@@ -126,7 +126,6 @@ package com.gestureworks.cml.components
 			super();
 			//blobContainerEnabled=true;
 			//visible=false;
-			displayComplete();
 		}
 
 		public function dipose():void
@@ -134,12 +133,10 @@ package com.gestureworks.cml.components
 			parent.removeChild(this);
 		}
 
-		override protected function displayComplete():void
+		override public function displayComplete():void
 		{			
 			//trace("google map viewer complete");
-			
 			createUI();
-			commitUI();
 		}
 
 		override protected function createUI():void
@@ -219,8 +216,19 @@ package com.gestureworks.cml.components
 			{							
 				frame = new TouchSprite();
 					frame.targetParent = true;
+					frame.graphics.lineStyle(2*frame_thickness, frame_color, frame_alpha);
+					frame.graphics.drawRect( -frame_thickness, -frame_thickness, mapWidth + 2 * frame_thickness, mapHeight + 2 * frame_thickness);
+					frame.graphics.lineStyle(2, frame_color,frame_alpha+0.5);
+					frame.graphics.drawRoundRect( -2 * frame_thickness, -2 * frame_thickness, mapWidth + 4 * frame_thickness, mapHeight + 4 * frame_thickness, 2 * frame_thickness, 2 * frame_thickness);
+					frame.graphics.lineStyle(4, frame_color,0.8);
+					frame.graphics.drawRect(-2, -2, mapWidth + 4, mapHeight + 4);	
 				map_holder.addChild(frame);
 			}
+			else frameMargin=0;
+			
+			width=mapWidth+frameMargin;
+			height=mapHeight+frameMargin;
+					
 			
 			//---------- build map ------------------------//
 			
@@ -252,6 +260,24 @@ package com.gestureworks.cml.components
 			//if (map_mask) {
 				//map2 = new Map();
 			//}
+			
+			
+			//map.key = mapApiKey;
+			//map.setSize(new Point(mapWidth,mapHeight));
+			//map.sensor = "false"
+			/*
+			if (map_mask) {
+				map2.key = mapApiKey;
+				map2.setSize(new Point(mapWidth,mapHeight));
+				map2.sensor = "false"
+			}
+			*/
+			
+			if (! _intialize)
+			{
+				_intialize=true;
+				visible=true;
+			}
 			
 			
 			map_holder.addChild(map);
@@ -320,8 +346,10 @@ package com.gestureworks.cml.components
 			//-- Add Event Listeners----------------------------------//
 			//map.addEventListener(MapEvent.MAP_PREINITIALIZE, onMapPreInt);
 			
-			
 			screen = new TouchSprite();
+				screen.graphics.beginFill(0xFFFFFF,0);
+				screen.graphics.drawRoundRect(0,0,mapWidth,mapHeight,0,0);
+				screen.graphics.endFill();
 			
 				screen.nestedTransform = true;
 				screen.mouseChildren = true;
@@ -337,56 +365,6 @@ package com.gestureworks.cml.components
 			//map_holder.addChild(screen);
 			map_holder.addChild(mShapeHit);
 			
-		}
-
-		override protected function commitUI():void
-		{	
-			trace("commit");
-			
-			width=mapWidth;
-			height=mapHeight;
-			
-			if(!frameMargin)
-			{
-				frameMargin=0;
-			}
-			
-			if(frameDraw)
-			{		
-				frame.graphics.lineStyle(2*frame_thickness, frame_color, frame_alpha);
-				frame.graphics.drawRect( -frame_thickness, -frame_thickness, mapWidth + 2 * frame_thickness, mapHeight + 2 * frame_thickness);
-				frame.graphics.lineStyle(2, frame_color,frame_alpha+0.5);
-				frame.graphics.drawRoundRect( -2 * frame_thickness, -2 * frame_thickness, mapWidth + 4 * frame_thickness, mapHeight + 4 * frame_thickness, 2 * frame_thickness, 2 * frame_thickness);
-				frame.graphics.lineStyle(4, frame_color,0.8);
-				frame.graphics.drawRect(-2, -2, mapWidth + 4, mapHeight + 4);
-
-				width=mapWidth+frameMargin;
-				height=mapHeight+frameMargin;
-			}
-			
-			//map.key = mapApiKey;
-			//map.setSize(new Point(mapWidth,mapHeight));
-			//map.sensor = "false"
-			/*
-			if (map_mask) {
-				map2.key = mapApiKey;
-				map2.setSize(new Point(mapWidth,mapHeight));
-				map2.sensor = "false"
-			}
-			*/
-			
-			screen.graphics.beginFill(0xFFFFFF,0);
-			screen.graphics.drawRoundRect(0,0,mapWidth,mapHeight,0,0);
-			screen.graphics.endFill();
-			//screen.blobContainerEnabled = true;
-			
-			rotation = mapRotation;
-			
-			if (! _intialize)
-			{
-				_intialize=true;
-				visible=true;
-			}
 		}
 		
 		/*
