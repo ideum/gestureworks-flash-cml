@@ -1,4 +1,4 @@
-package com.gestureworks.cml.components
+package com.gestureworks.components
 {	
 	import com.gestureworks.cml.managers.CSSManager;
 	import com.gestureworks.cml.managers.DisplayManager;
