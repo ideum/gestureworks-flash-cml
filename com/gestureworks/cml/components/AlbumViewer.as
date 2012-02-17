@@ -149,8 +149,8 @@ package com.gestureworks.cml.components
 
 			trace("initUI");
 
-			Width = childList.getIndex(0).width;
-			Height = childList.getIndex(0).height;
+			//Width = childList.getIndex(0).width;
+			//Height = childList.getIndex(0).height;
 
 			
 			Width = 400//childList[0].width;

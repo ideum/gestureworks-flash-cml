@@ -177,7 +177,7 @@ package com.gestureworks.cml.factories
 				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				netStream.close();
 				if (SystemDetection.VERSION_NUMBER >= 11.0)
-					netStream.dispose(); // only works in fp 11+				
+					//netStream.dispose(); // only works in fp 11+				
 				netStream = null;
 			}
 			
