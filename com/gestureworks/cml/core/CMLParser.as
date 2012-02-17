@@ -40,7 +40,7 @@ package com.gestureworks.cml.core
 		public static const COMPLETE:String = "COMPLETE";
 		
 		
-		public var debug:Boolean = true;
+		public var debug:Boolean;// = true;
 		
 		/**
 		 * Initial parsing of the cml document
@@ -209,7 +209,7 @@ package com.gestureworks.cml.core
 				
 				dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
 				
-				trace('\n\n********************* CML Parsing Complete ************************\n\n');				
+				if (debug) trace('\n\n********************* CML Parsing Complete ************************\n\n');				
 				
 			}
 			

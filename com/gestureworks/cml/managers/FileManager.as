@@ -74,7 +74,7 @@ package com.gestureworks.cml.managers
 		
 		public function startQueue():void
 		{
-			trace("START");
+			//trace("START");
 			stopped = false;
 			
 			if (!cmlLoaded && cmlCount > 0)
@@ -94,9 +94,9 @@ package com.gestureworks.cml.managers
 		
 		private function processCMLQueue():void
 		{
-			trace("PROCESS CML");
+			//trace("PROCESS CML");
 		
-			trace(cmlCount);
+			//trace(cmlCount);
 			
 			if (!stopped)
 			{
@@ -121,7 +121,7 @@ package com.gestureworks.cml.managers
 		
 		private function processFileQueue():void
 		{
-			trace("PROCESS FILE");
+			//trace("PROCESS FILE");
 			
 			if (!stopped)
 			{
@@ -160,7 +160,7 @@ package com.gestureworks.cml.managers
 		
 		private function onCMLLoaded(event:Event):void
 		{
-			trace(event.target, cmlQueue.currentKey,  "has finished loading");
+			//trace(event.target, cmlQueue.currentKey,  "has finished loading");
 						
 			if (cmlQueue.hasNext())
 			{
@@ -181,7 +181,7 @@ package com.gestureworks.cml.managers
 		
 		private function onFileLoaded(event:Event):void
 		{
-			trace(event.target, fileQueue.currentKey,  "has finished loading");
+			//trace(event.target, fileQueue.currentKey,  "has finished loading");
 			
 			if (fileQueue.hasNext())
 			{

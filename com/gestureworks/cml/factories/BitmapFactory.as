@@ -58,7 +58,7 @@ package com.gestureworks.cml.factories
 			}
 			*/
 			
-			trace("\n\n_____________________", imageSrc)
+			//trace("\n\n_____________________", imageSrc)
 			
 			
 			_bitmapData = new BitmapData(FileManager.instance.fileList.getKey(imageSrc).loader.width, 

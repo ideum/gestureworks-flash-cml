@@ -1,6 +1,5 @@
 package com.gestureworks.cml.core
 {
-	import away3d.core.render.Renderer;
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.kits.ComponentKit;

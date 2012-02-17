@@ -1,7 +1,5 @@
 package com.gestureworks.cml.managers
-{
-	import com.gestureworks.cml.element.SystemWindow;
-	
+{	
 	import flash.display.Screen;
 
 	/**
