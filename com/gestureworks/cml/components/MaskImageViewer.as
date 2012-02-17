@@ -123,29 +123,27 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{			
-			childInfo()
+			childInfo();
+			
+			initUI();
+			setupUI();
 		}
 		
 		private function childInfo():void
 		{ 
 				trace(this.childList.length);
 				
-				for (var i:int = 0; i <= this.childList.length; i++)
+				for (var i:int = 0; i < this.childList.length; i++)
 				{
-					if ((childList.getIndex(i) is TouchContainer))
+					trace(childList.getIndex(i),childList.getIndex(i).id);
+					//if ((childList.getIndex(i) is TouchContainer))
+					//if ((childList.getIndex(i) is ImageElement))
 					{
-						//trace(childList[i].x, childList[i].y,childList[i].getChildAt(0).width,childList[i],childList[i].getChildAt(0));
+						trace(childList.getIndex(i).id);
 						itemList.push(childList.getIndex(i));
 					}
 				}
-				n = itemList.length;
-				
-				//childList.getIndex(i).getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
-	
-				
-				
-			initUI();
-			setupUI();				
+				n = itemList.length;				
 		}
 		
 		private function initUI():void
@@ -187,9 +185,10 @@ package com.gestureworks.cml.components
 			//Width = base_image.width//401//499//image1.width;
 			//Height = base_image.height//401//321//image1.height;
 			
-			Width = childList.getIndex(0).width;
-			Height = childList.getIndex(0).height;
+			//Width = itemList[0].width;
+			//Height = itemList[0].height;
 			
+			//trace(itemList[0].width,itemList[0].width)
 						
 			if(frameDraw)
 			{	
@@ -197,12 +196,6 @@ package com.gestureworks.cml.components
 				//height=Height+frameMargin;
 			}
 			
-		}
-		
-		private function updateDisplay(event:Event):void
-		{ 
-			//trace("update");
-
 		}
 			
 		private function setupUI():void
