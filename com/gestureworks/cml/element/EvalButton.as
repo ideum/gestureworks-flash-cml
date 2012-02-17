@@ -7,7 +7,7 @@ package com.gestureworks.cml.element
 	
 	/**
 	 * ...
-	 * @author Matthew Valverde
+	 * @author  
 	 */
 	
 	public class EvalButton extends ElementFactory

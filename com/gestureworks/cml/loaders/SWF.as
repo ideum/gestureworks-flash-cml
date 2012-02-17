@@ -13,7 +13,7 @@ package com.gestureworks.cml.loaders
 	/**
 	 * SWF
 	 * Loads a SWF file
-	 * @authors Charles Veasey & Matthew Valverde
+	 * @authors Charles Veasey &  
 	 */	
 	
 	public class SWF extends EventDispatcher

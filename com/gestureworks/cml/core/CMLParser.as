@@ -21,7 +21,7 @@ package com.gestureworks.cml.core
 	/**
 	 * CMLParser, Singleton
 	 * CML parsing routine
-	 * @authors Matthew Valverde and Charles Veasey
+	 * @authors Charles Veasey
 	 */
 	public class CMLParser extends CML_CORE
 	{		

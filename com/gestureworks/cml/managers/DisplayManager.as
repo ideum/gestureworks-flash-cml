@@ -11,7 +11,7 @@ package com.gestureworks.cml.managers
 	 * DisplayManager, Singleton
 	 * Manages display objects
 	 * 
-	 * @authors Matthew Valverde & Charles Veasey 
+	 * @authors Charles Veasey 
 	 */	
 	
 	public class DisplayManager 

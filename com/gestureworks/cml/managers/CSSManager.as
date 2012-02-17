@@ -9,7 +9,7 @@ package com.gestureworks.cml.managers
 	
 	/**
 	 * ... 
-	 * @authors Charles Veasey & Matthew Valverde
+	 * @authors Charles Veasey
 	 */
 	
 	public class CSSManager extends EventDispatcher

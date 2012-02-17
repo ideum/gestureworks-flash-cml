@@ -14,7 +14,7 @@ package com.gestureworks.cml.components
 	
 	/**
 	 * ...
-	 * @author Matthew C. Valverde
+	 * @author 
 	 */	
 	
 	public class ComponentDisplay extends Sprite

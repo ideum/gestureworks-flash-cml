@@ -10,7 +10,7 @@ package com.gestureworks.cml.loaders
 	/**
 	 * CSS, Multiton Class
 	 * Loads and stores a global reference to a CSS Stylesheet 
-	 * @authors Charles Veasey & Matthew Valverde
+	 * @authors Charles Veasey
 	 */
 	
 	public class CSS extends EventDispatcher

@@ -16,7 +16,7 @@ package com.gestureworks.cml.factories
 	/**
 	 * ElementFactory
 	 * Base class for display elememts
-	 * @authors Matthew Valverde and Charles Veasey
+	 * @authors Charles Veasey
 	 */	
 	
 	public class ElementFactory extends Sprite implements IElement, ICSS, IClone

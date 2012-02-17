@@ -7,7 +7,7 @@ package com.gestureworks.cml.factories
 	
 	/**
 	 * ObjectFactory
-	 * @authors Matthew Valverde and Charles Veasey 
+	 * @authors Charles Veasey 
 	 */
 	public class ObjectFactory implements IObject
 	{

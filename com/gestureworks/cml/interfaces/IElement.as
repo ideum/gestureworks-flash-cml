@@ -3,7 +3,7 @@ package com.gestureworks.cml.interfaces
 	/**
 	 * IElement
 	 * Implement classes that are display elements
-	 * @authors Matthew Valverde and Charles Veasey
+	 * @authors Charles Veasey
 	 */	
 	
 	public interface IElement extends IObject

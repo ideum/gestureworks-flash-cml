@@ -9,7 +9,7 @@ package com.gestureworks.cml.loaders
 	/**
 	 * CML, Multiton Class
 	 * Loads and stores a global reference to a CML file
-	 * @authors Charles Veasey & Matthew Valverde
+	 * @authors Charles Veasey
 	 */
 	
 	public class CML extends EventDispatcher

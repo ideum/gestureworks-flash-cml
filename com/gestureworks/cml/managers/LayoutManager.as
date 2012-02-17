@@ -13,7 +13,7 @@
 	 * LayoutManager, Singleton
 	 * Manages layout routines
 	 * 
-	 * @authors Charles Veasey, Matthew Valverde, and Paul Lacey
+	 * @authors Charles Veasey and Paul Lacey
 	 */	
 	public class LayoutManager
 	{				
