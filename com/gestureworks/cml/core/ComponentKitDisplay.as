@@ -1,5 +1,6 @@
 package com.gestureworks.cml.core
 {
+	import away3d.core.render.Renderer;
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.kits.ComponentKit;
@@ -89,7 +90,6 @@ package com.gestureworks.cml.core
 				childToList(obj.id, obj);
 				
 				componentId = obj.id;
-				
 				
 				CMLObjectList.instance.append(obj.id, obj);					
 			}
