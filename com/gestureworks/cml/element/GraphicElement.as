@@ -70,6 +70,14 @@ package com.gestureworks.cml.element
 			
 			switch(shape)
 			{
+				
+				case "vector":
+					{
+						// for lines that a niether horizontal nor vertical
+						graphics.lineTo(width, height);
+						break;
+					}
+				
 				case "line":
 				{
 					// setting width makes horizontal line
@@ -79,8 +87,8 @@ package com.gestureworks.cml.element
 						graphics.lineTo(width, 0);
 					else	
 						graphics.lineTo(0, height);
-						
-					break;
+					
+					break;	
 				}
 					
 				case "rectangle":

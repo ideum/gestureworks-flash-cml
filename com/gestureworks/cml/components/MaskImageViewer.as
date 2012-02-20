@@ -221,7 +221,6 @@ package com.gestureworks.cml.components
 					var frame_alpha:Number = 0.3;
 					
 					frame.targetParent = true;
-
 					frame.graphics.lineStyle(2*frame_thickness, frame_color, frame_alpha);
 					frame.graphics.drawRect( -frame_thickness, -frame_thickness, Width + 2 * frame_thickness, Height + 2 * frame_thickness);
 					frame.graphics.lineStyle(2, frame_color,frame_alpha+0.5);

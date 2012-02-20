@@ -21,6 +21,8 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTransformEvent;
+	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.cml.kits.ComponentKit;
@@ -39,7 +41,7 @@ package com.gestureworks.cml.components
 		private var loopMode:Boolean = false;
 		
 		private var frame:TouchSprite;
-		private var album:TouchSprite;
+		public var album:TouchSprite = new TouchSprite();
 		private var metadata:Sprite;
 		
 		// bar
@@ -83,6 +85,8 @@ package com.gestureworks.cml.components
 		private var album_description:TextElement
 		private var text_pad:int;
 		
+		public static var ALBUM_UPDATE:String = "album update";
+		
 		public function AlbumViewer()
 		{
 			super();	
@@ -101,7 +105,7 @@ package com.gestureworks.cml.components
 			trace("album display viewer complete");
 			//childrenParse();
 			childListParse();
-			
+			preInit();
 			initUI();
 			setupUI();			
 		}
@@ -119,7 +123,7 @@ package com.gestureworks.cml.components
 		
 		private function childListParse():void
 		{ 
-				//trace(this.childList.length);
+				//trace("album, items",this.childList.length);
 				
 				for (i=0; i<=this.childList.length; i++)
 					{
@@ -144,10 +148,29 @@ package com.gestureworks.cml.components
 			//childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
 		}
 		
+		private function preInit(): void {
+			
+			album = new TouchSprite();
+				album.targeting = true;
+				album.gestureEvents = true;
+				album.nestedTransform = true;
+				album.disableNativeTransform = false;
+				album.disableAffineTransform = false;
+				album.mouseChildren = true;
+				album.gestureList = { "n-drag":true };
+				album.x = 0;
+				album.y = 0;
+				album.name = "album";
+				album.transformEvents = true;
+				album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
+			addChild(album);
+		}
+		
+		
 		private function initUI():void
 		{
 
-			trace("initUI");
+			trace("initUI album");
 
 			//Width = childList.getIndex(0).width;
 			//Height = childList.getIndex(0).height;
@@ -210,16 +233,14 @@ package com.gestureworks.cml.components
 		
 		private function setupUI():void
 		{ 
-			trace("setupUI");
+			trace("setupUI album");
 			
 			/////////////////////////////////////////////////////////////////////////////////////
 			// create album object
 			/////////////////////////////////////////////////////////////////////////////////////
 			
-			//this.gestureEvents = true;
-			//this.gestureList = { "n-drag":true };
-			
-			album = new TouchSprite();
+			/*
+			//album = new TouchSprite();
 				album.targeting = true;
 				album.gestureEvents = true;
 				album.nestedTransform = true;
@@ -229,8 +250,9 @@ package com.gestureworks.cml.components
 				album.gestureList = { "n-drag":true };
 				album.x = 0;
 				album.y = 0;
+				album.name = "album";
 			addChild(album);
-			
+			*/
 			
 			var bg:GraphicElement = new GraphicElement();
 				bg.lineColor = 0x000000;
@@ -253,6 +275,7 @@ package com.gestureworks.cml.components
 			
 			var frame:TouchSprite = new TouchSprite();
 				frame.targetParent = true;
+				
 				//frame.gestureEvents = true;
 				//frame.disableNativeTransform = false;
 				//frame.disableAffineTransform = false;
@@ -388,6 +411,7 @@ package com.gestureworks.cml.components
 					// create item container
 				var menuObj:TouchContainer = itemList[i - 1];
 						menuObj.id = String(i);
+						menuObj.name = "meni item";
 						//menuObj.visible = true;
 						menuObj.x = belt_marginX + (i-1)*box + (i-1)*sepx;
 						menuObj.y = belt_marginY;
@@ -431,6 +455,7 @@ package com.gestureworks.cml.components
 			
 			// metadata holder
 			metadata = new Sprite();
+				metadata.name = "metadata";
 				metadata.x = 0;
 				metadata.y = bar_height;
 				metadata.visible = false;
@@ -728,7 +753,16 @@ package com.gestureworks.cml.components
 		//override protected function commitUI():void{}
 		//override protected function layoutUI():void{}
 		
-		private function updateHandler(event:Event):void{}
+		public function translateHandler(event:GWTransformEvent):void
+		{
+			//trace("translate album");
+			this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
+		}
+		
+		private function updateHandler(event:Event):void 
+		{
+		trace("album update");	
+		}
 
 	}
 }

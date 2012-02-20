@@ -24,7 +24,6 @@ package com.gestureworks.cml.components
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.events.*;
-	//import flash.text.*;
 	import flash.utils.*;
 	
 	import flash.events.Event;
@@ -38,6 +37,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTransformEvent;
+	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	
@@ -110,7 +110,7 @@ package com.gestureworks.cml.components
 			childListParse();
 			
 			trace("update");
-			//initUI();
+			initUI();
 			//setupUI();
 		}
 		/*
@@ -155,14 +155,52 @@ package com.gestureworks.cml.components
 			//Width = childList[0].width;
 			//Height = childList[0].height;
 			
-			for (var j:int = 0; j < itemList.length; j++)
+			for (var j:int = 0; j < this.childList.length; j++)
 					{
-			for (var i:int = 0; i < itemList[j].childList.length; i++)
-					{
+						
+					//if (this.childList.getIndex(j) is object Container) {
+						
+						trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
 					
-				if(itemList[j].getChildAt(i))	trace("node children", i, itemList[j].getChildAt(i).id, itemList[j].getChildAt(i));
-				if (itemList[j].getChildAt(i).id == "0.album1") trace("album children", itemList[j].getChildAt(i).itemList.length); // not loaded yet
+						for (var i:int = 0; i < this.childList.getIndex(j).childList.length; i++)
+					{
+						trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
+						
+							if ( this.childList.getIndex(j).childList.getIndex(i) is TouchContainer) {
+								
+								trace("length",this.childList.getIndex(j).childList.getIndex(i).childList.length)
+								for (var k:int = 0; k < this.childList.getIndex(j).childList.getIndex(i).childList.length; k++)
+								{
+									trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
+									var item = this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k);
+									if (item is ComponentKit) {
+										//item.transformEvents = true;
+										//item.addEventListener(GWTransformEvent.T_TRANSLATE, dragHandler);
+										if (item.childList) {
+											trace(item.childList.length, item.childList.getIndex(0), item.childList.getIndex(0).id);
+											
+											
+											item.childList.getIndex(0).addEventListener(DisplayEvent.CHANGE, displayHandler);
+											
+											
+											//trace(item.childList.getIndex(0).getChildAt[0]);
+											//trace(item.childList.getIndex(1), item.childList.getIndex(1).id);
+											//item.childList.getIndex(0).album.transformEvents = true;
+											//item.childList.getIndex(0).getChildAt(0).transformEvents = true
+											//trace(item.childList.getIndex(0).getChildAt(0),item.childList.getIndex(0).getChildAt(0).id);
+											//trace(item.childList.getIndex(0).childList.getIndex(0),item.childList.getIndex(0).childList.getIndex(0).id);
+										}
+									}
+									
+									
+								}
+							}
+						
 					}
+					
+					
+					//}
+					
 				}
 			
 			//itemList[0].transformEvents = true;
@@ -183,14 +221,25 @@ package com.gestureworks.cml.components
 			trace("d tap", count);
 		}
 		
-		private function dragHandler(event:GWTransformEvent):void 
+		private function displayHandler(event:DisplayEvent):void 
 		{
-			trace("album translate",itemList[0].getChildAt(5).x,itemList[0].getChildAt(5).y);
+			trace("album translate check from inside node viewer", event.target.album.x, event.target.album.x);
+			trace("album",event.target.x, event.target.y);
+			trace("parent",event.target.parent.x, event.target.parent.y);
+			
+			var t = event.target;
+			
+			trace(t.parent.getChildAt(0), t.parent.parent.getChildAt(1).id);
+			
+			t.parent.parent.getChildAt(1).width = event.target.album.x+event.target.parent.x;
+			t.parent.parent.getChildAt(1).height = event.target.album.y+event.target.parent.y;
+			
+			//trace("album translate",itemList[0].getChildAt(5).x,itemList[0].getChildAt(5).y);
 			//event.target.getChildAt(2).width = 500;
 			//event.target.getChildAt(2).Height = 10;
 			
-			itemList[0].getChildAt(2).width = itemList[0].getChildAt(5).x;
-			itemList[0].getChildAt(2).height = itemList[0].getChildAt(5).y;
+			//itemList[0].getChildAt(2).width = itemList[0].getChildAt(5).x;
+			//itemList[0].getChildAt(2).height = itemList[0].getChildAt(5).y;
 			
 			//trace("album children", itemList[0].getChildAt(5).itemList.length)
 			//trace("album children", itemList[0].getChildAt(5).childList.length)
