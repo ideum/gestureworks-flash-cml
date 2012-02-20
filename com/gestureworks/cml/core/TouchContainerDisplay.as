@@ -82,8 +82,8 @@ package com.gestureworks.cml.core
 		
 		public function parseCML(cml:XMLList):XMLList
 		{
-			var obj:XMLList = CMLParser.instance.parseCML(this, cml);
-			this.gestureList = makeGestureList(cml.GestureList);			
+			var obj:XMLList = CMLParser.instance.parseCML(this, cml);			
+			cmlGestureList = makeGestureList(cml.GestureList);			
 			return obj;
 		}
 		
@@ -96,21 +96,24 @@ package com.gestureworks.cml.core
 			CMLParser.instance.updateProperties(this, state);		
 		}		
 		
+				
+		
+		private var cmlGestureList:Object;
 		
 		public function makeGestureList(value:XMLList):Object
-		{
-			var gestureList:*;
+		{			
+			var gl:*;
 			
-			if (gestureList === value.Gesture) 
+			if (gl === value.Gesture) 
 				return null;
 			
-			gestureList = value.Gesture;
+			gl = value.Gesture;
 			
 			var object:Object = new Object();
 			
-			for (var i:int; i < gestureList.length(); i++)
-			{				
-				object[(gestureList[i].@ref).toString()] = gestureList[i].@gestureOn;
+			for (var i:int; i < gl.length(); i++)
+			{					
+				object[(gl[i].@ref).toString()] = gl[i].@gestureOn;
 			}
 			
 			return object;
@@ -118,7 +121,10 @@ package com.gestureworks.cml.core
 		
 		
 		
-		
+		public function activateTouch():void
+		{
+			this.gestureList = cmlGestureList;
+		}
 		
 		
 		
@@ -167,7 +173,8 @@ package com.gestureworks.cml.core
 		public function get dimensionsTo():String { return _dimensionsTo ; }
 		public function set dimensionsTo(value:String):void
 		{
-			_dimensionsTo = value;	
+			_dimensionsTo = value;
+			trace("TOUCH CONTAINER - DIMENTIONS TO: ", dimensionsTo);
 		}		
 		
 		
