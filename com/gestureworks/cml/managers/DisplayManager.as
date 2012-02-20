@@ -67,6 +67,15 @@ package com.gestureworks.cml.managers
 			}
 		}
 		
+		public function activateTouch():void
+		{			
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{				
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("activateTouch"))
+					CMLObjectList.instance.getIndex(i).activateTouch();
+			}
+		}			
+		
 		
 		public function loadComplete():void
 		{			
