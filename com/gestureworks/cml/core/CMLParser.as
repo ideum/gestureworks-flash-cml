@@ -40,7 +40,7 @@ package com.gestureworks.cml.core
 		public static const COMPLETE:String = "COMPLETE";
 		
 		
-		public var debug:Boolean;// = true;
+		public var debug:Boolean = true;
 		
 		/**
 		 * Initial parsing of the cml document
@@ -195,6 +195,11 @@ package com.gestureworks.cml.core
 				DisplayManager.instance.layoutCML();
 				
 				if (debug)
+					trace("\nactivate touch");				
+				
+				DisplayManager.instance.activateTouch();				
+				
+				if (debug)
 					trace("\nadd children to stage");				
 				
 				DisplayManager.instance.addCMLChildren();
@@ -209,7 +214,7 @@ package com.gestureworks.cml.core
 				
 				dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
 				
-				if (debug) trace('\n\n********************* CML Parsing Complete ************************\n\n');				
+				trace('\n\n********************* CML Parsing Complete ************************\n\n');				
 				
 			}
 			
@@ -234,56 +239,52 @@ package com.gestureworks.cml.core
 			
 			for each (var node:* in cml)
 			{
-					
-				className = node.name();				
+				className = node.name();								
 				
-	
 				if (debug)
 					trace("\n-create", className);					
 				
 				obj = createObject(className);
 				
-
 				
 				if (!properties)
 					obj.id = node.@id;
-				else
+				else //target render data
 					obj.id = node.@id + "." + properties.@id;
-
-					
+				
 					
 				if (debug)
 					trace("\n-add to CMLObjectList id: ", obj.id, ", object: ", obj);							
-					
+				
 				CMLObjectList.instance.append(obj.id, obj);					
-				
+								
+
 				returnedNode = obj.parseCML(XMLList(node));
+			
 				
-				
-				
-				if (properties)
+				if (properties) //target render data
 				{
 					if (debug)
 						trace("\ncomponent kit render properties of id: ", obj.id);					
-																
+					
+					obj.propertyStates[0]["id"] = obj.id;				
+
 					for (var key:* in obj.propertyStates[0]) 
 					{
-						trace("*******************", obj.propertyStates[0][key]);
-						
-						if (properties.*.(name() == obj.propertyStates[0][key].toString()))
+						if (key == "dimensionsTo")
+							obj.propertyStates[0][key] = obj.propertyStates[0][key] + "." + properties.@id;
+												
+						for each (var val:* in properties.*)
 						{
-							obj.propertyStates[0][key] = 
-								properties.*.(name() == obj.propertyStates[0][key].toString()).valueOf();
-							trace("______________", obj.propertyStates[0][key]);
+							if (obj.propertyStates[0][key] == val.name().toString())
+								obj.propertyStates[0][key] = val;							
 						}
-					}	
-					
-					// must override the id or will be empty
-					obj.propertyStates[0]['id'] = obj.id;						
+					}						
 				}				
-
+				
 				
 				obj.postparseCML(XMLList(node));
+				
 				
 				if (parent is (IContainer))
 					parent.childToList(obj.id, obj);
@@ -384,8 +385,9 @@ package com.gestureworks.cml.core
 			var returnNode:XMLList = new XMLList;
 			
 			for each (var attrValue:* in cml.@*)
-			{				
+			{
 				attrName = attrValue.name().toString();
+								
 				obj.propertyStates[0][attrName] = attrValue;
 			}
 			
@@ -432,16 +434,31 @@ package com.gestureworks.cml.core
 		{
 			propertyValue = propertyStates[state][propertyName].toString();
 			
-			// filter value for expression delimeter "{}"
+			// filter value for expression delimiter "{}"
 			if (propertyValue.charAt(0) == "{")
 			{
-				// remove {} characters
-				propertyValue = propertyValue.slice(1);
-				propertyValue = propertyValue.slice(0, propertyValue.length-1);
+				if ((propertyValue.charAt(propertyValue.length - 1) == "}"))
+				{
+					// remove whitepsace and {} characters
+					var regExp:RegExp = /[\s\r\n{}]*/gim;
+					propertyValue = propertyValue.replace(regExp, '');
+					
+					// split properties
+					var arr:Array = propertyValue.split(".");
+					
+					if (arr.length > 1)
+					{
+						// assign value from master cml list
+						// get value from property states instead of object to remove time factors							
+						return CMLObjectList.instance.getKey(arr[0]).propertyStates[state][arr[1]];
+					}
+					
+					else 
+						throw new Error("Malformed expression attribute. A valid id and property must be given");
+				}
 				
-				// assign value from master cml list
-				// get value from property states instead of object to remove time factors
-				return CMLObjectList.instance.getKey(propertyValue).propertyStates[state][propertyName];
+				else 
+					throw new Error("Malformed expression attribute. The delimiter character: {  must be followed by the: }  character");
 			}
 			
 			// check for boolean
@@ -451,13 +468,11 @@ package com.gestureworks.cml.core
 				propertyStates[state][propertyName] = false;			
 			
 			// check for css keyword
-			else if (propertyName == "class")
+			if (propertyName == "class")
 				propertyName = "class_";
 							
 			return propertyStates[state][propertyName];			
 		}
-		
-		
 		
 		
 	}
