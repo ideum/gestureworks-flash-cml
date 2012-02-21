@@ -109,9 +109,9 @@ package com.gestureworks.cml.element
 			return list.prev();
 		}
 		
-		public function checkExists(index:int):Boolean
+		public function hasIndex(index:int):Boolean
 		{
-			return list.checkExists(index);
+			return list.hasIndex(index);
 		}
 		
 		public function show(index:int):void

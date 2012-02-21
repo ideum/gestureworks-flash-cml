@@ -48,7 +48,7 @@ package com.gestureworks.cml.element
 		{
 			var lastImage:* = get(index);
 			
-			if (checkExists(index))
+			if (hasIndex(index))
 			{
 				tween = BetweenAS3.tween(lastImage, { alpha:0 }, null, fadeDuration/1000);
 				tween.onComplete = onFadeOutEnd;

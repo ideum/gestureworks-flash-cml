@@ -86,7 +86,7 @@ package com.gestureworks.cml.element
 		 */		
 		override public function reset():void
 		{
-			if (checkExists(currentIndex-1))			
+			if (hasIndex(currentIndex-1))			
 				hide(currentIndex-1);
 			currentIndex = 0;		
 		}
@@ -115,7 +115,7 @@ package com.gestureworks.cml.element
 		
 		protected function showNext():void
 		{
-			if (checkExists(currentIndex-1))
+			if (hasIndex(currentIndex-1))
 				toggle(currentIndex-1, currentIndex);
 			else
 				show(currentIndex);
