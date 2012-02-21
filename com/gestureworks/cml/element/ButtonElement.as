@@ -172,7 +172,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseDown", true, true));															
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseDown", true, true));															
 		}
 		
 		
@@ -203,7 +203,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseOut", true, true));												
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));												
 		}		
 		
 		
@@ -228,7 +228,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseOver", true, true));									
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOver", true, true));									
 		}	
 		
 				
@@ -253,7 +253,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseOut", true, true));						
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));						
 		}		
 		
 		
@@ -284,7 +284,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "touchEvent", "touchDown", true, true));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));			
 		}
 		
 		
@@ -309,7 +309,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "touchEvent", "touchUp", true, true));						
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchUp", true, true));						
 		}			
 		
 	}
