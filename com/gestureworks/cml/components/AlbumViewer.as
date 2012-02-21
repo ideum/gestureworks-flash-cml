@@ -112,6 +112,7 @@ package com.gestureworks.cml.components
 			trace("album display viewer complete");
 			//childrenParse();
 			childListParse();
+			childListParse2();
 			preInit();
 			initUI();
 			setupUI();			
@@ -130,7 +131,7 @@ package com.gestureworks.cml.components
 		
 		private function childListParse():void
 		{ 
-				//trace("album, items",this.childList.length);
+				trace("album, items",this.childList.length);
 				
 				for (i=0; i<=this.childList.length; i++)
 					{
@@ -154,6 +155,41 @@ package com.gestureworks.cml.components
 			//if(childList[0])childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);				
 			//childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
 		}
+		
+		
+		private function childListParse2():void
+		{
+			//Width = childList[0].width;
+			//Height = childList[0].height;
+			
+			for (var j:int = 0; j < this.childList.length; j++)
+					{	
+						trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
+					
+						for (var i:int = 0; i < this.childList.getIndex(j).childList.length; i++)
+					{
+						trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
+						
+							if ( this.childList.getIndex(j).childList.getIndex(i) is TouchContainer) {
+								
+								//trace("length",this.childList.getIndex(j).childList.getIndex(i).childList.length)
+								for (var k:int = 0; k < this.childList.getIndex(j).childList.getIndex(i).childList.length; k++)
+								{
+									trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
+									var item = this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k);
+									if (item is ComponentKit) {
+										if (item.childList) {
+											//trace(item.childList.length, item.childList.getIndex(0), item.childList.getIndex(0).id);
+											//item.childList.getIndex(0).addEventListener(DisplayEvent.CHANGE, displayHandler);
+										}
+									}
+								}
+							}
+					}
+				}
+		}
+		
+		
 		
 		private function preInit(): void {
 			
@@ -531,7 +567,8 @@ package com.gestureworks.cml.components
 			
 			
 			// childList["meta_bg"].x = 500;
-			
+			trace("---------------------------------------------------",this.childList.getKey("belt1"));
+			//childList.getKey("meta_bg").x = 500
 	}
 	
 	public function onScroll(event:GWGestureEvent):void
