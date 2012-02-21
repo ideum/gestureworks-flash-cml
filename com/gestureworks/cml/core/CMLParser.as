@@ -387,7 +387,11 @@ package com.gestureworks.cml.core
 			for each (var attrValue:* in cml.@*)
 			{
 				attrName = attrValue.name().toString();
-								
+
+				// check for css keyword
+				if (attrName == "class")
+					attrName = "class_";				
+				
 				obj.propertyStates[0][attrName] = attrValue;
 			}
 			
@@ -412,7 +416,7 @@ package com.gestureworks.cml.core
 			var propertyValue:String;
 			
 			for (var propertyName:String in obj.propertyStates[state])
-			{
+			{	
 				obj[propertyName] = 
 					filterProperty(propertyName, propertyValue, obj.propertyStates, state); 
 			}	
@@ -431,7 +435,7 @@ package com.gestureworks.cml.core
 		 * @return
 		 */
 		public function filterProperty(propertyName:String, propertyValue:*, propertyStates:*, state:*):*
-		{
+		{			
 			propertyValue = propertyStates[state][propertyName].toString();
 			
 			// filter value for expression delimiter "{}"
@@ -467,9 +471,6 @@ package com.gestureworks.cml.core
 			else if (propertyValue == "false")
 				propertyStates[state][propertyName] = false;			
 			
-			// check for css keyword
-			if (propertyName == "class")
-				propertyName = "class_";
 							
 			return propertyStates[state][propertyName];			
 		}
