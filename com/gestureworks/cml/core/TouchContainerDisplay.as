@@ -1,16 +1,11 @@
 package com.gestureworks.cml.core
 {
-	import com.gestureworks.cml.interfaces.IContainer;
-	import com.gestureworks.cml.interfaces.IElement;
-	import com.gestureworks.cml.interfaces.IObject;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.core.DisplayList;
-	import com.gestureworks.cml.factories.ElementFactory;
-	import flash.events.Event;
-	import flash.utils.Dictionary;
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.events.GWTransformEvent;
-	import com.gestureworks.cml.utils.LinkedMap;
+	import com.gestureworks.cml.interfaces.*;
+	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.core.*;
+	import com.gestureworks.events.*;
+	import flash.events.*;
+	import flash.utils.*;
 	
 	
 	/**
@@ -32,10 +27,8 @@ package com.gestureworks.cml.core
 		* @productversion GestureWorks 3.0
 	*/
 	
-	public class TouchContainerDisplay extends TouchSprite implements IContainer
+	public class TouchContainerDisplay extends TouchSprite implements IContainer, ICSS
 	{
-		
-		
 				
 		/**
 		*  GestureWorks Constructor.
@@ -58,8 +51,7 @@ package com.gestureworks.cml.core
 			addEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);
 			alpha = 1;
 		}
-		
-		
+				
 		
 		
 		//////////////////////////////////////////////////////////////
@@ -152,7 +144,19 @@ package com.gestureworks.cml.core
 		
 		
 
+		//////////////////////////////////////////////////////////////
+		//  ICSS 
+		//////////////////////////////////////////////////////////////
 		
+		private var _class_:String;
+		/**
+		 * Object's css class; 
+		 */			
+		public function get class_():String {return _class_;}
+		public function set class_(value:String):void 
+		{ 
+			_class_ = value; 
+		}			
 		
 		
 		
