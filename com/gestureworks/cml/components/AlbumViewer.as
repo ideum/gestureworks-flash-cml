@@ -3,7 +3,7 @@ package com.gestureworks.cml.components
 	
 	import adobe.utils.CustomActions;
 	import com.gestureworks.cml.core.TouchContainerDisplay;
-	import com.gestureworks.cml.element.Button;
+	import com.gestureworks.cml.element.ButtonElement;
 	import com.gestureworks.cml.element.GraphicElement;
 	import com.gestureworks.cml.element.FrameElement;
 	import com.gestureworks.cml.element.TextElement;
@@ -339,7 +339,7 @@ package com.gestureworks.cml.components
 				cbtn.y = btn_rad+btn_pad;
 			album.addChild(cbtn);
 			
-			//var close_btn:Button = new Button();
+			//var close_btn:ButtonElement = new ButtonElement();
 			var close_btn:GraphicElement = new GraphicElement();
 				close_btn.shape = "circle";
 				close_btn.radius = btn_rad;
@@ -526,16 +526,12 @@ package com.gestureworks.cml.components
 				album_description.selectable = false;
 			scrolltxt.addChild(album_description);	
 			
-			var scroll_screen:GraphicElement= new GraphicElement();
-				scroll_screen.shape = "rectangle";
-				scroll_screen.width = Width;
-				scroll_screen.height = Height;
-				scroll_screen.color = 0xFFFFFF
-				scroll_screen.fillAlpha = 0.5;
-			scrolltxt.addChild(scroll_screen);	
-			
 			width = Width;
 			//heith = Height;
+			
+			
+			// childList["meta_bg"].x = 500;
+			
 	}
 	
 	public function onScroll(event:GWGestureEvent):void
