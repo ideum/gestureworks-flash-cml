@@ -76,7 +76,7 @@ package com.gestureworks.cml.utils
 				_currentIndex--;
 		}
 		
-		public function checkExists(index:int):Boolean
+		public function hasIndex(index:int):Boolean
 		{
 			if (array[index])
 				return true;
