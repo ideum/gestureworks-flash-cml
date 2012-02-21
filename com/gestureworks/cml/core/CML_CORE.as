@@ -22,7 +22,9 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	
 	
-	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;	
+	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
+	import com.gestureworks.cml.components.AlbumViewerNew; AlbumViewerNew;
+	import com.gestureworks.cml.components.ListViewer; ListViewer;
 	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
 	import com.gestureworks.cml.components.GoogleMapsViewer; GoogleMapsViewer;
 	import com.gestureworks.cml.components.ModestMapsViewer; ModestMapsViewer;
