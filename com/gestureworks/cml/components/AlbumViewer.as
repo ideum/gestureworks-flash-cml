@@ -3,7 +3,7 @@ package com.gestureworks.cml.components
 	
 	import adobe.utils.CustomActions;
 	import com.gestureworks.cml.core.TouchContainerDisplay;
-	//import com.gestureworks.cml.element.ButtonElement;
+	import com.gestureworks.cml.element.Button;
 	import com.gestureworks.cml.element.GraphicElement;
 	import com.gestureworks.cml.element.FrameElement;
 	import com.gestureworks.cml.element.TextElement;
@@ -18,6 +18,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.core.ComponentKitDisplay;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
+	import com.gestureworks.cml.element.GraphicElement;
 	
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
@@ -46,6 +47,9 @@ package com.gestureworks.cml.components
 		
 		// bar
 		private var bar_height:Number;
+		
+		private var btn_rad:int = 15;
+		private var btn_pad:int = 10;
 		
 		// belt
 		private var belt:TouchSprite;
@@ -83,7 +87,10 @@ package com.gestureworks.cml.components
 		
 		// meta data
 		private var album_description:TextElement
-		private var text_pad:int;
+		private var text_pad:Number;
+		private var scroll_bar_pad:Number;
+		private var scroll_bar_width:Number;
+		private var scroll_bar_height:Number;
 		
 		public static var ALBUM_UPDATE:String = "album update";
 		
@@ -162,6 +169,7 @@ package com.gestureworks.cml.components
 				album.y = 0;
 				album.name = "album";
 				album.transformEvents = true;
+				album.width = Width;
 				album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 			addChild(album);
 		}
@@ -190,7 +198,7 @@ package com.gestureworks.cml.components
 			centerX = Width*0.5;
 			centerY = Height*0.5;
 			box = 255//Width; //400// max 385
-			sepx = 25;
+			sepx = 10;
 			belt_marginY = 25;
 			belt_marginX = 0;
 			belt_height = Height;//502-78-35;
@@ -214,6 +222,9 @@ package com.gestureworks.cml.components
 			slider_factor = (centralBlockwidth - Width) / Width;
 			
 			text_pad = 20;
+			scroll_bar_pad = 30;
+			scroll_bar_width = 10;
+			scroll_bar_height = 60;
 			
 			/////////////////////////////
 			//
@@ -263,7 +274,8 @@ package com.gestureworks.cml.components
 				bg.width = Width;
 				bg.height = Height;
 				bg.y = bar_height;
-			album.addChild(bg)
+			album.addChild(bg);
+			
 			//if(visDebug){
 				//album.graphics.lineStyle(4, 0x00FF00, 1);
 				//album.graphics.drawRect(0,0,Width,Height);
@@ -294,14 +306,11 @@ package com.gestureworks.cml.components
 			frame.addChild(f);
 			*/
 			
-			var btn_rad:int = 20;
-			var btn_pad:int = 5;
-			
 			var bar:GraphicElement = new GraphicElement();
 				bar.lineColor = 0x000000;
 				bar.lineAlpha = 1;
-				bar.color = 0x888888;
-				bar.fillAlpha = 0.6;
+				bar.lineStroke = 2;
+				bar.color = 0x666666;
 				bar.shape="rectangle"
 				bar.width = Width;
 				bar.height = bar_height;
@@ -314,6 +323,7 @@ package com.gestureworks.cml.components
 					album_title.text = "Title 123456789....";
 					album_title.x = text_pad + 2*btn_rad + 2*btn_pad;
 					album_title.y = text_pad;
+					album_title.textColor = 0xFFFFFF;
 					album_title.width = Width - 4 * btn_rad - 4 * btn_pad;
 					album_title.height = bar_height; 
 			bar.addChild(album_title);	
@@ -328,16 +338,19 @@ package com.gestureworks.cml.components
 				cbtn.x = Width - btn_rad-btn_pad;
 				cbtn.y = btn_rad+btn_pad;
 			album.addChild(cbtn);
-			/*
-			var close_btn:ButtonElement = new ButtonElement();
+			
+			//var close_btn:Button = new Button();
+			var close_btn:GraphicElement = new GraphicElement();
+				close_btn.shape = "circle";
 				close_btn.radius = btn_rad;
-				close_btn.x = 0;
-				close_btn.y = 0;
-				close_btn.width = 30;
-				close_btn.height = 30;
+				close_btn.lineStroke = 2;
+				close_btn.x = -btn_rad;
+				close_btn.y = -btn_rad;
+				//close_btn.width = 30;
+				//close_btn.height = 30;
 				//close_btn.text = "x........";
 			cbtn.addChild(close_btn);
-			*/
+			
 			// info button 
 			var ibtn:TouchSprite = new TouchSprite();
 				ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
@@ -348,16 +361,33 @@ package com.gestureworks.cml.components
 				ibtn.y = btn_rad+btn_pad;
 			album.addChild(ibtn);
 			
-			/*
-			var info_btn:ButtonElement = new ButtonElement();
+			
+			var info_btn:GraphicElement = new GraphicElement();
+			//var info_btn:ButtonElement = new ButtonElement();
+				info_btn.shape = "circle";	
+				info_btn.lineStroke = 2;
 				info_btn.radius = btn_rad;
-				info_btn.x = 0;
-				info_btn.y = 0;
-				info_btn.width = 30;
-				info_btn.height = 30;
+				info_btn.x = -btn_rad;
+				info_btn.y = -btn_rad;
+				//info_btn.width = 25;
+				//info_btn.height = 25;
 				//info_btn.text = "i........";
 			ibtn.addChild(info_btn);
+			
+			//outline
+			/*
+			var ol:GraphicElement = new GraphicElement();
+				ol.fillAlpha = 0;
+				ol.lineColor = 0x000000;
+				ol.lineStroke = 3;
+				ol.shape = "rectangle";
+				ol.width = Width;
+				ol.height = Height;
+				ol.y = bar_height;
+				ol.mouseChildren = true;
+			album.addChild(ol);
 			*/
+			
 			/////////////////////////////////////////////////////////////////////////////////////
 			// create belt object
 			/////////////////////////////////////////////////////////////////////////////////////
@@ -384,7 +414,7 @@ package com.gestureworks.cml.components
 			album.addChild(belt);
 			
 			 //create belt background
-				belt.graphics.beginFill(0x777777, 1);
+				belt.graphics.beginFill(0x777777, 0);
 				belt.graphics.drawRect(0,0,belt_width,belt_height);
 				belt.graphics.endFill();
 			
@@ -440,6 +470,8 @@ package com.gestureworks.cml.components
 			var mShape:GraphicElement = new GraphicElement();
 				mShape.fill = "0xFFFFFF";
 				mShape.fillAlpha = 1;
+				mShape.lineColor = 0xFFFFFF;
+				mShape.lineStroke = 2;
 				mShape.shape = "rectangle";
 				mShape.width = Width;
 				mShape.height = Height;
@@ -475,24 +507,41 @@ package com.gestureworks.cml.components
 				scrolltxt.touchChildren = false;
 				scrolltxt.targeting = true;
 				scrolltxt.gestureEvents = true;
-				scrolltxt.gestureList = { "2-finger-drag":true };
-				
+				//scrolltxt.gestureList = { "2-finger-drag":true };
+				scrolltxt.disableNativeTransform = true;
+				scrolltxt.disableAffineTransform = true;
+				scrolltxt.gestureList = { "n-drag":true };
 				scrolltxt.addEventListener(GWGestureEvent.DRAG, onScroll);
 				metadata.addChild(scrolltxt);
 				
 			album_description = new TextElement();
-				album_description.text = "Description";
+				album_description.text = " 1 Description --Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 2 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.0000";
+				album_description.textSize = 24;
 				album_description.x = text_pad;
 				album_description.y = text_pad;
+				album_description.width = Width-2*text_pad-scroll_bar_width;
+				album_description.height = Height-text_pad;
+				album_description.wordWrap = true;
+				album_description.multiline = true;
 				album_description.selectable = false;
 			scrolltxt.addChild(album_description);	
 			
+			var scroll_screen:GraphicElement= new GraphicElement();
+				scroll_screen.shape = "rectangle";
+				scroll_screen.width = Width;
+				scroll_screen.height = Height;
+				scroll_screen.color = 0xFFFFFF
+				scroll_screen.fillAlpha = 0.5;
+			scrolltxt.addChild(scroll_screen);	
+			
+			width = Width;
+			//heith = Height;
 	}
 	
 	public function onScroll(event:GWGestureEvent):void
 	{
-		trace("scroll",album_description.maxScrollH);
-		album_description.scrollH += event.value.dx;
+		//trace("scroll",album_description.maxScrollH,10*event.value.dx);
+		album_description.scrollV += 0.2*event.value.dx;
 	}
 	
 	public function onClose(event:GWGestureEvent):void

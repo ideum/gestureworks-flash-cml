@@ -156,59 +156,30 @@ package com.gestureworks.cml.components
 			//Height = childList[0].height;
 			
 			for (var j:int = 0; j < this.childList.length; j++)
-					{
-						
-					//if (this.childList.getIndex(j) is object Container) {
-						
-						trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
+					{	
+						//trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
 					
 						for (var i:int = 0; i < this.childList.getIndex(j).childList.length; i++)
 					{
-						trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
+						//trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
 						
 							if ( this.childList.getIndex(j).childList.getIndex(i) is TouchContainer) {
 								
-								trace("length",this.childList.getIndex(j).childList.getIndex(i).childList.length)
+								//trace("length",this.childList.getIndex(j).childList.getIndex(i).childList.length)
 								for (var k:int = 0; k < this.childList.getIndex(j).childList.getIndex(i).childList.length; k++)
 								{
-									trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
+									//trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
 									var item = this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k);
 									if (item is ComponentKit) {
-										//item.transformEvents = true;
-										//item.addEventListener(GWTransformEvent.T_TRANSLATE, dragHandler);
 										if (item.childList) {
-											trace(item.childList.length, item.childList.getIndex(0), item.childList.getIndex(0).id);
-											
-											
+											//trace(item.childList.length, item.childList.getIndex(0), item.childList.getIndex(0).id);
 											item.childList.getIndex(0).addEventListener(DisplayEvent.CHANGE, displayHandler);
-											
-											
-											//trace(item.childList.getIndex(0).getChildAt[0]);
-											//trace(item.childList.getIndex(1), item.childList.getIndex(1).id);
-											//item.childList.getIndex(0).album.transformEvents = true;
-											//item.childList.getIndex(0).getChildAt(0).transformEvents = true
-											//trace(item.childList.getIndex(0).getChildAt(0),item.childList.getIndex(0).getChildAt(0).id);
-											//trace(item.childList.getIndex(0).childList.getIndex(0),item.childList.getIndex(0).childList.getIndex(0).id);
 										}
 									}
-									
-									
 								}
 							}
-						
 					}
-					
-					
-					//}
-					
 				}
-			
-			//itemList[0].transformEvents = true;
-			//itemList[0].addEventListener(GWTransformEvent.T_TRANSLATE, dragHandler);
-			
-			//itemList[0].getChildAt(5).getChildAt(0).transformEvents = true;
-			//itemList[0].getChildAt(5).getChildAt(0).addEventListener(GWTransformEvent.T_TRANSLATE, dragHandler);
-	
 		}
 		private function setupUI():void
 		{ 	
@@ -223,26 +194,14 @@ package com.gestureworks.cml.components
 		
 		private function displayHandler(event:DisplayEvent):void 
 		{
-			trace("album translate check from inside node viewer", event.target.album.x, event.target.album.x);
-			trace("album",event.target.x, event.target.y);
-			trace("parent",event.target.parent.x, event.target.parent.y);
+			//trace("album translate check from inside node viewer", event.target.album.x, event.target.album.x);
+			//trace("album",event.target.x, event.target.y);
+			//trace("parent",event.target.parent.x, event.target.parent.y);
+			//trace(event.target.parent.getChildAt(0), t.parent.parent.getChildAt(3).id);
+			//trace(event.target.album.width / 2,event.target.width / 2);
 			
-			var t = event.target;
-			
-			trace(t.parent.getChildAt(0), t.parent.parent.getChildAt(1).id);
-			
-			t.parent.parent.getChildAt(1).width = event.target.album.x+event.target.parent.x;
-			t.parent.parent.getChildAt(1).height = event.target.album.y+event.target.parent.y;
-			
-			//trace("album translate",itemList[0].getChildAt(5).x,itemList[0].getChildAt(5).y);
-			//event.target.getChildAt(2).width = 500;
-			//event.target.getChildAt(2).Height = 10;
-			
-			//itemList[0].getChildAt(2).width = itemList[0].getChildAt(5).x;
-			//itemList[0].getChildAt(2).height = itemList[0].getChildAt(5).y;
-			
-			//trace("album children", itemList[0].getChildAt(5).itemList.length)
-			//trace("album children", itemList[0].getChildAt(5).childList.length)
+			event.target.parent.parent.getChildAt(3).width = event.target.album.x+event.target.parent.x+event.target.width / 2;
+			event.target.parent.parent.getChildAt(3).height = event.target.album.y+event.target.parent.y;
 		}
 	}
 }
