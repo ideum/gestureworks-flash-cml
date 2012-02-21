@@ -78,6 +78,11 @@ package com.gestureworks.cml.utils
 				currentIndex++;			
 		}
 		
+		public function replaceKey(key:*, value:*):void 
+		{
+			dictionary[key] = value;	
+		}		
+		
 		public function insert(index:int, key:*, value:*):void 
 		{
 			if (dictionary[key] != null)
