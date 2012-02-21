@@ -27,7 +27,14 @@ package com.gestureworks.cml.events
 		public function get property():String { return _property; }	
 		
 		
-			
+		/**
+		 * Event initiator's property value
+		 * @default null
+		 */	
+		private var _value:String;
+		public function get value():String { return _value; }	
+		
+		
 		/**
 		 * Creates a StateEvent object and sets defaults
 		 * @param type
@@ -37,7 +44,7 @@ package com.gestureworks.cml.events
 		 * @param cancelelable
 		 * @return none
 		 */		
-		public function StateEvent(type:String, id:String=null, property:String=null, bubbles:Boolean=false, cancelable:Boolean = false):void 
+		public function StateEvent(type:String, id:String=null, property:String=null, value:*=null, bubbles:Boolean=false, cancelable:Boolean = false):void 
 		{
 			//calls the super class Event
 			super(type, bubbles, cancelable);
@@ -45,6 +52,7 @@ package com.gestureworks.cml.events
 			//sets custom values
 			_id = id;
 			_property = property;
+			_value = value;
 		}
 		
 		
@@ -55,7 +63,7 @@ package com.gestureworks.cml.events
 		 */		
 		override public function clone():Event
 		{
-			return new StateEvent(type, _id, _property, bubbles, cancelable);
+			return new StateEvent(type, _id, _property, _value, bubbles, cancelable);
 		}		
 	
 		
