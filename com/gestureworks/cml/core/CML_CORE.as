@@ -57,9 +57,7 @@ package com.gestureworks.cml.core
 	//need to check
 	
 	//need to fix
-	import com.gestureworks.cml.element.Button; Button;		
-	import com.gestureworks.cml.element.ButtonState; ButtonState;	
-	import com.gestureworks.cml.element.ContainerList; ContainerList;
+	import com.gestureworks.cml.element.ButtonElement; ButtonElement;		
 	
 	//??
 	import com.gestureworks.cml.element.Gesture; Gesture;
