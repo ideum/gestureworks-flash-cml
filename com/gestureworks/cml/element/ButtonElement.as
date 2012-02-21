@@ -9,7 +9,7 @@ package com.gestureworks.cml.element
 
 	public class ButtonElement extends Container
 	{
-		private var debug:Boolean = true;		
+		private var debug:Boolean = false;		
 		private var buttonStates:Dictionary;		
 		private var hitObject:Object;
 		
@@ -172,7 +172,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "MouseDown", true, true));															
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseDown", true, true));															
 		}
 		
 		
@@ -203,7 +203,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "MouseUp", true, true));												
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseOut", true, true));												
 		}		
 		
 		
@@ -228,7 +228,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "MouseOver", true, true));									
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseOver", true, true));									
 		}	
 		
 				
@@ -253,7 +253,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "MouseOut", true, true));						
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "mouseEvent", "mouseOut", true, true));						
 		}		
 		
 		
@@ -284,7 +284,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "TouchDown", true, true));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "touchEvent", "touchDown", true, true));			
 		}
 		
 		
@@ -309,7 +309,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "TouchUp", true, true));						
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "touchEvent", "touchUp", true, true));						
 		}			
 		
 	}
