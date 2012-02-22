@@ -62,11 +62,11 @@ package com.gestureworks.cml.factories
 			
 			
 			_bitmapData = new BitmapData(FileManager.instance.fileList.getKey(imageSrc).loader.width, 
-				FileManager.instance.fileList.getKey(imageSrc).loader.height);
+				FileManager.instance.fileList.getKey(imageSrc).loader.height, true, 0x000000);
 				
 			_bitmapData.draw(FileManager.instance.fileList.getKey(imageSrc).loader.content, resizeMatrix);
 			
-			_bitmap = new Bitmap(_bitmapData,PixelSnapping.NEVER,true);
+			_bitmap = new Bitmap(_bitmapData,PixelSnapping.NEVER, true);
 			_bitmap.smoothing=true;
 
 			width = _bitmap.width*_percentX;
