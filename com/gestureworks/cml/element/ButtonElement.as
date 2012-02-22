@@ -17,7 +17,7 @@ package com.gestureworks.cml.element
 		public function ButtonElement()
 		{
 			super();
-			buttonStates = new Dictionary(false);
+			buttonStates = new Dictionary(true);
 			hitObject = new Object;	
 		}		
 		

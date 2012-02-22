@@ -54,12 +54,10 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.View; View;
 	import com.gestureworks.cml.element.GestureList; GestureList;	
 	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
-	
-	
-	//need to check
-	
-	//need to fix
 	import com.gestureworks.cml.element.ButtonElement; ButtonElement;		
+	import com.gestureworks.cml.element.SliderElement; SliderElement;		
+	
+	
 	
 	//??
 	import com.gestureworks.cml.element.Gesture; Gesture;
@@ -71,16 +69,15 @@ package com.gestureworks.cml.core
 	
 	/////////////////////
 	//  KITS  
-	//////////////////
+	////////////////////
 	
 	
 	//checked
 	import com.gestureworks.cml.kits.LibraryKit; LibraryKit;
 	import com.gestureworks.cml.kits.ViewKit; ViewKit;
 	import com.gestureworks.cml.kits.LayoutKit; LayoutKit;		
-	
-	//need to check
 	import com.gestureworks.cml.kits.ComponentKit; ComponentKit;		
+
 	
 	//??
 	import com.gestureworks.cml.kits.BackgroundKit; BackgroundKit;		

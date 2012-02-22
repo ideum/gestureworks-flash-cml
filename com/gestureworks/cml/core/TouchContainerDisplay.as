@@ -141,7 +141,7 @@ package com.gestureworks.cml.core
 		}		
 		
 		
-		
+		public function displayComplete():void{}
 		
 
 		//////////////////////////////////////////////////////////////
@@ -182,6 +182,17 @@ package com.gestureworks.cml.core
 		}		
 		
 		
+		
+		private var _layout:String;
+		/**
+		 * 
+		 */
+		public function get layout():String {return _layout;}
+		public function set layout(value:String):void 
+		{
+			_layout = value;
+		}
+		
 		public function childToList(id:String, child:*):void
 		{			
 			childList.append(id, child);			
@@ -198,17 +209,6 @@ package com.gestureworks.cml.core
 			}
 		}		
 		
-		
-		
-		private var _layout:String;
-		/**
-		 * 
-		 */
-		public function get layout():String {return _layout;}
-		public function set layout(value:String):void 
-		{
-			_layout = value;
-		}
 		
 		
 

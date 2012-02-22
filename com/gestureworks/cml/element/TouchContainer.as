@@ -8,5 +8,27 @@ package com.gestureworks.cml.element
 		{
 			super();
 		}
+
+		
+		public function showIndex(index:int):void
+		{
+			childList.getIndex(index).visible = false;
+		}
+		
+		public function hideIndex(index:int):void
+		{
+			childList.getIndex(index).visible = false;
+		}		
+			
+		public function showKey(key:String):void
+		{
+			childList.getKey(key).visible = true;
+		}
+				
+		public function hideKey(key:String):void
+		{
+			childList.getKey(key).visible = false;
+		}		
+		
 	}
 }
