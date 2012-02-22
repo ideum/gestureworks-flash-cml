@@ -113,25 +113,6 @@ package com.gestureworks.cml.components
 			initUI();
 			//setupUI();
 		}
-		/*
-		private function childListParse():void
-		{ 
-				//trace(this.childList.length);
-				
-				for (var i:int = 0; i <= this.childList.length; i++)
-					{
-						//trace(this.childList[i])
-						if (childList[i] is TouchContainer)//&&(childList[i].id=="item"))
-						{
-							trace("childList",this.childList[i].id)
-							//trace(childList[i].x, childList[i].y,childList[i].getChildAt(0).width,childList[i],childList[i].getChildAt(0));
-							itemList.push(childList[i])
-						}
-					}
-					n = itemList.length;
-				
-				//childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
-		}*/
 		
 		private function childListParse():void
 		{ 
@@ -152,29 +133,39 @@ package com.gestureworks.cml.components
 		
 		private function initUI():void
 		{
-			//Width = childList[0].width;
-			//Height = childList[0].height;
+			trace("node viewer child parse");
 			
 			for (var j:int = 0; j < this.childList.length; j++)
 					{	
-						//trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
+						trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
 					
 						for (var i:int = 0; i < this.childList.getIndex(j).childList.length; i++)
 					{
-						//trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
+						trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
 						
 							if ( this.childList.getIndex(j).childList.getIndex(i) is TouchContainer) {
 								
 								//trace("length",this.childList.getIndex(j).childList.getIndex(i).childList.length)
 								for (var k:int = 0; k < this.childList.getIndex(j).childList.getIndex(i).childList.length; k++)
 								{
-									//trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
+									trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
 									var item = this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k);
-									if (item is ComponentKit) {
-										if (item.childList) {
+									
+									
+									
+									if (item is AlbumViewerNew) {
+										
+										
+										
+										//trace("compoenent kit", item, item.id)
+										//trace("compoenent kit", item.childList.getIndex(0), item.childList.getIndex(0).id);
+										
+										childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).addEventListener(DisplayEvent.CHANGE, displayHandler);
+										
+										//if (item.childList) {
 											//trace(item.childList.length, item.childList.getIndex(0), item.childList.getIndex(0).id);
-											item.childList.getIndex(0).addEventListener(DisplayEvent.CHANGE, displayHandler);
-										}
+											//item.childList.getIndex(0).addEventListener(DisplayEvent.CHANGE, displayHandler);
+										//}
 									}
 								}
 							}
@@ -201,9 +192,11 @@ package com.gestureworks.cml.components
 			//trace("parent",event.target.parent.x, event.target.parent.y);
 			//trace(event.target.parent.getChildAt(0), t.parent.parent.getChildAt(3).id);
 			//trace(event.target.album.width / 2,event.target.width / 2);
+			//trace("album move",event.target.id,event.target.parent.id, event.target.parent.getChildAt(3).id)
 			
-			event.target.parent.parent.getChildAt(3).width = event.target.album.x+event.target.parent.x+event.target.width / 2;
-			event.target.parent.parent.getChildAt(3).height = event.target.album.y+event.target.parent.y;
+			event.target.parent.getChildAt(3).width = event.target.album.x + event.target.x + event.target.width / 2;
+			event.target.parent.getChildAt(3).height = event.target.album.y + event.target.y;
+			//event.target.parent.getChildAt(3).height = event.target.y;
 		}
 	}
 }
