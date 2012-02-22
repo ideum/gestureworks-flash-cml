@@ -181,6 +181,8 @@ package com.gestureworks.cml.components
 			trace("-------------------\\", this.childList.getKey("al"))
 			trace("-------------------\\", this.childList.getKey("holder1").class_)
 			
+			//trace("-------------------\\", this.childList.getCSSClass("holder"))
+			
 			//var s:String;
 			//for (s in itemListObject) trace("chilist objects",itemListObject[s].id);
 				
@@ -203,7 +205,7 @@ package com.gestureworks.cml.components
 			Height += 50//GestureWorks.application.stageHeight;//height//
 			centerX = Width*0.5;
 			centerY = Height*0.5;
-			box = 255//Width; //400// max 385
+			box = 455//Width; //400// max 385
 			sepx = 10;
 			belt_marginY = 0;
 			belt_marginX = 0;
@@ -303,7 +305,7 @@ package com.gestureworks.cml.components
 			mShape = this.childList.getKey("holder1").childList.getKey("mask_shape1");
 			album.addChild(mShape);
 			//apply mask//
-			belt.mask = mShape;
+			//belt.mask = mShape;
 	}
 	
 	public function onScroll(event:GWGestureEvent):void

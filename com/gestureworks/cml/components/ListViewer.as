@@ -1,66 +1,21 @@
 package com.gestureworks.cml.components
 {
-	
-	import adobe.utils.CustomActions;
-	import com.gestureworks.cml.core.TouchContainerDisplay;
-	import com.gestureworks.cml.element.ButtonElement;
-	import com.gestureworks.cml.element.GraphicElement;
-	import com.gestureworks.cml.element.FrameElement;
-	import com.gestureworks.cml.element.TextElement;
-	import flash.display.Sprite;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.events.*;
-	//import flash.text.*;
-	import flash.utils.*;
-	
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.core.ComponentKitDisplay;
 	import com.gestureworks.cml.element.TouchContainer
-	import com.gestureworks.cml.element.ImageElement;
-	import com.gestureworks.cml.element.GraphicElement;
-	
-	import com.gestureworks.events.GWEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.GWTransformEvent;
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.cml.kits.ComponentKit;
-	
 	import com.gestureworks.core.GestureWorks;
 	
-	public class ListViewer extends ComponentKit//TouchContainer
+	public class ListViewer extends ComponentKit
 	{		
-		// component
-		private var visDebug:Boolean =false;
-		private var Width:Number;
-		private var Height:Number;
-		private var centerX:Number;
-		private var centerY:Number;
-		private var buffer_tween:Boolean = true;	
-		public var album:TouchSprite = new TouchSprite();
-		
-		// belt
-		private var belt:TouchSprite;
-		private var belt_width:Number;
-		private var belt_height:Number;
 		private var i:int
-		public var itemList:Array = new Array;
-		private var masterItemList:Array = new Array;
-		
-		private var belt_marginY;
-		private var belt_marginX;
-
-		private var n:int;
+		private var marginY:Number;
+		private var marginX:Number;
 		private var sepx:Number;
-		private var box:Number ;
-		private var distX:Number;
-		
-		//repeat blocks
-		private var rn:int // repeat number
-		private var centralBlockwidth:Number;
-		private var repeatBlockwidth:Number;
+		private var sepy:Number;
+		private var box:Number;
+		private var sumx:Number;
+		private var sumy:Number;
+		private var close_packing:Boolean;
+		private var n:int;
 		
 		public function ListViewer()
 		{
@@ -75,69 +30,80 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("list display viewer complete");
-			childListParse();
-			initUI();
-			setupUI();			
+			//listHorizontal();		
+			//listVertical();	
+			trace("---------------------------------------------------",this.id,this.layout);
 		}
 		
-		private function childListParse():void
+		
+		private function listHorizontal():void
 		{ 
+			box = 540
+			sepx = 10;
+			sepy = 10;
+			marginY = 25;
+			marginX = 0;
+			sumx = 0;
+			close_packing = true;
+			n = this.childList.length;
+			
 				//trace("album, items",this.childList.length);
-				for (i=0; i<=this.childList.length; i++)
+				for (i=0; i<=n; i++)
 					{
 						//trace(this.childList.getIndex(i))
 						if ((childList.getIndex(i) is TouchContainer))
 						{
-						itemList.push(childList.getIndex(i))
+							trace(childList.getIndex(i).width);
+							
+							if(!close_packing) childList.getIndex(i).x = marginX + (i) * box + (i - 1) * sepx;
+							else childList.getIndex(i).x = marginX + sumx + (i - 1) * sepx;
+							
+							childList.getIndex(i).y = 0;
+							childList.getIndex(i).gestureList = { "tap":true, "double_tap":true };
+							childList.getIndex(i).id = String(i);
+						
+							sumx+=childList.getIndex(i).width
 						}
 					}
-				n = itemList.length;
-				
-				//this.childList.getKey("holder1")
-				
-				//var s:String;
-				//for (s in childList.getKey) trace("chilist objects",childList.getKey[s].id);
+					
+					width = 2 * marginX + sumx + (n - 1) * sepx;
+					height = childList.getIndex(0).height;
 		}
-		
-		
-		private function initUI():void
-		{
-			//mouseChildren = true;
-			centerX = Width*0.5;
-			centerY = Height*0.5;
-			box = 255//Width; //400// max 385
-			sepx = 10;
-			belt_marginY = 25;
-			belt_marginX = 0;
-		}
-		
-		private function setupUI():void
+		/*
+		private function listVertical():void
 		{ 
-			// create menu elements
-				for (i=1; i<n+1; i++)
-				{	
-					//trace("menu item",i);
-					// create item container
-				var menuObj:TouchContainer = itemList[i - 1];
-						menuObj.id = String(i);
-						menuObj.name = "meni item";
-						//menuObj.visible = true;
-						menuObj.x = belt_marginX + (i-1)*box + (i-1)*sepx;
-						menuObj.y = belt_marginY;
-						menuObj.touchChildren = false;
-						menuObj.mouseChildren = false;
-						menuObj.targeting = true;
-						menuObj.targetParent = true;
-						menuObj.gestureEvents = true;
-						menuObj.gestureList = { "tap":true, "double_tap":true };
-					addChild(menuObj);
-				}
-	}
-	
-	private function updateHandler(event:Event):void 
-	{
-		trace("list update");	
-	}
+			box = 400
+			sepx = 10;
+			sepy = 10;
+			marginY = 25;
+			marginX = 0;
+			sumy = 0;
+			close_packing = true;
+			n = this.childList.length;
+			
+				//trace("album, items",this.childList.length);
+				for (i=0; i<=n; i++)
+					{
+						//trace(this.childList.getIndex(i))
+						if ((childList.getIndex(i) is TouchContainer))
+						{
+							trace(childList.getIndex(i).height);
+							
+							if(!close_packing) childList.getIndex(i).y = marginY + (i) * box + (i - 1) * sepy;
+							else childList.getIndex(i).y = marginY + sumy + (i - 1) * sepy;
+							
+							childList.getIndex(i).x = 0;
+							childList.getIndex(i).gestureList = { "tap":true, "double_tap":true };
+							childList.getIndex(i).id = String(i);
+						
+							sumy+=childList.getIndex(i).height
+						}
+					}
+					
+					height = 2 * marginX + sumy + (n - 1) * sepy;
+					width = childList.getIndex(0).width;
+		}
+		*/
 
 	}
 }
