@@ -1,11 +1,8 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.factories.GraphicFactory;
-	
-	import flash.display.GradientType;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.geom.Matrix;
+	import com.gestureworks.cml.factories.*;
+	import flash.events.*;
+	import flash.geom.*;
 	
 	public class GraphicElement extends GraphicFactory
 	{

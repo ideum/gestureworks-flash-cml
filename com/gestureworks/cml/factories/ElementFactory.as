@@ -255,7 +255,7 @@ package com.gestureworks.cml.factories
 		
 		
 		//////////////
-		//  IStyle  //
+		//  ICSS 
 		//////////////
 		
 		private var _class_:String;
@@ -271,7 +271,7 @@ package com.gestureworks.cml.factories
 		
 		
 		//////////////
-		//  IClone  //
+		//  IClone  
 		//////////////		
 		
 		/**

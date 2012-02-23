@@ -1,6 +1,6 @@
 package com.gestureworks.cml.utils
 {	
-	import flash.utils.Dictionary;
+	import flash.utils.*;
 	
 	public class LinkedMap
 	{
@@ -35,6 +35,40 @@ package com.gestureworks.cml.utils
 		public function getKey(key:*):*
 		{			
 			return dictionary[key];
+		}
+		
+		public function getCSSClass(value:String):Dictionary
+		{
+			var tmp:Dictionary = new Dictionary(true);
+			
+			for (var key:* in dictionary)
+			{				
+				if (dictionary[key].hasOwnProperty("class_"))
+				{
+					if (dictionary[key].class_ == value)
+						tmp[key] = dictionary[value];
+				}
+			}
+			return tmp;
+		}
+		
+		public function getClass(value:String):Dictionary
+		{
+			var tmp:Dictionary = new Dictionary(true);
+			var tmpClass:Class = getDefinitionByName(value) as Class;	
+			
+			
+			if (tmpClass)
+			{
+				for (var key:* in dictionary)
+				{				
+					if (dictionary[key] is tmpClass)
+						tmp[key] = dictionary[key];
+				}
+			}
+			
+			
+			return tmp;
 		}		
 		
 		public function selectIndex(index:int):*
