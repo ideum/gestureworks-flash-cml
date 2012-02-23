@@ -98,7 +98,8 @@ package com.gestureworks.cml.components
 			childListParse();
 			initUI();
 			//setupUI();	
-			setupUI2();	
+			//setupUI2();	
+			setupUI3();	
 		}
 	
 		
@@ -135,11 +136,15 @@ package com.gestureworks.cml.components
 			//for (s in itemListObject) trace("chilist objects",itemListObject[s].id);
 			//for (s in childList.getCSSClass("holder")) //trace("chilist objects",childList.getCSSClass("holder")[s].id);
 			
-			  var dictionary2:Dictionary = new Dictionary(true);
+			 var dictionary2:Dictionary = new Dictionary(true);
 				dictionary2 = this.childList.getCSSClass("holder");
               //dictionary2 = CMLObjectList.instance.getKey("s1").childList.getCSSClass("myClass");
 
-			 
+			 trace("-------", this.childList.getCSSClass("holder", 0));
+			 trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0));
+			 trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("cbtn"));
+			 trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("ibtn"));
+			 trace("-------", this.childList.getCSSClass("holder",0).item.childList.getCSSClass("mask_shape",0));
 			  
 			 //trace("-------------------\\", this.childList.getIndex[1].name)
 			 // trace("-------------------\\", this.childList.getIndex[0].id)
@@ -147,6 +152,7 @@ package com.gestureworks.cml.components
 			 /////////////////////////////////////////////////////////////
 			 //////////////////////////////////////////////////////////////
 			 
+			 /*
 			 for each (var item:* in this.childList.getCSSClass("holder")) 
 			 {
 				 trace("_____________", item.id);
@@ -172,6 +178,7 @@ package com.gestureworks.cml.components
 						}
 					} 
 			 }
+			 */
 			/////////////////////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////
 			 
@@ -190,6 +197,64 @@ package com.gestureworks.cml.components
 			//scroll_bar_height = 60;
 			
 		}
+		
+		private function setupUI3():void
+		{ 
+			trace("setupUI album");
+			
+			
+				album = this.childList.getCSSClass("holder", 0);
+					album.gestureList = { "n-drag":true };
+					album.transformEvents = true;
+					album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
+				addChild(album);
+			 
+						bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
+						//bar = album.childList.getCSSClass("menu", 0);
+						//bar.targetParent = true;
+						album.addChild(bar);
+						
+						
+							cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn");
+							//cbtn = bar.childList.getCSSClass("cbtn");
+								cbtn.gestureList = { "tap":true, "n-drag":true };
+								cbtn.addEventListener(GWGestureEvent.TAP, onClose);
+							album.addChild(cbtn);
+							
+							ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn");
+							//ibtn = bar.childList.getCSSClass("ibtn");
+								ibtn.gestureList = { "tap":true, "n-drag":true };
+								ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
+							album.addChild(ibtn);
+								
+			 
+					belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
+					//belt = album.childList.getCSSClass("belt", 0);
+						belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
+						belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
+						belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
+						if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
+						if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
+						if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+					album.addChild(belt);
+			 
+					mShape = this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0);
+					//mShape = album.childList.getCSSClass("mask_shape", 0);
+					album.addChild(mShape);
+					//apply mask//
+					belt.mask = mShape;
+					
+			/////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////
+			
+			// set anim params
+			belt_maxValue = belt.width - width;
+			belt_minValue = 0;
+			
+			//trace("belt........",belt.width,belt_maxValue, width);
+	}
+		
+		
 		
 		private function setupUI2():void
 		{ 
