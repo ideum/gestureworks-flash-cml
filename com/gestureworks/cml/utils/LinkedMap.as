@@ -46,7 +46,7 @@ package com.gestureworks.cml.utils
 				if (dictionary[key].hasOwnProperty("class_"))
 				{
 					if (dictionary[key].class_ == value)
-						tmp[key] = dictionary[value];
+						tmp[key] = dictionary[key];						
 				}
 			}
 			return tmp;

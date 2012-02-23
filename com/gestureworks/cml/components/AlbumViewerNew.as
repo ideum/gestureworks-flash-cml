@@ -97,7 +97,8 @@ package com.gestureworks.cml.components
 			trace("album display viewer complete");
 			childListParse();
 			initUI();
-			setupUI();			
+			//setupUI();	
+			setupUI2();	
 		}
 	
 		
@@ -125,10 +126,55 @@ package com.gestureworks.cml.components
 			//trace("-------------------\\", this.childList.getKey("holder1").childList.getKey("metadata1"));//.getChildAt(0).id
 			//trace("-------------------\\", this.childList.getKey("al"))
 			//trace("-------------------\\", this.childList.getKey("holder1").class_)
-			//trace("-------------------\\", this.childList.getCSSClass("holder"))
-			//var s:String;
+			//trace("-------------------\\", this.childList.getCSSClass("holder"), this.childList.getCSSClass("holder")["holder1"]);
+			//trace("-------------------\\", this.childList.getCSSClass("album"), this.childList.getCSSClass("album")["album1"]);
+			//trace("-------------------\\", this.childList.getClass("ListViewer"));
+			
+			trace("-------------------\\", this.childList.getCSSClass("holder"));//.childList.getCSSClass("menu");
+			var s:String;
 			//for (s in itemListObject) trace("chilist objects",itemListObject[s].id);
-				
+			//for (s in childList.getCSSClass("holder")) //trace("chilist objects",childList.getCSSClass("holder")[s].id);
+			
+			  var dictionary2:Dictionary = new Dictionary(true);
+				dictionary2 = this.childList.getCSSClass("holder");
+              //dictionary2 = CMLObjectList.instance.getKey("s1").childList.getCSSClass("myClass");
+
+			 
+			  
+			 //trace("-------------------\\", this.childList.getIndex[1].name)
+			 // trace("-------------------\\", this.childList.getIndex[0].id)
+			  
+			 /////////////////////////////////////////////////////////////
+			 //////////////////////////////////////////////////////////////
+			 
+			 for each (var item:* in this.childList.getCSSClass("holder")) 
+			 {
+				 trace("_____________", item.id);
+				 // trace("_____________", item.childList.getCSSClass("menu"));
+				  
+				  for each (var it:* in item.childList.getCSSClass("menu")) 
+					{
+					trace("_____________", it.id);
+				//	trace("_____________", it.childList.getCSSClass("cbtn"));
+					
+						for each (var itm:* in it.childList.getCSSClass("cbtn")) 
+						{
+							trace("_____________", itm.id);
+							//trace("_____________", itm.childList.getCSSClass("cbtn"));
+							trace("_____________", item.id, it.id, itm.id);
+						}
+						
+						for each (var ite:* in it.childList.getCSSClass("ibtn")) 
+						{
+							trace("_____________", ite.id);
+							//trace("_____________", itm.childList.getCSSClass("cbtn"));
+							trace("_____________", item.id, it.id, ite.id);
+						}
+					} 
+			 }
+			/////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////
+			 
 		}
 		
 		private function initUI():void
@@ -136,15 +182,72 @@ package com.gestureworks.cml.components
 			trace("initUI album");
 			
 			mouseChildren = true;
+			belt_buffer = 200;
 			//slider_factor = (centralBlockwidth - width) / width;
 			//text_pad = 20;
 			//scroll_bar_pad = 30;
 			//scroll_bar_width = 10;
 			//scroll_bar_height = 60;
-			belt_buffer = 200;
+			
 		}
 		
-		
+		private function setupUI2():void
+		{ 
+			trace("setupUI album");
+			
+			
+			for each (var item:* in this.childList.getCSSClass("holder")) 
+			 {
+				album = item;
+				for each (var it1:* in item.childList.getCSSClass("belt")) belt = it1;
+				for each (var it2:* in item.childList.getCSSClass("mask_shape")) mShape = it2;
+				for each (var it:* in item.childList.getCSSClass("menu")) 
+				{
+					bar = it;
+					//for each (var itm:* in it.childList.getCSSClass("cbtn")) cbtn = itm;
+					//for each (var ite:* in it.childList.getCSSClass("ibtn")) ibtn = ite;
+				} 
+			 }
+			 
+					album.gestureList = { "n-drag":true };
+					album.transformEvents = true;
+					album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
+				addChild(album);
+			 
+						//bar.targetParent = true;
+						album.addChild(bar);
+								/*
+								cbtn.gestureList = { "tap":true, "n-drag":true };
+								cbtn.addEventListener(GWGestureEvent.TAP, onClose);
+							album.addChild(cbtn);	
+							
+								ibtn.gestureList = { "tap":true, "n-drag":true };
+								ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
+							album.addChild(ibtn);
+								*/
+			 
+						belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
+						belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
+						belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
+						if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
+						if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
+						if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+					album.addChild(belt);
+			 
+					album.addChild(mShape);
+					//apply mask//
+					belt.mask = mShape;
+					
+			/////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////
+			
+			// set anim params
+			belt_maxValue = belt.width - width;
+			belt_minValue = 0;
+			
+			//trace("belt........",belt.width,belt_maxValue, width);
+	}
+	
 		private function setupUI():void
 		{ 
 			trace("setupUI album");
@@ -161,18 +264,18 @@ package com.gestureworks.cml.components
 				//bar.targetParent = true;
 			album.addChild(bar);
 			
-			// assign close button behaviors ///////////////////////////////////////////////////////////////////
-			cbtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("cbtn1");
-				cbtn.gestureList = { "tap":true, "n-drag":true };
-				cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-			album.addChild(cbtn);
-			
-			// assign info button behaviors
-			ibtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("ibtn1");
-				ibtn.gestureList = { "tap":true, "n-drag":true };
-				ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-			album.addChild(ibtn);
-			
+					// assign close button behaviors ///////////////////////////////////////////////////////////////////
+					cbtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("cbtn1");
+						cbtn.gestureList = { "tap":true, "n-drag":true };
+						cbtn.addEventListener(GWGestureEvent.TAP, onClose);
+					album.addChild(cbtn);
+					
+					// assign info button behaviors
+					ibtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("ibtn1");
+						ibtn.gestureList = { "tap":true, "n-drag":true };
+						ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
+					album.addChild(ibtn);
+
 			// assign belt///////////////////////////////////////////////////////////////////////////
 			belt = this.childList.getKey("holder1").childList.getKey("belt1");
 				belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
@@ -189,6 +292,7 @@ package com.gestureworks.cml.components
 			album.addChild(mShape);
 			//apply mask//
 			belt.mask = mShape;
+			/////////////////////////////////////////////////////////////////////
 			
 			
 			// set anim params
