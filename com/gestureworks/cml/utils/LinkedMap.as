@@ -37,21 +37,41 @@ package com.gestureworks.cml.utils
 			return dictionary[key];
 		}
 		
-		public function getCSSClass(value:String):Dictionary
+		/**
+		 * Returns a LinkedMap of objects that are of the 
+		 * specified CSS class if no second argument is given.
+		 * Returns an nth object of the retuned LinkedMap
+		 * if the second argument. 
+		 * @param	value
+		 * @param	index
+		 * @return
+		 */
+		public function getCSSClass(value:String, index:int=-1):*
 		{
-			var tmp:Dictionary = new Dictionary(true);
+			var tmp:LinkedMap = new LinkedMap(true);
 			
-			for (var key:* in dictionary)
-			{				
-				if (dictionary[key].hasOwnProperty("class_"))
+			for (var i:int = 0; i < list.length; i++) 
+			{
+				if (this.getIndex(i).hasOwnProperty("class_"))
 				{
-					if (dictionary[key].class_ == value)
-						tmp[key] = dictionary[key];						
+					if (this.getIndex(i).class_ == value)
+						tmp.append(this.getIndex(i).id, this.getIndex(i));
 				}
 			}
-			return tmp;
+						
+			if (index > -1)
+				return tmp.getIndex(index);
+			else
+				return tmp;
 		}
 		
+		
+		/**
+		 * Returns a dictionary of objects that are of 
+		 * the specified class
+		 * @param	value
+		 * @return
+		 */
 		public function getClass(value:String):Dictionary
 		{
 			var tmp:Dictionary = new Dictionary(true);
