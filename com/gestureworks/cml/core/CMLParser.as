@@ -446,15 +446,29 @@ package com.gestureworks.cml.core
 					// remove whitepsace and {} characters
 					var regExp:RegExp = /[\s\r\n{}]*/gim;
 					propertyValue = propertyValue.replace(regExp, '');
-					
-					// split properties
-					var arr:Array = propertyValue.split(".");
+									
+					// split last period 					
+					var arr:Array = propertyValue.split(".");			
 					
 					if (arr.length > 1)
-					{
+					{				
+						var str1:String = "";
+						var str2:String = "";
+					
+						for (var i:int = 0; i < arr.length; i++) 
+						{
+							if (i < arr.length-1)
+								str1 += "." + arr[i];
+							else
+								str2 = arr[i];
+						}
+						
+						if (str1.charAt(0) == ".")
+							str1 = str1.slice(1);					
+
 						// assign value from master cml list
 						// get value from property states instead of object to remove time factors							
-						return CMLObjectList.instance.getKey(arr[0]).propertyStates[state][arr[1]];
+						return CMLObjectList.instance.getKey(str1).propertyStates[state][str2];
 					}
 					
 					else 
