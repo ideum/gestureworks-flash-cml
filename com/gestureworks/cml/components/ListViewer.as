@@ -30,7 +30,7 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("list display viewer complete");
-			//listHorizontal();		
+			listHorizontal();		
 			//listVertical();	
 			trace("---------------------------------------------------",this.id,this.layout);
 		}

@@ -32,35 +32,24 @@ package com.gestureworks.cml.components
 	
 	public class AlbumViewerNew extends ComponentKit//TouchContainer
 	{		
-		// component
-		private var visDebug:Boolean =false;
-		private var Width:Number;
-		private var Height:Number;
-		private var centerX:Number;
-		private var centerY:Number;
-		private var buffer_tween:Boolean = true;
-		private var loopMode:Boolean = false;
-		
-		private var frame:TouchSprite;
+		// objects
 		public var album:TouchSprite = new TouchSprite();
-		private var metadata:Sprite;
-		
-		// bar
-		private var bar_height:Number;
 		private var bar:TouchSprite;
 		private var ibtn:TouchSprite;
 		private var cbtn:TouchSprite;
+		private var belt:TouchSprite;
+		private var mShape:GraphicElement
+		private var metadata:Sprite;
+		private var frame:TouchSprite;
+		private var itemListObject:Object = new Object;
 		
-		private var btn_rad:int = 15;
-		private var btn_pad:int = 10;
+		// component
+		private var i:int
+		private var visDebug:Boolean =false;
+		private var buffer_tween:Boolean = true;
+		private var loopMode:Boolean = false;
 		
 		// belt
-		private var belt:TouchSprite;
-		private var belt_width:Number;
-		private var belt_height:Number;
-		private var i:int
-		public var itemList:Array = new Array;
-		private var masterItemList:Array = new Array;
 		private var belt_marginX:Number;
 		private var belt_marginY:Number;
 		private var belt_maxValue:Number;
@@ -77,35 +66,24 @@ package com.gestureworks.cml.components
 		
 		// slider
 		private var slider_factor:Number;
-
-		private var n:int;
-		private var sepx:Number;
-		private var box:Number ;
-		private var distX:Number;
 		
 		//repeat blocks
-		private var rn:int // repeat number
-		private var centralBlockwidth:Number;
-		private var repeatBlockwidth:Number;
+		//private var rn:int // repeat number
+		//private var centralBlockwidth:Number;
+		//private var repeatBlockwidth:Number;
 		
 		// meta data
 		private var album_description:TextElement
-		private var text_pad:Number;
-		private var scroll_bar_pad:Number;
-		private var scroll_bar_width:Number;
-		private var scroll_bar_height:Number;
-		
-		private var itemListObject:Object = new Object;
-		
-		private var mShape:GraphicElement
+		//private var text_pad:Number;
+		//private var scroll_bar_pad:Number;
+		//private var scroll_bar_width:Number;
+		//private var scroll_bar_height:Number;
 		
 		public static var ALBUM_UPDATE:String = "album update";
 		
 		public function AlbumViewerNew()
 		{
 			super();	
-			//createUI();
-			//commitUI();
 			if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
 		}
 		
@@ -117,42 +95,13 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("album display viewer complete");
-			//childrenParse();
 			childListParse();
-			childListParse2();
 			initUI();
 			setupUI();			
 		}
+	
 		
 		private function childListParse():void
-		{ 
-				trace("album, items",this.childList.length);
-				
-				for (i=0; i<=this.childList.length; i++)
-					{
-
-						//trace(this.childList[i])
-						//if (childList[i] is TouchContainer)
-
-						trace(this.childList.getIndex(i))
-						if ((childList.getIndex(i) is TouchContainer))
-
-						{
-						//trace(this.childList[i].id)
-						//itemList.push(childList[i]);
-					
-						//trace(childList.getIndex(i).x, childList.getIndex(i).y,childList.getIndex(i).width,childList.getIndex(i).getChildAt(0).width);
-						itemList.push(childList.getIndex(i))
-						}
-					}
-					n = itemList.length;
-
-			//if(childList[0])childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);				
-			//childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
-		}
-		
-		
-		private function childListParse2():void
 		{
 			for (var j:int = 0; j < this.childList.length; j++)
 					{	
@@ -173,16 +122,10 @@ package com.gestureworks.cml.components
 						}
 					}
 				}
-				
-			//trace("---------------------------------------------------", this.childList.getKey("a1").childList);
-			//trace("---------------------------------------------------", this.childList.getKey("a1").childList.getKey("c1"));
-			//trace("---------------------------------------------------",this.childList.getKey("a1").getKey("c1"));
-			trace("-------------------\\", this.childList.getKey("holder1").childList.getKey("metadata1"));//.getChildAt(0).id
-			trace("-------------------\\", this.childList.getKey("al"))
-			trace("-------------------\\", this.childList.getKey("holder1").class_)
-			
+			//trace("-------------------\\", this.childList.getKey("holder1").childList.getKey("metadata1"));//.getChildAt(0).id
+			//trace("-------------------\\", this.childList.getKey("al"))
+			//trace("-------------------\\", this.childList.getKey("holder1").class_)
 			//trace("-------------------\\", this.childList.getCSSClass("holder"))
-			
 			//var s:String;
 			//for (s in itemListObject) trace("chilist objects",itemListObject[s].id);
 				
@@ -190,49 +133,15 @@ package com.gestureworks.cml.components
 		
 		private function initUI():void
 		{
-
-			mouseChildren = true;
-			
 			trace("initUI album");
-			//Width = 400//childList[0].width;
-			//Height = 220//childList[0].height;
-			//x = 0
-			//y = 0;
-			//targeting = false;
 			
-			
-			//Width = 400//GestureWorks.application.stageWidth;//width//
-			Height += 50//GestureWorks.application.stageHeight;//height//
-			centerX = Width*0.5;
-			centerY = Height*0.5;
-			box = 455//Width; //400// max 385
-			sepx = 10;
-			belt_marginY = 0;
-			belt_marginX = 0;
-			belt_height = Height;//502-78-35;
-			centralBlockwidth = 2 * belt_marginX + n * box + (n - 1) * sepx;
-			
-			bar_height = 50;
-			
-			if (!loopMode) {
-				belt_width = 2*belt_marginX + n*box + (n-1)*sepx;
-				belt_maxValue = belt_width - Width;
-				belt_minValue = 0;
-				belt_buffer = 200;
-			}
-			else {
-				belt_width = 2*belt_marginX + n*box + (n-1)*sepx + 2*repeatBlockwidth;
-				belt_maxValue = centralBlockwidth;
-				belt_minValue = repeatBlockwidth;
-				belt_buffer = 0;
-			}
-			
-			slider_factor = (centralBlockwidth - Width) / Width;
-			
-			text_pad = 20;
-			scroll_bar_pad = 30;
-			scroll_bar_width = 10;
-			scroll_bar_height = 60;
+			mouseChildren = true;
+			//slider_factor = (centralBlockwidth - width) / width;
+			//text_pad = 20;
+			//scroll_bar_pad = 30;
+			//scroll_bar_width = 10;
+			//scroll_bar_height = 60;
+			belt_buffer = 200;
 		}
 		
 		
@@ -242,18 +151,8 @@ package com.gestureworks.cml.components
 			
 			// assign album holder////////////////////////////////////////////////////////////////////
 			album = this.childList.getKey("holder1");
-				album.targeting = true;
-				album.gestureEvents = true;
-				album.nestedTransform = true;
-				album.disableNativeTransform = false;
-				album.disableAffineTransform = false;
-				album.mouseChildren = true;
 				album.gestureList = { "n-drag":true };
-				album.x = 0;
-				album.y = 0;
-				album.name = "album";
 				album.transformEvents = true;
-				album.width = Width;
 				album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 			addChild(album);
 			
@@ -264,31 +163,18 @@ package com.gestureworks.cml.components
 			
 			// assign close button behaviors ///////////////////////////////////////////////////////////////////
 			cbtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("cbtn1");
-				//cbtn.gestureEvents = true;
-				//cbtn.mouseChildren = false;
 				cbtn.gestureList = { "tap":true, "n-drag":true };
 				cbtn.addEventListener(GWGestureEvent.TAP, onClose);
 			album.addChild(cbtn);
 			
 			// assign info button behaviors
 			ibtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("ibtn1");
-				//ibtn.gestureEvents = true;
-				//ibtn.mouseChildren = false;
 				ibtn.gestureList = { "tap":true, "n-drag":true };
 				ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
 			album.addChild(ibtn);
 			
 			// assign belt///////////////////////////////////////////////////////////////////////////
-			//belt = itemListObject["belt1"];
 			belt = this.childList.getKey("holder1").childList.getKey("belt1");
-				//belt.name = "belt";
-				//belt.x = 0;
-				//belt.y = belt_marginY + bar_height;//top_bar.height;
-				//belt.nestedTransform = true;
-				//belt.mouseChildren = true;
-				//belt.gestureEvents = true;
-				//belt.disableNativeTransform = true;
-				//belt.disableAffineTransform = true;
 				belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
 				belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
 				belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
@@ -296,16 +182,20 @@ package com.gestureworks.cml.components
 				if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
 				if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
 				if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-				
-				belt.getChildAt(0).width = 1800;
 			album.addChild(belt);
 			
 			//assign mask shape////////////////////////////////////////////////////////////////////////
-			//mShape = itemListObject["mask_shape"];
 			mShape = this.childList.getKey("holder1").childList.getKey("mask_shape1");
 			album.addChild(mShape);
 			//apply mask//
-			//belt.mask = mShape;
+			belt.mask = mShape;
+			
+			
+			// set anim params
+			belt_maxValue = belt.width - width;
+			belt_minValue = 0;
+			
+			//trace("belt........",belt.width,belt_maxValue, width);
 	}
 	
 	public function onScroll(event:GWGestureEvent):void
@@ -440,7 +330,7 @@ package com.gestureworks.cml.components
 		//////////////////////////////////////////////////////////////////////////////
 		// loop belt content
 		//////////////////////////////////////////////////////////////////////////////
-		
+		/*
 		else {
 			if ((belt.x > 0) && (abs_beltx >= belt_minValue)) {
 						//trace("loopmmin", belt.$x);
@@ -451,7 +341,7 @@ package com.gestureworks.cml.components
 						//trace("loopmax",belt.$x);
 						belt.x = 0;
 			}	
-		}
+		}*/
 		///////////////////////////////////////////////////////////////////////////
 			
 	}
@@ -523,7 +413,7 @@ package com.gestureworks.cml.components
 	
 	public function tapMenuItem(event:TouchEvent):void{
 		//trace("tap menu item", event.target.id);
-		
+		/*
 		if (itemList[event.target.id - 1].getChildAt(1).visible)
 		{
 			itemList[event.target.id - 1].getChildAt(1).visible = false;
@@ -533,6 +423,7 @@ package com.gestureworks.cml.components
 			itemList[event.target.id - 1].getChildAt(1).visible = true;
 			itemList[event.target.id - 1].getChildAt(2).visible = false;
 		}
+		*/
 	}
 	public function clickMenuItem(event:MouseEvent):void{
 		trace("click menu item", event.target.id)
@@ -574,7 +465,7 @@ package com.gestureworks.cml.components
 		
 		public function translateHandler(event:GWTransformEvent):void
 		{
-			trace("translate album");
+			//trace("translate album");
 			this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
 		}
 		
