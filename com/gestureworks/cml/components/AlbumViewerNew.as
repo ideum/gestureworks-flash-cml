@@ -39,9 +39,9 @@ package com.gestureworks.cml.components
 		private var cbtn:TouchSprite;
 		private var belt:TouchSprite;
 		private var mShape:GraphicElement
-		private var metadata:Sprite;
-		private var frame:TouchSprite;
-		private var itemListObject:Object = new Object;
+		private var metadata:TouchSprite;
+		//private var frame:TouchSprite;
+		//private var itemListObject:Object = new Object;
 		
 		// component
 		private var i:int
@@ -96,92 +96,20 @@ package com.gestureworks.cml.components
 		{			
 			trace("album display viewer complete");
 			childListParse();
-			initUI();
-			//setupUI();	
-			//setupUI2();	
-			setupUI3();	
+			initUI();	
+			setupUI();	
 		}
 	
 		
 		private function childListParse():void
 		{
-			for (var j:int = 0; j < this.childList.length; j++)
-					{	
-						//trace("inside 1---------------- ", this.childList.getIndex(j), this.childList.getIndex(j).id)
-						itemListObject[this.childList.getIndex(j).id] = this.childList.getIndex(j);
-					
-						for (var i:int = 0; i < this.childList.getIndex(j).childList.length; i++)
-						{
-						//trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
-						itemListObject[this.childList.getIndex(j).childList.getIndex(i).id] = this.childList.getIndex(j).childList.getIndex(i)
-						
-						if ( this.childList.getIndex(j).childList.getIndex(i) is TouchContainer) {
-								for (var k:int = 0; k < this.childList.getIndex(j).childList.getIndex(i).childList.length; k++)
-								{
-									//trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);
-									itemListObject[this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id] = this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k);	
-								}
-						}
-					}
-				}
-			//trace("-------------------\\", this.childList.getKey("holder1").childList.getKey("metadata1"));//.getChildAt(0).id
-			//trace("-------------------\\", this.childList.getKey("al"))
-			//trace("-------------------\\", this.childList.getKey("holder1").class_)
-			//trace("-------------------\\", this.childList.getCSSClass("holder"), this.childList.getCSSClass("holder")["holder1"]);
-			//trace("-------------------\\", this.childList.getCSSClass("album"), this.childList.getCSSClass("album")["album1"]);
-			//trace("-------------------\\", this.childList.getClass("ListViewer"));
-			
-			trace("-------------------\\", this.childList.getCSSClass("holder"));//.childList.getCSSClass("menu");
-			var s:String;
-			//for (s in itemListObject) trace("chilist objects",itemListObject[s].id);
-			//for (s in childList.getCSSClass("holder")) //trace("chilist objects",childList.getCSSClass("holder")[s].id);
-			
-			 var dictionary2:Dictionary = new Dictionary(true);
-				dictionary2 = this.childList.getCSSClass("holder");
-              //dictionary2 = CMLObjectList.instance.getKey("s1").childList.getCSSClass("myClass");
-
-			 trace("-------", this.childList.getCSSClass("holder", 0));
-			 trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0));
-			 trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("cbtn"));
-			 trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("ibtn"));
-			 trace("-------", this.childList.getCSSClass("holder",0).item.childList.getCSSClass("mask_shape",0));
-			  
-			 //trace("-------------------\\", this.childList.getIndex[1].name)
-			 // trace("-------------------\\", this.childList.getIndex[0].id)
-			  
-			 /////////////////////////////////////////////////////////////
-			 //////////////////////////////////////////////////////////////
-			 
-			 /*
-			 for each (var item:* in this.childList.getCSSClass("holder")) 
-			 {
-				 trace("_____________", item.id);
-				 // trace("_____________", item.childList.getCSSClass("menu"));
-				  
-				  for each (var it:* in item.childList.getCSSClass("menu")) 
-					{
-					trace("_____________", it.id);
-				//	trace("_____________", it.childList.getCSSClass("cbtn"));
-					
-						for each (var itm:* in it.childList.getCSSClass("cbtn")) 
-						{
-							trace("_____________", itm.id);
-							//trace("_____________", itm.childList.getCSSClass("cbtn"));
-							trace("_____________", item.id, it.id, itm.id);
-						}
-						
-						for each (var ite:* in it.childList.getCSSClass("ibtn")) 
-						{
-							trace("_____________", ite.id);
-							//trace("_____________", itm.childList.getCSSClass("cbtn"));
-							trace("_____________", item.id, it.id, ite.id);
-						}
-					} 
-			 }
-			 */
-			/////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////
-			 
+			trace("-------", this.childList.getCSSClass("holder", 0).id);
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).id);
+			trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("belt",0).id);
+			trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
+			trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0).id);
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0).id);
 		}
 		
 		private function initUI():void
@@ -195,13 +123,15 @@ package com.gestureworks.cml.components
 			//scroll_bar_pad = 30;
 			//scroll_bar_width = 10;
 			//scroll_bar_height = 60;
-			
 		}
 		
-		private function setupUI3():void
+		
+		private function setupUI():void
 		{ 
 			trace("setupUI album");
 			
+			//////////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////
 			
 				album = this.childList.getCSSClass("holder", 0);
 					album.gestureList = { "n-drag":true };
@@ -209,163 +139,57 @@ package com.gestureworks.cml.components
 					album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 				addChild(album);
 			 
-						bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
-						//bar = album.childList.getCSSClass("menu", 0);
-						//bar.targetParent = true;
-						album.addChild(bar);
+				bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
+				//bar = album.childList.getCSSClass("menu", 0);
+					//bar.targetParent = true;
+				album.addChild(bar);
 						
-						
-							cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn");
-							//cbtn = bar.childList.getCSSClass("cbtn");
-								cbtn.gestureList = { "tap":true, "n-drag":true };
-								cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-							album.addChild(cbtn);
+				cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
+				//cbtn = bar.childList.getCSSClass("cbtn",0);
+					cbtn.gestureList = { "tap":true, "n-drag":true };
+					//cbtn.addEventListener(GWGestureEvent.TAP, onClose);
+					cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
+					//cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
+				album.addChild(cbtn);
 							
-							ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn");
-							//ibtn = bar.childList.getCSSClass("ibtn");
-								ibtn.gestureList = { "tap":true, "n-drag":true };
-								ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-							album.addChild(ibtn);
+				ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
+				//ibtn = bar.childList.getCSSClass("ibtn",0);
+					ibtn.gestureList = { "tap":true, "n-drag":true };
+					//ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
+					ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
+					//ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
+				album.addChild(ibtn);
 								
+				belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
+				//belt = album.childList.getCSSClass("belt", 0);
+					belt.gestureList = {"1-dragx":true, "2-dragx":true, "3-dragx":true };
+					belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
+					//belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
+					if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
+					if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
+					if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				album.addChild(belt);
 			 
-					belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
-					//belt = album.childList.getCSSClass("belt", 0);
-						belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
-						belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
-						belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
-						if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
-						if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-						if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-					album.addChild(belt);
-			 
-					mShape = this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0);
-					//mShape = album.childList.getCSSClass("mask_shape", 0);
-					album.addChild(mShape);
-					//apply mask//
-					belt.mask = mShape;
-					
-			/////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////
-			
-			// set anim params
-			belt_maxValue = belt.width - width;
-			belt_minValue = 0;
-			
-			//trace("belt........",belt.width,belt_maxValue, width);
-	}
-		
-		
-		
-		private function setupUI2():void
-		{ 
-			trace("setupUI album");
-			
-			
-			for each (var item:* in this.childList.getCSSClass("holder")) 
-			 {
-				album = item;
-				for each (var it1:* in item.childList.getCSSClass("belt")) belt = it1;
-				for each (var it2:* in item.childList.getCSSClass("mask_shape")) mShape = it2;
-				for each (var it:* in item.childList.getCSSClass("menu")) 
-				{
-					bar = it;
-					//for each (var itm:* in it.childList.getCSSClass("cbtn")) cbtn = itm;
-					//for each (var ite:* in it.childList.getCSSClass("ibtn")) ibtn = ite;
-				} 
-			 }
-			 
-					album.gestureList = { "n-drag":true };
-					album.transformEvents = true;
-					album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
-				addChild(album);
-			 
-						//bar.targetParent = true;
-						album.addChild(bar);
-								/*
-								cbtn.gestureList = { "tap":true, "n-drag":true };
-								cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-							album.addChild(cbtn);	
-							
-								ibtn.gestureList = { "tap":true, "n-drag":true };
-								ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-							album.addChild(ibtn);
-								*/
-			 
-						belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
-						belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
-						belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
-						if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
-						if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-						if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-					album.addChild(belt);
-			 
-					album.addChild(mShape);
-					//apply mask//
-					belt.mask = mShape;
-					
-			/////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////
-			
-			// set anim params
-			belt_maxValue = belt.width - width;
-			belt_minValue = 0;
-			
-			//trace("belt........",belt.width,belt_maxValue, width);
-	}
-	
-		private function setupUI():void
-		{ 
-			trace("setupUI album");
-			
-			// assign album holder////////////////////////////////////////////////////////////////////
-			album = this.childList.getKey("holder1");
-				album.gestureList = { "n-drag":true };
-				album.transformEvents = true;
-				album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
-			addChild(album);
-			
-			// assign bar ////////////////////////////////////////////////////////////////////////////
-			bar = this.childList.getKey("holder1").childList.getKey("menu1");
-				//bar.targetParent = true;
-			album.addChild(bar);
-			
-					// assign close button behaviors ///////////////////////////////////////////////////////////////////
-					cbtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("cbtn1");
-						cbtn.gestureList = { "tap":true, "n-drag":true };
-						cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-					album.addChild(cbtn);
-					
-					// assign info button behaviors
-					ibtn = this.childList.getKey("holder1").childList.getKey("menu1").childList.getKey("ibtn1");
-						ibtn.gestureList = { "tap":true, "n-drag":true };
-						ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-					album.addChild(ibtn);
-
-			// assign belt///////////////////////////////////////////////////////////////////////////
-			belt = this.childList.getKey("holder1").childList.getKey("belt1");
-				belt.gestureList = { "tap":true,"double_tap":true,"1-dragx":true, "2-dragx":true, "3-dragx":true };
-				belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
-				belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
+				//apply mask//
+				mShape = this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0);
+				//mShape = album.childList.getCSSClass("mask_shape", 0);
+				album.addChild(mShape);
+				belt.mask = mShape;
 				
-				if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
-				if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-				if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-			album.addChild(belt);
-			
-			//assign mask shape////////////////////////////////////////////////////////////////////////
-			mShape = this.childList.getKey("holder1").childList.getKey("mask_shape1");
-			album.addChild(mShape);
-			//apply mask//
-			belt.mask = mShape;
-			/////////////////////////////////////////////////////////////////////
-			
+				// meta data text display
+				metadata = this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0);
+				album.addChild(metadata);
+			/////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////
 			
 			// set anim params
 			belt_maxValue = belt.width - width;
 			belt_minValue = 0;
 			
 			//trace("belt........",belt.width,belt_maxValue, width);
+			
 	}
+
 	
 	public function onScroll(event:GWGestureEvent):void
 	{
@@ -396,7 +220,7 @@ package com.gestureworks.cml.components
 	}
 	public function onInfo(event:GWGestureEvent):void
 	{
-		trace("info");
+		trace("info",metadata.visible);
 		if (!metadata.visible) metadata.visible = true;
 		else metadata.visible = false;
 	}
@@ -579,69 +403,17 @@ package com.gestureworks.cml.components
 			belt_tween_target = -event.stageX * slider_factor//+belt_buffer;
 			belt_tween_factor = 1;
 	}
-	
-	public function tapMenuItem(event:TouchEvent):void{
-		//trace("tap menu item", event.target.id);
-		/*
-		if (itemList[event.target.id - 1].getChildAt(1).visible)
-		{
-			itemList[event.target.id - 1].getChildAt(1).visible = false;
-			itemList[event.target.id - 1].getChildAt(2).visible = true;
-		}
-		else {
-			itemList[event.target.id - 1].getChildAt(1).visible = true;
-			itemList[event.target.id - 1].getChildAt(2).visible = false;
-		}
-		*/
-	}
-	public function clickMenuItem(event:MouseEvent):void{
-		trace("click menu item", event.target.id)
-	}
-	public function gtapMenuItem(event:GWGestureEvent):void{
-		//trace("gtap menu item"event.target.id)
-		trace("gtap menu item"); 
-		/*
-		if (itemList[event.target.id - 1].getChildAt(1).visible)
-		{
-			itemList[event.target.id - 1].getChildAt(1).visible = false;
-			itemList[event.target.id - 1].getChildAt(2).visible = true;
-		}
-		else {
-			itemList[event.target.id - 1].getChildAt(1).visible = true;
-			itemList[event.target.id - 1].getChildAt(2).visible = false;
-		}
-		*/
-	}
-	public function gdtapMenuItem(event:GWGestureEvent):void{
-		//trace("gdtap menu item", event.target.id)
-		trace("gdtap menu item");
-		/*
-		if (itemList[event.target.id - 1].getChildAt(1).visible)
-		{
-			itemList[event.target.id - 1].getChildAt(1).visible = false;
-			itemList[event.target.id - 1].getChildAt(2).visible = true;
-		}
-		else {
-			itemList[event.target.id - 1].getChildAt(1).visible = true;
-			itemList[event.target.id - 1].getChildAt(2).visible = false;
-		}
-		*/
+		
+	public function translateHandler(event:GWTransformEvent):void
+	{
+		//trace("translate album");
+		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
 	}
 		
-		//override protected function createUI():void{}
-		//override protected function commitUI():void{}
-		//override protected function layoutUI():void{}
-		
-		public function translateHandler(event:GWTransformEvent):void
-		{
-			//trace("translate album");
-			this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
-		}
-		
-		private function updateHandler(event:Event):void 
-		{
-		trace("album update");	
-		}
+	private function updateHandler(event:Event):void 
+	{
+	trace("album update");	
+	}
 
 	}
 }

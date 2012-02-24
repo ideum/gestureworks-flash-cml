@@ -1,12 +1,12 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 //
 //  IDEUM
-//  Copyright 2010-2011 Ideum
+//  Copyright 2010-2012 Ideum
 //  All Rights Reserved.
 //
 //  GestureWorks
 //
-//  File:     MaskImageDisplay.as
+//  File:     NodeMapViewer.as
 //
 //  Author:  Paul Lacey (paul(at)ideum(dot)com)		 
 //
@@ -47,56 +47,21 @@ package com.gestureworks.cml.components
 	{
 		private var itemList:Array = new Array;
 
-		// ----- interactive object settings --//
-		private var stageWidth:Number;
-		private var stageHeight:Number;
-		
-		private var imagesNormalize:Number;
-		private var globalScale:Number;
-		
-		private var Width:Number = 0;
-		private var Height:Number = 0;
-		private var count:int = 0;
-		private var n:int = 0;
 		private var holder:TouchSprite;
-		private var base_image:TouchSprite;
-		private var mask_image:Sprite;
+		private var background_holder:Sprite;
+		private var text_holder:Sprite;
+		private var slider_holder:TouchSprite;
+		private var node_holder:TouchSprite;
+		
+		private var nodeList:TouchSprite;
+		private var node:TouchSprite;
+		private var nbtn:TouchSprite;
 		
 		
-		//-- mask settings ---//
-		private var maskSize:Number = 200;
-		private var maskShape:String = "square";
-		private var mShape:TouchSprite;
-		private var shape_hit:TouchSprite;
-		private var mapShape:Sprite;
-		private var mShapeOutline:Sprite;
-		
-		//---------frame settings--//
-		private var frame:TouchSprite;
-		private var frameDraw:Boolean = true;
-		private var frameMargin:Number = 100;
-		private var frameRadius:Number = 20;
-		private var frameFillColor:Number = 0xFFFFFF;
-		private var frameFillAlpha:Number = 0.5;
-		private var frameOutlineColor:Number = 0xFFFFFF;
-		private var frameOutlineStroke:Number = 2;
-		private var frameOutlineAlpha:Number = 1;
-		//----maskimage gestures---//
-		private var dragGesture:Boolean = true;
-		private var scaleGesture:Boolean = true;
-		private var rotateGesture:Boolean = true;
-		//----frame gestures---//
-		private var frameDragGesture:Boolean = true;
-		private var frameScaleGesture:Boolean = true;
-		private var frameRotateGesture:Boolean = true;
-		
-		//public static var COMPLETE:String = "complete";
-				 
 	
 		public function NodeMapViewer()
 		{
 			super();
-			//visible=false;
 		}
 
 		override public function dispose():void
@@ -107,13 +72,12 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("node viewer complete");
-			childListParse();
-			
-			trace("update");
-			initUI();
-			//setupUI();
+			//initUI();
+			parseClass();
+			setupUI();
 		}
 		
+		/*
 		private function childListParse():void
 		{ 
 			trace(this.childList.length);
@@ -129,11 +93,12 @@ package com.gestureworks.cml.components
 					}
 				n = itemList.length;
 		}
+		*/
 		
-		
-		private function initUI():void
+		private function parseIndex():void
 		{
 			trace("node viewer child parse");
+			
 			
 			for (var j:int = 0; j < this.childList.length; j++)
 					{	
@@ -171,22 +136,64 @@ package com.gestureworks.cml.components
 							}
 					}
 				}
-				
-				
 		}
+				
+		private function parseClass():void
+		{
+			trace("-------", this.childList.getCSSClass("holder", 0).id);
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("background", 0).id);
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("text", 0).id);
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0));
+			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).id);
+			
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).id); // node0
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(1).id); // node1
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(0).id); // title
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(1).id); // icon0
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(2).id); // icon1
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(3).id); // link
+			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(4).id); //album
+		}
+		
 		private function setupUI():void
 		{ 	
+			// add listener to albums///////////////////////////////////////////
+			this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(4).addEventListener(DisplayEvent.CHANGE, displayHandler);
+			this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(1).childList.getIndex(4).addEventListener(DisplayEvent.CHANGE, displayHandler);
 			
 			
+			
+			// update link drawing
+			
+			//add slider control to nodes//////////////////////////////
+			// set slider state
+			// loop through nodes in chosen active list
+			// set node state
+			
+			
+			// set node touch timer control
+			
+			
+			
+			
+			/*
+			// make node touchable 
+			nbtn = bar.childList.getCSSClass("nbtn");
+				nbtn.gestureList = { "tap":true, "n-drag":true };
+				nbtn.addEventListener(GWGestureEvent.TAP, onClose);
+				//nbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
+			node.addChild(nbtn);
+			*/
 		}
 		
 		private function dTapHandler(event:GWGestureEvent):void
 		{
-			trace("d tap", count);
+			//trace("d tap", count);
 		}
 		
 		private function displayHandler(event:DisplayEvent):void 
 		{
+			trace("album translate")
 			//trace("album translate check from inside node viewer", event.target.album.x, event.target.album.x);
 			//trace("album",event.target.x, event.target.y);
 			//trace("parent",event.target.parent.x, event.target.parent.y);
