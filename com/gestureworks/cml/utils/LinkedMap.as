@@ -26,11 +26,12 @@ package com.gestureworks.cml.utils
 		private var _length:int=0;
 		public function get length():int { return list.length }
 
+		
 		public function getIndex(index:int):*
 		{
-			currentIndex = index;
-			return dictionary[currentKey];
+			return dictionary[list.getIndex(index)];
 		}
+		
 		
 		public function getKey(key:*):*
 		{			
@@ -40,8 +41,8 @@ package com.gestureworks.cml.utils
 		/**
 		 * Returns a LinkedMap of objects that are of the 
 		 * specified CSS class if no second argument is given.
-		 * Returns an nth object of the retuned LinkedMap
-		 * if the second argument. 
+		 * Returns the nth object of the retuned LinkedMap
+		 * if the second argument is present. 
 		 * @param	value
 		 * @param	index
 		 * @return
@@ -50,7 +51,7 @@ package com.gestureworks.cml.utils
 		{
 			var tmp:LinkedMap = new LinkedMap(true);
 			
-			for (var i:int = 0; i < list.length; i++) 
+			for (var i:int = 0; i < this.length; i++) 
 			{
 				if (this.getIndex(i).hasOwnProperty("class_"))
 				{
@@ -67,28 +68,34 @@ package com.gestureworks.cml.utils
 		
 		
 		/**
-		 * Returns a dictionary of objects that are of 
-		 * the specified class
+		 * Returns a LinkedMap of objects that are of the 
+		 * specified AS3 class if no second argument is given.
+		 * Returns the nth object of the retuned LinkedMap
+		 * if the second argument is present.
+		 * The class name be the full name including package
+		 * and must be previously registered in the class library
 		 * @param	value
+		 * @param	index
 		 * @return
 		 */
-		public function getClass(value:String):Dictionary
+		public function getClass(value:String, index:int=-1):*
 		{
-			var tmp:Dictionary = new Dictionary(true);
+			var tmp:LinkedMap = new LinkedMap(true);
 			var tmpClass:Class = getDefinitionByName(value) as Class;	
-			
 			
 			if (tmpClass)
 			{
-				for (var key:* in dictionary)
-				{				
-					if (dictionary[key] is tmpClass)
-						tmp[key] = dictionary[key];
-				}
+				for (var i:int = 0; i < this.length; i++) 
+				{
+					if (this.getIndex(i) is tmpClass)
+						tmp.append(this.getIndex(i).id, this.getIndex(i));
+				}	
 			}
 			
-			
-			return tmp;
+			if (index > -1)
+				return tmp.getIndex(index);
+			else
+				return tmp;				
 		}		
 		
 		public function selectIndex(index:int):*
