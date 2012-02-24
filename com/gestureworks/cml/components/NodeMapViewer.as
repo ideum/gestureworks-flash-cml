@@ -164,6 +164,8 @@ package com.gestureworks.cml.components
 				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_link", 0).id); // link
 				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0).id); // album
 			}	
+			
+			//trace(this.childList.getCSSClass("holder", 0).name);
 		}
 		
 		private function setupUI():void
@@ -171,6 +173,7 @@ package com.gestureworks.cml.components
 			var nodeNum:int = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
 			var holder:* = this.childList.getCSSClass("holder", 0);
 			var nodes:* = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
+			
 			
 			for (var k:int = 0; k < nodeNum; k++)
 			{
