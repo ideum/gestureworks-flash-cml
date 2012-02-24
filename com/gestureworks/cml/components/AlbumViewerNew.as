@@ -199,7 +199,7 @@ package com.gestureworks.cml.components
 	
 	public function onClose(event:GWGestureEvent):void
 	{
-		trace("close");
+		trace("close album");
 		//dispose();
 		
 		//reset album //faux dispose
@@ -208,8 +208,8 @@ package com.gestureworks.cml.components
 		album.x = 0;
 		album.y = 0;
 		
-		x = 0;
-		y = 0;
+		//x = 0;
+		//y = 0;
 		
 		// reset meta data 
 		metadata.visible = false; // reset meta data

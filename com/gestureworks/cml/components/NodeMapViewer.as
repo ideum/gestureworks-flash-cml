@@ -146,44 +146,78 @@ package com.gestureworks.cml.components
 			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0));
 			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).id);
 			
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).id); // node0
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(1).id); // node1
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(0).id); // title
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(1).id); // icon0
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(2).id); // icon1
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(3).id); // link
-			trace(this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(4).id); //album
+			var holder = this.childList.getCSSClass("holder", 0);
+			trace("................",holder.childList.getCSSClass("background", 0).id);
+			
+			for (var k:int = 0; k < this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length; k++)
+			{
+				
+				//this.holder.nodes.node.width; 																						// reference method for objects constructed via as3 
+				//this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k) 	//current reefernce reference method for objects constructed via cml engine
+				
+				//this.cml.holder.nodes.node.width;																						// optional reference method for objects constructed via cml engine
+				//this.cml["holder.nodes.node"].width; 																					// optional reference method for objects constructed via cml engine
+				
+				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).id); // node
+				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0).id); // node_point
+				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_title", 0).id); // title
+				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_link", 0).id); // link
+				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0).id); // album
+			}	
 		}
 		
 		private function setupUI():void
 		{ 	
-			// add listener to albums///////////////////////////////////////////
-			this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(0).childList.getIndex(4).addEventListener(DisplayEvent.CHANGE, displayHandler);
-			this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getIndex(1).childList.getIndex(4).addEventListener(DisplayEvent.CHANGE, displayHandler);
+			var nodeNum:int = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
+			var holder:* = this.childList.getCSSClass("holder", 0);
+			var nodes:* = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
 			
+			for (var k:int = 0; k < nodeNum; k++)
+			{
 			
+				// add listener to albums///////// updates node links////////////////////////////////////
+	
+				//var album = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0);
+				var album:* = nodes.getIndex(k).childList.getCSSClass("album", 0);
+					album.addEventListener(DisplayEvent.CHANGE, displayHandler);
+				
+				// add tap listener to node points /////////////////////////////////
+				//var node_point = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0);
+				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);	
+					node_point.gestureEvents = true;
+					node_point.gestureList = { "tap":true,"n-drag":true };
+					node_point.addEventListener(GWGestureEvent.TAP, onOpen);
+					node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
+					node_point.addEventListener(TouchEvent.TOUCH_BEGIN, onOpen);
+			}
+				
+			// update link drawing//////////////////////////////////
 			
-			// update link drawing
-			
-			//add slider control to nodes//////////////////////////////
+			//add slider control to nodes////////////////////////////
 			// set slider state
 			// loop through nodes in chosen active list
 			// set node state
 			
 			
-			// set node touch timer control
+			// set node touch timer control///////////////////////
+			
+		}
+		
+		private function onOpen(event:GWGestureEvent):void 
+		{
+			var p:* = event.target.parent;
+			//trace("open", p.id);
+
+			// reset positions
 			
 			
+			// make visble
+			p.childList.getCSSClass("album", 0).visible = true;
+			p.childList.getCSSClass("node_link", 0).visible = true;
 			
-			
-			/*
-			// make node touchable 
-			nbtn = bar.childList.getCSSClass("nbtn");
-				nbtn.gestureList = { "tap":true, "n-drag":true };
-				nbtn.addEventListener(GWGestureEvent.TAP, onClose);
-				//nbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
-			node.addChild(nbtn);
-			*/
+			// update node link 
+			p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).x + p.childList.getCSSClass("album", 0).width / 2;
+			p.childList.getCSSClass("node_link", 0).height = p.childList.getCSSClass("album", 0).y;
 		}
 		
 		private function dTapHandler(event:GWGestureEvent):void
@@ -193,17 +227,15 @@ package com.gestureworks.cml.components
 		
 		private function displayHandler(event:DisplayEvent):void 
 		{
-			trace("album translate")
-			//trace("album translate check from inside node viewer", event.target.album.x, event.target.album.x);
-			//trace("album",event.target.x, event.target.y);
-			//trace("parent",event.target.parent.x, event.target.parent.y);
-			//trace(event.target.parent.getChildAt(0), t.parent.parent.getChildAt(3).id);
-			//trace(event.target.album.width / 2,event.target.width / 2);
-			//trace("album move",event.target.id,event.target.parent.id, event.target.parent.getChildAt(3).id)
+			var p:* = event.target.parent;
+			//trace("album translate", p.id, p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).id);
 			
-			event.target.parent.getChildAt(3).width = event.target.album.x + event.target.x + event.target.width / 2;
-			event.target.parent.getChildAt(3).height = event.target.album.y + event.target.y;
-			//event.target.parent.getChildAt(3).height = event.target.y;
+			//event.target.parent.getChildAt(2).width = event.target.album.x + event.target.x + event.target.width / 2;
+			//event.target.parent.getChildAt(2).height = event.target.album.y + event.target.y;
+			
+			p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).x + p.childList.getCSSClass("album", 0).width / 2  + event.target.x;
+			p.childList.getCSSClass("node_link", 0).height = p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).y + event.target.y;
+			
 		}
 	}
 }
