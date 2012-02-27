@@ -16,6 +16,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
+	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.element.GraphicElement;
@@ -30,7 +31,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.core.GestureWorks;
 	
-	public class AlbumViewer extends ComponentKit//TouchContainer
+	public class AlbumViewer extends Component
 	{		
 		// component
 		private var visDebug:Boolean =false;
@@ -99,7 +100,7 @@ package com.gestureworks.cml.components
 			super();	
 			//createUI();
 			//commitUI();
-			if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
+			//if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public function dipose():void
@@ -685,8 +686,8 @@ package com.gestureworks.cml.components
 		///////////////////////////////////////////////////////////////////////////
 			
 	}
-	
-	public function onEnterFrame(event:GWEvent):void
+	/*
+	override public function onEnterFrame(event:GWEvent):void
 	{
 		
 		//trace(belt_buffer_tweenOn,belt_target_tweenOn)
@@ -723,7 +724,7 @@ package com.gestureworks.cml.components
 				}
 		}
 		
-	}
+	}*/
 	
 	public function cancelTween(event:TouchEvent):void
 	{

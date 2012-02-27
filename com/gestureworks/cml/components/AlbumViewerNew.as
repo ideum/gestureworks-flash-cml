@@ -16,6 +16,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
+	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.element.GraphicElement;
@@ -30,7 +31,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.core.GestureWorks;
 	
-	public class AlbumViewerNew extends ComponentKit//TouchContainer
+	public class AlbumViewerNew extends Component//ComponentKit//TouchContainer
 	{		
 		// objects
 		public var album:TouchSprite = new TouchSprite();
@@ -84,7 +85,7 @@ package com.gestureworks.cml.components
 		public function AlbumViewerNew()
 		{
 			super();	
-			if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
+			//if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public function dipose():void
@@ -95,7 +96,7 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("album display viewer complete");
-			childListParse();
+			//childListParse();
 			initUI();	
 			setupUI();	
 		}
@@ -103,13 +104,21 @@ package com.gestureworks.cml.components
 		
 		private function childListParse():void
 		{
-			trace("-------", this.childList.getCSSClass("holder", 0).id);
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).id);
-			trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("belt",0).id);
-			trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
-			trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0).id);
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0).id);
+			//trace("-------", this.childList.getCSSClass("holder", 0).id);
+			//trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).id);
+			//trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("belt",0).id);
+			//trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
+			//trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
+			//trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0).id);
+			//trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0).id);
+			
+			trace("-------", this.id);
+			trace("-------", this.childList.getCSSClass("menu", 0).id);
+			trace("-------", this.childList.getCSSClass("belt",0).id);
+			trace("-------", this.childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
+			trace("-------", this.childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
+			trace("-------", this.childList.getCSSClass("mask_shape", 0).id);
+			trace("-------", this.childList.getCSSClass("metadata", 0).id);
 		}
 		
 		private function initUI():void
@@ -133,35 +142,42 @@ package com.gestureworks.cml.components
 			//////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////////////
 			
-				album = this.childList.getCSSClass("holder", 0);
-					album.gestureEvents = true;
-					album.gestureList = { "n-drag":true };
-					album.transformEvents = true;
-					album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
-				addChild(album);
+				//album = this.childList.getCSSClass("holder", 0);
+				//album = this;
+					this.gestureEvents = true;
+					this.gestureList = { "n-drag":true };
+					this.transformEvents = true;
+					this.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
+				//addChild(album);
 			 
-				bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
+				//bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
+				bar = this.childList.getCSSClass("menu", 0);
 				//bar = album.childList.getCSSClass("menu", 0);
-					//bar.targetParent = true;
-				album.addChild(bar);
+					bar.targetParent = true;
+				this.addChild(bar);
 						
-				cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
+			//	cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn", 0);
+				cbtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
 				//cbtn = bar.childList.getCSSClass("cbtn",0);
+					cbtn.gestureEvents = true;
 					cbtn.gestureList = { "tap":true, "n-drag":true };
-					//cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-					cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
-					//cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
-				album.addChild(cbtn);
+					cbtn.addEventListener(GWGestureEvent.TAP, onClose);
+					//cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
+					cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
+				this.addChild(cbtn);
 							
-				ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
+				ibtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn", 0);
+				//ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
 				//ibtn = bar.childList.getCSSClass("ibtn",0);
+					ibtn.gestureEvents = true;
 					ibtn.gestureList = { "tap":true, "n-drag":true };
-					//ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-					ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
-					//ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
-				album.addChild(ibtn);
+					ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
+					//ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
+					ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
+				this.addChild(ibtn);
 								
-				belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
+				belt = this.childList.getCSSClass("belt", 0);
+				//belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
 				//belt = album.childList.getCSSClass("belt", 0);
 					belt.gestureList = {"1-dragx":true, "2-dragx":true, "3-dragx":true };
 					belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
@@ -169,17 +185,19 @@ package com.gestureworks.cml.components
 					if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
 					if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
 					if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-				album.addChild(belt);
+				this.addChild(belt);
 			 
 				//apply mask//
-				mShape = this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0);
+				mShape = this.childList.getCSSClass("mask_shape", 0);
+				//mShape = this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0);
 				//mShape = album.childList.getCSSClass("mask_shape", 0);
-				album.addChild(mShape);
+				this.addChild(mShape);
 				belt.mask = mShape;
 				
 				// meta data text display
-				metadata = this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0);
-				album.addChild(metadata);
+				metadata = this.childList.getCSSClass("metadata", 0);
+				//metadata = this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0);
+				this.addChild(metadata);
 			/////////////////////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////
 			
@@ -339,7 +357,7 @@ package com.gestureworks.cml.components
 		///////////////////////////////////////////////////////////////////////////
 			
 	}
-	
+	/*
 	public function onEnterFrame(event:GWEvent):void
 	{
 		
@@ -377,7 +395,7 @@ package com.gestureworks.cml.components
 				}
 		}
 		
-	}
+	}*/
 	
 	public function cancelTween(event:TouchEvent):void
 	{

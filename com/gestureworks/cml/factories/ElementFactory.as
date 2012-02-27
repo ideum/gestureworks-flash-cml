@@ -178,13 +178,15 @@ package com.gestureworks.cml.factories
 		 * Display Manager onEnterFrame Event callback 
 		 * 
 		 */
+		
+		/*
 		public function onEnterFrame():void
 		{					
 			if (parent && fixedScale)
 			{
 				scale = originalScale / parent["scaleX"];
 			}
-		}		
+		}	*/	
 		
 
 		

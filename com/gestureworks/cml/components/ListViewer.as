@@ -67,7 +67,8 @@ package com.gestureworks.cml.components
 					}
 					
 					width = 2 * marginX + sumx + (n - 1) * sepx;
-					height = childList.getIndex(0).height;
+					//height = childList.getIndex(0).height;
+					height = this.height;
 		}
 		/*
 		private function listVertical():void

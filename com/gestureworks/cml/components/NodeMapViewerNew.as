@@ -30,6 +30,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
+	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.kits.ComponentKit;	
@@ -43,7 +44,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.core.GestureWorks;
 	 
-	public class NodeMapViewerNew extends ComponentKit
+	public class NodeMapViewerNew extends Component//ComponentKit
 	{
 		//private var itemList:Array = new Array;
 		//private var nodeList:TouchSprite;
@@ -108,10 +109,16 @@ package com.gestureworks.cml.components
 		
 		private function initUI():void
 		{ 	
-			nodeNum = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
-			holder = this.childList.getCSSClass("holder", 0);
-			nodes = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
-			albums = holder.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
+			//nodeNum = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
+			//holder = this.childList.getCSSClass("holder", 0);
+			//nodes = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
+			
+			//trace("------------------------------------------", this.text.id);
+			trace("------------------------------------------",this.childList.getCSSClass("nodes", 0).id)
+			
+			nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
+			nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
+			albums = this.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
 			
 			//slider = holder.childList.getCSSClass("slider", 0);
 		}
@@ -181,6 +188,7 @@ package com.gestureworks.cml.components
 			//trace("d tap", count);
 		}
 		
+		/*
 		private function displayHandler(event:DisplayEvent):void 
 		{
 			var p:* = event.target.parent;
@@ -197,6 +205,6 @@ package com.gestureworks.cml.components
 			//p.childList.getCSSClass("node_link", 0).width = albums.getIndex(ID).childList.getCSSClass("holder", 0).x + albums.getIndex(ID).width / 2  + event.target.x;
 			//p.childList.getCSSClass("node_link", 0).height = albums.getIndex(ID).childList.getCSSClass("holder", 0).y + event.target.y;
 			
-		}
+		}*/
 	}
 }

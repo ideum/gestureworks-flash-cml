@@ -35,6 +35,7 @@ package com.gestureworks.cml.element
 			
 			if (GestureWorks.supportsTouch) 
 			{
+				//trace("supports touch");
 				elements["hit"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 				elements["foreground"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownFgnd);
 			}	
@@ -54,7 +55,7 @@ package com.gestureworks.cml.element
 				foregroundOffset = childList.getKey(foreground).height / -2;
 				elements["foreground"].y = foregroundOffset;					
 			}
-			
+			//elements["foreground"].mouseChildren="false"
 			elements["foreground"].disableAffineTransform = true;
 			elements["foreground"].disableNativeTransform = true;	
 			elements["foreground"].gestureEvents = true;
@@ -227,6 +228,7 @@ package com.gestureworks.cml.element
 		
 		private function onDownHit(event:*):void
 		{
+			//trace("ontdown")
 			elements["foreground"].removeEventListener(GWGestureEvent.DRAG, onDrag);																
 			elements["foreground"].addEventListener(GWGestureEvent.DRAG, onDrag);
 			
@@ -264,6 +266,7 @@ package com.gestureworks.cml.element
 		
 		private function onDownFgnd(event:*):void
 		{
+			//trace("ontdown")
 			elements["foreground"].removeEventListener(GWGestureEvent.DRAG, onDrag);													
 			elements["foreground"].addEventListener(GWGestureEvent.DRAG, onDrag);
 			

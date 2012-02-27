@@ -124,10 +124,15 @@ package com.gestureworks.cml.layouts
 					container.childList.getIndex(i).x = paddingX + sumx + (i - 1) * marginX;
 					container.childList.getIndex(i).y = 0;
 				}
-				sumx+=container.childList.getIndex(i).width
+				sumx += container.childList.getIndex(i).width
+				
+				trace( container.childList.getIndex(i).id);
 			}
 			container.width = 2 * paddingX + sumx + (n - 1) * marginX;
-			container.height = container.childList.getIndex(0).height;
+			//container.height = container.childList.getIndex(0).height;
+			
+		//	trace("container layout height", container.height, container.childList.getKey(""))
+			
 		}
 		
 		/**
