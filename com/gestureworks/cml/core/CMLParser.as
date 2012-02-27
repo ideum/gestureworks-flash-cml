@@ -235,12 +235,6 @@ package com.gestureworks.cml.core
 			
 			if (cmlFilesComplete == FileManager.instance.cmlCount)
 			{
-				
-				if (debug)
-					trace("\n\nload renderer");					
-						
-			
-				
 				if (FileManager.instance.fileCount > 0)
 					loadExtFiles();
 				else
@@ -283,7 +277,6 @@ package com.gestureworks.cml.core
 		
 		public function loadRenderer(renderKit:*, parent:*):void
 		{	
-			
 			var rendererId:String = renderKit.Renderer.@id; 
 			var rendererData:String = renderKit.Renderer.@data;
 			
@@ -378,7 +371,7 @@ package com.gestureworks.cml.core
 					
 					if (aName == "rendererList") {					
 						includeParentIndex.push(parent);
-						FileManager.instance.addToQueue(aValue, "cmlRenderKit");
+						FileManager.instance.addToQueue(aValue, "cmlRenderKit");						
 					}		
 				}				
 				
@@ -426,7 +419,12 @@ package com.gestureworks.cml.core
 					{
 						if (key == "dimensionsTo")
 							obj.propertyStates[0][key] = obj.propertyStates[0][key] + "." + properties.@id;
-												
+						
+						if (key == "rendererList") {
+							includeParentIndex.push(parent);
+							FileManager.instance.addToQueue(val, "cmlRenderKit");
+						}
+							
 						for each (var val:* in properties.*)
 						{
 							if (obj.propertyStates[0][key] == val.name().toString())
