@@ -134,6 +134,7 @@ package com.gestureworks.cml.components
 			//////////////////////////////////////////////////////////////////////
 			
 				album = this.childList.getCSSClass("holder", 0);
+					album.gestureEvents = true;
 					album.gestureList = { "n-drag":true };
 					album.transformEvents = true;
 					album.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);

@@ -45,15 +45,8 @@ package com.gestureworks.cml.components
 	 
 	public class NodeMapViewerNew extends ComponentKit
 	{
-		private var itemList:Array = new Array;
-
-		//private var holder:TouchSprite;
-		//private var background_holder:Sprite;
-		//private var text_holder:Sprite;
-		//private var slider_holder:TouchSprite;
-		//private var node_holder:TouchSprite;
-		
-		private var nodeList:TouchSprite;
+		//private var itemList:Array = new Array;
+		//private var nodeList:TouchSprite;
 		private var node:TouchSprite;
 		private var nbtn:TouchSprite;
 		
@@ -61,6 +54,8 @@ package com.gestureworks.cml.components
 		private var holder:*; 
 		private var nodes:*; 
 		private var albums:*;
+		private var slider:*;
+		
 	
 		public function NodeMapViewerNew()
 		{
@@ -117,6 +112,8 @@ package com.gestureworks.cml.components
 			holder = this.childList.getCSSClass("holder", 0);
 			nodes = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
 			albums = holder.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
+			
+			//slider = holder.childList.getCSSClass("slider", 0);
 		}
 		
 		private function setupUI():void
@@ -145,6 +142,8 @@ package com.gestureworks.cml.components
 			
 			//add slider control to nodes////////////////////////////
 			// set slider state
+			
+			//slider.
 			// loop through nodes in chosen active list
 			// set node state
 			
