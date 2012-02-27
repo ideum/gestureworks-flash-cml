@@ -18,6 +18,7 @@ package com.gestureworks.cml.core
 	//  COMPONENTS  // 
 	//////////////////
 
+	import com.gestureworks.cml.components.TmpViewer; TmpViewer;			
 	
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	
@@ -26,7 +27,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.AlbumViewerNew; AlbumViewerNew;
 	import com.gestureworks.cml.components.ListViewer; ListViewer;
 	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
-	import com.gestureworks.cml.components.NodeMapViewerNew; NodeMapViewerNew;
 	import com.gestureworks.cml.components.GoogleMapsViewer; GoogleMapsViewer;
 	import com.gestureworks.cml.components.ModestMapsViewer; ModestMapsViewer;
 	//import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer
@@ -42,18 +42,22 @@ package com.gestureworks.cml.core
 	//  ELEMENTS  // 
 	////////////////
 
-	//checked
-	import com.gestureworks.cml.element.Container; Container;		
+	//checked	
+	import com.gestureworks.cml.element.Include; Include;			
+	import com.gestureworks.cml.element.Component; Component;	
+	import com.gestureworks.cml.element.Container; Container;
+	import com.gestureworks.cml.element.Menu; Menu;		
+	import com.gestureworks.cml.element.View; View;
+	import com.gestureworks.cml.element.Stack; Stack;	
+	import com.gestureworks.cml.element.TLF; TLF;	
+	import com.gestureworks.cml.element.GestureList; GestureList;		
 	import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
 	import com.gestureworks.cml.element.ImageElement; ImageElement;
 	import com.gestureworks.cml.element.SWCElement; SWCElement;	
 	import com.gestureworks.cml.element.SWFElement; SWFElement;
 	import com.gestureworks.cml.element.TextElement; TextElement;
-	import com.gestureworks.cml.element.TLF; TLF;	
 	import com.gestureworks.cml.element.MediaElement; MediaElement;	
 	import com.gestureworks.cml.element.VideoElement; VideoElement;	
-	import com.gestureworks.cml.element.View; View;
-	import com.gestureworks.cml.element.GestureList; GestureList;	
 	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
 	import com.gestureworks.cml.element.ButtonElement; ButtonElement;		
 	import com.gestureworks.cml.element.SliderElement; SliderElement;		
@@ -95,6 +99,8 @@ package com.gestureworks.cml.core
 	//checked
 	import com.gestureworks.cml.layouts.RandomLayout; RandomLayout;
 	import com.gestureworks.cml.layouts.ListLayout; ListLayout;
+	import com.gestureworks.cml.layouts.StackLayout; StackLayout;
+	import com.gestureworks.cml.layouts.GridLayout; GridLayout;
 
 	
 }
