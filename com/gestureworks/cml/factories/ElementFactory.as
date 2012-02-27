@@ -25,10 +25,14 @@ package com.gestureworks.cml.factories
 		{
 			super();
 			propertyStates = [];
-			propertyStates[0] = new Dictionary(false);			
+			propertyStates[0] = new Dictionary(false);
+			
+			super.scaleX = 1;
+			super.scaleY = 1;
 		}			
 		
 		
+
 		////////////////
 		//  IObject  
 		///////////////		
@@ -52,6 +56,15 @@ package com.gestureworks.cml.factories
 		}
 		
 		
+		
+		private var _cmlIndex:int;
+		public function get cmlIndex():int {return _cmlIndex};
+		public function set cmlIndex(value:int):void
+		{
+			_cmlIndex = value;
+		}
+		
+		
 		public function parseCML(cml:XMLList):XMLList
 		{			
 			return CMLParser.instance.parseCML(this, cml);
@@ -66,11 +79,18 @@ package com.gestureworks.cml.factories
 			CMLParser.instance.updateProperties(this, state);		
 		}	
 		
+
+		private var _className:String;
+		public function get className():String { return _className ; }
+		public function set className(value:String):void
+		{
+			_className = value;
+		}				
 		
 		
-		////////////////
-		//  IElement  //
-		////////////////		
+		/////////////////////////////////////////////////////
+		//  IElement  
+		/////////////////////////////////////////////////////
 		
 		
 		private var _width:Number = 0;
@@ -99,6 +119,75 @@ package com.gestureworks.cml.factories
 		}		
 		
 		
+		private var _scaleX:Number = 1;
+		/**
+		 * Sets width of the display object in pixels
+		 * @default 0
+		 */	
+		override public function get scaleX():Number{return _scaleX;}		
+		override public function set scaleX(value:Number):void
+		{
+			_scaleX = value
+			super.scaleX = value;
+		}		
+		
+		
+		private var _scaleY:Number = 1;
+		/**
+		 * Sets width of the display object in pixels
+		 * @default 0
+		 */	
+		override public function get scaleY():Number{return _scaleY;}		
+		override public function set scaleY(value:Number):void
+		{
+			_scaleY = value
+			super.scaleY = value;
+		}			
+		
+		
+		private var _minScale:Number = 0;
+		/**
+		 * Sets minimum scale of the display object in pixels
+		 * @default 0;
+		 */		
+		public function get minScale():Number{return _minScale;}
+		public function set minScale(value:Number):void
+		{
+			_minScale = value;
+		}
+		
+
+		private var _maxScale:Number = 0;
+		/**
+		 * Sets maximum scale of the display object in pixels
+		 * @default 0
+		 */				
+		public function get maxScale():Number{return _maxScale;}
+		public function set maxScale(value:Number):void
+		{
+			_maxScale = value;
+		}		
+		
+		
+		
+		
+		
+		private var originalScale:int = 1;
+		
+		/*
+		 * Display Manager onEnterFrame Event callback 
+		 * 
+		 */
+		public function onEnterFrame():void
+		{					
+			if (parent && fixedScale)
+			{
+				scale = originalScale / parent["scaleX"];
+			}
+		}		
+		
+
+		
 		private var _widthPercent:String = "";		
 		public function get widthPercent():String{return _widthPercent;}
 		public function set widthPercent(value:String):void
@@ -119,28 +208,7 @@ package com.gestureworks.cml.factories
 		}		
 		
 		
-		private var _minScale:Number=0;
-		/**
-		 * Sets minimum scale of the display object in pixels
-		 * @default 0
-		 */		
-		public function get minScale():Number{return _minScale;}
-		public function set minScale(value:Number):void
-		{
-			_minScale = value;
-		}
 		
-		
-		private var _maxScale:Number=0;
-		/**
-		 * Sets maximum scale of the display object in pixels
-		 * @default 0
-		 */				
-		public function get maxScale():Number{return _maxScale;}
-		public function set maxScale(value:Number):void
-		{
-			_maxScale = value;
-		}		
 		
 		
 		/**
@@ -218,11 +286,12 @@ package com.gestureworks.cml.factories
 			_debugStyle = value;
 		}
 		
-		private var _fixedScale:Boolean;
+		private var _fixedScale:Boolean = false;
 		public function get fixedScale():Boolean{return _fixedScale;}
 		public function set fixedScale(value:Boolean):void
 		{
 			_fixedScale = value;
+			originalScale = scaleX;
 		}
 		
 		private var _scale:Number = 1;
@@ -233,8 +302,8 @@ package com.gestureworks.cml.factories
 		public function set scale(value:Number):void
 		{
 			_scale = value;
-			scaleX=scale;
-			scaleY=scale;
+			scaleX = scale;
+			scaleY = scale;
 		}
 		
 
@@ -264,7 +333,7 @@ package com.gestureworks.cml.factories
 		 */			
 		public function get class_():String {return _class_;}
 		public function set class_(value:String):void 
-		{ 
+		{			
 			_class_ = value; 
 		}	
 		

@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element 
 {
-	import away3d.audio.drivers.AbstractSound3DDriver;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;

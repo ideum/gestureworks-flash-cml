@@ -15,6 +15,8 @@ package com.gestureworks.cml.factories
 		protected var loader:Loader;
 		public static var COMPLETE:String = "complete";	
 		
+		private var file:*;
+		
 		public function BitmapFactory() 
 		{
 			super();
@@ -22,13 +24,47 @@ package com.gestureworks.cml.factories
 			mouseChildren = false;
 		}
 				
-		private var _src:String="";
+		private var _src:String = "";
+		/**
+		 * Sets the file source path
+		 * @default ""
+		 */
 		public function get src():String{return _src;}
 		public function set src(value:String):void
 		{
 			if (src == value) return;
 				_src = value;
 		}
+		
+		
+		private var _width:Number = 0;
+		/**
+		 * Sets width of the display object in pixels
+		 * @default 0
+		 */
+		override public function get width():Number{return _width;}
+		override public function set width(value:Number):void
+		{
+			_width = value;
+			super.width = value;
+		}
+		
+		
+		private var _height:Number = 0;
+		/**
+		 * Sets width of the display object in pixels
+		 * @default 0
+		 */		
+		override public function get height():Number{return _height;}
+		override public function set height(value:Number):void
+		{
+			trace("________________________________________hegiht" + height);
+			
+			_height = value;
+			super.height = value;
+		}			
+		
+		
 		
 		private function loadBitmap(url:String):void
 		{
@@ -42,35 +78,48 @@ package com.gestureworks.cml.factories
 				loadBitmap(this.propertyStates[0]["src"]);
 		}
 		
-		public function loadComplete():void
+		override public function displayComplete():void
 		{
+			var imageSrc:String = propertyStates[0]["src"];
+			file = FileManager.instance.fileList.getKey(imageSrc).loader;
 			
 			var resizeMatrix:Matrix = new Matrix();
-				resizeMatrix.scale(_percentX, _percentY);
-						
-			var imageSrc:String = propertyStates[0]["src"];
 			
-			/*
-			for (var i:int = 0; i < FileManager.instance.fileList.length; i++) 
+
+			if (width != 0 && height != 0)
 			{
-				trace(FileManager.instance.fileList.selectIndex(i));
-				trace(FileManager.instance.fileList.currentKey);
+				_percentX = _width / file.width;
+				_percentY = _height / file.height;				
 			}
-			*/
-			
-			//trace("\n\n_____________________", imageSrc)
-			
-			
-			_bitmapData = new BitmapData(FileManager.instance.fileList.getKey(imageSrc).loader.width, 
-				FileManager.instance.fileList.getKey(imageSrc).loader.height, true, 0x000000);
+			else if (width != 0)
+			{				
+				_percentX = _width / file.width;
+				_percentY = _percentX;			
+			}	
+			else if (height != 0)
+			{
+				_percentY = _height / file.height; 										
+				_percentX = _percentY;
+			}
+			else 
+			{
+				_percentX = 1;
+				_percentY = 1;
+			}
 				
-			_bitmapData.draw(FileManager.instance.fileList.getKey(imageSrc).loader.content, resizeMatrix);
+			
+			resizeMatrix.scale(_percentX, _percentY);				
+			
+			_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
+			_bitmapData.draw(file.content, resizeMatrix);
 			
 			_bitmap = new Bitmap(_bitmapData,PixelSnapping.NEVER, true);
 			_bitmap.smoothing=true;
 
 			width = _bitmap.width*_percentX;
-			height = _bitmap.height*_percentY;
+			height = _bitmap.height * _percentY;
+			
+			
 			_aspectRatio = width / height;
 			//trace(width, height);
 			
@@ -152,7 +201,7 @@ package com.gestureworks.cml.factories
 						resizeMatrix.scale(reduceX, reduceY);
 						// resize bitmap data
 						bitmapData = new BitmapData(width * reduceX, height * reduceY);
-						bitmapData.draw(loader.content, resizeMatrix);
+						bitmapData.draw(file.content, resizeMatrix);
 							
 						_bitmap = new Bitmap(bitmapData,PixelSnapping.NEVER,true);
 						_bitmap.smoothing=true;
@@ -280,6 +329,10 @@ package com.gestureworks.cml.factories
 		{
 			_resampleWidth = value;
 		}
+		
+		
+		
+		
 		
 		// default avatar display icon
 	}

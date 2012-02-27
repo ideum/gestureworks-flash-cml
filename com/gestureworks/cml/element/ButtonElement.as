@@ -9,10 +9,10 @@ package com.gestureworks.cml.element
 
 	public class ButtonElement extends Container
 	{
-		private var debug:Boolean = false;		
-		private var buttonStates:Dictionary;		
-		private var hitObject:Object;
-		
+		protected var debug:Boolean = false;		
+		protected var buttonStates:Dictionary;		
+		public var hitObject:Object;
+		public var dispatchDefault:Boolean = false;
 		
 		public function ButtonElement()
 		{
@@ -21,7 +21,7 @@ package com.gestureworks.cml.element
 			hitObject = new Object;	
 		}		
 		
-		
+
 		/**
 		 * CML display initialization callback
 		 */
@@ -43,8 +43,33 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);	
 				
 			if (touchDown)
-				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);					
+				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+				
 		}
+		
+		
+		private var dispatchDict:Dictionary;
+		
+		private var _dispatch:String;
+		/**
+		 * Sets type of button, returned in the down event string
+		 */
+		public function get dispatch():String {return _dispatch;}
+		public function set dispatch(value:String):void 
+		{
+			if (!dispatchDict)
+				dispatchDict = new Dictionary(true);
+			
+			_dispatch = value;
+			
+			var arr:Array = _dispatch.split(":");
+			
+			for (var i:int = 0; i < arr.length-1; i+=2) 
+			{
+				dispatchDict[arr[i]] = arr[i + 1];				
+			}
+			
+		}			
 		
 		
 		private var _hit:String;
@@ -172,7 +197,16 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseDown", true, true));															
+			if (mouseOut)
+			{
+				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);												
+				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			}			
+			
+			if (dispatchDict["mouseDown"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseDown"], true, true));
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseDown", true, true));
 		}
 		
 		
@@ -203,7 +237,11 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));												
+			
+			if (dispatchDict["mouseUp"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseUp"], true, true));
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseUp", true, true));			
 		}		
 		
 		
@@ -228,7 +266,11 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOver", true, true));									
+			if (dispatchDict["mouseOver"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseDown"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOver", true, true));					
+											
 		}	
 		
 				
@@ -253,7 +295,16 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));						
+			if (mouseDown)
+			{
+				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);												
+				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			}			
+			
+			if (dispatchDict["mouseOut"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseOut"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));									
 		}		
 		
 		
@@ -284,7 +335,10 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));			
+			if (dispatchDict["touchDown"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchDown"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));						
 		}
 		
 		
@@ -309,8 +363,13 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchUp", true, true));						
+			if (dispatchDict["touchUp"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchUp"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchUp", true, true));					
 		}			
 		
+		
+	
 	}
 }

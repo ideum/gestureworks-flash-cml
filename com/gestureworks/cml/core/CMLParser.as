@@ -1,22 +1,16 @@
 package com.gestureworks.cml.core 
 {
-	import com.gestureworks.cml.interfaces.IContainer;
-	import com.gestureworks.cml.utils.LinkedMap;
-	import com.gestureworks.core.DisplayList;
-	import com.gestureworks.core.ObjectList;
-	import com.gestureworks.cml.core.CMLObjectList;
-	import com.gestureworks.cml.core.DefaultStage;
-	import com.gestureworks.cml.element.Container;
-	import com.gestureworks.cml.managers.DisplayManager;
-	import com.gestureworks.cml.managers.FileManager;	
-	import com.gestureworks.cml.utils.SystemDetection;
-	import flash.events.Event;
-	
+	import com.gestureworks.cml.core.*;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.kits.*;
-	
-	import flash.display.Sprite;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.Dictionary;
+	import com.gestureworks.cml.loaders.*;
+	import com.gestureworks.cml.managers.*;
+	import com.gestureworks.cml.utils.*;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.utils.*;
 	
 	/**
 	 * CMLParser, Singleton
@@ -36,11 +30,11 @@ package com.gestureworks.cml.core
 		}
 		
 		private static var GXMLComponent:Class;
-		private static var defaultContainer:Sprite;
+		public var defaultContainer:Container;
 		public static const COMPLETE:String = "COMPLETE";
-		
-		
 		public var debug:Boolean = true;
+		
+		public var cssFile:String;
 		
 		/**
 		 * Initial parsing of the cml document
@@ -50,16 +44,14 @@ package com.gestureworks.cml.core
 		 */
 		public function init(cml:XML, parent:*, properties:*=null):void
 		{
-			
 			if (debug)
 				trace("\n\n**************** CML parser initialized ****************");
 			
-		
 				
 			if (debug)
 				trace("\n\ncreate default container");					
 				
-			defaultContainer = new Sprite;
+			defaultContainer = new Container;
 
 		
 			
@@ -82,22 +74,6 @@ package com.gestureworks.cml.core
 			}			
 			
 			
-			
-			if (debug)
-				trace("\n\ncreate Elements & Objects");	
-							
-			var name:String;
-			for (var i:int=0; i<cml.children().length(); i++)
-			{	
-				name = cml.child(i).name().toString();	
-				
-				if (name != "LibraryKit" && name != "LayoutKit" && 
-					name != "WindowKit" && name != "DebugKit")
-					loopCML(cml.child(i), defaultContainer);					
-			}		
-			
-			
-			
 			if (debug)
 				trace("\n\ncreate WindowKit");
 			
@@ -109,113 +85,32 @@ package com.gestureworks.cml.core
 			else // window kit is not specified, use default			
 			{
 				DefaultStage.instance.stage.addChildAt(defaultContainer, 0);
-			}
+			}			
 			
 			
+			currentParent = defaultContainer;
+			createElements(cml, defaultContainer);
+	
+
 			
 			if (debug)
 				trace("\n\nload CML files");
 			
 			if (FileManager.instance.cmlCount > 0)
 			{
-				FileManager.instance.addEventListener(FileManager.CML_LOAD_COMPLETE, onCMLLoadComplete);
-				FileManager.instance.startQueue();				
+				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);												
+				FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
+				FileManager.instance.startCMLQueue();				
 			}	
 			else if (FileManager.instance.fileCount > 0)
 			{
+				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);								
 				loadExtFiles();
 			}
 			else
 			{
-				loadDisplay();
-			}
-			
-				
-		
-			
-			function onCMLLoadComplete(event:Event):void
-			{
-				if (debug)
-					trace("\nCML file load complete");	
-				
-				
-				if (debug)
-					trace("\n\nload renderer");					
-					
-				DisplayManager.instance.loadRenderer();			
-			
-
-				if (FileManager.instance.fileCount > 0)
-					loadExtFiles();
-				else
-					loadDisplay();
-				
-			}				
-				
-			
-			function loadExtFiles():void
-			{
-				if (debug)
-					trace("\nload non-cml external files");	
-					
-				FileManager.instance.addEventListener(FileManager.LOAD_COMPLETE, onLoadComplete);				
-				FileManager.instance.startQueue();				
-			}
-			
-					
-			function onLoadComplete(event:Event):void
-			{	
-				if (debug)
-					trace("\nload ext files complete...");						
-
-				
-				if (debug)
-					trace("\call 'load complete' to awaiting objects");				
-				
-				DisplayManager.instance.loadComplete();
-				
-				loadDisplay();
-			}
-			
-			
-			
-			function loadDisplay():void
-			{
-				if (debug)
-					trace("\nload display begins...");					
-				
-				if (debug)
-					trace("\nload cml properties");
-				
-				DisplayManager.instance.updateCMLProperties();
-				
-				if (debug)
-					trace("\nlayout containers");				
-				
-				DisplayManager.instance.layoutCML();
-				
-				if (debug)
-					trace("\nactivate touch");				
-				
-				DisplayManager.instance.activateTouch();				
-				
-				if (debug)
-					trace("\nadd children to stage");				
-				
-				DisplayManager.instance.addCMLChildren();
-				
-				if (debug)
-					trace("\ncall element's, display complete, abstract method");				
-				
-				DisplayManager.instance.displayComplete();		
-
-				if (debug)
-					trace("\nsend cml parser complete event");				
-				
-				dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
-				
-				trace('\n\n********************* CML Parsing Complete ************************\n\n');				
-				
+				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);												
+				loadCSS();
 			}
 			
 		}			
@@ -223,7 +118,202 @@ package com.gestureworks.cml.core
 		
 		
 		
+		private function loadExtFiles():void
+		{
+			if (debug)
+				trace("\nload non-cml external files");	
+				
+			FileManager.instance.addEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
+			FileManager.instance.startFileQueue();				
+		}
 		
+				
+		private function onLoadComplete(event:Event):void
+		{
+			FileManager.instance.removeEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
+			
+			if (debug)
+				trace("\nload ext files complete...");						
+
+			
+			if (debug)
+				trace("\call 'load complete' to awaiting objects");				
+			
+			DisplayManager.instance.loadComplete();
+
+			loadCSS();
+		}
+
+		private function loadCSS():void
+		{
+			if (debug)
+				trace("\nload css data...");						
+				
+			if (cssFile.length > 0)
+			{
+				CSSManager.instance.addEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
+				CSSManager.instance.loadCSS(cssFile);
+			}	
+			else
+				loadDisplay();
+		}
+		
+		
+		private function onCSSLoaded(event:FileEvent):void
+		{
+			CSSManager.instance.removeEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
+			
+			if (debug)
+				trace("\parse css data...");
+			
+			CSSManager.instance.parseCSS();
+			loadDisplay();
+		}
+		
+		
+		private function loadDisplay():void
+		{
+			if (debug)
+				trace("\nload display begins...");					
+
+			if (debug)
+				trace("\apply cml properties");
+			
+			DisplayManager.instance.updateCMLProperties();
+			
+			if (debug)
+				trace("\nlayout containers");				
+			
+			DisplayManager.instance.layoutCML();
+			
+			if (debug)
+				trace("\nactivate touch");				
+			
+			DisplayManager.instance.activateTouch();				
+			
+			if (debug)
+				trace("\nupdate display");				
+			
+			DisplayManager.instance.updateDisplay();			
+
+			
+			if (debug)
+				trace("\nadd children to stage");				
+			
+			DisplayManager.instance.addCMLChildren();
+			
+			if (debug)
+				trace("\ncall element's, display complete, abstract method");				
+			
+			DisplayManager.instance.displayComplete();		
+
+			if (debug)
+				trace("\nsend cml parser complete event");				
+			
+			dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
+			
+			trace('\n\n********************* CML Parsing Complete ************************\n\n');						
+							
+		}		
+		
+
+		private var cmlFilesComplete:int = 0;
+	
+
+		private function onCMLLoadComplete(event:FileEvent):void
+		{
+			if (debug)
+				trace("\nCML file load complete");	
+			
+			cmlFilesComplete++;
+			
+			if (event.fileType == "cmlRenderKit")
+				loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
+			else
+				createElements(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
+			
+			
+			if (cmlFilesComplete == FileManager.instance.cmlCount)
+			{
+				
+				if (debug)
+					trace("\n\nload renderer");					
+						
+			
+				
+				if (FileManager.instance.fileCount > 0)
+					loadExtFiles();
+				else
+					loadCSS();				
+			}
+			
+			else
+			{
+				FileManager.instance.resumeCMLQueue();
+			}
+			
+		}			
+		
+		private var currentParent:*;
+		
+		public function createElements(cml:*, parent:*=null):void
+		{
+			
+			if (debug)
+				trace("\n\ncreate Elements & Objects");	
+							
+			var name:String;
+			for (var i:int=0; i<cml.children().length(); i++)
+			{
+				
+				name = cml.child(i).name().toString();	
+				
+				if (name != "LibraryKit" && name != "LayoutKit" && 
+					name != "WindowKit" && name != "DebugKit") 
+					loopCML(cml.child(i), parent);				
+	
+			}
+					
+		}
+		
+		
+		
+		
+		
+		
+		public function loadRenderer(renderKit:*, parent:*):void
+		{	
+			
+			var rendererId:String = renderKit.Renderer.@id; 
+			var rendererData:String = renderKit.Renderer.@data;
+			
+			var renderedItemId:String;
+			
+			for (var q:int; q < renderKit.Renderer.length(); q++)
+			{								
+				var renderList:XMLList = renderKit[rendererData].children();				
+						
+				for (var i:int=0; i<renderList.length(); i++)
+				{
+					var cmlRenderer:XMLList = new XMLList(renderKit.Renderer[q].*);
+					
+					for each (var node:XML in cmlRenderer) 
+					{
+						var properties:XMLList = XMLList(renderList[i]);						
+						CMLParser.instance.loopCML(node, parent, properties);
+					}
+					
+				}
+				
+			}
+		
+		}			
+
+		
+		
+		private var index:int = 0;
+		
+		private var includeParentIndex:Array = [];
 		
 		/**
 		 * Recursive CML parsing
@@ -236,29 +326,92 @@ package com.gestureworks.cml.core
 			var className:String = null;
 			var obj:* = null;
 			var returnedNode:XMLList = null;
+			var classNameKeyword:Boolean = false;
 			
 			for each (var node:* in cml)
 			{
 				className = node.name();								
+				classNameKeyword = false;
+				
+				// nested cml loader
+				if (className == "Include")
+				{
+					var attrName:String;
+					
+					for each (var attrValue:* in node.@*)
+					{
+						attrName = attrValue.name().toString();
+
+						if (attrName == "cml" && attrValue.toString().length > 0)
+						{							
+							includeParentIndex.push(parent);
+							FileManager.instance.addToQueue(attrValue, "cml");			
+						}
+					}
+					
+					continue;
+				}
+				
+				
+				// look for className keyword
+				// this changes the class type of the loaded object	
+				for each (var aValue:* in node.@*)
+				{
+					var aName:String = aValue.name().toString();
+					if (aName == "className")					
+						className = aValue;
+				}
+										
 				
 				if (debug)
 					trace("\n-create", className);					
 				
-				obj = createObject(className);
+				obj = createObject(className);	
 				
 				
-				if (!properties)
+				
+				// look for rendererList keyword
+				// loads an external RenderKit	
+				for each (aValue in node.@*)
+				{
+					aName = aValue.name().toString();
+					
+					if (aName == "rendererList") {					
+						includeParentIndex.push(parent);
+						FileManager.instance.addToQueue(aValue, "cmlRenderKit");
+					}		
+				}				
+				
+		
+				
+				
+				// assign id and class values
+				if (node.@id != undefined)
+				{
 					obj.id = node.@id;
-				else //target render data
-					obj.id = node.@id + "." + properties.@id;
+					if (node.@['class'] != undefined)
+						obj.class_ = node.@['class'];
+				}
+				else if (node.@['class'] != undefined)
+				{
+					obj.class_ = node.@['class'];
+					obj.id = node.@['class'];
+				}
+				else
+					obj.id = className;
+
 				
 					
 				if (debug)
 					trace("\n-add to CMLObjectList id: ", obj.id, ", object: ", obj);							
 				
 				CMLObjectList.instance.append(obj.id, obj);					
-								
+				
+				
+				//unique object identifier
+				obj.cmlIndex = CMLObjectList.instance.length-1;
 
+				
 				returnedNode = obj.parseCML(XMLList(node));
 			
 				
@@ -287,15 +440,16 @@ package com.gestureworks.cml.core
 				
 				
 				if (parent is (IContainer))
+				{
 					parent.childToList(obj.id, obj);
-								
+				}				
 				
 				//recursion
 				if (returnedNode)
 					loopCML(returnedNode, obj, properties);					
 			}
 			
-			if (parent == defaultContainer)
+			if (parent == defaultContainer && obj is DisplayObject)
 					defaultContainer.addChild(obj);			
 		}		
 		
@@ -370,8 +524,7 @@ package com.gestureworks.cml.core
 			return obj;
 		}
 		
-		
-		
+	
 		
 		/**
 		 * Default parseCML routine
@@ -466,6 +619,20 @@ package com.gestureworks.cml.core
 						if (str1.charAt(0) == ".")
 							str1 = str1.slice(1);					
 
+						//trace(str1, state, str2, CMLObjectList.instance.getKey(str1).propertyStates[state][str2]);	
+						
+						
+						var last:int = -1;
+						for (var j:int = 0; j < CMLObjectList.instance.length; j++) 
+						{	
+							if (CMLObjectList.instance.getIndex(j).propertyStates[state][str2])
+								return CMLObjectList.instance.getIndex(j).propertyStates[state][str2];
+							
+						}
+											
+						throw new Error("Malformed expression attribute. A valid id and property must be given");	
+
+						
 						// assign value from master cml list
 						// get value from property states instead of object to remove time factors							
 						return CMLObjectList.instance.getKey(str1).propertyStates[state][str2];

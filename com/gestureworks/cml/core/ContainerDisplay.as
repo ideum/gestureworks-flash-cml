@@ -31,7 +31,7 @@ package com.gestureworks.cml.core
 		
 		
 		public function addAllChildren():void
-		{	
+		{			
 			for (var i:int = 0; i < _childList.length; i++) 
 			{
 				addChild(_childList.getIndex(i));
@@ -45,7 +45,7 @@ package com.gestureworks.cml.core
 		
 		
 		public function childToList(id:String, child:*):void
-		{
+		{		
 			childList.append(id, child);
 		}
 		
@@ -79,6 +79,9 @@ package com.gestureworks.cml.core
 		}
 			
 
+		
+		
+		
 
 	}
 }

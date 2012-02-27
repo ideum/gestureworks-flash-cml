@@ -6,6 +6,7 @@ package com.gestureworks.cml.loaders
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	import flash.text.StyleSheet;
+	import com.gestureworks.cml.events.FileEvent;
 	
 	/**
 	 * CSS, Multiton Class
@@ -15,7 +16,6 @@ package com.gestureworks.cml.loaders
 	
 	public class CSS extends EventDispatcher
 	{
-		static public const INIT:String = "init";		
 		static private var instances:Dictionary = new Dictionary;
 		
 		private var urlLoader:URLLoader;
@@ -41,7 +41,7 @@ package com.gestureworks.cml.loaders
 		{
 			data.parseCSS(urlLoader.data);
 			_isLoaded = true;
-			dispatchEvent(new Event(CSS.INIT, true, true));
+			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED));
 		}
 		
 		public static function getInstance(key:*):CSS

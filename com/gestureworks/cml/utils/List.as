@@ -5,7 +5,7 @@ package com.gestureworks.cml.utils
 	
 	public class List implements IList, IListIterator 
 	{
-		private var array:Array;		
+		public var array:Array;		
 		
 		public function List()
 		{

@@ -4,6 +4,7 @@ package com.gestureworks.cml.managers
 	import flash.events.EventDispatcher;
 	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.cml.loaders.*
+	import com.gestureworks.cml.events.*
 	
 	
 	/**
@@ -25,20 +26,16 @@ package com.gestureworks.cml.managers
 				_instance = new FileManager(new SingletonEnforcer());			
 			return _instance; 
 		}	
-		
-		
-		public static const CML_LOAD_COMPLETE:String = "CML_LOAD_COMPLETE";						
-		public static const LOAD_COMPLETE:String = "LOAD_COMPLETE";				
-		
+			
 		public var fileCount:int = 0;
 		private var fileQueue:LinkedMap = new LinkedMap;
 		public var fileList:LinkedMap = new LinkedMap;
 		
 		public var cmlCount:int = 0;
-		private var cmlQueue:LinkedMap = new LinkedMap;
+		public var cmlQueue:LinkedMap = new LinkedMap;
 		private var cmlLoaded:Boolean = false;
 		
-		private var stopped:Boolean = false;
+		public var stopped:Boolean = false;
 		
 		// supported file types
 		private var imageTypes:RegExp = /^.*\.(png|gif|jpg)$/i;  
@@ -50,11 +47,17 @@ package com.gestureworks.cml.managers
 		
 		public function addToQueue(file:String, type:String=null):void
 		{
-			if (type == "cml" && file.search(cmlType) >= 0 && !cmlQueue.hasKey(file))
-			{
+			if (type == "cml" && file.search(cmlType) >= 0)
+			{				
 				cmlQueue.append(file, type);			
 				cmlCount++;
-			}			
+			}
+			
+			else if (type == "cmlRenderKit" && file.search(cmlType) >= 0)
+			{				
+				cmlQueue.append(file, type);			
+				cmlCount++;
+			}					
 			
 			else if (type == "swf" && file.search(swfType) >= 0 && !fileQueue.hasKey(file))
 			{
@@ -66,24 +69,38 @@ package com.gestureworks.cml.managers
 			{
 				fileQueue.append(file, type);
 				fileCount++;
-			}				
+			}			
 		}
 		
 		
 		
-		
-		public function startQueue():void
+		public function startCMLQueue():void
 		{
-			//trace("START");
-			stopped = false;
-			
-			if (!cmlLoaded && cmlCount > 0)
+			trace("START CML");
+			stopped = false;						
+			if (cmlLoaded < cmlCount)
 				processCMLQueue();
-			else 
-				processFileQueue();
 		}
 		
 		
+		public function resumeCMLQueue():void
+		{
+			trace("RESUME CML");
+			stopped = false;
+
+			cmlQueue.currentIndex += 1;			
+			startCMLQueue();
+		}		
+		
+		
+		
+		public function startFileQueue():void
+		{
+			trace("START FILE");
+			stopped = false;
+
+			processFileQueue();
+		}		
 		
 		public function stopQueue():void
 		{
@@ -91,28 +108,31 @@ package com.gestureworks.cml.managers
 		}
 		
 		
-		
-		private function processCMLQueue():void
+		public function processCMLQueue():void
 		{
-			//trace("PROCESS CML");
+			trace("PROCESS CML");
 		
-			//trace(cmlCount);
-			
+						
 			if (!stopped)
 			{
 				var file:String = cmlQueue.currentKey;		
 				var type:String = cmlQueue.currentValue;
-				
 				trace(file, type);
 								
 				if (file)
 				{
-					if (type == "cml" && file.search(cmlType) >= 0)
+					if (type == "cml" && type&& file.search(cmlType) >= 0)
 					{
 						CML.getInstance(file).loadCML(file);
 						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
 						fileList.append(file, CML.getInstance(file));	
 					}
+					else if (type == "cmlRenderKit" && type&& file.search(cmlType) >= 0)
+					{
+						CML.getInstance(file).loadCML(file);
+						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
+						fileList.append(file, CML.getInstance(file));	
+					}					
 				}
 			}			
 			
@@ -121,12 +141,13 @@ package com.gestureworks.cml.managers
 		
 		private function processFileQueue():void
 		{
-			//trace("PROCESS FILE");
+			trace("PROCESS FILE");
 			
 			if (!stopped)
 			{
 				var file:String = fileQueue.currentKey;		
 				var type:String = fileQueue.currentValue;
+				trace(file, type);				
 				
 				var loader:* = null;
 				
@@ -160,18 +181,14 @@ package com.gestureworks.cml.managers
 		
 		private function onCMLLoaded(event:Event):void
 		{
-			//trace(event.target, cmlQueue.currentKey,  "has finished loading");
-						
-			if (cmlQueue.hasNext())
-			{
-				cmlQueue.currentIndex += 1;				
-				processCMLQueue();
-			}
-			else
-			{
-				cmlLoaded = true;
-				dispatchEvent(new Event(FileManager.CML_LOAD_COMPLETE, true, true));
-			}
+			trace(event.target, cmlQueue.currentKey,  "has finished loading");
+			var file:String = cmlQueue.currentKey;				
+			var type:String = cmlQueue.currentValue;				
+
+			stopped = true;
+			cmlLoaded = true;
+			
+			dispatchEvent(new FileEvent(FileEvent.CML_LOADED, type, file, true, true));			
 		}		
 		
 		
@@ -181,7 +198,9 @@ package com.gestureworks.cml.managers
 		
 		private function onFileLoaded(event:Event):void
 		{
-			//trace(event.target, fileQueue.currentKey,  "has finished loading");
+			trace(event.target, fileQueue.currentKey,  "has finished loading");
+			var file:String = fileQueue.currentKey;	
+			var type:String = fileQueue.currentValue;	
 			
 			if (fileQueue.hasNext())
 			{
@@ -189,7 +208,7 @@ package com.gestureworks.cml.managers
 				processFileQueue();
 			}
 			else
-				dispatchEvent(new Event(FileManager.LOAD_COMPLETE, true, true));
+				dispatchEvent(new FileEvent(FileEvent.FILES_LOADED, type, file, true, true));
 			
 		}
 		

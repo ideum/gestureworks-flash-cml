@@ -6,11 +6,13 @@ package com.gestureworks.cml.utils
 	{
 		private var dictionary:Dictionary;
 		private var list:List;
+		private var listValue:List;
 		
 		public function LinkedMap(weakKeys:Boolean=false)
 		{
 			dictionary = new Dictionary(weakKeys);
-			list = new List;		
+			list = new List;
+			listValue = new List;
 		}
 		
 		private var _currentIndex:int=0;
@@ -28,8 +30,8 @@ package com.gestureworks.cml.utils
 
 		
 		public function getIndex(index:int):*
-		{
-			return dictionary[list.getIndex(index)];
+		{			
+			return listValue.getIndex(index);
 		}
 		
 		
@@ -101,7 +103,7 @@ package com.gestureworks.cml.utils
 		public function selectIndex(index:int):*
 		{
 			currentIndex = index;
-			return dictionary[currentKey];
+			return listValue.getIndex(index)
 		}		
 				
 		public function selectKey(key:*):*
@@ -123,17 +125,24 @@ package com.gestureworks.cml.utils
 		
 		public function append(key:*, value:*):void 
 		{
-			if (dictionary[key] != null)
-				list.remove(list.search(key));
-			list.append(key);				
+			//if (dictionary[key] != null)
+				//list.remove(list.search(key));
+			list.append(key);
+			listValue.append(value);			
 			dictionary[key] = value;		
 		}
 		
 		public function prepend(key:*, value:*):void 
 		{
 			if (dictionary[key] != null)
+			{
 				list.remove(list.search(key));
-			list.prepend(key);				
+				listValue.remove(list.search(key));			
+			}	
+			
+			list.prepend(key);
+			listValue.prepend(value);
+			
 			dictionary[key] = value;
 			if (currentIndex > 0)
 				currentIndex++;			
@@ -147,8 +156,14 @@ package com.gestureworks.cml.utils
 		public function insert(index:int, key:*, value:*):void 
 		{
 			if (dictionary[key] != null)
-				list.remove(list.search(key));			
+			{
+				list.remove(list.search(key));
+				listValue.remove(list.search(key));
+			}	
+			
 			list.insert(index, key);				
+			listValue.insert(index, key);				
+			
 			dictionary[key] = value;
 			if (currentIndex >= index)
 				currentIndex++;			
@@ -159,7 +174,10 @@ package com.gestureworks.cml.utils
 			var key:* = list.selectIndex(index);
 			dictionary[key] = null;
 			delete dictionary[key];			
-			list.remove(index);
+			
+			list.remove(index);			
+			listValue.remove(index);			
+			
 			if (currentIndex > 0 && currentIndex >= index)
 				currentIndex--;
 		}		
@@ -167,7 +185,10 @@ package com.gestureworks.cml.utils
 		public function removeKey(key:*):void
 		{	
 			var index:int = list.search(key);
+			
 			list.remove(index);
+			listValue.remove(index);
+			
 			dictionary[key] = null;
 			delete dictionary[key];	
 			if (currentIndex > 0 && currentIndex >= index)

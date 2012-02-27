@@ -43,6 +43,12 @@ package com.gestureworks.cml.factories
 			_id = value;
 		}
 		
+		private var _cmlIndex:int;
+		public function get cmlIndex():int {return _cmlIndex};
+		public function set cmlIndex(value:int):void
+		{
+			_cmlIndex = value;
+		}
 		
 		public function parseCML(cml:XMLList):XMLList
 		{			
@@ -57,8 +63,6 @@ package com.gestureworks.cml.factories
 		{
 			CMLParser.instance.updateProperties(this, state);		
 		}	
-		
-		
 		
 		
 		/////////////////////////////////
@@ -320,6 +324,13 @@ package com.gestureworks.cml.factories
 			_index = value;
 		}
 		
+		
+		private var _className:String;
+		public function get className():String { return _className ; }
+		public function set className(value:String):void
+		{
+			_className = value;
+		}			
 		
 		protected function layoutText():void{}
 		protected function updateText():void{}

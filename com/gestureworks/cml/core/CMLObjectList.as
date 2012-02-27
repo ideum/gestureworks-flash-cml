@@ -17,7 +17,20 @@ package com.gestureworks.cml.core
 			if (_instance == null)
 				_instance = new CMLObjectList(new SingletonEnforcer());			
 			return _instance; 
-		}	
+		}
+		
+		
+		/**
+		 * Returns cml object by id value.
+		 * Same as: CMLObjectList.instance.getKey(value)
+		 * @param	value
+		 */
+		public function getId(value:String):*
+		{
+			return CMLObjectList.instance.getKey(value);
+		}
+		
+		
 	}
 }
 

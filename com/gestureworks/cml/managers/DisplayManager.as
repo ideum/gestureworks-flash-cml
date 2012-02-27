@@ -1,10 +1,10 @@
 package com.gestureworks.cml.managers
 {
-	import com.gestureworks.cml.core.CMLObjectList;
-	import com.gestureworks.cml.element.TouchContainer;
-	import com.gestureworks.cml.interfaces.IContainer;	
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.managers.LayoutManager;	
+	import com.codeazur.as3swf.timeline.*;
+	import com.gestureworks.cml.core.*;
+	import com.gestureworks.cml.interfaces.*;
+	import com.gestureworks.cml.managers.*;
+	import flash.events.*;
 
 	
 	/**
@@ -14,7 +14,7 @@ package com.gestureworks.cml.managers
 	 * @authors Charles Veasey 
 	 */	
 	
-	public class DisplayManager 
+	public class DisplayManager extends EventDispatcher
 	{		
 		public function DisplayManager(enforcer:SingletonEnforcer) {}
 		
@@ -22,7 +22,11 @@ package com.gestureworks.cml.managers
 		public static function get instance():DisplayManager 
 		{ 
 			if (_instance == null)
-				_instance = new DisplayManager(new SingletonEnforcer());			
+			{
+				_instance = new DisplayManager(new SingletonEnforcer());
+				DefaultStage.instance.stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+				DefaultStage.instance.stage.addEventListener(Event.EXIT_FRAME, onExitFrame);								
+			}
 			return _instance; 
 		}
 		
@@ -38,9 +42,9 @@ package com.gestureworks.cml.managers
 		public function addCMLChildren():void
 		{	
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
-			{				
+			{		
 				if (CMLObjectList.instance.getIndex(i) is IContainer)
-					CMLObjectList.instance.getIndex(i).addAllChildren();	
+					CMLObjectList.instance.getIndex(i).addAllChildren();					
 			}
 		}
 		
@@ -56,14 +60,30 @@ package com.gestureworks.cml.managers
 		
 		
 		public function loadRenderer():void
-		{			
+		{
+			trace("&&&&&&&&&DM loadRenderer&&&&&&&");
+			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
 			{				
 				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("loadRenderer"))
 				{
 					if (CMLObjectList.instance.getIndex(i).rendererList)
 						CMLObjectList.instance.getIndex(i).loadRenderer();
-				}	
+
+				}
+				
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("loadCML"))
+				{
+
+					if (CMLObjectList.instance.getIndex(i).cml)
+					{
+						trace(CMLObjectList.instance.getIndex(i).id);
+						
+						CMLObjectList.instance.getIndex(i).loadCML();
+					}
+
+				}					
+				
 			}
 		}
 		
@@ -105,7 +125,35 @@ package com.gestureworks.cml.managers
 		}
 	
 		
+		public function updateDisplay():void
+		{
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{		
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("onEnterFrame"))
+					CMLObjectList.instance.getIndex(i).onEnterFrame();					
+			}
+		}	
 		
+		
+		public static function onEnterFrame(event:Event=null):void
+		{
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{		
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("onEnterFrame"))
+					CMLObjectList.instance.getIndex(i).onEnterFrame();					
+			}
+		}
+		
+	
+		
+		public static function onExitFrame(event:Event):void
+		{
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{		
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("onExitFrame"))
+					CMLObjectList.instance.getIndex(i).onEnterFrame();					
+			}
+		}		
 		
 		
 	}

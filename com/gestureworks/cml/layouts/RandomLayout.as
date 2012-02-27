@@ -115,10 +115,8 @@ package com.gestureworks.cml.layouts
 		 */		
 		public function randomXY(container:IContainer):void
 		{
-			
 			for (var i:int = 0; i < container.childList.length; i++) 
 			{
-				trace(container.width);
 				container.childList.getIndex(i).x = randomMinMax(minX, maxX);
 				container.childList.getIndex(i).y = randomMinMax(minY, maxY);		
 			}			

@@ -87,37 +87,8 @@ package com.gestureworks.cml.core
 		{
 			CMLParser.instance.updateProperties(this, state);		
 		}		
-		
-				
-		
-		private var cmlGestureList:Object;
-		
-		public function makeGestureList(value:XMLList):Object
-		{			
-			var gl:*;
 			
-			if (gl === value.Gesture) 
-				return null;
-			
-			gl = value.Gesture;
-			
-			var object:Object = new Object();
-			
-			for (var i:int; i < gl.length(); i++)
-			{					
-				object[(gl[i].@ref).toString()] = gl[i].@gestureOn;
-			}
-			
-			return object;
-		}	
-		
-		
-		
-		public function activateTouch():void
-		{
-			this.gestureList = cmlGestureList;
-		}
-		
+	
 		
 		
 		//////////////////////////////////////////////////////////////
@@ -140,6 +111,13 @@ package com.gestureworks.cml.core
 			_height = value;
 		}		
 		
+		
+		private var _className:String;
+		public function get className():String { return _className ; }
+		public function set className(value:String):void
+		{
+			_className = value;
+		}			
 		
 		public function displayComplete():void{}
 		
@@ -244,6 +222,48 @@ package com.gestureworks.cml.core
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		private var cmlGestureList:Object;
+		
+		public function makeGestureList(value:XMLList):Object
+		{			
+			var gl:*;
+			
+			if (gl === value.Gesture) 
+				return null;
+			
+			gl = value.Gesture;
+			
+			var object:Object = new Object();
+			
+			for (var i:int; i < gl.length(); i++)
+			{					
+				object[(gl[i].@ref).toString()] = gl[i].@gestureOn;
+			}
+			
+			return object;
+		}	
+		
+		
+		
+		public function activateTouch():void
+		{
+			this.gestureList = cmlGestureList;
+		}
+				
+		
+		
+		
+		
+		
+		
+		
 		//////////////////////////////////////////////////////////////
 		// outline
 		//////////////////////////////////////////////////////////////
@@ -314,6 +334,7 @@ package com.gestureworks.cml.core
 			_minScale = value;
 		}
 		
+
 		
 
 		

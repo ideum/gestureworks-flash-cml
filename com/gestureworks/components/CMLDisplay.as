@@ -38,11 +38,9 @@ package com.gestureworks.components
 		
 		public function createUI():void
 		{
+			CMLParser.instance.cssFile = CMLLoader.settings.@css;
 			CMLParser.instance.init(CMLLoader.settings, this);
-			
-			var string:String = CMLLoader.settings.@css;
-			if (string != "") var cssManager:CSSManager = new CSSManager(CMLLoader.settings.@css);
-						
+									
 			var p:* = parent;
 			p.writeComplete = true;		
 		}

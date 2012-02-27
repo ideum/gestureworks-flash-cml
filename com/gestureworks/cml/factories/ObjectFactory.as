@@ -3,13 +3,14 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.interfaces.IObject;
 	import flash.display.Sprite;	
+	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
 	/**
 	 * ObjectFactory
 	 * @authors Charles Veasey 
 	 */
-	public class ObjectFactory implements IObject
+	public class ObjectFactory extends EventDispatcher implements IObject
 	{
 		public function ObjectFactory() 
 		{
@@ -27,6 +28,12 @@ package com.gestureworks.cml.factories
 		
 		public var propertyStates:Array;
 		
+		private var _cmlIndex:int;
+		public function get cmlIndex():int {return _cmlIndex};
+		public function set cmlIndex(value:int):void
+		{
+			_cmlIndex = value;
+		}		
 		
 		private var _id:String
 		public function get id():String {return _id};
@@ -50,6 +57,7 @@ package com.gestureworks.cml.factories
 			CMLParser.instance.updateProperties(this, state);		
 		}	
 	
+				
 		
 	}
 }

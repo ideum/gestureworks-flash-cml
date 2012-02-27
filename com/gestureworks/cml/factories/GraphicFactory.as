@@ -29,9 +29,7 @@ package com.gestureworks.cml.factories
 		// WIDTH AND HEIGHT //
 		//////////////////////
 		
-		// useHeight, toggles width and height
-		// keeps track of which was last		
-		// used to toggle between horizontal or vertical line
+		
 		
 		protected var _width:Number=0;
 		/**
