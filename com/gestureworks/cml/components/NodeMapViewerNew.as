@@ -114,11 +114,18 @@ package com.gestureworks.cml.components
 			//nodes = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
 			
 			//trace("------------------------------------------", this.text.id);
-			trace("------------------------------------------",this.childList.getCSSClass("nodes", 0).id)
+			trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).id);
+			trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).id);
+			trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.length);
+			trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album").length);
+
+			//nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
+			//nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
+			//albums = this.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
 			
-			nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
-			nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
-			albums = this.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
+			//nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
+			//nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
+			//albums = this.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
 			
 			//slider = holder.childList.getCSSClass("slider", 0);
 		}
