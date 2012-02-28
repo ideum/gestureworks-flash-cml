@@ -149,7 +149,7 @@ package com.gestureworks.cml.components
 					node_point.gestureEvents = true;
 					node_point.gestureList = { "tap":true,"n-drag":true };
 					node_point.addEventListener(GWGestureEvent.TAP, onOpen);
-					node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
+					//node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
 					node_point.addEventListener(TouchEvent.TOUCH_BEGIN, onOpen);
 					
 				
@@ -159,12 +159,8 @@ package com.gestureworks.cml.components
 				
 			// update link drawing//////////////////////////////////
 			
-			//add slider control to nodes////////////////////////////
-			// set slider state
 			
-			//slider.
-			// loop through nodes in chosen active list
-			// set node state
+			//slider// loop through nodes in chosen active list
 			slider.addEventListener(StateEvent.CHANGE, categoryUpdate);
 			
 			// set node touch timer control///////////////////////
@@ -175,7 +171,7 @@ package com.gestureworks.cml.components
 		{
 			var n:Number = Number(event.value);
 			var state:int = Math.round(n);
-			trace("node category update", event.value, event.target.id, state);
+			//trace("node category update", event.value, event.target.id, state);
 			
 			activateNodes(state);
 			
@@ -198,7 +194,7 @@ package com.gestureworks.cml.components
 				// reset
 				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = false;
 				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = true; 
-				albums.getIndex(k).visible = false;
+				//albums.getIndex(k).visible = false;
 				
 				if (nodes.getIndex(k).group == g) {
 					//change node point icon visibilty
@@ -206,7 +202,7 @@ package com.gestureworks.cml.components
 					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
 				}
 				if(albums.getIndex(k).group == g) {
-					albums.getIndex(k).visible = true;
+					//albums.getIndex(k).visible = true;
 				}
 			}
 			
@@ -233,21 +229,7 @@ package com.gestureworks.cml.components
 			//this.album0.visible = true;
 			albums.getIndex(ID).visible = true;
 			nodes.getIndex(ID).childList.getCSSClass("node_link", 0).visible = true;
-			
-			// make visble
-			//p.childList.getCSSClass("album", 0).visible = true;
-			//p.childList.getCSSClass("node_link", 0).visible = true;
-			
-			// update node link 
-			//p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).x + p.childList.getCSSClass("album", 0).width / 2;
-			//p.childList.getCSSClass("node_link", 0).height = p.childList.getCSSClass("album", 0).y;
 		}
-		
-		private function dTapHandler(event:GWGestureEvent):void
-		{
-			//trace("d tap", count);
-		}
-		
 		
 		private function displayHandler2(event:DisplayEvent):void 
 		{
