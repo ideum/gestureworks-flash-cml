@@ -126,9 +126,9 @@ package com.gestureworks.cml.components
 			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).getChildAt(0).id);
 			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).getChildAt(0).id);
 
-			//nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
-			//nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
-			//albums = this.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
+			nodeNum = this.childList.getCSSClass("node_list_viewer", 0).childList.length;
+			nodes = this.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node");
+			albums = this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album");
 			
 			//nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
 			//nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
@@ -147,16 +147,20 @@ package com.gestureworks.cml.components
 				//var album = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0);
 				//var album:* = nodes.getIndex(k).childList.getCSSClass("album", 0);
 				var album:* = albums.getIndex(k);
-					album.addEventListener(DisplayEvent.CHANGE, displayHandler);
+					album.name = k;
+					album.addEventListener(DisplayEvent.CHANGE, displayHandler2);
 				
 				// add tap listener to node points /////////////////////////////////
 				//var node_point = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0);
 				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);	
+					node_point.name = k;
 					node_point.gestureEvents = true;
 					node_point.gestureList = { "tap":true,"n-drag":true };
 					node_point.addEventListener(GWGestureEvent.TAP, onOpen);
 					node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
 					node_point.addEventListener(TouchEvent.TOUCH_BEGIN, onOpen);
+					
+					//trace(node_point.childList.getCSSClass("node_link",0).id)
 			}
 				
 			// update link drawing//////////////////////////////////
@@ -175,22 +179,16 @@ package com.gestureworks.cml.components
 		
 		private function onOpen(event:GWGestureEvent):void 
 		{
-			var p:* = event.target.parent;
-			trace("open", p.id, p.parent.id, p.parent.parent.id);
-			var s:String = p.id;
-			//var ID =  s.substr(s.length - 1)
-			var array = s.split("node");
-			var ID = array[1];
-			trace("0000000", ID);
-			
-
+			var ID:int = event.target.name;
+			trace("open", ID);
+	
 			// reset positions
 			//this.album0.visible = true;
 			albums.getIndex(ID).visible = true;
 			
 			// make visble
 			//p.childList.getCSSClass("album", 0).visible = true;
-			p.childList.getCSSClass("node_link", 0).visible = true;
+			//p.childList.getCSSClass("node_link", 0).visible = true;
 			
 			// update node link 
 			//p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).x + p.childList.getCSSClass("album", 0).width / 2;
@@ -202,13 +200,14 @@ package com.gestureworks.cml.components
 			//trace("d tap", count);
 		}
 		
-		/*
-		private function displayHandler(event:DisplayEvent):void 
+		
+		private function displayHandler2(event:DisplayEvent):void 
 		{
-			var p:* = event.target.parent;
+			var ID:int = event.target.name;
+			trace("album translate", ID, event.target.name, albums.getIndex(ID).x, albums.getIndex(ID).y);
 			
-			
-			//trace("album translate", p.id, p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).id);
+			var album:* = albums.getIndex(ID);
+			var node:* = nodes.getIndex(ID);
 			
 			//event.target.parent.getChildAt(2).width = event.target.album.x + event.target.x + event.target.width / 2;
 			//event.target.parent.getChildAt(2).height = event.target.album.y + event.target.y;
@@ -219,6 +218,6 @@ package com.gestureworks.cml.components
 			//p.childList.getCSSClass("node_link", 0).width = albums.getIndex(ID).childList.getCSSClass("holder", 0).x + albums.getIndex(ID).width / 2  + event.target.x;
 			//p.childList.getCSSClass("node_link", 0).height = albums.getIndex(ID).childList.getCSSClass("holder", 0).y + event.target.y;
 			
-		}*/
+		}
 	}
 }
