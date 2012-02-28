@@ -43,6 +43,9 @@ package com.gestureworks.cml.components
 		private var mShape:GraphicElement
 		private var metadata:TouchSprite;
 		
+		private var _x:Number;
+		private var _y:Number;
+
 		
 		// component
 		private var i:int
@@ -150,6 +153,10 @@ package com.gestureworks.cml.components
 					this.transformEvents = true;
 					this.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 				//addChild(album);
+				
+				//set init placement
+				_x = this.x;
+				_y = this.y;
 			 
 				//bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
 				bar = this.childList.getCSSClass("menu", 0);
@@ -163,7 +170,7 @@ package com.gestureworks.cml.components
 					cbtn.gestureEvents = true;
 					cbtn.gestureList = { "tap":true, "n-drag":true };
 					cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-					//cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
+					cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
 					cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
 				this.addChild(cbtn);
 							
@@ -173,7 +180,7 @@ package com.gestureworks.cml.components
 					ibtn.gestureEvents = true;
 					ibtn.gestureList = { "tap":true, "n-drag":true };
 					ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-					//ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
+					ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
 					ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
 				this.addChild(ibtn);
 								
@@ -234,8 +241,8 @@ package com.gestureworks.cml.components
 		//reset album //faux dispose
 		//album.visible = false;
 		//reset position
-		album.x = 0;
-		album.y = 0;
+		this.x = _x;
+		this.y = _y;
 		
 		//x = 0;
 		//y = 0;

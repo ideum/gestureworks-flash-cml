@@ -124,8 +124,6 @@ package com.gestureworks.cml.components
 			slider = this.childList.getCSSClass("slider", 0);
 			
 			background = this.childList.getCSSClass("background", 0);
-			text_desc = this.childList.getCSSClass("text_desc", 0)
-			text_title = this.childList.getCSSClass("text_title", 0)
 		}
 		
 		private function setupUI():void
@@ -201,15 +199,8 @@ package com.gestureworks.cml.components
 			
 			for (var p:int = 0; p < 3; p++)
 			{
-			background.getIndex(p).visible= false;
-			text_desc.getIndex(p).visible = false;
-			text_title.getIndex(p).visible = false;
-			
-				if (p==(state-1)) {
-					background.getIndex(p).visible= true;
-					text_desc.getIndex(p).visible = true;
-					text_title.getIndex(p).visible = true;
-				}
+				background.getIndex(p).visible= false;
+				if (p==(state-1)) background.getIndex(p).visible= true;
 			}
 		}
 		
