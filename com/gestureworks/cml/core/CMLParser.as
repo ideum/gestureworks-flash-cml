@@ -228,7 +228,15 @@ package com.gestureworks.cml.core
 			cmlFilesComplete++;
 			
 			if (event.fileType == "cmlRenderKit")
-				loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
+			{
+				//if (CML.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
+				//{
+					//includeParentIndex.push(parent);
+					//FileManager.instance.addToQueue(val, "cmlRenderKit");
+				//}
+				//else	
+					loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);
+			}	
 			else
 				createElements(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
 			
@@ -252,7 +260,6 @@ package com.gestureworks.cml.core
 		
 		public function createElements(cml:*, parent:*=null):void
 		{
-			
 			if (debug)
 				trace("\n\ncreate Elements & Objects");	
 							
@@ -265,7 +272,6 @@ package com.gestureworks.cml.core
 				if (name != "LibraryKit" && name != "LayoutKit" && 
 					name != "WindowKit" && name != "DebugKit") 
 					loopCML(cml.child(i), parent);				
-	
 			}
 					
 		}
@@ -361,8 +367,7 @@ package com.gestureworks.cml.core
 				
 				obj = createObject(className);	
 				
-				
-				
+							
 				// look for rendererList keyword
 				// loads an external RenderKit	
 				for each (aValue in node.@*)
@@ -370,14 +375,12 @@ package com.gestureworks.cml.core
 					aName = aValue.name().toString();
 					
 					if (aName == "rendererList") {					
-						includeParentIndex.push(parent);
+						includeParentIndex.push(obj);
 						FileManager.instance.addToQueue(aValue, "cmlRenderKit");						
 					}		
 				}				
 				
-		
-				
-				
+					
 				// assign id and class values
 				if (node.@id != undefined)
 				{
@@ -421,7 +424,7 @@ package com.gestureworks.cml.core
 							obj.propertyStates[0][key] = obj.propertyStates[0][key] + "." + properties.@id;
 						
 						if (key == "rendererList") {
-							includeParentIndex.push(parent);
+							includeParentIndex.push(obj);
 							FileManager.instance.addToQueue(val, "cmlRenderKit");
 						}
 							
