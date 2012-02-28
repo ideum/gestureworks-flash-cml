@@ -39,6 +39,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTransformEvent;
 	import com.gestureworks.events.DisplayEvent;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	
@@ -52,10 +53,13 @@ package com.gestureworks.cml.components
 		private var nbtn:TouchSprite;
 		
 		private var nodeNum:int;
-		private var holder:*; 
+		//private var holder:*; 
 		private var nodes:*; 
 		private var albums:*;
 		private var slider:*;
+		private var background:*; 
+		private var text_title:*;
+		private var text_desc:*; 
 		
 	
 		public function NodeMapViewerNew()
@@ -109,32 +113,19 @@ package com.gestureworks.cml.components
 		
 		private function initUI():void
 		{ 	
-			//nodeNum = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
-			//holder = this.childList.getCSSClass("holder", 0);
-			//nodes = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
-			
-			//trace("------------------------------------------", this.text.id);
 			trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).id);
 			trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).id);
 			trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.length);
 			trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album").length);
-			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer",0).getChildren);
-			
-			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node").id);
-			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album").id);
-			
-			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).getChildAt(0).id);
-			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).getChildAt(0).id);
 
 			nodeNum = this.childList.getCSSClass("node_list_viewer", 0).childList.length;
 			nodes = this.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node");
 			albums = this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album");
+			slider = this.childList.getCSSClass("slider", 0);
 			
-			//nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
-			//nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
-			//albums = this.childList.getCSSClass("albums", 0).childList.getCSSClass("album");
-			
-			//slider = holder.childList.getCSSClass("slider", 0);
+			background = this.childList.getCSSClass("background", 0);
+			text_desc = this.childList.getCSSClass("text_desc", 0)
+			text_title = this.childList.getCSSClass("text_title", 0)
 		}
 		
 		private function setupUI():void
@@ -174,10 +165,63 @@ package com.gestureworks.cml.components
 			//slider.
 			// loop through nodes in chosen active list
 			// set node state
-			
+			slider.addEventListener(StateEvent.CHANGE, categoryUpdate);
 			
 			// set node touch timer control///////////////////////
 			
+		}
+		
+		private function categoryUpdate(event:StateEvent):void 
+		{
+			var n:Number = Number(event.value);
+			var state:int = Math.round(n);
+			trace("node category update", event.value, event.target.id, state);
+			
+			activateNodes(state);
+			
+			//if (state == 1) activateNodes("1869");
+			//if (state == 2) activateNodes("1948");
+			//if (state == 3) activateNodes ("2012");
+
+		}
+		
+		private function activateNodes(state:int):void //state:String
+		{
+			var g:String;
+			if (state == 1) g="1869";
+			if (state == 2) g="1948";
+			if (state == 3) g="2012";
+			
+			
+			for (var k:int = 0; k < nodeNum; k++)
+			{
+				// reset
+				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = false;
+				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = true; 
+				albums.getIndex(k).visible = false;
+				
+				if (nodes.getIndex(k).group == g) {
+					//change node point icon visibilty
+					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = true;
+					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
+				}
+				if(albums.getIndex(k).group == g) {
+					albums.getIndex(k).visible = true;
+				}
+			}
+			
+			for (var p:int = 0; p < 3; p++)
+			{
+			background.getIndex(p).visible= false;
+			text_desc.getIndex(p).visible = false;
+			text_title.getIndex(p).visible = false;
+			
+				if (p==(state-1)) {
+					background.getIndex(p).visible= true;
+					text_desc.getIndex(p).visible = true;
+					text_title.getIndex(p).visible = true;
+				}
+			}
 		}
 		
 		private function onOpen(event:GWGestureEvent):void 

@@ -20,6 +20,8 @@ package com.gestureworks.cml.element
 		private var foregroundOffset:Number = 0;
 		private var stepPositions:Array;
 		
+		public static var SLIDER_UPDATE:String = "slider update";
+		
 		public function SliderElement() 
 		{
 			super();
@@ -30,7 +32,7 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{
 			elements["foreground"] = new TouchSprite;
-			
+			elements["rail"] = childList.getKey(rail); // establishes display independent slider rail 
 			elements["hit"] = childList.getKey(hit);
 			
 			if (GestureWorks.supportsTouch) 
@@ -157,7 +159,18 @@ package com.gestureworks.cml.element
 		public function set hit(value:String):void
 		{
 			_hit = value;	
-		}		
+		}
+		
+		private var _rail:String;
+		/**
+		 * Sets the slider's rail line through a child id
+		 * @default null
+		 */		
+		public function get rail():String {return _rail;}
+		public function set rail(value:String):void
+		{
+			_rail = value;	
+		}
 		
 
 		private var _background:String;
@@ -255,7 +268,7 @@ package com.gestureworks.cml.element
 				var index:int = getSnapValue(num, stepPositions);				
 				
 				if (orientation == "horizontal")		
-					elements["foreground"].x = stepPositions[index] + foregroundOffset;
+					elements["foreground"].x = stepPositions[index] //+ foregroundOffset;
 				else if (orientation == "vertical")
 					elements["foreground"].y = stepPositions[index] + foregroundOffset;
 			}
@@ -362,9 +375,7 @@ package com.gestureworks.cml.element
 			
 			updateValues();
 		}
-		
-		
-				
+	
 		
 		
 		///////////////////////////////////////////////////////

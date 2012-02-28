@@ -437,6 +437,7 @@ package com.gestureworks.cml.components
 	{
 		//trace("translate album");
 		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
+		//dispatchEvent(new Event(ImageViewer.COMPLETE));
 	}
 		
 	private function updateHandler(event:Event):void 
