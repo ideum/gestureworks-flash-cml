@@ -15,7 +15,7 @@ package com.gestureworks.cml.element
 	
 	public class SliderElement extends Container 
 	{
-		private var debug:Boolean = true;				
+		private var debug:Boolean = false;				
 		private var elements:Dictionary;	
 		private var foregroundOffset:Number = 0;
 		private var stepPositions:Array;
