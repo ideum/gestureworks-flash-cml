@@ -117,7 +117,14 @@ package com.gestureworks.cml.core
 		public function set className(value:String):void
 		{
 			_className = value;
-		}			
+		}	
+		
+		private var _group:String;
+		public function get group():String { return _group ; }
+		public function set group(value:String):void
+		{
+			_group = value;
+		}	
 		
 		public function displayComplete():void{}
 		

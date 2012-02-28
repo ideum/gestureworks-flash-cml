@@ -152,6 +152,7 @@ package com.gestureworks.cml.components
 				
 				// add tap listener to node points /////////////////////////////////
 				//var node_point = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0);
+				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
 				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);	
 					node_point.name = k;
 					node_point.gestureEvents = true;
@@ -160,7 +161,9 @@ package com.gestureworks.cml.components
 					node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
 					node_point.addEventListener(TouchEvent.TOUCH_BEGIN, onOpen);
 					
-					//trace(node_point.childList.getCSSClass("node_link",0).id)
+				
+					//trace("....................................................", nodes.getIndex(k).childList.getCSSClass("node_link", 0).id)
+					//trace("....................................................",nodes.getIndex(k).node_link.id)
 			}
 				
 			// update link drawing//////////////////////////////////
@@ -180,11 +183,12 @@ package com.gestureworks.cml.components
 		private function onOpen(event:GWGestureEvent):void 
 		{
 			var ID:int = event.target.name;
-			trace("open", ID);
+			//trace("open", ID);
 	
 			// reset positions
 			//this.album0.visible = true;
 			albums.getIndex(ID).visible = true;
+			nodes.getIndex(ID).childList.getCSSClass("node_link", 0).visible = true;
 			
 			// make visble
 			//p.childList.getCSSClass("album", 0).visible = true;
@@ -204,17 +208,25 @@ package com.gestureworks.cml.components
 		private function displayHandler2(event:DisplayEvent):void 
 		{
 			var ID:int = event.target.name;
-			trace("album translate", ID, event.target.name, albums.getIndex(ID).x, albums.getIndex(ID).y);
+			//trace("album translate", ID, event.target.name, albums.getIndex(ID).x, albums.getIndex(ID).y);
 			
 			var album:* = albums.getIndex(ID);
-			var node:* = nodes.getIndex(ID);
+			var node:*= nodes.getIndex(ID)
+			var node_link:* = nodes.getIndex(ID).childList.getCSSClass("node_link", 0);
 			
+			node_link.width = album.x -node.x + album.width / 2;
+			node_link.height = album.y - node.y;
+			
+			//trace("--------------node group", nodes.getIndex(ID).group);
+			//trace("--------------album group",albums.getIndex(ID).group);
+			
+			
+			//node_link.width = album.x + album.width/2  //+ event.target.x;
+			//node_link.height = album.y //+ event.target.y;
 			//event.target.parent.getChildAt(2).width = event.target.album.x + event.target.x + event.target.width / 2;
 			//event.target.parent.getChildAt(2).height = event.target.album.y + event.target.y;
-			
 			//p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).x + p.childList.getCSSClass("album", 0).width / 2  + event.target.x;
 			//p.childList.getCSSClass("node_link", 0).height = p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).y + event.target.y;
-			
 			//p.childList.getCSSClass("node_link", 0).width = albums.getIndex(ID).childList.getCSSClass("holder", 0).x + albums.getIndex(ID).width / 2  + event.target.x;
 			//p.childList.getCSSClass("node_link", 0).height = albums.getIndex(ID).childList.getCSSClass("holder", 0).y + event.target.y;
 			
