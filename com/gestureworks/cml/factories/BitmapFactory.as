@@ -106,7 +106,6 @@ package com.gestureworks.cml.factories
 				_percentX = 1;
 				_percentY = 1;
 			}
-				
 			
 			resizeMatrix.scale(_percentX, _percentY);				
 			
@@ -161,6 +160,7 @@ package com.gestureworks.cml.factories
 			
 		}
 		
+		
 		private function createBitmapDataArray():void
 		{
 			var avatarNum:int = _sizeArray.length;
@@ -188,7 +188,7 @@ package com.gestureworks.cml.factories
 						}
 						*/
 						//if((!force_width_normalize)&&(!force_height_normalize)){
-							if(width>height){ //landscape
+						if(width>height){ //landscape
 								reduceX = pixelSize/width;
 								reduceY = reduceX;
 							}
@@ -246,7 +246,6 @@ package com.gestureworks.cml.factories
 		public function get bitmapArray():Array {return _bitmapArray;}
 		
 		//private var _sizeArray:Array = new Array(20, 50, 100, 200, 400, 800, 1200, 1600); // default size array list
-		
 		private var _sizeArray:Array = new Array(20, 50, 100, 200); // default size array list
 		
 		

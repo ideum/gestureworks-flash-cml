@@ -152,7 +152,7 @@ package com.gestureworks.cml.components
 				
 				// add tap listener to node points /////////////////////////////////
 				//var node_point = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0);
-				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
+				//var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
 				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);	
 					node_point.name = k;
 					node_point.gestureEvents = true;

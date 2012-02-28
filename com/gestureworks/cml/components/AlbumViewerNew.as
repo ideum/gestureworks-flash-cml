@@ -39,10 +39,10 @@ package com.gestureworks.cml.components
 		private var ibtn:TouchSprite;
 		private var cbtn:TouchSprite;
 		private var belt:TouchSprite;
+		private var list:ComponentKit;
 		private var mShape:GraphicElement
 		private var metadata:TouchSprite;
-		//private var frame:TouchSprite;
-		//private var itemListObject:Object = new Object;
+		
 		
 		// component
 		private var i:int
@@ -114,7 +114,8 @@ package com.gestureworks.cml.components
 			
 			trace("-------", this.id);
 			trace("-------", this.childList.getCSSClass("menu", 0).id);
-			trace("-------", this.childList.getCSSClass("belt",0).id);
+			trace("-------", this.childList.getCSSClass("belt", 0).id);
+			trace("-------", this.childList.getCSSClass("belt",0).childList.getCSSClass("list",0).id);
 			trace("-------", this.childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
 			trace("-------", this.childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
 			trace("-------", this.childList.getCSSClass("mask_shape", 0).id);
@@ -186,6 +187,11 @@ package com.gestureworks.cml.components
 					if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
 					if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 				this.addChild(belt);
+				
+				list = this.childList.getCSSClass("belt", 0).childList.getCSSClass("list", 0);
+					//list.addEventListener(DisplayEvent.COMPLETE, cancelTween)
+					//list.y = 100;
+				belt.addChild(list);
 			 
 				//apply mask//
 				mShape = this.childList.getCSSClass("mask_shape", 0);
@@ -198,6 +204,10 @@ package com.gestureworks.cml.components
 				metadata = this.childList.getCSSClass("metadata", 0);
 				//metadata = this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0);
 				this.addChild(metadata);
+				
+				
+				
+				
 			/////////////////////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////
 			

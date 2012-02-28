@@ -30,12 +30,14 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("list display viewer complete");
-			listHorizontal();		
+			//listHorizontal();		
 			//listVertical();	
-			trace("---------------------------------------------------",this.id,this.layout);
+			//trace("---------------------------------------------------", this.id, this.layout);
+			
+			//this.childList.getIndex(i).addListener
 		}
 		
-		
+		/*
 		private function listHorizontal():void
 		{ 
 			box = 540
@@ -44,7 +46,7 @@ package com.gestureworks.cml.components
 			marginY = 25;
 			marginX = 0;
 			sumx = 0;
-			close_packing = true;
+			close_packing = false;
 			n = this.childList.length;
 			
 				//trace("album, items",this.childList.length);
@@ -53,7 +55,7 @@ package com.gestureworks.cml.components
 						//trace(this.childList.getIndex(i))
 						if ((childList.getIndex(i) is TouchContainer))
 						{
-							trace(childList.getIndex(i).width);
+							//trace(childList.getIndex(i).id,childList.getIndex(i).width);
 							
 							if(!close_packing) childList.getIndex(i).x = marginX + (i) * box + (i - 1) * sepx;
 							else childList.getIndex(i).x = marginX + sumx + (i - 1) * sepx;
@@ -69,7 +71,7 @@ package com.gestureworks.cml.components
 					width = 2 * marginX + sumx + (n - 1) * sepx;
 					//height = childList.getIndex(0).height;
 					height = this.height;
-		}
+		}*/
 		/*
 		private function listVertical():void
 		{ 

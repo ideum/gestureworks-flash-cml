@@ -113,12 +113,12 @@ package com.gestureworks.cml.layouts
 			trace("horizontal layout",n)
 			
 			for (var i:int = 0; i < n; i++) 
-			{				
-				//trace(container.childList.getIndex(i).width);
-							
+			{							
 				if (!close_packing) {
+					
 					container.childList.getIndex(i).x = paddingX + (i) * blockX + (i - 1) * marginX;
 					container.childList.getIndex(i).y = 0;
+					//trace("----------------------------------------------------------------------no close_packing pack",container.childList.getIndex(i).x)
 				}
 				else {
 					container.childList.getIndex(i).x = paddingX + sumx + (i - 1) * marginX;
@@ -126,7 +126,7 @@ package com.gestureworks.cml.layouts
 				}
 				sumx += container.childList.getIndex(i).width
 				
-				trace( container.childList.getIndex(i).id);
+				trace( container.childList.getIndex(i).id,container.childList.getIndex(i).width);
 			}
 			container.width = 2 * paddingX + sumx + (n - 1) * marginX;
 			//container.height = container.childList.getIndex(0).height;
