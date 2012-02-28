@@ -118,6 +118,13 @@ package com.gestureworks.cml.components
 			trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).id);
 			trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.length);
 			trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album").length);
+			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer",0).getChildren);
+			
+			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node").id);
+			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album").id);
+			
+			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).getChildAt(0).id);
+			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).getChildAt(0).id);
 
 			//nodeNum = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
 			//nodes = this.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");

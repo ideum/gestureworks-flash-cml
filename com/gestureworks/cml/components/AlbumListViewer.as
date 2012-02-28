@@ -29,10 +29,7 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{			
-			trace("album list display viewer complete");
-			//listHorizontal();		
-			//listVertical();	
-			//trace("---------------------------------------------------",this.id,this.layout);
+			trace("album list viewer---------------------------------------------------",this.id);
 		}
 	}
 }
