@@ -23,6 +23,7 @@ package com.gestureworks.cml.factories
 	{
 		public function ElementFactory() 
 		{
+			mouseChildren = true;
 			super();
 			propertyStates = [];
 			propertyStates[0] = new Dictionary(false);

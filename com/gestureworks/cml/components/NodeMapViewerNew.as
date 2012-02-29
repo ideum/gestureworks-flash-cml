@@ -128,6 +128,8 @@ package com.gestureworks.cml.components
 		
 		private function setupUI():void
 		{ 		
+			trace("node num",nodeNum)
+			
 			for (var k:int = 0; k < nodeNum; k++)
 			{
 				// add listener to albums///////// updates node links////////////////////////////////////
@@ -162,7 +164,7 @@ package com.gestureworks.cml.components
 		{
 			var n:Number = Number(event.value);
 			var state:int = Math.round(n);
-			//trace("node category update", event.value, event.target.id, state);
+			trace("node category update", event.value, event.target.id, state);
 			
 			activateNodes(state);
 			//if (state == 1) activateNodes("1869");
@@ -177,9 +179,11 @@ package com.gestureworks.cml.components
 			if (state == 2) g="1948";
 			if (state == 3) g="2012";
 			
-			//trace("--------------node group", nodes.getIndex(ID).group);
+			trace("--------------node group", g);
 			//trace("--------------album group",albums.getIndex(ID).group);
 			
+				//trace("node vis", nodes.getIndex(0).group, g);
+				
 			for (var k:int = 0; k < nodeNum; k++)
 			{
 				// reset
@@ -187,8 +191,10 @@ package com.gestureworks.cml.components
 				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = true; 
 				//albums.getIndex(k).visible = false;
 				
+			
 				if (nodes.getIndex(k).group == g) {
 					//change node point icon visibilty
+					trace("node vis");
 					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = true;
 					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
 				}
@@ -207,7 +213,7 @@ package com.gestureworks.cml.components
 		private function onOpen(event:GWGestureEvent):void 
 		{
 			var ID:int = event.target.name;
-			//trace("open", ID);
+			trace("open", ID);
 	
 			// reset positions
 			//this.album0.visible = true;

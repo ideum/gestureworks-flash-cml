@@ -42,6 +42,7 @@ package com.gestureworks.cml.core
 		public function TouchContainerDisplay()
 		{
 			super();
+			mouseChildren = true; // required for touchevents to pass into children
 			
 			propertyStates = [];
 			propertyStates[0] = new Dictionary(false);			
@@ -49,7 +50,7 @@ package com.gestureworks.cml.core
 			_childList = new LinkedMap;			
 			
 			addEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);
-			alpha = 1;
+			//alpha = 1;
 		}
 				
 		
@@ -95,8 +96,14 @@ package com.gestureworks.cml.core
 			CMLParser.instance.updateProperties(this, state);		
 		}		
 			
-	
-		
+		/////////////////////////////////////////
+		private var _group:String
+		public function get group():String {return _group};
+		public function set group(value:String):void
+		{
+			_group = value;
+		}
+		///////////////////////////////////////////////////
 		
 		//////////////////////////////////////////////////////////////
 		// IELEMENT
