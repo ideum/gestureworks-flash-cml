@@ -71,6 +71,13 @@ package com.gestureworks.cml.core
 			_id = value;
 		}
 		
+		private var _cmlIndex:int;
+		public function get cmlIndex():int {return _cmlIndex};
+		public function set cmlIndex(value:int):void
+		{
+			_cmlIndex = value;
+		}	
+		
 		
 		public function parseCML(cml:XMLList):XMLList
 		{
@@ -117,14 +124,7 @@ package com.gestureworks.cml.core
 		public function set className(value:String):void
 		{
 			_className = value;
-		}	
-		
-		private var _group:String;
-		public function get group():String { return _group ; }
-		public function set group(value:String):void
-		{
-			_group = value;
-		}	
+		}			
 		
 		public function displayComplete():void{}
 		
@@ -207,7 +207,12 @@ package com.gestureworks.cml.core
 				{
 					this.width = childList.getIndex(i).width;
 					this.height = childList.getIndex(i).height;
-				}	
+					
+					trace(width, height);
+				}
+				
+				trace("TOUCH CONTAINER - DIMENSIONS TO: ", dimensionsTo);
+				
 			}
 			
 		}	

@@ -57,9 +57,7 @@ package com.gestureworks.cml.factories
 		 */		
 		override public function get height():Number{return _height;}
 		override public function set height(value:Number):void
-		{
-			trace("________________________________________hegiht" + height);
-			
+		{			
 			_height = value;
 			super.height = value;
 		}			

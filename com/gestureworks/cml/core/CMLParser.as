@@ -1,5 +1,6 @@
 package com.gestureworks.cml.core 
 {
+	import com.gestureworks.core.DisplayList;	
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
@@ -202,16 +203,23 @@ package com.gestureworks.cml.core
 			
 			DisplayManager.instance.addCMLChildren();
 			
+			
+			if (debug)
+				printObjectList();			
+			
+			
 			if (debug)
 				trace("\ncall element's, display complete, abstract method");				
 			
 			DisplayManager.instance.displayComplete();		
 
+			
 			if (debug)
 				trace("\nsend cml parser complete event");				
 			
 			dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
 			
+
 			trace('\n\n********************* CML Parsing Complete ************************\n\n');						
 							
 		}		
@@ -266,7 +274,6 @@ package com.gestureworks.cml.core
 			var name:String;
 			for (var i:int=0; i<cml.children().length(); i++)
 			{
-				
 				name = cml.child(i).name().toString();	
 				
 				if (name != "LibraryKit" && name != "LayoutKit" && 
@@ -275,9 +282,6 @@ package com.gestureworks.cml.core
 			}
 					
 		}
-		
-		
-		
 		
 		
 		
@@ -309,9 +313,8 @@ package com.gestureworks.cml.core
 		}			
 
 		
-		
+
 		private var index:int = 0;
-		
 		private var includeParentIndex:Array = [];
 		
 		/**
@@ -367,6 +370,7 @@ package com.gestureworks.cml.core
 				
 				obj = createObject(className);	
 				
+				
 							
 				// look for rendererList keyword
 				// loads an external RenderKit	
@@ -375,10 +379,12 @@ package com.gestureworks.cml.core
 					aName = aValue.name().toString();
 					
 					if (aName == "rendererList") {					
-						includeParentIndex.push(obj);
+						includeParentIndex.push(parent);
 						FileManager.instance.addToQueue(aValue, "cmlRenderKit");						
 					}		
 				}				
+				
+				
 				
 					
 				// assign id and class values
@@ -401,8 +407,12 @@ package com.gestureworks.cml.core
 				if (debug)
 					trace("\n-add to CMLObjectList id: ", obj.id, ", object: ", obj);							
 				
+				// add to master object list
 				CMLObjectList.instance.append(obj.id, obj);					
 				
+				// add to master display list
+				DisplayList.object[obj.id] = obj;
+				DisplayList.array.push(obj);					
 				
 				//unique object identifier
 				obj.cmlIndex = CMLObjectList.instance.length-1;
@@ -423,11 +433,14 @@ package com.gestureworks.cml.core
 						if (key == "dimensionsTo")
 							obj.propertyStates[0][key] = obj.propertyStates[0][key] + "." + properties.@id;
 						
+						/*
 						if (key == "rendererList") {
 							includeParentIndex.push(obj);
 							FileManager.instance.addToQueue(val, "cmlRenderKit");
 						}
-							
+						
+						*/
+						
 						for each (var val:* in properties.*)
 						{
 							if (obj.propertyStates[0][key] == val.name().toString())
@@ -619,8 +632,6 @@ package com.gestureworks.cml.core
 						
 						if (str1.charAt(0) == ".")
 							str1 = str1.slice(1);					
-
-						//trace(str1, state, str2, CMLObjectList.instance.getKey(str1).propertyStates[state][str2]);	
 						
 						
 						var last:int = -1;
@@ -658,6 +669,94 @@ package com.gestureworks.cml.core
 		}
 		
 		
+		public function printObjectList():void
+		{
+			var cmlIndex:int;
+			var id:String;
+			var class_:String;
+			var object:*;
+			var childArray:Array = [];
+			var found:Boolean = true;
+			
+			trace("\n*********** CMLObjectList Begin **************");
+			trace("  root = no star, 'n'-child = 'n'-star");
+			
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{	
+				cmlIndex = -1;
+				id = "";
+				class_ = "";
+				object = null;
+				found = false;
+							
+				
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("cmlIndex"))
+					cmlIndex = CMLObjectList.instance.getIndex(i).cmlIndex;
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("id"))
+					id = CMLObjectList.instance.getIndex(i).id;
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("class_"))
+					class_ = CMLObjectList.instance.getIndex(i).class_;
+				object = CMLObjectList.instance.getIndex(i);
+										
+				
+				for (var j:int = 0; j < childArray.length; j++) 
+				{
+					if (childArray[j] == cmlIndex)
+						found = true;
+				}					
+				
+				if (!found)
+				{
+					trace();
+					trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + class_, " object:" + object);
+				
+					if (CMLObjectList.instance.getIndex(i).hasOwnProperty("childList")) 
+						childLoop(CMLObjectList.instance.getIndex(i), 0);
+				}
+			}
+			
+			
+			function childLoop(obj:*, index:int):void
+			{
+				var cmlIndex:int;
+				var id:String;
+				var class_:String;
+				var object:*;
+				
+				for (var i:int = 0; i < obj.childList.length; i++) 
+				{
+					cmlIndex = -1;
+					id = "";
+					class_ = "";
+					object = null;					
+					
+					if (obj.childList.getIndex(i).hasOwnProperty("cmlIndex"))
+						cmlIndex = obj.childList.getIndex(i).cmlIndex;
+					if (obj.childList.getIndex(i).hasOwnProperty("id"))
+						id = obj.childList.getIndex(i).id;
+					if (obj.childList.getIndex(i).hasOwnProperty("class_"))
+						class_ = obj.childList.getIndex(i).class_;
+					object = obj.childList.getIndex(i);					
+					
+					childArray.push(cmlIndex);
+					
+					var str:String = "*";
+					
+					for (var n:int = 0; n < index; n++)
+					{
+						str += "*";
+					}
+					
+					trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", class_, " object:", object);					
+					
+					if (obj.childList.getIndex(i).hasOwnProperty("childList"))
+						childLoop(obj.childList.getIndex(i), index + 1); 										
+				}
+			}
+			
+			trace("\n*********** CMLObjectList End **************");			
+		}	
+			
 	}
 }
 

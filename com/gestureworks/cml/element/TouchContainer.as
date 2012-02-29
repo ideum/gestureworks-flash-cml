@@ -9,12 +9,6 @@ package com.gestureworks.cml.element
 			super();
 		}
 
-		private var _cmlIndex:int;
-		public function get cmlIndex():int {return _cmlIndex};
-		public function set cmlIndex(value:int):void
-		{
-			_cmlIndex = value;
-		}
 		
 		public function showIndex(index:int):void
 		{

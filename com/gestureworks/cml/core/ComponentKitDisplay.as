@@ -39,7 +39,7 @@ package com.gestureworks.cml.core
 		public function get classRef():String{return _classRef;}
 		public function set classRef(value:String):void
 		{
-			className = value;
+			_className = value;
 			_classRef = value;			
 		}
 		
