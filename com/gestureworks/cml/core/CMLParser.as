@@ -136,12 +136,6 @@ package com.gestureworks.cml.core
 			if (debug)
 				trace("\nload ext files complete...");						
 
-			
-			if (debug)
-				trace("\call 'load complete' to awaiting objects");				
-			
-			DisplayManager.instance.loadComplete();
-
 			loadCSS();
 		}
 
@@ -174,6 +168,12 @@ package com.gestureworks.cml.core
 		
 		private function loadDisplay():void
 		{
+			if (debug)
+				trace("\call 'load complete' to awaiting objects");				
+			
+			DisplayManager.instance.loadComplete();			
+			
+			
 			if (debug)
 				trace("\nload display begins...");					
 
