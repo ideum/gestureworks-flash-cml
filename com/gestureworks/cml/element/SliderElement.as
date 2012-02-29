@@ -17,7 +17,7 @@ package com.gestureworks.cml.element
 	{
 		private var debug:Boolean = false;				
 		private var elements:Dictionary;	
-		private var foregroundOffset:Number = 0;
+		private var knobOffset:Number = 0;
 		private var stepPositions:Array;
 		
 		public static var SLIDER_UPDATE:String = "slider update";
@@ -31,39 +31,38 @@ package com.gestureworks.cml.element
 		
 		override public function displayComplete():void
 		{
-			elements["foreground"] = new TouchSprite;
-			elements["rail"] = childList.getKey(rail); // establishes display independent slider rail 
+			elements["knob"] = new TouchSprite;
 			elements["hit"] = childList.getKey(hit);
 			
 			if (GestureWorks.supportsTouch) 
 			{
 				//trace("supports touch");
 				elements["hit"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-				elements["foreground"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownFgnd);
+				elements["knob"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownFgnd);
 			}	
 			else
 			{
 				elements["hit"].addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
-				elements["foreground"].addEventListener(MouseEvent.MOUSE_DOWN, onDownFgnd);
+				elements["knob"].addEventListener(MouseEvent.MOUSE_DOWN, onDownFgnd);
 			}			
 			
 			if (orientation == "horizontal")
 			{
-				foregroundOffset = childList.getKey(foreground).width / -2;
-				elements["foreground"].x = foregroundOffset;
+				knobOffset = (childList.getKey(knob).width / -2) + elements["hit"].x;
+				elements["knob"].x = knobOffset;
 			}
 			else if (orientation == "vertical")
 			{
-				foregroundOffset = childList.getKey(foreground).height / -2;
-				elements["foreground"].y = foregroundOffset;					
+				knobOffset = (childList.getKey(knob).height / -2) + elements["hit"].y;
+				elements["knob"].y = knobOffset;					
 			}
-			//elements["foreground"].mouseChildren="false"
-			elements["foreground"].disableAffineTransform = true;
-			elements["foreground"].disableNativeTransform = true;	
-			elements["foreground"].gestureEvents = true;
-			elements["foreground"].addEventListener(GWGestureEvent.DRAG, onDrag);				
-			elements["foreground"].addChild(childList.getKey(foreground));
-			addChild(elements["foreground"]);				
+			//elements["knob"].mouseChildren="false"
+			elements["knob"].disableAffineTransform = true;
+			elements["knob"].disableNativeTransform = true;	
+			elements["knob"].gestureEvents = true;
+			elements["knob"].addEventListener(GWGestureEvent.DRAG, onDrag);				
+			elements["knob"].addChild(childList.getKey(knob));
+			addChild(elements["knob"]);				
 						
 			
 			if (mode == "discrete")
@@ -87,11 +86,11 @@ package com.gestureworks.cml.element
 					}
 				}				
 				
-				elements["foreground"].gestureList = { "n-drag-no-physics": true };				
+				elements["knob"].gestureList = { "n-drag-no-physics": true };				
 			}
 			else
 			{
-				elements["foreground"].gestureList = { "n-drag": true };
+				elements["knob"].gestureList = { "n-drag": true };
 			}
 			
 		}
@@ -104,9 +103,9 @@ package com.gestureworks.cml.element
 		public function reset():void
 		{
 			if (orientation == "horizontal")			
-				elements["foreground"].x = foregroundOffset;
+				elements["knob"].x = knobOffset;
 			else if (orientation == "vertical")
-				elements["foreground"].y = foregroundOffset;			
+				elements["knob"].y = knobOffset;			
 		}
 		
 		
@@ -161,39 +160,28 @@ package com.gestureworks.cml.element
 			_hit = value;	
 		}
 		
+		
 		private var _rail:String;
 		/**
-		 * Sets the slider's rail line through a child id
+		 * Sets the slider's rail element through a child id
 		 * @default null
 		 */		
 		public function get rail():String {return _rail;}
 		public function set rail(value:String):void
 		{
 			_rail = value;	
-		}
-		
-
-		private var _background:String;
-		/**
-		 * Sets the slider's background element through a child id
-		 * @default null
-		 */		
-		public function get background():String {return _background;}
-		public function set background(value:String):void
-		{
-			_background = value;	
 		}			
 		
 
-		private var _foreground:String;
+		private var _knob:String;
 		/**
-		 * Sets the slider's foreground element through a child id
+		 * Sets the slider's knob element through a child id
 		 * @default null
 		 */		
-		public function get foreground():String {return _foreground;}
-		public function set foreground(value:String):void
+		public function get knob():String {return _knob;}
+		public function set knob(value:String):void
 		{
-			_foreground = value;	
+			_knob = value;	
 		}
 					
 		
@@ -242,11 +230,11 @@ package com.gestureworks.cml.element
 		private function onDownHit(event:*):void
 		{
 			//trace("ontdown")
-			elements["foreground"].removeEventListener(GWGestureEvent.DRAG, onDrag);																
-			elements["foreground"].addEventListener(GWGestureEvent.DRAG, onDrag);
+			elements["knob"].removeEventListener(GWGestureEvent.DRAG, onDrag);																
+			elements["knob"].addEventListener(GWGestureEvent.DRAG, onDrag);
 			
-			elements["foreground"].removeEventListener(GWGestureEvent.RELEASE, onRelease);				
-			elements["foreground"].addEventListener(GWGestureEvent.RELEASE, onRelease);	
+			elements["knob"].removeEventListener(GWGestureEvent.RELEASE, onRelease);				
+			elements["knob"].addEventListener(GWGestureEvent.RELEASE, onRelease);	
 			
 			var num:Number;
 			
@@ -258,9 +246,9 @@ package com.gestureworks.cml.element
 			if (mode == "continuous")	
 			{
 				if (orientation == "horizontal")				
-					elements["foreground"].x = num + foregroundOffset;
+					elements["knob"].x = num + knobOffset;
 				else if (orientation == "vertical")
-					elements["foreground"].y = num + foregroundOffset;		
+					elements["knob"].y = num + knobOffset;		
 			}
 		
 			else if (mode == "discrete")
@@ -268,9 +256,9 @@ package com.gestureworks.cml.element
 				var index:int = getSnapValue(num, stepPositions);				
 				
 				if (orientation == "horizontal")		
-					elements["foreground"].x = stepPositions[index] //+ foregroundOffset;
+					elements["knob"].x = stepPositions[index] + knobOffset;
 				else if (orientation == "vertical")
-					elements["foreground"].y = stepPositions[index] + foregroundOffset;
+					elements["knob"].y = stepPositions[index] + knobOffset;
 			}
 			
 			updateValues();
@@ -280,11 +268,11 @@ package com.gestureworks.cml.element
 		private function onDownFgnd(event:*):void
 		{
 			//trace("ontdown")
-			elements["foreground"].removeEventListener(GWGestureEvent.DRAG, onDrag);													
-			elements["foreground"].addEventListener(GWGestureEvent.DRAG, onDrag);
+			elements["knob"].removeEventListener(GWGestureEvent.DRAG, onDrag);													
+			elements["knob"].addEventListener(GWGestureEvent.DRAG, onDrag);
 			
-			elements["foreground"].removeEventListener(GWGestureEvent.RELEASE, onRelease);				
-			elements["foreground"].addEventListener(GWGestureEvent.RELEASE, onRelease);						
+			elements["knob"].removeEventListener(GWGestureEvent.RELEASE, onRelease);				
+			elements["knob"].addEventListener(GWGestureEvent.RELEASE, onRelease);						
 		}
 		
 	
@@ -293,23 +281,23 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("release");			
 			
-			elements["foreground"].removeEventListener(GWGestureEvent.RELEASE, onRelease);														
+			elements["knob"].removeEventListener(GWGestureEvent.RELEASE, onRelease);														
 			
 			if (mode == "discrete")	
 			{
-				elements["foreground"].removeEventListener(GWGestureEvent.DRAG, onDrag);
+				elements["knob"].removeEventListener(GWGestureEvent.DRAG, onDrag);
 			
 				var index:int;
 				
 				if (orientation == "horizontal")
 				{
-					index = getSnapValue(elements["foreground"].x, stepPositions);
-					elements["foreground"].x = stepPositions[index] + foregroundOffset;
+					index = getSnapValue(elements["knob"].x, stepPositions);
+					elements["knob"].x = stepPositions[index] + knobOffset;
 				}
 				else if (orientation == "vertical")
 				{
-					index = getSnapValue(elements["foreground"].y, stepPositions);
-					elements["foreground"].y = stepPositions[index] + foregroundOffset;
+					index = getSnapValue(elements["knob"].y, stepPositions);
+					elements["knob"].y = stepPositions[index] + knobOffset;
 				}	
 			}	
 			
@@ -327,49 +315,49 @@ package com.gestureworks.cml.element
 				
 			if (orientation == "horizontal")
 			{	
-				moveValue = elements["foreground"].x + event.value.dx;
-				moveValue += childList.getKey(foreground).x;
+				moveValue = elements["knob"].x + event.value.dx;
+				moveValue += childList.getKey(knob).x;
 				
-				if (moveValue >= (elements["hit"].x + foregroundOffset))
+				if (moveValue >= (elements["hit"].x + knobOffset))
 				{
-					if (moveValue <= (elements["hit"].x + elements["hit"].width + foregroundOffset))
+					if (moveValue <= (elements["hit"].x + elements["hit"].width + knobOffset))
 					{
-						elements["foreground"].x += event.value.dx;
+						elements["knob"].x += event.value.dx;
 					}
 					else
 					{
-						elements["foreground"].stopDrag();
-						elements["foreground"].x = elements["hit"].width + foregroundOffset;					
+						elements["knob"].stopDrag();
+						elements["knob"].x = elements["hit"].width + knobOffset;					
 					}
 				}	
 				else
 				{
-					elements["foreground"].stopDrag();											
-					elements["foreground"].x = foregroundOffset;
+					elements["knob"].stopDrag();											
+					elements["knob"].x = knobOffset;
 				}				
 			}
 			
 			else if (orientation == "vertical")
 			{
-				moveValue = elements["foreground"].y + event.value.dy;
-				moveValue += childList.getKey(foreground).y;
+				moveValue = elements["knob"].y + event.value.dy;
+				moveValue += childList.getKey(knob).y;
 				
-				if (moveValue >= (elements["hit"].y + foregroundOffset))
+				if (moveValue >= (elements["hit"].y + knobOffset))
 				{
-					if (moveValue <= (elements["hit"].y + elements["hit"].height + foregroundOffset))
+					if (moveValue <= (elements["hit"].y + elements["hit"].height + knobOffset))
 					{
-						elements["foreground"].y += event.value.dy;
+						elements["knob"].y += event.value.dy;
 					}
 					else
 					{
-						elements["foreground"].stopDrag();
-						elements["foreground"].y = elements["hit"].height + foregroundOffset;					
+						elements["knob"].stopDrag();
+						elements["knob"].y = elements["hit"].height + knobOffset;					
 					}
 				}	
 				else
 				{
-					elements["foreground"].stopDrag();											
-					elements["foreground"].y = foregroundOffset;
+					elements["knob"].stopDrag();											
+					elements["knob"].y = knobOffset;
 				}					
 			}			
 			
@@ -417,13 +405,13 @@ package com.gestureworks.cml.element
 		{
 			if (orientation == "horizontal")
 			{
-				_currentPosition = elements["foreground"].x - foregroundOffset;
+				_currentPosition = elements["knob"].x - knobOffset;
 				_currentValue = map(_currentPosition, 0, elements["hit"].width, min, max); 			
 			}
 			
 			else if (orientation == "vertical")
 			{
-				_currentPosition = elements["foreground"].y - foregroundOffset;
+				_currentPosition = elements["knob"].y - knobOffset;
 				_currentValue = map(_currentPosition, 0, elements["hit"].height, min, max); 			
 			}			
 			
