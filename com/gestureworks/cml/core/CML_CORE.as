@@ -23,6 +23,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	
 	
+	
+	
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
 	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
 	import com.gestureworks.cml.components.AlbumViewerNew; AlbumViewerNew;
@@ -44,6 +46,8 @@ package com.gestureworks.cml.core
 	////////////////
 	//  ELEMENTS  // 
 	////////////////
+	
+	import com.gestureworks.cml.element.Magnifier; Magnifier;
 
 	//checked	
 	import com.gestureworks.cml.element.Include; Include;			
