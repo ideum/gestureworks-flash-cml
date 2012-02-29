@@ -47,7 +47,7 @@ package com.gestureworks.cml.core
 	//  ELEMENTS  // 
 	////////////////
 	
-	import com.gestureworks.cml.element.Magnifier; Magnifier;
+	import com.gestureworks.cml.element.MagnifierElement; MagnifierElement;
 
 	//checked	
 	import com.gestureworks.cml.element.Include; Include;			
