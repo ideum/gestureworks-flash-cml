@@ -170,7 +170,7 @@ package com.gestureworks.cml.components
 					cbtn.gestureEvents = true;
 					cbtn.gestureList = { "tap":true, "n-drag":true };
 					cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-					cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
+					//cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
 					cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
 				this.addChild(cbtn);
 							
@@ -180,7 +180,7 @@ package com.gestureworks.cml.components
 					ibtn.gestureEvents = true;
 					ibtn.gestureList = { "tap":true, "n-drag":true };
 					ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-					ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
+					//ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
 					ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
 				this.addChild(ibtn);
 								
