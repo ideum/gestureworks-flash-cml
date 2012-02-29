@@ -372,17 +372,7 @@ package com.gestureworks.cml.core
 				
 				
 							
-				// look for rendererList keyword
-				// loads an external RenderKit	
-				for each (aValue in node.@*)
-				{
-					aName = aValue.name().toString();
-					
-					if (aName == "rendererList") {					
-						includeParentIndex.push(parent);
-						FileManager.instance.addToQueue(aValue, "cmlRenderKit");						
-					}		
-				}				
+				
 				
 				
 				
@@ -433,13 +423,13 @@ package com.gestureworks.cml.core
 						if (key == "dimensionsTo")
 							obj.propertyStates[0][key] = obj.propertyStates[0][key] + "." + properties.@id;
 						
-						/*
+						
 						if (key == "rendererList") {
 							includeParentIndex.push(obj);
 							FileManager.instance.addToQueue(val, "cmlRenderKit");
 						}
 						
-						*/
+						
 						
 						for each (var val:* in properties.*)
 						{
@@ -448,6 +438,22 @@ package com.gestureworks.cml.core
 						}
 					}						
 				}				
+				else
+				{
+					// look for rendererList keyword
+					// loads an external RenderKit	
+					for each (aValue in node.@*)
+					{
+						aName = aValue.name().toString();
+						
+						if (aName == "rendererList") {					
+							includeParentIndex.push(obj);
+							FileManager.instance.addToQueue(aValue, "cmlRenderKit");						
+						}		
+					}
+				}
+				
+				
 				
 				
 				obj.postparseCML(XMLList(node));
