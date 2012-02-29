@@ -76,27 +76,33 @@ package com.gestureworks.cml.factories
 				loadBitmap(this.propertyStates[0]["src"]);
 		}
 		
-		override public function displayComplete():void
+		
+		public function loadComplete():void
 		{
 			var imageSrc:String = propertyStates[0]["src"];
 			file = FileManager.instance.fileList.getKey(imageSrc).loader;
 			
 			var resizeMatrix:Matrix = new Matrix();
 			
-
-			if (width != 0 && height != 0)
-			{
-				_percentX = _width / file.width;
-				_percentY = _height / file.height;				
-			}
-			else if (width != 0)
+			
+			trace("*****************************************", propertyStates[0]["width"], propertyStates[0]["height"]);
+		
+			
+			if (propertyStates[0]["width"] && propertyStates[0]["height"])
 			{				
-				_percentX = _width / file.width;
+				_percentX = propertyStates[0]["width"] / file.width;
+				_percentY = propertyStates[0]["height"] / file.height;				
+			}
+			else if (propertyStates[0]["width"])
+			{
+				
+				_percentX = propertyStates[0]["width"] / file.width;
 				_percentY = _percentX;			
 			}	
-			else if (height != 0)
+			else if (propertyStates[0]["height"])
 			{
-				_percentY = _height / file.height; 										
+				
+				_percentY = propertyStates[0]["height"] / file.height; 										
 				_percentX = _percentY;
 			}
 			else 
@@ -105,17 +111,20 @@ package com.gestureworks.cml.factories
 				_percentY = 1;
 			}
 			
+			
+			trace(_percentX, _percentY)
+			
 			resizeMatrix.scale(_percentX, _percentY);				
 			
-			_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
+			_bitmapData = new BitmapData(file.width * _percentX, file.height * _percentY, true, 0x000000);
 			_bitmapData.draw(file.content, resizeMatrix);
 			
 			_bitmap = new Bitmap(_bitmapData,PixelSnapping.NEVER, true);
 			_bitmap.smoothing=true;
-
+			
 			width = _bitmap.width*_percentX;
 			height = _bitmap.height * _percentY;
-			
+					
 			
 			_aspectRatio = width / height;
 			//trace(width, height);
@@ -154,7 +163,14 @@ package com.gestureworks.cml.factories
 			if (avatar) 
 			{
 				createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
-			}
+			}		
+			
+		}
+		
+		
+		override public function displayComplete():void
+		{
+
 			
 		}
 		
