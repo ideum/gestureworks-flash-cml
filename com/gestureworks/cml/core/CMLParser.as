@@ -33,7 +33,7 @@ package com.gestureworks.cml.core
 		private static var GXMLComponent:Class;
 		public var defaultContainer:Container;
 		public static const COMPLETE:String = "COMPLETE";
-		public var debug:Boolean = false;
+		public var debug:Boolean = true;
 		
 		public var cssFile:String;
 		
@@ -120,7 +120,7 @@ package com.gestureworks.cml.core
 		
 		
 		private function loadExtFiles():void
-		{
+		{			
 			if (debug)
 				trace("\nload non-cml external files");	
 				
@@ -261,8 +261,7 @@ package com.gestureworks.cml.core
 			
 			
 			if (cmlFilesComplete == FileManager.instance.cmlCount)
-			{
-				
+			{				
 				if (FileManager.instance.fileCount > 0)
 					loadExtFiles();
 				else
@@ -376,12 +375,7 @@ package com.gestureworks.cml.core
 					trace("\n-create", className);					
 				
 				obj = createObject(className);	
-				
-				
-							
-				
-				
-				
+					
 				
 					
 				// assign id and class values
@@ -458,7 +452,6 @@ package com.gestureworks.cml.core
 						}		
 					}
 				}
-				
 				
 				
 				
@@ -595,11 +588,12 @@ package com.gestureworks.cml.core
 			var propertyValue:String;
 			
 			for (var propertyName:String in obj.propertyStates[state])
-			{	
+			{
+				if (debug)
+					trace("___________________________", obj, obj.id, propertyName, obj[propertyName]);	
+				
 				obj[propertyName] = 
-					filterProperty(propertyName, propertyValue, obj.propertyStates, state);
-					
-				//trace("___________________________", obj, obj.id, propertyName, obj[propertyName]);	
+					filterProperty(propertyName, propertyValue, obj.propertyStates, state);					
 			}	
 				
 		}
