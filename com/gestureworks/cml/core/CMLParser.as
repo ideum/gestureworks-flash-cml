@@ -182,6 +182,7 @@ package com.gestureworks.cml.core
 			
 			DisplayManager.instance.updateCMLProperties();
 			
+			
 			if (debug)
 				trace("\nlayout containers");				
 			
@@ -226,8 +227,9 @@ package com.gestureworks.cml.core
 		
 
 		private var cmlFilesComplete:int = 0;
-	
-
+		
+		private var cmlRenderData:String;
+		
 		private function onCMLLoadComplete(event:FileEvent):void
 		{
 			if (debug)
@@ -237,12 +239,13 @@ package com.gestureworks.cml.core
 			
 			if (event.fileType == "cmlRenderKit")
 			{
-				//if (CML.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
-				//{
-					//includeParentIndex.push(parent);
-					//FileManager.instance.addToQueue(val, "cmlRenderKit");
-				//}
-				//else	
+				if (CML.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
+				{
+					cmlRenderData = CML.getInstance(event.filePath).data.Renderer.@dataPath;
+					FileManager.instance.addToQueue(cmlRenderData, "cmlRenderData");					
+					trace("----------------------------------------------------------------------", cmlRenderData);
+				}
+				else	
 					loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);
 			}	
 			else
@@ -428,7 +431,6 @@ package com.gestureworks.cml.core
 							includeParentIndex.push(obj);
 							FileManager.instance.addToQueue(val, "cmlRenderKit");
 						}
-						
 						
 						
 						for each (var val:* in properties.*)

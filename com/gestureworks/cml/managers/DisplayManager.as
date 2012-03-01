@@ -61,7 +61,6 @@ package com.gestureworks.cml.managers
 		
 		public function loadRenderer():void
 		{
-			trace("&&&&&&&&&DM loadRenderer&&&&&&&");
 			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
 			{				
@@ -107,6 +106,7 @@ package com.gestureworks.cml.managers
 		}		
 		
 
+		
 		public function layoutCML():void
 		{				
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
