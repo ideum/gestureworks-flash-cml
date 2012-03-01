@@ -35,24 +35,28 @@ package com.gestureworks.cml.components
 	public class AlbumViewerNew extends Component//ComponentKit//TouchContainer
 	{		
 		// objects
-		public var album:TouchSprite = new TouchSprite();
 		private var menu:TouchSprite;
-		private var ibtn:TouchSprite;
-		private var cbtn:TouchSprite;
-		private var belt:TouchSprite;
-		private var list:ComponentKit;
-		private var mShape:GraphicElement
-		private var metadata:TouchSprite;
 		private var bar:GraphicElement;
-		private var belt_bg:GraphicElement;
-		private var album_bg:GraphicElement;
-		
+		private var ibtn:TouchContainer;;
+		private var cbtn:TouchContainer;
 		private var album_title:TextElement;
 		
+		private var album_bg:GraphicElement;
+		private var belt:TouchSprite;
+		private var belt_bg:GraphicElement;
+		private var list:ComponentKit;
+		private var mShape:GraphicElement
+		
+		private var metadata:TouchSprite;
+		private var meta_bg:GraphicElement;
+		private var text_scroll_box:TouchSprite;
+		private var meta_desc:TextElement;
+		
+
 		private var _x:Number;
 		private var _y:Number;
-		
 		public var bar_height:Number;
+		private var text_padding:Number = 30;
 		
 		// component
 		private var i:int
@@ -153,18 +157,16 @@ package com.gestureworks.cml.components
 			//////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////////////
 			
-				//album = this.childList.getCSSClass("holder", 0);
-				//album = this;
-					this.gestureEvents = true;
-					this.gestureList = { "n-drag":true };
-					this.transformEvents = true;
-					this.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
-				//addChild(album);
+				this.gestureEvents = true;
+				this.gestureList = { "n-drag":true };
+				this.transformEvents = true;
+				this.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 				
 				//set init placement
 				_x = this.x;
 				_y = this.y;
 				
+				// album background
 				album_bg = this.childList.getCSSClass("album_bg", 0)
 				this.addChild(album_bg);
 			 
@@ -182,40 +184,42 @@ package com.gestureworks.cml.components
 				menu.addChild(bar);
 				
 				bar_height = bar.height;
-						
-			//	cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn", 0);
-				cbtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
-				//cbtn = bar.childList.getCSSClass("cbtn",0);
-					cbtn.gestureEvents = true;
-					cbtn.gestureList = { "tap":true, "n-drag":true };
-					cbtn.addEventListener(GWGestureEvent.TAP, onClose);
-					cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
-					cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
-				menu.addChild(cbtn);
-							
-				ibtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn", 0);
-				//ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
-				//ibtn = bar.childList.getCSSClass("ibtn",0);
-					ibtn.gestureEvents = true;
-					ibtn.gestureList = { "tap":true, "n-drag":true };
-					ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
-					//ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
-					ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
-				menu.addChild(ibtn);
 				
 				album_title = this.childList.getCSSClass("menu", 0).childList.getCSSClass("title", 0);
 				menu.addChild(album_title);
+						
+				// close button 
+				cbtn = new TouchContainer();
+				//cbtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
+					cbtn.mouseChildren = false;
+					cbtn.gestureEvents = true;
+					cbtn.gestureList = { "tap":true};//"n-drag":true 
+					cbtn.addEventListener(GWGestureEvent.TAP, onClose);
+				//menu.addChild(cbtn);
+				this.addChild(cbtn);
+				
+				var cml_cbtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
+				cbtn.addChild(cml_cbtn);
+
+				// info button
+				ibtn = new TouchContainer();
+				//ibtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn", 0);
+					ibtn.mouseChildren = false;
+					ibtn.gestureEvents = true;
+					ibtn.gestureList = {"tap":true};//, "n-drag":true 
+					ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
+				//menu.addChild(ibtn);
+				this.addChild(ibtn);
+				
+				var cml_ibtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
+				ibtn.addChild(cml_ibtn);
 	
 				/////////////////////////////////////////////////
-				// itme belt
+				// item belt
 				/////////////////////////////////////////////////
-								
 				belt = this.childList.getCSSClass("belt", 0);
-				//belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
-				//belt = album.childList.getCSSClass("belt", 0);
 					belt.gestureList = {"1-dragx":true, "2-dragx":true, "3-dragx":true };
 					belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
-					//belt.addEventListener(GWGestureEvent.DOUBLE_TAP, gtapMenuItem);
 					if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
 					if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
 					if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
@@ -227,33 +231,31 @@ package com.gestureworks.cml.components
 				
 				list = this.childList.getCSSClass("belt", 0).childList.getCSSClass("list", 0);
 				belt.addChild(list);
-			 
-				//apply mask//
+				
+				/////////////////////////////////////////////////////////
+				//apply album mask
+				/////////////////////////////////////////////
 				mShape = this.childList.getCSSClass("mask_shape", 0);
-				//mShape = this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0);
-				//mShape = album.childList.getCSSClass("mask_shape", 0);
 				this.addChild(mShape);
 				belt.mask = mShape;
 				
-				mShape.height = 700
-				
-				// meta data text display
+				//////////////////////////////////////////////////////////
+				// meta data text display 
+				//////////////////////////////////////////////////////////
 				metadata = this.childList.getCSSClass("metadata", 0);
-				//metadata = this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0);
 				this.addChild(metadata);
 				
+				meta_bg = this.childList.getCSSClass("metadata", 0).childList.getCSSClass("meta_bg", 0)
+				metadata.addChild(meta_bg);
 				
+				text_scroll_box = this.childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0);
+				metadata.addChild(text_scroll_box);
 				
+				meta_desc =  this.childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0).childList.getCSSClass("meta_description", 0);
+				text_scroll_box.addChild(meta_desc);
 				
-			/////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////
-			
-			// set anim params
-			belt_maxValue = belt.width - width;
-			belt_minValue = 0;
-			
-			//trace("belt........",belt.width,belt_maxValue, width);
-			
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////	
 	}
 	
 	public function update():void
@@ -264,11 +266,17 @@ package com.gestureworks.cml.components
 		belt_bg.height = height;
 		mShape.height = height;
 		metadata.height = height;
+		meta_bg.height = height;
+		text_scroll_box.height = height;
+		meta_desc.height = height - 2*text_padding;
 		
 		//update width
 		album_bg.width = width;
 		mShape.width = width;
 		metadata.width = width;
+		meta_bg.width = width;
+		text_scroll_box.width = width;
+		meta_desc.width = width - 2*text_padding;
 	}
 	
 	public function onScroll(event:GWGestureEvent):void
@@ -280,23 +288,30 @@ package com.gestureworks.cml.components
 	public function onClose(event:GWGestureEvent):void
 	{
 		trace("close album");
+		var ID:* = String(event.target.parent.id).split("album");
+		
 		//dispose();
 		
 		//reset album //faux dispose
-		//album.visible = false;
+		this.visible = false;
 		//reset position
 		this.x = _x;
 		this.y = _y;
-		
-		//x = 0;
-		//y = 0;
-		
 		// reset meta data 
 		metadata.visible = false; // reset meta data
 		// reset scroll text
 		
 		// reset belt
 		belt.x = 0;
+		
+		///////////////////////////////////////////////
+		// reset link line
+		///////////////////////////////////////////////
+		//trace(this.id, ID, event.target.parent.parent.parent);
+		//var nodeNum = event.target.parent.parent.parent.childList.getCSSClass("node_list_viewer", 0).childList.length
+		//var nodes = event.target.parent.parent.parent.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node");
+		
+		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
 	}
 	public function onInfo(event:GWGestureEvent):void
 	{

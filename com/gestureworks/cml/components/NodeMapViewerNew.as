@@ -135,26 +135,33 @@ package com.gestureworks.cml.components
 				// add listener to albums///////// updates node links////////////////////////////////////
 				//var album = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0);
 				//var album:* = nodes.getIndex(k).childList.getCSSClass("album", 0);
-				var album:* = albums.getIndex(k);
-					album.name = k;
+				var album:TouchContainer = albums.getIndex(k);
+					album.name = String(k);
 					album.addEventListener(DisplayEvent.CHANGE, linkDisplayHandler);
 				
-				// add tap listener to node points /////////////////////////////////
-				//var node_point = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0);
+				// add tap listener to nodes /////////////////////////////////
+				var node:TouchContainer = nodes.getIndex(k);
+				
+				var node_point:TouchContainer = new TouchContainer();	
 				//var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
-				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);	
-					node_point.name = k;
-					node_point.gestureEvents = true;
-					//node_point.touchEvents = true;
-					node_point.gestureList = { "tap":true,"n-drag":true };
+					//node_point.id = k;
+					node_point.name = String(k);
+					//node_point.gestureEvents = true;
+					node_point.gestureList = { "tap":true};//"n-drag":true 
 					node_point.addEventListener(GWGestureEvent.TAP, onOpen);
-					node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
-					node_point.addEventListener(TouchEvent.TOUCH_BEGIN, onOpen);
+				node.addChild(node_point)
+				
+				// sub in node_point content
+				var cml_node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
+				node_point.addChild(cml_node_point);
+				
 			}
 				
 			//slider//////////////////////////////////////////////
 			// loop through nodes in chosen active list
 			slider.addEventListener(StateEvent.CHANGE, categoryUpdate);
+			
+			
 			
 			// set node touch timer control///////////////////////
 			
@@ -181,8 +188,7 @@ package com.gestureworks.cml.components
 			
 			//trace("--------------node group", g);
 			//trace("--------------album group",albums.getIndex(ID).group);
-			
-				//trace("node vis", nodes.getIndex(0).group, g);
+			//trace("node vis", nodes.getIndex(0).group, g);
 				
 			for (var k:int = 0; k < nodeNum; k++)
 			{
@@ -213,7 +219,8 @@ package com.gestureworks.cml.components
 		private function onOpen(event:GWGestureEvent):void 
 		{
 			var ID:int = event.target.name;
-			trace("open", ID);
+			
+			trace("open", ID,event.target.id);
 	
 			// reset positions
 			//this.album0.visible = true;
@@ -232,6 +239,9 @@ package com.gestureworks.cml.components
 			
 			node_link.width = album.x -node.x + album.width / 2;
 			node_link.height = album.y - node.y;
+			
+			// when closed make invisible
+			if (!album.visible) node_link.visible = false;
 		}
 	}
 }

@@ -597,7 +597,9 @@ package com.gestureworks.cml.core
 			for (var propertyName:String in obj.propertyStates[state])
 			{	
 				obj[propertyName] = 
-					filterProperty(propertyName, propertyValue, obj.propertyStates, state); 
+					filterProperty(propertyName, propertyValue, obj.propertyStates, state);
+					
+				//trace("___________________________", obj, obj.id, propertyName, obj[propertyName]);	
 			}	
 				
 		}

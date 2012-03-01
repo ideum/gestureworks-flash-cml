@@ -170,7 +170,7 @@ package com.gestureworks.cml.core
 		public function set dimensionsTo(value:String):void
 		{
 			_dimensionsTo = value;
-			trace("TOUCH CONTAINER - DIMENTIONS TO: ", dimensionsTo);
+			//trace("TOUCH CONTAINER - DIMENTIONS TO: ", dimensionsTo);
 		}		
 		
 		
@@ -215,10 +215,10 @@ package com.gestureworks.cml.core
 					this.width = childList.getIndex(i).width;
 					this.height = childList.getIndex(i).height;
 					
-					trace(width, height);
+					//trace(width, height);
 				}
 				
-				trace("TOUCH CONTAINER - DIMENSIONS TO: ", dimensionsTo);
+				//trace("TOUCH CONTAINER - DIMENSIONS TO: ", dimensionsTo);
 				
 			}
 			
@@ -274,6 +274,10 @@ package com.gestureworks.cml.core
 		public function activateTouch():void
 		{
 			this.gestureList = cmlGestureList;
+			
+			for (var j:String in gestureList) {
+				//trace("gesture:",this.id, j+":"+gestureList[j]);
+			}
 		}
 				
 		
