@@ -81,55 +81,74 @@ package com.gestureworks.cml.factories
 		{
 			var imageSrc:String = propertyStates[0]["src"];
 			file = FileManager.instance.fileList.getKey(imageSrc).loader;
+						
+			///////////////////////////////////////////////////////////////////////////////////////// 
+			/// resample image if width and/or height are provided before load command is given.
+			/// we may want to make resampling something the user must turn on (e.g. resample = true)
+			/// and otherwise just scale the image to the right dimensions
+			/////////////////////////////////////////////////////////////////////////////////////////
 			
-			var resizeMatrix:Matrix = new Matrix();
+			// scale percentages needed to achieve desired diemensions
+			_percentX = 1; 
+			_percentY = 1;
 			
-			
-			trace("*****************************************", propertyStates[0]["width"], propertyStates[0]["height"]);
-		
 			
 			if (propertyStates[0]["width"] && propertyStates[0]["height"])
-			{				
-				_percentX = propertyStates[0]["width"] / file.width;
-				_percentY = propertyStates[0]["height"] / file.height;				
+			{
+				// skip resampling if not needed to avoid image degradation
+				if ((propertyStates[0]["width"] != file.width) && (propertyStates[0]["height"] != file.height))
+				{
+					_percentX = propertyStates[0]["width"] / file.width;
+					_percentY = propertyStates[0]["height"] / file.height;
+				}
 			}
+			
 			else if (propertyStates[0]["width"])
 			{
-				_percentX = propertyStates[0]["width"] / file.width;
-				_percentY = _percentX;			
-			}	
+				// skip resampling if not needed to avoid image degradation
+				if (propertyStates[0]["width"] != file.width)
+				{
+					_percentX = propertyStates[0]["width"] / file.width;
+					_percentY = _percentX;
+				}
+			}
+			
 			else if (propertyStates[0]["height"])
 			{
-				_percentY = propertyStates[0]["height"] / file.height; 										
-				_percentX = _percentY;
-			}
-			else 
+				// skip resampling if not needed to avoid image degradation
+				if (propertyStates[0]["height"] != file.height)
+				{
+					_percentY = propertyStates[0]["height"] / file.height; 										
+					_percentX = _percentY;
+				}
+			}			
+			
+			if ((_percentX != 1) && (_percentY != 1))
 			{
-				_percentX = 1;
-				_percentY = 1;
+				var resizeMatrix:Matrix = new Matrix();		
+				resizeMatrix.scale(_percentX, _percentY);				
+				_bitmapData = new BitmapData(file.width * _percentX, file.height * _percentY, true, 0x000000);
+				_bitmapData.draw(file.content, resizeMatrix);
+				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);				
+			}
+			else
+			{
+				_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
+				_bitmapData.draw(file.content);
+				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);				
 			}
 			
-			
-			
-			
-			resizeMatrix.scale(_percentX, _percentY);				
-			
-			_bitmapData = new BitmapData(file.width * _percentX, file.height * _percentY, true, 0x000000);
-			_bitmapData.draw(file.content, resizeMatrix);
-			
-			_bitmap = new Bitmap(_bitmapData,PixelSnapping.NEVER, true);
 			_bitmap.smoothing=true;
 			
-			width = _bitmap.width//*_percentX;
-			height = _bitmap.height// * _percentY;
 			
-			trace("image vars",_percentX, _percentY, file.width, file.height,_bitmap.width,_bitmap.height,width,height)
-					
+			// very important to set width and height!
+			width = _bitmap.width;
+			height = _bitmap.height;
+		
 			
+			// establish orientation			
 			_aspectRatio = width / height;
-			//trace(width, height);
 			
-			// establish orientation
 			if (_aspectRatio > 1) 
 			{
 				_portrait = true;
@@ -143,7 +162,8 @@ package com.gestureworks.cml.factories
 			
 			addChild(_bitmap);
 		
-			// unload loader
+			// unload loader 
+			// TODO: implement unloaders
 			//if (!avatar) {
 				//loader.unload();
 				//loader.unloadAndStop(); 
