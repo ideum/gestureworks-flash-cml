@@ -16,7 +16,7 @@ package com.gestureworks.cml.core
 	/**
 	 * CMLParser, Singleton
 	 * CML parsing routine
-	 * @authors Charles Veasey
+	 * @authors Matthew Valverde & Charles Veasey
 	 */
 	public class CMLParser extends CML_CORE
 	{		
@@ -33,7 +33,7 @@ package com.gestureworks.cml.core
 		private static var GXMLComponent:Class;
 		public var defaultContainer:Container;
 		public static const COMPLETE:String = "COMPLETE";
-		public var debug:Boolean = true;
+		public var debug:Boolean = false;
 		
 		public var cssFile:String;
 		
@@ -227,8 +227,7 @@ package com.gestureworks.cml.core
 		
 
 		private var cmlFilesComplete:int = 0;
-		
-		private var cmlRenderData:String;
+		private var cmlRenderer:XMLList;
 		
 		private function onCMLLoadComplete(event:FileEvent):void
 		{
@@ -241,19 +240,29 @@ package com.gestureworks.cml.core
 			{
 				if (CML.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
 				{
-					cmlRenderData = CML.getInstance(event.filePath).data.Renderer.@dataPath;
-					FileManager.instance.addToQueue(cmlRenderData, "cmlRenderData");					
-					trace("----------------------------------------------------------------------", cmlRenderData);
+					cmlRenderer = CML.getInstance(event.filePath).data.Renderer;
+					var cmlRendererData:String = CML.getInstance(event.filePath).data.Renderer.@dataPath;
+					FileManager.instance.addToQueue(cmlRendererData, "cmlRendererData");
+					trace("-------", cmlRendererData);
 				}
 				else	
 					loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);
-			}	
+			}
+			else if (event.fileType == "cmlRendererData")
+			{
+				var renderKit:XML = <RenderKit/>
+				var data:XMLList = cmlRenderer + CML.getInstance(event.filePath).data.RendererData;
+				renderKit.appendChild(data);				
+				loadRenderer(XMLList(renderKit), includeParentIndex[cmlFilesComplete-2]);
+			}
+				
 			else
 				createElements(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
 			
 			
 			if (cmlFilesComplete == FileManager.instance.cmlCount)
 			{
+				
 				if (FileManager.instance.fileCount > 0)
 					loadExtFiles();
 				else
@@ -289,16 +298,14 @@ package com.gestureworks.cml.core
 		
 		
 		public function loadRenderer(renderKit:*, parent:*):void
-		{	
+		{			
 			var rendererId:String = renderKit.Renderer.@id; 
-			var rendererData:String = renderKit.Renderer.@data;
-			
-			var renderedItemId:String;
+			var rendererData:XMLList = renderKit.RendererData;
 			
 			for (var q:int; q < renderKit.Renderer.length(); q++)
-			{								
-				var renderList:XMLList = renderKit[rendererData].children();				
-						
+			{
+				var renderList:XMLList = rendererData.*;
+				
 				for (var i:int=0; i<renderList.length(); i++)
 				{
 					var cmlRenderer:XMLList = new XMLList(renderKit.Renderer[q].*);
@@ -308,14 +315,11 @@ package com.gestureworks.cml.core
 						var properties:XMLList = XMLList(renderList[i]);						
 						CMLParser.instance.loopCML(node, parent, properties);
 					}
-					
 				}
-				
 			}
-		
 		}			
 
-		
+					
 
 		private var index:int = 0;
 		private var includeParentIndex:Array = [];

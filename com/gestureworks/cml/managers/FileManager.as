@@ -57,7 +57,13 @@ package com.gestureworks.cml.managers
 			{				
 				cmlQueue.append(file, type);			
 				cmlCount++;
-			}					
+			}
+			
+			else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
+			{				
+				cmlQueue.append(file, type);			
+				cmlCount++;
+			}				
 			
 			else if (type == "swf" && file.search(swfType) >= 0 && !fileQueue.hasKey(file))
 			{
@@ -121,18 +127,24 @@ package com.gestureworks.cml.managers
 								
 				if (file)
 				{
-					if (type == "cml" && type&& file.search(cmlType) >= 0)
+					if (type == "cml" && file.search(cmlType) >= 0)
 					{
 						CML.getInstance(file).loadCML(file);
 						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
 						fileList.append(file, CML.getInstance(file));	
 					}
-					else if (type == "cmlRenderKit" && type&& file.search(cmlType) >= 0)
+					else if (type == "cmlRenderKit" && file.search(cmlType) >= 0)
 					{
 						CML.getInstance(file).loadCML(file);
 						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
 						fileList.append(file, CML.getInstance(file));	
-					}					
+					}
+					else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
+					{
+						CML.getInstance(file).loadCML(file);
+						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
+						fileList.append(file, CML.getInstance(file));	
+					}						
 				}
 			}			
 			
