@@ -2,20 +2,12 @@ package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.kits.ComponentKit;
+	//import com.gestureworks.cml.element.Component;
 	import com.gestureworks.core.GestureWorks;
+		import com.gestureworks.components.CMLDisplay; CMLDisplay;
 	
 	public class ListViewer extends ComponentKit
 	{		
-		private var i:int
-		private var marginY:Number;
-		private var marginX:Number;
-		private var sepx:Number;
-		private var sepy:Number;
-		private var box:Number;
-		private var sumx:Number;
-		private var sumy:Number;
-		private var close_packing:Boolean;
-		private var n:int;
 		
 		public function ListViewer()
 		{
@@ -30,83 +22,59 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("list display viewer complete");
-			//listHorizontal();		
-			//listVertical();	
-			//trace("---------------------------------------------------", this.id, this.layout);
-			
-			//this.childList.getIndex(i).addListener
+			resizeBelt();
 		}
 		
-		/*
-		private function listHorizontal():void
+		
+		private function resizeBelt():void
 		{ 
-			box = 540
-			sepx = 10;
-			sepy = 10;
-			marginY = 25;
-			marginX = 0;
-			sumx = 0;
-			close_packing = false;
-			n = this.childList.length;
+			var album:* = this.parent.parent as TouchContainer
+			var belt:* = this.parent as TouchContainer
+			var background:* = belt.childList.getCSSClass("belt_bg", 0);
+			var list:* = belt.childList.getCSSClass("list", 0)//.childList.getCSSClass("list")
+			var listNumber:int = list.childList.length;
 			
-				//trace("album, items",this.childList.length);
-				for (i=0; i<=n; i++)
-					{
-						//trace(this.childList.getIndex(i))
-						if ((childList.getIndex(i) is TouchContainer))
-						{
-							//trace(childList.getIndex(i).id,childList.getIndex(i).width);
-							
-							if(!close_packing) childList.getIndex(i).x = marginX + (i) * box + (i - 1) * sepx;
-							else childList.getIndex(i).x = marginX + sumx + (i - 1) * sepx;
-							
-							childList.getIndex(i).y = 0;
-							childList.getIndex(i).gestureList = { "tap":true, "double_tap":true };
-							childList.getIndex(i).id = String(i);
-						
-							sumx+=childList.getIndex(i).width
-						}
-					}
-					
-					width = 2 * marginX + sumx + (n - 1) * sepx;
-					//height = childList.getIndex(0).height;
-					height = this.height;
-		}*/
-		/*
-		private function listVertical():void
-		{ 
-			box = 400
-			sepx = 10;
-			sepy = 10;
-			marginY = 25;
-			marginX = 0;
-			sumy = 0;
-			close_packing = true;
-			n = this.childList.length;
+			//trace("resizeBelt belt", this.width, this.height);
+			//trace(this.parent.parent as TouchContainer, album.id, album.belt_minValue, background.id);
 			
-				//trace("album, items",this.childList.length);
-				for (i=0; i<=n; i++)
-					{
-						//trace(this.childList.getIndex(i))
-						if ((childList.getIndex(i) is TouchContainer))
-						{
-							trace(childList.getIndex(i).height);
-							
-							if(!close_packing) childList.getIndex(i).y = marginY + (i) * box + (i - 1) * sepy;
-							else childList.getIndex(i).y = marginY + sumy + (i - 1) * sepy;
-							
-							childList.getIndex(i).x = 0;
-							childList.getIndex(i).gestureList = { "tap":true, "double_tap":true };
-							childList.getIndex(i).id = String(i);
-						
-							sumy+=childList.getIndex(i).height
-						}
-					}
+			// update belt size
+			belt.width = this.width;
+			belt.height = this.height;
+			
+			// update background size
+			background.width = this.width;
+			background.height = this.height;
+			
+			// set belt min and max values
+			album.belt_minValue = 0;
+			album.belt_maxValue = this.width - album.width;
+			
+			var label_height:Number;
+			var belt_height:Number;
+			// loop through items in belt and update test field
+			
+			for (var i:int=0; i<listNumber; i++)
+			{
+				
+				var itm:* = list.childList.getIndex(i);
+				var img:* = list.childList.getIndex(i).childList.getCSSClass("image", 0);
+				var md:* = list.childList.getIndex(i).childList.getCSSClass("metadata", 0)
+				
+				if (md) {
+					var bg:* = md.childList.getCSSClass("title_bg", 0);
+					var txt:* = md.childList.getCSSClass("title_text", 0);
 					
-					height = 2 * marginX + sumy + (n - 1) * sepy;
-					width = childList.getIndex(0).width;
+					label_height = md.height; 
+					belt_height = img.height; 
+					
+					md.y = img.height;
+					bg.width = img.width;
+					txt.width = img.width
+				}
+			}
+			// update album height
+			album.height = belt_height + label_height + album.bar_height -10;//????????
+			album.update();
 		}
-		*/
-
 	}
 }

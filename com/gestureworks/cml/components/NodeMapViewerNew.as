@@ -179,7 +179,7 @@ package com.gestureworks.cml.components
 			if (state == 2) g="1948";
 			if (state == 3) g="2012";
 			
-			trace("--------------node group", g);
+			//trace("--------------node group", g);
 			//trace("--------------album group",albums.getIndex(ID).group);
 			
 				//trace("node vis", nodes.getIndex(0).group, g);
@@ -194,7 +194,7 @@ package com.gestureworks.cml.components
 			
 				if (nodes.getIndex(k).group == g) {
 					//change node point icon visibilty
-					trace("node vis");
+					//trace("node vis");
 					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = true;
 					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
 				}

@@ -95,13 +95,11 @@ package com.gestureworks.cml.factories
 			}
 			else if (propertyStates[0]["width"])
 			{
-				
 				_percentX = propertyStates[0]["width"] / file.width;
 				_percentY = _percentX;			
 			}	
 			else if (propertyStates[0]["height"])
 			{
-				
 				_percentY = propertyStates[0]["height"] / file.height; 										
 				_percentX = _percentY;
 			}
@@ -112,7 +110,7 @@ package com.gestureworks.cml.factories
 			}
 			
 			
-			trace(_percentX, _percentY)
+			
 			
 			resizeMatrix.scale(_percentX, _percentY);				
 			
@@ -122,8 +120,10 @@ package com.gestureworks.cml.factories
 			_bitmap = new Bitmap(_bitmapData,PixelSnapping.NEVER, true);
 			_bitmap.smoothing=true;
 			
-			width = _bitmap.width*_percentX;
-			height = _bitmap.height * _percentY;
+			width = _bitmap.width//*_percentX;
+			height = _bitmap.height// * _percentY;
+			
+			trace("image vars",_percentX, _percentY, file.width, file.height,_bitmap.width,_bitmap.height,width,height)
 					
 			
 			_aspectRatio = width / height;

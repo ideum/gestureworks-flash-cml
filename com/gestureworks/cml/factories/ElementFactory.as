@@ -369,6 +369,7 @@ package com.gestureworks.cml.factories
 		protected function createUI():void{}
 		protected function commitUI():void{}
 		protected function layoutUI():void{}
-		public function updateUI():void{}
+		//public function updateUI():void{}
+		protected function updateUI():void{}
 	}
 }

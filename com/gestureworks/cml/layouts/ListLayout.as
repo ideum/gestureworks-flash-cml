@@ -24,7 +24,7 @@ package com.gestureworks.cml.layouts
 			_type = value;
 		}
 		
-		private var _close_packing:Boolean = false;
+		private var _close_packing:Boolean = true;
 		public function get close_packing():Boolean{return _close_packing;}
 		public function set close_packing(value:Boolean):void 
 		{
@@ -65,7 +65,7 @@ package com.gestureworks.cml.layouts
 			_marginX = value;
 		}
 		
-		private var _marginY:Number = 10;
+		private var _marginY:Number = 0;
 		public function get marginY():Number{return _marginY;}
 		public function set marginY(value:Number):void 
 		{
@@ -113,26 +113,24 @@ package com.gestureworks.cml.layouts
 			trace("horizontal layout",n)
 			
 			for (var i:int = 0; i < n; i++) 
-			{							
+			{				
+				var obj:* = container.childList.getIndex(i);
+				var objchild:* = container.childList.getIndex(i).childList.getIndex(0);
+				
 				if (!close_packing) {
-					
-					container.childList.getIndex(i).x = paddingX + (i) * blockX + (i - 1) * marginX;
-					container.childList.getIndex(i).y = 0;
-					//trace("----------------------------------------------------------------------no close_packing pack",container.childList.getIndex(i).x)
+		
+					obj.x = paddingX + (i) * blockX + (i - 1) * marginX;
+					obj.y = 0;
 				}
 				else {
-					container.childList.getIndex(i).x = paddingX + sumx + (i - 1) * marginX;
-					container.childList.getIndex(i).y = 0;
+					
+					obj.x = paddingX + sumx + (i - 1) * marginX;
+					obj.y = 0;
 				}
-				sumx += container.childList.getIndex(i).width
-				
-				trace( container.childList.getIndex(i).id,container.childList.getIndex(i).width);
+				sumx += objchild.width;
 			}
-			container.width = 2 * paddingX + sumx + (n - 1) * marginX;
-			//container.height = container.childList.getIndex(0).height;
-			
-		//	trace("container layout height", container.height, container.childList.getKey(""))
-			
+			container.width = 2 * paddingX + sumx + (n - 1) * marginY;
+			container.height = objchild.height;
 		}
 		
 		/**

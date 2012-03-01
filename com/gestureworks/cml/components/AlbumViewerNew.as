@@ -2,6 +2,7 @@ package com.gestureworks.cml.components
 {
 	
 	import adobe.utils.CustomActions;
+	import away3d.core.base.Graphics3D;
 	import com.gestureworks.cml.core.TouchContainerDisplay;
 	import com.gestureworks.cml.element.ButtonElement;
 	import com.gestureworks.cml.element.GraphicElement;
@@ -35,17 +36,23 @@ package com.gestureworks.cml.components
 	{		
 		// objects
 		public var album:TouchSprite = new TouchSprite();
-		private var bar:TouchSprite;
+		private var menu:TouchSprite;
 		private var ibtn:TouchSprite;
 		private var cbtn:TouchSprite;
 		private var belt:TouchSprite;
 		private var list:ComponentKit;
 		private var mShape:GraphicElement
 		private var metadata:TouchSprite;
+		private var bar:GraphicElement;
+		private var belt_bg:GraphicElement;
+		private var album_bg:GraphicElement;
+		
+		private var album_title:TextElement;
 		
 		private var _x:Number;
 		private var _y:Number;
-
+		
+		public var bar_height:Number;
 		
 		// component
 		private var i:int
@@ -56,8 +63,8 @@ package com.gestureworks.cml.components
 		// belt
 		private var belt_marginX:Number;
 		private var belt_marginY:Number;
-		private var belt_maxValue:Number;
-		private var belt_minValue:Number;
+		public var belt_maxValue:Number;
+		public var belt_minValue:Number;
 		private var belt_buffer:int;
 		// belt tween
 		private var belt_buffer_tweenOn:Boolean = false;
@@ -157,12 +164,24 @@ package com.gestureworks.cml.components
 				//set init placement
 				_x = this.x;
 				_y = this.y;
+				
+				album_bg = this.childList.getCSSClass("album_bg", 0)
+				this.addChild(album_bg);
 			 
-				//bar = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0);
-				bar = this.childList.getCSSClass("menu", 0);
+				////////////////////////////////////////////////
+				// menu
+				////////////////////////////////////////////////
+				
+				menu = this.childList.getCSSClass("menu", 0);
+					menu.targetParent = true;
+				this.addChild(menu);
+				
+				bar = this.childList.getCSSClass("menu", 0).childList.getCSSClass("bar", 0);
 				//bar = album.childList.getCSSClass("menu", 0);
-					bar.targetParent = true;
-				this.addChild(bar);
+					//bar.y -= 10;
+				menu.addChild(bar);
+				
+				bar_height = bar.height;
 						
 			//	cbtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn", 0);
 				cbtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("cbtn",0);
@@ -172,7 +191,7 @@ package com.gestureworks.cml.components
 					cbtn.addEventListener(GWGestureEvent.TAP, onClose);
 					cbtn.addEventListener(GWGestureEvent.DRAG, onClose);
 					cbtn.addEventListener(TouchEvent.TOUCH_BEGIN, onClose);
-				this.addChild(cbtn);
+				menu.addChild(cbtn);
 							
 				ibtn = this.childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn", 0);
 				//ibtn = this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
@@ -182,7 +201,14 @@ package com.gestureworks.cml.components
 					ibtn.addEventListener(GWGestureEvent.TAP, onInfo);
 					//ibtn.addEventListener(GWGestureEvent.DRAG, onInfo);
 					ibtn.addEventListener(TouchEvent.TOUCH_BEGIN, onInfo);
-				this.addChild(ibtn);
+				menu.addChild(ibtn);
+				
+				album_title = this.childList.getCSSClass("menu", 0).childList.getCSSClass("title", 0);
+				menu.addChild(album_title);
+	
+				/////////////////////////////////////////////////
+				// itme belt
+				/////////////////////////////////////////////////
 								
 				belt = this.childList.getCSSClass("belt", 0);
 				//belt = this.childList.getCSSClass("holder", 0).childList.getCSSClass("belt", 0);
@@ -195,9 +221,11 @@ package com.gestureworks.cml.components
 					if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 				this.addChild(belt);
 				
+				
+				belt_bg = this.childList.getCSSClass("belt", 0).childList.getCSSClass("belt_bg", 0);
+				belt.addChild(belt_bg);
+				
 				list = this.childList.getCSSClass("belt", 0).childList.getCSSClass("list", 0);
-					//list.addEventListener(DisplayEvent.COMPLETE, cancelTween)
-					//list.y = 100;
 				belt.addChild(list);
 			 
 				//apply mask//
@@ -206,6 +234,8 @@ package com.gestureworks.cml.components
 				//mShape = album.childList.getCSSClass("mask_shape", 0);
 				this.addChild(mShape);
 				belt.mask = mShape;
+				
+				mShape.height = 700
 				
 				// meta data text display
 				metadata = this.childList.getCSSClass("metadata", 0);
@@ -225,7 +255,21 @@ package com.gestureworks.cml.components
 			//trace("belt........",belt.width,belt_maxValue, width);
 			
 	}
-
+	
+	public function update():void
+	{	
+		// update height
+		album_bg.height = height;
+		belt.height = height;
+		belt_bg.height = height;
+		mShape.height = height;
+		metadata.height = height;
+		
+		//update width
+		album_bg.width = width;
+		mShape.width = width;
+		metadata.width = width;
+	}
 	
 	public function onScroll(event:GWGestureEvent):void
 	{

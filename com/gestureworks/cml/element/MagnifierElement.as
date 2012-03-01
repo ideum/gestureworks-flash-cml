@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.MagnifierFactory;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.core.TouchSprite;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
@@ -28,11 +29,13 @@ package com.gestureworks.cml.element
 		private var targetScale:Number = 1;
 		private var targetWidth:Number = 0;
 		private var zeroPoint:Point = new Point(0, 0);
-		private var magX:Number;
-		private var magY:Number;
-		public var id:int
-		public var cmlIndex:*
-		public var parseCML:*
+		public var magX:Number;
+		public var magY:Number;
+		//public var id:int
+		//public var cmlIndex:*
+		//public var parseCML:*
+		
+		private var ts:TouchSprite
 		
 		public function MagnifierElement(target:* = null)
 		{
@@ -46,8 +49,12 @@ package com.gestureworks.cml.element
 			//else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
+		//override protected function DisplayComplete():void 
+		//{
+		//}
+		
 		private function init(e:Event = null):void
-		{
+		{	
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			target = target ? target : parent ? parent : this;
 			outline = new Shape();
@@ -57,20 +64,26 @@ package com.gestureworks.cml.element
 			addChild(maskS);
 			this.mask = maskS;
 			
-			gestureList = {"n-drag": true, "n-scale": true};
-			nestedTransform = true;
-			disableNativeTransform = true;
-			disableAffineTransform = true;
-			gestureEvents = true;
+			
+			//ts.addChild(outline);
+			//ts.addChild(maskS);
+			//this.mask = maskS;
+			
+			
+			//gestureEvents = true;
+			//gestureList = {"n-drag": true, "n-scale": true};
+			//nestedTransform = true;
+			//disableNativeTransform = true;
+			//disableAffineTransform = true;
+			
 			
 			addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-			addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
+			//addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
 					
-			targetWidth = width;
-			magX = x;
-			magY = y;
-			
-			trace(magX, magY);
+			targetWidth = 250//width;
+			//magX = x;
+			//magY = y;
+			//trace(magX, magY);
 			
 			filters = [new DropShadowFilter(6, 45, 0x000000, .5, 6, 6, 1, 3)];
 			
@@ -85,22 +98,26 @@ package com.gestureworks.cml.element
 			magX += event.value.dx;
 			magY += event.value.dy;
 			
-			magX = (magX + (outline.width / 2) < 0) ? 0 - (outline.width / 2) : magX > stage.stageWidth - (outline.width / 2)  ? stage.stageWidth - (outline.width / 2) : magX;
-			magY = (magY + (outline.height / 2) < 0) ? 0 - (outline.height / 2) : magY > stage.stageHeight - (outline.height / 2)  ? stage.stageHeight - (outline.height / 2) : magY;
+			//magX = (magX + (outline.width / 2) < 0) ? 0 - (outline.width / 2) : magX > stage.stageWidth - (outline.width / 2)  ? stage.stageWidth - (outline.width / 2) : magX;
+			//magY = (magY + (outline.height / 2) < 0) ? 0 - (outline.height / 2) : magY > stage.stageHeight - (outline.height / 2)  ? stage.stageHeight - (outline.height / 2) : magY;
 			
 			x = magX;
 			y = magY;
+			
+			
 		}
 		
 		private function gestureScaleHandler(event:GWGestureEvent):void
 		{			
-			targetScale += event.value.dsx;
-			targetScale = targetScale > 2 ? 2 : targetScale < .8 ? .8 : targetScale;
+			//targetScale += event.value.dsx;
+			//targetScale = targetScale > 2 ? 2 : targetScale < .8 ? .8 : targetScale;
 			targetWidth = width * targetScale;
-			updateUI();
+			//updateUI();
 		}
 		
+		
 		override protected function updateUI():void
+		//protected function updateUI():void
 		{
 			if (!_initialized) return;
 			
@@ -151,8 +168,11 @@ package com.gestureworks.cml.element
 			bitmap.smoothing = true;
 			bitmap.x = 0;
 			bitmap.y = 0;
+			
 			addChildAt(bitmap, 0);
+			//ts.addChildAt(bitmap, 0);
 		}
+		
 		
 		public function destroyBitmap():void
 		{
@@ -162,6 +182,8 @@ package com.gestureworks.cml.element
 			bitmapData.dispose();
 			bitmapData = null;
 		}
+		
+		
 		
 		private function applyMatrixresizeMatrix(source:Matrix, scaleValue:Number, tx:Number, ty:Number):Matrix
 		{
