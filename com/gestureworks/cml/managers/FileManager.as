@@ -43,6 +43,7 @@ package com.gestureworks.cml.managers
 		private var	swfType:RegExp = /^.*\.(swf)$/i;
 		private var	cmlType:RegExp = /^.*\.(cml)$/i;
 		
+		private var rendererDataCount:int;
 		
 		
 		public function addToQueue(file:String, type:String=null):void
@@ -61,7 +62,16 @@ package com.gestureworks.cml.managers
 			
 			else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
 			{				
-				cmlQueue.append(file, type);			
+				if (cmlQueue.currentIndex + 1 > cmlQueue.length-1)
+					cmlQueue.append(file, type);
+				else
+					cmlQueue.insert(cmlQueue.currentIndex + 1, file, type);	
+				
+				for (var i:int = 0; i < cmlQueue.length; i++) 
+				{
+					trace(cmlQueue.getIndex(i));
+				}					
+					
 				cmlCount++;
 			}				
 			

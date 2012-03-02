@@ -107,6 +107,25 @@ package com.gestureworks.cml.layouts
 		 */
 		public function horizontal(container:IContainer):void
 		{
+			
+			trace("---------------------------------------------------------layout container:", container.childList.length);
+			
+					
+			
+			for (var j:int = 0; j < container.childList.length; j++) 
+			{		
+				trace("c1", container.childList.getIndex(i));
+				
+				if (container.childList.getIndex(i).hasOwnProperty("childList"))
+				{
+					for (var k:int = 0; k < container.childList.getIndex(i).childList.length; k++) 
+					{		
+						trace("c2", container.childList.getIndex(i).childList.getIndex(k));
+					}
+				}	
+			}
+			
+			
 			n = container.childList.length;
 			var sumx:Number = 0;
 			

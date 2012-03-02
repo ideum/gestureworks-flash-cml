@@ -134,11 +134,11 @@ package com.gestureworks.cml.utils
 		
 		public function prepend(key:*, value:*):void 
 		{
-			if (dictionary[key] != null)
-			{
-				list.remove(list.search(key));
-				listValue.remove(list.search(key));			
-			}	
+			//if (dictionary[key] != null)
+		//	{
+			//	list.remove(list.search(key));
+				//listValue.remove(list.search(key));			
+			//}	
 			
 			list.prepend(key);
 			listValue.prepend(value);
@@ -155,11 +155,11 @@ package com.gestureworks.cml.utils
 		
 		public function insert(index:int, key:*, value:*):void 
 		{
-			if (dictionary[key] != null)
-			{
-				list.remove(list.search(key));
-				listValue.remove(list.search(key));
-			}	
+			//if (dictionary[key] != null)
+			//{
+			//	list.remove(list.search(key));
+			//	listValue.remove(list.search(key));
+			//}	
 			
 			list.insert(index, key);				
 			listValue.insert(index, key);				

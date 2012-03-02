@@ -90,6 +90,8 @@ package com.gestureworks.cml.element
 					
 				case "rectangle":
 				{
+					trace(width, height);
+					
 					graphics.drawRect(0, 0, width, height);
 					break;
 				}

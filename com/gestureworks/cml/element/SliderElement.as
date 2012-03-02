@@ -20,7 +20,6 @@ package com.gestureworks.cml.element
 		private var knobOffset:Number = 0;
 		private var stepPositions:Array;
 		
-		public static var SLIDER_UPDATE:String = "slider update";
 		
 		public function SliderElement() 
 		{
@@ -36,7 +35,7 @@ package com.gestureworks.cml.element
 			
 			if (GestureWorks.supportsTouch) 
 			{
-				//trace("supports touch");
+				trace("supports touch");
 				elements["hit"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 				elements["knob"].addEventListener(TouchEvent.TOUCH_BEGIN, onDownFgnd);
 			}	
@@ -56,7 +55,8 @@ package com.gestureworks.cml.element
 				knobOffset = (childList.getKey(knob).height / -2) + elements["hit"].y;
 				elements["knob"].y = knobOffset;					
 			}
-			//elements["knob"].mouseChildren="false"
+			
+			elements["knob"].mouseChildren = false;
 			elements["knob"].disableAffineTransform = true;
 			elements["knob"].disableNativeTransform = true;	
 			elements["knob"].gestureEvents = true;
@@ -229,7 +229,7 @@ package com.gestureworks.cml.element
 		
 		private function onDownHit(event:*):void
 		{
-			//trace("ontdown")
+			trace("on down hit")
 			elements["knob"].removeEventListener(GWGestureEvent.DRAG, onDrag);																
 			elements["knob"].addEventListener(GWGestureEvent.DRAG, onDrag);
 			
@@ -267,7 +267,7 @@ package com.gestureworks.cml.element
 		
 		private function onDownFgnd(event:*):void
 		{
-			//trace("ontdown")
+			trace("on down foreground")
 			elements["knob"].removeEventListener(GWGestureEvent.DRAG, onDrag);													
 			elements["knob"].addEventListener(GWGestureEvent.DRAG, onDrag);
 			

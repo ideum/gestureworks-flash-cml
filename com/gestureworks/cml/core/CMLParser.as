@@ -228,6 +228,7 @@ package com.gestureworks.cml.core
 
 		private var cmlFilesComplete:int = 0;
 		private var cmlRenderer:XMLList;
+		private var cmlRendererKitFileComplete:int = 0;
 		
 		private function onCMLLoadComplete(event:FileEvent):void
 		{
@@ -238,22 +239,23 @@ package com.gestureworks.cml.core
 			
 			if (event.fileType == "cmlRenderKit")
 			{
+				cmlRendererKitFileComplete++;
+				
 				if (CML.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
 				{
 					cmlRenderer = CML.getInstance(event.filePath).data.Renderer;
 					var cmlRendererData:String = CML.getInstance(event.filePath).data.Renderer.@dataPath;
 					FileManager.instance.addToQueue(cmlRendererData, "cmlRendererData");
-					trace("-------", cmlRendererData);
 				}
 				else	
-					loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);
+					loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlRendererKitFileComplete-1]);
 			}
 			else if (event.fileType == "cmlRendererData")
 			{
 				var renderKit:XML = <RenderKit/>
 				var data:XMLList = cmlRenderer + CML.getInstance(event.filePath).data.RendererData;
 				renderKit.appendChild(data);				
-				loadRenderer(XMLList(renderKit), includeParentIndex[cmlFilesComplete-2]);
+				loadRenderer(XMLList(renderKit), includeParentIndex[cmlRendererKitFileComplete-1]);	
 			}
 				
 			else
@@ -297,7 +299,10 @@ package com.gestureworks.cml.core
 		
 		
 		public function loadRenderer(renderKit:*, parent:*):void
-		{			
+		{
+			if (debug)
+				trace("\n\nloading renderer");
+				
 			var rendererId:String = renderKit.Renderer.@id; 
 			var rendererData:XMLList = renderKit.RendererData;
 			
@@ -310,8 +315,8 @@ package com.gestureworks.cml.core
 					var cmlRenderer:XMLList = new XMLList(renderKit.Renderer[q].*);
 					
 					for each (var node:XML in cmlRenderer) 
-					{
-						var properties:XMLList = XMLList(renderList[i]);						
+					{						
+						var properties:XMLList = XMLList(renderList[i]);	
 						CMLParser.instance.loopCML(node, parent, properties);
 					}
 				}
@@ -418,13 +423,9 @@ package com.gestureworks.cml.core
 						trace("\ncomponent kit render properties of id: ", obj.id);					
 					
 					obj.propertyStates[0]["id"] = obj.id;				
-
+									
 					for (var key:* in obj.propertyStates[0]) 
-					{
-						if (key == "dimensionsTo")
-							obj.propertyStates[0][key] = obj.propertyStates[0][key] + "." + properties.@id;
-						
-						
+					{						
 						if (key == "rendererList") {
 							includeParentIndex.push(obj);
 							FileManager.instance.addToQueue(val, "cmlRenderKit");
@@ -432,9 +433,11 @@ package com.gestureworks.cml.core
 						
 						
 						for each (var val:* in properties.*)
-						{
-							if (obj.propertyStates[0][key] == val.name().toString())
-								obj.propertyStates[0][key] = val;							
+						{							
+							if (obj.propertyStates[0][key] == val.name().toString()){
+								obj.propertyStates[0][key] = val;					
+	
+							}	
 						}
 					}						
 				}				
@@ -563,8 +566,8 @@ package com.gestureworks.cml.core
 				// check for css keyword
 				if (attrName == "class")
 					attrName = "class_";				
-				
-				obj.propertyStates[0][attrName] = attrValue;
+									
+				obj.propertyStates[0][attrName] = attrValue;				
 			}
 			
 			attrName = null;	
@@ -588,12 +591,12 @@ package com.gestureworks.cml.core
 			var propertyValue:String;
 			
 			for (var propertyName:String in obj.propertyStates[state])
-			{
-				if (debug)
-					trace("___________________________", obj, obj.id, propertyName, obj[propertyName]);	
-				
+			{		
 				obj[propertyName] = 
-					filterProperty(propertyName, propertyValue, obj.propertyStates, state);					
+					filterProperty(propertyName, propertyValue, obj.propertyStates, state);	
+					
+				if (debug)
+					trace("___________________________", obj, obj.id, propertyName, filterProperty(propertyName, propertyValue, obj.propertyStates, state));					
 			}	
 				
 		}
