@@ -60,9 +60,13 @@ package com.gestureworks.cml.element
 			outline = new Shape();
 			maskS = new Shape();
 			
-			addChild(outline);
-			addChild(maskS);
-			this.mask = maskS;
+			var lens:ImageElement = new ImageElement();
+				lens.src = "library/assests/nodemap/Brass-Hand.png"
+				lens.visible = true;
+			addChild(lens)
+			//addChild(outline);
+			//addChild(maskS);
+			//this.mask = maskS;
 			
 			
 			//ts.addChild(outline);
@@ -90,11 +94,13 @@ package com.gestureworks.cml.element
 			_initialized = true;
 			updateUI();
 			
-			addEventListener(Event.ENTER_FRAME, captureBitmap);
+			//addEventListener(Event.ENTER_FRAME, captureBitmap);
 		}
 		
 		private function gestureDragHandler(event:GWGestureEvent):void
 		{
+			trace("mag position update")
+			
 			magX += event.value.dx;
 			magY += event.value.dy;
 			
