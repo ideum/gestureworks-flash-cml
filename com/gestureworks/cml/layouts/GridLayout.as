@@ -1,6 +1,5 @@
 package com.gestureworks.cml.layouts 
 {
-import away3d.core.block.ConvexBlocker;
     import flash.geom.Point;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.element.*;

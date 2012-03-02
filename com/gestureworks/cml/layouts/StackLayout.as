@@ -1,6 +1,5 @@
 package com.gestureworks.cml.layouts 
 {
-	import away3d.core.light.DirectionalLight;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.interfaces.*;

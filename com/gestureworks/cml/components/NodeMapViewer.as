@@ -30,6 +30,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
+	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.kits.ComponentKit;	
@@ -38,26 +39,21 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTransformEvent;
 	import com.gestureworks.events.DisplayEvent;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	
 	import com.gestureworks.core.GestureWorks;
 	 
-	public class NodeMapViewer extends ComponentKit
+	public class NodeMapViewer extends Component//ComponentKit
 	{
-		private var itemList:Array = new Array;
-
-		private var holder:TouchSprite;
-		private var background_holder:Sprite;
-		private var text_holder:Sprite;
-		private var slider_holder:TouchSprite;
-		private var node_holder:TouchSprite;
-		
-		private var nodeList:TouchSprite;
-		private var node:TouchSprite;
-		private var nbtn:TouchSprite;
-		
-		
+		private var nodeNum:int;
+		private var nodes:*; 
+		private var albums:*;
+		private var slider:*;
+		private var background:*; 
+		private var text_title:*;
+		private var text_desc:*; 
 	
 		public function NodeMapViewer()
 		{
@@ -71,174 +67,141 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{			
-			trace("node viewer complete");
-			//initUI();
-			parseClass();
+			//trace("node viewer complete");
+			initUI();
 			setupUI();
 		}
 		
-		/*
-		private function childListParse():void
-		{ 
-			trace(this.childList.length);
-				for (var i:int=0; i<this.childList.length; i++)
-					{
-						trace(this.childList.getIndex(i),this.childList.getIndex(i).id)
-						if ((childList.getIndex(i) is TouchContainer))
+		private function initUI():void
+		{ 	
+			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).id);
+			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).id);
+			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.length);
+			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album").length);
 
-						{
-						trace("touch container", this.childList[i].id)
-						itemList.push(childList.getIndex(i))
-						}
-					}
-				n = itemList.length;
-		}
-		*/
-		
-		private function parseIndex():void
-		{
-			trace("node viewer child parse");
-			
-			
-			for (var j:int = 0; j < this.childList.length; j++)
-					{	
-						trace("inside 1---------------- ",this.childList.getIndex(j), this.childList.getIndex(j).id)
-					
-						for (var i:int = 0; i < this.childList.getIndex(j).childList.length; i++)
-					{
-						trace("inside 2-----------------------------------",this.childList.getIndex(j).childList.getIndex(i), this.childList.getIndex(j).childList.getIndex(i).id);
-						
-							if ( this.childList.getIndex(j).childList.getIndex(i) is TouchContainer) {
-								
-								//trace("length",this.childList.getIndex(j).childList.getIndex(i).childList.length)
-								for (var k:int = 0; k < this.childList.getIndex(j).childList.getIndex(i).childList.length; k++)
-								{
-									trace("inside 3--------------------------------------------------", this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k),this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).id);	
-									var item = this.childList.getIndex(j).childList.getIndex(i).childList.getIndex(k);
-									
-									
-									
-									if (item is AlbumViewerNew) {
-										
-										
-										
-										//trace("compoenent kit", item, item.id)
-										//trace("compoenent kit", item.childList.getIndex(0), item.childList.getIndex(0).id);
-										
-										childList.getIndex(j).childList.getIndex(i).childList.getIndex(k).addEventListener(DisplayEvent.CHANGE, displayHandler);
-										
-										//if (item.childList) {
-											//trace(item.childList.length, item.childList.getIndex(0), item.childList.getIndex(0).id);
-											//item.childList.getIndex(0).addEventListener(DisplayEvent.CHANGE, displayHandler);
-										//}
-									}
-								}
-							}
-					}
-				}
-		}
-				
-		private function parseClass():void
-		{
-			trace("-------", this.childList.getCSSClass("holder", 0).id);
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("background", 0).id);
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("text", 0).id);
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0));
-			trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).id);
-			
-			var holder = this.childList.getCSSClass("holder", 0);
-			trace("................",holder.childList.getCSSClass("background", 0).id);
-			
-			for (var k:int = 0; k < this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length; k++)
-			{
-				
-				//this.holder.nodes.node.width; 																						// reference method for objects constructed via as3 
-				//this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k) 	//current reefernce reference method for objects constructed via cml engine
-				
-				//this.cml.holder.nodes.node.width;																						// optional reference method for objects constructed via cml engine
-				//this.cml["holder.nodes.node"].width; 																					// optional reference method for objects constructed via cml engine
-				
-				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).id); // node
-				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0).id); // node_point
-				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_title", 0).id); // title
-				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_link", 0).id); // link
-				trace("-------//-------",this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0).id); // album
-			}	
-			
-			//trace(this.childList.getCSSClass("holder", 0).name);
+			nodeNum = this.childList.getCSSClass("node_list_viewer", 0).childList.length;
+			nodes = this.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node");
+			albums = this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album");
+			slider = this.childList.getCSSClass("slider", 0);
+			background = this.childList.getCSSClass("background", 0);
 		}
 		
 		private function setupUI():void
-		{ 	
-			var nodeNum:int = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").length;
-			var holder:* = this.childList.getCSSClass("holder", 0);
-			var nodes:* = holder.childList.getCSSClass("nodes", 0).childList.getCSSClass("node");
-			
+		{ 		
+			trace("node num",nodeNum)
 			
 			for (var k:int = 0; k < nodeNum; k++)
 			{
-			
 				// add listener to albums///////// updates node links////////////////////////////////////
-	
 				//var album = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("album", 0);
-				var album:* = nodes.getIndex(k).childList.getCSSClass("album", 0);
-					album.addEventListener(DisplayEvent.CHANGE, displayHandler);
+				//var album:* = nodes.getIndex(k).childList.getCSSClass("album", 0);
+				var album:TouchContainer = albums.getIndex(k);
+					album.name = String(k);
+					album.addEventListener(DisplayEvent.CHANGE, linkDisplayHandler);
 				
-				// add tap listener to node points /////////////////////////////////
-				//var node_point = this.childList.getCSSClass("holder", 0).childList.getCSSClass("nodes", 0).childList.getCSSClass("node").getIndex(k).childList.getCSSClass("node_point", 0);
-				var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);	
-					node_point.gestureEvents = true;
-					node_point.gestureList = { "tap":true,"n-drag":true };
+				// add tap listener to nodes /////////////////////////////////
+				var node:TouchContainer = nodes.getIndex(k);
+				
+				var node_point:TouchContainer = new TouchContainer();	
+				//var node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
+					//node_point.id = k;
+					node_point.name = String(k);
+					//node_point.gestureEvents = true;
+					node_point.gestureList = { "tap":true};//"n-drag":true 
 					node_point.addEventListener(GWGestureEvent.TAP, onOpen);
-					node_point.addEventListener(GWGestureEvent.DRAG, onOpen);
-					node_point.addEventListener(TouchEvent.TOUCH_BEGIN, onOpen);
+				node.addChild(node_point)
+				
+				// sub in node_point content
+				var cml_node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
+				node_point.addChild(cml_node_point);
+				
 			}
 				
-			// update link drawing//////////////////////////////////
-			
-			//add slider control to nodes////////////////////////////
-			// set slider state
+			//slider//////////////////////////////////////////////
 			// loop through nodes in chosen active list
-			// set node state
+			slider.addEventListener(StateEvent.CHANGE, categoryUpdate);
+			
 			
 			
 			// set node touch timer control///////////////////////
 			
 		}
 		
+		private function categoryUpdate(event:StateEvent):void 
+		{
+			var n:Number = Number(event.value);
+			var state:int = Math.round(n);
+			trace("node category update", event.value, event.target.id, state);
+			
+			activateNodes(state);
+			//if (state == 1) activateNodes("1869");
+			//if (state == 2) activateNodes("1948");
+			//if (state == 3) activateNodes ("2012");
+		}
+		
+		private function activateNodes(state:int):void //state:String
+		{
+			var g:String;
+			if (state == 1) g="1869";
+			if (state == 2) g="1948";
+			if (state == 3) g="2012";
+			
+			//trace("--------------node group", g);
+			//trace("--------------album group",albums.getIndex(ID).group);
+			//trace("node vis", nodes.getIndex(0).group, g);
+				
+			for (var k:int = 0; k < nodeNum; k++)
+			{
+				// reset
+				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = false;
+				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = true; 
+				//albums.getIndex(k).visible = false;
+				
+			
+				if (nodes.getIndex(k).group == g) {
+					//change node point icon visibilty
+					//trace("node vis");
+					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = true;
+					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
+				}
+				if(albums.getIndex(k).group == g) {
+					//albums.getIndex(k).visible = true;
+				}
+			}
+			
+			for (var p:int = 0; p < 3; p++)
+			{
+				background.getIndex(p).visible= false;
+				if (p==(state-1)) background.getIndex(p).visible= true;
+			}
+		}
+		
 		private function onOpen(event:GWGestureEvent):void 
 		{
-			var p:* = event.target.parent;
-			//trace("open", p.id);
-
+			var ID:int = event.target.name;
+			
+			trace("open", ID,event.target.id);
+	
 			// reset positions
-			
-			
-			// make visble
-			p.childList.getCSSClass("album", 0).visible = true;
-			p.childList.getCSSClass("node_link", 0).visible = true;
-			
-			// update node link 
-			p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).x + p.childList.getCSSClass("album", 0).width / 2;
-			p.childList.getCSSClass("node_link", 0).height = p.childList.getCSSClass("album", 0).y;
+			//this.album0.visible = true;
+			albums.getIndex(ID).visible = true;
+			nodes.getIndex(ID).childList.getCSSClass("node_link", 0).visible = true;
 		}
 		
-		private function dTapHandler(event:GWGestureEvent):void
+		private function linkDisplayHandler(event:DisplayEvent):void 
 		{
-			//trace("d tap", count);
-		}
-		
-		private function displayHandler(event:DisplayEvent):void 
-		{
-			var p:* = event.target.parent;
-			//trace("album translate", p.id, p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).id);
+			var ID:int = event.target.name;
+			//trace("album translate", ID, event.target.name, albums.getIndex(ID).x, albums.getIndex(ID).y);
 			
-			//event.target.parent.getChildAt(2).width = event.target.album.x + event.target.x + event.target.width / 2;
-			//event.target.parent.getChildAt(2).height = event.target.album.y + event.target.y;
+			var album:* = albums.getIndex(ID);
+			var node:*= nodes.getIndex(ID)
+			var node_link:* = nodes.getIndex(ID).childList.getCSSClass("node_link", 0);
 			
-			p.childList.getCSSClass("node_link", 0).width = p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).x + p.childList.getCSSClass("album", 0).width / 2  + event.target.x;
-			p.childList.getCSSClass("node_link", 0).height = p.childList.getCSSClass("album", 0).childList.getCSSClass("holder", 0).y + event.target.y;
+			node_link.width = album.x -node.x + album.width / 2;
+			node_link.height = album.y - node.y;
 			
+			// when closed make invisible
+			if (!album.visible) node_link.visible = false;
 		}
 	}
 }

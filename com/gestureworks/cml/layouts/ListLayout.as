@@ -45,13 +45,13 @@ package com.gestureworks.cml.layouts
 			_blockY = value;
 		}
 		
-		private var _paddingX:Number = 25;
+		private var _paddingX:Number = 0;
 		public function get paddingX():Number{return _paddingX;}
 		public function set paddingX(value:Number):void 
 		{
 			_paddingX = value;
 		}	
-		private var _paddingY:Number = 25;
+		private var _paddingY:Number = 0;
 		public function get paddingY():Number{return _paddingY;}
 		public function set paddingY(value:Number):void 
 		{
@@ -107,10 +107,8 @@ package com.gestureworks.cml.layouts
 		 */
 		public function horizontal(container:IContainer):void
 		{
-			
+			/*
 			trace("---------------------------------------------------------layout container:", container.childList.length);
-			
-					
 			
 			for (var j:int = 0; j < container.childList.length; j++) 
 			{		
@@ -124,7 +122,7 @@ package com.gestureworks.cml.layouts
 					}
 				}	
 			}
-			
+			*/
 			
 			n = container.childList.length;
 			var sumx:Number = 0;
@@ -138,24 +136,23 @@ package com.gestureworks.cml.layouts
 				
 				if (!close_packing) {
 		
-					obj.x = paddingX + (i) * blockX + (i - 1) * marginX;
+					obj.x = paddingX + (i) * blockX + i * marginX;
 					obj.y = 0;
 				}
 				else {
 					
-					obj.x = paddingX + sumx + (i - 1) * marginX;
+					obj.x = paddingX + sumx + i * marginX;
 					obj.y = 0;
 				}
 				sumx += objchild.width;
 			}
-			container.width = 2 * paddingX + sumx + (n - 1) * marginY;
+			container.width = 2 * paddingX + sumx + (n - 1) * marginX;
 			container.height = objchild.height;
 		}
 		
 		/**
 		 * Distributes the the children of the container in a vertical list
-		 * about the y-axis. The maximum y value is equal to the 
-		 * container's width
+		 * about the y-axis.
 		 * @param	container
 		 */		
 		public function vertical(container:IContainer):void
@@ -163,22 +160,23 @@ package com.gestureworks.cml.layouts
 			n = container.childList.length; 
 			var sumy:Number = 0;
 			
-			for (var i:int = 0; i < container.childList.length; i++) 
+			for (var i:int = 0; i < n; i++) 
 			{				
-				//trace(container.childList.getIndex(i).height);
+				var obj:* = container.childList.getIndex(i);
+				var objchild:* = container.childList.getIndex(i).childList.getIndex(0);
 							
 					if (!close_packing) {
-						container.childList.getIndex(i).y = paddingY + (i) * blockY + (i - 1) * marginY;
-						container.childList.getIndex(i).x = 0;
+						obj.x = 0;
+						obj.y = paddingY + (i) * blockY + i * marginY;
 					}
 					else {
-						container.childList.getIndex(i).y = paddingY + sumy + (i - 1) * marginY;
-						container.childList.getIndex(i).x = 0;
+						obj.x = 0;
+						obj.y = paddingY + sumy + i * marginY;
 					}
-					sumy+=container.childList.getIndex(i).height
+					sumy += objchild.height;
 			}	
 			container.height = 2 * paddingX + sumy + (n - 1) * marginY;
-			container.width = container.childList.getIndex(0).width;
+			container.width = objchild.height;
 		}
 
 	}
