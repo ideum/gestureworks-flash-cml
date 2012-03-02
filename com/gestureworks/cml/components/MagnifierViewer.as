@@ -48,7 +48,7 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{			
 			trace("magnifier display viewer complete");
-			initUI();	
+			//initUI();	
 		}
 		
 		private function initUI():void
