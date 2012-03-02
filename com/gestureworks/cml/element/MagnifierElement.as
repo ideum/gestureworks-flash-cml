@@ -60,12 +60,28 @@ package com.gestureworks.cml.element
 			outline = new Shape();
 			maskS = new Shape();
 			
+			/*
 			var lens:ImageElement = new ImageElement();
 				lens.src = "library/assests/nodemap/Brass-Hand.png"
 				lens.visible = true;
 			addChild(lens)
-			//addChild(outline);
-			//addChild(maskS);
+			
+			*/
+			
+			ts = new TouchSprite();
+				ts.gestureEvents = true;
+				ts.gestureList = {"n-drag": true};
+				ts.nestedTransform = true;
+				ts.mouseChildren = false;
+				//disableNativeTransform = true;
+				//disableAffineTransform = true;
+				ts.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
+			addChild(ts);
+			
+			
+			
+			ts.addChild(outline);
+			ts.addChild(maskS);
 			//this.mask = maskS;
 			
 			

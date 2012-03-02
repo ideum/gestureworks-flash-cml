@@ -6,6 +6,8 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.interfaces.IClone;
 	import com.gestureworks.cml.core.CMLObjectList;
 	
+	//import com.gestureworks.core.TouchSprite;
+	
 	import com.gestureworks.cml.core.*;
 
 	import flash.utils.Dictionary;	
