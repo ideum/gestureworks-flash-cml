@@ -147,7 +147,7 @@ package com.gestureworks.cml.layouts
 				sumx += objchild.width;
 			}
 			container.width = 2 * paddingX + sumx + (n - 1) * marginX;
-			container.height = objchild.height;
+			//container.height = objchild.height;
 		}
 		
 		/**
