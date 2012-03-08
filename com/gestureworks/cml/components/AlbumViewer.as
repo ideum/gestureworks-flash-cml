@@ -94,6 +94,10 @@ package com.gestureworks.cml.components
 		//private var scroll_bar_width:Number;
 		//private var scroll_bar_height:Number;
 		
+		// interation
+		public var Icount = 0;
+		private var staleCount = 1200;
+		
 		public static var ALBUM_UPDATE:String = "album update";
 		
 		public function AlbumViewer()
@@ -222,7 +226,6 @@ package com.gestureworks.cml.components
 					belt.gestureList = {"1-dragx":true};//, "2-dragx":true, "3-dragx":true 
 					belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
 					belt.transformEvents = true;
-					belt.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 				this.addChild(belt);
 				
 				
@@ -285,11 +288,45 @@ package com.gestureworks.cml.components
 		album_description.scrollV += 0.2*event.value.dx;
 	}
 	
+	
+	///////////////////////////////////////////////////////////////
+
+		private function resetInteractionCount():void
+		{
+			Icount = 0;
+		}
+		
+		private function interactionCount():void
+		{
+			if (visible)
+			{ 
+				Icount++;
+				trace(Icount);
+			}
+		}
+		
+		private function interactionMonitor():void 
+		{
+			if (Icount > staleCount) 
+			{
+				trace("close album");
+				closeAlbum();
+				resetInteractionCount();
+			}
+			else interactionCount();
+		}
+	
+	///////////////////////////////////////////////////////////////
+	
+	
 	public function onClose(event:GWGestureEvent):void
 	{
+		closeAlbum();
+	}
+	
+	public function closeAlbum():void
+	{
 		trace("close album");
-		var ID:* = String(event.target.parent.id).split("album");
-		
 		//dispose();
 		
 		//reset album //faux dispose
@@ -303,17 +340,27 @@ package com.gestureworks.cml.components
 		
 		// reset belt
 		belt.x = 0;
-		
+
 		// reset link line
 		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
+		
+		resetInteractionCount();
 	}
+	
+	
 	public function onInfo(event:GWGestureEvent):void
+	{
+		showInfo();
+	}
+	
+	public function showInfo():void
 	{
 		trace("info",metadata.visible);
 		if (!metadata.visible) metadata.visible = true;
 		else metadata.visible = false;
 		
 		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
+		resetInteractionCount();
 	}
 	
 	
@@ -356,6 +403,9 @@ package com.gestureworks.cml.components
 	
 	public function checkBeltPosition(event:GWGestureEvent):void
 	{
+		// update interaction on drag belt
+		resetInteractionCount(); 
+		
 		var abs_beltx:Number = Math.abs(belt.x);
 		belt.x += event.value.dx;
 		
@@ -435,7 +485,7 @@ package com.gestureworks.cml.components
 	
 	public function onEnterFrameGW(event:GWEvent):void
 	{
-		
+		interactionMonitor();
 		//trace(belt_buffer_tweenOn,belt_target_tweenOn)
 		
 		if (belt_buffer_tweenOn) {
@@ -501,12 +551,12 @@ package com.gestureworks.cml.components
 	{
 		//trace("translate album");
 		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
-		//dispatchEvent(new Event(ImageViewer.COMPLETE));
+		resetInteractionCount();
 	}
 		
 	private function updateHandler(event:Event):void 
 	{
-	trace("album update");	
+		trace("album update");	
 	}
 
 	}
