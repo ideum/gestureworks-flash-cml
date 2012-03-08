@@ -283,7 +283,11 @@ package com.gestureworks.cml.components
 		metadata.width = width;
 		meta_bg.width = width;
 		text_scroll_box.width = width;
-		meta_desc.width = width - 2*text_padding;
+		meta_desc.width = width - 2 * text_padding;
+		
+		// update limits
+		belt_minValue = 0
+		belt_maxValue = belt_bg.width- width;
 	}
 	
 	public function onScroll(event:GWGestureEvent):void
@@ -365,6 +369,9 @@ package com.gestureworks.cml.components
 		
 		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
 		resetInteractionCount();
+		
+		// reset belt
+		belt.x = 0;
 	}
 	
 	
@@ -403,6 +410,8 @@ package com.gestureworks.cml.components
 			belt_tween_target = -belt_maxValue;
 		}
 		else belt_buffer_tweenOn = false;
+		
+		trace(belt.x);
 	}
 	
 	public function checkBeltPosition(event:GWGestureEvent):void
@@ -412,19 +421,22 @@ package com.gestureworks.cml.components
 		
 		var abs_beltx:Number = Math.abs(belt.x);
 		belt.x += event.value.dx;
-		
 		//trace("belt_pos",belt.x)
+		
+		checkTween();
 		
 			//////////////////////////////////////////////////////////////////////////////
 			// buffer mode
 			//////////////////////////////////////////////////////////////////////////////
-			if (!loopMode) {
 			
+			/*
+			if (!loopMode) {
+			trace(belt_buffer_tweenOn)
+				
 				if (buffer_tween) {
 					
-				
-					if(event.value.n!=0){
-						
+					if(event.value.n!=0){//only allows drag when not correcting for buffer
+					/*	
 						if (belt.x > 0) // positive
 						{
 							if (abs_beltx > (belt_minValue+belt_buffer))
@@ -453,7 +465,8 @@ package com.gestureworks.cml.components
 								belt.x += rbuff_perc * event.value.dx;
 							}
 						}
-					}
+						*/
+					/*}
 				
 					else if ((event.value.n == 0) && (!belt_buffer_tweenOn)) 
 					{
@@ -466,7 +479,8 @@ package com.gestureworks.cml.components
 					// when gesture tween check to see if break buffer
 					checkTween();
 					}
-		}
+					
+		}*/
 		
 		//////////////////////////////////////////////////////////////////////////////
 		// loop belt content
