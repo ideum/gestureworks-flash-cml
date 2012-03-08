@@ -32,6 +32,8 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.core.GestureWorks;
 	
+	import flash.filters.DropShadowFilter;
+	
 	public class AlbumViewer extends Component//ComponentKit//TouchContainer
 	{		
 		// objects
@@ -95,8 +97,8 @@ package com.gestureworks.cml.components
 		//private var scroll_bar_height:Number;
 		
 		// interation
-		public var Icount = 0;
-		private var staleCount = 1200;
+		public var Icount:int = 0;
+		private var timeOut:int = 1200;
 		
 		public static var ALBUM_UPDATE:String = "album update";
 		
@@ -166,6 +168,8 @@ package com.gestureworks.cml.components
 				this.gestureList = { "n-drag-lim":true };
 				this.transformEvents = true;
 				this.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
+				
+				this.filters = [new DropShadowFilter(6, 45, 0x000000, .5, 6, 6, 1, 3)];
 				
 				//set init placement
 				_x = this.x;
@@ -301,15 +305,15 @@ package com.gestureworks.cml.components
 			if (visible)
 			{ 
 				Icount++;
-				trace(Icount);
+				//trace(Icount);
 			}
 		}
 		
 		private function interactionMonitor():void 
 		{
-			if (Icount > staleCount) 
+			if (Icount > timeOut) 
 			{
-				trace("close album");
+				//trace("close album");
 				closeAlbum();
 				resetInteractionCount();
 			}
@@ -558,6 +562,8 @@ package com.gestureworks.cml.components
 	{
 		trace("album update");	
 	}
+	
+	
 
 	}
 }

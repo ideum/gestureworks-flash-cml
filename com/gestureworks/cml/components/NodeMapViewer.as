@@ -49,6 +49,7 @@ package com.gestureworks.cml.components
 	{
 		private var nodeNum:int;
 		private var nodes:*; 
+		private var album_holder:*;
 		private var albums:*;
 		private var slider:*;
 		private var background:*; 
@@ -81,6 +82,7 @@ package com.gestureworks.cml.components
 
 			nodeNum = this.childList.getCSSClass("node_list_viewer", 0).childList.length;
 			nodes = this.childList.getCSSClass("node_list_viewer", 0).childList.getCSSClass("node");
+			album_holder = this.childList.getCSSClass("album_list_viewer", 0);
 			albums = this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album");
 			slider = this.childList.getCSSClass("slider", 0);
 			background = this.childList.getCSSClass("background", 0);
@@ -97,7 +99,7 @@ package com.gestureworks.cml.components
 				//var album:* = nodes.getIndex(k).childList.getCSSClass("album", 0);
 				var album:TouchContainer = albums.getIndex(k);
 					album.name = String(k);
-					album.addEventListener(DisplayEvent.CHANGE, linkDisplayHandler);
+					album.addEventListener(DisplayEvent.CHANGE, updateHandler);
 				
 				// add tap listener to nodes /////////////////////////////////
 				var node:TouchContainer = nodes.getIndex(k);
@@ -194,13 +196,28 @@ package com.gestureworks.cml.components
 		private function onOpen(event:GWGestureEvent):void 
 		{
 			var ID:int = event.target.name;
+			var album:* = albums.getIndex(ID);
+			var node_link:* = nodes.getIndex(ID).childList.getCSSClass("node_link", 0);
 			
 			trace("open", ID,event.target.id);
 	
 			// reset positions
-			//this.album0.visible = true;
-			albums.getIndex(ID).visible = true;
-			nodes.getIndex(ID).childList.getCSSClass("node_link", 0).visible = true;
+			album.visible = true;
+			node_link.visible = true;
+			albumPop(album);
+		}
+		
+		private function albumPop(album:*):void 
+		{
+			album_holder.removeChild(album);
+			album_holder.addChild(album);
+		}
+		
+		private function updateHandler(event:DisplayEvent):void 
+		{
+			
+			albumPop(event.target)
+			linkDisplayHandler(event);
 		}
 		
 		private function linkDisplayHandler(event:DisplayEvent):void 
