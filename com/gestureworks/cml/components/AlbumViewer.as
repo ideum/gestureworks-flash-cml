@@ -56,7 +56,7 @@ package com.gestureworks.cml.components
 		private var _x:Number;
 		private var _y:Number;
 		public var bar_height:Number;
-		private var text_padding:Number = 30;
+		private var text_padding:Number = 20;
 		
 		// component
 		private var i:int
@@ -159,7 +159,7 @@ package com.gestureworks.cml.components
 			//////////////////////////////////////////////////////////////////////
 			
 				this.gestureEvents = true;
-				this.gestureList = { "n-drag":true };
+				this.gestureList = { "n-drag-lim":true };
 				this.transformEvents = true;
 				this.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 				
@@ -219,11 +219,10 @@ package com.gestureworks.cml.components
 				// item belt
 				/////////////////////////////////////////////////
 				belt = this.childList.getCSSClass("belt", 0);
-					belt.gestureList = {"1-dragx":true, "2-dragx":true, "3-dragx":true };
+					belt.gestureList = {"1-dragx":true};//, "2-dragx":true, "3-dragx":true 
 					belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
-					if(!loopMode)	belt.addEventListener(TouchEvent.TOUCH_BEGIN, cancelTween);
-					if(!loopMode)	belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-					if (!loopMode)	belt.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+					belt.transformEvents = true;
+					belt.addEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
 				this.addChild(belt);
 				
 				
@@ -313,6 +312,8 @@ package com.gestureworks.cml.components
 		trace("info",metadata.visible);
 		if (!metadata.visible) metadata.visible = true;
 		else metadata.visible = false;
+		
+		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
 	}
 	
 	
@@ -377,7 +378,8 @@ package com.gestureworks.cml.components
 								//trace(" left limit hard, zero motion towards left",belt.$x);
 								belt.x = belt_minValue + belt_buffer;
 							}
-							else if (abs_beltx > belt_minValue){
+							else if (abs_beltx > belt_minValue)
+							{
 								var lbuff_perc:Number = ((belt_minValue+belt_buffer)-abs_beltx)/belt_buffer
 								//trace(" left limit soft, take over gesture control",belt.$x, event.value.n);
 								belt.x += lbuff_perc * event.value.dx;
@@ -385,11 +387,13 @@ package com.gestureworks.cml.components
 						}
 						else if (belt.x <= 0 ) //negative
 						{	
-							if (abs_beltx > belt_maxValue+belt_buffer){
-									//trace("right limit hard, zero motion towards right",belt.$x);
-									belt.x = -(belt_maxValue+belt_buffer);
+							if (abs_beltx > belt_maxValue + belt_buffer)
+							{
+								//trace("right limit hard, zero motion towards right",belt.$x);
+								belt.x = -(belt_maxValue+belt_buffer);
 							}
-							else if (abs_beltx > belt_maxValue) {
+							else if (abs_beltx > belt_maxValue)
+							{
 								var rbuff_perc:Number = ((belt_maxValue+belt_buffer)-abs_beltx)/belt_buffer
 								//trace("right limit soft, take over gesture control",belt.$x,event.value.n);
 								belt.x += rbuff_perc * event.value.dx;
@@ -465,7 +469,6 @@ package com.gestureworks.cml.components
 				belt.x += target_dist * belt_tween_factor * belt_speed;
 				}
 		}
-		
 	}
 	
 	public function cancelTween(event:TouchEvent):void

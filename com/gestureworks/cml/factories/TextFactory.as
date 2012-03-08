@@ -79,11 +79,19 @@ package com.gestureworks.cml.factories
 			_class_ = value; 
 		}	
 		
-		
+	
 		
 		/////////////////////////////////
 		// TEXT 
 		////////////////////////////////		
+		
+		private var _htmlText:String;
+		override public function get htmlText():String { return super.htmlText; }
+		override public function set htmlText(value:String):void
+		{
+			super.htmlText = value;			
+			verticalAlign = _verticalAlign;
+		}
 		
 		
 		private var _text:String;

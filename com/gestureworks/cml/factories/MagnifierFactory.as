@@ -4,8 +4,8 @@ package com.gestureworks.cml.factories
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	
-	public class MagnifierFactory extends ElementFactory //TouchSprite
-	//public class MagnifierFactory extends TouchSprite
+	//public class MagnifierFactory extends ElementFactory
+	public class MagnifierFactory extends TouchSprite
 	{		
 		public function MagnifierFactory() 
 		{
@@ -79,6 +79,18 @@ package com.gestureworks.cml.factories
 			updateUI();
 		}
 		
+		
+		protected var _shape:String;
+		public function get shape():String
+		{
+			return _shape;
+		}
+		public function set shape(value:String):void
+		{
+			_shape = value;
+			updateUI();
+		}
+		
 		protected var _fillColor:uint = 0x000000;
 		public function get fillColor():uint
 		{
@@ -101,8 +113,8 @@ package com.gestureworks.cml.factories
 			updateUI();
 		}
 		
-		override protected function updateUI():void { }		
-		//protected function updateUI():void{}		
+		//override protected function updateUI():void { }		
+		protected function updateUI():void{}		
 	}
 
 }

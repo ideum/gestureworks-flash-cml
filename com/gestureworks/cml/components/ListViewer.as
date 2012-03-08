@@ -58,18 +58,21 @@ package com.gestureworks.cml.components
 				
 				var itm:* = list.childList.getIndex(i);
 				var img:* = list.childList.getIndex(i).childList.getCSSClass("image", 0);
-				var md:* = list.childList.getIndex(i).childList.getCSSClass("metadata", 0)
+				var md:* = list.childList.getIndex(i).childList.getCSSClass("metadata", 0);
+				
+				var scX:Number = img.scaleX;
+				var scY:Number = 1//img.scaleY
 				
 				if (md) {
 					var bg:* = md.childList.getCSSClass("title_bg", 0);
 					var txt:* = md.childList.getCSSClass("title_text", 0);
 					
 					label_height = md.height; 
-					belt_height = img.height; 
+					belt_height = img.height*scY; 
 					
-					md.y = img.height;
-					bg.width = img.width;
-					txt.width = img.width
+					md.y = img.height * scY;
+					bg.width = img.width * scX;
+					txt.width = img.width * scX;
 				}
 			}
 			// update album height

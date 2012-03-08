@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.events.Event;
+	import flash.display.Sprite;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
@@ -31,11 +32,11 @@ package com.gestureworks.cml.element
 		private var zeroPoint:Point = new Point(0, 0);
 		public var magX:Number;
 		public var magY:Number;
-		//public var id:int
-		//public var cmlIndex:*
-		//public var parseCML:*
 		
-		private var ts:TouchSprite
+		[Embed(source = "../../../../../bin/library/assets/nodemap/magnifier_image.swf")]
+		private var Picture1:Class;
+		
+		private var lens:*
 		
 		public function MagnifierElement(target:* = null)
 		{
@@ -54,92 +55,34 @@ package com.gestureworks.cml.element
 		//}
 		
 		private function init(e:Event = null):void
-		{	
-			removeEventListener(Event.ADDED_TO_STAGE, init);
+		{
+			//removeEventListener(Event.ADDED_TO_STAGE, init);
 			target = target ? target : parent ? parent : this;
 			outline = new Shape();
 			maskS = new Shape();
 			
-			/*
-			var lens:ImageElement = new ImageElement();
-				lens.src = "library/assests/nodemap/Brass-Hand.png"
-				lens.visible = true;
-			addChild(lens)
-			
-			*/
-			
-			ts = new TouchSprite();
-				ts.gestureEvents = true;
-				ts.gestureList = {"n-drag": true};
-				ts.nestedTransform = true;
-				ts.mouseChildren = false;
-				//disableNativeTransform = true;
-				//disableAffineTransform = true;
-				ts.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-			addChild(ts);
-			
-			
-			
-			ts.addChild(outline);
-			ts.addChild(maskS);
+			addChild(outline);
+			addChild(maskS);
 			//this.mask = maskS;
 			
-			
-			//ts.addChild(outline);
-			//ts.addChild(maskS);
-			//this.mask = maskS;
-			
-			
-			//gestureEvents = true;
-			//gestureList = {"n-drag": true, "n-scale": true};
-			//nestedTransform = true;
-			//disableNativeTransform = true;
-			//disableAffineTransform = true;
-			
-			
-			addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-			//addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
+			lens = new Picture1();
+				lens.x += -14;
+				lens.y += -10;
+			this.addChild(lens);
 					
-			targetWidth = 250//width;
-			//magX = x;
-			//magY = y;
-			//trace(magX, magY);
+			targetWidth = 280//width;
+			magX = x;
+			magY = y;
 			
 			filters = [new DropShadowFilter(6, 45, 0x000000, .5, 6, 6, 1, 3)];
 			
 			_initialized = true;
 			updateUI();
 			
-			//addEventListener(Event.ENTER_FRAME, captureBitmap);
+			addEventListener(Event.ENTER_FRAME, captureBitmap);
 		}
-		
-		private function gestureDragHandler(event:GWGestureEvent):void
-		{
-			trace("mag position update")
-			
-			magX += event.value.dx;
-			magY += event.value.dy;
-			
-			//magX = (magX + (outline.width / 2) < 0) ? 0 - (outline.width / 2) : magX > stage.stageWidth - (outline.width / 2)  ? stage.stageWidth - (outline.width / 2) : magX;
-			//magY = (magY + (outline.height / 2) < 0) ? 0 - (outline.height / 2) : magY > stage.stageHeight - (outline.height / 2)  ? stage.stageHeight - (outline.height / 2) : magY;
-			
-			x = magX;
-			y = magY;
-			
-			
-		}
-		
-		private function gestureScaleHandler(event:GWGestureEvent):void
-		{			
-			//targetScale += event.value.dsx;
-			//targetScale = targetScale > 2 ? 2 : targetScale < .8 ? .8 : targetScale;
-			targetWidth = width * targetScale;
-			//updateUI();
-		}
-		
 		
 		override protected function updateUI():void
-		//protected function updateUI():void
 		{
 			if (!_initialized) return;
 			
@@ -151,10 +94,15 @@ package com.gestureworks.cml.element
 			maskS.graphics.lineStyle(lineStroke, color);
 			maskS.graphics.beginFill(fillColor, fillAlpha);
 			
-			if (isCircle)
+			if (shape=="circle")
 			{
 				outline.graphics.drawCircle(targetWidth / 2, targetWidth / 2, targetWidth / 2);
 				maskS.graphics.drawCircle(targetWidth / 2, targetWidth / 2, targetWidth / 2);
+			}
+			if (shape=="roundrectangle")
+			{
+				outline.graphics.drawRoundRect(0, 0, targetWidth, targetWidth,80,80);
+				maskS.graphics.drawRoundRect(0, 0, targetWidth, targetWidth,80,80);
 			}
 			else
 			{
@@ -190,11 +138,11 @@ package com.gestureworks.cml.element
 			bitmap.smoothing = true;
 			bitmap.x = 0;
 			bitmap.y = 0;
-			
 			addChildAt(bitmap, 0);
-			//ts.addChildAt(bitmap, 0);
+			
+			bitmap.mask = maskS;
+			//bitmap.mask = lens_mask;
 		}
-		
 		
 		public function destroyBitmap():void
 		{
@@ -204,8 +152,6 @@ package com.gestureworks.cml.element
 			bitmapData.dispose();
 			bitmapData = null;
 		}
-		
-		
 		
 		private function applyMatrixresizeMatrix(source:Matrix, scaleValue:Number, tx:Number, ty:Number):Matrix
 		{

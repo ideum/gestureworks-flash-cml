@@ -115,6 +115,14 @@ package com.gestureworks.cml.components
 				var cml_node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
 				node_point.addChild(cml_node_point);
 				
+				//////////////////////////////////////////////
+				// data scale fix
+				//album.x *= 3;
+				//album.y *= 3;
+				//node.x *= 3;
+				//node.y *= 3;
+				
+				trace(node.group);
 			}
 				
 			//slider//////////////////////////////////////////////
@@ -157,15 +165,22 @@ package com.gestureworks.cml.components
 				nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = true; 
 				//albums.getIndex(k).visible = false;
 				
-			
-				if (nodes.getIndex(k).group == g) {
-					//change node point icon visibilty
-					//trace("node vis");
-					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = true;
-					nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
-				}
-				if(albums.getIndex(k).group == g) {
-					//albums.getIndex(k).visible = true;
+				var s:String = nodes.getIndex(k).group;
+				var sn:Array = s.split(", ");
+				//var sa:Array = albums.getIndex(k).group;
+				
+				for (var f:int = 0; f < sn.length; f++)
+				{
+					//trace("--------",sn[f], g)
+					if (sn[f] == g) {
+						//change node point icon visibilty
+						//trace("node vis");
+						nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_on", 0).visible = true;
+						nodes.getIndex(k).childList.getCSSClass("node_point", 0).childList.getCSSClass("icon_a_off", 0).visible = false; 
+					}
+					//if(sa[f] == g) {
+						//albums.getIndex(k).visible = true;
+					//}
 				}
 			}
 			

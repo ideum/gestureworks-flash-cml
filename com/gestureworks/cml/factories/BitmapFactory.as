@@ -92,36 +92,41 @@ package com.gestureworks.cml.factories
 			_percentX = 1; 
 			_percentY = 1;
 			
+			scaleX = 1;
+			scaleY = 1;
 			
-			if (propertyStates[0]["width"] && propertyStates[0]["height"])
-			{
-				// skip resampling if not needed to avoid image degradation
-				if ((propertyStates[0]["width"] != file.width) && (propertyStates[0]["height"] != file.height))
+			if(resample){
+			
+				if (propertyStates[0]["width"] && propertyStates[0]["height"])
 				{
-					_percentX = propertyStates[0]["width"] / file.width;
-					_percentY = propertyStates[0]["height"] / file.height;
+					// skip resampling if not needed to avoid image degradation
+					if ((propertyStates[0]["width"] != file.width) && (propertyStates[0]["height"] != file.height))
+					{
+						_percentX = propertyStates[0]["width"] / file.width;
+						_percentY = propertyStates[0]["height"] / file.height;
+					}
 				}
+				
+				else if (propertyStates[0]["width"])
+				{
+					// skip resampling if not needed to avoid image degradation
+					if (propertyStates[0]["width"] != file.width)
+					{
+						_percentX = propertyStates[0]["width"] / file.width;
+						_percentY = _percentX;
+					}
+				}
+				
+				else if (propertyStates[0]["height"])
+				{
+					// skip resampling if not needed to avoid image degradation
+					if (propertyStates[0]["height"] != file.height)
+					{
+						_percentY = propertyStates[0]["height"] / file.height; 										
+						_percentX = _percentY;
+					}
+				}	
 			}
-			
-			else if (propertyStates[0]["width"])
-			{
-				// skip resampling if not needed to avoid image degradation
-				if (propertyStates[0]["width"] != file.width)
-				{
-					_percentX = propertyStates[0]["width"] / file.width;
-					_percentY = _percentX;
-				}
-			}
-			
-			else if (propertyStates[0]["height"])
-			{
-				// skip resampling if not needed to avoid image degradation
-				if (propertyStates[0]["height"] != file.height)
-				{
-					_percentY = propertyStates[0]["height"] / file.height; 										
-					_percentX = _percentY;
-				}
-			}			
 			
 			if ((_percentX != 1) && (_percentY != 1))
 			{
@@ -133,17 +138,17 @@ package com.gestureworks.cml.factories
 			}
 			else
 			{
-				_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
+				_bitmapData = new BitmapData(file.width*scaleX, file.height*scaleY, true, 0x000000);
 				_bitmapData.draw(file.content);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);				
 			}
 			
 			_bitmap.smoothing=true;
-			
+			_bitmapData = null;
 			
 			// very important to set width and height!
-			width = _bitmap.width;
-			height = _bitmap.height;
+			width = _bitmap.width*scaleX;
+			height = _bitmap.height*scaleY;
 		
 			
 			// establish orientation			
@@ -172,6 +177,7 @@ package com.gestureworks.cml.factories
 			
 			// send complete event
 			bitmapComplete();
+			
 			
 			// resample base bitmap
 			if ((resample) || (normalize)) 
@@ -252,7 +258,7 @@ package com.gestureworks.cml.factories
 			// check for dim value
 			// check for dim match
 			// 
-						
+			
 			
 			
 		}
@@ -315,14 +321,14 @@ package com.gestureworks.cml.factories
 			_aspectRatio = value;
 		}
 		
-		private var _resample:Boolean = true;
+		private var _resample:Boolean = false;
 		public function get resample():Boolean{return _resample;}
 		public function set resample(value:Boolean):void
 		{
 			_resample = value;
 		}
 		
-		private var _normalize:Boolean = true;
+		private var _normalize:Boolean = false;
 		public function get normalize():Boolean{return _normalize;}
 		public function set normalize(value:Boolean):void
 		{
