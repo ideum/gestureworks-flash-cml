@@ -33,16 +33,15 @@ package com.gestureworks.cml.element
 		{
 			super();		
 			textFormat = new TextLayoutFormat;
-			XML.ignoreWhitespace = true;
 			
 			configuration = new Configuration;
 			configuration.textFlowInitialFormat = textFormat;
 			textFlow = new TextFlow;
-			
 		}	
 	
 		override public function parseCML(cml:XMLList):XMLList
 		{
+			XML.ignoreWhitespace = true;			
 			input(cml.children());
 			var returnNode:XMLList = new XMLList;
 			var attrName:String;
@@ -95,7 +94,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * input, must be prefixed with AS3's namespace:
-		 * <TextFlow xmlns='http://ns.adobe.com/textLayout/2008' font='ArialTLF' color='0xFF2233'>
+		 * <TextFlow xmlns='http://ns.adobe.com/textLayout/2008' color='0xFF2233'>
 		 *		<p>Paragraph1</p>
 		 *		<p>Paragraph2</p>
 		 *		<p>Paragraph3</p>

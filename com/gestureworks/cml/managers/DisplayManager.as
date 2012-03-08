@@ -24,8 +24,8 @@ package com.gestureworks.cml.managers
 			if (_instance == null)
 			{
 				_instance = new DisplayManager(new SingletonEnforcer());
-				DefaultStage.instance.stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-				DefaultStage.instance.stage.addEventListener(Event.EXIT_FRAME, onExitFrame);								
+				//DefaultStage.instance.stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+				//DefaultStage.instance.stage.addEventListener(Event.EXIT_FRAME, onExitFrame);
 			}
 			return _instance; 
 		}

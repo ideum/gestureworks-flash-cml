@@ -33,7 +33,7 @@ package com.gestureworks.cml.core
 		private static var GXMLComponent:Class;
 		public var defaultContainer:Container;
 		public static const COMPLETE:String = "COMPLETE";
-		public var debug:Boolean = true;
+		public var debug:Boolean = false;
 		
 		public var cssFile:String;
 		
@@ -45,6 +45,11 @@ package com.gestureworks.cml.core
 		 */
 		public function init(cml:XML, parent:*, properties:*=null):void
 		{
+			var fontManager:FontManager = new FontManager;
+			
+			XML.ignoreWhitespace = true;
+			XML.prettyPrinting = false;					
+			
 			if (debug)
 				trace("\n\n**************** CML parser initialized ****************");
 			

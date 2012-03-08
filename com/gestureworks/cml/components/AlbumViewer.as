@@ -268,6 +268,9 @@ package com.gestureworks.cml.components
 	public function update():void
 	{	
 		// update height
+		
+		trace("*******height", height);
+		
 		album_bg.height = height;
 		belt.height = height;
 		belt_bg.height = height;

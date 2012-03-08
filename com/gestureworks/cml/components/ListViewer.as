@@ -76,6 +76,7 @@ package com.gestureworks.cml.components
 				}
 			}
 			// update album height
+						
 			album.height = belt_height + label_height + album.bar_height -10;//????????
 			album.update();
 		}
