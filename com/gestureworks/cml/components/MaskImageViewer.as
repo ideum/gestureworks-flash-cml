@@ -17,11 +17,14 @@
 package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.element.Container;
+	import com.gestureworks.cml.element.FrameElement;
+	import com.gestureworks.cml.element.GraphicElement;
 	import flash.events.Event;
 	
 	import adobe.utils.CustomActions;
 	import com.gestureworks.cml.core.TouchContainerDisplay;
 	import flash.display.Sprite;
+	import flash.display.Shape;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.events.*;
@@ -44,6 +47,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.DisplayList;
 	
 	import com.gestureworks.core.GestureWorks;
+	import com.gestureworks.cml.element.Component;
 
 	 /**
 	 * <p>The MaskImageDisplay component is the main component for the MaskImageViewer module.  It contains all the neccessary display objects for the module.</p>
@@ -59,50 +63,22 @@ package com.gestureworks.cml.components
 	 
 	public class MaskImageViewer extends ComponentKit
 	{
-		private var itemList:Array = new Array;
-
 		// ----- interactive object settings --//
-		private var stageWidth:Number;
-		private var stageHeight:Number;
-		
-		private var imagesNormalize:Number;
-		private var globalScale:Number;
-		
 		private var Width:Number = 0;
 		private var Height:Number = 0;
-		private var count:int = 0;
+		private var count:int = 1;
 		private var n:int = 0;
-		private var holder:TouchSprite;
+		
+		private var holder:TouchContainer;
 		private var base_image:TouchSprite;
 		private var mask_image:Sprite;
-		
-		
-		//-- mask settings ---//
-		private var maskSize:Number = 200;
-		private var maskShape:String = "square";
-		private var mShape:TouchSprite;
-		private var shape_hit:TouchSprite;
-		private var mapShape:Sprite;
-		private var mShapeOutline:Sprite;
-		
-		//---------frame settings--//
-		private var frame:TouchSprite;
-		private var frameDraw:Boolean = true;
-		private var frameMargin:Number = 100;
-		private var frameRadius:Number = 20;
-		private var frameFillColor:Number = 0xFFFFFF;
-		private var frameFillAlpha:Number = 0.5;
-		private var frameOutlineColor:Number = 0xFFFFFF;
-		private var frameOutlineStroke:Number = 2;
-		private var frameOutlineAlpha:Number = 1;
-		//----maskimage gestures---//
-		private var dragGesture:Boolean = true;
-		private var scaleGesture:Boolean = true;
-		private var rotateGesture:Boolean = true;
-		//----frame gestures---//
-		private var frameDragGesture:Boolean = true;
-		private var frameScaleGesture:Boolean = true;
-		private var frameRotateGesture:Boolean = true;
+		private var mShape:GraphicElement;
+		//private var shape_hit:TouchContainerDisplay;
+		private var shape_hit:TouchContainer;
+		//private var shape_hit:TouchSprite;
+		private var mapShape:GraphicElement;
+		private var mShapeOutline:GraphicElement;
+		private var wShape:GraphicElement;
 		
 		//public static var COMPLETE:String = "complete";
 				 
@@ -110,10 +86,7 @@ package com.gestureworks.cml.components
 		public function MaskImageViewer()
 		{
 			super();
-			//visible=false;
-			
-			//trace("__________________________________________________________mask viewer_____________________________________________________________");
-			
+			//trace("mask viewer");
 		}
 
 		override public function dispose():void
@@ -123,84 +96,80 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{			
-			childInfo();
-			
+			//trace("mask image viewer complete")
 			initUI();
 			setupUI();
 		}
 		
-		private function childInfo():void
-		{ 
-				trace(this.childList.length);
-				
-				for (var i:int = 0; i < this.childList.length; i++)
-				{
-					trace(childList.getIndex(i),childList.getIndex(i).id);
-					//if ((childList.getIndex(i) is TouchContainer))
-					//if ((childList.getIndex(i) is ImageElement))
-					{
-						trace(childList.getIndex(i).id);
-						itemList.push(childList.getIndex(i));
-					}
-				}
-				n = itemList.length;				
-		}
-		
+			
 		private function initUI():void
-		{
-			/*
-			var xml:XML = ImageParser.settings;
-			stageWidth=ApplicationGlobals.application.stage.stageWidth;
-			stageHeight=ApplicationGlobals.application.stage.stageHeight;
+		{				
+			n = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mask_img", 0).childList.length;
+			//trace("childList length------------------------------:", n);
 			
-			//-- Style
-			globalScale=ImageParser.settings.GlobalSettings.globalScale;
-			scale=ImageParser.settings.GlobalSettings.scale;
-			imagesNormalize=ImageParser.settings.GlobalSettings.imagesNormalize;
-			maxScale=ImageParser.settings.GlobalSettings.maxScale;
-			minScale=ImageParser.settings.GlobalSettings.minScale;
-			stageWidth=ApplicationGlobals.application.stage.stageWidth;
-			stageHeight=ApplicationGlobals.application.stage.stageHeight;
-
-			//-- mask Properties --//
-			maskSize=ImageParser.settings.GlobalSettings.maskSize;
-			maskShape=ImageParser.settings.GlobalSettings.maskShape;
-			
-			//--Frame Style--//
-			frameDraw = xml.FrameStyle.frameDraw == "true"?true:false;
-			frameMargin = xml.FrameStyle.padding;
-			frameRadius = xml.FrameStyle.cornerRadius;
-			frameFillColor = xml.FrameStyle.fillColor1;
-			frameFillAlpha = xml.FrameStyle.fillAlpha;
-			frameOutlineColor = xml.FrameStyle.outlineColor;
-			frameOutlineStroke = xml.FrameStyle.outlineStroke;
-			frameOutlineAlpha = xml.FrameStyle.outlineAlpha;
-			
-			//--Frame Gestures--//
-			frameDragGesture=xml.FrameGestures.drag == "true" ?true:false;
-			frameScaleGesture=xml.FrameGestures.scale == "true" ?true:false;
-			frameRotateGesture=xml.FrameGestures.rotate == "true" ?true:false;
-			*/
-			
-			//Width = base_image.width//401//499//image1.width;
-			//Height = base_image.height//401//321//image1.height;
-			
-			//Width = itemList[0].width;
-			//Height = itemList[0].height;
-			
-			//trace(itemList[0].width,itemList[0].width)
-						
-			if(frameDraw)
-			{	
-				//width=Width+frameMargin;
-				//height=Height+frameMargin;
-			}
-			
+			//-- bottom image --//
+			Width = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("base_img", 0).width;
+			Height = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("base_img", 0).height;
 		}
 			
 		private function setupUI():void
 		{ 
 			trace("setup");
+			
+			// main touch container
+			holder = this.childList.getCSSClass("touch_container", 0);
+			addChild(holder);
+
+			// set frame size
+			this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = Width;
+			this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = Height;
+			
+			//set bottom image
+			base_image = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("base_img", 0)
+				base_image.targetParent = true;  // make base capture touch points
+			holder.addChild(base_image);
+			
+			
+			//top image stack
+			mask_image = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mask_img", 0);
+				mask_image.getChildAt(0).visible = true;
+			holder.addChild(mask_image);
+			
+			
+			////////////////////////////////////
+			// image mask
+			////////////////////////////////////
+			mShape = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mshape", 0);
+			holder.addChild(mShape);
+			
+			shape_hit = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("touch_mshape", 0);
+				shape_hit.addEventListener(GWGestureEvent.DOUBLE_TAP, dTapHandler);
+				shape_hit.addEventListener(GWGestureEvent.DRAG, dragHandler);
+				shape_hit.addEventListener(GWGestureEvent.SCALE, scaleHandler);
+				shape_hit.addEventListener(GWGestureEvent.ROTATE, rotateHandler);
+			holder.addChild(shape_hit);
+			
+			mask_image.mask = mShape;
+			
+			/////////////////////////////////////
+			// mask outline
+			/////////////////////////////////////
+			mShapeOutline = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mshape_outline", 0);
+			holder.addChild(mShapeOutline);
+			
+			wShape = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("wshape", 0);
+				wShape.width = Width;
+				wShape.height = Height;
+			holder.addChild(wShape);
+			
+			mShapeOutline.mask = wShape;
+		}
+		
+		/*
+		private function setupUI():void
+		{ 
+			trace("setup");
+		
 			holder = new TouchSprite();
 				holder.targeting = true;
 				holder.gestureEvents = true;
@@ -209,9 +178,9 @@ package com.gestureworks.cml.components
 				holder.disableAffineTransform = false;
 				holder.mouseChildren = true;
 				holder.gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
-			addChild(holder);
-				
+			
 			//---------- build frame ------------------------//
+
 			if(frameDraw)
 			{							
 				frame = new TouchSprite();
@@ -226,17 +195,16 @@ package com.gestureworks.cml.components
 					frame.graphics.lineStyle(2, frame_color,frame_alpha+0.5);
 					frame.graphics.drawRoundRect( -2 * frame_thickness, -2 * frame_thickness, Width + 4 * frame_thickness, Height + 4 * frame_thickness, 2 * frame_thickness, 2 * frame_thickness);
 					frame.graphics.lineStyle(4, frame_color,0.8);
-					frame.graphics.drawRect(-2, -2, Width + 4, Height + 4);
+					frame.graphics.drawRect( -2, -2, Width + 4, Height + 4);
 					
 				holder.addChild(frame);
 			}
 			else frameMargin=0;
-			
-			
+
 			//-- bottom image --//
-			base_image = itemList[0];
-			base_image.targetParent = true;  // make base capture touch points
-			holder.addChild(base_image);
+			//base_image = itemList[0];this.childList.getCSSClass("touch_img", 0).width
+			//base_image.targetParent = true;  // make base capture touch points
+			//holder.addChild(base_image);
 			
 			//-- top image --//
 			mask_image = new Sprite();
@@ -244,20 +212,20 @@ package com.gestureworks.cml.components
 			for (var i:int = 1; i <n; i++)
 				{
 				mask_image.addChild(itemList[i]);
-				if(i!=1)itemList[i].visible = false;
+				if (i != 1) itemList[i].visible = false;;
 				}
-			
 			holder.addChild(mask_image);
 			
 			//-- create mask shape --//
-			mShape = new TouchSprite();
+			
+			mShape = new Shape();
 				mShape.graphics.beginFill(0xFFFFFF,1);
 				mShape.graphics.drawRect(-maskSize/2,-maskSize/2,maskSize,maskSize);
 				mShape.graphics.endFill();
 				mShape.x = maskSize/2;
 				mShape.y = maskSize / 2;
 			holder.addChild(mShape);	
-				
+
 			shape_hit = new TouchSprite();
 				shape_hit.graphics.beginFill(0xFFFFFF,0);
 				shape_hit.graphics.drawRect( -maskSize / 2, -maskSize / 2, maskSize, maskSize);
@@ -279,7 +247,7 @@ package com.gestureworks.cml.components
 			mask_image.mask = mShape;
 			
 			
-			mShapeOutline = new Sprite();
+			mShapeOutline = new Shape();
 				mShapeOutline.graphics.lineStyle(3,0xFFFFFF,1);
 				//mShapeOutline.graphics.beginFill(0xFFFFFF,0);
 				mShapeOutline.graphics.drawRect(-maskSize/2,-maskSize/2,maskSize,maskSize);
@@ -288,30 +256,39 @@ package com.gestureworks.cml.components
 				mShapeOutline.y = maskSize / 2;
 			holder.addChild(mShapeOutline);
 			
-			var wShape:Sprite = new Sprite();
+			wShape = new Shape();
 				wShape.graphics.beginFill(0xFFFFFF, 1);
 				wShape.graphics.drawRect(0,0,Width,Height);
 				wShape.graphics.endFill();
 			holder.addChild(wShape);
 			
 			mShapeOutline.mask = wShape;
-			
+		}*/
+		
+		private function downHandler(e:TouchEvent):void
+		{
+			trace("t down");
+		}
+		
+		private function tapHandler(e:GWGestureEvent):void
+		{
+			trace("tap");
 		}
 		
 		private function dTapHandler(e:GWGestureEvent):void
 		{
-			trace("d tap", count);
+			if (count > n-1) count = 1;
+			else count++;
+			
+			trace("d tap", count, n);
 			
 			//  turn on required image
-			for (var i:int = 0; i <n-1; i++)
+			for (var i:int = 0; i <n; i++)
 				{
-				//trace(this.childList[i])
 				mask_image.getChildAt(i).visible = false
-				if (i == count) mask_image.getChildAt(i).visible = true;
+				if (i == count-1) mask_image.getChildAt(i).visible = true;
 			}
 			
-			if (count >= n-2) count = 0;
-			else count++;
 		}
 		
 		// gesture event handlers to act on mask shape object

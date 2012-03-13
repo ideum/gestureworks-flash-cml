@@ -101,6 +101,9 @@ package com.gestureworks.cml.components
 					album.name = String(k);
 					album.addEventListener(DisplayEvent.CHANGE, updateHandler);
 				
+				//reposition albums that open out of sight
+				if (album.y>(1080-album.height)) album.y -= (album.height +50);
+				
 				// add tap listener to nodes /////////////////////////////////
 				var node:TouchContainer = nodes.getIndex(k);
 				
@@ -117,13 +120,7 @@ package com.gestureworks.cml.components
 				var cml_node_point:* = nodes.getIndex(k).childList.getCSSClass("node_point", 0);
 				node_point.addChild(cml_node_point);
 				
-				//////////////////////////////////////////////
-				// data scale fix
-				//album.x *= 3;
-				//album.y *= 3;
-				//node.x *= 3;
-				//node.y *= 3;
-				
+				// node group
 				trace(node.group);
 			}
 				

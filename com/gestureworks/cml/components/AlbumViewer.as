@@ -1,8 +1,5 @@
 package com.gestureworks.cml.components
 {
-	
-	import adobe.utils.CustomActions;
-
 	import com.gestureworks.cml.core.TouchContainerDisplay;
 	import com.gestureworks.cml.element.ButtonElement;
 	import com.gestureworks.cml.element.GraphicElement;
@@ -12,16 +9,17 @@ package com.gestureworks.cml.components
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.events.*;
-	//import flash.text.*;
+	import flash.filters.DropShadowFilter;
 	import flash.utils.*;
+	import adobe.utils.CustomActions;
 	
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
 	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.element.GraphicElement;
-	
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTransformEvent;
@@ -29,12 +27,9 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.cml.kits.ComponentKit;
+
 	
-	import com.gestureworks.core.GestureWorks;
-	
-	import flash.filters.DropShadowFilter;
-	
-	public class AlbumViewer extends Component//ComponentKit//TouchContainer
+	public class AlbumViewer extends Component
 	{		
 		// objects
 		private var menu:TouchSprite;
@@ -44,16 +39,17 @@ package com.gestureworks.cml.components
 		private var album_title:TextElement;
 		
 		private var album_bg:GraphicElement;
+		private var content_holder:TouchSprite;
 		private var belt:TouchSprite;
 		private var belt_bg:GraphicElement;
 		private var list:ComponentKit;
+		private var mShape0:GraphicElement
 		private var mShape:GraphicElement
 		
 		private var metadata:TouchSprite;
-		private var meta_bg:GraphicElement;
 		private var text_scroll_box:TouchSprite;
+		private var meta_bg:GraphicElement;
 		private var meta_desc:TextElement;
-		
 
 		private var _x:Number;
 		private var _y:Number;
@@ -84,17 +80,15 @@ package com.gestureworks.cml.components
 		// slider
 		private var slider_factor:Number;
 		
-		//repeat blocks
-		//private var rn:int // repeat number
-		//private var centralBlockwidth:Number;
-		//private var repeatBlockwidth:Number;
-		
 		// meta data
 		private var album_description:TextElement
 		//private var text_pad:Number;
 		//private var scroll_bar_pad:Number;
 		//private var scroll_bar_width:Number;
 		//private var scroll_bar_height:Number;
+		
+		private var scroll_minValue:int;
+		private var scroll_maxValue:int;
 		
 		// interation
 		public var Icount:int = 0;
@@ -116,38 +110,14 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{			
-			trace("album display viewer complete");
-			//childListParse();
+			//trace("album display viewer complete");
 			initUI();	
 			setupUI();	
 		}
 	
-		
-		private function childListParse():void
-		{
-			//trace("-------", this.childList.getCSSClass("holder", 0).id);
-			//trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("menu", 0).id);
-			//trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("belt",0).id);
-			//trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
-			//trace("-------", this.childList.getCSSClass("holder",0).childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
-			//trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("mask_shape", 0).id);
-			//trace("-------", this.childList.getCSSClass("holder", 0).childList.getCSSClass("metadata", 0).id);
-			
-			trace("-------", this.id);
-			trace("-------", this.childList.getCSSClass("menu", 0).id);
-			trace("-------", this.childList.getCSSClass("belt", 0).id);
-			trace("-------", this.childList.getCSSClass("belt",0).childList.getCSSClass("list",0).id);
-			trace("-------", this.childList.getCSSClass("menu",0).childList.getCSSClass("cbtn",0).id);
-			trace("-------", this.childList.getCSSClass("menu",0).childList.getCSSClass("ibtn",0).id);
-			trace("-------", this.childList.getCSSClass("mask_shape", 0).id);
-			trace("-------", this.childList.getCSSClass("metadata", 0).id);
-		}
-		
 		private function initUI():void
 		{
-			trace("initUI album");
-			
-			
+			//trace("initUI album");
 			belt_buffer = 200;
 			//slider_factor = (centralBlockwidth - width) / width;
 			//text_pad = 20;
@@ -159,10 +129,7 @@ package com.gestureworks.cml.components
 		
 		private function setupUI():void
 		{ 
-			trace("setupUI album");
-			
-			//////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////
+			//trace(" start setupUI album");
 			
 				this.gestureEvents = true;
 				this.gestureList = { "n-drag-lim":true };
@@ -178,11 +145,11 @@ package com.gestureworks.cml.components
 				// album background
 				album_bg = this.childList.getCSSClass("album_bg", 0)
 				this.addChild(album_bg);
-			 
+				
+				
 				////////////////////////////////////////////////
 				// menu
 				////////////////////////////////////////////////
-				
 				menu = this.childList.getCSSClass("menu", 0);
 					menu.targetParent = true;
 				this.addChild(menu);
@@ -222,54 +189,68 @@ package com.gestureworks.cml.components
 				
 				var cml_ibtn:* = this.childList.getCSSClass("menu", 0).childList.getCSSClass("ibtn",0);
 				ibtn.addChild(cml_ibtn);
-	
+				
+				
+				/// belt and metadata holder 
+				content_holder = this.childList.getCSSClass("content", 0);
+				this.addChild(content_holder);
+				
+			
 				/////////////////////////////////////////////////
 				// item belt
 				/////////////////////////////////////////////////
-				belt = this.childList.getCSSClass("belt", 0);
+				belt = this.childList.getCSSClass("content", 0).childList.getCSSClass("belt", 0);
 					belt.gestureList = {"1-dragx":true};//, "2-dragx":true, "3-dragx":true 
+					belt.gestureEvents = true;
 					belt.addEventListener(GWGestureEvent.DRAG, checkBeltPosition);
 					belt.transformEvents = true;
-				this.addChild(belt);
+				content_holder.addChild(belt);
 				
-				
-				belt_bg = this.childList.getCSSClass("belt", 0).childList.getCSSClass("belt_bg", 0);
+					
+				belt_bg = this.childList.getCSSClass("content", 0).childList.getCSSClass("belt", 0).childList.getCSSClass("belt_bg", 0);
 				belt.addChild(belt_bg);
 				
-				list = this.childList.getCSSClass("belt", 0).childList.getCSSClass("list", 0);
+				list = this.childList.getCSSClass("content", 0).childList.getCSSClass("belt", 0).childList.getCSSClass("list", 0);
 				belt.addChild(list);
-				
-				/////////////////////////////////////////////////////////
-				//apply album mask
-				/////////////////////////////////////////////
-				mShape = this.childList.getCSSClass("mask_shape", 0);
-				this.addChild(mShape);
-				belt.mask = mShape;
+			
 				
 				//////////////////////////////////////////////////////////
 				// meta data text display 
 				//////////////////////////////////////////////////////////
-				metadata = this.childList.getCSSClass("metadata", 0);
-				this.addChild(metadata);
+				metadata = this.childList.getCSSClass("content", 0).childList.getCSSClass("metadata", 0);
+				content_holder.addChild(metadata);
 				
-				meta_bg = this.childList.getCSSClass("metadata", 0).childList.getCSSClass("meta_bg", 0)
+					
+				meta_bg = this.childList.getCSSClass("content", 0).childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0).childList.getCSSClass("meta_bg", 0)
 				metadata.addChild(meta_bg);
 				
-				text_scroll_box = this.childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0);
+				text_scroll_box = this.childList.getCSSClass("content", 0).childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0);
+					text_scroll_box.mouseChildren = false;
+					text_scroll_box.gestureEvents = true;
+					text_scroll_box.gestureList = { "n-dragy":true };  
+					text_scroll_box.addEventListener(GWGestureEvent.DRAG, checkScrollPosition);
 				metadata.addChild(text_scroll_box);
 				
-				meta_desc =  this.childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0).childList.getCSSClass("meta_description", 0);
-				text_scroll_box.addChild(meta_desc);
+					meta_desc =  this.childList.getCSSClass("content", 0).childList.getCSSClass("metadata", 0).childList.getCSSClass("vscroll_box", 0).childList.getCSSClass("meta_description", 0);
+					text_scroll_box.addChild(meta_desc);
 				
-	/////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////	
+					
+				/////////////////////////////////////////////////////////
+				//apply metadata mask
+				/////////////////////////////////////////////
+				mShape = this.childList.getCSSClass("mask_shape", 0);
+				this.addChild(mShape);
+				content_holder.mask = mShape;
+
+				//trace("Album setup complete");
+		
 	}
 	
 	public function update():void
 	{	
 		// update height
 		
-		trace("*******height", height);
+		//trace("*******height", height);
 		
 		album_bg.height = height;
 		belt.height = height;
@@ -277,8 +258,7 @@ package com.gestureworks.cml.components
 		mShape.height = height;
 		metadata.height = height;
 		meta_bg.height = height;
-		text_scroll_box.height = height;
-		meta_desc.height = height - 2*text_padding;
+		
 		
 		//update width
 		album_bg.width = width;
@@ -290,13 +270,20 @@ package com.gestureworks.cml.components
 		
 		// update limits
 		belt_minValue = 0
-		belt_maxValue = belt_bg.width- width;
-	}
-	
-	public function onScroll(event:GWGestureEvent):void
-	{
-		//trace("scroll",album_description.maxScrollH,10*event.value.dx);
-		album_description.scrollV += 0.2*event.value.dx;
+		belt_maxValue = belt_bg.width - width;
+		
+		///////////////////////////////////////////
+		
+		//meta_desc.height = 800// height - 2*text_padding;
+		meta_desc.wordWrap = true;
+		meta_desc.autoSize = "left"
+		
+		text_scroll_box.height = meta_desc.height;
+		
+		scroll_minValue = 0;
+		scroll_maxValue = meta_desc.height - height + bar_height;
+		
+		//trace("==============================================",meta_desc.height,meta_desc.textHeight)
 	}
 	
 	
@@ -337,7 +324,7 @@ package com.gestureworks.cml.components
 	
 	public function closeAlbum():void
 	{
-		trace("close album");
+		//trace("close album");
 		//dispose();
 		
 		//reset album //faux dispose
@@ -351,6 +338,9 @@ package com.gestureworks.cml.components
 		
 		// reset belt
 		belt.x = 0;
+		
+		// reset meta data
+		text_scroll_box.y = 0;
 
 		// reset link line
 		this.dispatchEvent(new DisplayEvent(DisplayEvent.CHANGE));
@@ -366,7 +356,7 @@ package com.gestureworks.cml.components
 	
 	public function showInfo():void
 	{
-		trace("info",metadata.visible);
+		//trace("info",metadata.visible);
 		if (!metadata.visible) metadata.visible = true;
 		else metadata.visible = false;
 		
@@ -375,6 +365,8 @@ package com.gestureworks.cml.components
 		
 		// reset belt
 		belt.x = 0;
+		// reset meta data
+		text_scroll_box.y = 0;
 	}
 	
 	
@@ -389,6 +381,25 @@ package com.gestureworks.cml.components
 	{
 		//trace("release");
 		checkTween();
+	}
+	
+	public function checkScrollPosition(event:GWGestureEvent):void
+	{
+		//trace("checkscroll position",text_scroll_box.y );
+		// update interaction on drag belt
+		resetInteractionCount(); 
+		
+		var abs_scrolly:Number = Math.abs(text_scroll_box.y);
+		
+		text_scroll_box.y += event.value.dy;
+		
+		if (text_scroll_box.y > 0){
+			if (abs_scrolly > scroll_minValue) text_scroll_box.y = scroll_minValue;
+		}
+		if (text_scroll_box.y < 0){
+			if (abs_scrolly > scroll_maxValue) text_scroll_box.y = -scroll_maxValue;
+		}
+
 	}
 	
 	public function checkTween():void
@@ -426,82 +437,7 @@ package com.gestureworks.cml.components
 		belt.x += event.value.dx;
 		//trace("belt_pos",belt.x)
 		
-		checkTween();
-		
-			//////////////////////////////////////////////////////////////////////////////
-			// buffer mode
-			//////////////////////////////////////////////////////////////////////////////
-			
-			/*
-			if (!loopMode) {
-			trace(belt_buffer_tweenOn)
-				
-				if (buffer_tween) {
-					
-					if(event.value.n!=0){//only allows drag when not correcting for buffer
-					/*	
-						if (belt.x > 0) // positive
-						{
-							if (abs_beltx > (belt_minValue+belt_buffer))
-							{
-								//trace(" left limit hard, zero motion towards left",belt.$x);
-								belt.x = belt_minValue + belt_buffer;
-							}
-							else if (abs_beltx > belt_minValue)
-							{
-								var lbuff_perc:Number = ((belt_minValue+belt_buffer)-abs_beltx)/belt_buffer
-								//trace(" left limit soft, take over gesture control",belt.$x, event.value.n);
-								belt.x += lbuff_perc * event.value.dx;
-							}
-						}
-						else if (belt.x <= 0 ) //negative
-						{	
-							if (abs_beltx > belt_maxValue + belt_buffer)
-							{
-								//trace("right limit hard, zero motion towards right",belt.$x);
-								belt.x = -(belt_maxValue+belt_buffer);
-							}
-							else if (abs_beltx > belt_maxValue)
-							{
-								var rbuff_perc:Number = ((belt_maxValue+belt_buffer)-abs_beltx)/belt_buffer
-								//trace("right limit soft, take over gesture control",belt.$x,event.value.n);
-								belt.x += rbuff_perc * event.value.dx;
-							}
-						}
-						*/
-					/*}
-				
-					else if ((event.value.n == 0) && (!belt_buffer_tweenOn)) 
-					{
-						// when gesture tween check to see if break buffer
-						checkTween();
-					}
-				}
-				//limit check when not buffer anim or loop
-				else {
-					// when gesture tween check to see if break buffer
-					checkTween();
-					}
-					
-		}*/
-		
-		//////////////////////////////////////////////////////////////////////////////
-		// loop belt content
-		//////////////////////////////////////////////////////////////////////////////
-		/*
-		else {
-			if ((belt.x > 0) && (abs_beltx >= belt_minValue)) {
-						//trace("loopmmin", belt.$x);
-						belt.x = -(centralBlockwidth-repeatBlockwidth);
-					}
-				
-			else if ((belt.x < 0 )&&(abs_beltx >= belt_maxValue)){
-						//trace("loopmax",belt.$x);
-						belt.x = 0;
-			}	
-		}*/
-		///////////////////////////////////////////////////////////////////////////
-			
+		checkTween();	
 	}
 	
 	public function onEnterFrameGW(event:GWEvent):void
@@ -509,6 +445,11 @@ package com.gestureworks.cml.components
 		interactionMonitor();
 		//trace(belt_buffer_tweenOn,belt_target_tweenOn)
 		
+		beltbuffer();
+	}
+	
+	public function beltbuffer():void
+	{
 		if (belt_buffer_tweenOn) {
 				
 			var buffer_dist:Number = Math.abs(belt.x) - Math.abs(belt_tween_target);
@@ -541,6 +482,8 @@ package com.gestureworks.cml.components
 				}
 		}
 	}
+	
+	
 	
 	public function cancelTween(event:TouchEvent):void
 	{

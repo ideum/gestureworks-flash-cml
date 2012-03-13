@@ -33,7 +33,7 @@ package com.gestureworks.cml.element
 		public var magX:Number;
 		public var magY:Number;
 		
-		[Embed(source = "../../../../../bin/library/assets/nodemap/magnifier_image.swf")]
+		[Embed(source = "../../../../../bin/library/node_map/assets/magnifier_image.swf")]
 		private var Picture1:Class;
 		
 		private var lens:*
@@ -68,6 +68,8 @@ package com.gestureworks.cml.element
 			lens = new Picture1();
 				lens.x += -14;
 				lens.y += -10;
+				lens.scaleX = 0.76;
+				lens.scaleY = 0.76;
 			this.addChild(lens);
 					
 			targetWidth = 280//width;
@@ -135,7 +137,7 @@ package com.gestureworks.cml.element
 			resizeMatrix = null;
 			resizeMatrix = applyMatrixresizeMatrix(new Matrix(), magnification, outline.width / 2, outline.height / 2);
 			bitmap.transform.matrix = resizeMatrix;
-			bitmap.smoothing = true;
+			//bitmap.smoothing = true;
 			bitmap.x = 0;
 			bitmap.y = 0;
 			addChildAt(bitmap, 0);

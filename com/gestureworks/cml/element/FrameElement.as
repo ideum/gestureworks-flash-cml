@@ -14,7 +14,7 @@ package com.gestureworks.cml.element
 		{			
 			super();
 			layoutUI();
-
+			
 		}		
 		
 		
@@ -22,7 +22,7 @@ package com.gestureworks.cml.element
 		{			
 			graphics.clear();		
 			
-			if(shape=="rectagle"){
+			if(_shape=="rectangle"){
 			// draw
 			graphics.lineStyle(2*frameThickness, frameColor, frameAlpha);
 			graphics.drawRect( -frameThickness, -frameThickness, width + 2 * frameThickness, height + 2 * frameThickness);
@@ -41,7 +41,7 @@ package com.gestureworks.cml.element
 		 * Sets frame shape
 		 * @default "rectangle"
 		 */			
-		public function get frameShape():String{return _shape;}
+		public function get frmaeShape():String{return _shape;}
 		public function set frameShape(value:String):void
 		{
 			_shape = value;		

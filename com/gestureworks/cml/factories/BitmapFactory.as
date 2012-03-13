@@ -89,11 +89,12 @@ package com.gestureworks.cml.factories
 			/////////////////////////////////////////////////////////////////////////////////////////
 			
 			// scale percentages needed to achieve desired diemensions
-			_percentX = 1; 
-			_percentY = 1;
+			//_percentX = 1; 
+			//_percentY = 1;
 			
-			scaleX = 1;
-			scaleY = 1;
+			//scaleX = 1
+			//scaleY = 1;
+			
 			
 			if(resample){
 			
@@ -138,12 +139,19 @@ package com.gestureworks.cml.factories
 			}
 			else
 			{
-				_bitmapData = new BitmapData(file.width*scaleX, file.height*scaleY, true, 0x000000);
-				_bitmapData.draw(file.content);
-				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);				
+				if((scaleX != 1) && (scaleY != 1)){
+					_bitmapData = new BitmapData(file.width*scaleX, file.height*scaleY, true, 0x000000);
+					_bitmapData.draw(file.content);
+					_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
+				}
+				else {
+					_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
+					_bitmapData.draw(file.content);
+					_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
+				}
 			}
 			
-			_bitmap.smoothing=true;
+			//_bitmap.smoothing=true;
 			_bitmapData = null;
 			
 			// very important to set width and height!
@@ -182,13 +190,13 @@ package com.gestureworks.cml.factories
 			// resample base bitmap
 			if ((resample) || (normalize)) 
 			{
-				resampleBitmapData();
+				//resampleBitmapData();
 			}
 			
 			//process avatar images
 			if (avatar) 
 			{
-				createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
+				//createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
 			}		
 			
 		}

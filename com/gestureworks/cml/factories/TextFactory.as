@@ -111,12 +111,37 @@ package com.gestureworks.cml.factories
 			setY = value;
 		}
 		
-		private var _autoSize:String;
-		override public function get autoSize():String{return _autoSize;}
-		override public function set autoSize(value:String):void
-		{
-			_autoSize = value;
-		}
+		//private var _autoSize:String;
+		//override public function get autoSize():String{return _autoSize;}
+		//override public function set autoSize(value:String):void
+		//{
+			//_autoSize = value;
+			
+			//super.autoSize = TextFieldAutoSize.CENTER;
+			/*
+			switch (value) 
+            {
+                case "center":
+                    //textFormat.autoSize = TextFieldAutoSize.CENTER;
+					
+                    updateTextFormat();
+                    break;
+                case "left":
+                  //  textFormat.autoSize = TextFieldAutoSize.LEFT;
+                    updateTextFormat();
+                    break;
+                case "right":
+                    //textFormat.autoSize = TextFieldAutoSize.RIGHT;
+                    updateTextFormat();
+                    break;
+                case "node":
+                    //textFormat.autoSize = TextFieldAutoSize.NONE;
+                    updateTextFormat();
+                    break;
+            }
+			*/
+
+		//}
 		
 		private var _color:int;
 		public function get color():int { return _color; }

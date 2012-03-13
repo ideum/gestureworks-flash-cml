@@ -28,7 +28,10 @@ package com.gestureworks.cml.components
 		
 		private function resizeBelt():void
 		{ 
-			var album:* = this.parent.parent as TouchContainer
+			trace(parent.parent, parent.parent.parent)
+			
+			var album:* = this.parent.parent.parent as TouchContainer
+			//var album:* = this.parent.parent as TouchContainer
 			var belt:* = this.parent as TouchContainer
 			var background:* = belt.childList.getCSSClass("belt_bg", 0);
 			var list:* = belt.childList.getCSSClass("list", 0)//.childList.getCSSClass("list")

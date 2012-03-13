@@ -20,22 +20,21 @@ package com.gestureworks.cml.core
 
 	import com.gestureworks.cml.components.TmpViewer; TmpViewer;			
 	
+	//component element viewers
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
-	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
-	import com.gestureworks.cml.components.ListViewer; ListViewer;
-	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
 	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
-	//import com.gestureworks.cml.components.NodeMapViewerNew; NodeMapViewerNew;
-	//import com.gestureworks.cml.components.GoogleMapsViewer; GoogleMapsViewer;
-	//import com.gestureworks.cml.components.ModestMapsViewer; ModestMapsViewer;
-	//import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer
-	
+	import com.gestureworks.cml.components.GoogleMapsViewer; GoogleMapsViewer;
+	import com.gestureworks.cml.components.ModestMapsViewer; ModestMapsViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
+	//import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer
 	//import com.gestureworks.cml.components.TimelineViewer; TimelineViewer;
 	//import com.gestureworks.cml.components.MediaViewer; MediaViewer;
 	
-
+	//componenet element viewer managers/lists
+	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
+	import com.gestureworks.cml.components.ListViewer; ListViewer;
+	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
 	
 	
 	////////////////
@@ -63,7 +62,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
 	import com.gestureworks.cml.element.ButtonElement; ButtonElement;		
 	import com.gestureworks.cml.element.SliderElement; SliderElement;		
-	
+	import com.gestureworks.cml.element.FrameElement; FrameElement;
 	
 	
 	//??

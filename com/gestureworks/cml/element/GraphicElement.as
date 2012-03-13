@@ -39,6 +39,11 @@ package com.gestureworks.cml.element
 			
 			switch(fill)
 			{
+				case "none":
+				{
+					break;
+				}
+				
 				case "color":
 				{
 					graphics.beginFill(color, fillAlpha);		
@@ -90,7 +95,7 @@ package com.gestureworks.cml.element
 					
 				case "rectangle":
 				{
-					trace(width, height);
+					//trace(width, height);
 					
 					graphics.drawRect(0, 0, width, height);
 					break;
