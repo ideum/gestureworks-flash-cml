@@ -35,9 +35,11 @@ package com.gestureworks.cml.element
 		 */		
 		override public function reset():void
 		{
-			var last:int = currentIndex-1;			
-			fadeout(last);
-			currentIndex = 0;		
+			if (hasIndex(currentIndex) && currentIndex > 0) 
+				fadeout(currentIndex);
+				
+			currentIndex = 0;
+			fadein(currentIndex);			
 		}			
 		
 		/**
@@ -46,7 +48,7 @@ package com.gestureworks.cml.element
 		 */		
 		public function fadeout(index:int):void
 		{
-			var lastImage:* = get(index);
+			var lastImage:* = getIndex(index);
 			
 			if (hasIndex(index))
 			{
@@ -68,11 +70,11 @@ package com.gestureworks.cml.element
 		 */		
 		public function fadein(index:int):void
 		{
-			var currentImage:* = get(index);
+			var currentImage:* = getIndex(index);
 			
-			get(index).alpha = 0;
+			getIndex(index).alpha = 0;
 			show(index);
-			
+						
 			tween = BetweenAS3.tween(currentImage, { alpha:1 }, null, fadeDuration/1000);
 			tween.onComplete = onFadeInEnd;
 			tween.play();
@@ -85,11 +87,12 @@ package com.gestureworks.cml.element
 		
 		override protected function showNext():void
 		{
-			var last:int = currentIndex-1;
-			var current:int = currentIndex;			
-			fadeout(last);
-			fadein(current);
-			currentIndex++;				
+			var last:int = currentIndex;
+			currentIndex++;			
+			
+			if (hasIndex(last))
+				fadeout(last);
+			fadein(currentIndex);			
 		}		
 	}
 }

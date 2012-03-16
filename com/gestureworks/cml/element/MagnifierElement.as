@@ -1,3 +1,6 @@
+///NOTE: I commented out the embed tag, b/c I couldn't find it
+
+
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.MagnifierFactory;
@@ -33,7 +36,7 @@ package com.gestureworks.cml.element
 		public var magX:Number;
 		public var magY:Number;
 		
-		[Embed(source = "../../../../../bin/library/node_map/assets/magnifier_image.swf")]
+		//[Embed(source = "../../../../../bin/library/node_map/assets/magnifier_image.swf")]
 		private var Picture1:Class;
 		
 		private var lens:*

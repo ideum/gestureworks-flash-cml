@@ -86,9 +86,11 @@ package com.gestureworks.cml.element
 		 */		
 		override public function reset():void
 		{
-			if (hasIndex(currentIndex-1))			
-				hide(currentIndex-1);
-			currentIndex = 0;		
+			if (hasIndex(currentIndex) && currentIndex > 0) 
+				hide(currentIndex);
+				
+			currentIndex = 0;
+			show(currentIndex);				
 		}
 			
 		
@@ -96,30 +98,25 @@ package com.gestureworks.cml.element
 		protected function onTimer(event:TimerEvent):void
 		{			
 			if (hasNext())
-			{	
 				showNext();
-			}
 			else
 			{
 				if (loop)
-				{
 					reset();
-					showNext();
-				}
 				else
-				{
 					stop();
-				}
 			}
 		}
 		
 		protected function showNext():void
 		{
-			if (hasIndex(currentIndex-1))
-				toggle(currentIndex-1, currentIndex);
+			var last:int = currentIndex;
+			currentIndex++;			
+			
+			if (hasIndex(last))
+				toggle(last, currentIndex);
 			else
 				show(currentIndex);
-			currentIndex++;			
 		}
 		
 	}

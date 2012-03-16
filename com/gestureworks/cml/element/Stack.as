@@ -2,7 +2,8 @@ package com.gestureworks.cml.element
 {
 	
 	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;		
+	import flash.events.TouchEvent;
+	import com.gestureworks.cml.events.StateEvent;
 	
 	/**
 	 * ...
@@ -27,6 +28,7 @@ package com.gestureworks.cml.element
 			_toggle = value;		
 		}			
 		
+		private var arr:Array = [];		
 		
 		/**
 		 * CML display initialization callback
@@ -52,7 +54,10 @@ package com.gestureworks.cml.element
 				this.addEventListener(MouseEvent.MOUSE_UP, onToggle);	
 				
 			else if (toggle == "touchDown")
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);					
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
+				
+			else if (toggle == "touchUp")
+				this.addEventListener(TouchEvent.TOUCH_END, onToggle);						
 		}		
 		
 		
@@ -77,7 +82,7 @@ package com.gestureworks.cml.element
 				childList.currentValue.visible = true				
 			}
 							
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
 		}
 		
 		

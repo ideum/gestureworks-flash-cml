@@ -7,6 +7,7 @@ package com.gestureworks.cml.factories
 	import flash.display.BitmapData;
 	import flash.display.PixelSnapping;
 	import flash.geom.Matrix;
+	import com.gestureworks.cml.loaders.IMG;
 	
 	import com.gestureworks.cml.managers.FileManager; 
 	
@@ -19,8 +20,7 @@ package com.gestureworks.cml.factories
 		
 		public function BitmapFactory() 
 		{
-			super();
-			
+			super();	
 			mouseChildren = false;
 		}
 				
@@ -50,6 +50,7 @@ package com.gestureworks.cml.factories
 		}
 		
 		
+		
 		private var _height:Number = 0;
 		/**
 		 * Sets width of the display object in pixels
@@ -62,7 +63,14 @@ package com.gestureworks.cml.factories
 			super.height = value;
 		}			
 		
-		
+		private var img:IMG;
+		public function load(url:String):void
+		{
+			src = url;
+			img = new IMG;
+			img.load(url);
+			img.addEventListener(Event.COMPLETE, loadComplete)
+		}
 		
 		private function loadBitmap(url:String):void
 		{
@@ -77,11 +85,20 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		public function loadComplete():void
+		public function loadComplete(event:Event=null):void
 		{
-			var imageSrc:String = propertyStates[0]["src"];
-			file = FileManager.instance.fileList.getKey(imageSrc).loader;
-						
+			
+			if (img)
+			{
+				file = img.loader;
+			}
+			else
+			{
+				var imageSrc:String = propertyStates[0]["src"];
+				file = FileManager.instance.fileList.getKey(imageSrc).loader;				
+			}
+			
+			
 			///////////////////////////////////////////////////////////////////////////////////////// 
 			/// resample image if width and/or height are provided before load command is given.
 			/// we may want to make resampling something the user must turn on (e.g. resample = true)
@@ -89,45 +106,44 @@ package com.gestureworks.cml.factories
 			/////////////////////////////////////////////////////////////////////////////////////////
 			
 			// scale percentages needed to achieve desired diemensions
-			//_percentX = 1; 
-			//_percentY = 1;
+			_percentX = 1; 
+			_percentY = 1;
 			
-			//scaleX = 1
-			//scaleY = 1;
+			scaleX = 1;
+			scaleY = 1;
 			
+			if (resample){
 			
-			if(resample){
-			
-				if (propertyStates[0]["width"] && propertyStates[0]["height"])
+				if (width && height)
 				{
 					// skip resampling if not needed to avoid image degradation
-					if ((propertyStates[0]["width"] != file.width) && (propertyStates[0]["height"] != file.height))
+					if ((width != file.width) && (height != file.height))
 					{
-						_percentX = propertyStates[0]["width"] / file.width;
-						_percentY = propertyStates[0]["height"] / file.height;
+						_percentX = width / file.width;
+						_percentY = height / file.height;
 					}
 				}
 				
-				else if (propertyStates[0]["width"])
+				else if (width)
 				{
 					// skip resampling if not needed to avoid image degradation
-					if (propertyStates[0]["width"] != file.width)
+					if (width != file.width)
 					{
-						_percentX = propertyStates[0]["width"] / file.width;
+						_percentX = width / file.width;
 						_percentY = _percentX;
 					}
 				}
 				
-				else if (propertyStates[0]["height"])
+				else if (height)
 				{
 					// skip resampling if not needed to avoid image degradation
-					if (propertyStates[0]["height"] != file.height)
+					if (height != file.height)
 					{
-						_percentY = propertyStates[0]["height"] / file.height; 										
+						_percentY = height / file.height; 										
 						_percentX = _percentY;
 					}
 				}	
-			}
+			}			
 			
 			if ((_percentX != 1) && (_percentY != 1))
 			{
@@ -148,10 +164,10 @@ package com.gestureworks.cml.factories
 					_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
 					_bitmapData.draw(file.content);
 					_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
-				}
+				}	
 			}
 			
-			//_bitmap.smoothing=true;
+			_bitmap.smoothing=true;
 			_bitmapData = null;
 			
 			// very important to set width and height!
@@ -190,13 +206,13 @@ package com.gestureworks.cml.factories
 			// resample base bitmap
 			if ((resample) || (normalize)) 
 			{
-				//resampleBitmapData();
+				resampleBitmapData();
 			}
 			
 			//process avatar images
 			if (avatar) 
 			{
-				//createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
+				createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
 			}		
 			
 		}

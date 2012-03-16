@@ -3,6 +3,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.utils.List;
+	import flash.events.Event;
 	
 	/**
 	 * ImageList
@@ -14,6 +15,8 @@ package com.gestureworks.cml.element
 	{
 		private var image:ImageElement;		
 		private var list:List;
+		private var imageCount:int = 0;
+		private var imagesLoaded:int = 0;
 		
 		public function ImageList() 
 		{
@@ -37,14 +40,14 @@ package com.gestureworks.cml.element
 			_autoShow = value; 	
 		}
 
-		public function get(index:int):*
+		public function getIndex(index:int):*
 		{
-			return list.get(index);
+			return list.getIndex(index);
 		}			
 		
-		public function select(index:int):*
+		public function selectIndex(index:int):*
 		{
-			return list.select(index);
+			return list.selectIndex(index);
 		}		
 		
 		public function search(value:*):*
@@ -55,7 +58,9 @@ package com.gestureworks.cml.element
 		public function append(file:String):void 
 		{	
 			var img:ImageElement = new ImageElement;
-			img.src = file;
+			img.addEventListener(Event.COMPLETE, onImgComplete);
+			imageCount++;
+			img.load(file);
 			list.append(img);
 			if (_autoShow)
 				addChild(img);	
@@ -64,7 +69,9 @@ package com.gestureworks.cml.element
 		public function prepend(file:String):void 
 		{
 			var img:ImageElement = new ImageElement;
-			img.src = file;
+			img.addEventListener(Event.COMPLETE, onImgComplete);
+			imageCount++;			
+			img.load(file);
 			list.prepend(img);
 			if (_autoShow)
 				addChild(img);			
@@ -73,11 +80,22 @@ package com.gestureworks.cml.element
 		public function insert(index:int, file:String):void 
 		{
 			var img:ImageElement = new ImageElement;
-			img.src = file;
+			img.addEventListener(Event.COMPLETE, onImgComplete);
+			imageCount++;			
+			img.load(file);
 			list.insert(index, img);
 			if (_autoShow)
 				addChild(img);		
 		}		
+				
+		private function onImgComplete(event:Event)
+		{
+			imagesLoaded++;
+			
+			if (imagesLoaded == imageCount)
+			dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
 		
 		public function removeIndex(index:int):void
 		{	
@@ -116,25 +134,26 @@ package com.gestureworks.cml.element
 		
 		public function show(index:int):void
 		{
-			addChild(list.select(index));
+			addChild(list.selectIndex(index));
 		}
 		
 		public function hide(index:int):void
 		{
-			removeChild(list.get(index));
+			if (contains(list.getIndex(index)))			
+				removeChild(list.getIndex(index));
 		}
 		
 		public function toggle(index1:int, index2:int):void
 		{	
-			if (contains(list.get(index1)))
+			if (contains(list.getIndex(index1)))
 			{	
-				removeChild(list.get(index1));
-				addChild(list.select(index2));
+				removeChild(list.getIndex(index1));
+				addChild(list.selectIndex(index2));
 			}
-			else if (contains(list.get(index2)))
+			else if (contains(list.getIndex(index2)))
 			{	
-				removeChild(list.get(index2));
-				addChild(list.select(index1));			
+				removeChild(list.getIndex(index2));
+				addChild(list.selectIndex(index1));			
 			}
 		}
 		
