@@ -61,7 +61,7 @@ package com.gestureworks.cml.components
 	 *
 	**/
 	 
-	public class MaskImageViewer extends ComponentKit
+	public class MaskImageViewer extends Component//ComponentKit
 	{
 		// ----- interactive object settings --//
 		private var Width:Number = 0;
@@ -104,63 +104,58 @@ package com.gestureworks.cml.components
 			
 		private function initUI():void
 		{				
-			n = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mask_img", 0).childList.length;
+			n = this.childList.getCSSClass("mask_img", 0).childList.length;
 			//trace("childList length------------------------------:", n);
 			
 			//-- bottom image --//
-			Width = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("base_img", 0).width;
-			Height = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("base_img", 0).height;
+			Width = this.childList.getCSSClass("base_img", 0).width;
+			Height = this.childList.getCSSClass("base_img", 0).height;
 		}
 			
 		private function setupUI():void
 		{ 
 			trace("setup");
-			
-			// main touch container
-			holder = this.childList.getCSSClass("touch_container", 0);
-			addChild(holder);
-
+		
 			// set frame size
-			this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = Width;
-			this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = Height;
+			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = Width;
+			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = Height;
 			
 			//set bottom image
-			base_image = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("base_img", 0)
+			base_image = this.childList.getCSSClass("base_img", 0)
 				base_image.targetParent = true;  // make base capture touch points
-			holder.addChild(base_image);
-			
+			addChild(base_image);
 			
 			//top image stack
-			mask_image = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mask_img", 0);
+			mask_image = this.childList.getCSSClass("mask_img", 0);
 				mask_image.getChildAt(0).visible = true;
-			holder.addChild(mask_image);
+			addChild(mask_image);
 			
 			
 			////////////////////////////////////
 			// image mask
 			////////////////////////////////////
-			mShape = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mshape", 0);
-			holder.addChild(mShape);
+			mShape = this.childList.getCSSClass("mshape", 0);
+			addChild(mShape);
 			
-			shape_hit = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("touch_mshape", 0);
+			shape_hit = this.childList.getCSSClass("touch_mshape", 0);
 				shape_hit.addEventListener(GWGestureEvent.DOUBLE_TAP, dTapHandler);
 				shape_hit.addEventListener(GWGestureEvent.DRAG, dragHandler);
 				shape_hit.addEventListener(GWGestureEvent.SCALE, scaleHandler);
 				shape_hit.addEventListener(GWGestureEvent.ROTATE, rotateHandler);
-			holder.addChild(shape_hit);
+			addChild(shape_hit);
 			
 			mask_image.mask = mShape;
 			
 			/////////////////////////////////////
 			// mask outline
 			/////////////////////////////////////
-			mShapeOutline = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("mshape_outline", 0);
-			holder.addChild(mShapeOutline);
+			mShapeOutline = this.childList.getCSSClass("mshape_outline", 0);
+			addChild(mShapeOutline);
 			
-			wShape = this.childList.getCSSClass("touch_container", 0).childList.getCSSClass("wshape", 0);
+			wShape = this.childList.getCSSClass("wshape", 0);
 				wShape.width = Width;
 				wShape.height = Height;
-			holder.addChild(wShape);
+			addChild(wShape);
 			
 			mShapeOutline.mask = wShape;
 		}

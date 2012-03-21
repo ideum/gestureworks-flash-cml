@@ -167,8 +167,10 @@ package com.gestureworks.cml.factories
 				}	
 			}
 			
-			_bitmap.smoothing=true;
-			_bitmapData = null;
+			_bitmap.smoothing = true;
+			
+			
+			//if(!_bitmapDataCache)_bitmapData = null;
 			
 			// very important to set width and height!
 			width = _bitmap.width*scaleX;
@@ -306,6 +308,16 @@ package com.gestureworks.cml.factories
 		private var _bitmap:Bitmap;
 		public function get bitmap():Bitmap { return _bitmap; }
 		
+		private var _bitmapData:BitmapData;
+		public function get bitmapData():BitmapData { return _bitmapData; }
+		
+		private var _bitmapDataCache:Boolean = false;
+		public function get bitmapDataCache():Boolean  { return _bitmapDataCache; }
+		public function set bitmapDataCache(value:Boolean):void
+		{
+			_bitmapDataCache = value;
+		}
+		
 		private var _bitmapArray:Array = new Array();
 		public function get bitmapArray():Array {return _bitmapArray;}
 		
@@ -321,9 +333,6 @@ package com.gestureworks.cml.factories
 		
 		private var _bitmapDataArray:Array;
 		public function get bitmapDataArray():Array { return _bitmapDataArray; }
-		
-		private var _bitmapData:BitmapData;
-		public function get bitmapData():BitmapData { return _bitmapData; }
 		
 		private var _percentX:Number = 1;
 		public function get percentX():Number{return _percentX;}
