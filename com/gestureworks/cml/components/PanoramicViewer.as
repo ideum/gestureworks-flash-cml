@@ -160,7 +160,7 @@ package com.gestureworks.cml.components
 			// add a huge surrounding sphere
 			if(_projectionType =="sphere"){
 				
-				var rad = (width / 2) * 45;//80000
+				var rad:Number = (width / 2) * 45;//80000
 				mat = new BitmapMaterial(Cast.bitmap(shape_net));
 				var largeSphere:Sphere = new Sphere({radius:rad,material:mat,segmentsW:14,segmentsH:28});
 					largeSphere.scaleX = -1;
