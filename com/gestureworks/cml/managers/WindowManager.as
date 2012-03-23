@@ -1,7 +1,9 @@
 package com.gestureworks.cml.managers
 {
-	import com.gestureworks.cml.element.SystemWindow;
-	import com.gestureworks.cml.utils.DefaultStage;
+	//import com.gestureworks.cml.element.SystemWindow;
+	import com.gestureworks.cml.utils.SystemWindow;
+	//import com.gestureworks.cml.utils.DefaultStage;
+	import com.gestureworks.cml.core.DefaultStage;
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.cml.utils.LinkedMap;
 	
@@ -35,7 +37,8 @@ package com.gestureworks.cml.managers
 		
 		public function WindowManager(enforcer:SingletonEnforcer)
 		{
-			windows = new Map;
+			//windows = new Map;
+			windows = new LinkedMap;
 			displays = new List;
 			nativeWindowInitOptions = new NativeWindowInitOptions;
 			nativeWindowInitOptions.maximizable = true;

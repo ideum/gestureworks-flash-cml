@@ -16,6 +16,7 @@
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.kits.ComponentKit;
+	import com.gestureworks.cml.element.Component;
 	
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
@@ -34,7 +35,7 @@
  	import com.google.maps.View;
 	import com.google.maps.geom.Attitude;
 	 
-	public class MediaViewer extends ComponentKit
+	public class MediaViewer extends Component
 	{
 		private var _id:int;
 		private var _intialize:Boolean;
@@ -80,6 +81,7 @@
 		{
 			parent.removeChild(this);
 		}
+		/*
 
 		override protected function displayComplete():void
 		{			
@@ -120,8 +122,8 @@
 					
 			//childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
 			*/
-		}
-
+		//}
+/*
 		override protected function createUI():void
 		{
 			
@@ -247,7 +249,7 @@
 			}
 		}
 		*/
-		
+		/*
 		private function objectDragHandler(event:GWGestureEvent):void
 		{
 			x += event.value.dx;
@@ -281,6 +283,6 @@
 		{
 		}
 		
-		
+		*/
 	}
 }

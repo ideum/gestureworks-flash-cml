@@ -21,7 +21,8 @@ package com.gestureworks.cml.components
 	
 	//import com.gestureworks.cml.element.AvatarElement;
 	//import com.gestureworks.cml.element.TimelineItem;
-	import com.gestureworks.cml.kits.ComponentKit;
+	//import com.gestureworks.cml.kits.ComponentKit;
+	import com.gestureworks.cml.element.Component;
 
 	
 	import com.gestureworks.events.GWEvent;
@@ -31,7 +32,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.core.GestureWorks;
 	
-	public class TimelineViewer extends ComponentKit//TouchContainer
+	public class TimelineViewer extends Component//TouchContainer
 	{		
 		// component
 		private var visDebug:Boolean = false;
@@ -92,14 +93,14 @@ package com.gestureworks.cml.components
 			super();	
 			//createUI();
 			//commitUI();
-			if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
+			//if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public function dipose():void
 		{
 			parent.removeChild(this);
 		}
-		
+		/*
 		override protected function displayComplete():void
 		{			
 			trace("timeline display viewer complete");
@@ -753,6 +754,6 @@ package com.gestureworks.cml.components
 		//override protected function layoutUI():void{}
 		
 		private function updateHandler(event:Event):void{}
-
+		*/
 	}
 }

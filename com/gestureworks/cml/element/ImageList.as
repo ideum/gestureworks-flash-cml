@@ -88,7 +88,7 @@ package com.gestureworks.cml.element
 				addChild(img);		
 		}		
 				
-		private function onImgComplete(event:Event)
+		private function onImgComplete(event:Event):void
 		{
 			imagesLoaded++;
 			
