@@ -28,7 +28,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ModestMapsViewer; ModestMapsViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer
-	//import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer
+	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer
 	//import com.gestureworks.cml.components.TimelineViewer; TimelineViewer;
 	//import com.gestureworks.cml.components.MediaViewer; MediaViewer;
 	

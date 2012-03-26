@@ -152,8 +152,8 @@ package com.gestureworks.cml.core
 	
 			
 			
-			if (debug)
-				FileManager.instance.debug = true;				
+			if (debug)	
+			FileManager.instance.debug = true;				
 			
 			if (FileManager.instance.cmlCount > 0)
 			{

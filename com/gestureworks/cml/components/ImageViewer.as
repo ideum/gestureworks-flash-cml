@@ -18,18 +18,19 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{
-			this.addEventListener(StateEvent.CHANGE, onStateEvent)
+			//this.addEventListener(StateEvent.CHANGE, onStateEvent)
 			
 			// hide all but first and not menu
+			/*
 			for (var i:int = 1; i < childList.length; i++) 
 			{
 				if (!(childList.getIndex(i) is Menu))
 					hideIndex(i);
 			}
-			
+			*/
 		}		
 		
-		
+		/*
 		private function onStateEvent(event:StateEvent):void
 		{			
 			if (event.value == "info")
@@ -58,7 +59,7 @@ package com.gestureworks.cml.components
 			}
 							
 		}		
-				
+		*/		
 		
 	}
 	

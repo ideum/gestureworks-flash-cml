@@ -112,7 +112,9 @@ package com.gestureworks.cml.factories
 			scaleX = 1;
 			scaleY = 1;
 			
-			if (resample){
+			trace(_resample,file.width,file.height,_width, _height, this.propertyStates[0]["width"])
+			
+			if (_resample){
 			
 				if (width && height)
 				{
@@ -153,6 +155,7 @@ package com.gestureworks.cml.factories
 				_bitmapData.draw(file.content, resizeMatrix);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);				
 			}
+			
 			else
 			{
 				if((scaleX != 1) && (scaleY != 1)){
@@ -168,9 +171,7 @@ package com.gestureworks.cml.factories
 			}
 			
 			_bitmap.smoothing = true;
-			
-			
-			//if(!_bitmapDataCache)_bitmapData = null;
+			if(!_bitmapDataCache)_bitmapData = null;
 			
 			// very important to set width and height!
 			width = _bitmap.width*scaleX;
@@ -354,7 +355,7 @@ package com.gestureworks.cml.factories
 			_aspectRatio = value;
 		}
 		
-		private var _resample:Boolean = false;
+		private var _resample:Boolean = true;
 		public function get resample():Boolean{return _resample;}
 		public function set resample(value:Boolean):void
 		{
