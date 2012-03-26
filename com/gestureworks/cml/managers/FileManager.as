@@ -2,10 +2,9 @@ package com.gestureworks.cml.managers
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.cml.loaders.*
 	import com.gestureworks.cml.events.*
-	
+	import com.gestureworks.cml.utils.*;	
 	
 	/**
 	 * FileManager, Singleton
@@ -26,7 +25,9 @@ package com.gestureworks.cml.managers
 				_instance = new FileManager(new SingletonEnforcer());			
 			return _instance; 
 		}	
-			
+		
+		public var debug:Boolean = false;
+		
 		public var fileCount:int = 0;
 		private var fileQueue:LinkedMap = new LinkedMap;
 		public var fileList:LinkedMap = new LinkedMap;
@@ -66,12 +67,7 @@ package com.gestureworks.cml.managers
 					cmlQueue.append(file, type);
 				else
 					cmlQueue.insert(cmlQueue.currentIndex + 1, file, type);	
-				
-				for (var i:int = 0; i < cmlQueue.length; i++) 
-				{
-					trace(cmlQueue.getIndex(i));
-				}					
-					
+									
 				cmlCount++;
 			}				
 			
@@ -91,8 +87,7 @@ package com.gestureworks.cml.managers
 		
 		
 		public function startCMLQueue():void
-		{
-			trace("START CML");
+		{					
 			stopped = false;						
 			if (cmlLoaded < cmlCount)
 				processCMLQueue();
@@ -101,7 +96,6 @@ package com.gestureworks.cml.managers
 		
 		public function resumeCMLQueue():void
 		{
-			trace("RESUME CML");
 			stopped = false;
 
 			cmlQueue.currentIndex += 1;			
@@ -112,9 +106,7 @@ package com.gestureworks.cml.managers
 		
 		public function startFileQueue():void
 		{
-			trace("START FILE");
 			stopped = false;
-
 			processFileQueue();
 		}		
 		
@@ -125,32 +117,37 @@ package com.gestureworks.cml.managers
 		
 		
 		public function processCMLQueue():void
-		{
-			trace("PROCESS CML");
-		
-						
+		{						
 			if (!stopped)
 			{
 				var file:String = cmlQueue.currentKey;		
 				var type:String = cmlQueue.currentValue;
-				trace(file, type);
 								
 				if (file)
 				{
 					if (type == "cml" && file.search(cmlType) >= 0)
 					{
+						if (debug)
+							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML include file: ", file));	
+				
 						CML.getInstance(file).loadCML(file);
 						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
 						fileList.append(file, CML.getInstance(file));	
 					}
 					else if (type == "cmlRenderKit" && file.search(cmlType) >= 0)
 					{
+						if (debug)
+							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML RenderKit file: ", file));							
+						
 						CML.getInstance(file).loadCML(file);
 						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
 						fileList.append(file, CML.getInstance(file));	
 					}
 					else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
-					{
+					{	
+						if (debug)
+							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML RendererData file: ", file));	
+							
 						CML.getInstance(file).loadCML(file);
 						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
 						fileList.append(file, CML.getInstance(file));	
@@ -162,23 +159,20 @@ package com.gestureworks.cml.managers
 		
 		
 		private function processFileQueue():void
-		{
-			trace("PROCESS FILE");
-			
+		{			
 			if (!stopped)
 			{
 				var file:String = fileQueue.currentKey;		
-				var type:String = fileQueue.currentValue;
-				trace(file, type);				
-				
+				var type:String = fileQueue.currentValue;				
 				var loader:* = null;
 				
 				if (file)
 				{
 					if (type == "swf" && file.search(swfType) >= 0)
 					{
-						trace(file);
-						
+						if (debug)
+							trace(StringUtils.printf("\n%4s%s%s", "", "Load SWF file: ", file));	
+							
 						loader = new SWF;
 						loader.addEventListener(SWF.FILE_LOADED, onFileLoaded);	
 						loader.load(file);
@@ -187,6 +181,9 @@ package com.gestureworks.cml.managers
 					
 					else if (type == "img" && file.search(imageTypes) >= 0)
 					{
+						if (debug)
+							trace(StringUtils.printf("\n%4s%s%s", "", "Load IMG file: ", file));						
+						
 						loader = new IMG;
 						loader.addEventListener(Event.COMPLETE, onFileLoaded);	
 						loader.load(file);						
@@ -202,11 +199,13 @@ package com.gestureworks.cml.managers
 		
 		
 		private function onCMLLoaded(event:Event):void
-		{
-			trace(event.target, cmlQueue.currentKey,  "has finished loading");
+		{			
 			var file:String = cmlQueue.currentKey;				
 			var type:String = cmlQueue.currentValue;				
-
+			
+			if (debug)
+				trace(StringUtils.printf("%4s%s%s", "", "CML file load complete: ", file));				
+			
 			stopped = true;
 			cmlLoaded = true;
 			
@@ -220,9 +219,11 @@ package com.gestureworks.cml.managers
 		
 		private function onFileLoaded(event:Event):void
 		{
-			trace(event.target, fileQueue.currentKey,  "has finished loading");
 			var file:String = fileQueue.currentKey;	
 			var type:String = fileQueue.currentValue;	
+			
+			if (debug)
+				trace(StringUtils.printf("%4s%s%s", "", "External file load complete: ", file));				
 			
 			if (fileQueue.hasNext())
 			{

@@ -43,7 +43,7 @@ package com.gestureworks.cml.layouts
 			var c:* = container;
 			
 			
-			// hide all but first button
+			// hide all but first child
 			for (var i:int = 1; i < c.childList.length; i++) 
 			{
 				c.hideIndex(i);
@@ -62,6 +62,9 @@ package com.gestureworks.cml.layouts
 				
 			else if (toggle == "touchDown")
 				c.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
+				
+			else if (toggle == "touchUp")
+				c.addEventListener(TouchEvent.TOUCH_END, onToggle);				
 			
 			// list of containers - used for event referencing
 			arr[c.cmlIndex] = c;

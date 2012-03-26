@@ -176,7 +176,13 @@ package com.gestureworks.cml.factories
 				netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				netStream.close();
-				//if (SystemDetection.VERSION_NUMBER >= 11.0) netStream.dispose(); // only works in fp 11+				
+
+				if (SystemDetection.VERSION_NUMBER >= 11.0)
+				{
+					if (netStream.hasOwnProperty("dispose"))
+						netStream['dispose'](); // only works in fp 11+				
+				}
+				
 				netStream = null;
 			}
 			

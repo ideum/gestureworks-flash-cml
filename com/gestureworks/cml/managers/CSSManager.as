@@ -2,6 +2,7 @@ package com.gestureworks.cml.managers
 {
 	import com.gestureworks.cml.loaders.CSS;
 	import com.gestureworks.cml.core.CMLObjectList;
+	import com.gestureworks.cml.utils.*;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -15,9 +16,8 @@ package com.gestureworks.cml.managers
 	
 	public class CSSManager extends EventDispatcher
 	{
-		
 		public var file:String;
-		
+		public var debug:Boolean = false;
 
 		private static var _instance:CSSManager;
 		public static function get instance():CSSManager 
@@ -39,16 +39,20 @@ package com.gestureworks.cml.managers
 		}
 		
 		private function onCSSLoad(event:Event):void
-		{
-			trace("_______________________________________");
-			
+		{			
 			event.target.removeEventListener(FileEvent.CSS_LOADED, onCSSLoad);
 			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED, "css", file));
-
 		}
 		
 		public function parseCSS():void
 		{
+			if (debug)
+			{
+				trace(StringUtils.printf("\n%4sBegin CSS parsing\n", ""));
+				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "cmlIndex", "target", "property", "value"));						
+				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "--------", "------", "--------", "-----"));						
+			}
+			
 			// add styles to objects --------------------------------------			
 			var styleData:StyleSheet = CSS.getInstance(file).data;
 			
@@ -90,7 +94,12 @@ package com.gestureworks.cml.managers
 								for (property in properties)
 								{									
 									if (CMLObjectList.instance.getIndex(j).hasOwnProperty(property))
+									{
+										if (debug)
+											trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, ClassSelectors[i], property,  properties[property]));						
+										
 										CMLObjectList.instance.getIndex(j)[property] = properties[property];
+									}	
 								}
 							}
 						}	
@@ -113,7 +122,12 @@ package com.gestureworks.cml.managers
 							for (property in properties)
 							{									
 								if (CMLObjectList.instance.getIndex(j).hasOwnProperty(property))
+								{
+									if (debug)
+										trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, IdSelectors[i], property,  properties[property]));									
+									
 									CMLObjectList.instance.getIndex(j)[property] = properties[property];
+								}	
 							}					
 						}
 					}

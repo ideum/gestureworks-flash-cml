@@ -1,6 +1,5 @@
 package com.gestureworks.cml.managers
 {
-	import com.codeazur.as3swf.timeline.*;
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.managers.*;
@@ -34,7 +33,7 @@ package com.gestureworks.cml.managers
 		public function updateCMLProperties():void
 		{	
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
-			{				
+			{					
 				CMLObjectList.instance.getIndex(i).updateProperties();	
 			}
 		}		
