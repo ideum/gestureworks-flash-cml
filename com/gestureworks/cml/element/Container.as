@@ -23,7 +23,37 @@ package com.gestureworks.cml.element
 		public function set layout(value:String):void 
 		{
 			_layout = value;
-		}		
+		}
+		
+		private var _position:String;
+		/**
+		 * 
+		 */
+		public function get position():String {return _position;}
+		public function set position(value:String):void 
+		{
+			_position = value;
+		}
+		
+		private var _paddingX:Number;
+		/**
+		 * 
+		 */
+		public function get paddingX():Number {return _paddingX;}
+		public function set paddingX(value:Number):void 
+		{
+			_paddingX = value;
+		}	
+		
+		private var _paddingY:Number;
+		/**
+		 * 
+		 */
+		public function get paddingY():Number {return _paddingY;}
+		public function set paddingY(value:Number):void 
+		{
+			_paddingY = value;
+		}	
 		
 		
 			

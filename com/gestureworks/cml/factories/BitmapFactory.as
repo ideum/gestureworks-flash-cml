@@ -112,7 +112,7 @@ package com.gestureworks.cml.factories
 			scaleX = 1;
 			scaleY = 1;
 			
-			trace(_resample,file.width,file.height,_width, _height, this.propertyStates[0]["width"])
+			//trace(_resample,file.width,file.height,_width, _height, this.propertyStates[0]["width"])
 			
 			if (_resample){
 			
