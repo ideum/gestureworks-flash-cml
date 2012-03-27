@@ -28,19 +28,42 @@ package com.gestureworks.cml.components
 			width = childList.getCSSClass("image_container", 0).childList.getCSSClass("image_element", 0).width
 			height = childList.getCSSClass("image_container", 0).childList.getCSSClass("image_element", 0).height
 			
+			
 			// update frame size
-			if(childList.getCSSClass("frame_container", 0)){
+			if (childList.getCSSClass("frame_container", 0))
+			{
 				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
 				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
 			}
 			// update info panel size
-			if(childList.getCSSClass("info_container", 0)){
+			if (childList.getCSSClass("info_container", 0))
+			{
 				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).width = width;
 				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).height = height;
 			}
+		
+			// update info text size
+			if (childList.getCSSClass("info_container", 0)) 
+			{
+				var textpaddingX:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingLeft;
+				var textpaddingY:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingTop;
+				var textSep:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingBottom;
+				
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).y = textpaddingY;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).y = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height;
+			}
 			
 			// update button placement
-			if(childList.getCSSClass("menu_container", 0)){
+			if (childList.getCSSClass("menu_container", 0))
+			{
 				var btnWidth:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("up", 0).childList.getCSSClass("btn-bg-up", 0).width;
 				var btnHeight:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("up", 0).childList.getCSSClass("btn-bg-up", 0).height;
 				var paddingX:Number = childList.getCSSClass("menu_container", 0).paddingX;
@@ -62,9 +85,13 @@ package com.gestureworks.cml.components
 		
 		private function onStateEvent(event:StateEvent):void
 		{	
-			trace("StateEvent change",event.value);
-			if (event.value == "info") 			childList.getCSSClass("info_container", 0).visible = true;
-			else if (event.value == "flip") 	childList.getCSSClass("info_container", 0).visible = false;
+			//trace("StateEvent change", event.value);
+			var info:* = childList.getCSSClass("info_container", 0)
+			
+			if (event.value == "info") {
+				if (!info.visible) info.visible = true;
+				else info.visible = false;
+			}
 			else if (event.value == "close") 	this.visible = false;
 		}			
 		

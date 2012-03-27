@@ -41,7 +41,7 @@ package com.gestureworks.cml.element
 		 * Sets frame shape
 		 * @default "rectangle"
 		 */			
-		public function get frmaeShape():String{return _shape;}
+		public function get frameShape():String{return _shape;}
 		public function set frameShape(value:String):void
 		{
 			_shape = value;		

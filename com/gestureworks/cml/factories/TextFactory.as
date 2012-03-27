@@ -283,6 +283,22 @@ package com.gestureworks.cml.factories
 			layoutText();
 		}
 		
+		private var _paddingRight:Number = 0;
+		public function get paddingRight():Number{return _paddingRight;}
+		public function set paddingRight(value:Number):void 
+		{
+			_paddingRight = value;
+			layoutText();
+		}
+		
+		private var _paddingBottom:Number = 0;
+		public function get paddingBottom():Number{return _paddingBottom;}
+		public function set paddingBottom(value:Number):void
+		{
+			_paddingBottom = value;
+			layoutText();
+		}
+		
 		private var _widthPercent:String="";
 		public function get widthPercent():String{return _widthPercent;}
 		public function set widthPercent(value:String):void
