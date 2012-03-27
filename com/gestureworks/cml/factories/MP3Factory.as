@@ -405,7 +405,8 @@ package com.gestureworks.cml.factories
 		private var _id3Year:String;
 		private var _id3Copyright:String;
 		private var _id3Comment:String;
-		public function set useId3(value:String)
+		
+		public function set useId3(value:String):void
 		{
 			_useId3 = value;
 		}
@@ -508,12 +509,6 @@ package com.gestureworks.cml.factories
 			
 			bytes.position = 0;
 			g.endFill();		
-		}
-		
-		//graphic: bitwise conversion of rgb color to a hex value
-		private function rgb2hex(r, g, b):Number 
-		{
-			return(r<<16 | g<<8 | b);
 		}	
 		
 		//id3 metadata method
