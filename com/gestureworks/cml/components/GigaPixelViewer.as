@@ -27,6 +27,13 @@
 	import com.gestureworks.events.GWTransformEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList
+	
+	
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.kits.*;
+	
+	
 	//---------------open zoom-------------//
 	import org.openzoom.flash.components.MultiScaleImage;
 	import org.openzoom.flash.components.SceneNavigator;
@@ -78,7 +85,7 @@
 	public class GigaPixelViewer extends Component
 	{
 		private var frame:TouchSprite;
-		private var panoramic:TouchSprite;
+		private var touch_giga_image:TouchSprite;
 
 		//------ image settings ------//
 		private var _clickZoomInFactor:Number = 1.7
@@ -104,6 +111,9 @@
 			//trace("panoramicViewer complete")
 			initUI();
 			setupUI();
+			updateLayout();
+			
+			this.addEventListener(StateEvent.CHANGE, onStateEvent)
 		}
 
 	
@@ -121,10 +131,10 @@
 			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = height;
 			
 			//touch container
-			//touch_giga_image = this.childList.getCSSClass("gigapixel_image", 0)
-				//panoramic.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-				//panoramic.addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
-			//addChild(touch_giga_image);
+			touch_giga_image = this.childList.getCSSClass("gigapixel_image", 0)
+				//touch_giga_image.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
+				//touch_giga_image.addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
+			addChild(touch_giga_image);
 			
 			//---------- build gigapixel image ------------------------//
 
@@ -161,7 +171,7 @@
 				image.width = width;
 				image.height = height;
 				
-				addChild(image);
+				touch_giga_image.addChild(image);
 
 		}
 		
@@ -176,6 +186,82 @@
 				//scaleConstraint.maxScale = 3.5;
 			}
 		}
+		
+		private function updateLayout():void
+		{
+
+			// update frame size
+			if (childList.getCSSClass("frame_container", 0))
+			{
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
+			}
+			// update info panel size
+			if (childList.getCSSClass("info_container", 0))
+			{
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).width = width;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).height = height;
+			}
+		
+			// update info text size
+			if (childList.getCSSClass("info_container", 0)) 
+			{
+				var textpaddingX:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingLeft;
+				var textpaddingY:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingTop;
+				var textSep:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingBottom;
+				
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).y = textpaddingY;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).y = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height;
+			}
+			
+			// update button placement
+			if (childList.getCSSClass("menu_container", 0))
+			{
+				var btnWidth:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
+				var btnHeight:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
+				var paddingX:Number = childList.getCSSClass("menu_container", 0).paddingX;
+				var paddingY:Number = childList.getCSSClass("menu_container", 0).paddingY;
+				var position:String = childList.getCSSClass("menu_container", 0).position;
+				
+				if(position=="bottom"){
+					childList.getCSSClass("menu_container", 0).y = height - btnHeight -paddingY;
+					childList.getCSSClass("menu_container", 0).childList.getCSSClass("info_btn", 0).x = paddingX
+					childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingX
+				}
+				else if(position=="top"){
+					childList.getCSSClass("menu_container", 0).y = paddingY;
+					childList.getCSSClass("menu_container", 0).childList.getCSSClass("info_btn", 0).x = paddingX
+					childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingX
+				}
+			}	
+		}
+		
+		private function onStateEvent(event:StateEvent):void
+		{	
+			//trace("StateEvent change", event.value);
+			var info:* = childList.getCSSClass("info_container", 0)
+			
+			if (event.value == "info") {
+				if (!info.visible) {
+					info.visible = true;
+					touch_giga_image.visible = false;
+				}
+				else {
+					info.visible = false;
+					touch_giga_image.visible = true;
+				}
+			}
+			else if (event.value == "close") 	this.visible = false;
+		}
+		
 		
 		private var _srcXML:String = "";
 		/**
