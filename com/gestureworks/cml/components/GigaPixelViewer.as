@@ -122,35 +122,25 @@
 	
 		private function initUI():void
 		{
-			trace("initUI");
+			//trace("initUI");
 			// set easing
 			// duration
 		}
 		
 		private function setupUI():void
 		{ 
-			trace("setupUI");
+			//trace("setupUI");
 			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = width;
 			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = height;
 			
 			//touch container
 			touch_giga_image = this.childList.getCSSClass("gigapixel_image", 0)
-				//touch_giga_image.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-				//touch_giga_image.addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
 			addChild(touch_giga_image);
 			
 			//---------- build gigapixel image ------------------------//
 
 				image = new MultiScaleImage();
 					image.mouseChildren = true;
-					//image.gestureEvents = true;
-					//image.disableNativeTransform = true;
-					//image.disableAffineTransform = true;
-					//image.gestureList = { "1-finger-drag":true,"2-finger-scale":true};
-					
-					//trace(image.view)
-					// smooth panning
-				
 					image.addEventListener(Event.COMPLETE, image_completeHandler)
 		
 				// Add transformer for smooth zooming
