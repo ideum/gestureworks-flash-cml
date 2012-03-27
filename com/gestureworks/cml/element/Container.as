@@ -35,24 +35,44 @@ package com.gestureworks.cml.element
 			_position = value;
 		}
 		
-		private var _paddingX:Number;
+		private var _paddingLeft:Number;
 		/**
 		 * 
 		 */
-		public function get paddingX():Number {return _paddingX;}
-		public function set paddingX(value:Number):void 
+		public function get paddingLeft():Number {return _paddingLeft;}
+		public function set paddingLeft(value:Number):void 
 		{
-			_paddingX = value;
+			_paddingLeft = value;
 		}	
 		
-		private var _paddingY:Number;
+		private var _paddingRight:Number;
 		/**
 		 * 
 		 */
-		public function get paddingY():Number {return _paddingY;}
-		public function set paddingY(value:Number):void 
+		public function get paddingRight():Number {return _paddingRight;}
+		public function set paddingRight(value:Number):void 
 		{
-			_paddingY = value;
+			_paddingRight = value;
+		}	
+		
+		private var _paddingTop:Number;
+		/**
+		 * 
+		 */
+		public function get paddingTop():Number {return _paddingTop;}
+		public function set paddingTop(value:Number):void 
+		{
+			_paddingTop = value;
+		}	
+		
+		private var _paddingBottom:Number;
+		/**
+		 * 
+		 */
+		public function get paddingBottom():Number {return _paddingBottom;}
+		public function set paddingBottom(value:Number):void 
+		{
+			_paddingBottom = value;
 		}	
 		
 		

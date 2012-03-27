@@ -2,6 +2,8 @@
 {
 	//----------------adobe--------------//
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
 	import flash.display.DisplayObject;
 	import flash.geom.*;
 	import flash.ui.Mouse;
@@ -29,10 +31,10 @@
 	import com.gestureworks.core.DisplayList
 	
 	
-	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.kits.*;
 	
 	//---------------open zoom-------------//
 	import org.openzoom.flash.components.MultiScaleImage;
@@ -60,7 +62,6 @@
 	 * <strong>Import Components :</strong>
 	 * <pre>
 	 * GigaPixelParser
-	 * TouchGesturePhysics
 	 * </pre>
 	 *
 	 * <listing version="3.0">
@@ -86,6 +87,8 @@
 	{
 		private var frame:TouchSprite;
 		private var touch_giga_image:TouchSprite;
+		private var info:*;
+		private var menu:Menu;
 
 		//------ image settings ------//
 		private var _clickZoomInFactor:Number = 1.7
@@ -189,7 +192,16 @@
 		
 		private function updateLayout():void
 		{
-
+			info = childList.getCSSClass("info_container", 0);						
+			menu = childList.getCSSClass("menu_container", 0);
+			
+			if (menu.autoHide)
+			{
+				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+			}
+			
+			
 			// update frame size
 			if (childList.getCSSClass("frame_container", 0))
 			{
@@ -225,23 +237,52 @@
 			// update button placement
 			if (childList.getCSSClass("menu_container", 0))
 			{
-				var btnWidth:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
-				var btnHeight:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
-				var paddingX:Number = childList.getCSSClass("menu_container", 0).paddingX;
-				var paddingY:Number = childList.getCSSClass("menu_container", 0).paddingY;
-				var position:String = childList.getCSSClass("menu_container", 0).position;
+				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
+				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
+				var paddingLeft:Number = menu.paddingLeft;
+				var paddingRight:Number = menu.paddingRight;
+				var paddingBottom:Number = menu.paddingBottom;
+				var position:String = menu.position;
 				
 				if(position=="bottom"){
-					childList.getCSSClass("menu_container", 0).y = height - btnHeight -paddingY;
-					childList.getCSSClass("menu_container", 0).childList.getCSSClass("info_btn", 0).x = paddingX
-					childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingX
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
 				}
 				else if(position=="top"){
-					childList.getCSSClass("menu_container", 0).y = paddingY;
-					childList.getCSSClass("menu_container", 0).childList.getCSSClass("info_btn", 0).x = paddingX
-					childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingX
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="topLeft"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+				}
+				else if(position=="topRight"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="bottomLeft"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+				}
+				else if(position=="bottomRight"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
 				}
 			}	
+		}
+		
+		private function onDown(event:*):void
+		{
+			menu.visible = true;
+			menu.startTimer();
 		}
 		
 		private function onStateEvent(event:StateEvent):void
