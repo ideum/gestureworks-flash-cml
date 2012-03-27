@@ -17,10 +17,9 @@ package com.gestureworks.cml.core
 	//////////////////
 	//  COMPONENTS  // 
 	//////////////////
-
-	import com.gestureworks.cml.components.TmpViewer; TmpViewer;			
 	
 	//component element viewers
+	import com.gestureworks.cml.components.VideoViewer; VideoViewer;	
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
 	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
@@ -64,6 +63,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ButtonElement; ButtonElement;		
 	import com.gestureworks.cml.element.SliderElement; SliderElement;		
 	import com.gestureworks.cml.element.FrameElement; FrameElement;
+	import com.gestureworks.cml.element.VideoElement; VideoElement;
 	
 	//import com.gestureworks.cml.element.ImageSlideshow; ImageSlideshow;
 	
