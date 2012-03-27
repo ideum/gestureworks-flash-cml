@@ -64,8 +64,8 @@ package com.gestureworks.cml.components
 			// update button placement
 			if (childList.getCSSClass("menu_container", 0))
 			{
-				var btnWidth:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("up", 0).childList.getCSSClass("btn-bg-up", 0).width;
-				var btnHeight:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("up", 0).childList.getCSSClass("btn-bg-up", 0).height;
+				var btnWidth:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
+				var btnHeight:Number = childList.getCSSClass("menu_container", 0).childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
 				var paddingX:Number = childList.getCSSClass("menu_container", 0).paddingX;
 				var paddingY:Number = childList.getCSSClass("menu_container", 0).paddingY;
 				var position:String = childList.getCSSClass("menu_container", 0).position;
