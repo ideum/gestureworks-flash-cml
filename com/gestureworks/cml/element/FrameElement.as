@@ -24,11 +24,11 @@ package com.gestureworks.cml.element
 			
 			if(_shape=="rectangle"){
 			// draw
-			graphics.lineStyle(2*frameThickness, frameColor, frameAlpha);
-			graphics.drawRect( -frameThickness, -frameThickness, width + 2 * frameThickness, height + 2 * frameThickness);
-			graphics.lineStyle(2, frameColor,frameAlpha+0.5);
-			graphics.drawRoundRect( -2 * frameThickness, -2 * frameThickness, width + 4 * frameThickness, height + 4 * frameThickness, 2 * frameThickness, 2 * frameThickness);
-			graphics.lineStyle(4, frameColor,0.8);
+			graphics.lineStyle(2*_frameThickness, _frameColor, _frameAlpha);
+			graphics.drawRect( -_frameThickness, -_frameThickness, width + 2 * _frameThickness, height + 2 * _frameThickness);
+			graphics.lineStyle(2, _frameColor,_frameAlpha+0.5);
+			graphics.drawRoundRect( -2 * _frameThickness, -2 * _frameThickness, width + 4 * _frameThickness, height + 4 * _frameThickness, 2 * _frameThickness, 2 * _frameThickness);
+			graphics.lineStyle(4, _frameColor,0.8);
 			graphics.drawRect(-2, -2, width + 4, height + 4);
 			}
 			
@@ -48,7 +48,7 @@ package com.gestureworks.cml.element
 			layoutUI();
 		}
 		
-		protected var _frameThickness:Number=25;
+		protected var _frameThickness:Number=30;
 		/**
 		 * Sets frame thickness
 		 * @default 100
