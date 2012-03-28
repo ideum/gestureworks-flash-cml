@@ -70,13 +70,15 @@ package com.gestureworks.cml.element
 		private function onFrame(event:GWEvent):void
 		{
 			frameCount++;
-						
-			if (1000 / stage.frameRate * frameCount >= autoHideTime)
-			{
-				GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);				
-				this.visible = false;
-				frameCount = 0;
-			}	
+			
+			if(stage){
+				if (1000 / stage.frameRate * frameCount >= autoHideTime)
+				{
+					GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);				
+					this.visible = false;
+					frameCount = 0;
+				}
+			}
 		}		
 		
 	}

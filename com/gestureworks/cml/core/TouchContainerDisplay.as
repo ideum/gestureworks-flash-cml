@@ -173,7 +173,12 @@ package com.gestureworks.cml.core
 			//trace("TOUCH CONTAINER - DIMENTIONS TO: ", dimensionsTo);
 		}		
 		
-		
+		private var _autoShuffle:Boolean = false;
+		public function get autoShuffle():Boolean{return _autoShuffle;}
+		public function set autoShuffle(value:Boolean):void
+		{
+			_autoShuffle = value;			
+		}
 		
 		private var _layout:String;
 		/**

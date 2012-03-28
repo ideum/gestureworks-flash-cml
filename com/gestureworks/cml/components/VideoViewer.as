@@ -149,7 +149,10 @@ package com.gestureworks.cml.components
 				else info.visible = false;
 			}
 			else if (event.value == "close")
+			{
 				this.visible = false;
+				video.pause();	
+			}
 			else if (event.value == "play")
 				video.resume();
 			else if (event.value == "pause")

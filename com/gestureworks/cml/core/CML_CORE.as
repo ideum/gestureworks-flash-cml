@@ -13,10 +13,24 @@ package com.gestureworks.cml.core
 		]		
 	}
 	
+	/////////////////////////
+	// high level components
+	/////////////////////////
+	
+	
+	
 	
 	//////////////////
 	//  COMPONENTS  // 
 	//////////////////
+	
+	//componenet element viewer managers/lists
+	//import com.gestureworks.cml.components.TimelineViewer; TimelineViewer;
+	//import com.gestureworks.cml.components.MediaViewer; MediaViewer;
+	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
+	import com.gestureworks.cml.components.ListViewer; ListViewer;
+	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
+	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;
 	
 	//component element viewers
 	import com.gestureworks.cml.components.MP3Player; MP3Player;	
@@ -29,15 +43,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
-	import com.gestureworks.cml.components.MP3Player; MP3Player;		
-	
-	//import com.gestureworks.cml.components.TimelineViewer; TimelineViewer;
-	//import com.gestureworks.cml.components.MediaViewer; MediaViewer;
-	
-	//componenet element viewer managers/lists
-	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
-	import com.gestureworks.cml.components.ListViewer; ListViewer;
-	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
+	import com.gestureworks.cml.components.MP3Player; MP3Player;
 	
 	
 	////////////////

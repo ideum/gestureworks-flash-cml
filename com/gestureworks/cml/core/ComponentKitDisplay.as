@@ -33,7 +33,6 @@ package com.gestureworks.cml.core
 		{
 			super();
 		}
-			
 		
 		private var _classRef:String;
 		public function get classRef():String{return _classRef;}

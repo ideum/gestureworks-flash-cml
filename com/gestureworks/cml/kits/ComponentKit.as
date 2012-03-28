@@ -7,6 +7,6 @@ package com.gestureworks.cml.kits
 		public function ComponentKit() 
 		{
 			super();			
-		}		
+		}
 	}
 }

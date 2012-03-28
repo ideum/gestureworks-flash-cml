@@ -48,7 +48,20 @@ package com.gestureworks.cml.layouts
 		public function set maxY(value:Number):void 
 		{
 			_maxY = value;
-		}		
+		}	
+		private var _minRot:Number = 0;
+		public function get minRot():Number{return _minRot;}
+		public function set minRot(value:Number):void 
+		{
+			_minRot = value;
+		}			
+		
+		private var _maxRot:Number = 360;
+		public function get maxRot():Number{return _maxRot;}
+		public function set maxRot(value:Number):void 
+		{
+			_maxRot = value;
+		}	
 				
 		
 		/**
@@ -65,7 +78,8 @@ package com.gestureworks.cml.layouts
 			{
 				case "randomX" : randomX(container); break;
 				case "randomY" : randomY(container); break;
-				case "randomXY" : randomXY(container); break;				
+				case "randomXY" : randomXY(container); break;
+				case "randomXYRotation" : randomXYRotation(container); break;
 				default: break;
 			}	
 		}		
@@ -120,7 +134,23 @@ package com.gestureworks.cml.layouts
 				container.childList.getIndex(i).x = randomMinMax(minX, maxX);
 				container.childList.getIndex(i).y = randomMinMax(minY, maxY);		
 			}			
-		}			
+		}
+		
+		/**
+		 * Distributes the the children of the container randomly
+		 * about the x,y-axes. The maximum x,y value is equal to the 
+		 * container's width, height
+		 * @param	container
+		 */		
+		public function randomXYRotation(container:IContainer):void
+		{
+			for (var i:int = 0; i < container.childList.length; i++) 
+			{
+				container.childList.getIndex(i).x = randomMinMax(minX, maxX);
+				container.childList.getIndex(i).y = randomMinMax(minY, maxY);
+				container.childList.getIndex(i).rotation = randomMinMax(minRot, maxRot);		
+			}			
+		}	
 		
 
 		

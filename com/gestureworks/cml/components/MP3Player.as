@@ -154,7 +154,10 @@ package com.gestureworks.cml.components
 				else info.visible = false;
 			}
 			else if (event.value == "close")
+			{
 				this.visible = false;
+				mp3.pause();
+			}
 			else if (event.value == "play")
 				mp3.resume();
 			else if (event.value == "pause")
