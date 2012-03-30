@@ -17,7 +17,7 @@ package com.gestureworks.cml.kits
 	 * @author Charles Veasey
 	 */	
 	
-	public class WindowKit implements ICML
+	public class WindowKit
 	{		
 		public function WindowKit(enforcer:SingletonEnforcer){}
 
