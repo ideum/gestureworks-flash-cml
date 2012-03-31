@@ -15,8 +15,7 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.utils.SystemDetection;
 
 	/**
-	 * Video Factory
-	 * Video player class
+	 * The Video Factory 
 	 * @author Charles Veasey 
 	 */	
 	public class VideoFactory extends ElementFactory
