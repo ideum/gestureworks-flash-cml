@@ -7,7 +7,6 @@ package com.gestureworks.cml.kits
 		public function BackgroundKit() 
 		{
 			super();
-			
 		}	
 	}
 }

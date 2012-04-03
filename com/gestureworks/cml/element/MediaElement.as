@@ -1,21 +1,28 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.ElementFactory;
-	
-	import flash.events.Event;
-	import flash.utils.Dictionary;
-
-	/**
-	 * MediaElement
-	 * Media element wrapper, auto-selects correct media class based on input file type
-	 * @author Charles Veasey 
-	 */	
+	import com.gestureworks.cml.factories.*;
+	import flash.events.*;
+	import flash.utils.*;
+	 
+	/** 
+	 * The MediaElement class is a wrapper for media elements including the ImageElement, VideoElement, and the MP3Element.
+	 * It auto-selects the correct media element based on the input file extension. It suppports the following file extensions: 
+	 * png, gif, jpg, mpeg-4, mp4, m4v, 3gpp, mov, flv, f4v, and mp3.
+	 * 
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @langversion 3.0
+	 *
+	 * @includeExample MediaElementExample.as -noswf
+	 *
+	 * @see ElementFactory
+	 * @see ObjectFactory
+	 */	 
 	public class MediaElement extends ElementFactory
 	{
-		private var imageElement:ImageElement;
-		private var videoElement:VideoElement;
 		private var imageTypes:RegExp;
 		private var videoTypes:RegExp;
+		private var mp3Types:RegExp;
 		private var dictionary:Dictionary;
 		private var current:String;
 		
@@ -25,6 +32,7 @@ package com.gestureworks.cml.element
 			dictionary = new Dictionary(true);
 			imageTypes = /^.*\.(png|gif|jpg)$/i;  
 			videoTypes = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
+			mp3Types = /^.*\.(mp3)$/i;			
 		}
 
 
@@ -91,24 +99,27 @@ package com.gestureworks.cml.element
 			}
 		}		
 
-		
-		
-		
+				
 		/**
 		 * Open File
 		 * @Param file path
 		 */		
-		public function open(file:String):void 
+		public function open(file:String=src):void 
 		{	
-			if (file.search(imageTypes) >= 0) 			
+			if (file.search(imageTypes) >= 0)
+ 			{
 				dictionary[file] = new ImageElement;
+			}	
 			else if (file.search(videoTypes) >= 0)
 			{	
 				dictionary[file] = new VideoElement;
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
-			else if (file == "")
-				file = "";
+			else if (file.search(mp3Types) >= 0)
+			{	
+				dictionary[file] = new MP3Element;
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
+			}
 			else
 				throw new Error("Media type is not supported: " + file);
 			
