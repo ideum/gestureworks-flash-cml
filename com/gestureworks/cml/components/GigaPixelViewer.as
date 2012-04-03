@@ -24,18 +24,14 @@
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.kits.ComponentKit;
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTransformEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList
-	
-	
-	
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.kits.*;
-	
 	//---------------open zoom-------------//
 	import org.openzoom.flash.components.MultiScaleImage;
 	import org.openzoom.flash.components.SceneNavigator;
@@ -130,8 +126,6 @@
 		private function setupUI():void
 		{ 
 			//trace("setupUI");
-			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = width;
-			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = height;
 			
 			//touch container
 			touch_giga_image = this.childList.getCSSClass("gigapixel_image", 0)

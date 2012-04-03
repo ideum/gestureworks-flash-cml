@@ -1,9 +1,8 @@
-﻿//commented out line 374 and 394 b/c Error undefined property View
-
-package com.gestureworks.cml.components
+﻿package com.gestureworks.cml.components
 {
 	//----------------adobe--------------//
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.display.DisplayObject;
 	import flash.geom.*;
 	import flash.ui.Mouse;
@@ -15,7 +14,6 @@ package com.gestureworks.cml.components
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
 	import flash.events.*;
-	
 	//---------- gestureworks ------------//
 	import com.gestureworks.cml.core.TouchContainerDisplay;
 	import com.gestureworks.core.GestureWorks;
@@ -24,17 +22,15 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.element.Component;
-	
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.cml.kits.ComponentKit;
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTransformEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
-	
-
-	
-	
 	//----------------away3d--------------//
 	import away3d.cameras.HoverCamera3D;
 	import away3d.cameras.Camera3D;
@@ -55,6 +51,8 @@ package com.gestureworks.cml.components
 	{
 		private var frame:TouchSprite;
 		private var panoramic:TouchSprite;
+		private var info:*;
+		private var menu:Menu;
 		
 		private var faceNum:int = 0;
 		
@@ -86,14 +84,15 @@ package com.gestureworks.cml.components
 			//trace("panoramicViewer complete")
 			initUI();
 			setupUI();
+			updateLayout();
+			
+			this.addEventListener(StateEvent.CHANGE, onStateEvent)
 		}
 
 	
 		private function initUI():void
 		{
-			trace("initUI");
-			// check for net
-			// check for faces
+			//trace("initUI");
 			
 			if (_projectionType == "sphere") {
 			
@@ -128,7 +127,7 @@ package com.gestureworks.cml.components
 		
 		private function setupUI():void
 		{ 
-			trace("setupUI");
+			//trace("setupUI");
 			
 			// update 
 			GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, update);
@@ -154,8 +153,6 @@ package com.gestureworks.cml.components
 			panoramic.addChild(view);
 			
 			//----------------------------------// 
-			//trace(type)
-			
 			
 			// add a huge surrounding sphere
 			if(_projectionType =="sphere"){
@@ -175,6 +172,119 @@ package com.gestureworks.cml.components
 				view.scene.addChild(largeCube);
 				view.render();
 			}
+		}
+		
+		private function updateLayout():void
+		{
+			info = childList.getCSSClass("info_container", 0);						
+			menu = childList.getCSSClass("menu_container", 0);
+			
+			if (menu.autoHide)
+			{
+				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+			}
+			
+			
+			// update frame size
+			if (childList.getCSSClass("frame_container", 0))
+			{
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
+			}
+			// update info panel size
+			if (childList.getCSSClass("info_container", 0))
+			{
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).width = width;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).height = height;
+			}
+		
+			// update info text size
+			if (childList.getCSSClass("info_container", 0)) 
+			{
+				var textpaddingX:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingLeft;
+				var textpaddingY:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingTop;
+				var textSep:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingBottom;
+				
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).y = textpaddingY;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).y = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height;
+			}
+			
+			// update button placement
+			if (childList.getCSSClass("menu_container", 0))
+			{
+				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
+				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
+				var paddingLeft:Number = menu.paddingLeft;
+				var paddingRight:Number = menu.paddingRight;
+				var paddingBottom:Number = menu.paddingBottom;
+				var position:String = menu.position;
+				
+				if(position=="bottom"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				else if(position=="top"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="topLeft"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+				}
+				else if(position=="topRight"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="bottomLeft"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+				}
+				else if(position=="bottomRight"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+			}	
+		}
+		
+		private function onDown(event:*):void
+		{
+			menu.visible = true;
+			menu.startTimer();
+		}
+		
+		private function onStateEvent(event:StateEvent):void
+		{	
+			//trace("StateEvent change", event.value);
+			var info:* = childList.getCSSClass("info_container", 0)
+			
+			if (event.value == "info") {
+				if (!info.visible) {
+					info.visible = true;
+					panoramic.visible = false;
+				}
+				else {
+					info.visible = false;
+					panoramic.visible = true;
+				}
+			}
+			else if (event.value == "close") 	this.visible = false;
 		}
 		
 		public function update(e:GWEvent):void

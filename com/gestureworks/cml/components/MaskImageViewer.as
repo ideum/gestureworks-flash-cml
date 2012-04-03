@@ -20,7 +20,6 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.FrameElement;
 	import com.gestureworks.cml.element.GraphicElement;
 	import flash.events.Event;
-	
 	import adobe.utils.CustomActions;
 	import com.gestureworks.cml.core.TouchContainerDisplay;
 	import flash.display.Sprite;
@@ -28,10 +27,7 @@ package com.gestureworks.cml.components
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.events.*;
-	//import flash.text.*;
 	import flash.utils.*;
-	
-	import flash.events.Event;
 	
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
@@ -39,13 +35,13 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.element.Container;	
 	import com.gestureworks.cml.kits.ComponentKit;	
-	
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.events.GWEvent;
 	import com.gestureworks.events.GWGestureEvent;
-	//import com.gestureworks.events.GWTransformEvent;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
-	
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.cml.element.Component;
 
@@ -64,20 +60,20 @@ package com.gestureworks.cml.components
 	public class MaskImageViewer extends Component//ComponentKit
 	{
 		// ----- interactive object settings --//
-		private var Width:Number = 0;
-		private var Height:Number = 0;
 		private var count:int = 1;
 		private var n:int = 0;
+		private var frame:TouchSprite;
+		private var info:*;
+		private var menu:Menu;
 		
-		private var holder:TouchContainer;
+		//private var holder:TouchContainer;
 		private var base_image:TouchSprite;
 		private var mask_image:Sprite;
-		private var mShape:GraphicElement;
-		//private var shape_hit:TouchContainerDisplay;
+		private var mShape:Container;
 		private var shape_hit:TouchContainer;
-		//private var shape_hit:TouchSprite;
-		private var mapShape:GraphicElement;
-		private var mShapeOutline:GraphicElement;
+		private var meta_data:TouchContainer;
+		private var mShapeOutline:Container;
+		
 		private var wShape:GraphicElement;
 		
 		//public static var COMPLETE:String = "complete";
@@ -99,6 +95,9 @@ package com.gestureworks.cml.components
 			//trace("mask image viewer complete")
 			initUI();
 			setupUI();
+			updateLayout();
+			
+			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 		}
 		
 			
@@ -108,17 +107,17 @@ package com.gestureworks.cml.components
 			//trace("childList length------------------------------:", n);
 			
 			//-- bottom image --//
-			Width = this.childList.getCSSClass("base_img", 0).width;
-			Height = this.childList.getCSSClass("base_img", 0).height;
+			width = this.childList.getCSSClass("base_img", 0).width;
+			height = this.childList.getCSSClass("base_img", 0).height;
 		}
 			
 		private function setupUI():void
 		{ 
-			trace("setup");
-		
+			//trace("setup");
+			
 			// set frame size
-			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = Width;
-			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = Height;
+			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = width;
+			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = height;
 			
 			//set bottom image
 			base_image = this.childList.getCSSClass("base_img", 0)
@@ -134,10 +133,10 @@ package com.gestureworks.cml.components
 			////////////////////////////////////
 			// image mask
 			////////////////////////////////////
-			mShape = this.childList.getCSSClass("mshape", 0);
+			mShape = this.childList.getCSSClass("mask_shape", 0);
 			addChild(mShape);
 			
-			shape_hit = this.childList.getCSSClass("touch_mshape", 0);
+			shape_hit = this.childList.getCSSClass("touch_mask_shape", 0);
 				shape_hit.addEventListener(GWGestureEvent.DOUBLE_TAP, dTapHandler);
 				shape_hit.addEventListener(GWGestureEvent.DRAG, dragHandler);
 				shape_hit.addEventListener(GWGestureEvent.SCALE, scaleHandler);
@@ -149,116 +148,132 @@ package com.gestureworks.cml.components
 			/////////////////////////////////////
 			// mask outline
 			/////////////////////////////////////
-			mShapeOutline = this.childList.getCSSClass("mshape_outline", 0);
+			mShapeOutline = this.childList.getCSSClass("mask_shape_outline", 0);
 			addChild(mShapeOutline);
 			
-			wShape = this.childList.getCSSClass("wshape", 0);
-				wShape.width = Width;
-				wShape.height = Height;
+			wShape = this.childList.getCSSClass("window_shape", 0);
+				wShape.width = width;
+				wShape.height = height;
 			addChild(wShape);
 			
 			mShapeOutline.mask = wShape;
+			
+			
+			meta_data = this.childList.getCSSClass("info_container", 0)
+				meta_data.targetParent = true;  // make base capture touch points
+			addChild(meta_data);
 		}
 		
-		/*
-		private function setupUI():void
-		{ 
-			trace("setup");
-		
-			holder = new TouchSprite();
-				holder.targeting = true;
-				holder.gestureEvents = true;
-				holder.nestedTransform = true;
-				holder.disableNativeTransform = false;
-				holder.disableAffineTransform = false;
-				holder.mouseChildren = true;
-				holder.gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
+		private function updateLayout():void
+		{
+			info = childList.getCSSClass("info_container", 0);						
+			menu = childList.getCSSClass("menu_container", 0);
 			
-			//---------- build frame ------------------------//
-
-			if(frameDraw)
-			{							
-				frame = new TouchSprite();
-					
-					var frame_thickness:Number = 50*0.5;
-					var frame_color:Number = 0x999999;
-					var frame_alpha:Number = 0.3;
-					
-					frame.targetParent = true;
-					frame.graphics.lineStyle(2*frame_thickness, frame_color, frame_alpha);
-					frame.graphics.drawRect( -frame_thickness, -frame_thickness, Width + 2 * frame_thickness, Height + 2 * frame_thickness);
-					frame.graphics.lineStyle(2, frame_color,frame_alpha+0.5);
-					frame.graphics.drawRoundRect( -2 * frame_thickness, -2 * frame_thickness, Width + 4 * frame_thickness, Height + 4 * frame_thickness, 2 * frame_thickness, 2 * frame_thickness);
-					frame.graphics.lineStyle(4, frame_color,0.8);
-					frame.graphics.drawRect( -2, -2, Width + 4, Height + 4);
-					
-				holder.addChild(frame);
+			if (menu.autoHide)
+			{
+				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
 			}
-			else frameMargin=0;
-
-			//-- bottom image --//
-			//base_image = itemList[0];this.childList.getCSSClass("touch_img", 0).width
-			//base_image.targetParent = true;  // make base capture touch points
-			//holder.addChild(base_image);
 			
-			//-- top image --//
-			mask_image = new Sprite();
 			
-			for (var i:int = 1; i <n; i++)
-				{
-				mask_image.addChild(itemList[i]);
-				if (i != 1) itemList[i].visible = false;;
+			// update frame size
+			if (childList.getCSSClass("frame_container", 0))
+			{
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
+			}
+			// update info panel size
+			if (childList.getCSSClass("info_container", 0))
+			{
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).width = width;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).height = height;
+			}
+		
+			// update info text size
+			if (childList.getCSSClass("info_container", 0)) 
+			{
+				var textpaddingX:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingLeft;
+				var textpaddingY:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingTop;
+				var textSep:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingBottom;
+				
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).y = textpaddingY;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).x = textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).y = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
+				
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
+				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height;
+			}
+			
+			// update button placement
+			if (childList.getCSSClass("menu_container", 0))
+			{
+				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
+				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
+				var paddingLeft:Number = menu.paddingLeft;
+				var paddingRight:Number = menu.paddingRight;
+				var paddingBottom:Number = menu.paddingBottom;
+				var position:String = menu.position;
+				
+				if(position=="bottom"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
 				}
-			holder.addChild(mask_image);
+				else if(position=="top"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="topLeft"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+					menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+				}
+				else if(position=="topRight"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="bottomLeft"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+				}
+				else if(position=="bottomRight"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+			}	
+		}
+		
+		private function onDown(event:*):void
+		{
+			menu.visible = true;
+			menu.startTimer();
+		}
+		
+		private function onStateEvent(event:StateEvent):void
+		{	
+			trace("StateEvent change", event.value);
+			var info:* = childList.getCSSClass("info_container", 0);
 			
-			//-- create mask shape --//
-			
-			mShape = new Shape();
-				mShape.graphics.beginFill(0xFFFFFF,1);
-				mShape.graphics.drawRect(-maskSize/2,-maskSize/2,maskSize,maskSize);
-				mShape.graphics.endFill();
-				mShape.x = maskSize/2;
-				mShape.y = maskSize / 2;
-			holder.addChild(mShape);	
-
-			shape_hit = new TouchSprite();
-				shape_hit.graphics.beginFill(0xFFFFFF,0);
-				shape_hit.graphics.drawRect( -maskSize / 2, -maskSize / 2, maskSize, maskSize);
-				shape_hit.graphics.endFill();
-				shape_hit.x = maskSize/2;
-				shape_hit.y = maskSize / 2;
-				shape_hit.mouseChildren = false;
-				shape_hit.gestureEvents = true;
-				shape_hit.disableNativeTransform = true;
-				shape_hit.disableAffineTransform = true;
-				shape_hit.gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true, "double_tap":true };
-				shape_hit.addEventListener(GWGestureEvent.DOUBLE_TAP, dTapHandler);
-				shape_hit.addEventListener(GWGestureEvent.DRAG, dragHandler);
-				shape_hit.addEventListener(GWGestureEvent.SCALE, scaleHandler);
-				shape_hit.addEventListener(GWGestureEvent.ROTATE, rotateHandler);
-			holder.addChild(shape_hit);
-			
-			//-- apply mask to images --//
-			mask_image.mask = mShape;
-			
-			
-			mShapeOutline = new Shape();
-				mShapeOutline.graphics.lineStyle(3,0xFFFFFF,1);
-				//mShapeOutline.graphics.beginFill(0xFFFFFF,0);
-				mShapeOutline.graphics.drawRect(-maskSize/2,-maskSize/2,maskSize,maskSize);
-				//mShapeOutline.graphics.endFill();
-				mShapeOutline.x = maskSize/2;
-				mShapeOutline.y = maskSize / 2;
-			holder.addChild(mShapeOutline);
-			
-			wShape = new Shape();
-				wShape.graphics.beginFill(0xFFFFFF, 1);
-				wShape.graphics.drawRect(0,0,Width,Height);
-				wShape.graphics.endFill();
-			holder.addChild(wShape);
-			
-			mShapeOutline.mask = wShape;
-		}*/
+			if (event.value == "info") {
+				if (!info.visible) {
+					info.visible = true;
+				}
+				else {
+					info.visible = false;
+				}
+			}
+			else if (event.value == "close") 	this.visible = false;
+		}
 		
 		private function downHandler(e:TouchEvent):void
 		{
@@ -287,23 +302,27 @@ package com.gestureworks.cml.components
 		}
 		
 		// gesture event handlers to act on mask shape object
-		private function dragHandler(e:GWGestureEvent):void 
+		private function dragHandler(event:GWGestureEvent):void 
 		{
-			var x_:Number = mShape.x + e.value.dx;
-			var y_:Number = mShape.y + e.value.dy;
+			var ang2:Number = rotation * (Math.PI / 180);
+			var COS2:Number = Math.cos(ang2);
+			var SIN2:Number = Math.sin(ang2);
 			
-			if ((x_ > 0) && (x_ < Width))
-			{
-				mShape.x += e.value.dx;
-				mShapeOutline.x += e.value.dx;
-				shape_hit.x += e.value.dx;
-			}
-			if ((y_ > 0) && (y_ < Height))
-			{
-				mShape.y += e.value.dy;
-				mShapeOutline.y += e.value.dy;
-				shape_hit.y += e.value.dy;
-			}
+			///var x_:Number = Math.abs(mShape.x + event.value.dx);
+			//var y_:Number = Math.abs(mShape.y + event.value.dy);
+			
+			//if ((x_ > 0) && (x_ < Width))
+			//{
+				mShape.x += (event.value.dy * SIN2 + event.value.dx * COS2);//e.value.dx;
+				mShapeOutline.x += (event.value.dy * SIN2 + event.value.dx * COS2);//e.value.dx;
+				shape_hit.x += (event.value.dy * SIN2 + event.value.dx * COS2);//e.value.dx;
+			//}
+			//if ((y_ > 0) && (y_ < Height))
+			//{
+				mShape.y += (event.value.dy * COS2 - event.value.dx * SIN2);//e.value.dy;
+				mShapeOutline.y += (event.value.dy * COS2 - event.value.dx * SIN2);//e.value.dy;
+				shape_hit.y += (event.value.dy * COS2 - event.value.dx * SIN2);//e.value.dy;
+			//}
 		}
 		private function scaleHandler(e:GWGestureEvent):void 
 		{
@@ -321,7 +340,6 @@ package com.gestureworks.cml.components
 		{
 			//trace("mask rotation");
 			mShape.rotation += e.value.dtheta;
-			
 			mShapeOutline.rotation += e.value.dtheta;
 			shape_hit.rotation += e.value.dtheta;
 		}
