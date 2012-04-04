@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  IDEUM
+//  Copyright 2011-2012 Ideum
+//  All Rights Reserved.
+//
+//  GestureWorks
+//
+//  File: MediaElement.as
+//  Authors: Ideum
+//             
+//  NOTICE: Ideum permits you to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.*;
@@ -9,14 +25,14 @@ package com.gestureworks.cml.element
 	 * It auto-selects the correct media element based on the input file extension. It suppports the following file extensions: 
 	 * png, gif, jpg, mpeg-4, mp4, m4v, 3gpp, mov, flv, f4v, and mp3.
 	 * 
-	 * @playerversion Flash 10
-	 * @playerversion AIR 1.5
+	 * @playerversion Flash 10.1
+	 * @playerversion AIR 2.5
 	 * @langversion 3.0
 	 *
 	 * @includeExample MediaElementExample.as -noswf
 	 *
-	 * @see ElementFactory
-	 * @see ObjectFactory
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	 
 	public class MediaElement extends ElementFactory
 	{
@@ -38,7 +54,7 @@ package com.gestureworks.cml.element
 
 		private var _width:Number=0;
 		/**
-		 * Media width
+		 * Sets media width
 		 */				
 		override public function get width():Number{ return _width;}
 		override public function set width(value:Number):void
@@ -49,7 +65,7 @@ package com.gestureworks.cml.element
 	
 		private var _height:Number=0;
 		/**
-		 * Media height
+		 * Sets media height
 		 */			
 		override public function get height():Number{ return _height;}
 		override public function set height(value:Number):void
@@ -71,7 +87,7 @@ package com.gestureworks.cml.element
 			
 		private var _loop:Boolean;
 		/**
-		 * Media loop play
+		 * Indicates whether the media will re-play when it has reached the end
 		 */			
 		public function get loop():Boolean { return _loop; }
 		public function set loop(value:Boolean):void 
@@ -87,7 +103,7 @@ package com.gestureworks.cml.element
 	
 		private var _src:String;
 		/**
-		 * Media file source
+		 * Sets the media file source
 		 */			
 		public function get src():String {return _src;}
 		public function set src(value:String):void
@@ -101,14 +117,15 @@ package com.gestureworks.cml.element
 
 				
 		/**
-		 * Open File
+		 * Opens the file specified in the argument
 		 * @Param file path
 		 */		
-		public function open(file:String=src):void 
+		public function open(file:String):void 
 		{	
 			if (file.search(imageTypes) >= 0)
  			{
 				dictionary[file] = new ImageElement;
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);			
 			}	
 			else if (file.search(videoTypes) >= 0)
 			{	
@@ -146,7 +163,7 @@ package com.gestureworks.cml.element
 		
 		
 		/**
-		 * Closes file
+		 * Closes the currently open media file
 		 */	
 		public function close():void 
 		{
@@ -162,7 +179,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Plays from the beginning
+		 * Plays the media file from the beginning
 		 */		
 		public function play():void
 		{
@@ -171,7 +188,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Resumes playback from paused position
+		 * Resumes media playback from paused position
 		 */			
 		public function resume():void
 		{
@@ -180,7 +197,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Pauses 
+		 * Pauses media playback
 		 */			
 		public function pause():void
 		{
@@ -189,7 +206,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Pauses and returns to the beginning
+		 * Pauses the media file and returns to the playhead to the beginning
 		 */			
 		public function stop():void
 		{
@@ -199,7 +216,7 @@ package com.gestureworks.cml.element
 		
 		
 		/**
-		 * Sets the playhead position
+		 * Sets the media playhead position
 		 * @param offset
 		 */
 		public function seek(offset:Number):void

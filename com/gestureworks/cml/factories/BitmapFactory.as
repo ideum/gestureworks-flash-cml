@@ -1,39 +1,39 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  IDEUM
+//  Copyright 2011-2012 Ideum
+//  All Rights Reserved.
+//
+//  GestureWorks
+//
+//  File: BitmapFactory.as
+//  Authors: Ideum
+//             
+//  NOTICE: Ideum permits you to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.gestureworks.cml.factories 
 {	
-	import flash.events.Event;
-	import flash.net.URLRequest;
-	import flash.display.Loader;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.PixelSnapping;
-	import flash.geom.Matrix;
-	import com.gestureworks.cml.loaders.IMG;
-	
-	import com.gestureworks.cml.managers.FileManager; 
+	import com.gestureworks.cml.loaders.*;
+	import com.gestureworks.cml.managers.*;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
 	
 	public class BitmapFactory extends ElementFactory
 	{
-		protected var loader:Loader;
 		public static var COMPLETE:String = "complete";	
 		
+		protected var loader:Loader;
 		private var file:*;
+		
 		
 		public function BitmapFactory() 
 		{
 			super();	
 			mouseChildren = false;
-		}
-				
-		private var _src:String = "";
-		/**
-		 * Sets the file source path
-		 * @default ""
-		 */
-		public function get src():String{return _src;}
-		public function set src(value:String):void
-		{
-			if (src == value) return;
-				_src = value;
 		}
 		
 		
@@ -50,7 +50,6 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		
 		private var _height:Number = 0;
 		/**
 		 * Sets width of the display object in pixels
@@ -61,7 +60,21 @@ package com.gestureworks.cml.factories
 		{			
 			_height = value;
 			super.height = value;
-		}			
+		}		
+		
+		
+		private var _src:String = "";
+		/**
+		 * Sets the file source path
+		 * @default ""
+		 */
+		public function get src():String{return _src;}
+		public function set src(value:String):void
+		{
+			if (src == value) return;
+				_src = value;
+		}
+		
 		
 		private var img:IMG;
 		public function load(url:String):void
@@ -202,9 +215,9 @@ package com.gestureworks.cml.factories
 				//loader = null;
 			//}
 			
+			
 			// send complete event
 			bitmapComplete();
-			
 			
 			// resample base bitmap
 			if ((resample) || (normalize)) 
@@ -231,80 +244,69 @@ package com.gestureworks.cml.factories
 		private function createBitmapDataArray():void
 		{
 			var avatarNum:int = _sizeArray.length;
-			var resizeMatrix:Matrix
-			var bitmapData:BitmapData
+			var resizeMatrix:Matrix;
+			var bitmapData:BitmapData;
 			var reduceX:Number = 1;
 			var reduceY:Number = 1;
 			
 			// loop thru standard sizeArray
 			for (var i:int=0; i<avatarNum; i++)
-				{	
-					//trace("sizeArray:",i,_sizeArray[i])
-					
-					if((width)&&(height)){
+			{	
+				//trace("sizeArray:",i,_sizeArray[i])
 				
-					var	pixelSize:Number = sizeArray[i];
-			/*
-						if(force_height_normalize){
-							reduceY = pixelSize/height;
-							reduceX = reduceY;
-						}
-						if(force_width_normalize){
+				if((width)&&(height)){
+			
+				var	pixelSize:Number = sizeArray[i];
+					/*
+					if(force_height_normalize){
+						reduceY = pixelSize/height;
+						reduceX = reduceY;
+					}
+					if(force_width_normalize){
+						reduceX = pixelSize/width;
+						reduceY = reduceX;
+					}
+					*/
+					//if((!force_width_normalize)&&(!force_height_normalize)){
+					if(width>height){ //landscape
 							reduceX = pixelSize/width;
 							reduceY = reduceX;
 						}
-						*/
-						//if((!force_width_normalize)&&(!force_height_normalize)){
-						if(width>height){ //landscape
-								reduceX = pixelSize/width;
-								reduceY = reduceX;
-							}
-							else if(width<=height){ //portrait or square
-								reduceY = pixelSize/height;
-								reduceX = reduceY;
-							}
-						//generate multitple resize matrixces
-						resizeMatrix = new Matrix();
-						resizeMatrix.scale(reduceX, reduceY);
-						// resize bitmap data
-						bitmapData = new BitmapData(width * reduceX, height * reduceY);
-						bitmapData.draw(file.content, resizeMatrix);
-							
-						_bitmap = new Bitmap(bitmapData,PixelSnapping.NEVER,true);
-						_bitmap.smoothing=true;
+						else if(width<=height){ //portrait or square
+							reduceY = pixelSize/height;
+							reduceX = reduceY;
+						}
+					//generate multitple resize matrixces
+					resizeMatrix = new Matrix();
+					resizeMatrix.scale(reduceX, reduceY);
+					// resize bitmap data
+					bitmapData = new BitmapData(width * reduceX, height * reduceY);
+					bitmapData.draw(file.content, resizeMatrix);
 						
-						bitmapData = null;
-						// add the bitmap objects to a list 
-						bitmapArray[i] = _bitmap;
-						//bitmapArray[i].visible = false
-						bitmapArray[i].y = 50 * i;
-						addChild(bitmapArray[i]);
-					}
+					_bitmap = new Bitmap(bitmapData,PixelSnapping.NEVER,true);
+					_bitmap.smoothing=true;
+					
+					bitmapData = null;
+					// add the bitmap objects to a list 
+					bitmapArray[i] = _bitmap;
+					//bitmapArray[i].visible = false
+					bitmapArray[i].y = 50 * i;
+					addChild(bitmapArray[i]);
 				}
-			
-			// check for dim value
-			// check for dim match
-			// 
-			
-			
-			
-		}
-		
-		private function loaderComplete():void
-		{			
-
-		}
-		
-		private function resampleBitmapData():void
-		{
-			
+			}
 		}
 		
 		protected function bitmapComplete():void 
 		{
 			dispatchEvent(new Event(BitmapFactory.COMPLETE));
-			//trace(this);
 		}
+		
+		
+		private function loaderComplete():void {}
+		
+		private function resampleBitmapData():void {}
+		
+
 		
 		private var _bitmap:Bitmap;
 		public function get bitmap():Bitmap { return _bitmap; }
@@ -402,11 +404,5 @@ package com.gestureworks.cml.factories
 		{
 			_resampleWidth = value;
 		}
-		
-		
-		
-		
-		
-		// default avatar display icon
 	}
 }
