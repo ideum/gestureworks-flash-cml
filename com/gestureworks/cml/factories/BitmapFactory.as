@@ -152,6 +152,27 @@ package com.gestureworks.cml.factories
 		public function get landscape():Boolean{return _landscape;}
 	
 		
+		private function resampleBitmapData():void {}
+	
+		
+		private var _bitmapArray:Array = new Array();
+		public function get bitmapArray():Array {return _bitmapArray;}
+		
+		//private var _sizeArray:Array = new Array(20, 50, 100, 200, 400, 800, 1200, 1600); // default size array list
+		private var _sizeArray:Array = new Array(20, 50, 100, 200); // default size array list
+		
+		
+		public function get sizeArray():Array {return _sizeArray;}
+		public function set sizeArray(value:Array):void
+		{
+			_sizeArray = value;
+		}
+		
+		private var _bitmapDataArray:Array;
+		public function get bitmapDataArray():Array { return _bitmapDataArray; }
+		
+		
+		
 		private var _aspectRatio:Number = 0;
 		/**
 		 * Stores the aspectRatio of the currently loaded image
@@ -195,7 +216,7 @@ package com.gestureworks.cml.factories
 			_landscape = false;
 			_portrait = false;
 			
-			if (_bitmapData)
+			if (_bitmapData && !_bitmapDataCache)
 			{
 				_bitmapData.dispose();
 				_bitmapData = null;
@@ -236,6 +257,9 @@ package com.gestureworks.cml.factories
 			var percentX:Number = 1; 
 			var percentY:Number = 1;
 			
+			
+			// Commenting out this below - I'm not sure why we were resetting the scale to one here,
+			// and thus nullifying the user scaling
 			
 			//scaleX = 1;
 			//scaleY = 1;
@@ -296,8 +320,6 @@ package com.gestureworks.cml.factories
 			
 			
 			
-			//if (!_bitmapDataCache)_bitmapData = null;
-			
 			// very important to set width and height!
 			width = _bitmap.width * scaleX;
 			height = _bitmap.height * scaleY;
@@ -305,6 +327,7 @@ package com.gestureworks.cml.factories
 			
 			// establish orientation			
 			_aspectRatio = width / height;
+			
 			
 			if (_aspectRatio > 1) 
 			{
@@ -321,8 +344,9 @@ package com.gestureworks.cml.factories
 				
 			
 			
-			// do this if the it loaded it self. if using the preloader, the preloader handles unloading			
-			if (img) 
+			
+			// Do this if the it loaded itself. If using the preloader, the preloader handles unloading
+			if (img &&  !_bitmapDataCache) 
 			{
 				fileData.unload();
 				fileData.unloadAndStop();
@@ -341,7 +365,7 @@ package com.gestureworks.cml.factories
 			//process avatar images
 			if (avatar) 
 			{
-				//createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
+				createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
 			}
 			
 			bitmapComplete();			
@@ -378,8 +402,7 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		
-		
+	
 			
 		private function createBitmapDataArray():void
 		{
@@ -435,34 +458,6 @@ package com.gestureworks.cml.factories
 				}
 			}
 		}
-		
-
-		
-		
-		
-		private function resampleBitmapData():void {}
-		
-
-		
-
-		
-		private var _bitmapArray:Array = new Array();
-		public function get bitmapArray():Array {return _bitmapArray;}
-		
-		//private var _sizeArray:Array = new Array(20, 50, 100, 200, 400, 800, 1200, 1600); // default size array list
-		private var _sizeArray:Array = new Array(20, 50, 100, 200); // default size array list
-		
-		
-		public function get sizeArray():Array {return _sizeArray;}
-		public function set sizeArray(value:Array):void
-		{
-			_sizeArray = value;
-		}
-		
-		private var _bitmapDataArray:Array;
-		public function get bitmapDataArray():Array { return _bitmapDataArray; }
-				
-		
 		
 	}
 }
