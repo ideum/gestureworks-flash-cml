@@ -295,9 +295,7 @@ package com.gestureworks.cml.factories
 			_bitmap.smoothing = true;
 			
 			
-			////////////////////////////////////////////////////////////////////////////////
-			// It can't work like this - talk to Paul and see what he meant by this
-			////////////////////////////////////////////////////////////////////////////////				
+			
 			//if (!_bitmapDataCache)_bitmapData = null;
 			
 			// very important to set width and height!
@@ -320,11 +318,7 @@ package com.gestureworks.cml.factories
 			}
 			
 			addChild(_bitmap);
-		
-			
-			////////////////////////////////////////////////////////////////////////////////
-			// Again, talk to Paul - I think this is what he want to cache
-			////////////////////////////////////////////////////////////////////////////////				
+				
 			
 			
 			// do this if the it loaded it self. if using the preloader, the preloader handles unloading			
@@ -334,14 +328,6 @@ package com.gestureworks.cml.factories
 				fileData.unloadAndStop();
 				fileData = null;
 			}
-			
-			// unload loader 
-			// TODO: implement unloaders
-			//if (!avatar) {
-				//loader.unload();
-				//loader.unloadAndStop(); 
-				//loader = null;
-			//}
 			
 			
 			// send complete event
@@ -394,14 +380,7 @@ package com.gestureworks.cml.factories
 		
 		
 		
-
-		////////////////////////////////////////////////////////////////////////////////
-		// Unused ? - talk to Paul
-		////////////////////////////////////////////////////////////////////////////////			
-		
-	
-		/*
-		
+			
 		private function createBitmapDataArray():void
 		{
 			var avatarNum:int = _sizeArray.length;
@@ -442,7 +421,7 @@ package com.gestureworks.cml.factories
 					resizeMatrix.scale(reduceX, reduceY);
 					// resize bitmap data
 					bitmapData = new BitmapData(width * reduceX, height * reduceY);
-					bitmapData.draw(file.content, resizeMatrix);
+					bitmapData.draw(fileData.content, resizeMatrix);
 						
 					_bitmap = new Bitmap(bitmapData,PixelSnapping.NEVER,true);
 					_bitmap.smoothing=true;
@@ -484,8 +463,6 @@ package com.gestureworks.cml.factories
 		public function get bitmapDataArray():Array { return _bitmapDataArray; }
 				
 		
-		
-		*/
 		
 	}
 }
