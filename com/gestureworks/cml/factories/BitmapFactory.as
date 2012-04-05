@@ -22,12 +22,23 @@ package com.gestureworks.cml.factories
 	import flash.events.*;
 	import flash.geom.*;
 	
+	/** 
+	 * The BitmapFactory class load and stores bitmap data, usually in the form an external image file
+	 * 
+	 * @playerversion Flash 10.1
+	 * @playerversion AIR 2.5
+	 * @langversion 3.0
+	 *
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 */	 	
 	public class BitmapFactory extends ElementFactory
-	{
-		public static var COMPLETE:String = "complete";	
+	{		
+		// image file loader
+		private var img:IMG;
 		
-		protected var loader:Loader;
-		private var file:*;
+		// loaded bitmap data from file
+		private var fileData:Loader;
 		
 		
 		public function BitmapFactory() 
@@ -35,7 +46,7 @@ package com.gestureworks.cml.factories
 			super();	
 			mouseChildren = false;
 		}
-		
+			
 		
 		private var _width:Number = 0;
 		/**
@@ -60,13 +71,13 @@ package com.gestureworks.cml.factories
 		{			
 			_height = value;
 			super.height = value;
-		}		
+		}			
 		
 		
-		private var _src:String = "";
+		private var _src:String;
 		/**
 		 * Sets the file source path
-		 * @default ""
+		 * @default null
 		 */
 		public function get src():String{return _src;}
 		public function set src(value:String):void
@@ -74,121 +85,225 @@ package com.gestureworks.cml.factories
 			if (src == value) return;
 				_src = value;
 		}
+
 		
+		private var _bitmap:Bitmap;
+		/**
+		 * Stores a reference to the currently loaded bitmap
+		 * @default null
+		 */			
+		public function get bitmap():Bitmap { return _bitmap; }
 		
-		private var img:IMG;
-		public function load(url:String):void
+	
+		private var _bitmapData:BitmapData;
+		/**
+		 * Stores a reference to the currently loaded bitmapData
+		 * @default null
+		 */				
+		public function get bitmapData():BitmapData { return _bitmapData; }
+		
+	
+		private var _bitmapDataCache:Boolean = false;
+		/**
+		 * Specifies whether the bitmapData is cached or not
+		 * @default false
+		 */				
+		public function get bitmapDataCache():Boolean  { return _bitmapDataCache; }
+		public function set bitmapDataCache(value:Boolean):void
 		{
-			src = url;
+			_bitmapDataCache = value;
+		}			
+		
+		
+		private var _resample:Boolean = false;
+		/**
+		 * Specifies whether a loaded image is resampled to the provided width and/or height.
+		 * In order for resampling to work, this must be set to true, and a width and/or height 
+		 * must be set prior to calling open.
+		 * @default false
+		 */
+		public function get resample():Boolean{return _resample;}
+		public function set resample(value:Boolean):void
+		{
+			_resample = value;
+		}		
+			
+	
+		private var _normalize:Boolean = false;
+		public function get normalize():Boolean{return _normalize;}
+		public function set normalize(value:Boolean):void
+		{
+			_normalize = value;
+		}
+		
+		
+		private var _avatar:Boolean = false;
+		public function get avatar():Boolean{return _avatar;}
+		public function set avatar(value:Boolean):void
+		{
+			_avatar = value;
+		}
+		
+		
+		private var _portrait:Boolean = false;
+		public function get portrait():Boolean{return _portrait;}
+		
+		
+		private var _landscape:Boolean = false;
+		public function get landscape():Boolean{return _landscape;}
+	
+		
+		private var _aspectRatio:Number = 0;
+		/**
+		 * Stores the aspectRatio of the currently loaded image
+		 * @default 0
+		 */
+		public function get aspectRatio():Number{return _aspectRatio; }
+		
+		
+		////////////////////////////////////////////////////////////////////////////////
+		// Public Methods
+		////////////////////////////////////////////////////////////////////////////////
+		
+		
+		/**
+		 * Opens an external image file
+		 * @param	file
+		 */
+		public function open(file:String):void
+		{
+			src = file;
 			img = new IMG;
-			img.load(url);
-			img.addEventListener(Event.COMPLETE, loadComplete)
+			img.load(file);
+			img.addEventListener(Event.COMPLETE, loadComplete);
+		}	
+		
+		
+		[Deprecated(replacement="open()")] 
+		public function load(file:String):void
+		{
+			open(file);
 		}
 		
-		private function loadBitmap(url:String):void
+		
+		/**
+		 * Closes the currently open image file
+		 */
+		public function close():void
 		{
-			src = url;
-			FileManager.instance.addToQueue(url, "img");
-		}
-				
+			_src = null;
+			_aspectRatio = 0;
+			_landscape = false;
+			_portrait = false;
+			
+			if (_bitmapData)
+			{
+				_bitmapData.dispose();
+				_bitmapData = null;
+			}
+			
+			if (_bitmap)
+				_bitmap = null;			
+		}		
+		
+		
+		/**
+		 * This is called by the CML parser. Do not override this method.
+		 */		
 		override public function postparseCML(cml:XMLList):void 
 		{
 			if (this.propertyStates[0]["src"])
-				loadBitmap(this.propertyStates[0]["src"]);
+				preloadFile(this.propertyStates[0]["src"]);
 		}
 		
 		
+		/**
+		 * This is called when the image is loaded. Do not override this method.
+		 */		
 		public function loadComplete(event:Event=null):void
 		{
-			
 			if (img)
 			{
-				file = img.loader;
+				fileData = img.loader;
 			}
 			else
 			{
 				var imageSrc:String = propertyStates[0]["src"];
-				file = FileManager.instance.fileList.getKey(imageSrc).loader;				
+				fileData = FileManager.instance.fileList.getKey(imageSrc).loader;				
 			}
-			
-			
-			///////////////////////////////////////////////////////////////////////////////////////// 
-			/// resample image if width and/or height are provided before load command is given.
-			/// we may want to make resampling something the user must turn on (e.g. resample = true)
-			/// and otherwise just scale the image to the right dimensions
-			/////////////////////////////////////////////////////////////////////////////////////////
+
 			
 			// scale percentages needed to achieve desired diemensions
-			_percentX = 1; 
-			_percentY = 1;
+			var percentX:Number = 1; 
+			var percentY:Number = 1;
 			
-			scaleX = 1;
-			scaleY = 1;
 			
-			//trace(_resample,file.width,file.height,_width, _height, this.propertyStates[0]["width"])
+			//scaleX = 1;
+			//scaleY = 1;
+
 			
-			if (_resample){
-			
+			if (_resample)
+			{
 				if (width && height)
 				{
 					// skip resampling if not needed to avoid image degradation
-					if ((width != file.width) && (height != file.height))
+					if ((width != fileData.width) && (height != fileData.height))
 					{
-						_percentX = width / file.width;
-						_percentY = height / file.height;
+						percentX = width / fileData.width;
+						percentY = height / fileData.height;
 					}
 				}
 				
 				else if (width)
 				{
 					// skip resampling if not needed to avoid image degradation
-					if (width != file.width)
+					if (width != fileData.width)
 					{
-						_percentX = width / file.width;
-						_percentY = _percentX;
+						percentX = width / fileData.width;
+						percentY = percentX;
 					}
 				}
 				
 				else if (height)
 				{
 					// skip resampling if not needed to avoid image degradation
-					if (height != file.height)
+					if (height != fileData.height)
 					{
-						_percentY = height / file.height; 										
-						_percentX = _percentY;
+						percentY = height / fileData.height; 										
+						percentX = percentY;
 					}
 				}	
 			}			
 			
-			if ((_percentX != 1) && (_percentY != 1))
+			if ((percentX != 1) && (percentY != 1))
 			{
 				var resizeMatrix:Matrix = new Matrix();		
-				resizeMatrix.scale(_percentX, _percentY);				
-				_bitmapData = new BitmapData(file.width * _percentX, file.height * _percentY, true, 0x000000);
-				_bitmapData.draw(file.content, resizeMatrix);
-				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);				
+				resizeMatrix.scale(percentX, percentY);				
+				_bitmapData = new BitmapData(fileData.width * percentX, fileData.height * percentY, true, 0x000000);
+				_bitmapData.draw(fileData.content, resizeMatrix);
+				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
+				resizeMatrix = null;
 			}
 			
+			// this used to contain a clause for scale, but it was counter-acting and the result was no scale
 			else
 			{
-				if((scaleX != 1) && (scaleY != 1)){
-					_bitmapData = new BitmapData(file.width*scaleX, file.height*scaleY, true, 0x000000);
-					_bitmapData.draw(file.content);
-					_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
-				}
-				else {
-					_bitmapData = new BitmapData(file.width, file.height, true, 0x000000);
-					_bitmapData.draw(file.content);
-					_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
-				}	
+				_bitmapData = new BitmapData(fileData.width, fileData.height, true, 0x000000);
+				_bitmapData.draw(fileData.content);
+				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
 			}
 			
 			_bitmap.smoothing = true;
-			if(!_bitmapDataCache)_bitmapData = null;
+			
+			
+			////////////////////////////////////////////////////////////////////////////////
+			// It can't work like this - talk to Paul and see what he meant by this
+			////////////////////////////////////////////////////////////////////////////////				
+			//if (!_bitmapDataCache)_bitmapData = null;
 			
 			// very important to set width and height!
-			width = _bitmap.width*scaleX;
-			height = _bitmap.height*scaleY;
+			width = _bitmap.width * scaleX;
+			height = _bitmap.height * scaleY;
 		
 			
 			// establish orientation			
@@ -207,6 +322,15 @@ package com.gestureworks.cml.factories
 			
 			addChild(_bitmap);
 		
+			
+			////////////////////////////////////////////////////////////////////////////////
+			// Again, talk to Paul - I think this is what he want to cache
+			////////////////////////////////////////////////////////////////////////////////				
+			
+			fileData.unload();
+			fileData.unloadAndStop();
+			fileData = null;
+			
 			// unload loader 
 			// TODO: implement unloaders
 			//if (!avatar) {
@@ -217,29 +341,62 @@ package com.gestureworks.cml.factories
 			
 			
 			// send complete event
-			bitmapComplete();
 			
 			// resample base bitmap
 			if ((resample) || (normalize)) 
 			{
-				resampleBitmapData();
+				//resampleBitmapData();
 			}
 			
 			//process avatar images
 			if (avatar) 
 			{
-				createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
-			}		
+				//createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
+			}
 			
-		}
+			bitmapComplete();			
+		}		
+		
+		/**
+		 * This is called by the CML parser. Do not override this method.
+		 */
+		override public function displayComplete():void {}		
 		
 		
-		override public function displayComplete():void
+		
+		////////////////////////////////////////////////////////////////////////////////
+		// Protected Methods
+		////////////////////////////////////////////////////////////////////////////////
+	
+		protected function bitmapComplete():void 
 		{
-
+			// listen like this: imageElement.addEventListener(Event.COMPLETE, onComplete);		
+			dispatchEvent(new Event(Event.COMPLETE, true, true));
 			
 		}
+	
 		
+
+		////////////////////////////////////////////////////////////////////////////////
+		// Private Methods
+		////////////////////////////////////////////////////////////////////////////////		
+		
+		private function preloadFile(file:String):void
+		{
+			src = file;
+			FileManager.instance.addToQueue(file, "img");
+		}
+		
+		
+		
+		
+
+		////////////////////////////////////////////////////////////////////////////////
+		// Unused ? - talk to Paul
+		////////////////////////////////////////////////////////////////////////////////			
+		
+	
+		/*
 		
 		private function createBitmapDataArray():void
 		{
@@ -257,16 +414,16 @@ package com.gestureworks.cml.factories
 				if((width)&&(height)){
 			
 				var	pixelSize:Number = sizeArray[i];
-					/*
-					if(force_height_normalize){
-						reduceY = pixelSize/height;
-						reduceX = reduceY;
-					}
-					if(force_width_normalize){
-						reduceX = pixelSize/width;
-						reduceY = reduceX;
-					}
-					*/
+					
+				//	if(force_height_normalize){
+				//		reduceY = pixelSize/height;
+				//		reduceX = reduceY;
+				//	}
+				//	if(force_width_normalize){
+				//		reduceX = pixelSize/width;
+				//		reduceY = reduceX;
+				//	}
+				
 					//if((!force_width_normalize)&&(!force_height_normalize)){
 					if(width>height){ //landscape
 							reduceX = pixelSize/width;
@@ -296,30 +453,15 @@ package com.gestureworks.cml.factories
 			}
 		}
 		
-		protected function bitmapComplete():void 
-		{
-			dispatchEvent(new Event(BitmapFactory.COMPLETE));
-		}
+
 		
 		
-		private function loaderComplete():void {}
 		
 		private function resampleBitmapData():void {}
 		
 
 		
-		private var _bitmap:Bitmap;
-		public function get bitmap():Bitmap { return _bitmap; }
-		
-		private var _bitmapData:BitmapData;
-		public function get bitmapData():BitmapData { return _bitmapData; }
-		
-		private var _bitmapDataCache:Boolean = false;
-		public function get bitmapDataCache():Boolean  { return _bitmapDataCache; }
-		public function set bitmapDataCache(value:Boolean):void
-		{
-			_bitmapDataCache = value;
-		}
+
 		
 		private var _bitmapArray:Array = new Array();
 		public function get bitmapArray():Array {return _bitmapArray;}
@@ -336,73 +478,10 @@ package com.gestureworks.cml.factories
 		
 		private var _bitmapDataArray:Array;
 		public function get bitmapDataArray():Array { return _bitmapDataArray; }
+				
 		
-		private var _percentX:Number = 1;
-		public function get percentX():Number{return _percentX;}
-		public function set percentX(value:Number):void
-		{
-			_percentX = value;
-		}
-		private var _percentY:Number = 1;
-		public function get percentY():Number{return _percentY;}
-		public function set percentY(value:Number):void
-		{
-			_percentY = value;
-		}
 		
-		private var _aspectRatio:Number = 1; //square
-		public function get aspectRatio():Number{return _aspectRatio;}
-		public function set aspectRatio(value:Number):void
-		{
-			_aspectRatio = value;
-		}
+		*/
 		
-		private var _resample:Boolean = true;
-		public function get resample():Boolean{return _resample;}
-		public function set resample(value:Boolean):void
-		{
-			_resample = value;
-		}
-		
-		private var _normalize:Boolean = false;
-		public function get normalize():Boolean{return _normalize;}
-		public function set normalize(value:Boolean):void
-		{
-			_normalize = value;
-		}
-		
-		private var _avatar:Boolean = false;
-		public function get avatar():Boolean{return _avatar;}
-		public function set avatar(value:Boolean):void
-		{
-			_avatar = value;
-		}
-		
-		private var _portrait:Boolean = false;
-		public function get portrait():Boolean{return _portrait;}
-		public function set portrait(value:Boolean):void
-		{
-			_portrait = value;
-		}
-		private var _landscape:Boolean = false;
-		public function get landscape():Boolean{return _landscape;}
-		public function set landscape(value:Boolean):void
-		{
-			_landscape = value;
-		}
-		
-		private var _resampleHeight:Number = 1;
-		public function get resampleHeight():Number{return _resampleHeight;}
-		public function set resampleHeight(value:Number):void
-		{
-			_resampleHeight = value;
-		}
-		
-		private var _resampleWidth:Number = 1;
-		public function get resampleWidth():Number{return _resampleWidth;}
-		public function set resampleWidth(value:Number):void
-		{
-			_resampleWidth = value;
-		}
 	}
 }

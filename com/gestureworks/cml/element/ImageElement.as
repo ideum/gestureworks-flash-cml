@@ -41,7 +41,7 @@ package com.gestureworks.cml.element
 		
 		override protected function bitmapComplete():void 
 		{						
-			dispatchEvent(new Event(displayEvents));
+			dispatchEvent(new Event(Event.COMPLETE, true, true));
 		}
 		
 	}

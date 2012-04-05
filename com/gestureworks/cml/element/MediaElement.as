@@ -40,7 +40,7 @@ package com.gestureworks.cml.element
 		private var videoTypes:RegExp;
 		private var mp3Types:RegExp;
 		private var dictionary:Dictionary;
-		private var current:String;
+		private var currentFile:String;
 		
 		public function MediaElement()
 		{
@@ -55,6 +55,7 @@ package com.gestureworks.cml.element
 		private var _width:Number=0;
 		/**
 		 * Sets media width
+		 * @default 0
 		 */				
 		override public function get width():Number{ return _width;}
 		override public function set width(value:Number):void
@@ -66,6 +67,7 @@ package com.gestureworks.cml.element
 		private var _height:Number=0;
 		/**
 		 * Sets media height
+		 * @default 0
 		 */			
 		override public function get height():Number{ return _height;}
 		override public function set height(value:Number):void
@@ -77,6 +79,7 @@ package com.gestureworks.cml.element
 		private var _autoPlay:Boolean=false;
 		/**
 		 * Indicates whether the file plays upon load
+		 * @default false
 		 */			
 		public function get autoPlay():Boolean { return _autoPlay; }
 		public function set autoPlay(value:Boolean):void 
@@ -85,9 +88,10 @@ package com.gestureworks.cml.element
 		}
 		
 			
-		private var _loop:Boolean;
+		private var _loop:Boolean=false;
 		/**
 		 * Indicates whether the media will re-play when it has reached the end
+		 * @default false
 		 */			
 		public function get loop():Boolean { return _loop; }
 		public function set loop(value:Boolean):void 
@@ -104,24 +108,36 @@ package com.gestureworks.cml.element
 		private var _src:String;
 		/**
 		 * Sets the media file source
+		 * @default null
 		 */			
 		public function get src():String {return _src;}
 		public function set src(value:String):void
 		{
 			if (_src != value)
-			{
 				_src = value;
-				open(_src);				
-			}
 		}		
 
-				
+		
+		private var _current:*;
+		/**
+		 * Returns a reference to the current media object
+		 * @default null
+		 */			
+		public function get current():String {return dictionary[currentFile];}
+
+		
+
+		////////////////////////////////////////////////////////////////////////////////
+		// Public Methods
+		////////////////////////////////////////////////////////////////////////////////		
+	
+		
 		/**
 		 * Opens the file specified in the argument
 		 * @Param file path
 		 */		
 		public function open(file:String):void 
-		{	
+		{
 			if (file.search(imageTypes) >= 0)
  			{
 				dictionary[file] = new ImageElement;
@@ -140,19 +156,19 @@ package com.gestureworks.cml.element
 			else
 				throw new Error("Media type is not supported: " + file);
 			
-			if (dictionary[file].hasOwnProperty("width"))
+			if (dictionary[file].hasOwnProperty("width") && width != 0)
 				dictionary[file].width = width;
-			if (dictionary[file].hasOwnProperty("height"))
+			if (dictionary[file].hasOwnProperty("height") && height != 0)
 				dictionary[file].height = height;
 			if (dictionary[file].hasOwnProperty("loop"))
 				dictionary[file].loop = loop;
 			if (dictionary[file].hasOwnProperty("autoPlay"))
 				dictionary[file].autoPlay = autoPlay;
-			if (dictionary[file].hasOwnProperty("src"))
-				dictionary[file].src = file;						
+			if (dictionary[file].hasOwnProperty("open"))
+				dictionary[file].open(file);						
 			
 			addChild(dictionary[file]);			
-			current=file;			
+			currentFile = file;			
 		}
 		
 		
@@ -167,51 +183,56 @@ package com.gestureworks.cml.element
 		 */	
 		public function close():void 
 		{
-			if (dictionary[current])
+			if (dictionary[currentFile])
 			{
-				if (dictionary[current].hasOwnProperty("close"))				
-					dictionary[current].close();
-				if (this.contains(dictionary[current]))
-					removeChild(dictionary[current]);
-				dictionary[current] = null;
-				delete dictionary[current];
+				if (dictionary[currentFile].hasOwnProperty("close"))				
+					dictionary[currentFile].close();
+				if (this.contains(dictionary[currentFile]))
+					removeChild(dictionary[currentFile]);
+				dictionary[currentFile] = null;
+				delete dictionary[currentFile];
+				currentFile = null;
 			}
 		}
+		
 		
 		/**
 		 * Plays the media file from the beginning
 		 */		
 		public function play():void
 		{
-			if (dictionary[current].hasOwnProperty("play"))
-				dictionary[current].play();			
+			if (dictionary[currentFile].hasOwnProperty("play"))
+				dictionary[currentFile].play();			
 		}
+		
 		
 		/**
 		 * Resumes media playback from paused position
 		 */			
 		public function resume():void
 		{
-			if (dictionary[current].hasOwnProperty("resume"))
-				dictionary[current].resume();
+			if (dictionary[currentFile].hasOwnProperty("resume"))
+				dictionary[currentFile].resume();
 		}
+		
 		
 		/**
 		 * Pauses media playback
 		 */			
 		public function pause():void
 		{
-			if (dictionary[current].hasOwnProperty("pause"))
-				dictionary[current].pause();
+			if (dictionary[currentFile].hasOwnProperty("pause"))
+				dictionary[currentFile].pause();
 		}
+		
 		
 		/**
 		 * Pauses the media file and returns to the playhead to the beginning
 		 */			
 		public function stop():void
 		{
-			if (dictionary[current].hasOwnProperty("stop"))
-				dictionary[current].stop();
+			if (dictionary[currentFile].hasOwnProperty("stop"))
+				dictionary[currentFile].stop();
 		}
 		
 		
@@ -221,9 +242,19 @@ package com.gestureworks.cml.element
 		 */
 		public function seek(offset:Number):void
 		{
-			if (dictionary[current].hasOwnProperty("seek"))
-				dictionary[current].seek(offset);
+			if (dictionary[currentFile].hasOwnProperty("seek"))
+				dictionary[currentFile].seek(offset);
 		}
+		
+		
+		/**
+		 * This is called by the CML parser. Do not override this method.
+		 */		
+		override public function postparseCML(cml:XMLList):void 
+		{
+			if (this.propertyStates[0]["src"])
+				open(this.propertyStates[0]["src"]);
+		}		
 		
 	}
 }

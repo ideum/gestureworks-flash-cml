@@ -84,6 +84,7 @@ package com.gestureworks.cml.factories
 		public function set autoPlay(value:Boolean):void 
 		{	
 			_autoPlay = value;
+			_autoPlay = value;
 		}
 
 		/**

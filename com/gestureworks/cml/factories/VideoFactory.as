@@ -33,7 +33,7 @@ package com.gestureworks.cml.factories
 		/**
 		 * Prints status message to console
 		 */				
-		private var _debug:Boolean=true;
+		private var _debug:Boolean=false;
 		public function get debug():Boolean { return _debug; }
 		public function set debug(value:Boolean):void 
 		{ 
@@ -280,7 +280,7 @@ package com.gestureworks.cml.factories
 					connectNetStream();
 					break;
 				case "NetStream.Play.StreamNotFound":
-					print("Unable to locate video: " + src);
+					if (debug) print("Unable to locate video: " + src);
 					break;
 				case "NetStream.Play.Stop":
 					end();
