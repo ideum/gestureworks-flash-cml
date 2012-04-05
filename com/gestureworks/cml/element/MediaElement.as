@@ -76,15 +76,22 @@ package com.gestureworks.cml.element
 		}		
 		
 	
-		private var _autoPlay:Boolean=false;
+		private var _autoplay:Boolean=false;
 		/**
 		 * Indicates whether the file plays upon load
 		 * @default false
 		 */			
-		public function get autoPlay():Boolean { return _autoPlay; }
-		public function set autoPlay(value:Boolean):void 
+		public function get autoplay():Boolean { return _autoplay; }
+		public function set autoplay(value:Boolean):void 
 		{	
-			_autoPlay = value;
+			_autoplay = value;
+			
+			if (dictionary[currentFile])
+			{
+				dictionary[currentFile].autoplay = value;
+				if (value && dictionary[currentFile].hasOwnProperty("play"))
+					dictionary[currentFile].play();
+			}
 		}
 		
 			
@@ -162,8 +169,8 @@ package com.gestureworks.cml.element
 				dictionary[file].height = height;
 			if (dictionary[file].hasOwnProperty("loop"))
 				dictionary[file].loop = loop;
-			if (dictionary[file].hasOwnProperty("autoPlay"))
-				dictionary[file].autoPlay = autoPlay;
+			if (dictionary[file].hasOwnProperty("autoplay"))
+				dictionary[file].autoplay = autoplay;
 			if (dictionary[file].hasOwnProperty("open"))
 				dictionary[file].open(file);						
 			

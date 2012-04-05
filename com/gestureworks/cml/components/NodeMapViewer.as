@@ -28,9 +28,9 @@ package com.gestureworks.cml.components
 	
 	import flash.events.Event;
 	
+	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.events.DisplayEvent;
 	import com.gestureworks.cml.core.ComponentKitDisplay;
-	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.kits.ComponentKit;	

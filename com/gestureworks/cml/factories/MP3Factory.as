@@ -1,3 +1,19 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  IDEUM
+//  Copyright 2011-2012 Ideum
+//  All Rights Reserved.
+//
+//  GestureWorks
+//
+//  File: MP3Factory.as
+//  Authors: Ideum
+//             
+//  NOTICE: Ideum permits you to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.gestureworks.cml.factories 
 {	
 	import com.gestureworks.cml.factories.*;
@@ -8,9 +24,7 @@ package com.gestureworks.cml.factories
 	import flash.utils.*;
 	
 	/**
-	 * Mp3 Factory
-	 * Mp3 player class
-	 * @author Charles Veasey 
+	 * This is the base class for the MP3Element
 	 */		
 	public class MP3Factory extends ElementFactory
 	{
@@ -79,12 +93,11 @@ package com.gestureworks.cml.factories
 		/**
 		 * Indicates whether the mp3 file plays upon load
 		 */		
-		private var _autoPlay:Boolean=false;
-		public function get autoPlay():Boolean { return _autoPlay; }
-		public function set autoPlay(value:Boolean):void 
+		private var _autoplay:Boolean=false;
+		public function get autoplay():Boolean { return _autoplay; }
+		public function set autoplay(value:Boolean):void 
 		{	
-			_autoPlay = value;
-			_autoPlay = value;
+			_autoplay = value;
 		}
 
 		/**
@@ -340,6 +353,7 @@ package com.gestureworks.cml.factories
 				addChild(sp);
 			}
 			
+			if (autoplay) play();
 							
 		}		
 		

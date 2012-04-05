@@ -1,288 +1,164 @@
-﻿package com.gestureworks.cml.components
+﻿package com.gestureworks.cml.components 
 {
-	import flash.events.Event;
-	import flash.display.DisplayObject;
-	import flash.geom.*;
-	import flash.ui.Mouse;
-	import adobe.utils.CustomActions;
-	import flash.display.Sprite;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.events.*;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.kits.*;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.utils.Timer;
 	
-	import com.gestureworks.cml.core.TouchContainerDisplay;
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.core.ComponentKitDisplay;
-	import com.gestureworks.cml.element.TouchContainer
-	import com.gestureworks.cml.element.ImageElement;
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.element.Component;
-	
-	import com.gestureworks.events.GWEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.GWTransformEvent;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.core.DisplayList;
-	
-	import com.gestureworks.core.GestureWorks;
-
-	import com.google.maps.LatLng;
-	import com.google.maps.Map;
-  	import com.google.maps.Map3D;
- 	import com.google.maps.MapEvent;
- 	import com.google.maps.MapOptions;
- 	import com.google.maps.MapType;
- 	import com.google.maps.View;
-	import com.google.maps.geom.Attitude;
-	 
-	public class MediaViewer extends Component
+	/**
+	 * MediaViewer
+	 * @author Ideum
+	 */
+	public class MediaViewer extends Component 
 	{
-		private var _id:int;
-		private var _intialize:Boolean;
+		private var media:MediaElement;
+		private var menu:Menu;
+		private var info:*;
 		
-		private var _holder:TouchSprite;
-		private var frame:TouchSprite;
-		private var screen:TouchSprite;
-		
-		public var src:String = "";
-		
-		//---------frame settings--//
-		private var frameDraw:Boolean = true;
-		private var frameMargin:Number = 25;
-		private var frameRadius:Number = 20;
-		private var frameFillColor:Number = 0x999999;
-		private var frameFillAlpha:Number = 0.5;
-		private var frameOutlineColor:Number = 0x999999;
-		private var frameOutlineStroke:Number = 2;
-		private var frameOutlineAlpha:Number = 0.3;
-		
-		private var screenDraw:Boolean = true;
-		
-		private var _Width:Number = 0;
-		private var _Height:Number = 0;
-		
-		//----frame gestures---//
-		//private var frameDragGesture:Boolean = true;
-		//private var frameScaleGesture:Boolean = true;
-		//private var frameRotateGesture:Boolean = true;
-		
-		private var media:ImageElement;
-				 
-	
-		public function MediaViewer()
+		public function MediaViewer() 
 		{
 			super();
-			//blobContainerEnabled=true;
-			//visible=false;
-			//displayComplete();
 		}
-
-		public function dipose():void
+		
+		override public function displayComplete():void
 		{
-			parent.removeChild(this);
-		}
-		/*
-
-		override protected function displayComplete():void
-		{			
-			trace("media display viewer complete");
-			
-			childInfo();
-			
-		}
+			this.addEventListener(StateEvent.CHANGE, onStateEvent)
+			updateLayout();
+		}		
 		
-		//override public function set childToList(child:*):void
-		//{
-			//trace("y");
-			//childInfo();
-			//createUI();
-			//commitUI();
-			//trace("childList",childList[0])
-		//}
-		
+		private function updateLayout():void
+		{
+			media = childList.getCSSClass("media_container", 0).childList.getCSSClass("media_element", 0);  
+			info = childList.getCSSClass("info_container", 0);			
+			menu = childList.getCSSClass("menu_container", 0);			
 			
-		private function childInfo():void
-		{ 
-				trace(this.childList.length);
+			if (menu.autoHide)
+			{
+				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+			}
+			
+			// update width and height
+			width = childList.getCSSClass("media_container", 0).childList.getCSSClass("media_element", 0).width
+			height = childList.getCSSClass("media_container", 0).childList.getCSSClass("media_element", 0).height
+						
+			// update frame size
+			if (info)
+			{
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
+				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;				
+			}
+			
+			// update info panel size
+			if (info)
+			{
+				info.childList.getCSSClass("info_bg", 0).width = width;
+				info.childList.getCSSClass("info_bg", 0).height = height;
+			}
+		
+			// update info text size
+			if (info) 
+			{
+				var textpaddingX:Number = info.childList.getCSSClass("info_title", 0).paddingLeft;
+				var textpaddingY:Number = info.childList.getCSSClass("info_title", 0).paddingTop;
+				var textSep:Number = info.childList.getCSSClass("info_title", 0).paddingBottom;
 				
-				//media = this.childList[0];
 				
-				/*
-				for (var i:int=0; i<=this.childList.length; i++)
-					{
-						trace(this.childList[i])
-						if ((childList[i] is ImageElement)&&(childList[i].id="image"))
-						{
-							//trace(childList[i].x, childList[i].y,childList[i].width,childList[i].getChildAt(0).width);
-							media=childList[i]
-						}
-					}
-					
-					//n = itemList.length;
-					
-			//childList[0].getChildAt(0).addEventListener(Event.COMPLETE, updateDisplay);
-			*/
-		//}
-/*
-		override protected function createUI():void
-		{
-			
-			_Width = 500;
-			_Height = 500;
-			//trace("createUI");
-			//stageWidth = 500//ApplicationGlobals.application.stage.stageWidth;
-			//stageHeight = 500//ApplicationGlobals.application.stage.stageHeight;
-		
-			//--Frame Style--//
-			frameDraw = true//MapParser.settings.FrameStyle.frameDraw == "true"?true:false;
-			frameMargin = 50//MapParser.settings.FrameStyle.padding;
-			frameRadius = 5//MapParser.settings.FrameStyle.cornerRadius;
-			frameFillColor = 0xFFFFFF//MapParser.settings.FrameStyle.fillColor1;
-			frameFillAlpha = 0.6//MapParser.settings.FrameStyle.fillAlpha;
-			frameOutlineColor = 0xFFFFFF//MapParser.settings.FrameStyle.outlineColor;
-			frameOutlineStroke = 4//MapParser.settings.FrameStyle.outlineStroke;
-			frameOutlineAlpha = 0.8//MapParser.settings.FrameStyle.outlineAlpha;
-			
-			//--Frame Gestures--//
-			//frameDragGesture= true//MapParser.settings.FrameGestures.drag == "true" ?true:false;
-			//frameScaleGesture=true//MapParser.settings.FrameGestures.scale == "true" ?true:false;
-			//frameRotateGesture=true//MapParser.settings.FrameGestures.rotate == "true" ?true:false;
-			
-			//----------------------------//
-			_holder = new TouchSprite();
-				_holder.targeting = true;
-				_holder.gestureEvents = true;
-				_holder.nestedTransform = true;
-				_holder.disableNativeTransform = false;
-				_holder.disableAffineTransform = false;
-				_holder.mouseChildren = true;
-				_holder.gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
-			addChild(_holder);
-			
-			//-----------media -------------------------------//
-			
-			//var media:ImageElement = new ImageElement();
-			//	media.src = this.src;
-				//media.src = "../../../bin/library/assets/USS_Macon_over_Manhattan.png"
-			
-				//media = this.childList[0];
-				//media.x = 400;
-				//_holder.addChild(media);
+				info.childList.getCSSClass("info_title", 0).x = textpaddingX;
+				info.childList.getCSSClass("info_title", 0).y = textpaddingY;
 				
-				//this.x = 800;
-			
-			
-			//---------- build frame ------------------------//
-			if(frameDraw)
-			{							
-				frame = new TouchSprite();
-					frame.targetParent = true;
-				_holder.addChild(frame);
+				info.childList.getCSSClass("info_description", 0).x = textpaddingX;
+				info.childList.getCSSClass("info_description", 0).y = info.childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
+				
+				info.childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
+				info.childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
+				info.childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-info.childList.getCSSClass("info_title", 0).height;
 			}
 			
-			
-			//-- center map --//
-			x = -_Width/2;
-			y = -_Height/2
-			
-			if (screenDraw)
+			// update button placement
+			if (childList.getCSSClass("menu_container", 0))
 			{
-			screen = new TouchSprite();
-				screen.nestedTransform = true;
-				screen.mouseChildren = true;
-				screen.gestureEvents = true;
-				screen.gestureList = {"n-drag":true, "n-scale":true,"4-finger-scale":true, "n-rotate":true,"double_tap":true};
-				screen.disableNativeTransform = true;
-				screen.disableAffineTransform = true;
-				screen.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-				screen.addEventListener(GWGestureEvent.DOUBLE_TAP, doubleTapHandler);
-			_holder.addChild(screen);
-			}
-			
+				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
+				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
+				var paddingLeft:Number = menu.paddingLeft;
+				var paddingRight:Number = menu.paddingRight;
+				var paddingBottom:Number = menu.paddingBottom;
+				var position:String = menu.position;
+				
+	
+				if(position=="bottom"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("play_btn", 0).x = menu.childList.getCSSClass("info_btn", 0).x + btnWidth + paddingLeft;
+					menu.childList.getCSSClass("pause_btn", 0).x = menu.childList.getCSSClass("play_btn", 0).x + btnWidth + paddingLeft;
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft;
+				}
+				else if(position=="top"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("play_btn", 0).x = menu.childList.getCSSClass("info_btn", 0).x + btnWidth + paddingLeft;
+					menu.childList.getCSSClass("pause_btn", 0).x = menu.childList.getCSSClass("play_btn", 0).x + btnWidth + paddingLeft;
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft;
+				}
+				
+				else if(position=="topLeft"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("play_btn", 0).x = paddingLeft + btnWidth + paddingRight;
+					menu.childList.getCSSClass("pause_btn", 0).x = paddingLeft + 2*btnWidth + 2*paddingRight;
+					menu.childList.getCSSClass("close_btn", 0).x = paddingLeft  + 3*btnWidth + 3*paddingRight;
+				}
+				else if(position=="topRight"){
+					menu.y = paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 4 * btnWidth - paddingLeft - 3*paddingRight
+					menu.childList.getCSSClass("play_btn", 0).x = width - 3 * btnWidth - paddingLeft - 2*paddingRight;
+					menu.childList.getCSSClass("pause_btn", 0).x = width - 2*btnWidth - paddingLeft - paddingRight;
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}
+				
+				else if(position=="bottomLeft"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+					menu.childList.getCSSClass("play_btn", 0).x = paddingLeft + btnWidth + paddingRight;
+					menu.childList.getCSSClass("pause_btn", 0).x = paddingLeft + 2*btnWidth + 2*paddingRight;
+					menu.childList.getCSSClass("close_btn", 0).x = paddingLeft  + 3*btnWidth + 3*paddingRight;
+				}
+				else if(position=="bottomRight"){
+					menu.y = height - btnHeight -paddingBottom;
+					menu.childList.getCSSClass("info_btn", 0).x = width - 4 * btnWidth - paddingLeft - 3*paddingRight
+					menu.childList.getCSSClass("play_btn", 0).x = width - 3 * btnWidth - paddingLeft - 2*paddingRight;
+					menu.childList.getCSSClass("pause_btn", 0).x = width - 2*btnWidth - paddingLeft - paddingRight;
+					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+				}	
+			}				
 		}
-
-		override protected function commitUI():void
-		{	
-			trace("commit");
-			
-			width=_Width;
-			height=_Height;
-			
-			if(!frameMargin)
+		
+		private function onDown(event:*):void
+		{
+			menu.visible = true;
+			menu.startTimer();
+		}			
+		
+		private function onStateEvent(event:StateEvent):void
+		{				
+			if (event.value == "info") 
 			{
-				frameMargin=0;
+				if (!info.visible) info.visible = true;
+				else info.visible = false;
 			}
-			
-			if(frameDraw)
-			{		
-				frame.graphics.lineStyle(2*frameMargin, frameFillColor, frameFillAlpha);
-				frame.graphics.drawRect( -frameMargin, -frameMargin, _Width + 2 * frameMargin, _Height + 2 * frameMargin);
-				frame.graphics.lineStyle(2, frameFillColor,frameFillAlpha+0.5);
-				frame.graphics.drawRoundRect( -2 * frameMargin, -2 * frameMargin, _Width + 4 * frameMargin, _Height + 4 * frameMargin, 2 * frameMargin, 2 * frameMargin);
-				frame.graphics.lineStyle(frameOutlineStroke, frameOutlineColor,frameOutlineAlpha);
-				frame.graphics.drawRect(-2, -2, _Width + 4, _Height + 4);
-
-				width=_Width+frameMargin;
-				height=_Height+frameMargin;
-			}
-			
-			if (screenDraw)
+			else if (event.value == "close")
 			{
-			screen.graphics.beginFill(0xFFFFFF,0);
-			screen.graphics.drawRoundRect(0,0,_Width,_Height,0,0);
-			screen.graphics.endFill();
+				this.visible = false;
+				media.pause();	
 			}
-			
-			if (! _intialize)
-			{
-				_intialize=true;
-				visible=true;
-			}
-		}
+			else if (event.value == "play")
+				media.resume();
+			else if (event.value == "pause")
+				media.pause();	
+		}			
 		
-		/*
-		override protected function updateUI():void
-		{
-			if( (x-(frameMargin/2)>stageWidth) || (x+width-(frameMargin/2)<0) || (y-(frameMargin/2)>stageHeight) || (y+height-(frameMargin/2)<0) )
-			{
-				Dispose();
-			}
-		}
-		*/
-		/*
-		private function objectDragHandler(event:GWGestureEvent):void
-		{
-			x += event.value.dx;
-			y += event.value.dy;
-		}
-		
-		private function objectScaleHandler(event:GWGestureEvent):void
-		{
-			scaleX += event.value.dsx;
-			scaleY += event.value.dsy;
-		}
-		
-		private function objectRotateHandler(event:GWGestureEvent):void
-		{
-			rotation += event.value.dtheta;
-		}
-		
-		private function gestureDragHandler(event:GWGestureEvent):void 
-		{	
-		}
-		
-		private function doubleTapHandler(event:GWGestureEvent):void
-		{
-		}
-
-		private function gestureScaleHandler(event:GWGestureEvent):void
-		{
-		}
-		
-		private function gestureRotateHandler(event:GWGestureEvent):void
-		{
-		}
-		
-		*/
 	}
+	
 }

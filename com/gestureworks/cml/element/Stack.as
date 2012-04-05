@@ -69,7 +69,7 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////		
 		
 		private function onToggle(event:*):void
-		{
+		{			
 			if (childList.hasNext() && !(childList.getIndex(childList.currentIndex + 1) is GestureList))
 			{
 				childList.currentValue.visible = false

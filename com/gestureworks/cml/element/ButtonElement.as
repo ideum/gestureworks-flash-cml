@@ -9,10 +9,11 @@ package com.gestureworks.cml.element
 
 	public class ButtonElement extends Container
 	{
-		protected var debug:Boolean = false;		
+		protected var debug:Boolean = true;		
 		protected var buttonStates:Dictionary;		
-		public var hitObject:Object;
+		public var hitObject:*;
 		public var dispatchDefault:Boolean = false;
+		private var dispatchDict:Dictionary;		
 		
 		public function ButtonElement()
 		{
@@ -34,7 +35,10 @@ package com.gestureworks.cml.element
 			}
 			
 			showKey(init);
-			hitObject = childList.getKey(hit);	
+			hitObject = childList.getKey(hit);
+			
+			// float hit area to the top of the siplay list
+			addChildAt(hitObject, numChildren - 1);
 			
 			if (mouseOver)
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);	
@@ -47,9 +51,7 @@ package com.gestureworks.cml.element
 				
 		}
 		
-		
-		private var dispatchDict:Dictionary;
-		
+				
 		private var _dispatch:String;
 		/**
 		 * Sets type of button, returned in the down event string

@@ -43,7 +43,6 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.core.GestureWorks;
-	import com.gestureworks.cml.element.Component;
 
 	 /**
 	 * <p>The MaskImageDisplay component is the main component for the MaskImageViewer module.  It contains all the neccessary display objects for the module.</p>

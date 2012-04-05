@@ -38,8 +38,7 @@ package com.gestureworks.cml.factories
 		private var img:IMG;
 		
 		// loaded bitmap data from file
-		private var fileData:Loader;
-		
+		private var fileData:*;
 		
 		public function BitmapFactory() 
 		{
@@ -317,7 +316,7 @@ package com.gestureworks.cml.factories
 			else 
 			{
 				_portrait = false;
-				_landscape = true;
+				_landscape = true; 
 			}
 			
 			addChild(_bitmap);
@@ -327,9 +326,14 @@ package com.gestureworks.cml.factories
 			// Again, talk to Paul - I think this is what he want to cache
 			////////////////////////////////////////////////////////////////////////////////				
 			
-			fileData.unload();
-			fileData.unloadAndStop();
-			fileData = null;
+			
+			// do this if the it loaded it self. if using the preloader, the preloader handles unloading			
+			if (img) 
+			{
+				fileData.unload();
+				fileData.unloadAndStop();
+				fileData = null;
+			}
 			
 			// unload loader 
 			// TODO: implement unloaders

@@ -18,11 +18,12 @@ package com.gestureworks.cml.element
 		{
 			super();
 		}
+
 		
+		private var _autoHide:Boolean = false;
 		/**
 		 * Specifies whether the menu automatically hides when not in use
-		 */		
-		private var _autoHide:Boolean = false;
+		 */			
 		public function get autoHide():Boolean { return _autoHide; }
 		public function set autoHide(value:Boolean):void 
 		{ 
@@ -32,10 +33,11 @@ package com.gestureworks.cml.element
 				this.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
 		}
 		
+	
+		private var _autoHideTime:Number = 2500;
 		/**
 		 * Specifies the auto-hide time
-		 */		
-		private var _autoHideTime:Number = 2500;
+		 */	 		
 		public function get autoHideTime():Number { return _autoHideTime; }
 		public function set autoHideTime(value:Number):void 
 		{ 

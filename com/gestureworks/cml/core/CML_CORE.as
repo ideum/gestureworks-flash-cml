@@ -26,7 +26,7 @@ package com.gestureworks.cml.core
 	
 	//componenet element viewer managers/lists
 	//import com.gestureworks.cml.components.TimelineViewer; TimelineViewer;
-	//import com.gestureworks.cml.components.MediaViewer; MediaViewer;
+	import com.gestureworks.cml.components.MediaViewer; MediaViewer;
 	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
 	import com.gestureworks.cml.components.ListViewer; ListViewer;
 	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
@@ -44,6 +44,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
 	import com.gestureworks.cml.components.MP3Player; MP3Player;
+	import com.gestureworks.cml.components.Component; Component;	
 	
 	
 	////////////////
@@ -54,7 +55,6 @@ package com.gestureworks.cml.core
 
 	//checked	
 	import com.gestureworks.cml.element.Include; Include;			
-	import com.gestureworks.cml.element.Component; Component;	
 	import com.gestureworks.cml.element.Container; Container;
 	import com.gestureworks.cml.element.Menu; Menu;		
 	import com.gestureworks.cml.element.View; View;
@@ -63,6 +63,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.GestureList; GestureList;		
 	import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
 	import com.gestureworks.cml.element.ImageElement; ImageElement;
+	import com.gestureworks.cml.element.ImageSlideshow; ImageSlideshow;
 	import com.gestureworks.cml.element.SWCElement; SWCElement;	
 	import com.gestureworks.cml.element.SWFElement; SWFElement;
 	import com.gestureworks.cml.element.TextElement; TextElement;

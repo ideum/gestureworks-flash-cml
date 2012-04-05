@@ -42,6 +42,18 @@ package com.gestureworks.cml.element
 			_loop = value; 
 		}		
 		
+		private var _autoplay:Boolean=false;
+		/**
+		 * Indicates whether the file plays upon load
+		 * @default false
+		 */			
+		public function get autoplay():Boolean { return _autoplay; }
+		public function set autoplay(value:Boolean):void 
+		{	
+			_autoplay = value;
+			play();
+		}		
+		
 		
 		/**
 		 * Starts the sequencer from the beginning 

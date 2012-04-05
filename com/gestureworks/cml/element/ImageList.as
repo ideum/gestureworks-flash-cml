@@ -39,6 +39,20 @@ package com.gestureworks.cml.element
 		{ 
 			_autoShow = value; 	
 		}
+		
+		private var _src:String;
+		public function get src():String { return _src; }
+		public function set src(value:String):void 
+		{ 			
+			var rex:RegExp = /[\s\r\n]*/gim;
+			_src = value.replace(rex,'');			
+			var arr:Array = _src.split(",");
+			
+			for (var i:int = 0; i < arr.length; i++) 
+			{
+				append(arr[i]);
+			}			
+		}		
 
 		public function getIndex(index:int):*
 		{
@@ -60,7 +74,7 @@ package com.gestureworks.cml.element
 			var img:ImageElement = new ImageElement;
 			img.addEventListener(Event.COMPLETE, onImgComplete);
 			imageCount++;
-			img.load(file);
+			img.open(file);
 			list.append(img);
 			if (_autoShow)
 				addChild(img);	
@@ -71,7 +85,7 @@ package com.gestureworks.cml.element
 			var img:ImageElement = new ImageElement;
 			img.addEventListener(Event.COMPLETE, onImgComplete);
 			imageCount++;			
-			img.load(file);
+			img.open(file);
 			list.prepend(img);
 			if (_autoShow)
 				addChild(img);			
@@ -82,7 +96,7 @@ package com.gestureworks.cml.element
 			var img:ImageElement = new ImageElement;
 			img.addEventListener(Event.COMPLETE, onImgComplete);
 			imageCount++;			
-			img.load(file);
+			img.open(file);
 			list.insert(index, img);
 			if (_autoShow)
 				addChild(img);		

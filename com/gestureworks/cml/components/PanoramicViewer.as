@@ -21,7 +21,6 @@
 	import com.gestureworks.cml.core.ComponentKitDisplay;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
-	import com.gestureworks.cml.element.Component;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.kits.*;

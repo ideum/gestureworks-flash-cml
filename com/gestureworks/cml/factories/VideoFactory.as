@@ -12,7 +12,7 @@ package com.gestureworks.cml.factories
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.utils.Timer;
-	import com.gestureworks.cml.utils.SystemDetection;
+	import com.gestureworks.cml.events.StateEvent;
 
 	/**
 	 * The Video Factory 
@@ -75,11 +75,11 @@ package com.gestureworks.cml.factories
 		/**
 		 * Indicates whether the video file plays upon load
 		 */		
-		private var _autoPlay:Boolean=false;
-		public function get autoPlay():Boolean { return _autoPlay; }
-		public function set autoPlay(value:Boolean):void 
+		private var _autoplay:Boolean=false;
+		public function get autoplay():Boolean { return _autoplay; }
+		public function set autoplay(value:Boolean):void 
 		{	
-			_autoPlay = value;
+			_autoplay = value;
 		}
 
 		/**
@@ -92,7 +92,7 @@ package com.gestureworks.cml.factories
 		/**
 		 * Sets the video file path
 		 */			
-		private var _src:String="";
+		private var _src:String;
 		public function get src():String{ return _src;}
 		public function set src(value:String):void
 		{
@@ -176,11 +176,8 @@ package com.gestureworks.cml.factories
 				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				netStream.close();
 
-				if (SystemDetection.VERSION_NUMBER >= 11.0)
-				{
-					if (netStream.hasOwnProperty("dispose"))
-						netStream['dispose'](); // only works in fp 11+				
-				}
+				if (netStream.hasOwnProperty("dispose"))
+					netStream['dispose'](); // only works in fp 11+	
 				
 				netStream = null;
 			}
@@ -320,6 +317,7 @@ package com.gestureworks.cml.factories
 			netStream.play(src);
 			netStream.pause();
 			netStream.seek(0);
+			if (autoplay) play();			
 		}
 		
 		private function onMetaData(meta:Object):void
@@ -356,6 +354,9 @@ package com.gestureworks.cml.factories
 				}
 				
 				sizeLoaded = true;
+				
+				// file and all metadata loaded
+				this.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
 		
@@ -384,7 +385,6 @@ package com.gestureworks.cml.factories
 				timer.reset();
 				timer.removeEventListener(TimerEvent.TIMER, onProgress);
 				timer.addEventListener(TimerEvent.TIMER, onPosition);				
-				if (autoPlay) play();
 			}
 			else
 			{
@@ -405,7 +405,8 @@ package com.gestureworks.cml.factories
 		{
 			if (loop) play();
 			else stop();
-			this.dispatchEvent(new Event(Event.COMPLETE));
+			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", "end", true, true));
 		}		
 			
 	}
