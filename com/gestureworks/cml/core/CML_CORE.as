@@ -64,6 +64,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
 	import com.gestureworks.cml.element.ImageElement; ImageElement;
 	import com.gestureworks.cml.element.ImageSlideshow; ImageSlideshow;
+	import com.gestureworks.cml.element.ImageList; ImageList;
+	import com.gestureworks.cml.element.ImageSequence; ImageSequence;
 	import com.gestureworks.cml.element.SWCElement; SWCElement;	
 	import com.gestureworks.cml.element.SWFElement; SWFElement;
 	import com.gestureworks.cml.element.TextElement; TextElement;
@@ -75,15 +77,9 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.FrameElement; FrameElement;
 	import com.gestureworks.cml.element.VideoElement; VideoElement;
 	import com.gestureworks.cml.element.MP3Element; MP3Element;
-	
-	//import com.gestureworks.cml.element.ImageSlideshow; ImageSlideshow;
-	
-	
-	//??
 	import com.gestureworks.cml.element.Gesture; Gesture;
 	import com.gestureworks.cml.element.Group; Group;		
-	import com.gestureworks.cml.element.PreloaderElement; PreloaderElement;
-	import com.gestureworks.cml.element.LabelElement; LabelElement;
+
 	
 	
 	
