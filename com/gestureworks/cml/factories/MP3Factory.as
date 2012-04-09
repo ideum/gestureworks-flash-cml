@@ -500,7 +500,7 @@ package com.gestureworks.cml.factories
 		//graphic
 		private function draw():void 
 		{
-			var origin:Number = height * .5;
+			var origin:Number = _height * .5;
 			sound.extract(bytes, 2048, (channel.position*44.1));
 			bytes.position = 0;
 			
@@ -515,8 +515,8 @@ package com.gestureworks.cml.factories
 			{
 				var average:Number = bytes.readFloat() + bytes.readFloat() * .5;
 				if (cnt % 8 == 0) {
-					g.lineTo(i*(width/255), average * height  * _volume * 2 + origin);
-					g.lineTo(i*(width/255), origin);
+					g.lineTo(i*(_width/255), average * _height  * _volume * 0.9 + origin);
+					g.lineTo(i*(_width/255), origin);
 					i++
 				}	
 				cnt++;

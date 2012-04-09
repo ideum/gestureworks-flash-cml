@@ -87,51 +87,86 @@
 				var paddingBottom:Number = menu.paddingBottom;
 				var position:String = menu.position;
 				
-	
-				if(position=="bottom"){
-					menu.y = height - btnHeight -paddingBottom;
-					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-					menu.childList.getCSSClass("play_btn", 0).x = menu.childList.getCSSClass("info_btn", 0).x + btnWidth + paddingLeft;
-					menu.childList.getCSSClass("pause_btn", 0).x = menu.childList.getCSSClass("play_btn", 0).x + btnWidth + paddingLeft;
-					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft;
+				if((menu.childList.getCSSClass("play_btn", 0))&&(menu.childList.getCSSClass("pause_btn", 0))){
+					if(position=="bottom"){
+						menu.y = height - btnHeight -paddingBottom;
+						if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+						if((menu.childList.getCSSClass("play_btn", 0))&&(menu.childList.getCSSClass("info_btn", 0))) menu.childList.getCSSClass("play_btn", 0).x = menu.childList.getCSSClass("info_btn", 0).x + btnWidth + paddingLeft;
+						if((menu.childList.getCSSClass("pause_btn", 0))&&(menu.childList.getCSSClass("play_btn", 0))) menu.childList.getCSSClass("pause_btn", 0).x = menu.childList.getCSSClass("play_btn", 0).x + btnWidth + paddingLeft;
+						if(menu.childList.getCSSClass("close_btn", 0))menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft;
+					}
+					else if(position=="top"){
+						menu.y = paddingBottom;
+						if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+						if(menu.childList.getCSSClass("play_btn", 0)) menu.childList.getCSSClass("play_btn", 0).x = menu.childList.getCSSClass("info_btn", 0).x + btnWidth + paddingLeft;
+						if((menu.childList.getCSSClass("pause_btn", 0))&&(menu.childList.getCSSClass("play_btn", 0))) menu.childList.getCSSClass("pause_btn", 0).x = menu.childList.getCSSClass("play_btn", 0).x + btnWidth + paddingLeft;
+						if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft;
+					}
+					
+					else if(position=="topLeft"){
+						menu.y = paddingBottom;
+						if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+						if(menu.childList.getCSSClass("play_btn", 0)) menu.childList.getCSSClass("play_btn", 0).x = paddingLeft + btnWidth + paddingRight;
+						if(menu.childList.getCSSClass("pause_btn", 0)) menu.childList.getCSSClass("pause_btn", 0).x = paddingLeft + 2*btnWidth + 2*paddingRight;
+						if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = paddingLeft  + 3*btnWidth + 3*paddingRight;
+					}
+					else if(position=="topRight"){
+						menu.y = paddingBottom;
+						if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 4 * btnWidth - paddingLeft - 3*paddingRight
+						if(menu.childList.getCSSClass("play_btn", 0)) menu.childList.getCSSClass("play_btn", 0).x = width - 3 * btnWidth - paddingLeft - 2*paddingRight;
+						if(menu.childList.getCSSClass("pause_btn", 0)) menu.childList.getCSSClass("pause_btn", 0).x = width - 2*btnWidth - paddingLeft - paddingRight;
+						if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+					}
+					
+					else if(position=="bottomLeft"){
+						menu.y = height - btnHeight -paddingBottom;
+						if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+						if(menu.childList.getCSSClass("play_btn", 0)) menu.childList.getCSSClass("play_btn", 0).x = paddingLeft + btnWidth + paddingRight;
+						if(menu.childList.getCSSClass("pause_btn", 0)) menu.childList.getCSSClass("pause_btn", 0).x = paddingLeft + 2*btnWidth + 2*paddingRight;
+						if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = paddingLeft  + 3*btnWidth + 3*paddingRight;
+					}
+					else if(position=="bottomRight"){
+						menu.y = height - btnHeight -paddingBottom;
+						if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 4 * btnWidth - paddingLeft - 3*paddingRight
+						if(menu.childList.getCSSClass("play_btn", 0)) menu.childList.getCSSClass("play_btn", 0).x = width - 3 * btnWidth - paddingLeft - 2*paddingRight;
+						if(menu.childList.getCSSClass("pause_btn", 0)) menu.childList.getCSSClass("pause_btn", 0).x = width - 2*btnWidth - paddingLeft - paddingRight;
+						if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+					}	
 				}
-				else if(position=="top"){
-					menu.y = paddingBottom;
-					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-					menu.childList.getCSSClass("play_btn", 0).x = menu.childList.getCSSClass("info_btn", 0).x + btnWidth + paddingLeft;
-					menu.childList.getCSSClass("pause_btn", 0).x = menu.childList.getCSSClass("play_btn", 0).x + btnWidth + paddingLeft;
-					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft;
+				else {
+						if(position=="bottom"){
+							menu.y = height - btnHeight -paddingBottom;
+							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+						}
+						else if(position=="top"){
+							menu.y = paddingBottom;
+							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+						}
+						
+						else if(position=="topLeft"){
+							menu.y = paddingBottom;
+							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
+							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+						}
+						else if(position=="topRight"){
+							menu.y = paddingBottom;
+							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+						}
+						
+						else if(position=="bottomLeft"){
+							menu.y = height - btnHeight -paddingBottom;
+							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
+							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
+						}
+						else if(position=="bottomRight"){
+							menu.y = height - btnHeight -paddingBottom;
+							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
+							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
+						}
 				}
-				
-				else if(position=="topLeft"){
-					menu.y = paddingBottom;
-					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-					menu.childList.getCSSClass("play_btn", 0).x = paddingLeft + btnWidth + paddingRight;
-					menu.childList.getCSSClass("pause_btn", 0).x = paddingLeft + 2*btnWidth + 2*paddingRight;
-					menu.childList.getCSSClass("close_btn", 0).x = paddingLeft  + 3*btnWidth + 3*paddingRight;
-				}
-				else if(position=="topRight"){
-					menu.y = paddingBottom;
-					menu.childList.getCSSClass("info_btn", 0).x = width - 4 * btnWidth - paddingLeft - 3*paddingRight
-					menu.childList.getCSSClass("play_btn", 0).x = width - 3 * btnWidth - paddingLeft - 2*paddingRight;
-					menu.childList.getCSSClass("pause_btn", 0).x = width - 2*btnWidth - paddingLeft - paddingRight;
-					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-				}
-				
-				else if(position=="bottomLeft"){
-					menu.y = height - btnHeight -paddingBottom;
-					menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-					menu.childList.getCSSClass("play_btn", 0).x = paddingLeft + btnWidth + paddingRight;
-					menu.childList.getCSSClass("pause_btn", 0).x = paddingLeft + 2*btnWidth + 2*paddingRight;
-					menu.childList.getCSSClass("close_btn", 0).x = paddingLeft  + 3*btnWidth + 3*paddingRight;
-				}
-				else if(position=="bottomRight"){
-					menu.y = height - btnHeight -paddingBottom;
-					menu.childList.getCSSClass("info_btn", 0).x = width - 4 * btnWidth - paddingLeft - 3*paddingRight
-					menu.childList.getCSSClass("play_btn", 0).x = width - 3 * btnWidth - paddingLeft - 2*paddingRight;
-					menu.childList.getCSSClass("pause_btn", 0).x = width - 2*btnWidth - paddingLeft - paddingRight;
-					menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-				}	
 			}				
 		}
 		

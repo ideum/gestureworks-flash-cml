@@ -133,6 +133,21 @@ package com.gestureworks.cml.element
 		public function get current():String {return dictionary[currentFile];}
 
 		
+		private var _resample:Boolean = false;
+		/**
+		 * Specifies whether a loaded image is resampled to the provided width and/or height.
+		 * In order for resampling to work, this must be set to true, and a width and/or height 
+		 * must be set prior to calling open.
+		 * @default false
+		 */
+		public function get resample():Boolean{return _resample;}
+		public function set resample(value:Boolean):void
+		{
+			_resample = value;
+		}		
+			
+		
+		
 
 		////////////////////////////////////////////////////////////////////////////////
 		// Public Methods
@@ -148,7 +163,9 @@ package com.gestureworks.cml.element
 			if (file.search(imageTypes) >= 0)
  			{
 				dictionary[file] = new ImageElement;
-				dictionary[file].addEventListener(Event.COMPLETE, onComplete);			
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);
+				
+				trace(_width,_resample, width)
 			}	
 			else if (file.search(videoTypes) >= 0)
 			{	
@@ -163,19 +180,14 @@ package com.gestureworks.cml.element
 			else
 				throw new Error("Media type is not supported: " + file);
 			
-			if (dictionary[file].hasOwnProperty("width") && width != 0)
-				dictionary[file].width = width;
-			if (dictionary[file].hasOwnProperty("height") && height != 0)
-				dictionary[file].height = height;
-			if (dictionary[file].hasOwnProperty("loop"))
-				dictionary[file].loop = loop;
-			if (dictionary[file].hasOwnProperty("autoplay"))
-				dictionary[file].autoplay = autoplay;
-			if (dictionary[file].hasOwnProperty("open"))
-				dictionary[file].open(file);						
+			if (dictionary[file].hasOwnProperty("width") && _width != 0)		dictionary[file].width = _width;
+			if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
+			if (dictionary[file].hasOwnProperty("loop"))					dictionary[file].loop = loop;
+			if (dictionary[file].hasOwnProperty("autoplay"))				dictionary[file].autoplay = autoplay;
+			if (dictionary[file].hasOwnProperty("open"))					dictionary[file].open(file);						
 			
 			addChild(dictionary[file]);			
-			currentFile = file;			
+			currentFile = file;	
 		}
 		
 		
