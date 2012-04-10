@@ -22,11 +22,11 @@ package com.gestureworks.cml.kits
 		public function WindowKit(enforcer:SingletonEnforcer){}
 
 		
-		private static var _instance:LibraryKit;
-		public static function get instance():LibraryKit 
+		private static var _instance:WindowKit;
+		public static function get instance():WindowKit 
 		{ 
 			if (_instance == null)
-				_instance = new LibraryKit(new SingletonEnforcer());			
+				_instance = new WindowKit(new SingletonEnforcer());			
 			return _instance;	
 		}			
 		
@@ -50,7 +50,7 @@ package com.gestureworks.cml.kits
 						window.stage.displayState = StageDisplayState.FULL_SCREEN;
 					else if (attr.name() == "backgroundColor")
 						WindowManager.instance.setBackgroundColor(node.@id, attr);
-					else if (attr.name() == "dlref")
+					else if (attr.name() == "ref")
 					{
 						if (DisplayList.object[attr.toString()])
 							WindowManager.instance.appendDisplay(DisplayList.object[attr.toString()], node.@id);						
