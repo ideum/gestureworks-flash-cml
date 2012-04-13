@@ -12,8 +12,9 @@ package com.gestureworks.cml.components
 	 */
 	public class ImageViewer extends Component 
 	{
-		private var info:*;
-		private var menu:Menu;
+		public var info:*;
+		public var menu:Menu;
+		public var frame:FrameElement;
 		
 		public function ImageViewer() 
 		{
@@ -45,8 +46,11 @@ package com.gestureworks.cml.components
 			// update frame size
 			if (info)
 			{
-				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
-				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
+				if (childList.getCSSClass("frame_container", 0))
+				{
+					childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
+					childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
+				}
 			}
 			// update info panel size
 			if (info)
