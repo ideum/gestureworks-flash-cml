@@ -8,37 +8,10 @@ package com.gestureworks.cml.core
 	import flash.utils.*;
 	
 	
-	/**
-		* The GestureWorksCore class.
-		* 
-		* <strong>Important Properties</strong>
-		* <pre>
-		*  initialized:Boolean = false;
-		*  settingsPath:String = null;
-		*  fullscreen:Boolean = false;
-		* </pre>
-		* 
-		* @see flash.display.Sprite
-		* 
-		* 
-		* @langversion 3.0
-		* @playerversion AIR 2.5
-		* @playerversion Flash 10.1
-		* @productversion GestureWorks 3.0
-	*/
 	
 	public class TouchContainerDisplay extends TouchSprite implements IContainer, ICSS
 	{
 				
-		/**
-		*  GestureWorks Constructor.
-		*  
-		* @langversion 3.0
-		* @playerversion AIR 1.5
-		* @playerversion Flash 10
-		* @playerversion Flash Lite 4
-		* @productversion GestureWorks 1.5
-		*/
 		public function TouchContainerDisplay()
 		{
 			super();

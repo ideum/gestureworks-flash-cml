@@ -4,17 +4,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
 	
-	/**
-	 * The ComponentKitDisplay class.
-	 * 
-	 * @see flash.display.Sprite
-	 * 
-	 * 
-	 * @langversion 3.0
-	 * @playerversion AIR 2.5
-	 * @playerversion Flash 10.1
-	 * @productversion GestureWorks 3.0
-	 */
 	
 	public class ComponentKitDisplay extends Container
 	{

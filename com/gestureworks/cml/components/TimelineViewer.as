@@ -22,7 +22,7 @@ package com.gestureworks.cml.components
 	//import com.gestureworks.cml.element.AvatarElement;
 	//import com.gestureworks.cml.element.TimelineItem;
 	//import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.element.Component;
+	import com.gestureworks.cml.components.Component;
 
 	
 	import com.gestureworks.events.GWEvent;
