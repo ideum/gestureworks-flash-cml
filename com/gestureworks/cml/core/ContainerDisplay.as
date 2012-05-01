@@ -52,36 +52,18 @@ package com.gestureworks.cml.core
 
 		// called in layoutCML() method of DisplayManager
 		public function setDimensionsToChild():void
-		{
+		{			
+			// we can use the keyword dimensionsTo, which specifies from which object to pull the dims
 			for (var i:int = 0; i < childList.length; i++) 
 			{
 				if (childList.getIndex(i).id == dimensionsTo)
 				{
 					this.width = childList.getIndex(i).width;
 					this.height = childList.getIndex(i).height;
-				}	
+				}
 			}
-
-			// is this still neccesary???
-			//updateChildren();
+			
 		}		
-
 		
-		private function updateChildren():void
-		{			
-			for (var i:int = 0; i < childList.length; i++)
-			{
-				if (childList.getIndex(i).hasOwnProperty("updateProperties")) 
-					childList.getIndex(i).updateProperties();
-			}
-			
-			//childrenHaveUpdated();
-		}
-			
-
-		
-		
-		
-
 	}
 }

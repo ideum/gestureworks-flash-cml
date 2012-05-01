@@ -58,10 +58,10 @@ package com.gestureworks.cml.element
 		}
 		
 		
+		private var _width:Number = 500;
 		/**
 		 * container width
-		 */		
-		private var _width:Number=500;
+		 */				
 		override public function get width():Number{return _width;}
 		override public function set width(value:Number):void
 		{
@@ -69,10 +69,11 @@ package com.gestureworks.cml.element
 			if (initialized) updateContainer();
 		}
 		
+
+		private var _height:Number = 500;
 		/**
 		 * container height 
-		 */		
-		private var _height:Number=500;
+		 */				
 		override public function get height():Number{return _height;}
 		override public function set height(value:Number):void
 		{
@@ -83,7 +84,7 @@ package com.gestureworks.cml.element
 		/**
 		 * font name, use CFF embeded fonts 
 		 */		
-		private var _font:String="ArialTLF";
+		private var _font:String="MyriadProRegularTLF";
 		public function get font():String { return _font; }
 		public function set font(v:String):void 
 		{ 
@@ -113,12 +114,18 @@ package com.gestureworks.cml.element
 		}
 		
 		private function updateContainer():void
-		{	
-			textFlow.flowComposer.removeAllControllers();
-			container = null;
-			container = new ContainerController(this, width, height);
-			textFlow.flowComposer.addController(container);		
-			textFlow.flowComposer.updateAllControllers();			
+		{			
+			if (initialized) 
+			{
+				container.setCompositionSize( width, height );			
+				textFlow.flowComposer.updateAllControllers();	
+			}
+			else 
+			{
+				container = new ContainerController(this, width, height);
+				textFlow.flowComposer.addController(container);		
+				textFlow.flowComposer.updateAllControllers();	
+			}
 		}
 
 		

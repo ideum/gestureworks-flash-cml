@@ -1,8 +1,8 @@
 package com.gestureworks.cml.kits 
 {
-	import com.gestureworks.cml.factories.ElementFactory;	
+	import com.gestureworks.cml.element.*;	
 	
-	public class BackgroundKit extends ElementFactory
+	public class BackgroundKit extends Container
 	{
 		public function BackgroundKit() 
 		{

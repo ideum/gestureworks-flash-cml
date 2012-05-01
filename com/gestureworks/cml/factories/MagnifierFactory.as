@@ -1,11 +1,12 @@
 package com.gestureworks.cml.factories 
 {
+	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.core.TouchSprite;
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	
 	//public class MagnifierFactory extends ElementFactory
-	public class MagnifierFactory extends TouchSprite
+	public class MagnifierFactory extends TouchContainer
 	{		
 		public function MagnifierFactory() 
 		{

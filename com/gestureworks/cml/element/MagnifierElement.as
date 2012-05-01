@@ -1,171 +1,195 @@
-///NOTE: I commented out the embed tag, b/c I couldn't find it
-
-
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.MagnifierFactory;
-	import com.gestureworks.events.GWGestureEvent;
+
 	import com.gestureworks.core.TouchSprite;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.filters.*;
+	import flash.geom.*;
+	import flash.net.*;
 	
-	import flash.display.DisplayObject;
-	import flash.display.Shape;
-	import flash.events.Event;
-	import flash.display.Sprite;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.utils.setInterval;
-	import flash.utils.clearInterval;
-	import mx.utils.MatrixUtil;
-	import flash.display.PixelSnapping;
-	import flash.filters.DropShadowFilter;
-	
-	public class MagnifierElement extends MagnifierFactory
+
+	public class MagnifierElement extends Sprite
 	{
-		public var magnification:Number = 2;
-		private var bitmap:Bitmap;
-		private var bitmapData:BitmapData;
-		private var outline:Shape;
-		private var maskS:Shape;
-		private var _initialized:Boolean;
-		private var targetScale:Number = 1;
-		private var targetWidth:Number = 0;
-		private var zeroPoint:Point = new Point(0, 0);
-		public var magX:Number;
-		public var magY:Number;
 		
-		//[Embed(source = "../../../../../bin/library/node_map/assets/magnifier_image.swf")]
-		private var Picture1:Class;
+		[Embed(source="../../../../../projects/CollectionViewerMaxwell/lib/magnify.pbj", mimeType="application/octet-stream")]
+		private static var Magnifier:Class;		
+
+		private const ZERO_POINT:Point = new Point();
 		
-		private var lens:*
+		private var loader:URLLoader;
+		private var shader:Shader;
+		private var sphereFilter:ShaderFilter;	
+		private var initiated:Boolean = false;
 		
-		public function MagnifierElement(target:* = null)
-		{
-			super();
+		
+		
+		public var bitmapData:BitmapData;
+		
+		private var canvas:BitmapData 
+		private var canvasContainer:Bitmap;
+
+		private var position:Point = new Point();
+
+		
+		
+		
+		public function MagnifierElement(radius:Number=100, position:Point=null, bitmapData:BitmapData=null)
+		{			
+			canvas = new BitmapData(radius * 2, radius * 2, false, 0x0);
+		
+			if (bitmapData) 
+				this.bitmapData = bitmapData;
+			else 
+				bitmapData = new BitmapData(512, 512);
+				
+			//this.buttonMode = false
+			//this.mouseEnabled = false
+			this.mouseChildren = false;
 			
-			_target = target;
-			mouseChildren = false;
-			
-			init();
-			//if (stage) 
-			//else addEventListener(Event.ADDED_TO_STAGE, init);
+			initShader();
+			initMagnifyingGlass();			
 		}
 		
-		//override protected function DisplayComplete():void 
-		//{
-		//}
 		
-		private function init(e:Event = null):void
-		{
-			//removeEventListener(Event.ADDED_TO_STAGE, init);
-			target = target ? target : parent ? parent : this;
-			outline = new Shape();
-			maskS = new Shape();
-			
-			addChild(outline);
-			addChild(maskS);
-			//this.mask = maskS;
-			
-			lens = new Picture1();
-				lens.x += -14;
-				lens.y += -10;
-				lens.scaleX = 0.76;
-				lens.scaleY = 0.76;
-			this.addChild(lens);
-					
-			targetWidth = 280//width;
-			magX = x;
-			magY = y;
-			
-			filters = [new DropShadowFilter(6, 45, 0x000000, .5, 6, 6, 1, 3)];
-			
-			_initialized = true;
-			updateUI();
-			
-			addEventListener(Event.ENTER_FRAME, captureBitmap);
-		}
 		
-		override protected function updateUI():void
+		
+		
+		////////////////////////////////////////////
+		// Public Properties
+		////////////////////////////////////////////
+		
+		
+		/**
+		 * Sets the x value
+		 * @default 100
+		 */
+		override public function get x():Number{return super.x;}
+		override public function set x(value:Number):void
 		{
-			if (!_initialized) return;
+			super.x = value;
+			position.x = value;
+			update();
+		}			
+		
+		
+		/**
+		 * Sets the y value
+		 * @default 100
+		 */
+		override public function get y():Number{return super.y;}
+		override public function set y(value:Number):void
+		{
+			super.y = value;
+			position.y = value;
+			update();
+		}	
+		
+		
+		private var _radius:Number = 100;
+		/**
+		 * Sets the radius of the magnifying glass
+		 * @default 100
+		 */
+		public function get radius():Number{return _radius;}
+		public function set radius(value:Number):void
+		{
+			_radius = value;
 			
-			outline.graphics.clear();
-			outline.graphics.lineStyle(lineStroke, color);
-			outline.graphics.beginFill(fillColor, fillAlpha);
-			
-			maskS.graphics.clear();
-			maskS.graphics.lineStyle(lineStroke, color);
-			maskS.graphics.beginFill(fillColor, fillAlpha);
-			
-			if (shape=="circle")
-			{
-				outline.graphics.drawCircle(targetWidth / 2, targetWidth / 2, targetWidth / 2);
-				maskS.graphics.drawCircle(targetWidth / 2, targetWidth / 2, targetWidth / 2);
+			/*
+			if (initiated) {
+				
+				canvas.dispose();
+				canvas = null;
+				canvas = new BitmapData(value * 2, value * 2, false, 0x0);
+				canvasContainer.bitmapData = canvas;
+				sphereFilter = new ShaderFilter(shader);
+				updateShaderParams();
+				updateShader();
 			}
-			if (shape=="roundrectangle")
-			{
-				outline.graphics.drawRoundRect(0, 0, targetWidth, targetWidth,80,80);
-				maskS.graphics.drawRoundRect(0, 0, targetWidth, targetWidth,80,80);
-			}
-			else
-			{
-				outline.graphics.drawRect(0, 0, targetWidth, targetWidth);
-				maskS.graphics.drawRect(0, 0, targetWidth, targetWidth);
-			}
 			
-			outline.graphics.endFill();
-			maskS.graphics.endFill();
-		}
+			*/
+		}		
 		
-		public function captureBitmap(event:Event = null):void
-		{						
-			if (bitmap) destroyBitmap();
-			
-			var tempData:BitmapData;
-			
-			var resizeMatrix:Matrix = new Matrix();
-			
-			var rect:Rectangle = new Rectangle(x+(outline.width/4), y+(outline.width/4), outline.width/2, outline.height/2);
-			var rect2:Rectangle = new Rectangle(x, y, outline.width/2, outline.height/2);
-			if (rect.right < 0 || rect.bottom < 0) return;
-			tempData = new BitmapData(rect.right, rect.bottom, true, 0);
-			tempData.draw(target, resizeMatrix, null, null, rect);
-			bitmapData = new BitmapData(outline.width, outline.height, true, 0);
-			bitmapData.copyPixels(tempData, rect, zeroPoint, null, null, true);
-			bitmap = new Bitmap(bitmapData, PixelSnapping.AUTO, true);
-			tempData.dispose();
-			tempData = null;
-			resizeMatrix = null;
-			resizeMatrix = applyMatrixresizeMatrix(new Matrix(), magnification, outline.width / 2, outline.height / 2);
-			bitmap.transform.matrix = resizeMatrix;
-			//bitmap.smoothing = true;
-			bitmap.x = 0;
-			bitmap.y = 0;
-			addChildAt(bitmap, 0);
-			
-			bitmap.mask = maskS;
-			//bitmap.mask = lens_mask;
-		}
-		
-		public function destroyBitmap():void
+
+		private var _magnification:Number = 2.5;
+		/**
+		 * Sets the magnification amount
+		 * @default 2.5
+		 */
+		public function get magnification():Number{return _magnification;}
+		public function set magnification(value:Number):void
 		{
-			removeChild(bitmap);
-			bitmap = null;
-			
-			bitmapData.dispose();
-			bitmapData = null;
+			_magnification = value;
+			if (initiated) {
+				updateShaderParams();
+				updateShader();
+			}
+		}			
+		
+		
+		
+		////////////////////////////////////////////
+		// Public Methods
+		////////////////////////////////////////////
+		
+		
+		/**
+		 * re-renders magnifier
+		 */
+		public function update():void
+		{
+			if (initiated)
+				updateShader();
+		}		
+		
+		
+		
+		////////////////////////////////////////////
+		// Private Properties
+		////////////////////////////////////////////		
+
+		
+		private function initShader():void
+		{
+			shader = new Shader(new Magnifier)
+			updateShaderParams()
 		}
 		
-		private function applyMatrixresizeMatrix(source:Matrix, scaleValue:Number, tx:Number, ty:Number):Matrix
+		
+		private function initMagnifyingGlass():void
 		{
-			source.tx -= tx;
-			source.ty -= ty;
-			source.scale(scaleValue, scaleValue);
-			source.tx += tx;
-			source.ty += ty;
-			return source;
+			//Add the canvas bitmapdata to the canvasContainer bitmap
+			canvasContainer = new Bitmap(canvas)
+			addChild(canvasContainer)
+	
+			//Set the centre of the canvas container to 0,0
+			canvasContainer.x = -radius
+			canvasContainer.y = -radius
+
+			sphereFilter = new ShaderFilter(shader);
+			initiated = true;
+			updateShader();
 		}
+		
+
+		
+		private function updateShaderParams():void
+		{			
+			shader.data.center.value = [radius, radius];
+			shader.data.innerRadius.value = [radius];
+			shader.data.outerRadius.value = [radius];
+			shader.data.magnification.value = [magnification];			
+		}
+		
+
+		private function updateShader():void
+		{			
+			//Copy the pixels underneath the magnifying glass
+			canvas.copyPixels(bitmapData, new Rectangle(position.x - radius, position.y - radius, radius * 2, radius * 2), ZERO_POINT);
+			canvasContainer.filters = [sphereFilter];
+		}
+		
+
 	}
 }

@@ -134,7 +134,7 @@ package com.gestureworks.cml.factories
                     //textFormat.autoSize = TextFieldAutoSize.RIGHT;
                     updateTextFormat();
                     break;
-                case "node":
+                case "none":
                     //textFormat.autoSize = TextFieldAutoSize.NONE;
                     updateTextFormat();
                     break;

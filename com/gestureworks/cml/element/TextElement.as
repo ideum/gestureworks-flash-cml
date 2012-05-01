@@ -52,6 +52,11 @@ package com.gestureworks.cml.element
 		{			
 		}
 		
+		public function updateLayout(containerWidth:Number, containerHeight:Number):void
+		{
+				
+		}
+		
 		override protected function updateTextFormat():void 
 		{
 			defaultTextFormat = textFormat;

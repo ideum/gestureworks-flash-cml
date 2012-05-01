@@ -23,7 +23,7 @@ package com.gestureworks.cml.utils
 		public function get currentKey():* { return list.selectIndex(currentIndex) };
 		
 		private var _currentValue:*;
-		public function get currentValue():* { return dictionary[currentKey]; }	
+		public function get currentValue():* { return listValue.getIndex(currentIndex); }	
 		
 		private var _length:int=0;
 		public function get length():int { return list.length }
@@ -39,6 +39,17 @@ package com.gestureworks.cml.utils
 		{			
 			return dictionary[key];
 		}
+		
+		public function getKeyArray():Array
+		{			
+			return list.array;
+		}			
+		
+		public function getValueArray():Array
+		{			
+			return listValue.array;
+		}		
+		
 		
 		/**
 		 * Returns a LinkedMap of objects that are of the 
@@ -72,27 +83,21 @@ package com.gestureworks.cml.utils
 		/**
 		 * Returns a LinkedMap of objects that are of the 
 		 * specified AS3 class if no second argument is given.
-		 * Returns the nth object of the retuned LinkedMap
+		 * Returns the nth object of the returned LinkedMap
 		 * if the second argument is present.
-		 * The class name be the full name including package
-		 * and must be previously registered in the class library
 		 * @param	value
 		 * @param	index
 		 * @return
 		 */
-		public function getClass(value:String, index:int=-1):*
+		public function getClass(value:Class, index:int=-1):*
 		{
 			var tmp:LinkedMap = new LinkedMap(true);
-			var tmpClass:Class = getDefinitionByName(value) as Class;	
 			
-			if (tmpClass)
+			for (var i:int = 0; i < this.length; i++) 
 			{
-				for (var i:int = 0; i < this.length; i++) 
-				{
-					if (this.getIndex(i) is tmpClass)
-						tmp.append(this.getIndex(i).id, this.getIndex(i));
-				}	
-			}
+				if (this.getIndex(i) is value)
+					tmp.append(this.getIndex(i).id, this.getIndex(i));
+			}	
 			
 			if (index > -1)
 				return tmp.getIndex(index);
@@ -217,13 +222,13 @@ package com.gestureworks.cml.utils
 		public function next():*
 		{
 			currentIndex++;
-			return dictionary[currentKey];
+			return listValue.getIndex(currentIndex);
 		}
 		
 		public function prev():*
 		{
 			currentIndex--;
-			return dictionary[currentKey];
+			return listValue.getIndex(currentIndex);
 		}
 		
 		public function hasKey(value:String):Boolean

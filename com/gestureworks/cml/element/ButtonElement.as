@@ -37,7 +37,7 @@ package com.gestureworks.cml.element
 			showKey(init);
 			hitObject = childList.getKey(hit);
 			
-			// float hit area to the top of the siplay list
+			// float hit area to the top of the display list
 			addChildAt(hitObject, numChildren - 1);
 			
 			if (mouseOver)
@@ -48,7 +48,40 @@ package com.gestureworks.cml.element
 				
 			if (touchDown)
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+			
+			updateLayout();
+		}
+		
+		
+		public function updateLayout():void
+		{
+			// we need containers to automatically take on the dimensions of the largest child, so I don't have to do this!!
+			if (childList.getKey(buttonStates["init"]) is Container)
+			{
+				if (childList.getKey(buttonStates["init"]).width == 0)
+				{
+					for each (var item:* in childList.getKey(buttonStates["init"]).childList.getValueArray()) 
+					{
+						if (item.hasOwnProperty("width"))
+						{							
+							if (item.width > this.width)
+								this.width = item.width;								
+						}						
+					}
+				}
 				
+				if (childList.getKey(buttonStates["init"]).height == 0)
+				{
+					for each (var item2:* in childList.getKey(buttonStates["init"]).childList.getValueArray()) 
+					{
+						if (item.hasOwnProperty("height"))
+						{
+							if (item2.height > this.height)
+								this.height = item2.height;
+						}						
+					}
+				}				
+			}			
 		}
 		
 				
@@ -178,7 +211,7 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////
 		
 		
-		private function onMouseDown(event:MouseEvent):void
+		public function onMouseDown(event:*=null):void
 		{
 			if (debug)
 				trace("mouse down");
@@ -212,7 +245,7 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		private function onMouseUp(event:MouseEvent):void
+		public function onMouseUp(event:*=null):void
 		{
 			if (debug)
 				trace("mouse up");
