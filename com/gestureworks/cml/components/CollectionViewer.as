@@ -2,19 +2,14 @@ package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.utils.LinkedMap;
-	import com.gestureworks.cml.utils.List;
+	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
-	import flash.display.DisplayObject;
+	import flash.display.*;
 	import flash.events.*;
-	import flash.utils.Dictionary;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.core.tweens.IITween;
-	import org.libspark.betweenas3.tweens.ITween;
+	import flash.utils.*;
+	import org.libspark.betweenas3.*;
 	import org.libspark.betweenas3.easing.*;
-	import com.gestureworks.core.GestureWorks;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.events.GWTouchEvent;
 	
 	/**
 	 * CollectionViewer
@@ -23,6 +18,7 @@ package com.gestureworks.cml.components
 	public class CollectionViewer extends Component
 	{
 		public var amountToShow:int = -1;
+		public var animateIn:Boolean = false;
 		
 		private var queue:List;
 		private var currentTween:*;
@@ -35,8 +31,7 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{
-			//addTouchListeners(); // now adding on only the amount on stage
-			
+			//addTouchListeners(); // now adding on only the amount on stage			
 			
 			if (amountToShow > childList.length || amountToShow == -1)
 				amountToShow = childList.length;
@@ -48,10 +43,10 @@ package com.gestureworks.cml.components
 				
 				if (autoShuffle) 
 				{
-					//else if (GestureWorks.supportsTouch)
-						//childList.getIndex(i).addEventListener(GWTouchEvent.TOUCH_BEGIN, updateLayout);
-					//else 
-						//childList.getIndex(i).addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);
+					if (GestureWorks.supportsTouch)
+						childList.getIndex(i).addEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
+					else 
+						childList.getIndex(i).addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);
 				}
 				
 				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent);	
@@ -71,11 +66,9 @@ package com.gestureworks.cml.components
 				}	
 								
 			}
-			
-	
 		}			
 			
-		
+		/*
 		public function downHandler(displayObject:DisplayObject):void
 		{
 			if (displayObject.parent && displayObject.parent == this)
@@ -101,7 +94,7 @@ package com.gestureworks.cml.components
 			}
 		
 		}
-		
+		*/
 		
 		private function onGestureComplete(event:GWGestureEvent):void
 		{
@@ -142,7 +135,6 @@ package com.gestureworks.cml.components
 				for (var i:int = 0; i < childList.length; i++) 
 				{
 					getChildAt(i).addEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
-					
 				}
 			}
 		}
@@ -198,18 +190,16 @@ package com.gestureworks.cml.components
 				newComponent.x = -500;
 				newComponent.y = -500;
 				
-				//if (animationIn)
-				//{
-				
+				if (animateIn)
+				{
 					tweens[newComponent] = BetweenAS3.tween(newComponent, { x:randX, y:randY }, null, 4, Exponential.easeOut)
 					tweens[newComponent].onComplete = onTweenEnd;
 					tweens[newComponent].play();
 					newComponent.visible = true;
 										
 					//newComponent.addEventListener(StateEvent.CHANGE, onStateEvent);
-					//newComponent.addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);						
-					
-				//}
+					//newComponent.addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);							
+				}
 			
 			}
 			
@@ -218,11 +208,6 @@ package com.gestureworks.cml.components
 				tweens[newComponent] = null;
 			}				
 			
-			
-		
 		}
-	
-		
 	}
-	
 }
