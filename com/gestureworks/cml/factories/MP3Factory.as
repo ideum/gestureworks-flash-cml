@@ -361,37 +361,7 @@ package com.gestureworks.cml.factories
 		
 		private var bgGraphic:Sprite;
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		
 		//graphics
 		public function set waveColor(value:int):void
@@ -404,13 +374,7 @@ package com.gestureworks.cml.factories
 			return _waveColor;
 		}	
 		
-		
-		
-		
-		
-		
-		
-		
+	
 		//ID3 metadata
 		private var id3:ID3Info;
 		private var _useId3:String;
@@ -461,28 +425,13 @@ package com.gestureworks.cml.factories
 			return _id3Comment;
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		//update timer
 		public function get time():String
 		{
 			return _timerFormated;
 		}
 	
-		
-
 		
 		private function soundLoaded(event:Event):void 
 		{    
@@ -515,7 +464,7 @@ package com.gestureworks.cml.factories
 			{
 				var average:Number = bytes.readFloat() + bytes.readFloat() * .5;
 				if (cnt % 8 == 0) {
-					g.lineTo(i*(_width/255), average * _height  * _volume * 0.9 + origin);
+					g.lineTo(i*(_width/255), average * _height  * _volume * 0.75 + origin);
 					g.lineTo(i*(_width/255), origin);
 					i++
 				}	

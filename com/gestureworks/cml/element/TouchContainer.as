@@ -63,10 +63,15 @@ package com.gestureworks.cml.element
 		 * (id or class) or AS3 Class. If found, a corresponding display object is returned, if not, null is returned.
 		 * The first occurrance that matches the parameter is returned.
 		 */			
-		public function searchChildren(value:*):*
+		public function searchChildren(value:*, returnType:Class=null):*
 		{
 			var returnVal:* = null;
 			var searchType:String = null;
+			
+			if (returnType == Array)
+			{
+				var returnArray:Array = [];
+			}
 			
 			// determine search method
 			if (value is Class)
@@ -94,16 +99,25 @@ package com.gestureworks.cml.element
 			
 			// run first level search
 			if (searchType == "getKey" && this.childList.getKey(value))
-			{	
-				return this.childList.getKey(value);
+			{
+				if (returnType == Array)
+					returnArray = this.childList.getKey(value).getValueArray();
+				else
+					return this.childList.getKey(value);
 			}
 			else if (searchType == "getCSSClass" && this.childList.getCSSClass(value, 0))
 			{
-				return this.childList.getCSSClass(value, 0);
+				if (returnType == Array)
+					returnArray = this.childList.getCSSClass(value).getValueArray();
+				else
+					return this.childList.getCSSClass(value, 0);
 			}
 			else if (searchType == "getClass" && this.childList.getClass(value, 0))
 			{
-				return this.childList.getClass(value, 0);
+				if (returnType == Array)
+					returnArray = this.childList.getClass(value).getValueArray();
+				else
+					return this.childList.getClass(value, 0);
 			}
 			
 			// recursive search through sub-children's childList
@@ -114,30 +128,63 @@ package com.gestureworks.cml.element
 			}
 			
 			function loopSearch(arr:Array, val:*, sType:String):*
-			{	
-				for (var i:int = 0; i < arr.length; i++) 
+			{
+				var tmp:Array;
+				var i:int;
+				
+				if (returnType == Array)
 				{					
-					if (arr[i].hasOwnProperty("childList"))
-					{												
-						if (sType == "getCSSClass" || sType == "getClass")
-						{
-							if (arr[i].childList[sType](val, 0))
-								return arr[i].childList[sType](val, 0);						
+					for (i = 0; i < arr.length; i++) 
+					{
+						if (arr[i].hasOwnProperty("childList"))
+						{	
+							if (sType == "getCSSClass" || sType == "getClass")
+							{	
+								if (arr[i].childList[sType](val))
+									returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());									
+							}
+							else 
+							{
+								if (arr[i].childList[sType](val))
+									returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());
+							}
+							
+							if (arr[i].childList.getValueArray())
+								loopSearch(arr[i].childList.getValueArray(), val, sType);
 						}
-						else 
-						{
-							if (arr[i].childList[sType](val))
-								return arr[i].childList[sType](val);
+					}					
+				}
+				
+				else
+				{					
+					for (i = 0; i < arr.length; i++) 
+					{					
+						if (arr[i].hasOwnProperty("childList"))
+						{						
+							if (sType == "getCSSClass" || sType == "getClass")
+							{
+								if (arr[i].childList[sType](val, 0))
+									return arr[i].childList[sType](val, 0);						
+							}
+							else 
+							{
+								if (arr[i].childList[sType](val))
+									return arr[i].childList[sType](val);
+							}
+							
+							if (arr[i].childList.getValueArray())
+								loopSearch(arr[i].childList.getValueArray(), val, sType);							
 						}
-						
-						if (arr[i].childList.getValueArray())
-							loopSearch(arr[i].childList.getValueArray(), val, sType);							
 					}
-				}				
+				}
 			}
 			
-			return returnVal;
-		}				
+			
+			if (returnType == Array)
+				return returnArray;
+			else
+				return returnVal;
+		}					
 		
 		
 	}

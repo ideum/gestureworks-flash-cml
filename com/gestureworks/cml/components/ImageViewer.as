@@ -3,141 +3,309 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
+	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	
 	/**
-	 * ImageViewer
-	 * @author Ideum
+	 * The ImageViewer is a component that is primarily meant to display an image on the front side and meta-data on the back side.
+	 * It is composed of the following elements: image, front, back, menu, and frame. The image and front may be the same thing. 
+	 * The image is required. The width and height of the component is automatically set to the dimensions of the image unless it is 
+	 * previously specifed by the component.
 	 */
 	public class ImageViewer extends Component 
 	{
-		public var info:*;
-		public var menu:Menu;
-		public var frame:FrameElement;
+		private var textFields:Array;	
 		
 		public function ImageViewer() 
 		{
 			super();			
 		}
 		
+		
+		///////////////////////////////////////////////////////////////////////
+		// Public Properties
+		//////////////////////////////////////////////////////////////////////
+		
+		private var _image:*;
+		/**
+		 * Sets the image element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned. 
+		 */		
+		public function get image():* {return _image}
+		public function set image(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_image = value;
+			else 
+				_image = searchChildren(value);					
+		}			
+		
+		
+		private var _front:*;
+		/**
+		 * Sets the front element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get front():* {return _front}
+		public function set front(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_front = value;
+			else 
+				_front = searchChildren(value);			
+		}				
+		
+		
+		private var _back:*;
+		/**
+		 * Sets the back element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get back():* {return _back}
+		public function set back(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_back = value;
+			else
+				_back = searchChildren(value);
+		}		
+		
+		
+		private var _backBackground:*;
+		/**
+		 * Sets the back background element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get backBackground():* {return _backBackground}
+		public function set backBackground(value:*):void 
+		{	
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_backBackground = value;
+			else
+				_backBackground = searchChildren(value);				
+		}
+		
+		
+		private var _menu:*;
+		/**
+		 * Sets the menu element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get menu():* {return _menu}
+		public function set menu(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_menu = value;
+			else
+				_menu = searchChildren(value);
+		}			
+		
+		
+		private var _frame:*;
+		/**
+		 * Sets the frame element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get frame():* {return _frame}
+		public function set frame(value:*):void 
+		{	
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_frame = value;
+			else
+				_frame = searchChildren(value);				
+		}			
+		
+		
+		private var _hideFrontOnFlip:Boolean = false;
+		/**
+		 * Specifies whether the front is hidden when the the back is shown
+		 * @default false
+		 */		
+		public function get hideFrontOnFlip():* {return _hideFrontOnFlip}
+		public function set hideFrontOnFlip(value:*):void 
+		{	
+			_hideFrontOnFlip = value;			
+		}				
+		
+		
+		private var _autoTextLayout:Boolean = true;
+		/**
+		 * Specifies whether text fields will be automatically adjusted to the component's width
+		 * @default true
+		 */		
+		public function get autoTextLayout():Boolean {return _autoTextLayout}
+		public function set autoTextLayout(value:Boolean):void 
+		{	
+			_autoTextLayout = value;			
+		}		
+		
+		
+		///////////////////////////////////////////////////////////////////////
+		// Public Methods
+		//////////////////////////////////////////////////////////////////////		
+		
+		/**
+		 * This is part of the CML parsing process.
+		 */
 		override public function displayComplete():void
 		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
-			updateLayout();			
-		}		
-				
-		private function updateLayout():void
-		{
-			info = childList.getCSSClass("info_container", 0);						
-			menu = childList.getCSSClass("menu_container", 0);
 			
-			if (menu.autoHide)
+			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
+			if (!image)
+				image = searchChildren(".image_element");
+			if (!menu)
+				menu = searchChildren(".menu_container");
+			if (!frame)
+				frame = searchChildren(".frame_element");
+			if (!front)
+				front = searchChildren(".image_container");
+			if (!back)
+				back = searchChildren(".info_container");				
+			if (!backBackground)
+				backBackground = searchChildren(".info_bg");	
+			
+			// automatically try to find elements based on AS3 class
+			if (!image)
+				image = searchChildren(ImageElement);
+			if (!menu)
+				menu = searchChildren(Menu);
+			if (!frame)
+				frame = searchChildren(FrameElement);
+			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
+				backBackground = back.searchChildren(GraphicElement);	
+			
+			// this is the v2.0-v2.1 implementation
+			if (autoTextLayout)
+				textFields = searchChildren(TextElement, Array);
+				
+			updateLayout();	
+		}		
+			
+		
+		///////////////////////////////////////////////////////////////////////
+		// Private Methods
+		//////////////////////////////////////////////////////////////////////		
+		
+		private function updateLayout():void
+		{			
+			// update width and height to the size of the image, if not already specified
+			if (!width && image)
+				width = image.width;
+			if (!height && image)
+				height = image.height;
+							
+			if (front)
 			{
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+				front.width = width;
+				front.height = height;				
+			}			
+			
+			if (back)
+			{
+				back.width = width;
+				back.height = height;				
 			}
 			
-			// update width and height
-			width = childList.getCSSClass("image_container", 0).childList.getCSSClass("image_element", 0).width
-			height = childList.getCSSClass("image_container", 0).childList.getCSSClass("image_element", 0).height
-			
-			
-			// update frame size
-			if (info)
+			if (backBackground)
 			{
-				if (childList.getCSSClass("frame_container", 0))
+				backBackground.width = width;
+				backBackground.height = height;
+			}
+				
+			if (frame)
+			{
+				frame.width = width;
+				frame.height = height;
+			}			
+			
+			if (menu)
+			{
+				menu.updateLayout(width, height);
+				
+				if (menu.autoHide)
 				{
-					childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
-					childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
+					this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+					this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);														
+					this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+					this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+				}					
+			}
+			
+			if (textFields && autoTextLayout)
+			{
+				for (var i:int = 0; i < textFields.length; i++) 
+				{
+					textFields[i].x = textFields[i].x + textFields[i].paddingLeft;
+					
+					textFields[i].autoSize = "left";
+					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
+										
+					if (i == 0)
+						textFields[i].y = textFields[i].paddingTop;
+					else
+						textFields[i].y = textFields[i].paddingTop + textFields[i-1].paddingBottom + textFields[i-1].height;
 				}
 			}
-			// update info panel size
-			if (info)
-			{
-				info.childList.getCSSClass("info_bg", 0).width = width;
-				info.childList.getCSSClass("info_bg", 0).height = height;
-			}
-		
-			// update info text size
-			if (info) 
-			{
-				var textpaddingX:Number = info.childList.getCSSClass("info_title", 0).paddingLeft;
-				var textpaddingY:Number = info.childList.getCSSClass("info_title", 0).paddingTop;
-				var textSep:Number = info.childList.getCSSClass("info_title", 0).paddingBottom;
-				
-				
-				info.childList.getCSSClass("info_title", 0).x = textpaddingX;
-				info.childList.getCSSClass("info_title", 0).y = textpaddingY;
-				
-				info.childList.getCSSClass("info_description", 0).x = textpaddingX;
-				info.childList.getCSSClass("info_description", 0).y = info.childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
-				
-				info.childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
-				info.childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
-				info.childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-info.childList.getCSSClass("info_title", 0).height;
-			}
-			
-			// update button placement
-			if (childList.getCSSClass("menu_container", 0))
-			{
-				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
-				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
-				var paddingLeft:Number = menu.paddingLeft;
-				var paddingRight:Number = menu.paddingRight;
-				var paddingBottom:Number = menu.paddingBottom;
-				var position:String = menu.position;
-				
-						if(position=="bottom"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						else if(position=="top"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						
-						else if(position=="topLeft"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
-						}
-						else if(position=="topRight"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						
-						else if(position=="bottomLeft"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
-						}
-						else if(position=="bottomRight"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-			}	
+							
 		}
 		
-		private function onDown(event:*):void
+		public function onDown(event:*):void
 		{
-			menu.visible = true;
-			menu.startTimer();
+			if (menu)
+			{
+				menu.visible = true;
+				menu.startTimer();
+			}
 		}			
 		
 		private function onStateEvent(event:StateEvent):void
-		{	
-			//trace("StateEvent change", event.value);
-			
-			if (event.value == "info") {
-				if (!info.visible) info.visible = true;
-				else info.visible = false;
+		{				
+			if (event.value == "info") 
+			{
+				if (back)
+				{
+					if (!back.visible) { 
+						back.visible = true;
+					}
+					else { 
+						back.visible = false;
+					}
+				}
+				if (front && hideFrontOnFlip)
+				{
+					if (!front.visible) { 
+						front.visible = true;
+					}
+					else { 
+						front.visible = false;
+					}
+				}
 			}
-			else if (event.value == "close") 	this.visible = false;
+			else if (event.value == "close")
+			{
+				this.visible = false;
+			}
 		}			
 		
 	}
