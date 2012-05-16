@@ -31,7 +31,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ListViewer; ListViewer;
 	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
 	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;
-	import com.gestureworks.cml.components.Test; Test;
 	
 	//component element viewers
 	import com.gestureworks.cml.components.MP3Player; MP3Player;	
