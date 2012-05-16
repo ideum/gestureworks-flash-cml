@@ -455,7 +455,6 @@ package com.gestureworks.cml.core
 				
 				obj = createObject(className);	
 					
-				
 					
 				// assign id and class values
 				if (node.@id != undefined)
