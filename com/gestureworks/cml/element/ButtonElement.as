@@ -428,6 +428,7 @@ package com.gestureworks.cml.element
 				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 				hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 			}
+			
 			if (touchOut)
 			{
 				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);											
@@ -456,6 +457,12 @@ package com.gestureworks.cml.element
 			
 			showKey(buttonStates["touchUp"]);
 				
+			if (touchDown)
+			{
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+			}
+			
 			if (touchDown)
 			{
 				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
@@ -507,25 +514,134 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("down");
 			
-
+			if (GestureWorks.supportsTouch)
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			else
+				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+											
+			for each (var state:* in buttonStates)
+			{
+				if (state != down)
+					hideKey(state);	
+			}
+			
+			showKey(buttonStates["down"]);
+				
+			if (up)
+			{				
+				if (GestureWorks.supportsTouch) {
+					hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
+					hitObject.addEventListener(TouchEvent.TOUCH_END, onUp);
+				}	
+				else {
+					hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
+					hitObject.addEventListener(MouseEvent.MOUSE_UP, onUp);	
+				}
+			}
+			
+			if (out)
+			{				
+				if (GestureWorks.supportsTouch) {
+					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
+				}	
+				else {
+					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
+					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
+				}
+			}
+			
+			if (dispatchDict["down"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["down"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "down", true, true));		
 		}
 		
 		
 		private function onUp(event:*):void
-		{
+		{	
 			if (debug)
 				trace("up");
 			
+			if (GestureWorks.supportsTouch)
+				hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			else
+				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
+											
+			for each (var state:* in buttonStates)
+			{
+				if (state != up)
+					hideKey(state);	
+			}
+			
+			showKey(buttonStates["up"]);
 				
-		}			
+			if (down)
+			{				
+				if (GestureWorks.supportsTouch) {
+					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				}	
+				else {
+					hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+				}
+			}
+			
+			if (out)
+			{				
+				if (GestureWorks.supportsTouch) {
+					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
+				}	
+				else {
+					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
+					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
+				}
+			}
+			
+			if (dispatchDict["up"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["up"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "up", true, true));		
+		}		
 		
 		
 		private function onOut(event:*):void
-		{
+		{	
 			if (debug)
 				trace("out");
-							
-		}	
+			
+			if (GestureWorks.supportsTouch)
+				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+			else
+				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
+											
+			for each (var state:* in buttonStates)
+			{
+				if (state != out)
+					hideKey(state);	
+			}
+			
+			showKey(buttonStates["out"]);
+			
+			if (down)
+			{				
+				if (GestureWorks.supportsTouch) {
+					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				}	
+				else {
+					hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+				}
+			}
+			
+			if (dispatchDict["out"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["out"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "out", true, true));		
+		}
 		
 		
 	}
