@@ -10,7 +10,7 @@ package com.gestureworks.cml.element
 
 	public class ButtonElement extends Container
 	{
-		protected var debug:Boolean = true;		
+		public var debug:Boolean = false;		
 		protected var buttonStates:Dictionary;		
 		public var hitObject:*;
 		public var dispatchDefault:Boolean = false;
