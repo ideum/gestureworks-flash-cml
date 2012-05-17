@@ -17,7 +17,7 @@ package com.gestureworks.cml.factories
 	
 	/**
 	 * ElementFactory
-	 * Base class for display elememts
+	 * Base class for display elements
 	 * @authors Charles Veasey
 	 */	
 	
