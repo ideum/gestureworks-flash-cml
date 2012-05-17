@@ -30,17 +30,13 @@ package com.gestureworks.cml.components
 		}
 		
 		override public function displayComplete():void
-		{
-			//addTouchListeners(); // now adding on only the amount on stage			
-			
-			if (amountToShow > childList.length || amountToShow == -1)
+		{			
+			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
 			
-				
 			var i:int = 0;	
 			for (i = 0; i < childList.length; i++) 
-			{	
-				
+			{					
 				if (autoShuffle) 
 				{
 					if (GestureWorks.supportsTouch)
@@ -52,49 +48,20 @@ package com.gestureworks.cml.components
 				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent);	
 				childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
 				
-				
 				if (i < amountToShow)
-				{
+				{					
 					addChild(childList.getIndex(i));
 				}
 				else
-				{
+				{					
 					if (contains(childList.getIndex(i)))
 						removeChild(childList.getIndex(i));
-						
+											
 					queue.append(childList.getIndex(i));
 				}	
 								
 			}
 		}			
-			
-		/*
-		public function downHandler(displayObject:DisplayObject):void
-		{
-			if (displayObject.parent && displayObject.parent == this)
-			{
-				if (tweens[displayObject]){
-					tweens[displayObject].stop();
-					tweens[displayObject] = null;
-					delete tweens[displayObject];
-				}
-					
-				if (displayObject is TouchContainer){
-					if (contains(displayObject)){	
-						removeChild(displayObject);
-						addChild(displayObject);
-					}
-				}
-				
-			}
-			
-			if (displayObject.hasOwnProperty("onDown"))
-			{
-				displayObject["onDown"](null);
-			}
-		
-		}
-		*/
 		
 		private function onGestureComplete(event:GWGestureEvent):void
 		{
@@ -104,7 +71,7 @@ package com.gestureworks.cml.components
 				event.target.y >= stage.stageHeight - 10)
 			{
 				removeComponent(event.target);
-				addNextComponent(event.target);				
+				addNextComponent(event.target);
 			}
 		}
 		

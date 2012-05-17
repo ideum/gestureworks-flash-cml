@@ -6,6 +6,7 @@ package com.gestureworks.cml.element
 	import flash.events.TouchEvent;	
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.core.GestureWorks;
 
 	public class ButtonElement extends Container
 	{
@@ -44,11 +45,19 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);	
 			
 			if (mouseDown)
-				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);	
+				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 				
 			if (touchDown)
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			
+			if (down)
+			{
+				if (GestureWorks.supportsTouch)
+					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				else
+					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			}
+				
 			updateLayout();
 		}
 		
@@ -205,13 +214,63 @@ package com.gestureworks.cml.element
 		}			
 
 		
+		private var _touchOut:String;
+		/**
+		 * Sets button state association with touch out event
+		 */		
+		public function get touchOut():String {return buttonStates["touchOut"];}
+		public function set touchOut(value:String):void 
+		{			
+			buttonStates["touchOut"] = value;
+		}			
+		
+		
+		
+		////////////////////////////////////////////////////
+		/// AUTO STATES
+		///////////////////////////////////////////////////		
+		
+		
+		private var _down:String;
+		/**
+		 * Sets button state association with down event
+		 */		
+		public function get down():String {return buttonStates["down"];}
+		public function set down(value:String):void 
+		{			
+			buttonStates["down"] = value;
+		}
+		
+		
+		private var _up:String;
+		/**
+		 * Sets button state association with up event
+		 */		
+		public function get up():String {return buttonStates["up"];}
+		public function set up(value:String):void 
+		{			
+			buttonStates["up"] = value;
+		}			
+
+		
+		private var _out:String;
+		/**
+		 * Sets button state association with out event
+		 */		
+		public function get out():String {return buttonStates["out"];}
+		public function set out(value:String):void 
+		{			
+			buttonStates["out"] = value;
+		}
+		
+		
 		
 		////////////////////////////////////////////////////
 		/// MOUSE EVENT HANDLERS
 		///////////////////////////////////////////////////
 		
 		
-		public function onMouseDown(event:*=null):void
+		public function onMouseDown(event:MouseEvent):void
 		{
 			if (debug)
 				trace("mouse down");
@@ -245,7 +304,7 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		public function onMouseUp(event:*=null):void
+		public function onMouseUp(event:MouseEvent):void
 		{
 			if (debug)
 				trace("mouse up");
@@ -350,7 +409,7 @@ package com.gestureworks.cml.element
 		
 		
 		private function onTouchDown(event:TouchEvent):void
-		{
+		{	
 			if (debug)
 				trace("touch down");
 			
@@ -369,6 +428,11 @@ package com.gestureworks.cml.element
 				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 				hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 			}
+			if (touchOut)
+			{
+				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);											
+				hitObject.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
+			}	
 			
 			if (dispatchDict["touchDown"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchDown"], true, true));	
@@ -405,6 +469,64 @@ package com.gestureworks.cml.element
 		}			
 		
 		
-	
+		private function onTouchOut(event:TouchEvent):void
+		{
+			if (debug)
+				trace("touch out");
+			
+			hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);															
+			
+			for each (var state:* in buttonStates)
+			{
+				if (state != touchOut)
+					hideKey(state);	
+			}
+			
+			showKey(buttonStates["touchOut"]);
+				
+			if (touchOut)
+			{
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+			}
+			
+			if (dispatchDict["touchOut"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchOut"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchOut", true, true));					
+		}
+
+
+		////////////////////////////////////////////////////
+		/// AUTO EVENT HANDLERS
+		///////////////////////////////////////////////////
+		
+		
+		private function onDown(event:*):void
+		{	
+			if (debug)
+				trace("down");
+			
+
+		}
+		
+		
+		private function onUp(event:*):void
+		{
+			if (debug)
+				trace("up");
+			
+				
+		}			
+		
+		
+		private function onOut(event:*):void
+		{
+			if (debug)
+				trace("out");
+							
+		}	
+		
+		
 	}
 }
