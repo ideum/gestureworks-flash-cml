@@ -1,16 +1,11 @@
 package com.gestureworks.cml.element 
 {
-	import flash.events.TimerEvent;
-	import flash.events.MouseEvent;
-	import flash.utils.Timer;
-	import com.gestureworks.events.GWEvent;
-	import com.gestureworks.core.GestureWorks;
-	import com.gestureworks.cml.element.ButtonElement;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.core.*;
+	import com.gestureworks.events.*;
+	import flash.events.*;
 	
-	/**
-	 * ...
-	 * @author ...
-	 */
+	
 	public class Menu extends Container 
 	{
 		private var frameCount:int = 0;
@@ -193,8 +188,6 @@ package com.gestureworks.cml.element
 					
 				}	
 			}					
-			
-			
 			
 			
 		}
