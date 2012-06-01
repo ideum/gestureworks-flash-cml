@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.GestureWorks;
+	import org.tuio.TuioTouchEvent;
 
 	public class ButtonElement extends Container
 	{
@@ -46,18 +47,22 @@ package com.gestureworks.cml.element
 			
 			if (mouseDown)
 				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-				
-			if (touchDown)
+			
+			if (touchDown && GestureWorks.activeTUIO)
+				hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
+			else if (touchDown)
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			
 			if (down)
 			{
-				if (GestureWorks.supportsTouch)
+				if (GestureWorks.activeTUIO)
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				else if (GestureWorks.supportsTouch)
 					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 				else
 					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 			}
-				
+
 			updateLayout();
 		}
 		
@@ -408,12 +413,15 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////
 		
 		
-		private function onTouchDown(event:TouchEvent):void
+		private function onTouchDown(event:*):void
 		{	
 			if (debug)
 				trace("touch down");
 			
-			hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+			if (GestureWorks.activeTUIO)	
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
+			else 
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			
 			for each (var state:* in buttonStates)
 			{
@@ -425,14 +433,27 @@ package com.gestureworks.cml.element
 				
 			if (touchUp)
 			{
-				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
-				hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);															
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
+				}
+				else {
+					hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
+					hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);
+				}															
 			}
 			
 			if (touchOut)
 			{
-				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);											
-				hitObject.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
+				}
+				else {
+					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);											
+					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
+				}
+				
 			}	
 			
 			if (dispatchDict["touchDown"])
@@ -447,7 +468,10 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("touch up");
 			
-			hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
+			if (GestureWorks.activeTUIO)
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchUp);															
+			else
+				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
 			
 			for each (var state:* in buttonStates)
 			{
@@ -459,14 +483,14 @@ package com.gestureworks.cml.element
 				
 			if (touchDown)
 			{
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
-				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
-			}
-			
-			if (touchDown)
-			{
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
-				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);															
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
+				}
+				else {
+					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+				}
 			}
 			
 			if (dispatchDict["touchUp"])
@@ -481,7 +505,10 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("touch out");
 			
-			hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);															
+			if (GestureWorks.activeTUIO)
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);															
+			else
+				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);															
 			
 			for each (var state:* in buttonStates)
 			{
@@ -491,10 +518,16 @@ package com.gestureworks.cml.element
 			
 			showKey(buttonStates["touchOut"]);
 				
-			if (touchOut)
+			if (touchDown)
 			{
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
-				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);															
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
+				}
+				else {
+					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
+					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+				}
 			}
 			
 			if (dispatchDict["touchOut"])
@@ -514,7 +547,9 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("down");
 			
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeTUIO)
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			else if (GestureWorks.supportsTouch)
 				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 			else
 				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
@@ -528,8 +563,12 @@ package com.gestureworks.cml.element
 			showKey(buttonStates["down"]);
 				
 			if (up)
-			{				
-				if (GestureWorks.supportsTouch) {
+			{
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+				}
+				else if (GestureWorks.supportsTouch) {
 					hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
 					hitObject.addEventListener(TouchEvent.TOUCH_END, onUp);
 				}	
@@ -540,8 +579,12 @@ package com.gestureworks.cml.element
 			}
 			
 			if (out)
-			{				
-				if (GestureWorks.supportsTouch) {
+			{
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
+				}
+				else if (GestureWorks.supportsTouch) {
 					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
 					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
 				}	
@@ -563,7 +606,9 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("up");
 			
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeTUIO)
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			else if (GestureWorks.supportsTouch)
 				hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
 			else
 				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
@@ -577,8 +622,12 @@ package com.gestureworks.cml.element
 			showKey(buttonStates["up"]);
 				
 			if (down)
-			{				
-				if (GestureWorks.supportsTouch) {
+			{
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				}
+				else if (GestureWorks.supportsTouch) {
 					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 				}	
@@ -589,8 +638,12 @@ package com.gestureworks.cml.element
 			}
 			
 			if (out)
-			{				
-				if (GestureWorks.supportsTouch) {
+			{
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);	
+				}
+				else if (GestureWorks.supportsTouch) {
 					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
 					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
 				}	
@@ -612,7 +665,9 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("out");
 			
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeTUIO)
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
+			else if (GestureWorks.supportsTouch)
 				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
 			else
 				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
@@ -626,8 +681,12 @@ package com.gestureworks.cml.element
 			showKey(buttonStates["out"]);
 			
 			if (down)
-			{				
-				if (GestureWorks.supportsTouch) {
+			{
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				}
+				else if (GestureWorks.supportsTouch) {
 					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 				}	

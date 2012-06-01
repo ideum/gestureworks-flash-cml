@@ -7,6 +7,8 @@ package com.gestureworks.cml.components
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
+	import org.tuio.TuioTouchEvent;
+	import com.gestureworks.core.GestureWorks;	
 	
 	/**
 	 * The VideoViewer is a component that is meant to video files on the front and metadata on the back.
@@ -243,12 +245,13 @@ package com.gestureworks.cml.components
 			{
 				menu.updateLayout(width, height);
 				
-				if (menu.autoHide)
-				{
-					this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
-					this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);														
-					this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+				if (menu.autoHide) {
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 				}					
 			}
 			

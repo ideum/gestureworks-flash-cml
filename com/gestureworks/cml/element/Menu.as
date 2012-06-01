@@ -4,7 +4,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.events.*;
-	
+	import org.tuio.TuioTouchEvent;
 	
 	public class Menu extends Container 
 	{
@@ -26,8 +26,14 @@ package com.gestureworks.cml.element
 		{ 
 			_autoHide = value;
 			
-			if (autoHide)
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			if (autoHide) {
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onClick);
+				else if	(GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_BEGIN, onClick);
+				else	
+					this.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			}
 		}
 		
 	
@@ -57,7 +63,7 @@ package com.gestureworks.cml.element
 		
 		override public function displayComplete():void {}
 		
-		private function onClick(event:MouseEvent):void
+		private function onClick(event:*):void
 		{
 			startTimer();
 		}

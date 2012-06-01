@@ -43,6 +43,8 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.core.GestureWorks;
+	import org.tuio.TuioTouchEvent;
+	import com.gestureworks.core.GestureWorks	
 
 	 /**
 	 * <p>The MaskImageDisplay component is the main component for the MaskImageViewer module.  It contains all the neccessary display objects for the module.</p>
@@ -168,10 +170,13 @@ package com.gestureworks.cml.components
 			info = childList.getCSSClass("info_container", 0);						
 			menu = childList.getCSSClass("menu_container", 0);
 			
-			if (menu.autoHide)
-			{
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+			if (menu.autoHide) {
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 			}
 			
 			

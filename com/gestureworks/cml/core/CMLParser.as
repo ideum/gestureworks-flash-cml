@@ -33,7 +33,7 @@ package com.gestureworks.cml.core
 		}
 		
 		private static var GXMLComponent:Class;
-		public var defaultContainer:Container;
+		public var defaultContainer:Stage;
 		public static const COMPLETE:String = "COMPLETE";
 		public var debug:Boolean = false;
 		public var cssFile:String;
@@ -70,7 +70,7 @@ package com.gestureworks.cml.core
 			if (debug)
 				trace("\n 2) Create defaultContainer");					
 				
-			defaultContainer = new Container;
+			defaultContainer = DefaultStage.instance.stage;
 
 			
 			
@@ -137,7 +137,7 @@ package com.gestureworks.cml.core
 				if (debug)
 					trace(StringUtils.printf("%9s%s", "", "No WindowKit found... skip WindowKit... adding defaultContainer to stage"));				
 					
-				DefaultStage.instance.stage.addChildAt(defaultContainer, 0);
+				//DefaultStage.instance.stage.addChildAt(defaultContainer, 0);
 			}			
 			
 			

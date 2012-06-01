@@ -44,6 +44,8 @@
 	import away3d.primitives.Cube;
 	import away3d.materials.BitmapMaterial;
 	import away3d.core.utils.Cast;
+	import org.tuio.TuioTouchEvent;
+	import com.gestureworks.core.GestureWorks;		
 	
 	 
 	public class PanoramicViewer extends Component
@@ -178,11 +180,14 @@
 			info = childList.getCSSClass("info_container", 0);						
 			menu = childList.getCSSClass("menu_container", 0);
 			
-			if (menu.autoHide)
-			{
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
-			}
+			if (menu.autoHide) {
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				else if	(GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				else	
+					this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			}	
 			
 			
 			// update frame size

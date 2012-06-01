@@ -44,7 +44,9 @@
 	import org.openzoom.flash.viewport.controllers.TouchController;
 	import org.openzoom.flash.viewport.transformers.TweenerTransformer;
 	import org.openzoom.flash.utils.math.clamp;
- 
+	import org.tuio.TuioTouchEvent;
+	import com.gestureworks.core.GestureWorks
+	
 	 /**
 	 * <p>The GigaPixelDisplay component is the main component for the GigaPixelViewer module.  It contains all the neccessary display objects for the module.</p>
 	 *
@@ -178,10 +180,13 @@
 			info = childList.getCSSClass("info_container", 0);						
 			menu = childList.getCSSClass("menu_container", 0);
 			
-			if (menu.autoHide)
-			{
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);				
+			if (menu.autoHide) {
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 			}
 			
 			
