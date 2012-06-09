@@ -14,6 +14,7 @@ package com.gestureworks.cml.core
 	import flash.display.*;
 	import flash.events.*;
 	import flash.utils.*;
+	import flash.display.DisplayObjectContainer;
 	
 	/**
 	 * CMLParser, Singleton
@@ -33,7 +34,7 @@ package com.gestureworks.cml.core
 		}
 		
 		private static var GXMLComponent:Class;
-		public var defaultContainer:Stage;
+		public var defaultContainer:DisplayObjectContainer;
 		public static const COMPLETE:String = "COMPLETE";
 		public var debug:Boolean = false;
 		public var cssFile:String;
@@ -70,7 +71,7 @@ package com.gestureworks.cml.core
 			if (debug)
 				trace("\n 2) Create defaultContainer");					
 				
-			defaultContainer = DefaultStage.instance.stage;
+			defaultContainer = parent as DisplayObjectContainer;
 
 			
 			

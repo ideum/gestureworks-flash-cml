@@ -24,7 +24,8 @@ package com.gestureworks.components
 		*/
 	
 	public class CMLDisplay extends Sprite
-	{		
+	{
+		
 		public function CMLDisplay()
 		{
 			if (stage) init();

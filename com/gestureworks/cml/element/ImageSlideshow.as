@@ -82,7 +82,7 @@ package com.gestureworks.cml.element
 			function onFadeInEnd():void
 			{
 				tween = null;
-			}				
+			}
 		}
 		
 		override protected function showNext():void
@@ -93,6 +93,7 @@ package com.gestureworks.cml.element
 			if (hasIndex(last))
 				fadeout(last);
 			fadein(currentIndex);			
-		}		
+		}
+		
 	}
 }

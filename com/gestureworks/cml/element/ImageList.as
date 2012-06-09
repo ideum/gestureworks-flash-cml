@@ -50,7 +50,7 @@ package com.gestureworks.cml.element
 			
 			for (var i:int = 0; i < arr.length; i++) 
 			{
-				append(arr[i]);
+				append(arr[i]);				
 			}			
 		}		
 
@@ -147,7 +147,7 @@ package com.gestureworks.cml.element
 		}
 		
 		public function show(index:int):void
-		{
+		{			
 			addChild(list.selectIndex(index));
 		}
 		

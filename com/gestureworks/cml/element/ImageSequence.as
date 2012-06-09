@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {	
+	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
@@ -51,9 +52,14 @@ package com.gestureworks.cml.element
 		public function set autoplay(value:Boolean):void 
 		{	
 			_autoplay = value;
-			play();
+			if (_autoplay)
+				this.addEventListener(Event.COMPLETE, onComplete);
 		}		
 		
+		private function onComplete(event:Event):void { play(); }
+		
+		
+		import flash.events.Event;
 		
 		/**
 		 * Starts the sequencer from the beginning 
@@ -121,7 +127,7 @@ package com.gestureworks.cml.element
 		}
 		
 		protected function showNext():void
-		{
+		{	
 			var last:int = currentIndex;
 			currentIndex++;			
 			

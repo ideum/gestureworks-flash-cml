@@ -7,11 +7,12 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.*;
 	import flash.display.*;
 	import flash.events.*;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.*;
 	import org.libspark.betweenas3.*;
-	import org.libspark.betweenas3.easing.*;
-	
-	
+	import org.libspark.betweenas3.easing.*;	
 	import org.tuio.TuioTouchEvent;
 	
 	/**
@@ -25,7 +26,7 @@ package com.gestureworks.cml.components
 		
 		private var queue:List;
 		private var currentTween:*;
-		
+				
 		public function CollectionViewer() 
 		{
 			super();
@@ -36,6 +37,8 @@ package com.gestureworks.cml.components
 		{			
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
+					
+			//amountToShow = 10; sometimes not loading this property correctly !!! ugh, it is the cml parser - why the inconsistency!!
 			
 			var i:int = 0;	
 			for (i = 0; i < childList.length; i++) 
@@ -49,7 +52,6 @@ package com.gestureworks.cml.components
 					else 
 						childList.getIndex(i).addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);	
 				}
-				
 				
 				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent);	
 				childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
@@ -69,20 +71,87 @@ package com.gestureworks.cml.components
 		}			
 		
 		private function onGestureComplete(event:GWGestureEvent):void
-		{
-			var w:Number = event.target.width * event.target.scaleX;
-			var h:Number = event.target.height * event.target.scaleY;
+		{			
+			var offscreenBuffer:int = 50;
+			var bounds:Rectangle =  getVisibility(event.target as DisplayObject);
 			
+			var offscreen:Boolean = false;
 			
-			if ((event.target.x - (w / 2) > stage.stageWidth) ||
-				(event.target.x + (w / 2) < 0) ||
-				(event.target.y - (h / 2) > stage.stageHeight) ||
-				(event.target.y + (h / 2) < 0)
-			)
-			{
+			// out left
+			if (bounds.x + bounds.width <= offscreenBuffer)
+				offscreen = true;
+			
+			// out right	
+			if (bounds.x >= stage.stageWidth - offscreenBuffer)
+				offscreen = true;
+				
+			// out top	
+			if (bounds.y + bounds.height <= offscreenBuffer)
+				offscreen = true;
+				
+			// out bottom	
+			if (bounds.y >= stage.stageHeight - offscreenBuffer)
+				offscreen = true;
+							
+			if (offscreen)
+			{	
 				removeComponent(event.target);
-				addNextComponent(event.target);
-			}			
+				
+				if (this.numChildren < amountToShow)
+					addNextComponent(event.target);
+			}
+		}
+			
+		
+		private function getVisibility(obj:DisplayObject):Rectangle 
+		{
+			var vis:Rectangle;
+		 
+			if (obj.parent == null) return new Rectangle();
+		 
+			if (obj is DisplayObjectContainer) {
+				vis = getChildVisibility(obj, obj.parent);
+			} else {
+				vis = obj.getBounds(obj.parent);
+			}
+		 
+			// Is the DisplayObject masked?
+			if (obj.mask != null) {
+				vis = vis.intersection(obj.mask.getBounds(obj.parent));
+			}
+		 
+			// Is the DisplayObject partly or completely off-stage?
+			vis = vis.intersection(obj.stage.getBounds(obj.parent));
+		 			
+			return vis;
+		}
+		
+		
+		private function getChildVisibility(obj:*, target:DisplayObjectContainer):Rectangle {
+		 
+			var vis:Rectangle = new Rectangle();
+			var child:DisplayObject;
+			var childRect:Rectangle;
+			var i:uint;
+		 
+			for (i = 1; i <= obj.numChildren; i++) {
+				child = obj.getChildAt(i-1);
+		 
+				if (child != null) {
+					if (child.visible) {
+						if (child is DisplayObjectContainer) {
+							childRect = getChildVisibility(child, target);
+						} else {
+							childRect = child.getBounds(target);
+						}
+						if (child.mask != null) {
+							childRect = childRect.intersection(child.mask.getBounds(target));
+						}
+						vis = vis.union(childRect);
+					}
+				}
+			}
+			return vis;
 		}
 		
 		
@@ -118,9 +187,11 @@ package com.gestureworks.cml.components
 		private function onStateEvent(event:StateEvent):void
 		{			
 			if (event.value == "close") 
-			{
-				addNextComponent(event.currentTarget);
+			{				
 				removeComponent(event.currentTarget);				
+
+				if (this.numChildren < amountToShow)
+					addNextComponent(event.target);
 			}	
 		}	
 		
@@ -131,10 +202,10 @@ package com.gestureworks.cml.components
 			//component.removeEventListener(MouseEvent.MOUSE_DOWN, updateLayout);
 			//component.removeEventListener(GWGestureEvent.COMPLETE, onGestureComplete);	
 			
-			if (contains(component as DisplayObject))
+			if (contains(component as DisplayObject)) {
 				removeChild(component as DisplayObject);
-				
-			queue.append(component);
+				queue.append(component);
+			}	
 		}
 		
 		private function addNextComponent(component:*):void
@@ -143,37 +214,44 @@ package com.gestureworks.cml.components
 			var removedIndex:int;
 			
 			
-			newComponent = queue.getIndex(0);
-			queue.remove(0);
-			
-			
-			if (newComponent)
+			function process():void
 			{
-				//newComponent.updateProperties(0);
+				newComponent = queue.getIndex(0);
+				queue.remove(0);
 				
-				addChild(newComponent);
 				
-				var randX:Number = (stage.width / 2) - 200;	
-				var randY:Number = (stage.height / 2) - 200;
-										
-				newComponent.x = -500;
-				newComponent.y = -500;
-				
-				if (animateIn)
-				{
-					tweens[newComponent] = BetweenAS3.tween(newComponent, { x:randX, y:randY }, null, 4, Exponential.easeOut)
-					tweens[newComponent].onComplete = onTweenEnd;
-					tweens[newComponent].play();
-					newComponent.visible = true;							
+				if (newComponent)
+				{				
+					addChild(newComponent);
+					
+					var randX:Number = (stage.width / 2) - 200;	
+					var randY:Number = (stage.height / 2) - 200;
+											
+					newComponent.x = -500;
+					newComponent.y = -500;
+					
+					if (animateIn)
+					{
+						tweens[newComponent] = BetweenAS3.tween(newComponent, { x:randX, y:randY }, null, 4, Exponential.easeOut)
+						tweens[newComponent].onComplete = onTweenEnd;
+						tweens[newComponent].play();
+						newComponent.visible = true;							
+					}
 				}
-			
+				
+				function onTweenEnd():void
+				{			
+					tweens[newComponent] = null;
+				}
 			}
 			
-			function onTweenEnd():void
-			{			
-				tweens[newComponent] = null;
-			}				
+			while (this.numChildren < amountToShow)
+			{
+				process();
+			}
 			
+
+						
 		}
 	}
 }
