@@ -12,7 +12,7 @@ package com.gestureworks.cml.kits
 		
 		override public function displayComplete():void
 		{
-			stage.addEventListener(Event.RESIZE, updateLayout);
+			//stage.addEventListener(Event.RESIZE, updateLayout);
 			updateLayout();
 		}
 		
