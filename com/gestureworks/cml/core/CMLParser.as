@@ -156,8 +156,9 @@ package com.gestureworks.cml.core
 			if (debug)	
 			FileManager.instance.debug = true;				
 			
+			
 			if (FileManager.instance.cmlCount > 0)
-			{
+			{	
 				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);												
 				FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
 				FileManager.instance.startCMLQueue();				

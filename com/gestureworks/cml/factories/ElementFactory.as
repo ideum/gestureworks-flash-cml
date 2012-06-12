@@ -55,9 +55,7 @@ package com.gestureworks.cml.factories
 		public function get id():String {return _id};
 		public function set id(value:String):void
 		{
-			_id = value;
-			
-			trace("id", id);
+			_id = value;			
 		}
 		
 		

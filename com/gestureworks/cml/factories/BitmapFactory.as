@@ -248,7 +248,11 @@ package com.gestureworks.cml.factories
 			}
 			else
 			{
-				var imageSrc:String = propertyStates[0]["src"];
+				var imageSrc:String;
+				if (src.length < 3)
+					imageSrc = propertyStates[0]["src"];
+				else
+					imageSrc = src;				
 				fileData = FileManager.instance.fileList.getKey(imageSrc).loader;				
 			}
 
@@ -345,7 +349,7 @@ package com.gestureworks.cml.factories
 			
 			
 			
-			// Do this if the it loaded itself. If using the preloader, the preloader handles unloading
+			// Do this if it loaded itself. If using the preloader, the preloader handles unloading
 			if (img &&  !_bitmapDataCache) 
 			{
 				fileData.unload();
@@ -386,7 +390,6 @@ package com.gestureworks.cml.factories
 		{
 			// listen like this: imageElement.addEventListener(Event.COMPLETE, onComplete);		
 			dispatchEvent(new Event(Event.COMPLETE, true, true));
-			
 		}
 	
 		
@@ -395,7 +398,7 @@ package com.gestureworks.cml.factories
 		// Private Methods
 		////////////////////////////////////////////////////////////////////////////////		
 		
-		private function preloadFile(file:String):void
+		public function preloadFile(file:String):void
 		{
 			src = file;
 			FileManager.instance.addToQueue(file, "img");

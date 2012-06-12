@@ -4,6 +4,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.utils.List;
 	import flash.events.Event;
+	import com.gestureworks.cml.managers.FileManager;
 	
 	/**
 	 * ImageList
@@ -18,9 +19,41 @@ package com.gestureworks.cml.element
 		private var imageCount:int = 0;
 		private var imagesLoaded:int = 0;
 		
+		public var preload:Boolean = true;
+		
 		public function ImageList() 
 		{
 			list = new List;
+		}
+		
+		/**
+		 * This is called by the CML parser. Do not override this method.
+		 */		
+		override public function postparseCML(cml:XMLList):void 
+		{
+			if (this.propertyStates[0]["src"]) {
+				
+				if (preload)
+				{
+					var value:String = this.propertyStates[0]["src"];
+					var rex:RegExp = /[\s\r\n]*/gim;
+					_src = value.replace(rex,'');			
+					var arr:Array = _src.split(",");
+				
+					for (var i:int = 0; i < arr.length; i++) 
+					{			
+						var img:ImageElement = new ImageElement;
+						//img.addEventListener(Event.COMPLETE, onImgComplete);
+						imageCount++;
+						img.preloadFile(arr[i]);
+						list.append(img);
+						if (_autoShow)
+							addChild(img);	
+						FileManager.instance.addToQueue(arr[i], "img");
+					
+					}
+				}
+			}
 		}
 		
 		private var _currentIndex:int=0;
@@ -43,7 +76,9 @@ package com.gestureworks.cml.element
 		private var _src:String;
 		public function get src():String { return _src; }
 		public function set src(value:String):void 
-		{ 			
+		{
+			if (preload) return;
+			
 			var rex:RegExp = /[\s\r\n]*/gim;
 			_src = value.replace(rex,'');			
 			var arr:Array = _src.split(",");
@@ -101,7 +136,12 @@ package com.gestureworks.cml.element
 			if (_autoShow)
 				addChild(img);		
 		}		
-				
+		
+		public function loadComplete():void 
+		{ 
+			dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
 		private function onImgComplete(event:Event):void
 		{
 			imagesLoaded++;
