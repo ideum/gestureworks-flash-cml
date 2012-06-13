@@ -26,7 +26,9 @@ package com.gestureworks.cml.components
 		
 		private var queue:List;
 		private var currentTween:*;
-				
+		
+		private var boundsTimer:Timer;
+		
 		public function CollectionViewer() 
 		{
 			super();
@@ -34,7 +36,11 @@ package com.gestureworks.cml.components
 		}
 		
 		override public function displayComplete():void
-		{			
+		{
+			boundsTimer = new Timer(1000);
+			boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
+			boundsTimer.start();
+			
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
 					
@@ -54,7 +60,7 @@ package com.gestureworks.cml.components
 				}
 				
 				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent);	
-				childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
+				//childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
 				
 				if (i < amountToShow)
 				{					
@@ -70,35 +76,51 @@ package com.gestureworks.cml.components
 			}	
 		}			
 		
-		private function onGestureComplete(event:GWGestureEvent):void
-		{			
-			var offscreenBuffer:int = 50;
-			var bounds:Rectangle =  getVisibility(event.target as DisplayObject);
-			
-			var offscreen:Boolean = false;
-			
-			// out left
-			if (bounds.x + bounds.width <= offscreenBuffer)
-				offscreen = true;
-			
-			// out right	
-			if (bounds.x >= stage.stageWidth - offscreenBuffer)
-				offscreen = true;
-				
-			// out top	
-			if (bounds.y + bounds.height <= offscreenBuffer)
-				offscreen = true;
-				
-			// out bottom	
-			if (bounds.y >= stage.stageHeight - offscreenBuffer)
-				offscreen = true;
+		private function onBoundsTimer(event:TimerEvent):void
+		{				
+			trace(numChildren);				
 							
-			if (offscreen)
-			{	
-				removeComponent(event.target);
+			for (var i:int = 0; i < this.numChildren - 1; i++)
+			{
 				
-				if (this.numChildren < amountToShow)
-					addNextComponent(event.target);
+				var offscreenBuffer:int = 50;
+				var bounds:Rectangle =  getVisibility(this.getChildAt(i) as DisplayObject);
+				
+				trace(bounds);
+				
+				var offscreen:Boolean = false;
+				
+				// out left
+				if (bounds.x + bounds.width <= offscreenBuffer)
+					offscreen = true;
+				
+				// out right	
+				if (bounds.x >= stage.stageWidth - offscreenBuffer)
+					offscreen = true;
+					
+				// out top	
+				if (bounds.y + bounds.height <= offscreenBuffer)
+					offscreen = true;
+					
+				// out bottom	
+				if (bounds.y >= stage.stageHeight - offscreenBuffer)
+					offscreen = true;
+				
+					
+				trace(offscreen);	
+					
+				if (offscreen)
+				{
+					
+					trace(i);
+					
+					removeComponent(this.getChildAt(i));
+					
+					if (this.numChildren < amountToShow) {
+						addNextComponent(this.getChildAt(i));
+						
+					}
+				}
 			}
 		}
 			
@@ -224,15 +246,15 @@ package com.gestureworks.cml.components
 				{				
 					addChild(newComponent);
 					
-					var randX:Number = (stage.width / 2) - 200;	
-					var randY:Number = (stage.height / 2) - 200;
+					//var randX:Number = (stage.width / 2) - 200;	
+					//var randY:Number = (stage.height / 2) - 200;
 											
 					newComponent.x = -500;
 					newComponent.y = -500;
 					
 					if (animateIn)
 					{
-						tweens[newComponent] = BetweenAS3.tween(newComponent, { x:randX, y:randY }, null, 4, Exponential.easeOut)
+						tweens[newComponent] = BetweenAS3.tween(newComponent, { x:stage.stageWidth/2, y:stage.stageHeight/2 }, null, 4, Exponential.easeOut)
 						tweens[newComponent].onComplete = onTweenEnd;
 						tweens[newComponent].play();
 						newComponent.visible = true;							
