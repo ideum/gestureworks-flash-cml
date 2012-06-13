@@ -78,15 +78,14 @@ package com.gestureworks.cml.components
 		
 		private function onBoundsTimer(event:TimerEvent):void
 		{				
-			trace(numChildren);				
+			//trace(numChildren);				
 							
 			for (var i:int = 0; i < this.numChildren - 1; i++)
 			{
-				
 				var offscreenBuffer:int = 50;
 				var bounds:Rectangle =  getVisibility(this.getChildAt(i) as DisplayObject);
 				
-				trace(bounds);
+				//trace(bounds);
 				
 				var offscreen:Boolean = false;
 				
@@ -106,13 +105,10 @@ package com.gestureworks.cml.components
 				if (bounds.y >= stage.stageHeight - offscreenBuffer)
 					offscreen = true;
 				
-					
-				trace(offscreen);	
-					
+										
 				if (offscreen)
 				{
-					
-					trace(i);
+					//trace(i);
 					
 					removeComponent(this.getChildAt(i));
 					
