@@ -263,7 +263,7 @@ package com.gestureworks.cml.components
 			menu.startTimer();
 		}
 		
-		private function onStateEvent(event:StateEvent):void
+		override protected function onStateEvent(event:StateEvent):void
 		{	
 			trace("StateEvent change", event.value);
 			var info:* = childList.getCSSClass("info_container", 0);

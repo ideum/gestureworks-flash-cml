@@ -21,10 +21,10 @@ package com.gestureworks.cml.components
 		}
 		
 
-		private function onStateEvent(event:StateEvent):void
+		protected function onStateEvent(event:StateEvent):void
 		{				
 			if (event.value == "close") 
-				this.visible = false;
+				this.visible = false;				
 		}
 		
 	}

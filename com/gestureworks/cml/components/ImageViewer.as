@@ -282,7 +282,7 @@ package com.gestureworks.cml.components
 			}
 		}			
 		
-		private function onStateEvent(event:StateEvent):void
+		override protected function onStateEvent(event:StateEvent):void
 		{				
 			if (event.value == "info") 
 			{
@@ -308,7 +308,8 @@ package com.gestureworks.cml.components
 			else if (event.value == "close")
 			{
 				this.visible = false;
-			}
+				trace("invisible");
+			}			
 		}			
 		
 	}

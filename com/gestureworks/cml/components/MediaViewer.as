@@ -282,7 +282,7 @@
 			}
 		}			
 		
-		private function onStateEvent(event:StateEvent):void
+		override protected function onStateEvent(event:StateEvent):void
 		{				
 			if (event.value == "info") 
 			{

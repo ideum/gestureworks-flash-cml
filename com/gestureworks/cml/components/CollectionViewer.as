@@ -15,6 +15,8 @@ package com.gestureworks.cml.components
 	import org.libspark.betweenas3.easing.*;	
 	import org.tuio.TuioTouchEvent;
 	
+	import flash.geom.ColorTransform;
+	
 	/**
 	 * CollectionViewer
 	 * @author Ideum
@@ -37,10 +39,15 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{
+			cover = new Sprite;
+			cover.graphics.beginFill(0xFFFFFF, 1);
+			cover.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+			cover.graphics.endFill();
+			stage.addChildAt(cover, 0);
+			
 			boundsTimer = new Timer(500);
 			boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
 			boundsTimer.start();
-			
 			
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
@@ -60,7 +67,7 @@ package com.gestureworks.cml.components
 						childList.getIndex(i).addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);	
 				}
 				
-				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent);	
+				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent, false, -1);
 				//childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
 				
 				if (i < amountToShow)
@@ -74,97 +81,94 @@ package com.gestureworks.cml.components
 											
 					queue.append(childList.getIndex(i));
 				}	
-			}	
+			}
+			
 		}			
 		
+		private var cover:Sprite;
+		
 		private function onBoundsTimer(event:TimerEvent):void
-		{				
+		{
+			
+	
 			for (var i:int = 0; i < this.numChildren; i++)
 			{
 				var offscreenBuffer:int = 50;
-				var bounds:Rectangle = getVisibility(this.getChildAt(i) as DisplayObject);
-								
+				//var bounds:Rectangle = getVisibility(this.getChildAt(i) as DisplayObject)
+				
+
+				
+				trace();
+				
+				//bounds.x = getChildAt(i).x;
+				//bounds.y = getChildAt(i).y;
+				//bounds.width *= getChildAt(i).scaleX;
+				//bounds.height *= getChildAt(i).scaleY;
+				
+				//trace("bounds", bounds);
+				
+				var bounds:Rectangle = getChildAt(i).getBounds(stage);
+				//trace(bounds);
+				
 				var offscreen:Boolean = false;
 				
+				trace(bounds.top, bounds.left, bounds.bottom, bounds.right);
+				
+				
+				trace(bounds.width, getChildAt(i).width*getChildAt(i).scaleX);
+				
 				// out left
-				if (bounds.x + bounds.width <= offscreenBuffer)
+				if (bounds.right <= offscreenBuffer)
 					offscreen = true;
 				
 				// out right	
-				if (bounds.x >= stage.stageWidth - offscreenBuffer)
+				if (bounds.left >= stage.stageWidth - offscreenBuffer)
 					offscreen = true;
 					
 				// out top	
-				if (bounds.y + bounds.height <= offscreenBuffer)
+				if (bounds.bottom <= offscreenBuffer)
 					offscreen = true;
 					
 				// out bottom	
-				if (bounds.y >= stage.stageHeight - offscreenBuffer)
+				if (bounds.top >= stage.stageHeight - offscreenBuffer)
 					offscreen = true;
 				
-										
+				
 				if (offscreen)
 				{					
-					removeComponent(this.getChildAt(i));
+					removeComponent(getChildAt(i));
 					
 					if (this.numChildren < amountToShow)
 						addNextComponent();
 				}
+				
+				
 			}
 		}
 			
 		
-		private function getVisibility(obj:DisplayObject):Rectangle 
-		{
-			var vis:Rectangle;
+		   public function getVisibility(source:DisplayObject):Rectangle
+		   {
+			   var bounds:Rectangle = source.getBounds(stage);
+			   trace(bounds);
+			   
+			   var matrix:Matrix = new Matrix();
+			   matrix.scale(source.scaleX, source.scaleY);
+			   matrix.translate( source.x, source.y);
+			   matrix.rotate(source.rotationX * (Math.PI / 180));
 		 
-			if (obj.parent == null) return new Rectangle();
-		 
-			if (obj is DisplayObjectContainer) {
-				vis = getChildVisibility(obj, obj.parent);
-			} else {
-				vis = obj.getBounds(obj.parent);
-			}
-		 
-			// Is the DisplayObject masked?
-			if (obj.mask != null) {
-				vis = vis.intersection(obj.mask.getBounds(obj.parent));
-			}
-		 
-			// Is the DisplayObject partly or completely off-stage?
-			vis = vis.intersection(obj.stage.getBounds(obj.parent));
-		 			
-			return vis;
-		}
+			   var data:BitmapData = new BitmapData(source.width, source.height, true, 0x00000000);			  
+			   data.draw(source, matrix);
+			   var bounds : Rectangle = data.getColorBoundsRect(0xFFFFFFFF, 0x000000, false);
+			   data.dispose();
+			   matrix = null;
+			   
+			   //bounds.x += source.x;
+			   //bounds.y += source.y;
+			   return bounds;
+		   }
 		
-		
-		private function getChildVisibility(obj:*, target:DisplayObjectContainer):Rectangle {
-		 
-			var vis:Rectangle = new Rectangle();
-			var child:DisplayObject;
-			var childRect:Rectangle;
-			var i:uint;
-		 
-			for (i = 1; i <= obj.numChildren; i++) {
-				child = obj.getChildAt(i-1);
-		 
-				if (child != null) {
-					if (child.visible) {
-						if (child is DisplayObjectContainer) {
-							childRect = getChildVisibility(child, target);
-						} else {
-							childRect = child.getBounds(target);
-						}
-						if (child.mask != null) {
-							childRect = childRect.intersection(child.mask.getBounds(target));
-						}
-						vis = vis.union(childRect);
-					}
-				}
-			}
-			return vis;
-		}
-		
+	
 		
 		private var tweens:Dictionary = new Dictionary(true)
 		private function updateLayout(event:*=null):void
@@ -195,73 +199,51 @@ package com.gestureworks.cml.components
 		}
 		
 
-		private function onStateEvent(event:StateEvent):void
+		override protected function onStateEvent(event:StateEvent):void
 		{			
 			if (event.value == "close") 
 			{				
 				removeComponent(event.currentTarget);				
-
-				if (this.numChildren < amountToShow)
+				if (numChildren < amountToShow)
 					addNextComponent();
 			}	
 		}	
 		
 		private function removeComponent(component:*):void
-		{			
-			//component.removeEventListener(StateEvent.CHANGE, onStateEvent);				
-			//component.removeEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
-			//component.removeEventListener(MouseEvent.MOUSE_DOWN, updateLayout);
-			//component.removeEventListener(GWGestureEvent.COMPLETE, onGestureComplete);	
-			
-			if (contains(component as DisplayObject)) {
+		{
+			trace("remove");
+			queue.append(component);
+			if (contains(component as DisplayObject))
 				removeChild(component as DisplayObject);
-				queue.append(component);
-			}	
 		}
 		
 		private function addNextComponent():void
 		{
-			var newComponent:*;
-			var removedIndex:int;
+			trace("add");
+			var newComponent:*;							
+			newComponent = queue.getIndex(0);
+			queue.remove(0);
 			
-			
-			function process():void
+			if (newComponent)
 			{
-				newComponent = queue.getIndex(0);
-				queue.remove(0);
+				newComponent.x = -500;
+				newComponent.y = -500;
+				addChild(newComponent);
+				newComponent.visible = true;
 				
 				
-				if (newComponent)
-				{				
-					addChild(newComponent);
-					
-					//var randX:Number = (stage.width / 2) - 200;	
-					//var randY:Number = (stage.height / 2) - 200;
-											
-					newComponent.x = -500;
-					newComponent.y = -500;
-					
-					if (animateIn)
-					{
-						tweens[newComponent] = BetweenAS3.tween(newComponent, { x:stage.stageWidth/2, y:stage.stageHeight/2 }, null, 4, Exponential.easeOut)
-						tweens[newComponent].onComplete = onTweenEnd;
-						tweens[newComponent].play();
-						newComponent.visible = true;							
-					}
-				}
-				
-				function onTweenEnd():void
-				{			
-					tweens[newComponent] = null;
+				if (animateIn)
+				{
+					tweens[newComponent] = BetweenAS3.tween(newComponent, { x:stage.stageWidth/2, y:stage.stageHeight/2 }, null, 4, Exponential.easeOut)
+					tweens[newComponent].onComplete = onTweenEnd;
+					tweens[newComponent].play();
 				}
 			}
 			
-			while (this.numChildren < amountToShow)
-			{
-				process();
+			function onTweenEnd():void
+			{			
+				tweens[newComponent] = null;
 			}
-			
-
 						
 		}
 	}
