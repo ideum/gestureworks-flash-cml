@@ -37,9 +37,10 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{
-			boundsTimer = new Timer(1000);
+			boundsTimer = new Timer(500);
 			boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
 			boundsTimer.start();
+			
 			
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
@@ -78,15 +79,11 @@ package com.gestureworks.cml.components
 		
 		private function onBoundsTimer(event:TimerEvent):void
 		{				
-			//trace(numChildren);				
-							
-			for (var i:int = 0; i < this.numChildren - 1; i++)
+			for (var i:int = 0; i < this.numChildren; i++)
 			{
 				var offscreenBuffer:int = 50;
-				var bounds:Rectangle =  getVisibility(this.getChildAt(i) as DisplayObject);
-				
-				//trace(bounds);
-				
+				var bounds:Rectangle = getVisibility(this.getChildAt(i) as DisplayObject);
+								
 				var offscreen:Boolean = false;
 				
 				// out left
@@ -107,15 +104,11 @@ package com.gestureworks.cml.components
 				
 										
 				if (offscreen)
-				{
-					//trace(i);
-					
+				{					
 					removeComponent(this.getChildAt(i));
 					
-					if (this.numChildren < amountToShow) {
-						addNextComponent(this.getChildAt(i));
-						
-					}
+					if (this.numChildren < amountToShow)
+						addNextComponent();
 				}
 			}
 		}
@@ -209,7 +202,7 @@ package com.gestureworks.cml.components
 				removeComponent(event.currentTarget);				
 
 				if (this.numChildren < amountToShow)
-					addNextComponent(event.target);
+					addNextComponent();
 			}	
 		}	
 		
@@ -226,7 +219,7 @@ package com.gestureworks.cml.components
 			}	
 		}
 		
-		private function addNextComponent(component:*):void
+		private function addNextComponent():void
 		{
 			var newComponent:*;
 			var removedIndex:int;
