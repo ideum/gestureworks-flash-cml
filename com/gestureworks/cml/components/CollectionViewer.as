@@ -7,15 +7,10 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.*;
 	import flash.display.*;
 	import flash.events.*;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	import flash.utils.*;
 	import org.libspark.betweenas3.*;
-	import org.libspark.betweenas3.easing.*;	
-	import org.tuio.TuioTouchEvent;
-	
-	import flash.geom.ColorTransform;
+	import org.libspark.betweenas3.easing.*;
+	import org.tuio.*;	
 	
 	/**
 	 * CollectionViewer
@@ -40,11 +35,14 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{
 			cover = new Sprite;
-			cover.graphics.beginFill(0xFFFFFF, 1);
-			cover.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+		
+			cover.graphics.beginFill(0x000000, 1);
+			cover.graphics.drawRect(30, 30, stage.stageWidth - 60, stage.stageHeight - 60);
 			cover.graphics.endFill();
-			stage.addChildAt(cover, 0);
-			
+			cover.cacheAsBitmap = true;
+			cover.visible = false;
+			this.addChildAt(cover, 0);
+						
 			boundsTimer = new Timer(500);
 			boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
 			boundsTimer.start();
@@ -68,7 +66,6 @@ package com.gestureworks.cml.components
 				}
 				
 				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent, false, -1);
-				//childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
 				
 				if (i < amountToShow)
 				{					
@@ -89,87 +86,23 @@ package com.gestureworks.cml.components
 		
 		private function onBoundsTimer(event:TimerEvent):void
 		{
-			
-	
-			for (var i:int = 0; i < this.numChildren; i++)
-			{
-				var offscreenBuffer:int = 50;
-				//var bounds:Rectangle = getVisibility(this.getChildAt(i) as DisplayObject)
+			for (var i:int = 1; i < this.numChildren; i++)
+			{					
+				var onscreen:Boolean = PixelPerfectCollisionDetection.isColliding(getChildAt(i), cover, this, false, 0);								
 				
-
-				
-				trace();
-				
-				//bounds.x = getChildAt(i).x;
-				//bounds.y = getChildAt(i).y;
-				//bounds.width *= getChildAt(i).scaleX;
-				//bounds.height *= getChildAt(i).scaleY;
-				
-				//trace("bounds", bounds);
-				
-				var bounds:Rectangle = getChildAt(i).getBounds(stage);
-				//trace(bounds);
-				
-				var offscreen:Boolean = false;
-				
-				trace(bounds.top, bounds.left, bounds.bottom, bounds.right);
-				
-				
-				trace(bounds.width, getChildAt(i).width*getChildAt(i).scaleX);
-				
-				// out left
-				if (bounds.right <= offscreenBuffer)
-					offscreen = true;
-				
-				// out right	
-				if (bounds.left >= stage.stageWidth - offscreenBuffer)
-					offscreen = true;
-					
-				// out top	
-				if (bounds.bottom <= offscreenBuffer)
-					offscreen = true;
-					
-				// out bottom	
-				if (bounds.top >= stage.stageHeight - offscreenBuffer)
-					offscreen = true;
-				
-				
-				if (offscreen)
+				if (!onscreen)
 				{					
 					removeComponent(getChildAt(i));
 					
-					if (this.numChildren < amountToShow)
+					if (this.numChildren-1 < amountToShow)
 						addNextComponent();
 				}
-				
 				
 			}
 		}
 			
-		
-		   public function getVisibility(source:DisplayObject):Rectangle
-		   {
-			   var bounds:Rectangle = source.getBounds(stage);
-			   trace(bounds);
-			   
-			   var matrix:Matrix = new Matrix();
-			   matrix.scale(source.scaleX, source.scaleY);
-			   matrix.translate( source.x, source.y);
-			   matrix.rotate(source.rotationX * (Math.PI / 180));
-		 
-			   var data:BitmapData = new BitmapData(source.width, source.height, true, 0x00000000);			  
-			   data.draw(source, matrix);
-			   var bounds : Rectangle = data.getColorBoundsRect(0xFFFFFFFF, 0x000000, false);
-			   data.dispose();
-			   matrix = null;
-			   
-			   //bounds.x += source.x;
-			   //bounds.y += source.y;
-			   return bounds;
-		   }
-		
-	
-		
+
+		   
 		private var tweens:Dictionary = new Dictionary(true)
 		private function updateLayout(event:*=null):void
 		{			
@@ -204,7 +137,7 @@ package com.gestureworks.cml.components
 			if (event.value == "close") 
 			{				
 				removeComponent(event.currentTarget);				
-				if (numChildren < amountToShow)
+				if (numChildren-1 < amountToShow)
 					addNextComponent();
 			}	
 		}	

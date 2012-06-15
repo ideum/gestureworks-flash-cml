@@ -53,6 +53,9 @@ package com.gestureworks.cml.element
 			else if (touchDown)
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			
+			if (over)
+				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);
+				
 			if (down)
 			{
 				if (GestureWorks.activeTUIO)
@@ -62,6 +65,7 @@ package com.gestureworks.cml.element
 				else
 					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 			}
+						
 
 			updateLayout();
 		}
@@ -246,6 +250,16 @@ package com.gestureworks.cml.element
 			buttonStates["down"] = value;
 		}
 		
+		private var _over:String;
+		/**
+		 * Sets button state association with over event (mouse only)
+		 */		
+		public function get over():String {return buttonStates["over"];}
+		public function set over(value:String):void 
+		{			
+			buttonStates["over"] = value;
+		}
+		
 		
 		private var _up:String;
 		/**
@@ -366,7 +380,7 @@ package com.gestureworks.cml.element
 			}
 			
 			if (dispatchDict["mouseOver"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseDown"], true, true));	
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseOver"], true, true));	
 			else if (dispatchDefault)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOver", true, true));					
 											
@@ -390,7 +404,7 @@ package com.gestureworks.cml.element
 			
 			if (mouseOver)
 			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOut);												
+				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);												
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			}
 			
@@ -517,7 +531,7 @@ package com.gestureworks.cml.element
 			}
 			
 			showKey(buttonStates["touchOut"]);
-				
+			
 			if (touchDown)
 			{
 				if (GestureWorks.activeTUIO) {
@@ -600,6 +614,43 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "down", true, true));		
 		}
 		
+		private function onOver(event:*):void
+		{
+			if (debug)			
+				trace("over");											
+			
+			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);															
+			
+			for each (var state:* in buttonStates)
+			{
+				if (state != over)
+					hideKey(state);	
+			}				
+	
+			showKey(buttonStates["over"]);	
+			
+			if (out)
+			{
+				if (GestureWorks.activeTUIO) {
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);	
+				}
+				else if (GestureWorks.supportsTouch) {
+					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
+				}	
+				else {
+					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
+					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
+				}
+			}
+			
+			if (dispatchDict["over"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["over"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "over", true, true));					
+											
+		}	
 		
 		private function onUp(event:*):void
 		{	
@@ -679,6 +730,12 @@ package com.gestureworks.cml.element
 			}
 			
 			showKey(buttonStates["out"]);
+			
+			if (over)
+			{
+				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);												
+				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);
+			}
 			
 			if (down)
 			{
