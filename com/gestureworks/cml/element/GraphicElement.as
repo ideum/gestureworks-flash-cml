@@ -120,7 +120,7 @@ package com.gestureworks.cml.element
 				default:
 				{
 					// makes line unless radius is specified (makes circle), and
-					// if width and height are specifed then makes square
+					// if width and height are specifed then makes rectangle
 					
 					if (radius == 0 && width > 0 && height > 0) 
 						graphics.drawRect(0, 0, width, height);
