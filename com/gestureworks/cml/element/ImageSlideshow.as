@@ -5,6 +5,7 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.tweens.ITween;
 	
 	import flash.events.TimerEvent;
+	import flash.events.Event;
 
 	/**
 	 * ImageSlideshow
@@ -18,6 +19,37 @@ package com.gestureworks.cml.element
 		public function ImageSlideshow()
 		{
 			super();
+		}
+		
+		private var loaded:Boolean = false;
+		
+		/**
+		 * Default index sets the default image and displays it
+		 */		
+		private var _defaultIndex:int;
+		public function get defaultIndex():int { return _defaultIndex };
+		public function set defaultIndex(value:int):void
+		{
+			_defaultIndex = value;
+		}	
+			
+		public function loadDefault(index:int):void
+		{	
+			currentIndex = index
+			fadein(index);
+		}
+
+		override public function loadComplete():void 
+		{
+			loaded = true;  
+
+			for (var i:int = 0; i < this.length; i++) 
+			{
+				getIndex(i).loadComplete();
+			}	
+
+			loadDefault(_defaultIndex);						
+			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
 		/**
