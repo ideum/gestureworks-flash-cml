@@ -7,6 +7,8 @@ package com.gestureworks.cml.factories
 	import flash.text.*;
 	import flash.display.BlendMode;
 	import flash.utils.Dictionary;
+	import flash.text.TextFieldType;
+	
 	
 	public class TextFactory extends TextField implements IElement, ICSS
 	{
@@ -93,6 +95,18 @@ package com.gestureworks.cml.factories
 			verticalAlign = _verticalAlign;
 		}
 		
+		private var _type:String = "input";
+		override public function get type():String { return _type; }
+		override public function set type(value:String):void
+		{
+			
+			_type = value;
+			
+			if (_type == "input")
+				super.type = TextFieldType.INPUT;
+			else
+				super.type = TextFieldType.DYNAMIC;
+		}
 		
 		private var _text:String;
 		override public function get text():String { return super.text; }
@@ -111,37 +125,33 @@ package com.gestureworks.cml.factories
 			setY = value;
 		}
 		
-		//private var _autoSize:String;
-		//override public function get autoSize():String{return _autoSize;}
-		//override public function set autoSize(value:String):void
-		//{
-			//_autoSize = value;
-			
-			//super.autoSize = TextFieldAutoSize.CENTER;
-			/*
+		private var _autoSize:String;
+		override public function get autoSize():String{return _autoSize;}
+		override public function set autoSize(value:String):void
+		{
+			_autoSize = value;
+						
 			switch (value) 
             {
                 case "center":
-                    //textFormat.autoSize = TextFieldAutoSize.CENTER;
-					
-                    updateTextFormat();
+					super.autoSize = TextFieldAutoSize.CENTER;
+                   // updateTextFormat();
                     break;
                 case "left":
-                  //  textFormat.autoSize = TextFieldAutoSize.LEFT;
-                    updateTextFormat();
+					super.autoSize = TextFieldAutoSize.LEFT;
+                   // updateTextFormat();
                     break;
                 case "right":
-                    //textFormat.autoSize = TextFieldAutoSize.RIGHT;
-                    updateTextFormat();
+                    super.autoSize = TextFieldAutoSize.RIGHT;
+                   // updateTextFormat();
                     break;
                 case "none":
-                    //textFormat.autoSize = TextFieldAutoSize.NONE;
-                    updateTextFormat();
+                    super.autoSize = TextFieldAutoSize.NONE;
+                   // updateTextFormat();
                     break;
             }
-			*/
 
-		//}
+		}
 		
 		private var _color:int;
 		public function get color():int { return _color; }

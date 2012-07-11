@@ -78,7 +78,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.VideoElement; VideoElement;
 	import com.gestureworks.cml.element.MP3Element; MP3Element;
 	import com.gestureworks.cml.element.Gesture; Gesture;
-	import com.gestureworks.cml.element.Group; Group;		
+	import com.gestureworks.cml.element.Group; Group;
+	import com.gestureworks.cml.element.Toggle; Toggle;
 
 	
 	
