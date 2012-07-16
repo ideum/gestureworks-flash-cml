@@ -6,7 +6,7 @@ package com.gestureworks.cml.layouts
 	import com.gestureworks.cml.interfaces.*;
    
     /**
-     * A layout utility that fore laying out in a grid
+     * A layout utility for laying out display objects in a grid
      *
      * @author 
      * @version

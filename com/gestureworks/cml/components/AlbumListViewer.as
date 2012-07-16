@@ -4,6 +4,8 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.kits.ComponentKit;
 	import com.gestureworks.core.GestureWorks;
 	
+	import flash.display.Sprite
+	
 	public class AlbumListViewer extends ComponentKit
 	{		
 		private var i:int
@@ -29,7 +31,7 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{			
-			trace("album list viewer---------------------------------------------------",this.id);
+		
 		}
 	}
 }

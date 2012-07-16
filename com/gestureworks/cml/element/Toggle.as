@@ -12,9 +12,9 @@
 	 * The Toggle is a element that acts as a toggle button.
 	 * It has the following parameters: fillColor, outlineColor and lineStroke.
 	 * 
-	 * <code>
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 * 
-	 *      var toggle:Toggle = new Toggle();
+	        var toggle:Toggle = new Toggle();
 			toggle.fillColor = 0x333333;
 			toggle.outlineColor = 0xFF0000;
 			toggle.lineStroke = 4;
@@ -42,7 +42,7 @@
 			}
 	 * 
 	 * 
-	 * </code>
+	 * </codeblock>
 	 */
 	public class Toggle extends ElementFactory 
 	  {
