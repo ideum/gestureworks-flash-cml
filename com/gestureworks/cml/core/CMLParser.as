@@ -1,8 +1,16 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  IDEUM
+//  Copyright 2011-2012 Ideum
+//  All Rights Reserved.
+//             
+//  NOTICE: Ideum permits you to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.gestureworks.cml.core 
 {
-	//import com.gestureworks.cml.utils.collections.TreeIterator;
-	//import com.gestureworks.cml.utils.collections.TreeNode;
-	import com.gestureworks.core.DisplayList;	
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
@@ -11,16 +19,26 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.core.GestureWorks;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.utils.*;
-	import flash.display.DisplayObjectContainer;
+	import com.gestureworks.core.DisplayList;
 	
-	/**
-	 * CMLParser, Singleton
-	 * CML parsing routine
-	 * @authors Matthew Valverde and Charles Veasey
-	 */
+	
+	/** 
+	 * The CMLParser class parses cml files for run-time object construction 
+	 * and modification. It is called by the GestureWorks class when a cml file 
+	 * path is specified in the constructor.
+	 *
+	 * @author Matthew Valverde and Charles Veasey
+	 * @langversion 3.0
+	 * @playerversion Flash 10.1
+	 * @playerversion AIR 2.5
+	 * 
+	 * @see com.gestureworks.cml.core.CMLObjectList
+	 */		
+
 	public class CMLParser extends CML_CORE
 	{		
 		public function CMLParser(enforcer:SingletonEnforcer) {}
@@ -598,8 +616,8 @@ package com.gestureworks.cml.core
 				obj = searchPackages(className, CML_CORE_PACKAGES);
 				
 				//if search failed, try the external list
-				if (!obj)
-					obj = searchPackages(className, CML_EXTERNAL_PACKAGES);
+				//if (!obj)
+					//obj = searchPackages(className, CML_EXTERNAL_PACKAGES);
 
 				//if search failed again, throw an error
 				if (!obj)

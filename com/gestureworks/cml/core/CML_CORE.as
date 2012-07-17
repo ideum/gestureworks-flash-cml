@@ -1,7 +1,40 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  IDEUM
+//  Copyright 2011-2012 Ideum
+//  All Rights Reserved.
+//             
+//  NOTICE: Ideum permits you to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.gestureworks.cml.core 
 {
+	import flash.events.EventDispatcher;
 	
-	public class CML_CORE extends CML_EXTERNAL 
+	/** 
+	 * This class is the registry file for classes that are CML-compatible.
+	 * 
+	 * <p>You can register you own class for CML loading by placing your class file
+	 * in one of the following packages: </p>
+	 * 
+	 * <p> com.gestureworks.components </p>
+	 * <p> com.gestureworks.element </p>
+	 * <p> com.gestureworks.kits </p>
+	 * <p> com.gestureworks.layouts </p>
+	 * 
+	 * <p>Then use the following import syntax to register your class:</p>
+	 * 
+	 * <p>com.gestureworks.cml.element.CustomClass; CustomClass;</p>
+	 * 
+	 * @playerversion Flash 10.1
+	 * @playerversion AIR 2.5
+	 * @langversion 3.0
+	 *
+	 * @see com.gestureworks.cml.core.CML_AIR
+	 */		
+	public class CML_CORE extends EventDispatcher
 	{
 		// searchable packages
 		protected static var CML_CORE_PACKAGES:Array = 
@@ -13,33 +46,21 @@ package com.gestureworks.cml.core
 		]		
 	}
 	
-	/////////////////////////
-	// high level components
-	/////////////////////////
 	
 	
-	
-	
-	//////////////////
-	//  COMPONENTS  // 
-	//////////////////
-	
-	//componenet element viewer managers/lists
-	//import com.gestureworks.cml.components.TimelineViewer; TimelineViewer;
+	/////////////////////
+	//  COMPONENTS   
+	/////////////////////	
 	import com.gestureworks.cml.components.MediaViewer; MediaViewer;
 	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
 	import com.gestureworks.cml.components.ListViewer; ListViewer;
 	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
-	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;
-	
-	//component element viewers
+	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;	
 	import com.gestureworks.cml.components.MP3Player; MP3Player;	
 	import com.gestureworks.cml.components.VideoViewer; VideoViewer;	
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
 	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
-	import com.gestureworks.cml.components.GoogleMapsViewer; GoogleMapsViewer;
-	import com.gestureworks.cml.components.ModestMapsViewer; ModestMapsViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
@@ -47,13 +68,10 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.Component; Component;	
 	
 	
-	////////////////
-	//  ELEMENTS  // 
-	////////////////
 	
-	import com.gestureworks.cml.element.MagnifierElement; MagnifierElement;
-
-	//checked	
+	/////////////////////
+	//  ELEMENTS   
+	/////////////////////
 	import com.gestureworks.cml.element.Include; Include;			
 	import com.gestureworks.cml.element.Container; Container;
 	import com.gestureworks.cml.element.Menu; Menu;		
@@ -80,39 +98,26 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Gesture; Gesture;
 	import com.gestureworks.cml.element.Group; Group;
 	import com.gestureworks.cml.element.Toggle; Toggle;
-    import com.gestureworks.cml.element.Switch; Switch;
+   // import com.gestureworks.cml.element.Switch; Switch;
 	
 	
 	
 	/////////////////////
 	//  KITS  
-	////////////////////
-	
-	
-	//checked
+	/////////////////////
 	import com.gestureworks.cml.kits.LibraryKit; LibraryKit;
-	import com.gestureworks.cml.kits.ViewKit; ViewKit;
 	import com.gestureworks.cml.kits.LayoutKit; LayoutKit;		
-	import com.gestureworks.cml.kits.ComponentKit; ComponentKit;		
-
-	
-	//??
+	import com.gestureworks.cml.kits.ComponentKit; ComponentKit;	
 	import com.gestureworks.cml.kits.BackgroundKit; BackgroundKit;		
 	import com.gestureworks.cml.kits.StageKit; StageKit;
-	import com.gestureworks.cml.kits.SplashKit; SplashKit;	
+	
 	
 
 	///////////////////////
 	//  LAYOUTS 
 	//////////////////////
-	
-	
-	//checked
 	import com.gestureworks.cml.layouts.RandomLayout; RandomLayout;
 	import com.gestureworks.cml.layouts.ListLayout; ListLayout;
 	import com.gestureworks.cml.layouts.StackLayout; StackLayout;
 	import com.gestureworks.cml.layouts.GridLayout; GridLayout;
-
-	
 }
-

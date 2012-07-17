@@ -2,10 +2,10 @@
     {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.ElementFactory;
-	import flash.display.Sprite;
-	import flash.events.TouchEvent;
 	import com.gestureworks.core.GestureWorks;
+	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
 	
 	/**
