@@ -131,15 +131,15 @@ package com.gestureworks.cml.layouts
 
         /**
          * Creates the grid and returns an array of points with x and y values based on passed parameters.
-         * The $leftToRight addition was contributed by Skye Giordano.
+         * The leftToRight addition was contributed by Skye Giordano.
          *
-         * @param $columns An integer representing the number of columns to be created in the grid
-         * @param $rows An integer representing the number of rows to be created in the grid
-         * @param $xSpacing An integer representing the spacing between columns
-         * @param $ySpacing An integer representing the spacing between rows
-         * @param $xPadding An integer representing the padding between each column
-         * @param $yPadding An integer representing the padding between each row
-         * @param $leftToRight An optional boolean that creates the grid from left-to-right or top-to-bottom (default: true)
+         * @param columns An integer representing the number of columns to be created in the grid
+         * @param rows An integer representing the number of rows to be created in the grid
+         * @param xSpacing An integer representing the spacing between columns
+         * @param ySpacing An integer representing the spacing between rows
+         * @param xPadding An integer representing the padding between each column
+         * @param yPadding An integer representing the padding between each row
+         * @param leftToRight An optional boolean that creates the grid from left-to-right or top-to-bottom (default: true)
          *
          * @return Array
          */
