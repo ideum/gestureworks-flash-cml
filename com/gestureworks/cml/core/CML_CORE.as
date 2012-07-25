@@ -98,6 +98,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Gesture; Gesture;
 	import com.gestureworks.cml.element.Group; Group;
 	import com.gestureworks.cml.element.Toggle; Toggle;
+	import com.gestureworks.cml.element.RadioButtons; RadioButtons;
    // import com.gestureworks.cml.element.Switch; Switch;
 	
 	

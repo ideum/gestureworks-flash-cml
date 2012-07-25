@@ -10,6 +10,39 @@
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.cml.element.TextElement;
 	
+	/**
+	 * The RadioButtons element represents a group of radio buttons generated from a user defined list of labels. Other configurable
+	 * properties include the primary font characteristics (style, size, and color), placement direction (right to left or top to bottom), 
+	 * and the spacing between the buttons.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * 			
+		override protected function gestureworksInit():void
+ 		{
+			radioButtonsTest();
+		}
+	 
+		private function radioButtonsTest()
+		{
+			var rButtons:RadioButtons = new RadioButtons("A,B,C,D,E");
+			rButtons.x = 200;
+			rButtons.y = 200;
+		    rButtons.labels = "Abracadabra,B,C,D,E,f,g,h,i,k";			
+			rButtons.fontColor = 0xFF0216;			
+			rButtons.verticalOffset = 70;
+			rButtons.update();
+			rButtons.addEventListener(StateEvent.CHANGE, testRBSelect);
+			addChild(rButtons);
+		}
+		
+		private function testRBSelect(event:StateEvent):void
+		{
+			trace(event.value);
+		}
+	 * 
+	 * 
+	 * </codeblock>
+	 */
 	public class RadioButtons extends ElementFactory 	 
 	{		
 		private var selected:Sprite;
@@ -45,6 +78,9 @@
 				this.addEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
 		}	
 		
+		/**
+		 * CML display initialization callback
+		 */
 		public override function displayComplete():void
 		{
 			super.displayComplete();
@@ -107,15 +143,13 @@
 			button.graphics.beginFill(0xFFFFFF);			
 			button.graphics.drawCircle(radius, radius, radius);			
 			button.graphics.endFill();														
-			_radioButtons[button] = caption;	
 			setButtonPosition(button);
 					
 			caption.autoSize = "left";
 			caption.text = label;
-			caption.border = true;
-			caption.height = caption.fontSize;			
+			caption.height = caption.fontSize;
 			caption.x = button.x + button.width;
-			caption.y = button.y;
+			caption.y = button.y - (caption.height - caption.getLineMetrics(0).height);
 			
 			addChild(button);
 			addChild(caption);												
@@ -133,19 +167,19 @@
 			{
 				//set a minimum distance to prevent overlap
 				var min:Number;
+				var offset:Number;
 				
 				if (_verticalLayout)
 				{
 					min = lastLabel.textHeight + 10 ;
-					_verticalOffset = _verticalOffset > min ? _verticalOffset : min;
-					button.y = lastLabel.y + _verticalOffset;
+					offset = _verticalOffset > min ? _verticalOffset : min;
+					button.y = lastLabel.y + offset;
 				}
 				else
 				{
 					min = lastLabel.textWidth + 10;
-					trace(min, lastLabel.text);
-					_horizontalOffset = _horizontalOffset > min ? _horizontalOffset : min;
-					button.x = lastLabel.x + _horizontalOffset;
+					offset = _horizontalOffset > min ? _horizontalOffset : min;
+					button.x = lastLabel.x + offset;
 				}
 			}
 		}
@@ -164,36 +198,35 @@
 					return child;
 			}
 			return null;
-		}
+		}		
 		
 		/**
-		 * 
+		 * Draws the inner circle representing the selected state of the radio button. 
 		 */
 		private function drawSelection(): void
-		{
+		{		
 			selected = new Sprite();
 			selected.name = "selected";
 			selected.graphics.lineStyle(1, 0x000000);
-			selected.graphics.beginFill(0x000000);
+			selected.graphics.beginFill(0x000000);		
 			selected.graphics.drawCircle(radius, radius, radius*.6);
 			selected.graphics.endFill();
 		}
 		
+		/**
+		 * Comma delimited string of button labels
+		 */
 		private var _labels:String;
 		public function get labels():String { return _labels; }
 		public function set labels(labels:String):void
 		{
 			_labels = labels;
 
-		}
+		}		
 		
-		private var _radioButtons:Dictionary = new Dictionary();
-		public function get radioButtons():Dictionary { return _radioButtons; }
-		public function set radioButtons(rb:Dictionary):void
-		{
-			_radioButtons = rb;
-		}
-		
+		/**
+		 * Vertical distance between buttons
+		 */
 		private var _verticalOffset:Number;
 		public function get verticalOffset():Number { return _verticalOffset; }
 		public function set verticalOffset(vo:Number):void		
@@ -201,6 +234,9 @@
 			_verticalOffset = vo;
 		}
 		
+		/**
+		 * Horizontal distance between button 
+		 */
 		private var _horizontalOffset:Number;
 		public function get horizontalOffset():Number { return _horizontalOffset; }
 		public function set horizontalOffset(ho:Number):void
@@ -208,6 +244,9 @@
 			_horizontalOffset = ho;
 		}
 		
+		/**
+		 * Flag indicating whether the buttons in a sequence are displayed vertically or horizontally.
+		 */
 		private var _verticalLayout:Boolean = true;
 		public function get verticalLayout():Boolean { return _verticalLayout };
 		public function set verticalLayout(vl:Boolean):void 
@@ -215,6 +254,9 @@
 			_verticalLayout = vl;
 		}
 		
+		/**
+		 * The label font name
+		 */
 		private var _fontStyle:String;
 		public function get fontStyle():String { return _fontStyle; }
 		public function set fontStyle(fs:String):void
@@ -222,6 +264,9 @@
 			_fontStyle = fs;
 		}
 		
+		/**
+		 * The label font size (minimum size is 9)
+		 */
 		private var _fontSize:Number;
 		public function get fontSize():Number { return _fontSize; }
 		public function set fontSize(fs:Number):void
@@ -230,6 +275,9 @@
 				_fontSize = fs;
 		}
 		
+		/**
+		 * The label font color
+		 */
 		private var _fontColor:uint;
 		public function get fontColor():uint { return _fontColor; }
 		public function set fontColor(fc:uint):void
@@ -237,22 +285,17 @@
 			_fontColor = fc;
 		}
 		
+		/**
+		 * The currently selected label
+		 */
 		private var _selectedLabel:String;
 		public function get selectedLabel():String { return _selectedLabel; }
-		public function set selectedLabel(sl:String):void
-		{
-			_selectedLabel = sl;
-		}
+				
 		
-		public function getSelectedLabel():String
-		{
-			if (selected.parent)
-				return TextElement(_radioButtons[selected.parent]).text;			
-			return null;
-		}
-		
-		
-		
+		/**
+		 * Handles the event indicating a radio button is selected 
+		 * @param	event
+		 */
 		private function buttonSelected(event:*):void
 		{		
 			if (event.target is Sprite)
@@ -261,11 +304,10 @@
 				if (button.name != selected.name)
 				{
 					button.addChild(selected);
-					selectedLabel = TextElement(_radioButtons[button]).text;
+					_selectedLabel = button.name;
 				}
-					
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel));		
 			}
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", selectedLabel));
 		}	
 			
 	}
