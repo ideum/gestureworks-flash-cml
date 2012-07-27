@@ -99,7 +99,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Group; Group;
 	import com.gestureworks.cml.element.Toggle; Toggle;
 	import com.gestureworks.cml.element.RadioButtons; RadioButtons;
-   // import com.gestureworks.cml.element.Switch; Switch;
+    import com.gestureworks.cml.element.Switch; Switch;
+	import com.gestureworks.cml.element.DatePicker; DatePicker;
 	
 	
 	
