@@ -152,6 +152,9 @@
 			caption.x = button.x + button.width;
 			caption.y = button.y - (caption.height - caption.getLineMetrics(0).height);
 			
+			_radioButtons[label] = button;
+			_textElements[label] = caption;
+			
 			addChild(button);
 			addChild(caption);												
 		}
@@ -285,6 +288,18 @@
 		{
 			_fontColor = fc;
 		}
+		
+		/**
+		 * Label name to TextElement mapping
+		 */
+		private var _textElements:Dictionary = new Dictionary();
+		public function get textEls():Dictionary { return _textElements; }
+		
+		/**
+		 * Label name to button Sprite mapping
+		 */
+		private var _radioButtons:Dictionary = new Dictionary();
+		public function get radioButtons():Dictionary { return _radioButtons; }
 		
 		/**
 		 * The currently selected label

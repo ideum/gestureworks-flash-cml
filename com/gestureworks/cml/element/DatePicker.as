@@ -51,25 +51,30 @@ package com.gestureworks.cml.element
 		private var monthArray:Array;		
 		private var dayNameArray:Array;
 		private var daysMonthArray:Array = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);		
-		private var fontColor:uint;
-		private var calendar:Sprite;				// container-Sprite for the Date-Grid
+		private var fontColor:uint;		
 		private var _calendarWidth:Number = 240;
 		private var _calendarHeight:Number = 175;
-		private var mCount:Number;					// month-counter
-		private var yCount:Number;					// year-counter		
+		private var mCount:Number;					
+		private var yCount:Number;					
+		private var calendar:Sprite;			// container-Sprite for the Date-Grid
+		private var bkg:Sprite;
+		private var prevArrow:Sprite;
+		private var nextArrow:Sprite;
+		private var dayDisplay:Sprite;
 		
 		/**
 		 * Constructor
 		 */				
-		public function DatePicker(){
-			addEventListener(Event.ADDED_TO_STAGE, init);
+		public function DatePicker() {
+			super();
+			init();
 		}
 		
 		/**
 		 * A flag indicating the calendars color scheme
 		 */
 		private var _colorSchemeDark:Boolean = true;
-		public function get colorSchemeDark():Boolean { return _colorSchemeDark }; 
+		public function get colorSchemeDark():Boolean { return _colorSchemeDark; } 
 		public function set colorSchemeDark(ds:Boolean):void
 		{
 			_colorSchemeDark = ds;
@@ -85,7 +90,7 @@ package com.gestureworks.cml.element
 		 * A comma delimited string representing the days of the week
 		 */
 		private var _days:String = "Mo,Tu,We,Th,Fr,Sa,Su";
-		public function get days():String { return _days };
+		public function get days():String { return _days; }
 		public function set days(d:String):void
 		{
 			for (var i:int = d.split(",").length; i < 7; i++)
@@ -104,26 +109,39 @@ package com.gestureworks.cml.element
 				m = m + ",";
 			trace(m);	
 			_months = m;
-		}		
+		}
+		
+		/**
+		 * CML display initialization callback
+		 */
+		public override function displayComplete():void
+		{
+			super.displayComplete();
+			init();
+		}
 			
 		/**
 		 * Initializes the calendar components
 		 * @param	e  ADDED_TO_STAGE event
 		 */
-		private function init(e:Event):void{
+		public function init():void{
 			fontColor = _colorSchemeDark ? 0xCCCCCC : 0x333333;
-		    addChild(drawRadialBackground(_calendarWidth, _calendarHeight));			
+			bkg = drawRadialBackground(_calendarWidth, _calendarHeight);
+		    addChild(bkg);			
 			
-			var next_btn:Sprite = drawArrow(_calendarWidth-25,12,0);
-			addEvents(next_btn, onNext); 
-			addChild(next_btn);
+			nextArrow = drawArrow(_calendarWidth-25,12,0);
+			addEvents(nextArrow, onNext); 
+			addChild(nextArrow);
 			
-			var prev_btn:Sprite = drawArrow(25,12,180);
-			addEvents(prev_btn, onPrev);
-			addChild(prev_btn);
+			prevArrow = drawArrow(25,12,180);
+			addEvents(prevArrow, onPrev);
+			addChild(prevArrow);
 			
-			addChild(drawDayNameRow(5,25));
-		    addChild(drawDateGrid(xDate.getMonth(), xDate.getFullYear()));			
+			dayDisplay = drawDayNameRow(5, 25);
+			addChild(dayDisplay);
+			
+			calendar = drawDateGrid(xDate.getMonth(), xDate.getFullYear());
+		    addChild(calendar);			
 		}		
 		
 		/**
@@ -163,9 +181,9 @@ package com.gestureworks.cml.element
 		 * @return  the current calendar
 		 */
 		private function drawDateGrid(mm:Number, yy:Number):Sprite{
-			calendar = new Sprite();
-			calendar.x = 5;
-			addChild(calendar);
+			var grid:Sprite = new Sprite();
+			grid.x = 5;
+			addChild(grid);
 
 			/*******month and year display******/
 			var month_txt:TextField = new TextField();
@@ -175,7 +193,7 @@ package com.gestureworks.cml.element
 			month_txt.y = 5;			
 			month_txt.x = (_calendarWidth / 2) - (month_txt.width / 2);
 			month_txt.setTextFormat(txtFormat("month"));
-			calendar.addChild(month_txt);
+			grid.addChild(month_txt);
 			
 			/*******rows of date numbers******/
 			var daysNr:int = (yy%4 == 0 && mm == 1) ? 29 : daysMonthArray[mm];  //  recognizing leap years
@@ -212,10 +230,10 @@ package com.gestureworks.cml.element
 				(todayDate.getFullYear() == yy && todayDate.getMonth() == mm  && todayDate.getDate() == i) ? nr_txt.setTextFormat(txtFormat("today")) : nr_txt.setTextFormat(txtFormat("dateGrid"));
 				nr_spr.addChild(nr_txt);
 				
-				calendar.addChild(nr_spr);								
+				grid.addChild(nr_spr);								
 				dayNameNr == 7 ? dayNameNr = 1 : dayNameNr++;  // if dayNameNr is 7 (Sunday) set it back to 1 (Monday)
 			}
-			return calendar;
+			return grid;
 		}
 		
 		/**
@@ -261,7 +279,8 @@ package com.gestureworks.cml.element
 			} else {
 				mCount++;								// else increase month counter by 1
 			}
-			drawDateGrid(mCount, yCount);				// make DateGrid-Sprite for the next month
+			calendar = drawDateGrid(mCount, yCount);	// make DateGrid-Sprite for the next month
+			addChild(calendar);
 		}
 		
 		/**
@@ -278,7 +297,8 @@ package com.gestureworks.cml.element
 			} else {
 				mCount--;								// else decrease month counter by 1
 			}
-			drawDateGrid(mCount, yCount);				// make DateGrid-Sprite for the previous month
+			calendar = drawDateGrid(mCount, yCount);	// make DateGrid-Sprite for the previous month
+			addChild(calendar);
 		}
 		
 		/**
