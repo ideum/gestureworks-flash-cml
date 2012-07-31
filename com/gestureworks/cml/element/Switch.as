@@ -12,16 +12,16 @@ package com.gestureworks.cml.element
 	
 	/**
 	 * The Switch is a UIelement that acts as a Switch button.
-	 * It has the following parameters: backgroundfillColor, backgroundoutlineColor, backgroundlineStroke, backgroundX, backgroundY, backgroundWidth, backgroundHeight, backgroundEllipseWidth,backgroundEllipseHeight, buttonfillColor, buttonoutlineColor, buttonlineStroke, buttonX, buttonY, buttonWidth, buttonHeight, buttonEllipseWidth, buttonEllipseHeight.
+	 * It has the following parameters: backgroundColor, backgroundoutlineColor, backgroundlineStroke, backgroundX, backgroundY, backgroundWidth, backgroundHeight, backgroundEllipseWidth,backgroundEllipseHeight, buttonColor, buttonoutlineColor, buttonlineStroke, buttonX, buttonY, buttonWidth, buttonHeight, buttonEllipseWidth, buttonEllipseHeight.
 	 *
 	 * <code>
 	 *
 	 * var switch1:Switch = new Switch();
 	
-	   switch1.backgroundfillColor = 0x333333;
+	   switch1.backgroundColor = 0x333333;
 	   switch1.backgroundoutlineColor = 0xFF0000;
 	   switch1.backgroundlineStroke = 3;
-	   switch1.buttonfillColor = 0x000000;
+	   switch1.buttonColor = 0x000000;
 	   switch1.buttonoutlineColor = 0x000000;
 	   switch1.buttonlineStroke = 1;
 	   switch1.backgroundX = 0;
@@ -67,20 +67,20 @@ package com.gestureworks.cml.element
 		public var button:Sprite = new Sprite();
 		public var state:Boolean = false;
 		
-		private var _backgroundfillColor:uint = 0xFFFFFF;
+		private var _backgroundColor:uint = 0xFFFFFF;
 		
 		/**
 		 * Sets the background inside color of the Rounded Rectangle
 		 * @default = 0xFFFFFF;
 		 */
-		public function get backgroundfillColor():uint
+		public function get backgroundColor():uint
 		{
-			return _backgroundfillColor;
+			return _backgroundColor;
 		}
 		
-		public function set backgroundfillColor(value:uint):void
+		public function set backgroundColor(value:uint):void
 		{
-			_backgroundfillColor = value;
+			_backgroundColor = value;
 			displayButton();
 		}
 		
@@ -118,20 +118,20 @@ package com.gestureworks.cml.element
 			displayButton();
 		}
 		
-		private var _buttonfillColor:uint = 0x000000;
+		private var _buttonColor:uint = 0x000000;
 		
 		/**
 		 * Sets the button inside color of the Rounded Rectangle
 		 * @default = 0x000000;
 		 */
-		public function get buttonfillColor():uint
+		public function get buttonColor():uint
 		{
-			return _buttonfillColor;
+			return _buttonColor;
 		}
 		
-		public function set buttonfillColor(value:uint):void
+		public function set buttonColor(value:uint):void
 		{
-			_buttonfillColor = value;
+			_buttonColor = value;
 			displayButton();
 		}
 		
@@ -387,12 +387,12 @@ package com.gestureworks.cml.element
 			this.mouseChildren = true;
 			
 			background.graphics.lineStyle(backgroundlineStroke, backgroundoutlineColor);
-			background.graphics.beginFill(backgroundfillColor);
+			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRoundRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight, backgroundEllipseWidth, backgroundEllipseHeight);
 			background.graphics.endFill();
 			
 			button.graphics.lineStyle(buttonlineStroke, buttonoutlineColor);
-			button.graphics.beginFill(buttonfillColor);
+			button.graphics.beginFill(buttonColor);
 			button.graphics.drawRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, buttonEllipseWidth, buttonEllipseHeight);
 			button.graphics.endFill();
 			button.visible = true;

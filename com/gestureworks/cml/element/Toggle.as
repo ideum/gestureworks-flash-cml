@@ -74,20 +74,20 @@ package com.gestureworks.cml.element
 		 */
 		public var toggleGraphic:Sprite = new Sprite();
 		
-		private var _fillColor:uint = 0x333333;
+		private var _backgroundColor:uint = 0x333333;
 		
 		/**
 		 * Sets the inside color of the background
 		 * @default = 0x333333;
 		 */
-		public function get fillColor():uint
+		public function get backgroundColor():uint
 		{
-			return _fillColor;
+			return _backgroundColor;
 		}
 		
-		public function set fillColor(value:uint):void
+		public function set backgroundColor(value:uint):void
 		{
-			_fillColor = value;
+			_backgroundColor = value;
 			draw();
 		}
 		
@@ -172,7 +172,7 @@ package com.gestureworks.cml.element
 		{
 			
 			background.graphics.lineStyle(backgroundLineStoke, backgroundLineColor);
-			background.graphics.beginFill(fillColor);
+			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRect(50, 50, 100, 100);
 			background.graphics.endFill();
 			
