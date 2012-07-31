@@ -61,7 +61,7 @@ package com.gestureworks.cml.element
 		}		
 		
 		
-		override public function displayComplete():void {}
+		override public function displayComplete():void {updateLayout(this.width, this.height)}
 		
 		private function onClick(event:*):void
 		{
@@ -103,8 +103,10 @@ package com.gestureworks.cml.element
 		
 		public function updateLayout(containerWidth:Number = 0, containerHeight:Number = 0):void
 		{
+			trace("updateLayout", containerWidth, containerHeight);
+			
 			buttonArray = this.childList.getClass(ButtonElement).getValueArray();
-
+			
 			var btnWidth:Number = 0;
 			var btnHeight:Number = 0;		
 			var maxBtnWidth:Number = 0;
@@ -132,7 +134,7 @@ package com.gestureworks.cml.element
 					this.y = containerHeight - maxBtnHeight - paddingBottom;				
 				else if (position == "top")
 					this.y = paddingTop;			
-	
+						
 				// position all but last buttons			
 				for (i = 0; i < buttonArray.length-1; i++) 
 				{

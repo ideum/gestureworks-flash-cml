@@ -130,27 +130,27 @@ package com.gestureworks.cml.managers
 						if (debug)
 							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML include file: ", file));	
 				
-						CML.getInstance(file).loadCML(file);
-						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
-						fileList.append(file, CML.getInstance(file));	
+						CMLLoader.getInstance(file).loadCML(file);
+						CMLLoader.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
+						fileList.append(file, CMLLoader.getInstance(file));	
 					}
 					else if (type == "cmlRenderKit" && file.search(cmlType) >= 0)
 					{
 						if (debug)
 							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML RenderKit file: ", file));							
 						
-						CML.getInstance(file).loadCML(file);
-						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
-						fileList.append(file, CML.getInstance(file));	
+						CMLLoader.getInstance(file).loadCML(file);
+						CMLLoader.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
+						fileList.append(file, CMLLoader.getInstance(file));	
 					}
 					else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
 					{	
 						if (debug)
 							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML RendererData file: ", file));	
 							
-						CML.getInstance(file).loadCML(file);
-						CML.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
-						fileList.append(file, CML.getInstance(file));	
+						CMLLoader.getInstance(file).loadCML(file);
+						CMLLoader.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
+						fileList.append(file, CMLLoader.getInstance(file));	
 					}						
 				}
 			}			
@@ -173,8 +173,8 @@ package com.gestureworks.cml.managers
 						if (debug)
 							trace(StringUtils.printf("\n%4s%s%s", "", "Load SWF file: ", file));	
 							
-						loader = new SWF;
-						loader.addEventListener(SWF.FILE_LOADED, onFileLoaded);	
+						loader = new SWFLoader;
+						loader.addEventListener(SWFLoader.FILE_LOADED, onFileLoaded);	
 						loader.load(file);
 						fileList.append(file, loader);	
 					}
@@ -184,7 +184,7 @@ package com.gestureworks.cml.managers
 						if (debug)
 							trace(StringUtils.printf("\n%4s%s%s", "", "Load IMG file: ", file));						
 						
-						loader = new IMG;
+						loader = new IMGLoader;
 						loader.addEventListener(Event.COMPLETE, onFileLoaded);	
 						loader.load(file);						
 						fileList.append(file, loader);

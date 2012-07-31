@@ -1,9 +1,10 @@
 package com.gestureworks.cml.element 
 {
-	
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.core.GestureWorks;
+	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * ...
@@ -18,9 +19,12 @@ package com.gestureworks.cml.element
 		}
 		 
 		
-		private var _toggle:String;
+		private var _toggle:String = "up";
 		/**
-		 * Sets button state association with mouse over event
+		 * sets toggle event by string name:
+		 * mouseOver, mouseDown, mouseUp, touchDown, touchUp, down, and up 
+		 * (the last two auto-switch between input device)
+		 * @default up
 		 */		
 		public function get toggle():String {return _toggle}
 		public function set toggle(value:String):void 
@@ -28,15 +32,43 @@ package com.gestureworks.cml.element
 			_toggle = value;		
 		}			
 		
-		private var arr:Array = [];		
+		
+		private var _loop:Boolean = true;
+		/**
+		 * Specifies whether the stack loops to the beginning and continues while toggling
+		 */		
+		public function get loop():Boolean {return _loop}
+		public function set loop(value:Boolean):void 
+		{			
+			_loop = value;		
+		}	
+		
+		
+		// public methods //
 		
 		/**
-		 * CML display initialization callback
+		 * Initialization method
+		 */
+		public function init():void
+		{
+			displayComplete();
+		}
+		
+		/**
+		 * Resets the stack order
+		 */		
+		public function reset():void
+		{
+			childList.reset();
+		}
+		
+		/**
+		 * CML initialization method
 		 * @internal do not call the super here
 		 */
 		override public function displayComplete():void
 		{			
-			// hide all but first button
+			// hide all but first child
 			for (var i:int = 1; i < childList.length; i++) 
 			{
 				hideIndex(i);
@@ -57,16 +89,30 @@ package com.gestureworks.cml.element
 				this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
 				
 			else if (toggle == "touchUp")
-				this.addEventListener(TouchEvent.TOUCH_END, onToggle);						
+				this.addEventListener(TouchEvent.TOUCH_END, onToggle);
+				
+			else if (toggle == "down")
+			{
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
+				else if (GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
+				else
+					this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
+			}
+			else if (toggle == "up")
+			{
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_UP, onToggle);
+				else if (GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_END, onToggle);
+				else
+					this.addEventListener(MouseEvent.MOUSE_UP, onToggle);
+			}			
 		}		
-		
-		
-		
-		
-		
-		////////////////////////////////////////////////////
-		/// EVENT HANDLER
-		///////////////////////////////////////////////////		
+			
+
+		// event handlers // 
 		
 		private function onToggle(event:*):void
 		{			
@@ -75,7 +121,7 @@ package com.gestureworks.cml.element
 				childList.currentValue.visible = false
 				childList.next().visible = true;
 			}
-			else
+			else if (loop)
 			{
 				childList.currentValue.visible = false				
 				childList.reset();
@@ -85,8 +131,5 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
 		}
 		
-		
-		
 	}
-
 }

@@ -4,7 +4,7 @@ package com.gestureworks.cml.element
 	
 	import flash.geom.ColorTransform;
 	import flash.utils.getDefinitionByName;
-	
+
 	public class SWCElement extends ElementFactory
 	{
 		private var asset:*;

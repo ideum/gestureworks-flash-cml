@@ -14,7 +14,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.utils.LinkedMap;
 	
 	/**
-	 * The CMLObjectList is the master list for all objects created through cml.
+	 * The CmlObjectList is the master list for all objects created through cml.
 	 * 
 	 * <p>It is populated by the CMLParser class.</p> 
 	 * <p>It is a singleton class that can be accessed through the instance method.</p>
@@ -38,7 +38,7 @@ package com.gestureworks.cml.core
 	 * @playerversion AIR 2.5
 	 * @langversion 3.0
 	 *
-	 * @see com.gestureworks.cml.core.CMLParser
+	 * @see com.gestureworks.cml.core.CmlParser
 	 */
 	public class CMLObjectList extends LinkedMap
 	{		

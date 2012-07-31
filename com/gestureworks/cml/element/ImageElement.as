@@ -1,21 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2011-2012 Ideum
-//  All Rights Reserved.
-//             
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.factories.*;
 	import flash.events.*;
 	
 	/** 
-	 * The ImageElement class loads and displays an external bitmap file.
+	 * The Image class loads and displays an external bitmap file.
 	 * 
 	 * @includeExample ImageElementExample.as -noswf
 	 *

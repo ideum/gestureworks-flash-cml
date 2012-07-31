@@ -331,25 +331,25 @@ package com.gestureworks.cml.core
 			{
 				cmlRendererKitFileComplete++;
 				
-				if (CML.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
+				if (CMLLoader.getInstance(event.filePath).data.Renderer.@dataPath != undefined)
 				{
-					cmlRenderer = CML.getInstance(event.filePath).data.Renderer;
-					var cmlRendererData:String = CML.getInstance(event.filePath).data.Renderer.@dataPath;
+					cmlRenderer = CMLLoader.getInstance(event.filePath).data.Renderer;
+					var cmlRendererData:String = CMLLoader.getInstance(event.filePath).data.Renderer.@dataPath;
 					FileManager.instance.addToQueue(cmlRendererData, "cmlRendererData");
 				}
 				else	
-					loadRenderer(CML.getInstance(event.filePath).data, includeParentIndex[cmlRendererKitFileComplete-1]);
+					loadRenderer(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlRendererKitFileComplete-1]);
 			}
 			else if (event.fileType == "cmlRendererData")
 			{
 				var renderKit:XML = <RenderKit/>
-				var data:XMLList = cmlRenderer + CML.getInstance(event.filePath).data.RendererData;
+				var data:XMLList = cmlRenderer + CMLLoader.getInstance(event.filePath).data.RendererData;
 				renderKit.appendChild(data);				
 				loadRenderer(XMLList(renderKit), includeParentIndex[cmlRendererKitFileComplete-1]);	
 			}
 				
 			else
-				createElements(CML.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
+				createElements(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
 			
 			
 			if (cmlFilesComplete == FileManager.instance.cmlCount)

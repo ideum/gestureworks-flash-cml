@@ -1,14 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2011-2012 Ideum
-//  All Rights Reserved.
-//             
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.gestureworks.cml.core 
 {
 	import flash.events.EventDispatcher;
@@ -91,7 +80,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.VideoElement; VideoElement;	
 	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
 	import com.gestureworks.cml.element.ButtonElement; ButtonElement;		
-	import com.gestureworks.cml.element.SliderElement; SliderElement;		
+	import com.gestureworks.cml.element.Slider; Slider;		
 	import com.gestureworks.cml.element.FrameElement; FrameElement;
 	import com.gestureworks.cml.element.VideoElement; VideoElement;
 	import com.gestureworks.cml.element.MP3Element; MP3Element;

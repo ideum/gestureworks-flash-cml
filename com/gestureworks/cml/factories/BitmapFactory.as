@@ -1,19 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2011-2012 Ideum
-//  All Rights Reserved.
-//
-//  GestureWorks
-//
-//  File: BitmapFactory.as
-//  Authors: Ideum
-//             
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.gestureworks.cml.factories 
 {	
 	import com.gestureworks.cml.loaders.*;
@@ -35,7 +19,7 @@ package com.gestureworks.cml.factories
 	public class BitmapFactory extends ElementFactory
 	{		
 		// image file loader
-		private var img:IMG;
+		private var img:IMGLoader;
 		
 		// loaded bitmap data from file
 		private var fileData:*;
@@ -193,7 +177,7 @@ package com.gestureworks.cml.factories
 		public function open(file:String):void
 		{
 			src = file;
-			img = new IMG;
+			img = new IMGLoader;
 			img.load(file);
 			img.addEventListener(Event.COMPLETE, loadComplete);
 		}	

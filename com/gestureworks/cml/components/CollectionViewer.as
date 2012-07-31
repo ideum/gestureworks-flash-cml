@@ -88,7 +88,7 @@ package com.gestureworks.cml.components
 		{
 			for (var i:int = 1; i < this.numChildren; i++)
 			{					
-				var onscreen:Boolean = PixelPerfectCollisionDetection.isColliding(getChildAt(i), cover, this, false, 0);								
+				var onscreen:Boolean = CollisionDetection.isColliding(getChildAt(i), cover, this, false, 0);								
 				
 				if (!onscreen)
 				{					

@@ -1,18 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2011-2012 Ideum
-//  All Rights Reserved.
-//
-//  GestureWorks
-//
-//  File: MediaElement.as
-//  Authors: Ideum
-//             
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
+// phasing out the Element suffix for more uniform framework, less typing, and cleaner cml
+// use frame instead
+// -charles veasey, 7/29/11
 
 package com.gestureworks.cml.element
 {
@@ -21,7 +9,7 @@ package com.gestureworks.cml.element
 	import flash.utils.*;
 	 
 	/** 
-	 * The MediaElement class is a wrapper for media elements including the ImageElement, VideoElement, and the MP3Element.
+	 * The Media class is a wrapper for media elements including the ImageElement, VideoElement, and the MP3Element.
 	 * It auto-selects the correct media element based on the input file extension. It suppports the following file extensions: 
 	 * png, gif, jpg, mpeg-4, mp4, m4v, 3gpp, mov, flv, f4v, and mp3.
 	 * 

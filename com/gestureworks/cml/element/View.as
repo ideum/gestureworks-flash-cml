@@ -4,7 +4,6 @@ package com.gestureworks.cml.element
 	import flash.events.Event;
 	
 	/**
-	 * View
 	 * Views are the main display container, default set to the stage size 
 	 * @author Charles Veasey
 	 */	

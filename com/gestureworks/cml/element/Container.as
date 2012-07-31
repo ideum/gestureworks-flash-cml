@@ -34,7 +34,7 @@ package com.gestureworks.cml.element
 			_position = value;
 		}
 		
-		private var _paddingLeft:Number;
+		private var _paddingLeft:Number=0;
 		/**
 		 * 
 		 */
@@ -44,7 +44,7 @@ package com.gestureworks.cml.element
 			_paddingLeft = value;
 		}	
 		
-		private var _paddingRight:Number;
+		private var _paddingRight:Number=0;
 		/**
 		 * 
 		 */
@@ -54,7 +54,7 @@ package com.gestureworks.cml.element
 			_paddingRight = value;
 		}	
 		
-		private var _paddingTop:Number;
+		private var _paddingTop:Number=0;
 		/**
 		 * 
 		 */
@@ -64,7 +64,7 @@ package com.gestureworks.cml.element
 			_paddingTop = value;
 		}	
 		
-		private var _paddingBottom:Number;
+		private var _paddingBottom:Number=0;
 		/**
 		 * 
 		 */

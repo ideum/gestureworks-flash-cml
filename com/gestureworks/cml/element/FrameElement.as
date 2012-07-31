@@ -6,7 +6,7 @@ package com.gestureworks.cml.element
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Matrix;
-	
+
 	public class FrameElement extends GraphicFactory
 	{
 		
@@ -14,7 +14,6 @@ package com.gestureworks.cml.element
 		{			
 			super();
 			layoutUI();
-			
 		}		
 		
 		

@@ -1,6 +1,6 @@
 package com.gestureworks.cml.managers
 {
-	import com.gestureworks.cml.loaders.CSS;
+	import com.gestureworks.cml.loaders.CSSLoader;
 	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.utils.*;
 	
@@ -8,9 +8,10 @@ package com.gestureworks.cml.managers
 	import flash.events.EventDispatcher;
 	import flash.text.StyleSheet;
 	import com.gestureworks.cml.events.FileEvent;
+	import com.gestureworks.cml.loaders.CSSLoader;
 	
 	/**
-	 * CSSManager, Singleton 
+	 * Singleton 
 	 * @authors Charles Veasey
 	 */
 	
@@ -34,8 +35,8 @@ package com.gestureworks.cml.managers
 		public function loadCSS(filePath:String):void
 		{
 			file = filePath;
-			CSS.getInstance(file).loadStyle(file);
-			CSS.getInstance(file).addEventListener(FileEvent.CSS_LOADED, onCSSLoad);			
+			CSSLoader.getInstance(file).loadStyle(file);
+			CSSLoader.getInstance(file).addEventListener(FileEvent.CSS_LOADED, onCSSLoad);			
 		}
 		
 		private function onCSSLoad(event:Event):void
@@ -54,7 +55,7 @@ package com.gestureworks.cml.managers
 			}
 			
 			// add styles to objects --------------------------------------			
-			var styleData:StyleSheet = CSS.getInstance(file).data;
+			var styleData:StyleSheet = CSSLoader.getInstance(file).data;
 			
 			var IdSelectors:Array = [];
 			var ClassSelectors:Array = [];
@@ -98,6 +99,11 @@ package com.gestureworks.cml.managers
 										if (debug)
 											trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, ClassSelectors[i], property,  properties[property]));						
 										
+										if (properties[property] == "false")
+											properties[property] = false;
+										else if (properties[property] == "true")
+											properties[property] = true;
+											
 										CMLObjectList.instance.getIndex(j)[property] = properties[property];
 									}	
 								}
@@ -126,6 +132,11 @@ package com.gestureworks.cml.managers
 									if (debug)
 										trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, IdSelectors[i], property,  properties[property]));									
 									
+									if (properties[property] == "false")
+										properties[property] = false;
+									else if (properties[property] == "true")
+										properties[property] = true;										
+										
 									CMLObjectList.instance.getIndex(j)[property] = properties[property];
 								}	
 							}					
