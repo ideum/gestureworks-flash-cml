@@ -187,13 +187,16 @@ package com.gestureworks.cml.factories
 			
 			if (video)
 			{
+				if (contains(video))
+					removeChild(video);
 				video.clear();
 				video = null;
 			}
 			
 			if (timer)
 			{
-				timer.removeEventListener(TimerEvent.TIMER, onPosition);					
+				timer.removeEventListener(TimerEvent.TIMER, onPosition);
+				timer.removeEventListener(TimerEvent.TIMER, onProgress);					
 				timer.stop();
 				timer = null;
 			}

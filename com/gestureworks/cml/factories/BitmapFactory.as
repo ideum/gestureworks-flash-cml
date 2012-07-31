@@ -222,8 +222,12 @@ package com.gestureworks.cml.factories
 				_bitmapData = null;
 			}
 			
-			if (_bitmap)
-				_bitmap = null;			
+			if (_bitmap) {
+				if (contains(_bitmap))
+					removeChild(_bitmap)
+				_bitmap = null;
+			}
+				
 		}		
 		
 		
