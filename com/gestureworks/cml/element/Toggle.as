@@ -168,6 +168,10 @@ package com.gestureworks.cml.element
 		
 		}
 		
+		/**
+		 * draws the background and x graphic in background 
+		 */
+		
 		public function draw():void
 		{
 			
@@ -195,6 +199,10 @@ package com.gestureworks.cml.element
 				this.addEventListener(MouseEvent.MOUSE_DOWN, onTouchBegin);
 		
 		}
+		
+		/**
+		 * visibility of x graphic in background 
+		 */
 		
 		private function onTouchBegin(event:TouchEvent):void
 		{
