@@ -43,13 +43,27 @@ package com.gestureworks.cml.element
 		private var _baseColor:uint;
 		private var _selectedColor:uint;
 		private var _selectedColorTransform:ColorTransform;	
+		
 		private var _colorX:Number = 235;
 		private var _colorY:Number = 85;
 		private var _hueY:Number = 200;
-		private var _hexText:TextElement = new TextElement();
-		private var _rText:TextElement = new TextElement();
-		private var _gText:TextElement = new TextElement();
-		private var _bText:TextElement = new TextElement();
+		
+		private var _hexText:TextElement;
+		private var _hText:TextElement;
+		private var _sText:TextElement;
+		private var _brText:TextElement;
+		private var _rText:TextElement;
+		private var _gText:TextElement;
+		private var _bText:TextElement;
+		
+		private var hue:Number;
+		private var saturation:Number;
+		private var brightness:Number;
+		private var red:Number;
+		private var green:Number;
+		private var blue:Number;
+		
+		
 		private static const HEX_RANGE:Number = Math.PI / 3;
 				
 		public function ColorPicker() 
@@ -71,7 +85,6 @@ package com.gestureworks.cml.element
 		{
 			_containerRec = new Sprite();
 			var g:Graphics = _containerRec.graphics;
-			g.lineStyle(1, 0x000000);
 			g.beginFill(0xE8E8E8);			
 			g.drawRect(0, 0, 480, 375);
 			g.endFill();
@@ -90,12 +103,13 @@ package com.gestureworks.cml.element
 			_hueBarBMD = new BitmapData(barWidth, _colorRecHeight);
 			var g:Graphics = _hueBar.graphics;
 			
-			var rads:Number = 2 * Math.PI / _colorRecHeight;
-			for (var i:int = 0; i < _colorRecHeight; i++)
+			var rads:Number = 2 * Math.PI / 360;
+			var interval:Number = _colorRecHeight / 360;			
+			for (var i:int = 0; i < 360; i++)
 			{
 				var color:uint = angleToColor(rads * i); 
 				g.beginFill(color, 1);
-				g.drawRect(0, i, barWidth, 1);
+				g.drawRect(0, i*interval, barWidth, interval);
 			}	
 			_hueBar.x = 350;
 			_hueBar.y = 25;
@@ -186,100 +200,65 @@ package com.gestureworks.cml.element
 			{
 				_containerRec.addChild(_selectedColorRec);
 				_containerRec.addChild(borderRec);
-				updateSelectedColorRec();
+				updateSelectedColor();
 			}
 		}
 		
 		private function drawColorSpecs():void
-		{		
-			var rgb:Array = hexToRGB(uint(getSelectedHexValue()));	
+		{
+			var spacing:Number = 30;
+			var _w:Number = 35;
+			var xLoc:Number = _selectedColorRec.x;
+			var yLoc:Number = _selectedColorRec.y + _selectedColorRec.height + 10;			
 			
-			var hexLabel:TextElement = new TextElement();
-			hexLabel.autoSize = "left";
-			hexLabel.text = "#";
-			hexLabel.selectable = false;
-			hexLabel.height = 27;
-			hexLabel.x = _colorRec.width/2;
-			hexLabel.y = _colorRec.y + _colorRec.height + 10;
-			hexLabel.selectable = false;
+			_hText = createTextField("H:", _w, xLoc, yLoc, hue.toString(), 3);	
+			_sText = createTextField("S:", _w, xLoc, yLoc += spacing, saturation.toString(), 3);
+			_brText = createTextField("B:", _w, xLoc, yLoc += spacing, brightness.toString(), 3);
+			_rText = createTextField("R:", _w, xLoc, yLoc += spacing, red.toString(), 3);
+			_gText = createTextField("G:", _w, xLoc, yLoc += spacing, green.toString(), 3);
+			_bText = createTextField("B:", _w, xLoc, yLoc += spacing, blue.toString(), 3);			
+			_hexText = createTextField("#", 65, _colorRec.width / 2, _colorRec.y + _colorRecHeight + 10, getSelectedHexValue());	
+			_brText.id = "Br:";
 			
-			_hexText.width = 65;
-			_hexText.text = getSelectedHexValue().substr(2);
-			_hexText.maxChars = 6;
-			_hexText.height = hexLabel.height;
-			_hexText.x = hexLabel.x + hexLabel.width;
-			_hexText.y = hexLabel.y;
-			_hexText.background = true;
-			_hexText.border = true;
-			_hexText.type = "input";
-			_hexText.scrollH = 0;
-			_hexText.addEventListener(KeyboardEvent.KEY_DOWN, moveToPixel);
-			
-			var rLabel:TextElement = new TextElement();
-			rLabel.autoSize = "left";
-			rLabel.text = "R:";
-			rLabel.selectable = false;
-			rLabel.fontSize = 14;
-			rLabel.x = _selectedColorRec.x;
-			rLabel.y = _selectedColorRec.y + _selectedColorRec.height + 40;
-			
-			_rText.maxChars = 3;
-			_rText.height = rLabel.height;
-			_rText.width = 35;
-			_rText.fontSize = rLabel.fontSize;
-			_rText.text = rgb[0].toString();
-			_rText.x = rLabel.x + rLabel.width+2;
-			_rText.y = rLabel.y;
-			_rText.border = true;
-			_rText.background = true;
-			
-			var gLabel:TextElement = new TextElement();
-			gLabel.autoSize = "left";
-			gLabel.text = "G:";
-			gLabel.selectable = false;
-			gLabel.fontSize = 14;
-			gLabel.x = rLabel.x;
-			gLabel.y = rLabel.y + rLabel.height + 10;
-			
-			_gText.maxChars = 3;
-			_gText.height = gLabel.height;
-			_gText.width = 35;
-			_gText.fontSize = gLabel.fontSize;
-			_gText.text = rgb[1].toString();
-			_gText.x = gLabel.x + gLabel.width+2;
-			_gText.y = gLabel.y;
-			_gText.border = true;
-			_gText.background = true;
-			
-			var bLabel:TextElement = new TextElement();
-			bLabel.autoSize = "left";
-			bLabel.text = "B:";
-			bLabel.selectable = false;
-			bLabel.fontSize = 14;
-			bLabel.x = gLabel.x;
-			bLabel.y = gLabel.y + gLabel.height + 10;
-			
-			_bText.maxChars = 3;
-			_bText.height = bLabel.height;
-			_bText.width = 35;
-			_bText.fontSize = bLabel.fontSize;
-			_bText.text = rgb[2].toString();
-			_bText.x = bLabel.x + bLabel.width+2;
-			_bText.y = bLabel.y;
-			_bText.border = true;
-			_bText.background = true;									
-									
 			if (_containerRec)
 			{
-				_containerRec.addChild(hexLabel);
-				_containerRec.addChild(_hexText);
-				_containerRec.addChild(rLabel);
+				_containerRec.addChild(_hText);
+				_containerRec.addChild(_sText);
+				_containerRec.addChild(_brText);
 				_containerRec.addChild(_rText);
-				_containerRec.addChild(gLabel);
 				_containerRec.addChild(_gText);
-				_containerRec.addChild(bLabel);
 				_containerRec.addChild(_bText);
+				_containerRec.addChild(_hexText);			
 			}
+		}
+		
+		private function createTextField(lab:String, _width:Number, _x:Number, _y:Number, _text:String = null, _maxChar:Number = 6):TextElement
+		{
+			var label:TextElement = new TextElement();
+			label.autoSize = "left";
+			label.text = lab;
+			label.selectable = false;
+			label.x = _x;
+			label.y = _y;
+			
+			var te:TextElement = new TextElement();
+			te.id = lab;
+			te.width = _width;
+			te.height = label.height;
+			te.text = _text;
+			te.x = label.x + label.width;
+			te.y = label.y;
+			te.background = true;
+			te.border = true;
+			te.type = "input";
+			te.maxChars = _maxChar;
+			te.scrollH = 0;		
+			te.addEventListener(KeyboardEvent.KEY_DOWN, findColor);
+			
+			if (_containerRec)
+				_containerRec.addChild(label);
+						
+			return te;
 		}
 		
 		private function drawHueSelector():void 
@@ -324,19 +303,37 @@ package com.gestureworks.cml.element
 			_baseGradientRec.y = 25;
 		}
 		
-		protected function updateSelectedColorRec():void
+		protected function updateSelectedColor(color:Number = -1):void
 		{			
-			_selectedColor = _colorSelectionBMD.getPixel(_colorX, _colorY);
-			_selectedColorTransform.color = _selectedColor;
-			_selectedColorRec.transform.colorTransform = _selectedColorTransform;
+			_selectedColor = color != -1 ? color : _colorSelectionBMD.getPixel(_colorX, _colorY);
 			_colorSelector.x = _colorX;
-			_colorSelector.y = _colorY;			
-						
-			var rgb:Array = hexToRGB(uint(getSelectedHexValue()));
-			_hexText.text = getSelectedHexValue().substr(2);
-			_rText.text = rgb[0].toString();
-			_gText.text = rgb[1].toString();
-			_bText.text = rgb[2].toString();				
+			_colorSelector.y = _colorY;						
+			
+			var rgb:Array = hexToRGB(_selectedColor);
+			red = rgb[0];
+			green = rgb[1];
+			blue = rgb[2];						
+			
+			var hsb:Array = rgbToHSB(red, green, blue);
+			hue = hsb[0];
+			saturation = hsb[1];
+			brightness = hsb[2];
+			
+			_selectedColorTransform.color = _selectedColor;
+			_selectedColorRec.transform.colorTransform = _selectedColorTransform;															
+		}
+		
+		private function updateSpecs():void
+		{
+			_hText.text = hue.toString();
+			_sText.text= saturation.toString();
+			_brText.text = brightness.toString();
+			
+			_rText.text = red.toString();
+			_gText.text = green.toString();
+			_bText.text = blue.toString();
+			
+			_hexText.text = getSelectedHexValue();
 		}
 		
 		private function hueBarHandler(event:*):void
@@ -352,7 +349,8 @@ package com.gestureworks.cml.element
 				_hueY = yVal;
 				_baseColor =  _hueBarBMD.getPixel(0, _hueY);
 				updateBaseGradient();
-				updateSelectedColorRec();
+				updateSelectedColor();
+				updateSpecs();
 			}
 		}
 		
@@ -373,117 +371,95 @@ package com.gestureworks.cml.element
 			{					
 				_colorX = xVal;
 				_colorY = yVal;
-				updateSelectedColorRec();
+				updateSelectedColor();
+				updateSpecs();
 			}
 		}
 		
-		private function moveToPixel(event:KeyboardEvent):void
+		private function findColor(event:KeyboardEvent):void
 		{
 			if (event.keyCode != 13)
 				return;
 				
-			var point:Point;
-			if (event.target.text.length == 6)
+			var txt:TextElement = TextElement(event.target);
+			var tgtId:String = txt.id;
+			switch(tgtId)
 			{
-				_hueY = hueYVal(uint("0x" + event.target.text.toUpperCase()));
-				_hexText.text = event.target.text.toUpperCase();
-				_baseColor =  _hueBarBMD.getPixel(0, _hueY);
-				updateBaseGradient();
-				
-				point = pixelLocation(uint("0x" + event.target.text.toUpperCase()));
-				if (point)
-				{
-					_colorX = point.x;
-					_colorY = point.y;
-					trace("point", _colorX, _colorY);
-					updateSelectedColorRec();
-				}
+				case "#":
+					updateSelectedColor(uint("0x"+txt.text));
+					break;
+				case "H:":
+					hue = Number(txt.text);
+					if (hue > 359 || hue < 0) hue = 0;
+					break;
+				case "S:":
+					saturation = Number(txt.text);
+					if (saturation > 100) saturation = 100;
+					else if (saturation < 0) saturation = 0;
+					break;	
+				case "Br:":
+					brightness = Number(txt.text);
+					if (brightness > 100) brightness = 100;
+					else if (brightness < 0) brightness = 0;
+					break;
+				case "R:":
+					red = Number(txt.text);
+					if (red > 255) red = 255;
+					else if (red < 0) red = 0;
+					var hsb:Array = rgbToHSB(red, green, blue);
+					hue = hsb[0];
+					saturation = hsb[1];
+					brightness = hsb[2];
+				case "G:":
+					green = Number(txt.text);
+					if (green > 255) green = 255;
+					else if (green < 0) green = 0;
+					var hsb:Array = rgbToHSB(red, green, blue);
+					hue = hsb[0];
+					saturation = hsb[1];
+					brightness = hsb[2];
+				case "B:":				
+					blue = Number(txt.text);
+					if (blue > 255) blue = 255;
+					else if (blue < 0) blue = 0;
+					var hsb:Array = rgbToHSB(red, green, blue);
+					hue = hsb[0];
+					saturation = hsb[1];
+					brightness = hsb[2];
+				default:
 			}
-		}
-		
-		private function pixelLocation(hex:uint):Point
-		{		
-			var hsb:Array = getHSB(hex);
-			var hue:Number = hsb[0];
-			var saturation:Number = hsb[1];
-			var brightness:Number = hsb[2];
 			
-			var _x:int = saturation * (300 / 100);
-			var _y:int = 300 - brightness * (300 / 100);
-			
-			return new Point(_x, _y);
-		}
-		
-		private function hueYVal(hex:uint):int
-		{
-			var hsb:Array = getHSB(hex);
-			var hue:Number = hsb[0];
-			var saturation:Number = hsb[1];
-			var brightness:Number = hsb[2];
-						
-			
-			trace("hsb",hue, saturation, brightness);
-			return hue * (300 / 360);
+			trace(hue, saturation, brightness);
+			_hueY = hue * (_colorRecHeight / 360);
+			_baseColor = _hueBarBMD.getPixel(0, _hueY);
+			updateBaseGradient();
+			trace(_hueY);
+			//_colorX = saturation * (_colorRecWidth / 100);
+			//_colorY = 300 - brightness * (_colorRecHeight / 100);
+			//updateSelectedColor();
+			//
+			//updateSpecs();
 		}
 		
 		public function getSelectedHexValue():String
 		{
-			return "0x"+_selectedColor.toString(16).toUpperCase();
-		}
+			return _selectedColor.toString(16).toUpperCase();
+		}		
 		
 		public static function hexToRGB(hex:uint):Array
 		{
 			var rgb:Array = [
-				(hex >> 16) & 0xFF,
-				(hex >> 8) & 0xFF,
-				hex & 0xFF
+				Math.round((hex >> 16) & 0xFF),
+				Math.round((hex >> 8) & 0xFF),
+				Math.round(hex & 0xFF)
 				]
 				
 			return rgb;
 		}
 		
-		public static function getHue(hex:uint):Number
-		{
-			var rgb:Array = hexToRGB(hex);
-			var r:Number = rgb[0];
-			var g:Number = rgb[1];
-			var b:Number = rgb[2];
-			
-			r /= 255;
-			g /= 255;
-			b /= 255;
-			
-			var max:Number = Math.max(r, g, b);
-			var min:Number = Math.min(r, g, b);
-			var h:Number, s:Number, l:Number = (max + min) / 2;
-			
-			if (max == min)
-			{
-				h = s = 0;
-			}
-			else
-			{
-				var d:Number = max - min;				
-				switch(max)
-				{
-					case r: h = (g - b) / d + (g < b ? 6 : 0);break;
-					case g: h = (b - r) / d + 2; break;
-					case b: h = (r - g) / d + 4; break;
-				}
-				h /= 6;
-				h = Math.round(h * 360);
-			}
-			trace(h, s, l);
-			return h;
-		}
-		
-		public static function getHSB(hex:uint):Array
+		public static function rgbToHSB(r:Number, g:Number, b:Number):Array
 		{
 			var hue:Number, saturation:Number, brightness:Number;
-			var rgb:Array = hexToRGB(hex);
-			var r:Number = rgb[0];
-			var g:Number = rgb[1];
-			var b:Number = rgb[2];
 			
 			r /= 255;
 			g /= 255;
@@ -512,9 +488,9 @@ package com.gestureworks.cml.element
 				hue *= 60;
 				if (hue < 0) hue += 360;
 				
-				hue = hue;
-				saturation = saturation *= 100;
-				brightness = brightness *= 100;
+				hue = Math.round(hue);
+				saturation =  Math.round(saturation *= 100);
+				brightness = Math.round(brightness *= 100);				
 			}
 			
 			return [hue, saturation, brightness];
