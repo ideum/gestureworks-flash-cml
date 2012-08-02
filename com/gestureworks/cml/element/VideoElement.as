@@ -268,6 +268,9 @@ package com.gestureworks.cml.element
 				case "NetStream.Play.StreamNotFound":
 					if (debug) print("Unable to locate video: " + src);
 					break;
+				case "NetStream.Buffer.Full":
+					timer.removeEventListener(TimerEvent.TIMER, onProgress);
+					break;	
 				case "NetStream.Play.Stop":
 					end();
 					break;
@@ -373,7 +376,6 @@ package com.gestureworks.cml.element
 				timer.stop();
 				timer.reset();
 				timer.removeEventListener(TimerEvent.TIMER, onProgress);
-				timer.addEventListener(TimerEvent.TIMER, onPosition);				
 			}
 			else
 			{
@@ -383,7 +385,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onPosition(event:TimerEvent):void
-		{
+		{			
 			_position++;
 			
 			if (debug)

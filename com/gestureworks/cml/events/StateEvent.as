@@ -31,8 +31,8 @@ package com.gestureworks.cml.events
 		 * Event initiator's property value
 		 * @default null
 		 */	
-		private var _value:String;
-		public function get value():String { return _value; }	
+		private var _value:*;
+		public function get value():* { return _value; }	
 		
 		
 		/**
