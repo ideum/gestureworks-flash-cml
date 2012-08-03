@@ -94,11 +94,19 @@
 		private var image:MultiScaleImage
     	private var sceneNavigator:SceneNavigator
     	private var scaleConstraint:ScaleConstraint;
+		private var _minScaleConstraint:Number = 0.001;
 	
 	
 		public function GigaPixelViewer()
 		{
 			super();
+		}
+		
+		public function get minScaleConstraint():Number { return _minScaleConstraint; }
+		public function set minScaleConstraint(value:Number):void {
+			if(!isNaN(value) && value >=0){
+				_minScaleConstraint = value;
+			}
 		}
 
 		override public function dispose():void
@@ -149,6 +157,7 @@
 					var zoomConstraint:ZoomConstraint = new ZoomConstraint()
 						zoomConstraint.minZoom = 0.1 //????
 						scaleConstraint = new ScaleConstraint()
+						scaleConstraint.minScale = _minScaleConstraint;
 					var centerConstraint:CenterConstraint = new CenterConstraint()
 					var visibilityConstraint:VisibilityConstraint = new VisibilityConstraint()
 						visibilityConstraint.visibilityRatio = 0.6
