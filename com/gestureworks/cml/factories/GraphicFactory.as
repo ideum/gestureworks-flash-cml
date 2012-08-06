@@ -16,7 +16,7 @@ package com.gestureworks.cml.factories
 		{ 
 			super();		
 		}
-
+		
 		
 		// matrix, currently using for gradients
 		// can also use for bitmap and shader fills

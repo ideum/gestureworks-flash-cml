@@ -101,8 +101,8 @@ package com.gestureworks.cml.element
 		}					
 		
 		
-		[Deprecated(replacement="preload")] 
-		private var _autoLoad:Boolean=true;
+		private var _autoLoad:Boolean = true;
+		[Deprecated(replacement="preload")] 		
 		public function get autoLoad():Boolean { return _preload; }
 		public function set autoLoad(value:Boolean):void 
 		{ 
