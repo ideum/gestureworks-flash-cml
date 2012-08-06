@@ -8,6 +8,7 @@ package com.gestureworks.cml.factories
 	import flash.display.BlendMode;
 	import flash.utils.Dictionary;
 	import flash.text.TextFieldType;
+	import com.gestureworks.cml.managers.CSSManager;
 	
 	
 	public class TextFactory extends TextField implements IElement, ICSS
@@ -25,7 +26,7 @@ package com.gestureworks.cml.factories
 			textFormat.color = textFormatColor;
 			textFormat.size = textSize;
 			antiAliasType = AntiAliasType.ADVANCED;
-			blendMode=BlendMode.LAYER;
+			blendMode = BlendMode.LAYER;
 		}
 		
 		
@@ -53,7 +54,13 @@ package com.gestureworks.cml.factories
 		}
 		
 		public function parseCML(cml:XMLList):XMLList
-		{			
+		{
+			// if TextElement has child, then interpret as htmlText
+			if (String(cml).length > 0) {
+				multiline = true;
+				super.htmlText = String(cml.children());
+				cml = new XMLList;
+			}
 			return CMLParser.instance.parseCML(this, cml);
 		}
 		
@@ -91,6 +98,7 @@ package com.gestureworks.cml.factories
 		override public function get htmlText():String { return super.htmlText; }
 		override public function set htmlText(value:String):void
 		{
+			trace("html", value);
 			super.htmlText = value;			
 			verticalAlign = _verticalAlign;
 		}
@@ -232,7 +240,7 @@ package com.gestureworks.cml.factories
 			updateTextFormat();
 		}
 		
-		private var _font:String = "ArialFont";
+		private var _font:String = "OpenSansRegular";
 		public function get font():String{return _font;}
 		public function set font(value:String):void
 		{
@@ -318,7 +326,6 @@ package com.gestureworks.cml.factories
 			if (parent) width = parent.width * (number / 100);
 		}
 				
-		//private var _heightPercent:*= "";
 		private var _heightPercent:String="";
 		public function get heightPercent():String{	return _heightPercent;}
 		public function set heightPercent(value:String):void

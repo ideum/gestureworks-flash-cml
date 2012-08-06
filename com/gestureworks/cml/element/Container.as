@@ -114,7 +114,7 @@ package com.gestureworks.cml.element
 		 * The first occurrance that matches the parameter is returned.
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):*
-		{
+		{		
 			var returnVal:* = null;
 			var searchType:String = null;
 			

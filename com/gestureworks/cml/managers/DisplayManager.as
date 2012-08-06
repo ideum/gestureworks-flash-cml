@@ -46,7 +46,19 @@ package com.gestureworks.cml.managers
 					CMLObjectList.instance.getIndex(i).addAllChildren();					
 			}
 		}
-		
+
+		public function removeCMLChildren():void
+		{	
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{		
+				if (CMLObjectList.instance.getIndex(i) is IContainer)
+				{
+					while (CMLObjectList.instance.getIndex(i).numChildren > 0) {
+						CMLObjectList.instance.getIndex(i).removeChildAt(0);
+					}
+				}
+			}
+		}		
 
 		public function displayComplete():void
 		{			
