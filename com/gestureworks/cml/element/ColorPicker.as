@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.codeazur.utils.HexUtils;
+	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.events.Event;
@@ -20,59 +21,198 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	
 	/**
-	 * ...
+	 * The ColorPicker element provides color selection capability by moving graphical indicators or adjusting color 
+	 * properties to select hue and color variants. 
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * 			
+		override protected function gestureworksInit():void
+ 		{
+			trace("gestureWorksInit()");
+			colorPickerTestAS();
+		}				
+		
+		private function colorPickerTestAS():void
+		{
+			var cp:ColorPicker = new ColorPicker();
+			cp.x = 100;
+			cp.y = 100;
+			cp.scaleX = cp.scaleX + 1;
+			cp.scaleY = cp.scaleY + 1;
+			cp.addEventListener(StateEvent.CHANGE, colorSelected);
+			addChild(cp);
+		}	
+		
+		private function colorSelected(event:StateEvent):void
+		{
+			trace(event.value);
+		}
+	 * 
+	 * 
+	 * </codeblock>
 	 * @author Shaun
 	 */
 	public class ColorPicker extends ElementFactory
 	{
+		
+		/**
+		 * The main container for color picker components
+		 */
 		private var containerRec:Sprite;
+		/**
+		 * The sprite containing black and white gradient fill overlayed over baseGradientRec to create the dark to light versions of the color
+		 */
 		private var colorRec:TouchSprite;
+		/**
+		 * The circlular indicator marking the location of the currently selected color in the colorRec
+		 */
 		private var colorSelector:Sprite;
+		/**
+		 * The sprite containing the gradient fill of the base color selected in the hueBar
+		 */
 		private var baseGradientRec:Sprite;
+		/**
+		 * A sprite containing an RGB spectrum to choose a base color from
+		 */
 		private var hueBar:TouchSprite;
+		/**
+		 * The arrows indicator pin pointing the currently selected base color in the hueBar
+		 */
 		private var hueSelector:Sprite;
+		/**
+		 * The BitmapData of the hueBar to retrieve the currently selected pixel (hue)
+		 */
 		private var hueBarBMD:BitmapData;
+		/**
+		 * The rec containing the currently selected color 
+		 */
 		private var selectedColorRec:Sprite;
+		/**
+		 * The BitmapData of the colorRec to retireve the currently selected pixel (selectedColor)
+		 */
 		private var colorSelectionBMD:BitmapData;
-		private var colorSpecs:Sprite;
+		/**
+		 * The matrix used for the gradient fills of the colorRec and baseGradientRec
+		 */		
 		private var colorMatrix:Matrix;		
+		/**
+		 * Array to hold graident values for gradient fills
+		 */
 		private var colors:Array;
+		/**
+		 * Array to hold alpha values for gradient fills
+		 */
 		private var alphas:Array;
+		/**
+		 * Array to hold ratio values for gradient fills
+		 */
 		private var ratios:Array;		
+		/**
+		 * The width of the colorRec and baseGradientRec
+		 */		
 		private var colorRecWidth:Number = 300;
+		/**
+		 * The height of the colorRec, baseGradientRec, and hueBar
+		 */
 		private var colorRecHeight:Number = 300;
+		/**
+		 * The base color of the gradient selected in the hueBar
+		 */
 		private var baseColor:uint;
+		/**
+		 * The currently selected color in the colorRec 
+		 */
 		private var selectedColor:uint;
+		/**
+		 * The color transform of the selected color
+		 */
 		private var selectedColorTransform:ColorTransform;	
 		
+		/**
+		 * The x coordinate of the selectedColor in the colorRec
+		 */
 		private var colorX:Number = 235;
+		/**
+		 * The y coordinate of the selectedColor in the colorRec
+		 */
 		private var colorY:Number = 85;
+		/**
+		 * The y coordinate of the selected hue in the hueBar
+		 */
 		private var hueY:Number = 200;
 		
+		/**
+		 * Displays the hexidecimal representation of the selectedColor
+		 */
 		private var hexText:TextElement;
+		/**
+		 * Displays the value of the base gradient in the hueBar
+		 */
 		private var hText:TextElement;
+		/**
+		 * Displays the selected color's saturation value
+		 */
 		private var sText:TextElement;
+		/**
+		 * Displays the selected color's brightness value
+		 */
 		private var brText:TextElement;
+		/**
+		 * Displays the selected color's red value
+		 */
 		private var rText:TextElement;
+		/**
+		 * Displays the selected color's green value
+		 */
 		private var gText:TextElement;
+		/**
+		 * Displays the selected color's blue value
+		 */
 		private var bText:TextElement;
 		
+		/**
+		 * The selected base gradient in the hueBar
+		 */
 		private var hue:Number;
+		/**
+		 * The selected color's saturation
+		 */
 		private var saturation:Number;
+		/**
+		 * The selected color's brightness
+		 */
 		private var brightness:Number;
+		/**
+		 * The selected color's red value
+		 */
 		private var red:Number;
+		/**
+		 * The selected color's green value
+		 */
 		private var green:Number;
+		/**
+		 * The selected color's blue value
+		 */
 		private var blue:Number;
 		
+		/**
+		 * The color of the containerRec
+		 */
 		private var _skin:uint = 0xE8E8E8;			
 		private static const HEX_RANGE:Number = Math.PI / 3;
-				
+			
+		/**
+		 * Constructor
+		 */
 		public function ColorPicker() 
 		{
 			super();
 			init();			
 		}
 		
+		/**
+		 * Initializes the components
+		 */
 		public function init():void
 		{
 			drawContainer();
@@ -89,21 +229,27 @@ package com.gestureworks.cml.element
 		{
 			super.displayComplete();
 			init();
-		}
+		}		
 		
+		/**
+		 * Draw the container sprite to add all of the components to
+		 */
 		private function drawContainer():void
 		{
 			containerRec = new Sprite();
 			var g:Graphics = containerRec.graphics;
 			g.beginFill(_skin);			
-			//g.beginFill(0xAC985F);
 			g.drawRect(0, 0, 480, 375);
 			g.endFill();
 			addChild(containerRec);
 		}
 		
+		/**
+		 * Draw the hueBar to select the base color
+		 */
 		private function drawHueBar():void
 		{		
+			//use the drag and touch events to select hue
 			hueBar = new TouchSprite();
 			hueBar.gestureList = { "n-drag":true };
 			hueBar.gestureReleaseInertia = false;
@@ -114,6 +260,7 @@ package com.gestureworks.cml.element
 			hueBarBMD = new BitmapData(barWidth, colorRecHeight);
 			var g:Graphics = hueBar.graphics;
 						
+			//add spectrum to hueBar
 			var rads:Number = 2 * Math.PI / 360;
 			var interval:Number = colorRecHeight / 360;			
 			for (var i:int = 0; i < 360; i++)
@@ -141,6 +288,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Draw indicator (arrows) for hue selection
+		 */
 		private function drawHueSelector():void 
 		{
 			var _x:Number = hueBar.x, _y:Number = hueBar.y;
@@ -161,6 +311,9 @@ package com.gestureworks.cml.element
 				containerRec.addChild(hueSelector);
 		}
 		
+		/**
+		 * Draw the rectangle for selecting the color
+		 */
 		private function drawColorRec():void
 		{
 			var bkg:Sprite = new Sprite();
@@ -169,16 +322,18 @@ package com.gestureworks.cml.element
 			colorSelector = new Sprite();		
 			colorMatrix = new Matrix();			
 			
+			//add drag and touch events to select color
 			colorRec.gestureList = { "n-drag":true };
 			colorRec.gestureReleaseInertia = false;
 			colorRec.addEventListener(GWGestureEvent.DRAG, colorSelectionHandler);
 			colorRec.addEventListener(TouchEvent.TOUCH_BEGIN, colorSelectionHandler);			
-
+			
 			colors = [0x000000, 0x000000];
 			alphas = [0, 1];
 			ratios = [0, 255];			
 			colorMatrix.createGradientBox(colorRecWidth, colorRecHeight, Math.PI / 2, 0, 0); 
-			
+				
+			//black gradient fill overlay
 			var g:Graphics = colorRec.graphics;			
 			g.beginGradientFill(GradientType.LINEAR, colors, alphas, ratios, colorMatrix); 
 			g.drawRect(0, 0, colorRecWidth, colorRecHeight);
@@ -186,14 +341,16 @@ package com.gestureworks.cml.element
 			colorRec.x = 25;
 			colorRec.y = 25;
 			
+			//static white background
 			g = bkg.graphics;
 			g.lineStyle(1, 0x000000);
 			g.beginFill(0xFFFFFF);
 			g.drawRect(0, 0, colorRecWidth, colorRecHeight);
 			g.endFill();
-			bkg.x = 25;
-			bkg.y = 25;
+			bkg.x = colorRec.x;
+			bkg.y = colorRec.y;
 			
+			//draw the circular inidicator to mark the location of the currently selected color
 			g = colorSelector.graphics;
 			g.lineStyle(1, 0x000000);
 			g.drawCircle(colorRec.x, colorRec.y, 6);
@@ -210,6 +367,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Draw the component containing the currently selected color
+		 */
 		private function drawSelectedColorRec():void
 		{
 			var borderRec:Sprite = new Sprite();
@@ -237,6 +397,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Draw the text elements containing the hexadecimal, HSB, and RGB values of the selected color
+		 */
 		private function drawColorSpecs():void
 		{
 			var spacing:Number = 30;
@@ -265,10 +428,20 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function createTextField(lab:String, _width:Number, _x:Number, _y:Number, _text:String = null, _maxChar:Number = 6):TextElement
+		/**
+		 * Creates an editable textfield and associated label based on the provided arguments
+		 * @param	lab  the label name
+		 * @param	_width  the width of the text field
+		 * @param	_x  the x location of the text field
+		 * @param	_y  the y location of the text field
+		 * @param	_text  the content of the text field
+		 * @param	_maxChar  the character limit of the text field
+		 * @return  the resulting text element
+		 */
+		protected function createTextField(lab:String, _width:Number, _x:Number, _y:Number, _text:String = null, _maxChar:Number = 6):TextElement
 		{
 			var label:TextElement = new TextElement();
-			label.autoSize = "left";
+			label.autoSize = "center";
 			label.text = lab;
 			label.selectable = false;
 			label.x = _x;
@@ -279,14 +452,14 @@ package com.gestureworks.cml.element
 			te.width = _width;
 			te.height = label.height;
 			te.text = _text;
-			te.x = label.x + label.width;
+			te.x = label.x + 25;
 			te.y = label.y;
 			te.background = true;
 			te.border = true;
 			te.type = "input";
 			te.maxChars = _maxChar;
 			te.scrollH = 0;		
-			te.addEventListener(KeyboardEvent.KEY_DOWN, updateColor);
+			te.addEventListener(KeyboardEvent.KEY_DOWN, updateColorByEntry);
 			
 			if (containerRec)
 				containerRec.addChild(label);
@@ -294,6 +467,9 @@ package com.gestureworks.cml.element
 			return te;
 		}	
 				
+		/**
+		 * Retrieve the selected hue from the hueBar and update the base color of the colorRec
+		 */
 		protected function updateBaseGradient():void
 		{		
 			colorMatrix = new Matrix();			
@@ -316,21 +492,31 @@ package com.gestureworks.cml.element
 			baseGradientRec.y = 25;
 		}
 		
-		private function updateSelectedColor(color:Number = -1):void
+		/**
+		 * The primary update function called each time a change event occurs. Assigns the selectedColor value by argument or by retrieving the pixel 
+		 * currently selected in the colorRec, updates the color specs and adjusts the location of the colorSelector accordingly.  
+		 * @param	color  the color to assign as the selectedColor
+		 */
+		protected function updateSelectedColor(color:Number = -1):void
 		{			
 			selectedColor = color != -1 ? color : colorSelectionBMD.getPixel(colorX, colorY);												
 			
-			getRGBFromHex();
-			getHSBFromRGB();
+			calculateRGBFromHex();
+			calculateHSBFromRGB();
 			
 			colorSelector.x = saturation * 300;
 			colorSelector.y = (1 - brightness) * 300;			
 			
 			selectedColorTransform.color = selectedColor;
-			selectedColorRec.transform.colorTransform = selectedColorTransform;															
+			selectedColorRec.transform.colorTransform = selectedColorTransform;	
+			
+			//dispatches a state event with the hexadecimal of the selected color
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedColor", "0x"+getSelectedHexValue()))
 		}
 		
+		/**
+		 * Update the text fields of the color properties
+		 */
 		private function updateSpecs():void
 		{
 			hText.text = Math.round(hue).toString();
@@ -344,6 +530,10 @@ package com.gestureworks.cml.element
 			hexText.text = getSelectedHexValue();
 		}
 		
+		/**
+		 * Handles the hue change events from the hueBar
+		 * @param	event  occurs when the hueBar is touched or dragged
+		 */
 		private function hueBarHandler(event:*):void
 		{
 			var yVal:Number;
@@ -361,6 +551,10 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Handles the color change events from the colorRec
+		 * @param	event  occurs when the colorRec is touched or dragged
+		 */
 		private function colorSelectionHandler(event:*):void
 		{
 			var xVal:Number, yVal:Number;
@@ -383,8 +577,14 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function updateColor(event:KeyboardEvent):void
+		/**
+		 * Updates the hue, selected color, and other color property text fields when a custom spec is
+		 * submitted
+		 * @param	event  occurs when a text element changes
+		 */
+		private function updateColorByEntry(event:KeyboardEvent):void
 		{
+			//requires 'ENTER' key to submit change
 			if (event.keyCode != 13)
 				return;
 				
@@ -399,35 +599,35 @@ package com.gestureworks.cml.element
 				case "H:":
 					hue = Number(txt.text);
 					if (hue > 359 || hue < 0) hue = 0;
-					getRGBFromHSB();
-					updateSelectedColor(uint(getHexFromRGB()));
+					calculateRGBFromHSB();
+					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;
 				case "S:":
 					saturation = Number(txt.text)/100;
 					saturation = saturation > 1 ? 1 : (saturation < 0) ?  0 : saturation;
-					getRGBFromHSB();
-					updateSelectedColor(uint(getHexFromRGB()));
+					calculateRGBFromHSB();
+					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;	
 				case "Br:":
 					brightness = Number(txt.text) / 100;
 					brightness = brightness > 1 ? 1 : (brightness < 0) ? 0 : brightness;
-					getRGBFromHSB();
-					updateSelectedColor(uint(getHexFromRGB()));
+					calculateRGBFromHSB();
+					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;
 				case "R:":
 					red = Number(txt.text);
 					red = red > 255 ? 255 : (red < 0) ? 0 : red;
-					updateSelectedColor(uint(getHexFromRGB()));
+					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;
 				case "G:":
 					green = Number(txt.text);
 					green = green > 255 ? 255 : (green < 0) ? 0 : green;
-					updateSelectedColor(uint(getHexFromRGB()));
+					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;
 				case "B:":				
 					blue = Number(txt.text);
 					blue = blue > 255 ? 255 : (blue < 0) ? 0 : blue;
-					updateSelectedColor(uint(getHexFromRGB()));
+					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;
 				default:
 			}
@@ -437,6 +637,10 @@ package com.gestureworks.cml.element
 			updateSpecs();
 		}
 		
+		/**
+		 * Returns the hex representation of the selectedColor as a String
+		 * @return  the hex representation of the selectedColor
+		 */
 		public function getSelectedHexValue():String
 		{
 			var hexStr:String = selectedColor.toString(16).toUpperCase();
@@ -448,14 +652,20 @@ package com.gestureworks.cml.element
 			return hexStr;
 		}		
 		
-		public function getRGBFromHex():void
+		/**
+		 * Calculates the selectedColor's RGB values
+		 */
+		public function calculateRGBFromHex():void
 		{
 			red = Math.round((selectedColor >> 16) & 0xFF);
 			green = Math.round((selectedColor >> 8) & 0xFF);
 			blue = Math.round(selectedColor & 0xFF);
 		}
 		
-		public function getRGBFromHSB():void
+		/**
+		 * Calculates the color's RGB values from its HSB values
+		 */
+		public function calculateRGBFromHSB():void
 		{
 			 red = brightness;
 			 green = brightness;
@@ -494,7 +704,10 @@ package com.gestureworks.cml.element
 			  blue = Math.round(blue * 255);
 		}
 		
-		public function getHSBFromRGB():void
+		/**
+		 * Calculates the color's HSB values from its RGB values
+		 */
+		public function calculateHSBFromRGB():void
 		{
 			  var r:Number = red / 255;
 			  var g:Number = green / 255;
@@ -525,7 +738,11 @@ package com.gestureworks.cml.element
 				hue += 360;						
 		}		
 		
-		private function getHexFromRGB():String
+		/**
+		 * Calculates the color's hex value from its RGB values
+		 * @return  a hexadecimal String
+		 */
+		private function calculateHexFromRGB():String
 		{
 		  var rStr:String = red.toString(16);
 		  if (rStr.length == 1)
@@ -575,6 +792,9 @@ package com.gestureworks.cml.element
 			return (angle / HEX_RANGE);
 		}
 		
+		/**
+		 * The skin color of the containerRec
+		 */
 		public function get skin():uint { return _skin; };
 		public function set skin(s:uint):void
 		{
