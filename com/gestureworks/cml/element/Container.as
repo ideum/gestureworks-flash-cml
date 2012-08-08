@@ -5,6 +5,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
+	import flash.utils.Dictionary;
 	
 	public class Container extends ContainerDisplay implements IContainer
 	{				
@@ -14,12 +15,14 @@ package com.gestureworks.cml.element
 			super();
 		}	
 		
-		private var _layout:String;
+		public var layoutList:Dictionary = new Dictionary(true);
+		
+		private var _layout:*;
 		/**
 		 * 
 		 */
-		public function get layout():String {return _layout;}
-		public function set layout(value:String):void 
+		public function get layout():* {return _layout;}
+		public function set layout(value:*):void 
 		{
 			_layout = value;
 		}
@@ -74,8 +77,78 @@ package com.gestureworks.cml.element
 			_paddingBottom = value;
 		}	
 		
-		
+		/**
+		 * Parse cml for local layouts.
+		 * @param	cml
+		 * @return
+		 */
+		override public function parseCML(cml:XMLList):XMLList
+		{
+			var node:XML = XML(cml);
+			var obj:Object;
+			var layoutId:String;
+			var layoutCnt:int = 0;
+						
+			for each (var item:XML in node.*) 
+			{
+				if (item.name() == "Layout") {
+					
+					obj = CMLParser.instance.createObject(item.@classRef);					
+					var attrName:String;
+					var returnNode:XMLList = new XMLList;
+					
+					//apply attributes
+					for each (var attrValue:* in item.@*)
+					{				
+						attrName = attrValue.name().toString();
+						if (attrName != "classRef")
+							obj[attrName] = attrValue;
+					}					
+					
+					//layout id is either user defined or index
+					if (item.@id != undefined)
+						layoutId = item.@id;
+					else 
+						layoutId = layoutCnt.toString();					
+					layoutList[layoutId] = obj;
+					
+					//by default layout is the first local layout child, the user can specify the initial
+					//layout through the container's layout property
+					if (layoutCnt == 0)
+						layout = layoutId;
+					
+					//increment index	
+					layoutCnt++;						
+				}
+			}
 			
+			//remove all layout children and continue parsing
+			delete cml["Layout"];			
+			CMLParser.instance.parseCML(this, cml);
+			
+			return cml.*;
+		}		
+
+		/**
+		 * Apply the containers layout
+		 * @param	value
+		 */
+		public function applyLayout(value:*=null):void
+		{			
+			if (!value && layout is ILayout)
+				ILayout(value).layout(this);
+			else if (!value) {
+				layoutList[String(layout)].layout(this);
+			}
+			else {
+				layout = value;					
+				if (value is ILayout)
+					value.layout(this);
+				else
+					layoutList[value].layout(this);
+			}
+		}		
+		
 		public function showIndex(index:int):void
 		{
 			childList.getIndex(index).visible = true;

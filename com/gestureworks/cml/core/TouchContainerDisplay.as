@@ -153,12 +153,12 @@ package com.gestureworks.cml.core
 			_autoShuffle = value;			
 		}
 		
-		private var _layout:String;
+		private var _layout:*;
 		/**
 		 * 
 		 */
-		public function get layout():String {return _layout;}
-		public function set layout(value:String):void 
+		public function get layout():* {return _layout;}
+		public function set layout(value:*):void 
 		{
 			_layout = value;
 		}

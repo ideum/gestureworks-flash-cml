@@ -114,7 +114,6 @@ package com.gestureworks.cml.layouts
 			var c:* = container;		
 			var arr:Array = createGrid(_columns, _rows, _spacingX, _spacingY, _paddingX, _paddingY, _leftToRight)
 			
-			// hide all but first button
 			for (var i:int = 0; i < arr.length; i++) 
 			{			
 				if (c.childList.getIndex(i))

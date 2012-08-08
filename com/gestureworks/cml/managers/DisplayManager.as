@@ -119,7 +119,9 @@ package com.gestureworks.cml.managers
 
 		
 		public function layoutCML():void
-		{				
+		{
+			var layoutString:String;
+			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
 			{
 				if (CMLObjectList.instance.getIndex(i) is IContainer)
@@ -127,9 +129,18 @@ package com.gestureworks.cml.managers
 					CMLObjectList.instance.getIndex(i).setDimensionsToChild();	
 					
 					if (CMLObjectList.instance.getIndex(i).layout)
-					{
-						LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, 
-							CMLObjectList.instance.getIndex(i));
+					{						
+						layoutString = CMLObjectList.instance.getIndex(i).layout;
+						
+						//apply local layout
+						if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
+							CMLObjectList.instance.getIndex(i).applyLayout();
+	
+						//apply global layout
+						else if (LayoutManager.instance.layoutList[CMLObjectList.instance.getIndex(i).layout]) {						
+							LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, 
+								CMLObjectList.instance.getIndex(i));
+						}
 					}
 				}	
 			}

@@ -613,7 +613,7 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				obj = searchPackages(className, CML_CORE_PACKAGES);
+				obj = searchPackages(className, CML_CORE.CML_CORE_PACKAGES);
 				
 				//if search failed, try the external list
 				//if (!obj)

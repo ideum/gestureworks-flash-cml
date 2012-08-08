@@ -9,7 +9,7 @@ package com.gestureworks.cml.interfaces
 	public interface IContainer extends IElement
 	{
 		function get childList():LinkedMap;
-		function get layout():String;
+		function get layout():*;
 	}
 	
 }
