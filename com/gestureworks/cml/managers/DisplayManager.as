@@ -131,16 +131,13 @@ package com.gestureworks.cml.managers
 					if (CMLObjectList.instance.getIndex(i).layout)
 					{						
 						layoutString = CMLObjectList.instance.getIndex(i).layout;
-						
 						//apply local layout
 						if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
 							CMLObjectList.instance.getIndex(i).applyLayout();
 	
 						//apply global layout
-						else if (LayoutManager.instance.layoutList[CMLObjectList.instance.getIndex(i).layout]) {						
-							LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, 
-								CMLObjectList.instance.getIndex(i));
-						}
+						else 
+							LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, CMLObjectList.instance.getIndex(i));					
 					}
 				}	
 			}
