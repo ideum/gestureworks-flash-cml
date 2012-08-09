@@ -89,7 +89,30 @@ package com.gestureworks.cml.components
 
 		override public function dispose():void
 		{
-			parent.removeChild(this);
+			super.dispose();
+			
+			frame = null;
+			info = null;
+			menu = null;
+			base_image = null;
+			mask_image = null;
+			mShape = null;
+			meta_data = null;
+			mShapeOutline = null;
+			wShape = null;
+			
+			if (shape_hit)
+			{
+				shape_hit.removeEventListener(GWGestureEvent.DOUBLE_TAP, dTapHandler);
+				shape_hit.removeEventListener(GWGestureEvent.DRAG, dragHandler);
+				shape_hit.removeEventListener(GWGestureEvent.SCALE, scaleHandler);
+				shape_hit.removeEventListener(GWGestureEvent.ROTATE, rotateHandler);
+			}
+			
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
 		}
 		
 		override public function displayComplete():void

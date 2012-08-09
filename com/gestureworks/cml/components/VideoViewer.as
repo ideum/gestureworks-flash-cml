@@ -315,7 +315,25 @@ package com.gestureworks.cml.components
 				video.resume();
 			else if (event.value == "pause")
 				video.pause();				
-		}			
+		}
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+			
+			textFields = null;
+			video = null;
+			front = null;
+			back = null;
+			backBackground = null;
+			menu = null;
+			frame = null;
+			
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);			
+		}
 		
 	}
 }

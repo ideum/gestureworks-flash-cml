@@ -77,7 +77,31 @@
 
 		override public function dispose():void
 		{
-			parent.removeChild(this);
+			super.dispose();
+			
+			frame = null;
+			info = null;
+			menu = null;
+			cam = null;
+			view = null;
+			largeCube = null;
+			cube = null;
+			shape_net = null;
+			cube_face = null;
+			mat = null;
+			
+			if (panoramic)
+			{
+				panoramic.removeEventListener(GWGestureEvent.DRAG, gestureDragHandler);
+				panoramic.removeEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
+				panoramic = null;
+			}
+			
+			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, update);
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);			
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);		
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);	
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
 		}
 		
 		override public function displayComplete():void

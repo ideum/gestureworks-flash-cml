@@ -93,7 +93,12 @@ package com.gestureworks.cml.layouts
 			}
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
-		}		
+		}	
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+		}
 		
 		
 	}

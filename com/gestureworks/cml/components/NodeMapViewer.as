@@ -63,7 +63,21 @@ package com.gestureworks.cml.components
 
 		override public function dispose():void
 		{
-			parent.removeChild(this);
+			super.dispose();
+			
+			nodes = null;
+			album_holder = null;
+			albums = null;
+			background = null;
+			text_title = null;
+			text_desc = null;
+			
+			if (slider)
+			{
+				slider.removeEventListener(StateEvent.CHANGE, categoryUpdate);
+				slider = null;
+			}
+			
 		}
 		
 		override public function displayComplete():void

@@ -159,6 +159,11 @@ package com.gestureworks.cml.layouts
 			return min + Math.random() * (max - min);
 		}
 		
+		override public function dispose():void 
+		{
+			super.dispose();
+		}
+		
 	}
 
 }

@@ -178,6 +178,9 @@ package com.gestureworks.cml.layouts
             return arr;
         }
    
-
+		override public function dispose():void 
+		{
+			super.dispose();			
+		}		
     }
 }	

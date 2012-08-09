@@ -103,9 +103,46 @@ package com.gestureworks.cml.components
 			if (buffer_tween) GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrameGW);
 		}
 		
-		public function dipose():void
+		override public function dispose():void
 		{
-			parent.removeChild(this);
+			super.dispose();
+			menu = null;
+			bar = null;
+			album_title = null;
+			album_bg = null;
+			content_holder = null;
+			belt_bg = null;
+			list = null;
+			mShape0 = null;
+			mShape = null;
+			metadata = null;
+			meta_bg = null;
+			meta_desc = null;
+			album_description = null;			
+			
+			if (ibtn)
+			{
+				ibtn.removeEventListener(GWGestureEvent.TAP, onInfo);
+				ibtn = null;
+			}
+			if (cbtn)
+			{
+				cbtn.removeEventListener(GWGestureEvent.TAP, onClose);
+				cbtn = null;
+			}
+			if (belt)
+			{
+				belt.removeEventListener(GWGestureEvent.DRAG, checkBeltPosition);
+				belt = null;
+			}	
+			if (text_scroll_box)
+			{
+				text_scroll_box.removeEventListener(GWGestureEvent.DRAG, checkScrollPosition);
+				text_scroll_box = null;
+			}
+			
+			this.removeEventListener(GWTransformEvent.T_TRANSLATE, translateHandler);
+			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onEnterFrameGW);
 		}
 		
 		override public function displayComplete():void

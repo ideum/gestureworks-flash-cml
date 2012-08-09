@@ -8,5 +8,10 @@ package com.gestureworks.cml.kits
 		{
 			super();			
 		}
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+		}
 	}
 }

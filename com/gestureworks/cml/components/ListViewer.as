@@ -14,9 +14,9 @@ package com.gestureworks.cml.components
 			super();
 		}
 		
-		public function dipose():void
+		override public function dispose():void
 		{
-			parent.removeChild(this);
+			super.dispose();
 		}
 		
 		override public function displayComplete():void

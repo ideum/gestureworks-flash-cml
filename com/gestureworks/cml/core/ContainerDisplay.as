@@ -15,7 +15,11 @@ package com.gestureworks.cml.core
 			_childList = new LinkedMap;
 		}	
 		
-		override public function dispose():void{parent.removeChild(this);}
+		override public function dispose():void
+		{
+			super.dispose();
+			_childList = null;
+		}
 				
 		
 		private var _childList:LinkedMap;

@@ -179,5 +179,32 @@ package com.gestureworks.cml.components
 			}
 						
 		}
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+			queue = null;			
+			currentTween = null;			
+			cover = null;			
+			tweens = null;
+			
+			if (boundsTimer)
+			{
+				boundsTimer.stop();
+				boundsTimer.removeEventListener(TimerEvent.TIMER,onBoundsTimer);
+				boundsTimer = null;
+			}
+			
+			if (childList)
+			{
+				for (var i:int = 0; i < childList.length; i++) 
+				{	
+					childList.getIndex(i).removeEventListener(TuioTouchEvent.TOUCH_DOWN, updateLayout);
+					childList.getIndex(i).removeEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
+					childList.getIndex(i).removeEventListener(MouseEvent.MOUSE_DOWN, updateLayout);
+					childList.getIndex(i).removeEventListener(StateEvent.CHANGE, onStateEvent);
+				}
+			}
+		}
 	}
 }

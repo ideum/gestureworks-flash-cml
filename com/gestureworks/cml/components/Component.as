@@ -59,6 +59,17 @@ package com.gestureworks.cml.components
 				this.visible = false;				
 		}
 		
+		override public function dispose():void 
+		{
+			super.dispose();
+			menu = null;
+			
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+		}
+		
 	}
 
 }

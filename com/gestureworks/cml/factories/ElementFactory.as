@@ -42,11 +42,21 @@ package com.gestureworks.cml.factories
 		
 		
 		/**
-		 * Destructor
+		 * Calls the dispose method for each child possessing a dispose method then removes all children. 
+		 * This is the root deconstructor intended to be called by overriding dispose functions. 
 		 */
-		public function dispose():void
-		{
-			if (parent) parent.removeChild(this);
+		public function dispose():void 
+		{ 
+			for (var i:int = numChildren - 1; i >= 0; i--)
+			{
+				var child:Object = getChildAt(i);
+				if (child.hasOwnProperty("dispose"))
+					child["dispose"]();
+				removeChildAt(i);
+			}
+			
+			propertyStates = null
+			debugStyle = null;
 		}
 		
 		public var propertyStates:Array;

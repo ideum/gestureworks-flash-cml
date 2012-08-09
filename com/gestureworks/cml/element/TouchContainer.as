@@ -261,9 +261,13 @@ package com.gestureworks.cml.element
 				else
 					layoutList[value].layout(this);
 			}
-		}		
-
+		}	
 		
+		override public function dispose():void 
+		{
+			super.dispose();
+			layoutList = null;			
+		}		
 		
 	}
 }

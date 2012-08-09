@@ -111,7 +111,24 @@
 
 		override public function dispose():void
 		{
-			parent.removeChild(this);
+			super.dispose();
+			frame = null;
+			touch_giga_image = null;
+			info = null;
+			menu = null;
+			sceneNavigator = null;
+			scaleConstraint = null;
+			
+			if (image)
+			{
+				image.removeEventListener(Event.COMPLETE, image_completeHandler);
+				image = null;
+			}	
+			
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
 		}
 		
 		override public function displayComplete():void

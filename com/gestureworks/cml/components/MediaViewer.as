@@ -315,7 +315,25 @@
 				media.resume();
 			else if (event.value == "pause")
 				media.pause();				
-		}			
+		}
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+			
+			textFields = null;
+			media = null;
+			front = null;
+			back = null;
+			backBackground = null;
+			menu = null;
+			frame = null;
+			
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);			
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+		}
 		
 	}
 }

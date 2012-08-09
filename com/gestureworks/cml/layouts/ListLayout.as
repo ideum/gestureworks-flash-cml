@@ -178,6 +178,11 @@ package com.gestureworks.cml.layouts
 			container.height = 2 * paddingX + sumy + (n - 1) * marginY;
 			container.width = objchild.height;
 		}
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+		}
 
 	}
 

@@ -31,9 +31,29 @@ package com.gestureworks.cml.core
 		//////////////////////////////////////////////////////////////
 		// IOBJECT
 		//////////////////////////////////////////////////////////////		
+				
 		
+		/**
+		 * Calls the dispose method for each child possessing a dispose method then removes all children. 
+		 * This is the root deconstructor intended to be called by overriding dispose functions. 
+		 */
+		public function dispose():void 		
+		{
+			for (var i:int = numChildren - 1; i >= 0; i--)
+			{
+				var child:Object = getChildAt(i);
+				if (child.hasOwnProperty("dispose"))
+					child["dispose"]();
+				removeChildAt(i);
+			}
 		
-		public function dispose():void { parent.removeChild(this); }
+			propertyStates = null;
+			_childList = null; 
+			layout = null;
+			cmlGestureList = null;
+			
+			removeEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);			
+		}
 		
 		public var propertyStates:Array;
 		
