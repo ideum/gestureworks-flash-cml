@@ -13,14 +13,8 @@ package com.gestureworks.cml.layouts
 		public function RandomLayout() 
 		{
 			super();
-		}
-		
-		private var _type:String = "randomXY";
-		public function get type():String{return _type;}
-		public function set type(value:String):void 
-		{
-			_type = value;
-		}
+			type = "randomXY";
+		}		
 		
 		private var _minX:Number = 0;
 		public function get minX():Number{return _minX;}
@@ -151,13 +145,6 @@ package com.gestureworks.cml.layouts
 				container.childList.getIndex(i).rotation = randomMinMax(minRot, maxRot);		
 			}			
 		}	
-		
-
-		
-		private function randomMinMax(min:Number, max:Number):Number
-		{
-			return min + Math.random() * (max - min);
-		}
 		
 		override public function dispose():void 
 		{

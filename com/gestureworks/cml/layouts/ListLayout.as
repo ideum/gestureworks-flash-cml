@@ -3,9 +3,8 @@ package com.gestureworks.cml.layouts
 	import com.gestureworks.cml.factories.LayoutFactory;
 	import com.gestureworks.cml.interfaces.IContainer;
 	
-	/**
-	 * Random
-	 * Random Layout
+	/**	 
+	 * List Layout
 	 * @author Charles Veasey
 	 */
 	public class ListLayout extends LayoutFactory
@@ -15,13 +14,7 @@ package com.gestureworks.cml.layouts
 		public function ListLayout() 
 		{
 			super();
-		}
-		
-		private var _type:String = "horizontal";
-		public function get type():String{return _type;}
-		public function set type(value:String):void 
-		{
-			_type = value;
+			type = "horizontal";
 		}
 		
 		private var _close_packing:Boolean = true;
@@ -43,35 +36,7 @@ package com.gestureworks.cml.layouts
 		public function set blockY(value:Number):void 
 		{
 			_blockY = value;
-		}
-		
-		private var _paddingX:Number = 0;
-		public function get paddingX():Number{return _paddingX;}
-		public function set paddingX(value:Number):void 
-		{
-			_paddingX = value;
-		}	
-		private var _paddingY:Number = 0;
-		public function get paddingY():Number{return _paddingY;}
-		public function set paddingY(value:Number):void 
-		{
-			_paddingY = value;
-		}
-		
-		private var _marginX:Number = 10;
-		public function get marginX():Number{return _marginX;}
-		public function set marginX(value:Number):void 
-		{
-			_marginX = value;
-		}
-		
-		private var _marginY:Number = 0;
-		public function get marginY():Number{return _marginY;}
-		public function set marginY(value:Number):void 
-		{
-			_marginY = value;
-		}		
-				
+		}			
 		
 		/**
 		 * Apply layout type to container object
@@ -102,57 +67,41 @@ package com.gestureworks.cml.layouts
 
 		/**
 		 * Distributes the the children of the container in a list
-		 * about the x-axis.
+		 * about the x-axis. Margin is multiplied by 2 to represent the margin between
+		 * two objects.
 		 * @param	container
 		 */
 		public function horizontal(container:IContainer):void
-		{
-			/*
-			trace("---------------------------------------------------------layout container:", container.childList.length);
-			
-			for (var j:int = 0; j < container.childList.length; j++) 
-			{		
-				trace("c1", container.childList.getIndex(i));
-				
-				if (container.childList.getIndex(i).hasOwnProperty("childList"))
-				{
-					for (var k:int = 0; k < container.childList.getIndex(i).childList.length; k++) 
-					{		
-						trace("c2", container.childList.getIndex(i).childList.getIndex(k));
-					}
-				}	
-			}
-			*/
-			
+		{		
 			n = container.childList.length;
-			var sumx:Number = 0;
-			
-			trace("horizontal layout",n)
+			var sumx:Number = 0;			
 			
 			for (var i:int = 0; i < n; i++) 
-			{				
+			{		
 				var obj:* = container.childList.getIndex(i);
-				var objchild:* = container.childList.getIndex(i).childList.getIndex(0);
+				var objchild:* = obj is IContainer ?  obj.childList.getIndex(0) : obj;
 				
 				if (!close_packing) {
 		
-					obj.x = paddingX + (i) * blockX + i * marginX;
-					obj.y = 0;
+					obj.x = i * blockX + i * (2*marginX);
+					obj.y = 0;					
 				}
 				else {
 					
-					obj.x = paddingX + sumx + i * marginX;
+					obj.x = useMargins ? sumx + i * (2*marginX) : i * spacingX;
 					obj.y = 0;
+					trace(obj.x);
 				}
-				sumx += objchild.width*objchild.scaleX;
+				sumx += objchild.width * objchild.scaleX;
 			}
-			container.width = 2 * paddingX + sumx + (n - 1) * marginX;
+			container.width =  sumx + (n - 1) * (2*marginX);
 			//container.height = objchild.height;
 		}
 		
 		/**
 		 * Distributes the the children of the container in a vertical list
-		 * about the y-axis.
+		 * about the y-axis. Margin is multiplied by 2 to represent the margin between
+		 * two objects.
 		 * @param	container
 		 */		
 		public function vertical(container:IContainer):void
@@ -163,22 +112,25 @@ package com.gestureworks.cml.layouts
 			for (var i:int = 0; i < n; i++) 
 			{				
 				var obj:* = container.childList.getIndex(i);
-				var objchild:* = container.childList.getIndex(i).childList.getIndex(0);
+				var objchild:* = obj is IContainer ?  obj.childList.getIndex(0) : obj;
 							
 					if (!close_packing) {
 						obj.x = 0;
-						obj.y = paddingY + (i) * blockY + i * marginY;
+						obj.y = i * blockY + i * (2*marginY);
 					}
 					else {
 						obj.x = 0;
-						obj.y = paddingY + sumy + i * marginY;
+						obj.y = useMargins ? sumy + i * (2*marginY) : i * spacingY;
 					}
 					sumy += objchild.height;
 			}	
-			container.height = 2 * paddingX + sumy + (n - 1) * marginY;
+			container.height = sumy + (n - 1) * (2*marginY);
 			container.width = objchild.height;
 		}
 		
+		/**
+		 * Disposal function
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();
