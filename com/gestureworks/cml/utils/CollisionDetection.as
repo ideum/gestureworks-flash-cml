@@ -4,7 +4,7 @@ package com.gestureworks.cml.utils
 	import flash.geom.*;
 
     /**
-     * Use isColliding to test for a collision between two sprites.
+	 * Use isColliding to test for a collision between two sprites.
      */
 	public class CollisionDetection
 	{
