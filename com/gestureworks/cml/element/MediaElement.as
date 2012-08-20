@@ -151,9 +151,7 @@ package com.gestureworks.cml.element
 			if (file.search(imageTypes) >= 0)
  			{
 				dictionary[file] = new ImageElement;
-				dictionary[file].addEventListener(Event.COMPLETE, onComplete);
-				
-				trace(_width,_resample, width)
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}	
 			else if (file.search(videoTypes) >= 0)
 			{	

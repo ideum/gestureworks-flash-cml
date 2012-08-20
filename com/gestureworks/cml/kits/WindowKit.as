@@ -37,6 +37,9 @@ package com.gestureworks.cml.kits
 			
 			for each (var node:* in cml.*)
 			{
+				if (node.@id == undefined)
+					node.@id = "default";
+				
 				if (node.@id != "default")
 					WindowManager.instance.createWindow(node.@id);
 				

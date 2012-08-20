@@ -24,6 +24,7 @@ package com.gestureworks.cml.core
 	import flash.events.*;
 	import flash.utils.*;
 	import com.gestureworks.core.DisplayList;
+	import com.gestureworks.components.CMLDisplay; CMLDisplay;
 	
 	
 	/** 
@@ -58,7 +59,9 @@ package com.gestureworks.cml.core
 		public var cssFile:String;
 		public var cmlFile:String;
 		private var cmlTreeNodes:Array = [];
-		
+		public var relativePaths:Boolean = false;
+		public var extensions:RegExp;			
+		public var rootDirectory:String = "";		
 		
 		/**
 		 * Initial parsing of the cml document
@@ -67,14 +70,28 @@ package com.gestureworks.cml.core
 		 * @param	properties
 		 */
 		public function init(cml:XML, parent:*, properties:*=null):void
-		{			
+		{
+			extensions = /^.*\.(cml|gml|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|png|gif|jpg|mp3|swf|swc)$/i;			
+			
+			if (cml.@relativePaths == "true")
+				relativePaths = true;
+				
+			// get css file
+			var cssStr:String = cml.@css;			
+			
+			if (relativePaths)
+				cssStr = relToAbsPath(rootDirectory+cssStr);
+			
+			CMLParser.instance.cssFile = cssStr;	
+							
 			if (debug)
 				trace("\n\n========================== CML parser initialized ===============================");
 			
 			//need these settings for TLF System
 			XML.ignoreWhitespace = true;
 			XML.prettyPrinting = false;						
-							
+		
+			
 			if (debug)
 				trace("\n Parsing main CML document:", cmlFile);					
 			
@@ -448,8 +465,18 @@ package com.gestureworks.cml.core
 					{
 						attrName = attrValue.name().toString();
 
-						if (attrName == "cml" && attrValue.toString().length > 0)
-						{							
+						if ((attrName == "cml" || attrName == "src") && attrValue.toString().length > 0)
+						{
+							// rootDirectory allows you to change root path	
+							if (relativePaths && rootDirectory 
+								&& rootDirectory.length > 1){	
+								if (attrValue.search(extensions) >= 0){
+									attrValue = rootDirectory + attrValue;
+									attrValue = relToAbsPath(attrValue);	
+								}
+							}	
+							
+														
 							includeParentIndex.push(parent);
 							FileManager.instance.addToQueue(attrValue, "cml");			
 						}
@@ -676,7 +703,18 @@ package com.gestureworks.cml.core
 				// check for css keyword
 				if (attrName == "class")
 					attrName = "class_";				
-									
+				
+				
+				// rootDirectory allows you to change root path	
+				if (relativePaths && rootDirectory && rootDirectory.length > 1)	
+				{	
+					if (attrValue.search(extensions) >= 0)
+					{
+						attrValue = rootDirectory + attrValue;
+						attrValue = relToAbsPath(attrValue);	
+					}
+				}
+				
 				obj.propertyStates[0][attrName] = attrValue;				
 			}
 			
@@ -689,7 +727,32 @@ package com.gestureworks.cml.core
 		}		
 		
 		
+		public function relToAbsPath(string:String):String
+		{			
+			var newString:String;
+			var cnt:int = 0;
+			var arr:Array = string.split("/");
+			
+			for (var i:int = arr.length-1; i >= 0; i--) 
+			{
+				if (i == arr.length - 1) {
+					newString = arr[i];
+					continue;
+				}	
+				
+				if (arr[i] == "..")
+					cnt++;
+				else if (cnt > 0) {
+					cnt--;
+				}	
+				else 
+					newString = arr[i] + "/" + newString;
+			}	
+						
+			return newString;
+		}
 		
+
 		
 		/**
 		 * Default updateProperties routine
@@ -721,9 +784,7 @@ package com.gestureworks.cml.core
 				
 		}
 				
-		
-		
-		
+				
 		/**
 		 * 
 		 * @param	propertyName
@@ -889,15 +950,8 @@ package com.gestureworks.cml.core
 						childLoop(obj.childList.getIndex(i), index + 1); 										
 				}
 			
-
-				
 			}
-			
-			
-			
-				
-
-				
+							
 								
 			trace();	
 			trace();	

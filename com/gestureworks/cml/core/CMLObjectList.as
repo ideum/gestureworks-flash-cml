@@ -29,7 +29,7 @@ package com.gestureworks.cml.core
 	 * CMLObjectList.instance.getCSSClass("my-css-class");
 	 * 
 	 * // returns object by given as3 class
-	 * CMLObjectList.instance.getClass("desert-picture");
+	 * CMLObjectList.instance.getClass("ImageElement");
 	 * 
 	 * </codeblock>
 	 * 
@@ -38,7 +38,7 @@ package com.gestureworks.cml.core
 	 * @playerversion AIR 2.5
 	 * @langversion 3.0
 	 *
-	 * @see com.gestureworks.cml.core.CmlParser
+	 * @see com.gestureworks.cml.core.CMLParser
 	 */
 	public class CMLObjectList extends LinkedMap
 	{		

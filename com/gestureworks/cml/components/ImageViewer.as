@@ -22,7 +22,10 @@ package com.gestureworks.cml.components
 		
 		public function ImageViewer() 
 		{
-			super();			
+			super();
+			mouseChildren = true;
+			disableNativeTransform = false;
+			disableAffineTransform = false;			
 		}
 		
 		
@@ -237,7 +240,7 @@ package com.gestureworks.cml.components
 			}			
 			
 			if (menu)
-			{
+			{				
 				menu.updateLayout(width, height);
 				
 				if (menu.autoHide) {
@@ -247,8 +250,16 @@ package com.gestureworks.cml.components
 						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 					else	
 						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+						
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_END, onUp);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_UP, onUp);						
 				}					
 			}
+			
 			
 			if (textFields && autoTextLayout)
 			{
@@ -276,6 +287,12 @@ package com.gestureworks.cml.components
 				menu.startTimer();
 			}
 		}			
+
+		public function onUp(event:*):void
+		{
+			if (menu)
+				menu.mouseChildren = true;
+		}		
 		
 		override protected function onStateEvent(event:StateEvent):void
 		{				
@@ -303,7 +320,6 @@ package com.gestureworks.cml.components
 			else if (event.value == "close")
 			{
 				this.visible = false;
-				trace("invisible");
 			}			
 		}
 		

@@ -5,6 +5,7 @@ package com.gestureworks.cml.utils
 	import flash.display.Shape;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.NativeWindowBoundsEvent;
 
 	/**
 	 * SystemWindow
@@ -19,6 +20,8 @@ package com.gestureworks.cml.utils
 		public function SystemWindow(initOptions:NativeWindowInitOptions)
 		{
 			super(initOptions);
+			
+			this.addEventListener(NativeWindowBoundsEvent.RESIZE, onResize);
 		}
 		
 		private var _id:String;
@@ -46,10 +49,13 @@ package com.gestureworks.cml.utils
 			background.graphics.endFill();			
 		}
 		
-		private function onResize(event:Event):void
+		private function onResize(event:NativeWindowBoundsEvent):void
 		{
 			background.width = this.width;
 			background.height = this.height;
+			
+			this.stage.stageHeight = this.height;
+			this.stage.stageWidth = this.width;			
 		}
 		
 	}

@@ -29,7 +29,7 @@ package com.gestureworks.cml.loaders
 		}	
 		
 		public function loadCML(url:String):void
-		{
+		{			
 			var urlRequest:URLRequest = new URLRequest(url);
 			urlLoader = new URLLoader;
 			urlLoader.addEventListener(Event.COMPLETE, onCMLDataLoaded);

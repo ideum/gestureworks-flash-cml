@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import com.gestureworks.cml.interfaces.IButton;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import com.gestureworks.cml.events.StateEvent;
@@ -10,7 +11,7 @@ package com.gestureworks.cml.element
 	 * ...
 	 * @author ...
 	 */
-	public class Stack extends TouchContainer 
+	public class Stack extends TouchContainer
 	{
 		
 		public function Stack() 
@@ -64,7 +65,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * CML initialization method
-		 * @internal do not call the super here
+		 * @internal do not call super here
 		 */
 		override public function displayComplete():void
 		{			

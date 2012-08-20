@@ -252,7 +252,14 @@ package com.gestureworks.cml.components
 						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 					else	
 						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-				}					
+						
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_END, onUp);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_UP, onUp);						
+				}						
 			}
 			
 			if (textFields && autoTextLayout)
@@ -275,12 +282,17 @@ package com.gestureworks.cml.components
 		
 		public function onDown(event:*):void
 		{
-			if (menu)
-			{
+			if (menu){
 				menu.visible = true;
 				menu.startTimer();
 			}
 		}			
+
+		public function onUp(event:*):void
+		{
+			if (menu)
+				menu.mouseChildren = true;
+		}		
 		
 		override protected function onStateEvent(event:StateEvent):void
 		{				

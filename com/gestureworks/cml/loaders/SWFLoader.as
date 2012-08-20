@@ -42,15 +42,17 @@ package com.gestureworks.cml.loaders
 		{
 			if (src == "")
 				_src = url;
-			
+							
 			loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loaderCompleteHandler);
-			var loaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+			var loaderContext:LoaderContext = new LoaderContext(false);
+			loaderContext.allowCodeImport = true;
+			loaderContext.applicationDomain = ApplicationDomain.currentDomain;
 			loader.load(new URLRequest(url), loaderContext);			
 		}		
 		
 		private function loaderCompleteHandler(event:Event):void
-		{
+		{			
 			_loaded = true;
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, loaderCompleteHandler);			
 			dispatchEvent(new Event(SWFLoader.FILE_LOADED, true, true));			

@@ -5,14 +5,18 @@ package com.gestureworks.cml.kits
 	
 	public class BackgroundKit extends Container
 	{
+		
 		public function BackgroundKit() 
 		{
 			super();
 		}
 		
+		public var autoupdate:Boolean = true;
+		
 		override public function displayComplete():void
 		{
-			//stage.addEventListener(Event.RESIZE, updateLayout);
+			if (autoupdate)
+				stage.addEventListener(Event.RESIZE, updateLayout);
 			updateLayout();
 		}
 		
@@ -23,8 +27,8 @@ package com.gestureworks.cml.kits
 			for (var i:int = 0; i < numChildren; i++) 
 			{
 				child = getChildAt(i);
-				//child.x = (stage.stageWidth - child.width) / 2;
-				//child.y = (stage.stageHeight -  child.height) / 2;				
+				child.x = (stage.stageWidth - child.width) / 2;
+				child.y = (stage.stageHeight -  child.height) / 2;				
 			}			
 		}
 		

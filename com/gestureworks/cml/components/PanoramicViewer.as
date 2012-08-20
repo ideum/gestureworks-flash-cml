@@ -15,10 +15,10 @@
 	import flash.geom.Matrix;
 	import flash.events.*;
 	//---------- gestureworks ------------//
-	import com.gestureworks.cml.core.TouchContainerDisplay;
+	import com.gestureworks.cml.factories.TouchContainerFactory;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.core.ComponentKitDisplay;
+	import com.gestureworks.cml.kits.ComponentKit;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.events.*;

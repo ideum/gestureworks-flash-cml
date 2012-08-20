@@ -52,8 +52,8 @@ package com.gestureworks.cml.managers
 			if (DefaultStage.instance.stage)
 			{	
 				windows.append("default", DefaultStage.instance.stage.nativeWindow);
-				DefaultStage.instance.stage.scaleMode = StageScaleMode.NO_SCALE;
-				DefaultStage.instance.stage.align = StageAlign.TOP_LEFT;				
+				//DefaultStage.instance.stage.scaleMode = StageScaleMode.NO_SCALE;
+				//DefaultStage.instance.stage.align = StageAlign.TOP_LEFT;					
 			}	
 		}
 		

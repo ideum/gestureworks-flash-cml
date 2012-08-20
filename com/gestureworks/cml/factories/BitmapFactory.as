@@ -249,48 +249,35 @@ package com.gestureworks.cml.factories
 			var percentX:Number = 1; 
 			var percentY:Number = 1;
 			
-			
-			// Commenting out this below - I'm not sure why we were resetting the scale to one here,
-			// and thus nullifying the user scaling
-			
-			//scaleX = 1;
-			//scaleY = 1;
 
-			
-			if (_resample)
+			if (width && height)
 			{
-				if (width && height)
+				if ((width != fileData.width) && (height != fileData.height))
 				{
-					// skip resampling if not needed to avoid image degradation
-					if ((width != fileData.width) && (height != fileData.height))
-					{
-						percentX = width / fileData.width;
-						percentY = height / fileData.height;
-					}
+					percentX = width / fileData.width;
+					percentY = height / fileData.height;
 				}
-				
-				else if (width)
-				{
-					// skip resampling if not needed to avoid image degradation
-					if (width != fileData.width)
-					{
-						percentX = width / fileData.width;
-						percentY = percentX;
-					}
-				}
-				
-				else if (height)
-				{
-					// skip resampling if not needed to avoid image degradation
-					if (height != fileData.height)
-					{
-						percentY = height / fileData.height; 										
-						percentX = percentY;
-					}
-				}	
-			}			
+			}
 			
-			if ((percentX != 1) && (percentY != 1))
+			else if (width)
+			{
+				if (width != fileData.width)
+				{
+					percentX = width / fileData.width;
+					percentY = percentX;
+				}
+			}
+			
+			else if (height)
+			{
+				if (height != fileData.height)
+				{
+					percentY = height / fileData.height; 										
+					percentX = percentY;
+				}
+			}	
+			
+			if (resample && (percentX != 1) && (percentY != 1))
 			{
 				var resizeMatrix:Matrix = new Matrix();		
 				resizeMatrix.scale(percentX, percentY);				
@@ -298,28 +285,29 @@ package com.gestureworks.cml.factories
 				_bitmapData.draw(fileData.content, resizeMatrix);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
 				resizeMatrix = null;
-			}
-			
-			// this used to contain a clause for scale, but it was counter-acting and the result was no scale
+			}			
 			else
 			{
 				_bitmapData = new BitmapData(fileData.width, fileData.height, true, 0x000000);
 				_bitmapData.draw(fileData.content);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
+				
+				scaleX *= percentX;
+				scaleY *= percentY;
 			}
+
+		
 			
-			_bitmap.smoothing = true;
-			
-			
-			
+						
 			// very important to set width and height!
 			width = _bitmap.width * scaleX;
 			height = _bitmap.height * scaleY;
 		
+
+			
 			
 			// establish orientation			
 			_aspectRatio = width / height;
-			
 			
 			if (_aspectRatio > 1) 
 			{
@@ -332,6 +320,8 @@ package com.gestureworks.cml.factories
 				_landscape = true; 
 			}
 			
+			
+			_bitmap.smoothing = true;
 			addChild(_bitmap);
 				
 			

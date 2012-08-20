@@ -26,7 +26,7 @@ package com.gestureworks.cml.managers
 			return _instance; 
 		}	
 		
-		public var debug:Boolean = false;
+		public var debug:Boolean = true;
 		
 		public var fileCount:int = 0;
 		private var fileQueue:LinkedMap = new LinkedMap;
@@ -51,7 +51,7 @@ package com.gestureworks.cml.managers
 		{
 			if (type == "cml" && file.search(cmlType) >= 0)
 			{				
-				cmlQueue.append(file, type);			
+				cmlQueue.append(file, type);				
 				cmlCount++;
 			}
 			
@@ -72,7 +72,7 @@ package com.gestureworks.cml.managers
 			}				
 			
 			else if (type == "swf" && file.search(swfType) >= 0 && !fileQueue.hasKey(file))
-			{
+			{				
 				fileQueue.append(file, type);
 				fileCount++;
 			}

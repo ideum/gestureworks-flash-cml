@@ -19,7 +19,7 @@ package com.gestureworks.cml.components
 	import flash.events.Event;
 	
 	import adobe.utils.CustomActions;
-	import com.gestureworks.cml.core.TouchContainerDisplay;
+	import com.gestureworks.cml.factories.TouchContainerFactory;
 	import flash.display.Sprite;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -30,7 +30,7 @@ package com.gestureworks.cml.components
 	
 	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.core.ComponentKitDisplay;
+	import com.gestureworks.cml.kits.ComponentKit;
 	import com.gestureworks.cml.element.TouchContainer
 	import com.gestureworks.cml.element.ImageElement;
 	import com.gestureworks.cml.kits.ComponentKit;	

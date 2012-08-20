@@ -22,9 +22,25 @@ package com.gestureworks.cml.element
 		{
 			if (_cml == value)
 				return;
-				
+			
+			_src = value;
 			_cml = value;
-		}	
+		}
+		
+		
+		private var _src:String;
+		/**
+		 * 
+		 */
+		public function get src():String {return _src;}
+		public function set src(value:String):void 
+		{
+			if (_src == value)
+				return;
+			
+			_cml = value;
+			_src = value;
+		}
 		
 	}
 

@@ -4,7 +4,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.kits.ComponentKit;
 	//import com.gestureworks.cml.element.Component;
 	import com.gestureworks.core.GestureWorks;
-		import com.gestureworks.components.CMLDisplay; CMLDisplay;
+	//import com.gestureworks.cml.core.CMLDisplay; CMLDisplay;
 	
 	public class ListViewer extends ComponentKit
 	{		
