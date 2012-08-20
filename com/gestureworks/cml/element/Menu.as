@@ -5,6 +5,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.*;
 	import flash.events.*;
 	import org.tuio.TuioTouchEvent;
+	import com.gestureworks.cml.interfaces.IButton;
 	
 	public class Menu extends Container 
 	{
@@ -61,7 +62,9 @@ package com.gestureworks.cml.element
 		}		
 		
 		
-		override public function displayComplete():void {updateLayout(this.width, this.height)}
+		override public function displayComplete():void {
+			//**updateLayout(this.width, this.height)**//
+			}
 		
 		private function onClick(event:*):void
 		{
@@ -95,46 +98,33 @@ package com.gestureworks.cml.element
 				{
 					GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);				
 					this.visible = false;
+					this.mouseChildren = false;
 					frameCount = 0;
 				}
 			}
 		}
 		
 		
-		public function updateLayout(containerWidth:Number = 0, containerHeight:Number = 0):void
+		public function updateLayout(containerWidth:Number, containerHeight:Number):void
 		{
-			trace("updateLayout", containerWidth, containerHeight);
 			
-			buttonArray = this.childList.getClass(ButtonElement).getValueArray();
+			for (var j:int = 0; j < childList.length; j++) 
+			{
+				if (childList.getIndex(j) is ButtonElement) {
+					buttonArray.push(childList.getIndex(j));
+				}	
+			}
 			
-			var btnWidth:Number = 0;
-			var btnHeight:Number = 0;		
-			var maxBtnWidth:Number = 0;
-			var maxBtnHeight:Number = 0;
 			var i:int;
-			
-			
+		
 			for (i = 0; i < buttonArray.length; i++)
 			{
 				buttonArray[i].updateLayout();
-				btnWidth = buttonArray[i].width;
-				btnHeight = buttonArray[i].height;
-				
-				if (maxBtnWidth < btnWidth)
-					maxBtnWidth = btnWidth;
-				if (maxBtnHeight < btnHeight)
-					maxBtnHeight = btnHeight;
 			}
-					
+			
 			
 			if (position == "bottom" || position == "top")	
-			{
-				// position self
-				if (position == "bottom")
-					this.y = containerHeight - maxBtnHeight - paddingBottom;				
-				else if (position == "top")
-					this.y = paddingTop;			
-						
+			{						
 				// position all but last buttons			
 				for (i = 0; i < buttonArray.length-1; i++) 
 				{
@@ -145,20 +135,35 @@ package com.gestureworks.cml.element
 					// position middle buttons
 					else
 						buttonArray[i].x = (containerWidth - paddingLeft - paddingRight) / (buttonArray.length - 1) * i;
-				}	
+
+						
+					// position y
+					if (position == "bottom")
+						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;				
+					
+					else if (position == "top")
+						buttonArray[i].y = paddingTop;					
+				
+				}
 				
 				// position last button, if more than one
-				if (buttonArray.length > 1)
-					buttonArray[buttonArray.length - 1].x = containerWidth - paddingRight - buttonArray[buttonArray.length - 1].width;
+				if (buttonArray.length > 1)  {
+					buttonArray[buttonArray.length - 1].x = containerWidth - paddingRight - buttonArray[buttonArray.length - 1].width;	
+					
+					// position y
+					if (position == "bottom")
+						buttonArray[buttonArray.length - 1].y = containerHeight - buttonArray[i].height - paddingBottom;				
+					
+					else if (position == "top")
+						buttonArray[buttonArray.length - 1].y = paddingTop;
+					
+				}
+				
 			}
 			
 			else if (position == "bottomLeft" || position == "topLeft")	
 			{
-				// position self
-				if (position == "bottomLeft")
-					this.y = containerHeight - maxBtnHeight - paddingBottom;				
-				else if (position == "topLeft")
-					this.y = paddingTop;				
+				
 				
 				// position buttons		
 				for (i = 0; i < buttonArray.length; i++) 
@@ -170,35 +175,39 @@ package com.gestureworks.cml.element
 					// position the rest
 					else
 						buttonArray[i].x = buttonArray[i - 1].x + buttonArray[i - 1].width + paddingLeft + paddingRight;
+						
+					// position y
+					if (position == "bottomLeft")
+						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;				
+					
+					else if (position == "topLeft")
+						buttonArray[i].y = paddingTop;
+											
 				}	
 				
 			}		
 			
 			else if (position == "bottomRight" || position == "topRight")	
-			{
-				// position self
-				if (position == "bottomRight")
-					this.y = containerHeight - maxBtnHeight - paddingBottom;				
-				else if (position == "topRight")
-					this.y = paddingTop;					
-				
+			{																
 				// position buttons		
 				for (i = buttonArray.length-1; i >= 0; i--) 
-				{					
+				{
 					// position last button
 					if (i == buttonArray.length-1) 
 						buttonArray[i].x = containerWidth - buttonArray[i].width - paddingRight;
 						
 					// position the rest
 					else
-						buttonArray[i].x = buttonArray[i + 1].x - buttonArray[i + 1].width - paddingLeft - paddingRight;
-						
+						buttonArray[i].x = buttonArray[i + 1].x - buttonArray[i + 1].width - paddingLeft - paddingRight;										
 					
+					// position y
+					if (position == "bottomRight")	
+						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;
+					
+					else if (position == "topRight")
+						buttonArray[i].y = paddingTop;
 				}	
-			}					
-			
-			
+			}			
 		}
-		
 	}
 }
