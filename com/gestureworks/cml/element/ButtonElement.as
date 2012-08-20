@@ -1,5 +1,8 @@
 package com.gestureworks.cml.element
 {	
+	import com.gestureworks.cml.interfaces.IButton;
+	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -9,7 +12,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.GestureWorks;
 	import org.tuio.TuioTouchEvent;
 
-	public class ButtonElement extends Container
+	public class ButtonElement extends Container implements IButton
 	{
 		public var debug:Boolean = false;		
 		protected var buttonStates:Dictionary;		
@@ -21,7 +24,6 @@ package com.gestureworks.cml.element
 		{
 			super();
 			buttonStates = new Dictionary(true);
-			hitObject = new Object;	
 		}		
 		
 
@@ -30,17 +32,25 @@ package com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void
 		{
+			// try to auto-find init
+			if (!init && (childList.length > 0))
+				init = childList.getIndex(0);			
+			
 			for each (var state:* in buttonStates)
 			{
 				if (state != init)
 					hideKey(state);	
 			}
-			
-			showKey(init);
-			hitObject = childList.getKey(hit);
+				
+
+			if (!hit && (childList.length > 0))
+				hitObject = childList.getIndex(0) as DisplayObject;
+			else
+				hitObject = childList.getKey(hit);
 			
 			// float hit area to the top of the display list
-			addChildAt(hitObject, numChildren - 1);
+			if (hitObject)
+				addChildAt(hitObject, numChildren - 1);
 			
 			if (mouseOver)
 				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);	
@@ -67,12 +77,51 @@ package com.gestureworks.cml.element
 			}
 						
 
+			// toggle
+			if (toggle == "mouseOver")
+				this.addEventListener(MouseEvent.MOUSE_OVER, onToggle);	
+			
+			else if (toggle == "mouseDown")
+				this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
+				
+			else if (toggle == "mouseUp")
+				this.addEventListener(MouseEvent.MOUSE_UP, onToggle);	
+				
+			else if (toggle == "touchDown")
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
+				
+			else if (toggle == "touchUp")
+				this.addEventListener(TouchEvent.TOUCH_END, onToggle);
+				
+			else if (toggle == "down")
+			{
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
+				else if (GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
+				else
+					this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
+			}
+			else if (toggle == "up")
+			{
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_UP, onToggle);
+				else if (GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_END, onToggle);
+				else
+					this.addEventListener(MouseEvent.MOUSE_UP, onToggle);					
+			}					
+			
+			
+			
+			
 			updateLayout();
 		}
 		
 		
 		public function updateLayout():void
 		{
+						
 			// we need containers to automatically take on the dimensions of the largest child, so I don't have to do this!!
 			if (childList.getKey(buttonStates["init"]) is Container)
 			{
@@ -99,9 +148,37 @@ package com.gestureworks.cml.element
 						}						
 					}
 				}				
-			}			
+			}
+			
+			
+
+			for (var i:int = 0; i < childList.length; i++) 
+			{
+				if (childList.getIndex(i) is ButtonElement) {
+					childList.getIndex(i).updateLayout();
+					this.width = childList.getIndex(i).width ;
+					this.height = childList.getIndex(i).height;
+				}
+			
+			}	
+			
 		}
+
 		
+		private var _toggle:String = "";
+		/**
+		 * sets toggle event by string name:
+		 * mouseOver, mouseDown, mouseUp, touchDown, touchUp, down, and up 
+		 * (the last two auto-switch between input device)
+		 * @default ""
+		 */		
+		public function get toggle():String {return _toggle}
+		public function set toggle(value:String):void 
+		{			
+			_toggle = value;		
+		}	
+		
+				
 				
 		private var _dispatch:String;
 		/**
@@ -758,6 +835,26 @@ package com.gestureworks.cml.element
 			else if (dispatchDefault)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "out", true, true));		
 		}
+		
+				
+		private function onToggle(event:*):void
+		{			
+			if (childList.hasNext())
+			{
+				
+				childList.currentValue.visible = false;
+				childList.next().visible = true;
+			}
+			else
+			{
+				childList.currentValue.visible = false;				
+				childList.reset();
+				childList.currentValue.visible = true;			
+			}
+			
+			
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
+		}		
 		
 		
 	}
