@@ -252,6 +252,13 @@ package com.gestureworks.cml.components
 						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 					else	
 						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+						
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_END, onUp);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_UP, onUp);						
 				}					
 			}
 			
@@ -282,6 +289,13 @@ package com.gestureworks.cml.components
 			}
 		}			
 		
+		public function onUp(event:*):void
+		{
+			if (menu)
+				menu.mouseChildren = true;
+		}
+		
+		
 		override protected function onStateEvent(event:StateEvent):void
 		{				
 			if (event.value == "info") 
@@ -311,9 +325,9 @@ package com.gestureworks.cml.components
 				if (video)
 					video.stop();
 			}
-			else if (event.value == "play")
+			else if (event.value == "play" && video)
 				video.resume();
-			else if (event.value == "pause")
+			else if (event.value == "pause" && video)
 				video.pause();				
 		}
 		
