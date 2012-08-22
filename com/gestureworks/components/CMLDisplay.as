@@ -19,7 +19,9 @@ package com.gestureworks.components
 		{	
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			DefaultStage.instance.stage = stage;			
-			CMLParser.instance.init(CMLLoader.settings, this);	
+			CMLParser.instance.init(CMLLoader.settings, this);
+			var p:* = parent;
+			p.writeComplete = true;					
 		}
 
 	}
