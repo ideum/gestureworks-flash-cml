@@ -238,16 +238,7 @@ package com.gestureworks.cml.factories
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		private var cmlGestureList:Object;
+		protected var cmlGestureList:Object;
 		
 		public function makeGestureList(value:XMLList):Object
 		{			
