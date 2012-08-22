@@ -1,7 +1,7 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObjectContainer;;
 	import flash.display.Sprite;
 	
 	/**
@@ -55,7 +55,7 @@ package com.gestureworks.cml.layouts
 		 * Positions and rotates the objects based on the type
 		 * @param	container
 		 */
-		override public function layout(container:IContainer):void 
+		override public function layout(container:DisplayObjectContainer):void 
 		{
 			switch (type) 
 			{
@@ -72,12 +72,12 @@ package com.gestureworks.cml.layouts
 		 * the origin at the specific angle
 		 * @param	c  object container
 		 */
-		private function topLeftPivot(c:IContainer):void
+		private function topLeftPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.childList.length; i++) 
+			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
-				var child:* = c.childList.getIndex(i);
+				var child:* = c.getChildAt(i);
 				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				child.x = originX;
@@ -92,12 +92,12 @@ package com.gestureworks.cml.layouts
 		 * the origin at the specific angle
 		 * @param	c  object container
 		 */		
-		private function topRightPivot(c:IContainer):void
+		private function topRightPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.childList.length; i++) 
+			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
-				var child:* = c.childList.getIndex(i);
+				var child:* = c.getChildAt(i);
 				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				child.x = originX - child.width;
@@ -112,12 +112,12 @@ package com.gestureworks.cml.layouts
 		 * the origin at the specific angle
 		 * @param	c  object container
 		 */		
-		private function bottomLeftPivot(c:IContainer):void
+		private function bottomLeftPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.childList.length; i++) 
+			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
-				var child:* = c.childList.getIndex(i);
+				var child:* = c.getChildAt(i);
 				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				child.x = originX;
@@ -132,12 +132,12 @@ package com.gestureworks.cml.layouts
 		 * the origin at the specific angle
 		 * @param	c  object container
 		 */		
-		private function bottomRightPivot(c:IContainer):void
+		private function bottomRightPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.childList.length; i++) 
+			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
-				var child:* = c.childList.getIndex(i);
+				var child:* = c.getChildAt(i);
 				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				child.x = originX - child.width;

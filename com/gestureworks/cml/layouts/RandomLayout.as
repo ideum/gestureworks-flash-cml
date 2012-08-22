@@ -1,7 +1,7 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObjectContainer;
 	
 	/**
 	 * Random
@@ -60,11 +60,11 @@ package com.gestureworks.cml.layouts
 		
 		/**
 		 * Apply layout type to container object
-		 * Object passed must implement IContainer
+		 * Object passed must implement DisplayObjectContainer
 		 * @param	type
 		 * @param	container
 		 */
-		override public function layout(container:IContainer):void
+		override public function layout(container:DisplayObjectContainer):void
 		{
 			// switch layouts methods
 
@@ -93,11 +93,15 @@ package com.gestureworks.cml.layouts
 		 * container's width
 		 * @param	container
 		 */
-		public function randomX(container:IContainer):void
+		public function randomX(container:DisplayObjectContainer):void
 		{
-			for (var i:int = 0; i < container.childList.length; i++) 
-			{				
-				container.childList.getIndex(i).x = randomMinMax(minX, maxX);
+			trace("hi", container.numChildren);
+			
+			for (var i:int = 0; i < container.numChildren; i++) 
+			{
+				trace(i);
+				
+				container.getChildAt(i).x = randomMinMax(minX, maxX);
 			}			
 		}
 		
@@ -107,11 +111,11 @@ package com.gestureworks.cml.layouts
 		 * container's width
 		 * @param	container
 		 */		
-		public function randomY(container:IContainer):void
+		public function randomY(container:DisplayObjectContainer):void
 		{
-			for (var i:int = 0; i < container.childList.length; i++) 
+			for (var i:int = 0; i < container.numChildren; i++) 
 			{				
-				container.childList.getIndex(i).y = randomMinMax(minY, maxY);	
+				container.getChildAt(i).y = randomMinMax(minY, maxY);	
 			}			
 		}
 		
@@ -121,12 +125,12 @@ package com.gestureworks.cml.layouts
 		 * container's width, height
 		 * @param	container
 		 */		
-		public function randomXY(container:IContainer):void
+		public function randomXY(container:DisplayObjectContainer):void
 		{
-			for (var i:int = 0; i < container.childList.length; i++) 
+			for (var i:int = 0; i < container.numChildren; i++) 
 			{
-				container.childList.getIndex(i).x = randomMinMax(minX, maxX);
-				container.childList.getIndex(i).y = randomMinMax(minY, maxY);		
+				container.getChildAt(i).x = randomMinMax(minX, maxX);
+				container.getChildAt(i).y = randomMinMax(minY, maxY);		
 			}			
 		}
 		
@@ -136,13 +140,13 @@ package com.gestureworks.cml.layouts
 		 * container's width, height
 		 * @param	container
 		 */		
-		public function randomXYRotation(container:IContainer):void
+		public function randomXYRotation(container:DisplayObjectContainer):void
 		{
-			for (var i:int = 0; i < container.childList.length; i++) 
+			for (var i:int = 0; i < container.numChildren; i++) 
 			{
-				container.childList.getIndex(i).x = randomMinMax(minX, maxX);
-				container.childList.getIndex(i).y = randomMinMax(minY, maxY);
-				container.childList.getIndex(i).rotation = randomMinMax(minRot, maxRot);		
+				container.getChildAt(i).x = randomMinMax(minX, maxX);
+				container.getChildAt(i).y = randomMinMax(minY, maxY);
+				container.getChildAt(i).rotation = randomMinMax(minRot, maxRot);		
 			}			
 		}	
 		

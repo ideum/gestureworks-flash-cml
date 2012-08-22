@@ -1,8 +1,8 @@
 package com.gestureworks.cml.factories 
 {
-	import com.gestureworks.cml.interfaces.IContainer;
 	import com.gestureworks.cml.interfaces.ILayout;	
 	import flash.geom.Matrix;
+	import flash.display.DisplayObjectContainer;
 	
 	/**
 	 * Base layout class
@@ -21,8 +21,9 @@ package com.gestureworks.cml.factories
 		
 		/**
 		 * Horizontal distance between the origins of two objects
+		 * @default 100
 		 */
-		private var _spacingX:Number = 0;
+		private var _spacingX:Number = 100;
 		public function get spacingX():Number { return _spacingX; }
 		public function set spacingX(s:Number):void
 		{
@@ -31,8 +32,9 @@ package com.gestureworks.cml.factories
 		
 		/**
 		 * Vertical distance between the origins of two objects
+		 * @default 100
 		 */
-		private var _spacingY:Number = 0;
+		private var _spacingY:Number = 100;
 		public function get spacingY():Number { return _spacingY; }
 		public function set spacingY(s:Number):void
 		{
@@ -40,9 +42,10 @@ package com.gestureworks.cml.factories
 		}
 		
 		/**
-		 * Spacing added to the width of an object 
+		 * Spacing added to the width of an object
+		 * @default 10
 		 */
-		private var _marginX:Number = 0;
+		private var _marginX:Number = 10;
 		public function get marginX():Number { return _marginX; }
 		public function set marginX(m:Number):void
 		{
@@ -50,9 +53,10 @@ package com.gestureworks.cml.factories
 		}
 		
 		/**
-		 * Spacing added to the height of an object 
+		 * Spacing added to the height of an object
+		 * @default 10
 		 */
-		private var _marginY:Number = 0;
+		private var _marginY:Number = 10;
 		public function get marginY():Number { return _marginY; }
 		public function set marginY(m:Number):void
 		{
@@ -110,7 +114,7 @@ package com.gestureworks.cml.factories
 		 * The object distribution function 
 		 * @param	container
 		 */
-		public function layout(container:IContainer):void {}
+		public function layout(container:DisplayObjectContainer):void {}
 	}
 
 }

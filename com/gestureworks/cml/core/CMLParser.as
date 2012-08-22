@@ -291,11 +291,6 @@ package com.gestureworks.cml.core
 			
 			
 			if (debug)
-				trace("\n 8) Layout Containers... set dimensions to child");				
-			
-			DisplayManager.instance.layoutCML();
-			
-			if (debug)
 				trace("\n 9) Activate touch... apply GestureList to TouchContainers");				
 			
 			DisplayManager.instance.activateTouch();				
@@ -312,6 +307,12 @@ package com.gestureworks.cml.core
 			
 			DisplayManager.instance.addCMLChildren();
 						
+			
+			if (debug)
+				trace("\n 8) Layout Containers... set dimensions to child");				
+			
+			DisplayManager.instance.layoutCML();
+			
 			
 			if (debug)
 				trace("\n 11) Call object's displayComplete() method");				

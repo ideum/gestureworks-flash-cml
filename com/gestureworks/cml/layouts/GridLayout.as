@@ -1,9 +1,11 @@
 package com.gestureworks.cml.layouts 
 {
+import flash.display.DisplayObject;
     import flash.geom.Point;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.interfaces.*;
+	import flash.display.DisplayObjectContainer
    
     /**
      * A layout utility for laying out display objects in a grid
@@ -56,12 +58,12 @@ package com.gestureworks.cml.layouts
 		
 		/**
 		 * Apply grid layout to container object
-		 * Object passed must implement IContainer
+		 * Object passed must implement DisplayObjectContainer
 		 * @param	container
 		 */
-		override public function layout(container:IContainer):void
+		override public function layout(container:DisplayObjectContainer):void
 		{
-			var c:* = container;	
+			var c:DisplayObjectContainer = container;	
             var row:Number;
             var col:Number;
 			var sumx:Number = 0;
@@ -69,9 +71,9 @@ package com.gestureworks.cml.layouts
             var num:int = (columns * rows);
 						
 			
-			for (var i:int = 0; i < c.childList.length; i++) 
+			for (var i:int = 0; i < c.numChildren; i++) 
 			{		
-				var child:* = c.childList.getIndex(i);
+				var child:DisplayObject = c.getChildAt(i);
 				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				if (leftToRight)

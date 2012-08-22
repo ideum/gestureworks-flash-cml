@@ -1,7 +1,8 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	
@@ -66,14 +67,14 @@ package com.gestureworks.cml.layouts
 		 * not been defined, the angle is random. 
 		 * @param	container
 		 */
-		override public function layout(container:IContainer):void 
+		override public function layout(container:DisplayObjectContainer):void 
 		{
-			var c:* = container;
+			var c:DisplayObjectContainer = container;
 			var nextAngle:Number = 0;
 		
-			for (var i:int = 0; i < c.childList.length; i++) 
+			for (var i:int = 0; i < c.numChildren; i++) 
 			{		
-				var child:* = c.childList.getIndex(i);
+				var child:DisplayObject = c.getChildAt(i);
 				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				centerOnOrigin(child);

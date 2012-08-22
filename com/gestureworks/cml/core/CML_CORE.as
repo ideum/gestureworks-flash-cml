@@ -110,7 +110,6 @@ package com.gestureworks.cml.core
 	//////////////////////
 	import com.gestureworks.cml.layouts.RandomLayout; RandomLayout;
 	import com.gestureworks.cml.layouts.ListLayout; ListLayout;
-	import com.gestureworks.cml.layouts.StackLayout; StackLayout;
 	import com.gestureworks.cml.layouts.GridLayout; GridLayout;
 	import com.gestureworks.cml.layouts.PointLayout; PointLayout;
 	import com.gestureworks.cml.layouts.PileLayout; PileLayout;

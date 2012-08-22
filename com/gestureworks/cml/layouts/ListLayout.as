@@ -2,6 +2,7 @@ package com.gestureworks.cml.layouts
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
 	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObjectContainer;
 	
 	/**	 
 	 * List Layout
@@ -18,11 +19,19 @@ package com.gestureworks.cml.layouts
 		}
 		
 		private var _close_packing:Boolean = true;
+		[Deprecated(replacement="closePacking()")] 
 		public function get close_packing():Boolean{return _close_packing;}
 		public function set close_packing(value:Boolean):void 
 		{
 			_close_packing = value;
 		}
+
+		private var _closePacking:Boolean = false;
+		public function get closePacking():Boolean { return _closePacking; }
+		public function set closePacking(value:Boolean):void 
+		{
+			_closePacking= value;
+		}		
 		
 		private var _blockX:Number = 400;
 		public function get blockX():Number{return _blockX;}
@@ -44,7 +53,7 @@ package com.gestureworks.cml.layouts
 		 * @param	type
 		 * @param	container
 		 */
-		override public function layout(container:IContainer):void
+		override public function layout(container:DisplayObjectContainer):void
 		{
 			// switch layouts methods
 
@@ -71,17 +80,16 @@ package com.gestureworks.cml.layouts
 		 * two objects.
 		 * @param	container
 		 */
-		public function horizontal(container:IContainer):void
+		public function horizontal(container:DisplayObjectContainer):void
 		{		
-			n = container.childList.length;
+			n = container.numChildren;
 			var sumx:Number = 0;			
 			
 			for (var i:int = 0; i < n; i++) 
 			{		
-				var obj:* = container.childList.getIndex(i);
-				var objchild:* = obj is IContainer ?  obj.childList.getIndex(0) : obj;
+				var obj:* = container.getChildAt(i);
 				
-				if (!close_packing) {
+				if (!closePacking) {
 		
 					obj.x = i * blockX + i * (2*marginX);
 					obj.y = 0;					
@@ -90,12 +98,9 @@ package com.gestureworks.cml.layouts
 					
 					obj.x = useMargins ? sumx + i * (2*marginX) : i * spacingX;
 					obj.y = 0;
-					trace(obj.x);
 				}
-				sumx += objchild.width * objchild.scaleX;
+				sumx += obj.width * obj.scaleX;
 			}
-			container.width =  sumx + (n - 1) * (2*marginX);
-			//container.height = objchild.height;
 		}
 		
 		/**
@@ -104,17 +109,16 @@ package com.gestureworks.cml.layouts
 		 * two objects.
 		 * @param	container
 		 */		
-		public function vertical(container:IContainer):void
+		public function vertical(container:DisplayObjectContainer):void
 		{
-			n = container.childList.length; 
+			n = container.numChildren; 
 			var sumy:Number = 0;
 			
 			for (var i:int = 0; i < n; i++) 
 			{				
-				var obj:* = container.childList.getIndex(i);
-				var objchild:* = obj is IContainer ?  obj.childList.getIndex(0) : obj;
+				var obj:* = container.getChildAt(i);
 							
-					if (!close_packing) {
+					if (!closePacking) {
 						obj.x = 0;
 						obj.y = i * blockY + i * (2*marginY);
 					}
@@ -122,10 +126,8 @@ package com.gestureworks.cml.layouts
 						obj.x = 0;
 						obj.y = useMargins ? sumy + i * (2*marginY) : i * spacingY;
 					}
-					sumy += objchild.height;
-			}	
-			container.height = sumy + (n - 1) * (2*marginY);
-			container.width = objchild.height;
+					sumy += obj.height;
+			}
 		}
 		
 		/**

@@ -1,7 +1,8 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	
 	/**
 	 * Positions the objects of a container based on a user defined list of xy coordinates. 
@@ -32,9 +33,9 @@ package com.gestureworks.cml.layouts
 		 * Places the display objects at user defined points
 		 * @param	container
 		 */
-		override public function layout(container:IContainer):void
+		override public function layout(container:DisplayObjectContainer):void
 		{
-			var c:* = container;							
+			var c:DisplayObjectContainer = container;							
 			if (!points) return;
 			
 			var pts:Array = points.split(",");
@@ -42,7 +43,7 @@ package com.gestureworks.cml.layouts
 			
 			for (var i:int = 0; i < pts.length; i+=2) 
 			{		
-				var child:* = c.childList.getIndex(i/2);
+				var child:DisplayObject = c.getChildAt(i/2);
 				if (!child || !child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
 				
 				child.x = pts[i];
