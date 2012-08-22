@@ -50,8 +50,7 @@ package com.gestureworks.cml.components
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
 					
-			//amountToShow = 10; sometimes not loading this property correctly !!! ugh, it is the cml parser - why the inconsistency!!
-			
+				
 			var i:int = 0;	
 			for (i = 0; i < childList.length; i++) 
 			{	
