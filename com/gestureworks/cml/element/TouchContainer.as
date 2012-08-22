@@ -1,11 +1,11 @@
 package com.gestureworks.cml.element
 {
 	import flash.utils.Dictionary;
-	import com.gestureworks.cml.core.TouchContainerDisplay;
+	import com.gestureworks.cml.factories.TouchContainerFactory;
 	import com.gestureworks.cml.interfaces.ILayout;
 	import com.gestureworks.cml.core.CMLParser;
 	
-	public class TouchContainer extends TouchContainerDisplay
+	public class TouchContainer extends TouchContainerFactory
 	{	
 		public var layoutList:Dictionary = new Dictionary(true);
 		

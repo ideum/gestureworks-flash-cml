@@ -1,7 +1,8 @@
-package com.gestureworks.cml.core
+package com.gestureworks.cml.factories
 {
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.cml.core.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.events.*;
@@ -9,10 +10,10 @@ package com.gestureworks.cml.core
 	
 	
 	
-	public class TouchContainerDisplay extends TouchSprite implements IContainer, ICSS
+	public class TouchContainerFactory extends TouchSprite implements IContainer, ICSS
 	{
 				
-		public function TouchContainerDisplay()
+		public function TouchContainerFactory()
 		{
 			super();
 			mouseChildren = true; // required for touchevents to pass into children

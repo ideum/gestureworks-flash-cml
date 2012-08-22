@@ -1,4 +1,4 @@
-package com.gestureworks.cml.core
+package com.gestureworks.cml.factories
 {
 	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.core.DisplayList;
@@ -8,9 +8,9 @@ package com.gestureworks.cml.core
 	import flash.utils.Dictionary;
 	import com.gestureworks.events.DisplayEvent;
 	
-	public class ContainerDisplay extends ElementFactory
+	public class ContainerFactory extends ElementFactory
 	{
-		public function ContainerDisplay()
+		public function ContainerFactory()
 		{
 			_childList = new LinkedMap;
 		}	
