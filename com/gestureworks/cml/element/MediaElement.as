@@ -188,7 +188,7 @@ package com.gestureworks.cml.element
 			else
 				throw new Error("Media type is not supported: " + file);
 			
-			if (dictionary[file].hasOwnProperty("width") && _width != 0)		dictionary[file].width = _width;
+			if (dictionary[file].hasOwnProperty("width") && _width != 0)	dictionary[file].width = _width;
 			if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
 			if (dictionary[file].hasOwnProperty("loop"))					dictionary[file].loop = loop;
 			if (dictionary[file].hasOwnProperty("autoplay"))				dictionary[file].autoplay = autoplay;

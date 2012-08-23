@@ -16,7 +16,6 @@ package com.gestureworks.cml.element
 	import flash.text.TextField;
 	import flash.display.GradientType;
 	import flash.utils.Dictionary;
-	import unit_test.Main_3drotate;
 	import flash.events.KeyboardEvent;
 	import com.gestureworks.cml.events.StateEvent;
 	
