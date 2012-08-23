@@ -52,17 +52,16 @@ package com.gestureworks.cml.element
 						
 			for each (var i:Object in dictionary)
             {
-			if (dictionary[i].hasOwnProperty("close"))				
-				dictionary[i].close();
-			if (this.contains(dictionary[i]))
-				removeChild(dictionary[i]);
-			dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
-			dictionary[i] = null;
+				if (dictionary[i].hasOwnProperty("close"))				
+					dictionary[i].close();
+				if (this.contains(dictionary[i]))
+					removeChild(dictionary[i]);
+				dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
+				dictionary[i] = null;
 				delete dictionary[i];
 			}
-		
-	
 		}
+		
 		private var _width:Number=0;
 		/**
 		 * Sets media width

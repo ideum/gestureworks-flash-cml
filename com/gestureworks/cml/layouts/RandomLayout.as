@@ -8,7 +8,7 @@ package com.gestureworks.cml.layouts
 	 * and applies a specified amount of random rotation. 
 	 * 
 	 * <p>Allowable types are: randomX, randomY, randomXY, randomXYRotation</p>
-	 * <p>Default type is RandomXY.</p>
+	 * <p>Default type is: RandomXY.</p>
 	 * 
 	 * @author Charles Veasey
 	 */

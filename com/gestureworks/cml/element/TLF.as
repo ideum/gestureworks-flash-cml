@@ -16,8 +16,8 @@ package com.gestureworks.cml.element
 	import flashx.textLayout.formats.TextLayoutFormat;
 
 	/**
-	 * TLFElement
-	 * Wrapper for AS3's TLF system
+	 * This is a wrapper for AS3's TLF system. The input is in the form of XML,
+	 * and prefixed with AS3's namespace
 	 * @author Charles Veasey 
 	 */	
 	
