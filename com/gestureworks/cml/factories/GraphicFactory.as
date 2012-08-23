@@ -767,6 +767,7 @@ package com.gestureworks.cml.factories
 		public function get radius():Number{return _radius;}
 		public function set radius(value:Number):void
 		{
+			if (shape != "circle") return;
 			_radius = value;
 			width = radius * 2;
 			height = radius * 2;
@@ -787,13 +788,15 @@ package com.gestureworks.cml.factories
 		 */		
 		public function get pathCommands():String{return _pathCommands;}
 		public function set pathCommands(value:String):void
-		{
+		{			
 			var array:Array = [];
 			_pathCommands = value;
-			array = _pathCommands.split(",");
-			for (var i:int = 0; i < array.length; i++)
+			
+			if (_pathCommands)
 			{
-			   pathCommandsVector.push(array[i]);
+				array = _pathCommands.split(",");
+				for (var i:int = 0; i < array.length; i++)
+				   pathCommandsVector.push(array[i]);
 			}
 			layoutUI();
 			
@@ -811,10 +814,11 @@ package com.gestureworks.cml.factories
 		{
 			var array:Array = [];
 			_pathCoordinates = value;
-			array = _pathCoordinates.split(",");
-			for (var j:int = 0; j < array.length; j++)
+			if (_pathCoordinates)
 			{
-				pathCoordinatesVector.push(array[j]);
+				array = _pathCoordinates.split(",");
+				for (var j:int = 0; j < array.length; j++)
+					pathCoordinatesVector.push(array[j]);
 			}
 			layoutUI();
 		}
@@ -954,8 +958,6 @@ package com.gestureworks.cml.factories
 		{
 			graphics.copyFrom(source.graphics);
 		}
-		
-		
 		
 	}
 }
