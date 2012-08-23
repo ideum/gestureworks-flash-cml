@@ -142,11 +142,11 @@ package com.gestureworks.cml.element
 			draw();
 		}
 		
-		private var _toggleColor:uint = 0x00ff00;
+		private var _toggleColor:uint = 0x00FF00;
 		
 		/**
 		 * Sets the toggle color of the background
-		 *  @default = 1;
+		 *  @default = 0x00FF00;
 		 */
 		public function get toggleColor():uint
 		{

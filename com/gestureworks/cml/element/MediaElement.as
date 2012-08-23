@@ -15,6 +15,7 @@ package com.gestureworks.cml.element
 	 * 
 	 * @playerversion Flash 10.1
 	 * @playerversion AIR 2.5
+	 * 
 	 * @langversion 3.0
 	 *
 	 * @includeExample MediaElementExample.as -noswf
@@ -40,6 +41,28 @@ package com.gestureworks.cml.element
 		}
 
 
+		override public function dispose():void
+		{
+			super.dispose();
+			dictionary = null;
+			imageTypes = null;
+			videoTypes = null;
+			mp3Types = null;
+			currentFile = null;
+						
+			for each (var i:Object in dictionary)
+            {
+			if (dictionary[i].hasOwnProperty("close"))				
+				dictionary[i].close();
+			if (this.contains(dictionary[i]))
+				removeChild(dictionary[i]);
+			dictionary[i] = null;
+				delete dictionary[i];
+			}
+			
+			dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
+	
+		}
 		private var _width:Number=0;
 		/**
 		 * Sets media width

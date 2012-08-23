@@ -137,5 +137,18 @@ package com.gestureworks.cml.element
 				show(currentIndex);
 		}
 		
+		override public function dispose():void
+		{
+			super.dispose();
+			timer = null;
+			if (timer)
+			{
+			timer.stop();
+			timer.removeEventListener(TimerEvent.TIMER, onTimer);
+			timer = null;
+			}
+			this.removeEventListener(Event.COMPLETE, onComplete);
+		}
+		
 	}
 }

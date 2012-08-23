@@ -17,6 +17,17 @@ package com.gestureworks.cml.element
 			super();
 		}
 
+		override public function dispose():void
+		{
+			super.dispose();
+			buttonArray = null;
+			
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onClick);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onClick);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			
+			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);
+		}
 		
 		private var _autoHide:Boolean = false;
 		/**

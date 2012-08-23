@@ -21,6 +21,11 @@ package com.gestureworks.cml.element
 			super();
 		}
 		
+		override public function dispose():void
+		{
+			super.dispose();
+			tween = null;
+		}
 		private var loaded:Boolean = false;
 		
 		/**

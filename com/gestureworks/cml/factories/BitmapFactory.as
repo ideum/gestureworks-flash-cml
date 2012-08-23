@@ -30,6 +30,15 @@ package com.gestureworks.cml.factories
 			mouseChildren = false;
 		}
 			
+	    override public function dispose():void
+		{
+			super.dispose();
+			img = null;
+			fileData = null;
+			sizeArray = null;
+				   			
+			img.removeEventListener(Event.COMPLETE, loadComplete);
+		}
 		
 		private var _width:Number = 0;
 		/**

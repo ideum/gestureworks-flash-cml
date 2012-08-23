@@ -70,6 +70,24 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
+	override public function dispose():void
+		{
+			super.dispose();
+			todayDate = null;
+			xDate = null;
+			monthArray = null;
+			dayNameArray = null;
+			daysMonthArray = null;
+			prevArrow = null;
+			dayDisplay = null;
+			nextArrow = null;
+			calendar = null;
+			bkg = null;
+			
+		
+		} 
+		 
+		
 		/**
 		 * A flag indicating the calendars color scheme
 		 */
@@ -415,7 +433,7 @@ package com.gestureworks.cml.element
 			s.graphics.endFill();
 			return s;
 		}
-
+			
 	}
 
 }

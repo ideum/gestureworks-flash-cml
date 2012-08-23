@@ -310,6 +310,12 @@ package com.gestureworks.cml.element
 				return returnVal;
 		}		
 		
+	override public function dispose():void 
+		{
+			super.dispose();
+			layoutList = null;	
+			layout = null;
+		}
 		
 	}
 }

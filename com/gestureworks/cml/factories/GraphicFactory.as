@@ -17,6 +17,11 @@ package com.gestureworks.cml.factories
 			super();		
 		}
 		
+		override public function dispose():void 
+		{
+			super.dispose();
+			matrix = null;
+		}
 		
 		// matrix, currently using for gradients
 		// can also use for bitmap and shader fills
@@ -56,9 +61,7 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 		
-
-		
-		
+       		
 		///////////////////////////////
 		// LINE TYPES AND PROPERTIES //
 		///////////////////////////////
@@ -598,7 +601,6 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 		
-		
 		private var _gradientWidth:Number = 100;		
 		/**
 		 * Sets the width (in pixels) to which the gradient will spread. 
@@ -612,7 +614,6 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 		
-	
 		private var _gradientHeight:Number = 100;
 		/**
 		 * The height (in pixels) to which the gradient will spread. 
@@ -626,7 +627,6 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 		
-	
 		protected var _gradientRotation:Number = 0; //holds value in radians
 		/**
 		 * Sets the rotation (in degrees) that will be applied to the gradient.
@@ -643,7 +643,6 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 		
-	
 		private var _gradientX:Number = 0;
 		/**
 		 * Sets how far (in pixels) the gradient is shifted horizontally. 
@@ -657,7 +656,6 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 
-		
 		private var _gradientY:Number = 0;
 		/**
 		 * Sets how far (in pixels) the gradient is shifted vertically. 
@@ -671,7 +669,6 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 				
-	
 		protected var _gradientSpread:String = SpreadMethod.PAD;
 		/**
 		 * Specifies which gradient spread method to use.
@@ -699,7 +696,6 @@ package com.gestureworks.cml.factories
 			layoutUI();		
 		}
 	
-	
 		protected var _gradientInterpolation:String = InterpolationMethod.RGB;
 		/**
 		 * Specifies which interpolation value to use: RGB or linearRGB
@@ -721,7 +717,6 @@ package com.gestureworks.cml.factories
 			layoutUI();				
 		}
 		
-		
 		private var _gradientFocalPointRatio:Number = 0.0;
 		/**
 		 * A number that controls the location of the focal point of the gradient. 
@@ -738,10 +733,7 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}
 		
-		
-		
-		
-		
+			
 		///////////////////////////////////////////////
 		// SHAPE TYPES AND SHAPE-SPECIFIC PROPERTIES //
 		///////////////////////////////////////////////
@@ -750,7 +742,7 @@ package com.gestureworks.cml.factories
 		private var _shape:String = "line";
 		/**
 		 * Sets predefined shape type.
-		 * Choose: line, rectangle, circle, or ellipse
+		 * Choose: line, rectangle, circle or ellipse
 		 * @default line 
 		 */		
 		public function get shape():String {return _shape;}
@@ -760,8 +752,7 @@ package com.gestureworks.cml.factories
 			layoutUI();
 		}	
 		
-		
-
+	
 		////////////////////////
 		// SHAPE TYPE: CIRCLE //
 		////////////////////////
@@ -781,8 +772,130 @@ package com.gestureworks.cml.factories
 			height = radius * 2;
 			layoutUI();
 		}
+	
+		
+		/////////////////////////
+		// SHAPE TYPE: PATH //
+		////////////////////////
+		
+		public var pathCommandsVector:Vector.< int >  = new Vector.<int>();
+		private var _pathCommands:String;
+		/**
+		 * 
+		 * Sets the path moveTo and lineTo values
+		 * 
+		 */		
+		public function get pathCommands():String{return _pathCommands;}
+		public function set pathCommands(value:String):void
+		{
+			var array:Array = [];
+			_pathCommands = value;
+			array = _pathCommands.split(",");
+			for (var i:int = 0; i < array.length; i++)
+			{
+			   pathCommandsVector.push(array[i]);
+			}
+			layoutUI();
+			
+		}
+		
+		public var pathCoordinatesVector:Vector.< Number >  = new Vector.<Number>();
+		private var _pathCoordinates:String;
+		/**
+		 * 
+		 * Sets the path coordinates
+		 * 
+		 */		
+		public function get pathCoordinates():String{return _pathCoordinates;}
+		public function set pathCoordinates(value:String):void
+		{
+			var array:Array = [];
+			_pathCoordinates = value;
+			array = _pathCoordinates.split(",");
+			for (var j:int = 0; j < array.length; j++)
+			{
+				pathCoordinatesVector.push(array[j]);
+			}
+			layoutUI();
+		}
 		
 		
+		/////////////////////////
+		// SHAPE TYPE: CURVE //
+		////////////////////////
+		
+		private var _controlX:Number = 10;
+		/**
+		 * Sets the control X of curve.
+		 * @default 10 
+		 */		
+		public function get controlX():Number { return _controlX; }
+		public function set controlX(value:Number):void 
+		{ 
+			_controlX = value;
+			layoutUI();			
+		}
+		
+			private var _controlY:Number = 10;
+		/**
+		 * Sets the control y value of curve.
+		 * @default 10 
+		 */		
+		public function get controlY():Number { return _controlY; }
+		public function set controlY(value:Number):void 
+		{ 
+			_controlY = value;
+			layoutUI();			
+		}
+		
+		private var _anchorX:Number = 10;
+		/**
+		 * Sets the anchor X of curve.
+		 * @default 10 
+		 */		
+		public function get anchorX():Number { return _anchorX; }
+		public function set anchorX(value:Number):void 
+		{ 
+			_anchorX = value;
+			layoutUI();			
+		}
+		
+		private var _anchorY:Number = 10;
+		/**
+		 * Sets the anchor Y of curve.
+		 * @default 10 
+		 */		
+		public function get anchorY():Number { return _anchorY; }
+		public function set anchorY(value:Number):void 
+		{ 
+			_anchorY = value;
+			layoutUI();			
+		}
+		
+		private var _startX:Number=0;
+		/**
+		 * Sets starting X position for curve
+		 * @default 0
+		 */		
+		 public function get startX():Number{return _startX;}
+		 public function set startX(value:Number):void
+		{
+			_startX = value;
+			layoutUI();
+		}
+		
+		
+		private var _startY:Number=0;
+		/**
+		 * Sets starting Y position for curve
+		 * @default 0
+		 */			
+		 public function get startY():Number{return _startY;}
+		 public function set startY(value:Number):void
+		{
+			_startY = value;
+			layoutUI();
+		}
 		
 		/////////////////////////////////
 		// SHAPE TYPE: ROUND RECTANGLE //
@@ -815,7 +928,7 @@ package com.gestureworks.cml.factories
 			_cornerHeight = value;
 			layoutUI();			
 		}
-		
+	
 		
 		
 		////////////////////

@@ -14,25 +14,26 @@ package com.gestureworks.cml.element
 		private var video:Video;
 		private var videoObject:Object;
 		private var customClient:Object;
-		private var timer:Timer;
+		private var positionTimer:Timer;
+		private var progressTimer:Timer;
 		private var sizeLoaded:Boolean = false;
 		
 		public function VideoElement() {}
 
+		private var _debug:Boolean=false;
 		/**
 		 * Prints status message to console
-		 */				
-		private var _debug:Boolean=false;
+		 */	
 		public function get debug():Boolean { return _debug; }
 		public function set debug(value:Boolean):void 
 		{ 
 			_debug = value; 
 		}		
 		
+		private var _width:Number=0;
 		/**
 		 * Sets the video width
-		 */		
-		private var _width:Number=0;
+		 */	
 		override public function get width():Number{ return _width;}
 		override public function set width(value:Number):void
 		{
@@ -40,10 +41,10 @@ package com.gestureworks.cml.element
 			if (video) video.width = value;
 		}
 		
+		private var _height:Number = 0;
 		/**
 		 * Sets the video height
-		 */		
-		private var _height:Number=0;
+		 */	
 		override public function get height():Number{ return _height;}
 		override public function set height(value:Number):void
 		{
@@ -51,37 +52,37 @@ package com.gestureworks.cml.element
 			if (video) video.height = value;
 		}		
 		
+		private var _autoLoad:Boolean = true;
 		/**
 		 * Indicates whether the video file is loaded when the src property is set
-		 */		
-		private var _autoLoad:Boolean=true;
+		 */	
 		public function get autoLoad():Boolean { return _autoLoad; }
 		public function set autoLoad(value:Boolean):void 
 		{ 
 			_autoLoad = value; 
 		}
-		
+			
+		private var _autoplay:Boolean = false;
 		/**
 		 * Indicates whether the video file plays upon load
-		 */		
-		private var _autoplay:Boolean=false;
+		 */	
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 
 		{	
 			_autoplay = value;
 		}
-
+					
+		private var _loop:Boolean = false;
 		/**
 		 * Video loop play
-		 */				
-		private var _loop:Boolean=false;
+		 */	
 		public function get loop():Boolean { return _loop; }
 		public function set loop(value:Boolean):void { _loop = value; }		
-		
+			
+		private var _src:String;
 		/**
 		 * Sets the video file path
-		 */			
-		private var _src:String;
+		 */	
 		public function get src():String{ return _src;}
 		public function set src(value:String):void
 		{
@@ -90,21 +91,21 @@ package com.gestureworks.cml.element
 			if (autoLoad) load();
 		}		
 		
+		private var _deblocking:int;
 		/**
 		 * Indicates the type of filter applied to decoded video as part of post-processing. 
-		 */		
-		private var _deblocking:int;
+		 */
 		public function get deblocking():int { return _deblocking; }
 		public function set deblocking(value:int):void 
 		{ 
 			_deblocking = value; 
 			if (video) video.deblocking = value 
 		}
-		
+			
+		private var _smoothing:Boolean;
 		/**
 		 * Specifies whether the video should be smoothed (interpolated) when it is scaled. 
-		 */		
-		private var _smoothing:Boolean;
+		 */	
 		public function get smoothing():Boolean { return _smoothing; }
 		public function set smoothing(value:Boolean):void 
 		{ 
@@ -112,27 +113,31 @@ package com.gestureworks.cml.element
 			if (video) video.smoothing = value;
 		}
 		
-		
+		private var _duration:Number = 0;
 		/**
 		 * Total video duration
-		 */		
-		private var _duration:Number=0;
+		 */	
 		public function get duration():Number { return _duration; }
 		
+		private var _percentLoaded:Number = 0;
 		/**
 		 * Percent of file loaded 
-		 */		
-		private var _percentLoaded:Number=0;
+		 */	
 		public function get percentLoaded():Number { return _percentLoaded; }
-		
+			
+		private var _position:Number = 0;
 		/**
 		 * Playhead position in ms
-		 */		
-		private var _position:Number=0;
+		 */	
 		public function get position():Number { return _position; }
 		
-		
-		
+		private var _isPlaying:Boolean = false;
+		/**
+		 * sets video playing status
+		 */	
+		public function get isPlaying():Boolean { return _isPlaying; }
+   		
+	
 			
 		
 		
@@ -149,6 +154,7 @@ package com.gestureworks.cml.element
 			load();
 		}
 
+		
 		/**
 		 * Closes video 
 		 */	
@@ -183,11 +189,11 @@ package com.gestureworks.cml.element
 				video = null;
 			}
 			
-			if (timer)
+			if (positionTimer)
 			{
-				timer.removeEventListener(TimerEvent.TIMER, onPosition);					
-				timer.stop();
-				timer = null;
+				positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);					
+				positionTimer.stop();
+				positionTimer = null;
 			}
 			
 			src = "";
@@ -200,11 +206,14 @@ package com.gestureworks.cml.element
 		 */		
 		public function play():void
 		{
+			positionTimer = new Timer(1);
 			netStream.seek(0);				
 			netStream.resume();
-			timer.reset();
-			timer.start();
+			positionTimer.reset();
+			positionTimer.start();
 			_position = 0;
+			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
+			positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
 		}
 		
 		/**
@@ -213,7 +222,7 @@ package com.gestureworks.cml.element
 		public function resume():void
 		{
 			netStream.resume();
-			timer.start();
+			positionTimer.start();
 		}
 		
 		/**
@@ -222,7 +231,7 @@ package com.gestureworks.cml.element
 		public function pause():void
 		{
 			netStream.pause();
-			timer.stop();
+			positionTimer.stop();
 		}
 		
 		/**
@@ -232,8 +241,8 @@ package com.gestureworks.cml.element
 		{
 			netStream.pause();
 			netStream.seek(0);
-			timer.stop();	
-			timer.reset();
+			positionTimer.stop();	
+			positionTimer.reset();
 			_position = 0;
 		}
 		
@@ -247,11 +256,10 @@ package com.gestureworks.cml.element
 			
 			if (position < 0)
 				position == 0;
-			
 			_position += offset;
+		
 		}
 
-	
 		/// PRIVATE METHODS ///	
 		private function load():void
 		{
@@ -266,29 +274,50 @@ package com.gestureworks.cml.element
 			switch (event.info.code) 
 			{
 				case "NetConnection.Connect.Success":
-					connectNetStream();
-					break;
+					 connectNetStream();
+					 break;
 				case "NetStream.Play.StreamNotFound":
-					if (debug) print("Unable to locate video: " + src);
-					break;
+					 if (debug) print("Unable to locate video: " + src);
+					 break;
 				case "NetStream.Buffer.Full":
-					timer.removeEventListener(TimerEvent.TIMER, onProgress);
-					break;	
+					 progressTimer.removeEventListener(TimerEvent.TIMER, onProgress);
+					 progressTimer.stop();
+					 break;	
+				case "NetStream.Play.Start":
+					 trace("video started");
+					 _isPlaying = true;
+					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					 break;	
 				case "NetStream.Play.Stop":
+
+					 trace("video stopped");
+					 end();
+				     _isPlaying = false;
+					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					 break;
+				case "NetStream.Pause.Notify":
+                     trace("video paused");
+					 _isPlaying = false;
+					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					 break;
+				case "NetStream.Seek.Notify":
+					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
+					 break;
+
 					
 					end();
 					break;
+
 			}	
-			
-			if (debug)
+				if (debug)
 				print(event.info.code);
 		}
 		
 		private function connectNetStream():void
 		{
-			timer = new Timer(1);
-			timer.addEventListener(TimerEvent.TIMER, onProgress);
-			timer.start();
+			progressTimer = new Timer(1000);
+		//	progressTimer.addEventListener(TimerEvent.TIMER, onProgress); 
+		//	progressTimer.start(); not able to stop
 			
 			netStream = new NetStream(netConnection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
@@ -313,7 +342,8 @@ package com.gestureworks.cml.element
 			netStream.play(src);
 			netStream.pause();
 			netStream.seek(0);
-			if (autoplay) play();			
+			if (autoplay) play();	
+			
 		}
 		
 		private function onMetaData(meta:Object):void
@@ -377,31 +407,34 @@ package com.gestureworks.cml.element
 			
 			if (percentLoaded >= 100)
 			{	
-				timer.stop();
-				timer.reset();
-				timer.removeEventListener(TimerEvent.TIMER, onProgress);
+				progressTimer.stop();
+				progressTimer.reset();
+				progressTimer.removeEventListener(TimerEvent.TIMER, onProgress);
 			}
 			else
 			{
 				if (debug)
 					print(src + " percent loaded: " + percentLoaded);
 			}	
+			trace("onProgress");
 		}
 		
 		private function onPosition(event:TimerEvent):void
 		{			
 			_position++;
-			
+	
 			if (debug)
-				print(_position);
-		}
+				trace(_position); 
 		
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
+
+		}
+	
 		private function end():void
 		{
 			if (loop) play();
 			else stop();
-			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", "end", true, true));
+	
 		}		
 			
 	}

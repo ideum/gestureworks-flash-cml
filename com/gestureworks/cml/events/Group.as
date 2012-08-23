@@ -15,6 +15,5 @@ package com.gestureworks.cml.element
 		{
 			_id = value;
 		}
-			
 	}
 }

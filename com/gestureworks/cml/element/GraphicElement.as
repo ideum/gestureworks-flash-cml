@@ -3,6 +3,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.factories.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import flash.display.*;
 
 	public class GraphicElement extends GraphicFactory
 	{
@@ -13,6 +14,12 @@ package com.gestureworks.cml.element
 			layoutUI();
 
 		}		
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			matrix = null;
+		}
 		
 		override protected function layoutUI():void
 		{	
@@ -32,7 +39,7 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			
+				
 			// fills
 			// currently "color" for solid color and "gradient"
 			// TODO: implement bitmap and shader fills
@@ -114,6 +121,28 @@ package com.gestureworks.cml.element
 				case "ellipse":
 				{
 					graphics.drawEllipse(0, 0, width, height);
+					break;
+				}
+				
+				case "path":
+				{
+		            graphics.drawPath(pathCommandsVector, pathCoordinatesVector); 
+					break;
+				}
+				
+				case "triangle":
+				{
+		   			graphics.moveTo(height/2, 0);
+                    graphics.lineTo(height, height);
+                    graphics.lineTo(0, height);
+                    graphics.lineTo(height/2, 0);
+					break;
+				}
+				
+				case "curve":
+				{   
+					graphics.moveTo(startX, startY);
+					graphics.curveTo(controlX, controlY, anchorX, anchorY);
 					break;
 				}
 				

@@ -28,5 +28,10 @@ package com.gestureworks.cml.element
 		{						
 			dispatchEvent(new Event(Event.COMPLETE, true, true));
 		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+		}
 	}
 }

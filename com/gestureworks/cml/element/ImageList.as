@@ -20,10 +20,18 @@ package com.gestureworks.cml.element
 		private var imagesLoaded:int = 0;
 		
 		public var preload:Boolean = true;
-		
+			
 		public function ImageList() 
 		{
 			list = new List;
+		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			image = null;
+			list = null;
+							
 		}
 		
 		/**

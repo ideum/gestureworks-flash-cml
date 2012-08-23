@@ -33,6 +33,12 @@ package com.gestureworks.cml.element
 		{
 			this.gestureList = cml;			
 			return new XMLList;
-		}		
+		}	
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			gestureList = null;
+		}
 	}
 }

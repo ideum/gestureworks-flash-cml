@@ -26,7 +26,7 @@ package com.gestureworks.cml.element
 			_src = value;
 			_cml = value;
 		}
-		
+
 		
 		private var _src:String;
 		/**

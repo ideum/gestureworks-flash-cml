@@ -81,7 +81,7 @@ package com.gestureworks.cml.element
 		public function set backgroundColor(value:uint):void
 		{
 			_backgroundColor = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _backgroundoutlineColor:uint = 0x333333;
@@ -98,7 +98,7 @@ package com.gestureworks.cml.element
 		public function set backgroundoutlineColor(value:uint):void
 		{
 			_backgroundoutlineColor = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _backgroundlineStroke:Number = 3;
@@ -115,7 +115,7 @@ package com.gestureworks.cml.element
 		public function set backgroundlineStroke(value:Number):void
 		{
 			_backgroundlineStroke = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonColor:uint = 0x000000;
@@ -132,7 +132,7 @@ package com.gestureworks.cml.element
 		public function set buttonColor(value:uint):void
 		{
 			_buttonColor = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonoutlineColor:uint = 0x000000;
@@ -149,7 +149,7 @@ package com.gestureworks.cml.element
 		public function set buttonoutlineColor(value:uint):void
 		{
 			_buttonoutlineColor = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonlineStroke:Number = 1;
@@ -166,7 +166,7 @@ package com.gestureworks.cml.element
 		public function set buttonlineStroke(value:Number):void
 		{
 			_buttonlineStroke = value;
-			displayButton();
+		//	displayButton();
 		}
 		
 		private var _backgroundX:Number = 0;
@@ -183,7 +183,7 @@ package com.gestureworks.cml.element
 		public function set backgroundX(value:uint):void
 		{
 			_backgroundX = value;
-			displayButton();
+		//	displayButton();
 		}
 		
 		private var _backgroundY:Number = 0;
@@ -200,7 +200,7 @@ package com.gestureworks.cml.element
 		public function set backgroundY(value:uint):void
 		{
 			_backgroundY = value;
-			displayButton();
+		//	displayButton();
 		}
 		
 		private var _backgroundWidth:Number = 100;
@@ -217,7 +217,7 @@ package com.gestureworks.cml.element
 		public function set backgroundWidth(value:uint):void
 		{
 			_backgroundWidth = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _backgroundHeight:Number = 50;
@@ -234,7 +234,7 @@ package com.gestureworks.cml.element
 		public function set backgroundHeight(value:Number):void
 		{
 			_backgroundHeight = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _backgroundEllipseWidth:Number = 25;
@@ -251,7 +251,7 @@ package com.gestureworks.cml.element
 		public function set backgroundEllipseWidth(value:uint):void
 		{
 			_backgroundEllipseWidth = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _backgroundEllipseHeight:Number = 25;
@@ -268,7 +268,7 @@ package com.gestureworks.cml.element
 		public function set backgroundEllipseHeight(value:Number):void
 		{
 			_backgroundEllipseHeight = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonX:Number = 0;
@@ -285,7 +285,7 @@ package com.gestureworks.cml.element
 		public function set buttonX(value:uint):void
 		{
 			_buttonX = value;
-			displayButton();
+		//	displayButton();
 		}
 		
 		private var _buttonY:Number = 0;
@@ -302,7 +302,7 @@ package com.gestureworks.cml.element
 		public function set buttonY(value:uint):void
 		{
 			_buttonY = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonWidth:Number = 50;
@@ -319,7 +319,7 @@ package com.gestureworks.cml.element
 		public function set buttonWidth(value:uint):void
 		{
 			_buttonWidth = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonHeight:Number = 50;
@@ -336,7 +336,7 @@ package com.gestureworks.cml.element
 		public function set buttonHeight(value:Number):void
 		{
 			_buttonHeight = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		private var _buttonEllipseWidth:Number = 25;
@@ -353,7 +353,7 @@ package com.gestureworks.cml.element
 		public function set buttonEllipseWidth(value:uint):void
 		{
 			_backgroundEllipseWidth = value;
-			displayButton();
+		//	displayButton();
 		}
 		
 		private var _buttonEllipseHeight:Number = 25;
@@ -370,7 +370,7 @@ package com.gestureworks.cml.element
 		public function set buttonEllipseHeight(value:Number):void
 		{
 			_buttonEllipseHeight = value;
-			displayButton();
+			//displayButton();
 		}
 		
 		/**
@@ -404,7 +404,7 @@ package com.gestureworks.cml.element
 			touchSprite.disableNativeTransform = true;
 			touchSprite.disableAffineTransform = false;
 			touchSprite.gestureList = {"n-drag": true, "n-tap": true};
-			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
+		//	touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 			//touchSprite.addEventListener(TouchEvent.TOUCH_END, onEnd);
 			//touchSprite.addEventListener(TouchEvent.TOUCH_OUT, onEnd);
 			

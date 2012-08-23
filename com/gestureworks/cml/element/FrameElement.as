@@ -81,6 +81,11 @@ package com.gestureworks.cml.element
 			_frameAlpha = value;		
 			layoutUI();
 		}
-
+ 
+		override public function dispose():void
+		{
+			super.dispose();
+		}
+		
 	}
 }

@@ -26,6 +26,72 @@ package com.gestureworks.cml.element
 			buttonStates = new Dictionary(true);
 		}		
 		
+		
+	override public function dispose():void
+		{
+			super.dispose();
+			buttonStates = null;
+			dispatchDict = null;	
+			hitObject = null;
+			
+			if (over)
+			{
+			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);	
+			hitObject = null;
+			}
+			if (mouseOver)
+			{
+			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);	
+			hitObject = null;
+			}
+			if (mouseDown)
+			{
+			hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			hitObject = null;
+			}
+			if (mouseUp)
+			{
+			hitObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);												
+			hitObject = null;
+			}
+			if (mouseOut)
+			{
+			hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);												
+			hitObject = null;
+			}
+			if (up)
+			{
+			hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			hitObject = null;
+			}
+			if(up)
+			{
+			hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
+			hitObject = null;
+			}
+			if(out)
+			{
+			hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
+			hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+			hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);
+			hitObject = null;
+			}
+			if(down)
+			{
+			hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+			hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			hitObject = null;
+			}
+			hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
+			hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+			hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
+		    hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);	
+		    hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
+				
+		}
 
 		/**
 		 * CML display initialization callback

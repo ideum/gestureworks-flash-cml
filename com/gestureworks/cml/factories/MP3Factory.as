@@ -55,8 +55,6 @@ package com.gestureworks.cml.factories
 			super();
 		}
 		
-		
-		
 		/**
 		 * Sets the width
 		 */		
@@ -187,6 +185,22 @@ package com.gestureworks.cml.factories
 		 */				
 		override public function dispose():void
 		{
+			super.dispose();
+			channel = null;
+			playing = null;
+			cue = null;
+			g = null;
+			timer = null;
+			id3 = null;
+			useId3 = null;
+			id3Title = null;
+	        id3Author = null;
+	        id3Album = null;
+	        id3Year = null;
+	        id3Copyright = null;
+	        id3Comment = null;
+			
+			
 			if (timer) {
 				timer.stop();
 				timer.removeEventListener(TimerEvent.TIMER, updateDisplay);

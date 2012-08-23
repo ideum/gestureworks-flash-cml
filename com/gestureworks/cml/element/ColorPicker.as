@@ -210,6 +210,40 @@ package com.gestureworks.cml.element
 			init();			
 		}
 		
+		override public function dispose():void
+		{
+		   super.dispose();
+		   hueBarBMD = null;
+		   colorSelectionBMD = null;
+		   colorMatrix = null;
+		   colors = null;
+		   alphas = null;
+		   ratios = null;
+		   hexText = null;
+		   hText = null;
+		   sText = null;
+		   sText = null;
+		   brText = null;
+		   rText = null;
+		   gText = null;
+		   bText = null;
+		   selectedColorTransform = null;
+		   selectedColorRec = null;
+		   hueBarBMD = null;
+		   hueSelector = null;
+		   hueBar = null;
+		   baseGradientRec = null;
+		   colorSelector = null;
+		   colorRec = null;
+		   containerRec = null;
+			
+		  	hueBar.removeEventListener(GWGestureEvent.DRAG, hueBarHandler);
+			hueBar.removeEventListener(TouchEvent.TOUCH_BEGIN, hueBarHandler); 
+			colorRec.removeEventListener(GWGestureEvent.DRAG, colorSelectionHandler);
+			colorRec.removeEventListener(TouchEvent.TOUCH_BEGIN, colorSelectionHandler); 
+		}	
+		   
+		
 		/**
 		 * Initializes the components
 		 */
