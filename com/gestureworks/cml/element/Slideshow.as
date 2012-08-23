@@ -216,7 +216,7 @@ package com.gestureworks.cml.element
 			timer.removeEventListener(TimerEvent.TIMER, onTimer);
 			if (_autoplay)
 				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
-			timer.stop;
+			timer.stop();
 			timer = null;
 			tween = null;
 			
