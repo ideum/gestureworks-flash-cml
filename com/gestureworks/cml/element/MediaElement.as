@@ -56,11 +56,11 @@ package com.gestureworks.cml.element
 				dictionary[i].close();
 			if (this.contains(dictionary[i]))
 				removeChild(dictionary[i]);
+			dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
 			dictionary[i] = null;
 				delete dictionary[i];
 			}
-			
-			dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
+		
 	
 		}
 		private var _width:Number=0;
