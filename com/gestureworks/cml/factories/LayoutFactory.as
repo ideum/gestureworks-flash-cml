@@ -65,6 +65,7 @@ package com.gestureworks.cml.factories
 		
 		/**
 		 * Flag indicating the use of margins or spacing
+		 * @default false
 		 */
 		private var _useMargins:Boolean = false;
 		public function get useMargins():Boolean { return _useMargins; }
@@ -75,6 +76,7 @@ package com.gestureworks.cml.factories
 		
 		/**
 		 * Specifies a layout subtype
+		 * @default null
 		 */
 		private var _type:String;
 		public function get type():String { return _type; }

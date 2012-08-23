@@ -4,8 +4,12 @@ package com.gestureworks.cml.layouts
 	import flash.display.DisplayObjectContainer;
 	
 	/**
-	 * Random
-	 * Random Layout
+	 * Positions a display container's children randomly about the x and y axes
+	 * and applies a specified amount of random rotation. 
+	 * 
+	 * <p>Allowable types are: randomX, randomY, randomXY, randomXYRotation</p>
+	 * <p>Default type is RandomXY.</p>
+	 * 
 	 * @author Charles Veasey
 	 */
 	public class RandomLayout extends LayoutFactory
@@ -17,6 +21,10 @@ package com.gestureworks.cml.layouts
 		}		
 		
 		private var _minX:Number = 0;
+		/**
+		 * The minimum random x value.
+		 * @default 0
+		 */
 		public function get minX():Number{return _minX;}
 		public function set minX(value:Number):void 
 		{
@@ -24,6 +32,10 @@ package com.gestureworks.cml.layouts
 		}			
 		
 		private var _maxX:Number = 500;
+		/**
+		 * The minimum random y value.
+		 * @default 500
+		 */		
 		public function get maxX():Number{return _maxX;}
 		public function set maxX(value:Number):void 
 		{
@@ -31,6 +43,10 @@ package com.gestureworks.cml.layouts
 		}
 		
 		private var _minY:Number = 0;
+		/**
+		 * The minimum random y value.
+		 * @default 0
+		 */			
 		public function get minY():Number{return _minY;}
 		public function set minY(value:Number):void 
 		{
@@ -38,12 +54,21 @@ package com.gestureworks.cml.layouts
 		}			
 		
 		private var _maxY:Number = 500;
+		/**
+		 * The maximum random y value.
+		 * @default 500
+		 */				
 		public function get maxY():Number{return _maxY;}
 		public function set maxY(value:Number):void 
 		{
 			_maxY = value;
-		}	
+		}
+		
 		private var _minRot:Number = 0;
+		/**
+		 * The minimum rotation value.
+		 * @default 0
+		 */			
 		public function get minRot():Number{return _minRot;}
 		public function set minRot(value:Number):void 
 		{
@@ -51,6 +76,10 @@ package com.gestureworks.cml.layouts
 		}			
 		
 		private var _maxRot:Number = 360;
+		/**
+		 * The maximum rotation value.
+		 * @default 360
+		 */			
 		public function get maxRot():Number{return _maxRot;}
 		public function set maxRot(value:Number):void 
 		{
@@ -61,7 +90,6 @@ package com.gestureworks.cml.layouts
 		/**
 		 * Apply layout type to container object
 		 * Object passed must implement DisplayObjectContainer
-		 * @param	type
 		 * @param	container
 		 */
 		override public function layout(container:DisplayObjectContainer):void
@@ -89,8 +117,7 @@ package com.gestureworks.cml.layouts
 
 		/**
 		 * Distributes the the children of the container randomly
-		 * about the x-axis. The maximum x value is equal to the 
-		 * container's width
+		 * about the x-axis.
 		 * @param	container
 		 */
 		public function randomX(container:DisplayObjectContainer):void
@@ -107,8 +134,7 @@ package com.gestureworks.cml.layouts
 		
 		/**
 		 * Distributes the the children of the container randomly
-		 * about the y-axis. The maximum y value is equal to the 
-		 * container's width
+		 * about the y-axis.
 		 * @param	container
 		 */		
 		public function randomY(container:DisplayObjectContainer):void
@@ -121,8 +147,7 @@ package com.gestureworks.cml.layouts
 		
 		/**
 		 * Distributes the the children of the container randomly
-		 * about the x,y-axes. The maximum x,y value is equal to the 
-		 * container's width, height
+		 * about the x,y-axes.
 		 * @param	container
 		 */		
 		public function randomXY(container:DisplayObjectContainer):void
@@ -136,8 +161,8 @@ package com.gestureworks.cml.layouts
 		
 		/**
 		 * Distributes the the children of the container randomly
-		 * about the x,y-axes. The maximum x,y value is equal to the 
-		 * container's width, height
+		 * about the x,y-axes and applies a random amount of rotation. 
+		 * The maximum x,y value is equal to the container's width, height
 		 * @param	container
 		 */		
 		public function randomXYRotation(container:DisplayObjectContainer):void
@@ -149,7 +174,10 @@ package com.gestureworks.cml.layouts
 				container.getChildAt(i).rotation = randomMinMax(minRot, maxRot);		
 			}			
 		}	
-		
+
+		/**
+		 * Disposal method
+		 */		
 		override public function dispose():void 
 		{
 			super.dispose();
