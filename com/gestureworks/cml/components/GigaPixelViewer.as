@@ -17,8 +17,8 @@
 	 * <p>The GigaPixelDisplay component is the main component for the GigaPixelViewer module.  It contains all the neccessary display objects for the module.</p>
 	 *
 	 * <p>
-	 * The GigaPixelViewer is a module that uses the OpenZoom API to create interactive high resolution zoomable image window.  
-	 * Multiple touch object windows can independently display individual images with different sizes and orientations.  
+	 * The GigaPixelViewer is a module that uses the GigapixelElement to create interactive high resolution zoomable image windows.  
+	 * Multiple windows can independently display individual images with different sizes and orientations. The Gigapixel Elements are already touch enabled and should not be placed in touchContainers.  
 	 * The image windows can be interactively moved around stage, scaled and rotated using multitouch gestures additionaly the image can be panned and zoomed using multitouch gesture inside the image window.
 	 * Multitouch frame gestures can be activated and deactivated using the module XML settings.</p>
 	 *
