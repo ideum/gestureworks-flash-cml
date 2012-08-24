@@ -46,7 +46,7 @@
 	 */
 	
 	 
-	public class GigapixelViewer extends Component
+	public class GigaPixelViewer extends Component
 	{
 		//private var frame:TouchSprite;
 		private var info:*;
@@ -62,7 +62,7 @@
     	private var scaleConstraint:ScaleConstraint;
 	
 	
-		public function GigapixelViewer()
+		public function GigaPixelViewer()
 		{
 			super();
 		}
