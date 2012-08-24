@@ -5,11 +5,15 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.*;
 	import com.gestureworks.core.*;
+	import com.google.maps.MapEvent;
 	import com.modestmaps.extras.MapControls;
 	import com.modestmaps.geo.Location;
 	import com.modestmaps.Map;
+	import com.modestmaps.TweenMap;
 	import com.modestmaps.mapproviders.microsoft.*;
 	import com.modestmaps.mapproviders.yahoo.*;
+	import com.modestmaps.events.MapEvent;
+	import com.modestmaps.events.MarkerEvent;
 	import flash.geom.Point;
 	
 	import flash.events.MouseEvent;
@@ -23,7 +27,8 @@ package com.gestureworks.cml.element
 	 */
 	public class ModestMapElement extends ElementFactory
 	{
-		private var map:Map;
+		//private var map:Map;
+		private var map:TweenMap;
 		
 		private var p1:IMapProvider = new BlueMarbleMapProvider;
 		private var p2:IMapProvider = new MicrosoftAerialMapProvider;
@@ -39,6 +44,8 @@ package com.gestureworks.cml.element
 		private var currentIndex:int = 0;
 		
 		private var lastLoc:Location;
+		
+		private var zoomFactor:Number = 0;
 		
 		public function ModestMapElement() 
 		{
@@ -129,10 +136,13 @@ package com.gestureworks.cml.element
 		}
 		
 		private function createMap():void {
-			map = new Map(width, height, _draggable, _mapProvider);
+			//map = new Map(width, height, _draggable, _mapProvider);
+			map = new TweenMap(width, height, _draggable, _mapProvider);
 			//map.addChild(new MapControls(map));
 			lastLoc = new Location(_latitude, _longitude);
 			map.setCenterZoom(lastLoc, _zoom);
+			
+			map.zoomDuration = 0.5;
 			
 			addChild(map);
 			
@@ -140,69 +150,44 @@ package com.gestureworks.cml.element
 			
 			_loaded = "loaded";
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded));
+			trace(map.grid);
+			if (this.parent)
+				parent.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded));
 		}
 		
 		private function createEvents():void {
 			if (this.parent && this.parent is TouchContainer) {
-				//this.parent.addEventListener(GWGestureEvent.DRAG, onDrag);
-				//this.addEventListener(GWGestureEvent.SCALE, onScale);
-				this.parent.addEventListener(GWTouchEvent.TOUCH_BEGIN, onTouch);
+				this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+				this.parent.addEventListener(GWGestureEvent.SCALE, onScale);
 			}
 		}
 		
-		private function onTouch(e:*):void {
-			this.parent.addEventListener(GWGestureEvent.DRAG, onDrag);
-			this.parent.addEventListener(GWTouchEvent.TOUCH_END, onRelease);
-			map.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN, true, false, e.value.localX, e.value.localY));
-		}
-		
-		private function onDrag(e:GWGestureEvent):void {
-			//this.parent.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			//trace("Event x: " + e.value.localX + ", " + e.value.localY);
-			//trace("Event differential: " + e.value.drag_dx + ", " + e.value.drag_dy);
-			//trace("Map pointLocation: " + map.pointLocation(new Point(e.value.localX, e.value.localY), this));
-			//trace("Parent pointLocation: " + map.pointLocation(new Point(e.value.localX, e.value.localY), this.parent));
-			//trace("Stage pointLocation: " + map.pointLocation(new Point(e.value.localX, e.value.localY), this.parent.stage));
-			//var p:Point = new Point(e.value.localX, e.value.localY);
-			//var newLoc:Location = map.pointLocation(p, this);
-			//map.setCenter(newLoc);
-			//trace("New loc: " + newLoc);
-			//this.parent.addEventListener(GWGestureEvent.DRAG, onDrag);
-			
-			//Get new location from touch event.
-			
-			/*var p:Point = new Point(e.value.localX, e.value.localY);
-			var newLoc:Location = map.pointLocation(p, this.parent.stage);
-			
-			trace("Stage pointLocation: " + map.pointLocation(new Point(e.value.localX, e.value.localY), this.parent.stage));
-			trace("New loc: " + newLoc);
-			trace("Map center: " + map.getCenter());
-			trace("LastLoc: " + lastLoc);
-			//If map != last location from previous event
-			//Keep center going towards las location.
-			var compLoc:Location = map.getCenter();
-			if (lastLoc.lat != compLoc.lat && lastLoc.lon != compLoc.lon) {
-				trace("I am an if statement that should be firing.");
-				map.setCenter(newLoc);
-				lastLoc = newLoc;
-			}*/
-			
-			//Otherwise set new location to center.
-			//set new location to old location.
-			
-			map.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE, true, false, e.value.localX, e.value.localY));
-		}
-		
-		private function onRelease(e:*):void {
-			
-		}
-		
 		private function onScale(e:GWGestureEvent):void {
+			//trace("SCALING");
+			//var scale:Number = Math.sqrt(((e.value.scale_dsx - psx) * (e.value.scale_dsx - psx)) + ((e.value.scale_dsy - psy) * (e.value.scale_dsy - psy)));
 			
+			this.parent.removeEventListener(GWGestureEvent.SCALE, onScale);
+			//this.parent.addEventListener(MapEvent.ZOOMED_BY, onZoom);
+			
+			zoomFactor += e.value.scale_dsy;
+			zoomFactor += e.value.scale_dsy;
+			
+			map.addEventListener(com.modestmaps.events.MapEvent.STOP_ZOOMING, onZoom);
+			
+			map.zoomByAbout(zoomFactor);
+			//trace(zoomFactor);
+			//trace(e.value.scale_dsy);
+			//trace(Math.sqrt(((e.value.dsx - psx) * (e.value.dsx - psx)) + ((e.value.dsy - psy) * (e.value.dsy - psy))));
+			//trace(e.value.scale_dsx);
 		}
 		
-		public function switchMapProvider():void {
+		private function onZoom(e:*):void {
+			this.parent.addEventListener(GWGestureEvent.SCALE, onScale);
+			//this.parent.removeEventListener(MapEvent.ZOOMED_BY, onZoom);
+			map.removeEventListener(com.modestmaps.events.MapEvent.STOP_ZOOMING, onZoom);
+		}
+		
+		public function switchMapProvider(e:*):void {
 			trace("Switching map provider.");
 			currentIndex++;
 			if (currentIndex >= providers.length) currentIndex = 0;

@@ -1,51 +1,17 @@
 ﻿package com.gestureworks.cml.components
 {
 	//----------------adobe--------------//
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.display.DisplayObject;
-	import flash.geom.*;
-	import flash.ui.Mouse;
-	import adobe.utils.CustomActions;
-	import flash.display.Sprite;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.PixelSnapping;
-	import flash.display.Sprite;
-	import flash.geom.Matrix;
-	import flash.events.*;
-	//---------- gestureworks ------------//
-	import com.gestureworks.cml.factories.TouchContainerFactory;
-	import com.gestureworks.core.GestureWorks;
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.element.TouchContainer
-	import com.gestureworks.cml.element.ImageElement;
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
-	import com.gestureworks.events.GWEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.GWTransformEvent;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.core.DisplayList
+	import com.gestureworks.core.*;
+	import flash.display.*;
+	import flash.events.*;
+	import org.openzoom.flash.components.*;
+	import org.openzoom.flash.viewport.constraints.*;
+	import org.tuio.*;
+	//---------- gestureworks ------------//
 	//---------------open zoom-------------//
-	import org.openzoom.flash.components.MultiScaleImage;
-	import org.openzoom.flash.components.SceneNavigator;
-	import org.openzoom.flash.descriptors.IMultiScaleImageDescriptor;
-	import org.openzoom.flash.events.ViewportEvent;
-	import org.openzoom.flash.viewport.constraints.CenterConstraint;
-	import org.openzoom.flash.viewport.constraints.CompositeConstraint;
-	import org.openzoom.flash.viewport.constraints.ScaleConstraint;
-	import org.openzoom.flash.viewport.constraints.VisibilityConstraint;
-	import org.openzoom.flash.viewport.constraints.ZoomConstraint;
-	import org.openzoom.flash.viewport.controllers.TouchController;
-	import org.openzoom.flash.viewport.transformers.TweenerTransformer;
-	import org.openzoom.flash.utils.math.clamp;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks
 	
 	 /**
 	 * <p>The GigaPixelDisplay component is the main component for the GigaPixelViewer module.  It contains all the neccessary display objects for the module.</p>
@@ -80,28 +46,28 @@
 	 */
 	
 	 
-	public class GigaPixelViewer extends Component
+	public class GigapixelViewer extends Component
 	{
-		private var frame:TouchSprite;
-		private var touch_giga_image:TouchSprite;
+		//private var frame:TouchSprite;
 		private var info:*;
-		private var menu:Menu;
+		//private var menu:Menu;
+		private var textFields:Array;
 
 		//------ image settings ------//
 		private var _clickZoomInFactor:Number = 1.7
 		private var _scaleZoomFactor:Number = 1.4
     	public var smoothPanning:Boolean = true;
-		private var image:MultiScaleImage
-    	private var sceneNavigator:SceneNavigator
+		private var gigapixel:GigapixelElement;
+    	private var sceneNavigator:SceneNavigator;
     	private var scaleConstraint:ScaleConstraint;
-		private var _minScaleConstraint:Number = 0.001;
 	
 	
-		public function GigaPixelViewer()
+		public function GigapixelViewer()
 		{
 			super();
 		}
 		
+		private var _minScaleConstraint:Number = 0.001;
 		public function get minScaleConstraint():Number { return _minScaleConstraint; }
 		public function set minScaleConstraint(value:Number):void {
 			if(!isNaN(value) && value >=0){
@@ -109,26 +75,111 @@
 			}
 		}
 
-		override public function dispose():void
+		private var _front:*;
+		/**
+		 * Sets the front element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get front():* { return _front; }
+		public function set front(value:*):void 
 		{
-			super.dispose();
-			frame = null;
-			touch_giga_image = null;
-			info = null;
-			menu = null;
-			sceneNavigator = null;
-			scaleConstraint = null;
+			if (!value) return;
 			
-			if (image)
-			{
-				image.removeEventListener(Event.COMPLETE, image_completeHandler);
-				image = null;
-			}	
+			if (value is DisplayObject)
+				_front = value;
+			else 
+				_front = searchChildren(value);			
+		}
+		
+		private var _back:*;
+		/**
+		 * Sets the back element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get back():* { return _back; }
+		public function set back(value:*):void 
+		{
+			if (!value) return;
 			
-			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			if (value is DisplayObject)
+				_back = value;
+			else
+				_back = searchChildren(value);
+		}
+		
+		private var _backBackground:*;
+		/**
+		 * Sets the back background element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get backBackground():* { return _backBackground; }
+		public function set backBackground(value:*):void 
+		{	
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_backBackground = value;
+			else
+				_backBackground = searchChildren(value);				
+		}
+		
+		private var _menu:*;
+		/**
+		 * Sets the menu element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get menu():* { return _menu; }
+		public function set menu(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_menu = value;
+			else
+				_menu = searchChildren(value);
+		}
+		
+		private var _frame:*;
+		/**
+		 * Sets the frame element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get frame():* { return _frame; }
+		public function set frame(value:*):void 
+		{	
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_frame = value;
+			else
+				_frame = searchChildren(value);				
+		}
+		
+		private var _hideFrontOnFlip:Boolean = false;
+		/**
+		 * Specifies whether the front is hidden when the the back is shown
+		 * @default false
+		 */		
+		public function get hideFrontOnFlip():* { return _hideFrontOnFlip; }
+		public function set hideFrontOnFlip(value:*):void 
+		{	
+			_hideFrontOnFlip = value;			
+		}
+		
+		private var _autoTextLayout:Boolean = true;
+		/**
+		 * Specifies whether text fields will be automatically adjusted to the component's width
+		 * @default true
+		 */		
+		public function get autoTextLayout():Boolean { return _autoTextLayout; }
+		public function set autoTextLayout(value:Boolean):void 
+		{	
+			_autoTextLayout = value;			
 		}
 		
 		override public function displayComplete():void
@@ -137,8 +188,6 @@
 			initUI();
 			setupUI();
 			updateLayout();
-			
-			this.addEventListener(StateEvent.CHANGE, onStateEvent)
 		}
 
 	
@@ -151,152 +200,124 @@
 		
 		private function setupUI():void
 		{ 
-			//trace("setupUI");
+			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
-			//touch container
-			touch_giga_image = this.childList.getCSSClass("gigapixel_image", 0)
-			addChild(touch_giga_image);
+			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
+			if (!gigapixel)
+				gigapixel = searchChildren(".gigapixel_element");
+				gigapixel.addEventListener(StateEvent.CHANGE, onStateEvent);
+			if (!menu)
+				menu = searchChildren(".menu_container");
+			if (!frame)
+				frame = searchChildren(".frame_element");
+			if (!front)
+				front = searchChildren(".gigapixel_container");
+			if (!back)
+				back = searchChildren(".info_container");				
+			if (!backBackground)
+				backBackground = searchChildren(".info_bg");	
 			
-			//---------- build gigapixel image ------------------------//
-
-				image = new MultiScaleImage();
-					image.mouseChildren = true;
-					image.addEventListener(Event.COMPLETE, image_completeHandler)
-		
-				// Add transformer for smooth zooming
-				var transformer:TweenerTransformer = new TweenerTransformer()
-					transformer.easing = "EaseOut";//"easeOutElastic"
-					transformer.duration = 1 // seconds
-				image.transformer = transformer
-				image.controllers = [new TouchController()]
-		
-					var constraint:CompositeConstraint = new CompositeConstraint()
-					var zoomConstraint:ZoomConstraint = new ZoomConstraint()
-						zoomConstraint.minZoom = 0.1 //????
-						scaleConstraint = new ScaleConstraint()
-						scaleConstraint.minScale = _minScaleConstraint;
-					var centerConstraint:CenterConstraint = new CenterConstraint()
-					var visibilityConstraint:VisibilityConstraint = new VisibilityConstraint()
-						visibilityConstraint.visibilityRatio = 0.6
-						constraint.constraints = [zoomConstraint, scaleConstraint, centerConstraint, visibilityConstraint]
-		
-				image.constraint = constraint
-				image.source = _srcXML //"./resources/images/deepzoom/" + imagexml;
-				image.width = width;
-				image.height = height;
+			// automatically try to find elements based on AS3 class
+			if (!gigapixel)
+				gigapixel = searchChildren(GigapixelElement);
+				gigapixel.addEventListener(StateEvent.CHANGE, onStateEvent);
+			if (!menu)
+				menu = searchChildren(Menu);
+			if (!frame)
+				frame = searchChildren(FrameElement);
+			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
+				backBackground = back.searchChildren(GraphicElement);	
+			
+			// this is the v2.0-v2.1 implementation
+			if (autoTextLayout)
+				textFields = searchChildren(TextElement, Array);
 				
-				touch_giga_image.addChild(image);
-
-		}
-		
-		// -- giga pixel image event handler ----//
-		private function image_completeHandler(event:Event):void
-		{
-			//trace("------------------------g image loaded");
-			var descriptor:IMultiScaleImageDescriptor = image.source as IMultiScaleImageDescriptor
-			if (descriptor)
-			{
-				scaleConstraint.maxScale = descriptor.width/image.sceneWidth
-				//scaleConstraint.maxScale = 3.5;
-			}
+			updateLayout();
 		}
 		
 		private function updateLayout():void
 		{
-			info = childList.getCSSClass("info_container", 0);						
-			menu = childList.getCSSClass("menu_container", 0);
+			// update width and height to the size of the image, if not already specified
+			if (!width && gigapixel)
+				width = gigapixel.width;
+				trace("Gigapixel width: " + gigapixel.width);
+			if (!height && gigapixel)
+				height = gigapixel.height;
+				trace("Gigapixel height: " + gigapixel.height);
+							
+			if (front)
+			{
+				front.width = width;
+				front.height = height;				
+			}			
 			
-			if (menu.autoHide) {
+			if (back)
+			{
+				back.width = width;
+				back.height = height;				
+			}
+			
+			if (backBackground)
+			{
+				backBackground.width = width;
+				backBackground.height = height;
+			}
+				
+			if (frame)
+			{
+				frame.width = width;
+				frame.height = height;
+			}			
+			
+			if (menu)
+			{				
+				menu.updateLayout(width, height);
+				
+				if (menu.autoHide) {
 					if (GestureWorks.activeTUIO)
 						this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
 					else if	(GestureWorks.supportsTouch)
 						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 					else	
 						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-			}
-			
-			
-			// update frame size
-			if (childList.getCSSClass("frame_container", 0))
-			{
-				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
-				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
-			}
-			// update info panel size
-			if (childList.getCSSClass("info_container", 0))
-			{
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).width = width;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).height = height;
-			}
-		
-			// update info text size
-			if (childList.getCSSClass("info_container", 0)) 
-			{
-				var textpaddingX:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingLeft;
-				var textpaddingY:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingTop;
-				var textSep:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingBottom;
-				
-				
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).x = textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).y = textpaddingY;
-				
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).x = textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).y = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
-				
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height;
-			}
-			
-			// update button placement
-			if (childList.getCSSClass("menu_container", 0))
-			{
-				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
-				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
-				var paddingLeft:Number = menu.paddingLeft;
-				var paddingRight:Number = menu.paddingRight;
-				var paddingBottom:Number = menu.paddingBottom;
-				var position:String = menu.position;
-				
-						if(position=="bottom"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						else if(position=="top"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
 						
-						else if(position=="topLeft"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
-						}
-						else if(position=="topRight"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						
-						else if(position=="bottomLeft"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
-						}
-						else if(position=="bottomRight"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-			}	
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_END, onUp);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_UP, onUp);						
+				}					
+			}
+			
+			
+			if (textFields && autoTextLayout)
+			{
+				for (var i:int = 0; i < textFields.length; i++) 
+				{
+					textFields[i].x = textFields[i].x + textFields[i].paddingLeft;
+					
+					textFields[i].autoSize = "left";
+					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
+										
+					if (i == 0)
+						textFields[i].y = textFields[i].paddingTop;
+					else
+						textFields[i].y = textFields[i].paddingTop + textFields[i-1].paddingBottom + textFields[i-1].height;
+				}
+			}
 		}
 		
 		private function onDown(event:*):void
 		{
 			menu.visible = true;
 			menu.startTimer();
+		}
+		
+		public function onUp(event:*):void
+		{
+			if (menu)
+				menu.mouseChildren = true;
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void
@@ -307,26 +328,43 @@
 			if (event.value == "info") {
 				if (!info.visible) {
 					info.visible = true;
-					touch_giga_image.visible = false;
+					gigapixel.visible = false;
 				}
 				else {
 					info.visible = false;
-					touch_giga_image.visible = true;
+					gigapixel.visible = true;
 				}
 			}
 			else if (event.value == "close") 	this.visible = false;
+			else if (event.value == "loaded") {
+				height = gigapixel.height;
+				width = gigapixel.width;
+				gigapixel.removeEventListener(StateEvent.CHANGE, onStateEvent);
+				
+				updateLayout();
+			}
 		}
 		
-		
-		private var _srcXML:String = "";
-		/**
-		 * Sets the src xml file
-		 * @default 50
-		 */		
-		public function get srcXML():String{return _srcXML;}
-		public function set srcXML(value:String):void
-		{			
-			_srcXML = value;
-		}	
+		/*override public function dispose():void
+		{
+			super.dispose();
+			frame = null;
+			touch_giga_image = null;
+			info = null;
+			menu = null;
+			sceneNavigator = null;
+			scaleConstraint = null;
+			
+			if (image)
+			{
+				gigapixel.removeEventListener(Event.COMPLETE, image_completeHandler);
+				gigapixel = null;
+			}	
+			
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+		}*/
 	}
 }
