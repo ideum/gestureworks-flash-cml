@@ -25,6 +25,7 @@ package com.gestureworks.cml.components
 		{
 			super();
 			mouseChildren = true;
+			//_map = new ModestMapElement();
 			disableNativeTransform = false;
 			disableAffineTransform = false;			
 		}
@@ -173,9 +174,11 @@ package com.gestureworks.cml.components
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!map)
+			if (!map){
 				map = searchChildren(".map_element");
+				trace("Adding map event listener.");
 				map.addEventListener(StateEvent.CHANGE, onStateEvent);
+			}
 			if (!menu)
 				menu = searchChildren(".menu_container");
 			if (!frame)
@@ -185,11 +188,12 @@ package com.gestureworks.cml.components
 			if (!back)
 				back = searchChildren(".info_container");				
 			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+				backBackground = searchChildren(".info_bg");
 			
 			// automatically try to find elements based on AS3 class
 			if (!map){
 				map = searchChildren(ModestMapElement);
+				trace("Adding map event listener.");
 				map.addEventListener(StateEvent.CHANGE, onStateEvent);
 			}
 			if (!menu)
@@ -265,7 +269,6 @@ package com.gestureworks.cml.components
 				}					
 			}
 			
-			
 			if (textFields && autoTextLayout)
 			{
 				for (var i:int = 0; i < textFields.length; i++) 
@@ -327,14 +330,9 @@ package com.gestureworks.cml.components
 				this.visible = false;
 			}
 			else if (event.value == "loaded") {
-				map.removeEventListener(StateEvent.CHANGE, onStateEvent);
+				//map.removeEventListener(StateEvent.CHANGE, onStateEvent);
 				trace("Traced mapElement loaded.");
 				map.updateFrame();
-
-				//map.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, onDouble);
-
-				
-				//map.addEventListener(GWGestureEvent.SCALE, scaleMap);
 				updateLayout();
 			}
 		}

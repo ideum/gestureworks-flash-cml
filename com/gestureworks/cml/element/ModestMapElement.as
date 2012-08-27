@@ -5,8 +5,10 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.*;
 	import com.gestureworks.core.*;
+	import com.gestureworks.cml.element.ModestMapMarker;
 	import com.google.maps.MapEvent;
 	import com.modestmaps.extras.MapControls;
+	import com.modestmaps.extras.ZoomSlider;
 	import com.modestmaps.geo.Location;
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
@@ -14,6 +16,8 @@ package com.gestureworks.cml.element
 	import com.modestmaps.mapproviders.yahoo.*;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.events.MarkerEvent;
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	
 	import flash.events.MouseEvent;
@@ -25,7 +29,7 @@ package com.gestureworks.cml.element
 	 * ...
 	 * @author josh
 	 */
-	public class ModestMapElement extends ElementFactory
+	public class ModestMapElement extends Container
 	{
 		//private var map:Map;
 		private var map:TweenMap;
@@ -46,10 +50,12 @@ package com.gestureworks.cml.element
 		private var lastLoc:Location;
 		
 		private var zoomFactor:Number = 0;
+		private var mapMarkers:Array;
 		
 		public function ModestMapElement() 
 		{
 			super();
+			mapMarkers = new Array();
 		}
 		
 		private var _mapProvider:IMapProvider;
@@ -132,13 +138,25 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void {
 			super.displayComplete();
 			
+			trace(this.numChildren);
+			
+			while (this.numChildren > 0) {
+				if (this.getChildAt(this.numChildren - 1) is DisplayObject) {
+					mapMarkers.push(this.getChildAt(this.numChildren - 1));
+				}
+				trace(this.getChildAt(this.numChildren - 1));
+				removeChildAt(this.numChildren - 1);
+			}
+			
+			trace("MAP MARKERS: ");
+			trace(mapMarkers);
 			createMap();
 		}
 		
 		private function createMap():void {
 			//map = new Map(width, height, _draggable, _mapProvider);
 			map = new TweenMap(width, height, _draggable, _mapProvider);
-			//map.addChild(new MapControls(map));
+			
 			lastLoc = new Location(_latitude, _longitude);
 			map.setCenterZoom(lastLoc, _zoom);
 			
@@ -146,45 +164,32 @@ package com.gestureworks.cml.element
 			
 			addChild(map);
 			
+			if (mapMarkers.length > 0) {
+				for (var i:Number = 0; i < mapMarkers.length; i++) {
+					var mapLoc:Location = new Location(mapMarkers[i].latitude, mapMarkers[i].longitude);
+					map.putMarker(mapLoc, mapMarkers[i]);
+				}
+			}
+			
 			createEvents();
 			
 			_loaded = "loaded";
 			
-			trace(map.grid);
-			if (this.parent)
-				parent.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded));
+			if (this.parent) {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded));
+			}
 		}
 		
 		private function createEvents():void {
 			if (this.parent && this.parent is TouchContainer) {
 				this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				this.parent.addEventListener(GWGestureEvent.SCALE, onScale);
+				map.addEventListener(StateEvent.CHANGE, onZoom);
 			}
 		}
 		
-		private function onScale(e:GWGestureEvent):void {
-			//trace("SCALING");
-			//var scale:Number = Math.sqrt(((e.value.scale_dsx - psx) * (e.value.scale_dsx - psx)) + ((e.value.scale_dsy - psy) * (e.value.scale_dsy - psy)));
-			
-			this.parent.removeEventListener(GWGestureEvent.SCALE, onScale);
-			//this.parent.addEventListener(MapEvent.ZOOMED_BY, onZoom);
-			
-			zoomFactor += e.value.scale_dsy;
-			zoomFactor += e.value.scale_dsy;
-			
-			map.addEventListener(com.modestmaps.events.MapEvent.STOP_ZOOMING, onZoom);
-			
-			map.zoomByAbout(zoomFactor);
-			//trace(zoomFactor);
-			//trace(e.value.scale_dsy);
-			//trace(Math.sqrt(((e.value.dsx - psx) * (e.value.dsx - psx)) + ((e.value.dsy - psy) * (e.value.dsy - psy))));
-			//trace(e.value.scale_dsx);
-		}
-		
 		private function onZoom(e:*):void {
-			this.parent.addEventListener(GWGestureEvent.SCALE, onScale);
-			//this.parent.removeEventListener(MapEvent.ZOOMED_BY, onZoom);
-			map.removeEventListener(com.modestmaps.events.MapEvent.STOP_ZOOMING, onZoom);
+			trace("Zooming in ModestMapElement");
+			map.zoomByAbout(e.value);
 		}
 		
 		public function switchMapProvider(e:*):void {
