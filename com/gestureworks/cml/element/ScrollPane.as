@@ -8,13 +8,16 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.*;
+	import flash.events.MouseEvent;
+	import org.tuio.TuioTouchEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.*;
 	import flash.text.*;
+	import com.gestureworks.core.GestureWorks;
     
 	/**
 	 * The Scrollpane element scrolls the text when event happens.
-	 * It has the following parameters:squareLineStroke , squareOutLineColor, squareColor, ellipseOutLineColor, ellipseColor, ellipseLineStroke, verticalEllipseOutLineColor ,verticalEllipseColor, verticalEllipseLineStroke,bgOutLineColor, bgColor, bgLineStroke, verticalBgOutLineColor, verticalBgColor, verticalBgLineStroke ,scrollBarColor, scrollBarOutLineColor , scrollBarLineStroke , verticalScrollBarColor , verticalScrollBarOutLineColor, verticalScrollbarLineStroke, horizontal .
+	 * It has the following parameters:squareLineStroke , squareOutlineColor, squareColor, ellipseOutLineColor, ellipseColor, ellipseLineStroke, verticalEllipseOutLineColor ,verticalEllipseColor, verticalEllipseLineStroke,bgOutLineColor, bgColor, bgLineStroke, verticalBgOutLineColor, verticalBgColor, verticalBgLineStroke ,scrollBarColor, scrollBarOutLineColor , scrollBarLineStroke , verticalScrollBarColor , verticalScrollBarOutLineColor, verticalScrollbarLineStroke, horizontal .
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -97,18 +100,18 @@ public class ScrollPane extends Container
 		_squareLineStroke = value;
 	}
 	
-	private var _squareOutLineColor:uint = 0xCCCCCC;
+	private var _squareOutlineColor:uint = 0xCCCCCC;
 	/**
 	 * Sets out line color of square.
 	 * @default = 0xCCCCCC;
 	 */ 
-	public function get squareOutLineColor():uint
+	public function get squareOutlineColor():uint
 	{
-		return _squareOutLineColor;
+		return _squareOutlineColor;
 	}
-	public function set squareOutLineColor(value:uint):void
+	public function set squareOutlineColor(value:uint):void
 	{
-		_squareOutLineColor = value;
+		_squareOutlineColor = value;
 	}
 	
 	private var _squareColor:uint = 0x909090;
@@ -125,18 +128,18 @@ public class ScrollPane extends Container
 		_squareColor = value;
 	}
 	
-	private var _ellipseOutLineColor:uint = 0x505050;
+	private var _ellipseOutlineColor:uint = 0x505050;
 	/**
 	 * Sets out line color of horizontal display object ellipse of square.
 	 * @default = 0x505050;
 	 */ 
-	public function get ellipseOutLineColor():uint
+	public function get ellipseOutlineColor():uint
 	{
-		return _ellipseOutLineColor;
+		return _ellipseOutlineColor;
 	}
-	public function set ellipseOutLineColor(value:uint):void
+	public function set ellipseOutlineColor(value:uint):void
 	{
-		_ellipseOutLineColor = value;
+		_ellipseOutlineColor = value;
 	}
 	
 	private var _ellipseColor:uint = 0x000000;
@@ -167,18 +170,18 @@ public class ScrollPane extends Container
 		_ellipseLineStroke = value;
 	}
 	
-	private var _verticalEllipseOutLineColor:uint = 0x505050;
+	private var _verticalEllipseOutlineColor:uint = 0x505050;
 	/**
 	 * Sets out line color of vertical display object ellipse of square.
 	 * @default = 0x505050;
 	 */ 
-	public function get verticalEllipseOutLineColor():uint
+	public function get verticalEllipseOutlineColor():uint
 	{
-		return _verticalEllipseOutLineColor;
+		return _verticalEllipseOutlineColor;
 	}
-	public function set verticalEllipseOutLineColor(value:uint):void
+	public function set verticalEllipseOutlineColor(value:uint):void
 	{
-		_verticalEllipseOutLineColor = value;
+		_verticalEllipseOutlineColor = value;
 	}
 	
 	private var _verticalEllipseColor:uint = 0x000000;
@@ -209,18 +212,18 @@ public class ScrollPane extends Container
 		_verticalEllipseLineStroke = value;
 	}
 		
-	private var _bgOutLineColor:uint = 0x000000;
+	private var _bgOutlineColor:uint = 0x000000;
 	/**
 	 * Sets out line color of background of square.
 	 * @default = 0x000000;
 	 */ 
-	public function get bgOutLineColor():uint
+	public function get bgOutlineColor():uint
 	{
-		return _bgOutLineColor;
+		return _bgOutlineColor;
 	}
-	public function set bgOutLineColor(value:uint):void
+	public function set bgOutlineColor(value:uint):void
 	{
-		_bgOutLineColor = value;
+		_bgOutlineColor = value;
 	}
 	
 	private var _bgColor:uint = 0x000000;
@@ -251,18 +254,18 @@ public class ScrollPane extends Container
 		_bgLineStroke = value;
 	}
 	
-	private var _verticalBgOutLineColor:uint = 0x000000;
+	private var _verticalBgOutlineColor:uint = 0x000000;
 	/**
 	 * Sets out line color of vertical background of square.
 	 * @default = 0x000000;
 	 */ 
-	public function get verticalBgOutLineColor():uint
+	public function get verticalBgOutlineColor():uint
 	{
-		return _verticalBgOutLineColor;
+		return _verticalBgOutlineColor;
 	}
-	public function set verticalBgOutLineColor(value:uint):void
+	public function set verticalBgOutlineColor(value:uint):void
 	{
-		_verticalBgOutLineColor = value;
+		_verticalBgOutlineColor = value;
 	}
 	
 	private var _verticalBgColor:uint = 0x000000;
@@ -307,18 +310,18 @@ public class ScrollPane extends Container
 		_scrollBarColor = value;
 	}
 	
-	private var _scrollBarOutLineColor:uint = 0x383838;
+	private var _scrollBarOutlineColor:uint = 0x383838;
 	/**
 	 * Sets out line color of horizontal scrollbar of square.
 	 * @default = 0x383838;
 	 */ 
-	public function get scrollBarOutLineColor():uint
+	public function get scrollBarOutlineColor():uint
 	{
-		return _scrollBarOutLineColor;
+		return _scrollBarOutlineColor;
 	}
-	public function set scrollBarOutLineColor(value:uint):void
+	public function set scrollBarOutlineColor(value:uint):void
 	{
-		_scrollBarOutLineColor = value;
+		_scrollBarOutlineColor = value;
 	}
 	
 	private var _scrollBarLineStroke:Number = 3;
@@ -349,18 +352,18 @@ public class ScrollPane extends Container
 		_verticalScrollBarColor = value;
 	}
 	
-	private var _verticalScrollBarOutLineColor:uint = 0x383838;
+	private var _verticalScrollBarOutlineColor:uint = 0x383838;
 	/**
 	 * Sets out line color of horizontal scrollbar of square.
 	 * @default = 0x383838;
 	 */ 
-	public function get verticalScrollBarOutLineColor():uint
+	public function get verticalScrollBarOutlineColor():uint
 	{
-		return _verticalScrollBarOutLineColor;
+		return _verticalScrollBarOutlineColor;
 	}
-	public function set verticalScrollBarOutLineColor(value:uint):void
+	public function set verticalScrollBarOutlineColor(value:uint):void
 	{
-		_verticalScrollBarOutLineColor = value;
+		_verticalScrollBarOutlineColor = value;
 	}
 	
 	private var _verticalScrollbarLineStroke:Number = 3;
@@ -390,6 +393,18 @@ public class ScrollPane extends Container
 	  _horizontal = value;
 	}
 	
+	private var _vertical:Boolean = true;
+	/**
+	* Defines the flag for vertical background 
+	*/
+	public function get vertical():Boolean
+	{ 
+	  return _vertical;
+	}
+	public function set vertical(value:Boolean):void
+	{
+	  _vertical = value;
+	}
 	
 	public function init():void
 		{   
@@ -402,40 +417,29 @@ public class ScrollPane extends Container
     private function displayPane():void
 		{
 			
-	 this.mouseChildren = true;
+	this.mouseChildren = true;
     
-	square.graphics.lineStyle(squareLineStroke, squareOutLineColor);
+	square.graphics.lineStyle(squareLineStroke, squareOutlineColor);
 	square.graphics.beginFill(squareColor);
 	square.graphics.drawRect(0, 0, 500 , 300);
 	square.graphics.endFill();
 	square.x = 100;
 	square.y = 100;
 
-	ell_H.graphics.lineStyle(ellipseLineStroke, ellipseOutLineColor);
+	ell_H.graphics.lineStyle(ellipseLineStroke, ellipseOutlineColor);
 	ell_H.graphics.beginFill(ellipseColor);
 	ell_H.graphics.drawEllipse(0, 0, 700, 270);
-	//ell.graphics.drawEllipse(10, 10, 475, 250);
+	//ell_H.graphics.drawEllipse(10, 10, 475, 250);
 	ell_H.graphics.endFill();
 	
 	square.scrollRect = new Rectangle(0 , 0 , 500 , 300);
-
-	/*
-	var txt:TextElement = new TextElement(); 
-	txt.x = 20;
-	txt.y = 20;
-	txt.width = 450;
-	txt.height = 230;
-	txt.wordWrap = true;
-	txt.border = true;
-	txt.type = "input";
-	txt.scrollRect = new Rectangle(0 , 0 , 500, 300); */
- 
-   	ell_V.graphics.lineStyle(verticalEllipseLineStroke, verticalEllipseOutLineColor);
+	 
+   	ell_V.graphics.lineStyle(verticalEllipseLineStroke, verticalEllipseOutlineColor);
 	ell_V.graphics.beginFill(verticalEllipseColor);
 	ell_V.graphics.drawEllipse(70, 10, 300, 470);
 	ell_V.graphics.endFill();
 	 
-    background_H.graphics.lineStyle(bgLineStroke, bgOutLineColor); 
+    background_H.graphics.lineStyle(bgLineStroke, bgOutlineColor); 
     background_H.graphics.beginFill(bgColor);
     background_H.graphics.drawRoundRect(0, 0, square.width, 15, 25, 30);
 	background_H.graphics.endFill();
@@ -444,7 +448,7 @@ public class ScrollPane extends Container
 	background_H.y = square.height - background_H.height;
 	background_H.width = square.width;
 	 
-	background_V.graphics.lineStyle(verticalBgLineStroke, verticalBgOutLineColor); 
+	background_V.graphics.lineStyle(verticalBgLineStroke, verticalBgOutlineColor); 
     background_V.graphics.beginFill(verticalBgColor);
     background_V.graphics.drawRoundRect(0, 0, 15, 300, 25, 30);
 	background_V.graphics.endFill();
@@ -452,7 +456,7 @@ public class ScrollPane extends Container
 	background_V.x = square.width - background_V.width;
 	//background_V.y = square.y;
 
-	scrollbar_H.graphics.lineStyle(scrollBarLineStroke, scrollBarOutLineColor);  
+	scrollbar_H.graphics.lineStyle(scrollBarLineStroke, scrollBarOutlineColor);  
     scrollbar_H.graphics.beginFill(scrollBarColor);
     scrollbar_H.graphics.drawRoundRect(0, 0, 100, 15, 30, 50);
 	scrollbar_H.graphics.endFill();
@@ -460,7 +464,7 @@ public class ScrollPane extends Container
 	scrollbar_H.x = background_H.x;
 	scrollbar_H.y = background_H.y;
 
-	scrollbar_V.graphics.lineStyle(verticalScrollbarLineStroke, verticalScrollBarOutLineColor); 
+	scrollbar_V.graphics.lineStyle(verticalScrollbarLineStroke, verticalScrollBarOutlineColor); 
     scrollbar_V.graphics.beginFill(verticalScrollBarColor);
     scrollbar_V.graphics.drawRoundRect(0, 0, 15, 100, 30, 50);
 	scrollbar_V.graphics.endFill();
@@ -468,32 +472,45 @@ public class ScrollPane extends Container
 	scrollbar_V.x = background_V.x; 
 	scrollbar_V.y = background_V.y;
 	
-	if (horizontal)
+	if(horizontal)
 	{
 	scrollbar_H.gestureList = { "n-drag": true };
-	scrollbar_H.addEventListener(GWGestureEvent.DRAG , onDrag);
-	background_H.addEventListener(TouchEvent.TOUCH_BEGIN , onBegin);
+	scrollbar_H.addEventListener(GWGestureEvent.DRAG , hDrag);
+	//background_H.addEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
+	
+		if (GestureWorks.activeTUIO)
+				this.addEventListener(TuioTouchEvent.TOUCH_MOVE , hBegin);
+			else if (GestureWorks.supportsTouch)
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
+			else
+				this.addEventListener(MouseEvent.MOUSE_MOVE, hBegin);
 	}
-	else	
+	if(vertical)	
 	{
 	scrollbar_V.gestureList = { "n-drag": true };
-	scrollbar_V.addEventListener(GWGestureEvent.DRAG , onDrag);
-	background_V.addEventListener(TouchEvent.TOUCH_BEGIN , onBegin);
+	scrollbar_V.addEventListener(GWGestureEvent.DRAG , vDrag);
+	//background_V.addEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
+	
+		if (GestureWorks.activeTUIO)
+				this.addEventListener(TuioTouchEvent.TOUCH_MOVE , vBegin);
+			else if (GestureWorks.supportsTouch)
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
+			else
+				this.addEventListener(MouseEvent.MOUSE_MOVE, vBegin);
 	} 
 	
 	addChild(square);
+	square.addChild(ell_H);
 
-	if (horizontal)
+	if(horizontal)
 	{
 	square.addChild(background_H);
 	square.addChild(scrollbar_H);
-	square.addChild(ell_H);
-	}
-	else
+   	}
+	if(vertical)
 	{
 	square.addChild(background_V);
 	square.addChild(scrollbar_V);
-	square.addChild(ell_V);
 	} 
 	
 	scrollbar_HminPos = background_H.x ;
@@ -501,7 +518,7 @@ public class ScrollPane extends Container
 	
 	scrollbar_VminPos = background_V.y;
 	scrollbar_VmaxPos = background_V.height - scrollbar_V.height;
-
+	
 }  
 	private var	scrollbar_HminPos:Number;
 	private var	scrollbar_HmaxPos:Number;
@@ -509,43 +526,46 @@ public class ScrollPane extends Container
 	private var	scrollbar_VmaxPos:Number;
 	
 	/**
-	 * Creates boundary for the scrollpane.
+	 * Creates boundary for the horizontal scrollpane.
 	 * @param	event
 	 */
-    private function onDrag(event:GWGestureEvent):void
+    private function hDrag(event:GWGestureEvent):void
 	{
 		 var offset:Number = 25;
 		 var dx:Number = event.value.drag_dx - scrollbar_H.x;
-		 var dy:Number = event.value.drag_dy - scrollbar_V.y;
-			
-		if (horizontal)
-		{
+	
 		if ((event.value.drag_dx + event.target.x) > scrollbar_HmaxPos)
 		 event.target.x = scrollbar_HmaxPos ;
 		else if ((event.value.drag_dx + event.target.x) < scrollbar_HminPos)
 		 event.target.x = scrollbar_HminPos;
-	    else 
+		else 
 		 event.target.x += event.value.drag_dx;
 		 ell_H.x = dx + offset;
-		}
+	}	
 	
-		else
-		{
+	/**
+	 * Creates boundary for the vertical scrollpane.
+	 * @param	event
+	 */
+    private function vDrag(event:GWGestureEvent):void
+	{
+		 var offset:Number = 10;
+		 var dy:Number = event.value.drag_dy - scrollbar_V.y;
+		
 		if ((event.value.drag_dy + event.target.y) > scrollbar_VmaxPos)
 		 event.target.y = scrollbar_VmaxPos ;
 		else if ((event.value.drag_dy + event.target.y) < scrollbar_VminPos)
 		 event.target.y = scrollbar_VminPos;
 	    else 
 		 event.target.y += event.value.drag_dy;
-		 ell_V.y = dy;
-		}	
-	}	
+		 ell_H.y = dy + offset;
+	}
 
 	/**
-	 * Handles horizontal or vertical touch events.
+	 * Handles horizontal touch events.
 	 * @param	event
 	 */
-	private function onBegin(event:TouchEvent):void
+	private function hBegin(event:TouchEvent):void
     {
 		 var offset:Number = 10;
 		 
@@ -553,13 +573,7 @@ public class ScrollPane extends Container
 		 var scrollBarCenter:Number = scrollbar_H.width/2;
 		 var rightBoundary:Number = background_H.width - scrollBarCenter;
 		 var leftBoundary:Number = scrollBarCenter;  
-	   	 	 
-		 var touchY:Number = event.localY;
-		 var topBoundary:Number = scrollbar_V.height/2;
-		 var bottomBoundary:Number = background_V.height - scrollbar_V.height; 
 
-		if (horizontal)
-		{
 		if (touchX > rightBoundary)
     	 scrollbar_H.x =  background_H.width - scrollbar_H.width;
 		else if (touchX < leftBoundary)
@@ -567,20 +581,28 @@ public class ScrollPane extends Container
 		else			 
 		 scrollbar_H.x = touchX - scrollBarCenter;	
 	     ell_H.x = offset - event.localX ;
-		}
-		
-		else
-		{
+	}
+
+	/**
+	 * Handles vertical touch events.
+	 * @param	event
+	 */
+	private function vBegin(event:TouchEvent):void
+    {
+		 var offset:Number = 10;
+		   	 	 
+		 var touchY:Number = event.localY;
+		 var topBoundary:Number = scrollbar_V.height/2;
+		 var bottomBoundary:Number = background_V.height - scrollbar_V.height; 
+
 		if (touchY < topBoundary)
 		 scrollbar_V.y = topBoundary - scrollbar_V.height/2;
 		else if (touchY > bottomBoundary)
 		 scrollbar_V.y = bottomBoundary;
 		else
 		 scrollbar_V.y = touchY - scrollbar_V.height / 2;
-		 ell_V.y = offset - event.localY ;
-		}
+		 ell_H.y = offset - event.localY;
 	}
-
 
 }
 }

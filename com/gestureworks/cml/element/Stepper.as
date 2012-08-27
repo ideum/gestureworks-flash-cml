@@ -1,12 +1,21 @@
 package com.gestureworks.cml.element
 {
+	import com.codeazur.as3swf.utils.NumberUtils;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
+	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.globalization.NumberFormatter;
+	import flash.globalization.NumberParseResult;
+	import flash.events.TouchEvent;
+	import org.tuio.TuioTouchEvent;
+	import flash.events.MouseEvent;
+	import com.gestureworks.core.GestureWorks;
 	import flash.text.*;
 	
 	/**
@@ -16,9 +25,10 @@ package com.gestureworks.cml.element
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 	   var st:Stepper = new Stepper();
-	   addChild(st);
 	   st.x = 50;
 	   st.y = 50;
+	   addChild(st);
+	   
 	 *
 	 * </codeblock>
 	 * @author Uma
@@ -45,9 +55,24 @@ package com.gestureworks.cml.element
 		} 
 		
 		/**
+		 * Defines the square which is a rectangle.
+		 */
+		public var square:TouchSprite = new TouchSprite();
+		
+		/**
 		 * Defines the background which is a rectangle
 		 */
-		public var background:TouchSprite = new TouchSprite();
+		public var background:Sprite = new Sprite();
+		
+		/**
+		 * Defines the bottom square of background
+		 */
+		public var bottomSquare:TouchSprite =  new TouchSprite();
+		
+		/**
+		 * Defines the top square of background
+		 */
+		public 	var topSquare:TouchSprite = new TouchSprite();
 		
 		/**
 		 * Defines the top triangle of square
@@ -64,24 +89,28 @@ package com.gestureworks.cml.element
 		 */
 		public var txt:TextElement = new TextElement();
 		
-		private var _text:Number = 1;
+		/**
+		 * Defines the input text Field
+		 */
+		public var inputTxt:TextElement = new TextElement();
 		
+		private var _data:Number = 0.1;
 		/**
 		 * Sets the default Number in Text Field
 		 * @default = 0;
 		 */
-		public function get text():Number
+		public function get data():Number
 		{
-			return _text;
+			return _data;
 		}
 		
-		public function set text(value:Number):void
+		public function set data(value:Number):void
 		{
-			_text = value;
+			_data = value;
 		}
+		
 		
 		private var _backgroundLineStroke:Number = 3;
-		
 		/**
 		 * Sets the line stroke of background
 		 * @default = 3;
@@ -96,11 +125,11 @@ package com.gestureworks.cml.element
 			_backgroundLineStroke = value;
 		}
 		
-		private var _backgroundLineColor:uint = 0xCCCCCC;
+		private var _backgroundLineColor:uint = 0x000000;
 		
 		/**
 		 * Sets the background line color
-		 * @default = 0xCCCCCC;
+		 * @default = 0x000000;
 		 */
 		public function get backgroundLineColor():uint
 		{
@@ -207,13 +236,15 @@ package com.gestureworks.cml.element
 		{
 			_textColor = value;
 		}
-		
+	
+		private var lastY:Number;
 		/**
 		 * Initializes the configuration and display of Numbers
 		 */
 		private function init():void
 		{
 			displayNum();
+			lastY = 50;
 		}
 		
 		/**
@@ -226,35 +257,114 @@ package com.gestureworks.cml.element
 			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRect(0, 0, 100, 50);
 			background.graphics.endFill();
-			
+							
 			topTriangle.graphics.beginFill(topTriangleColor, topTriangleAlpha);
 			topTriangle.graphics.moveTo(90, 0);
 			topTriangle.graphics.lineTo(80, 23);
 			topTriangle.graphics.lineTo(100, 23);
 			topTriangle.graphics.endFill();
 			
+			topSquare.graphics.beginFill(0xCCCCCC);
+			topSquare.graphics.drawRect(70, 2, 30, 22);
+			topSquare.graphics.endFill();
+					
 			bottomTriangle.graphics.beginFill(bottomTriangleColor, bottomTriangleAlpha);
 			bottomTriangle.graphics.moveTo(90, 50);
 			bottomTriangle.graphics.lineTo(80, 25);
 			bottomTriangle.graphics.lineTo(100, 25);
 			bottomTriangle.graphics.endFill();
 			
-			topTriangle.addEventListener(GWGestureEvent.TAP, upArrow);
-			bottomTriangle.addEventListener(GWGestureEvent.TAP, downArrow);
+			bottomSquare.graphics.beginFill(0xCCCCCC);
+			bottomSquare.graphics.drawRect(70, 25, 30, 23);
+			bottomSquare.graphics.endFill();
+			
+		//	background.addEventListener(TouchEvent.TOUCH_MOVE , onMove);
+									
+			topSquare.addEventListener(GWGestureEvent.TAP, upArrow);
+			bottomSquare.addEventListener(GWGestureEvent.TAP, downArrow);
+			
+		//	background.addEventListener(TouchEvent.TOUCH_BEGIN , onBegin);
 					
-			topTriangle.addEventListener(MouseEvent.MOUSE_UP, incrementText);
-			bottomTriangle.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
+			topSquare.addEventListener(MouseEvent.MOUSE_UP, incrementText);
+			bottomSquare.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
 			
-			txt.x = 40;
+				if (GestureWorks.activeTUIO)
+				this.addEventListener(TuioTouchEvent.TOUCH_MOVE, onMove);
+			else if (GestureWorks.supportsTouch)
+				this.addEventListener(TouchEvent.TOUCH_MOVE, onMove);
+			else
+				this.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
+				
+				if (GestureWorks.activeTUIO)
+				this.addEventListener(TuioTouchEvent.TOUCH_UP, onBegin);
+			else if (GestureWorks.supportsTouch)
+				this.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			else
+				this.addEventListener(MouseEvent.MOUSE_UP, onBegin);	
+				
+			
+			txt.x = 25;
 			txt.y = 10;
-			txt.visible = true;
-			txt.text = text.toString();
-			background.addChild(txt);
+			txt.width = 40;
+			txt.height = 25;
+			txt.font = "OpenSansBold";
+			txt.text = data.toString();
 			txt.textColor = textColor;
+			background.addChild(txt);
 			
+			inputTxt.x = 25;
+			inputTxt.y = 10;
+			inputTxt.width = 40;
+			inputTxt.height = 25;
+			inputTxt.font = "OpenSansBold";
+			inputTxt.text = data.toString();
+			inputTxt.type = "input";
+			inputTxt.textColor = textColor;
+			background.addChild(inputTxt);
+			
+			addChild(square);
 			addChild(background);
-			addChild(topTriangle);
-			addChild(bottomTriangle);
+			addChild(topSquare);
+			topSquare.addChild(topTriangle);
+			addChild(bottomSquare);
+			bottomSquare.addChild(bottomTriangle);
+		
+		}
+		
+		/**
+		 * input text field visible when touch event happens.
+		 * @param	event
+		 */
+		private function onBegin(event:TouchEvent):void
+		{
+			txt.visible = false;
+		    inputTxt.visible = true;
+	    }
+		
+		/**
+		 * Increments text when dragged
+		 * * @param	event
+		 */
+		private function onMove(event:TouchEvent):void
+		{
+	        var Dy:Number;
+			var K:Number = 30;
+			Dy = event.localY - lastY;
+            data = data + Dy/K;  
+		    lastY = event.localY;
+		
+			data++;
+			txt.text = data.toString();
+																
+			if(inputTxt)
+			{
+			var myText:String = "";
+			myText = inputTxt.text;
+			var value:Number = Number(myText);
+			value++;
+			inputTxt.text = value.toString();
+			}
+			
 		}
 		
 		/**
@@ -263,8 +373,19 @@ package com.gestureworks.cml.element
 		 */
 		private function upArrow(event:GWGestureEvent):void
 		{
-			text++;
-			txt.text = text.toString();
+
+			data++;
+			txt.text = data.toString();
+			
+		    if(inputTxt)
+			{
+			var myText:String ="";
+			myText = inputTxt.text;
+			var value:Number = Number(myText);
+			value++;
+			inputTxt.text = value.toString();
+			}
+		
 		}
 		
 		/**
@@ -274,8 +395,19 @@ package com.gestureworks.cml.element
 		
 		private function downArrow(event:GWGestureEvent):void
 		{
-			text--;
-			txt.text = text.toString();
+
+			data--;
+			txt.text = data.toString();
+      
+		    if(inputTxt)
+			{
+			var myText:String ="";
+			myText = inputTxt.text;
+			var value:Number = Number(myText);
+			value--;
+			inputTxt.text = value.toString();
+			}
+
 		}
 		
 		/**
@@ -284,9 +416,18 @@ package com.gestureworks.cml.element
 		 */
 		private function incrementText(event:MouseEvent):void
 		{
-			text++;
-			txt.text = text.toString();
-		}
+            data++;
+			txt.text = data.toString();
+
+			if(inputTxt)
+			{
+			var myText:String ="";
+			myText = inputTxt.text;
+			var value:Number = Number(myText);
+			value++;
+			inputTxt.text = value.toString();
+			}
+	    }
 		
 		/**
 		 * handles mouse event decrement text when down arrow pressed
@@ -294,8 +435,20 @@ package com.gestureworks.cml.element
 		 */
 		private function decrementText(event:MouseEvent):void
 		{
-			text--;
-			txt.text = text.toString();
+
+			data--;
+			txt.text = data.toString();
+			
+		    if (inputTxt)
+			{
+			var myText:String ="";
+			myText = inputTxt.text;
+			var value:Number = Number(myText);
+			value--;
+			inputTxt.text = value.toString();
+			}
 		}
-	}
+		
+		
+}
 }
