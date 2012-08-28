@@ -84,8 +84,8 @@ import flash.display.DisplayObject;
                     child.x = useMargins ? sumx + col * (2*marginX) : col * spacingX;
                     child.y = useMargins ? sumy + row * (2*marginY) : row * spacingY;
 					
-					sumx = col == columns-1 ? 0 : sumx + child.width * child.scaleX;
-					sumy = col == columns-1 ? sumy + child.height * child.scaleY : sumy;						
+					sumx = col == columns - 1 ? 0 : sumx + child.width;
+					sumy = col == columns-1 ? sumy + child.height  : sumy;						
 				}
                 else
                 {
@@ -95,8 +95,8 @@ import flash.display.DisplayObject;
                     child.x = useMargins ? sumx + col * (2*marginX) : col * spacingX;
                     child.y = useMargins ? sumy + row * (2*marginY) : row * spacingY;	
 
-					sumx = row == rows-1 ? sumx + child.width * child.scaleX : sumx;
-					sumy = row == rows - 1 ? 0 : sumy + child.height * child.scaleY;					
+					sumx = row == rows-1 ? sumx + child.width : sumx;
+					sumy = row == rows - 1 ? 0 : sumy + child.height;					
                 }				
 			}
 	
