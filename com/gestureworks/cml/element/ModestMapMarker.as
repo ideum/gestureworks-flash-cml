@@ -24,6 +24,10 @@ package com.gestureworks.cml.element
 		public function set latitude(value:Number):void {
 			_latitude = value;
 		}
+		
+		override public function dispose():void {
+			super.dispose();
+		}
 	}
 
 }
