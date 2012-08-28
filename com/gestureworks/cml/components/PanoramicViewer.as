@@ -50,380 +50,308 @@
 	 
 	public class PanoramicViewer extends Component
 	{
-		private var frame:TouchSprite;
-		private var panoramic:TouchSprite;
-		private var info:*;
-		private var menu:Menu;
-		
-		private var faceNum:int = 0;
-		
-		private var cam:HoverCamera3D;
-		private var view:View3D;
-		private var largeCube:Skybox6;
-		private var cube:Cube;
-		private var shape_net:Bitmap;
-		private var cube_face:Array = new Array();
-		private var mat:BitmapMaterial;
-		
-		private var _zoom:Number = 100; 
-		private var _yaw:Number = 45;
-		private var _roll:Number = 0;
-		private var _pitch:Number = 8; 
+		private var textFields:Array;
 	
 		public function PanoramicViewer()
 		{
 			super();
 		}
 
-		override public function dispose():void
+		private var _panoramic:*;
+		/**
+		 * Sets the panoramic element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned. 
+		 */		
+		public function get panoramic():* {return _panoramic}
+		public function set panoramic(value:*):void 
 		{
-			super.dispose();
+			if (!value) return;
 			
-			frame = null;
-			info = null;
-			menu = null;
-			cam = null;
-			view = null;
-			largeCube = null;
-			cube = null;
-			shape_net = null;
-			cube_face = null;
-			mat = null;
+			if (value is DisplayObject)
+				_panoramic = value;
+			else 
+				_panoramic = searchChildren(value);					
+		}			
+		
+		
+		private var _front:*;
+		/**
+		 * Sets the front element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get front():* {return _front}
+		public function set front(value:*):void 
+		{
+			if (!value) return;
 			
-			if (panoramic)
-			{
-				panoramic.removeEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-				panoramic.removeEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
-				panoramic = null;
-			}
+			if (value is DisplayObject)
+				_front = value;
+			else 
+				_front = searchChildren(value);			
+		}				
+		
+		
+		private var _back:*;
+		/**
+		 * Sets the back element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get back():* {return _back}
+		public function set back(value:*):void 
+		{
+			if (!value) return;
 			
-			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, update);
-			this.removeEventListener(StateEvent.CHANGE, onStateEvent);			
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);		
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);	
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			if (value is DisplayObject)
+				_back = value;
+			else
+				_back = searchChildren(value);
+		}		
+		
+		
+		private var _backBackground:*;
+		/**
+		 * Sets the back background element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get backBackground():* {return _backBackground}
+		public function set backBackground(value:*):void 
+		{	
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_backBackground = value;
+			else
+				_backBackground = searchChildren(value);				
+		}
+		
+		
+		private var _menu:*;
+		/**
+		 * Sets the menu element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get menu():* {return _menu}
+		public function set menu(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_menu = value;
+			else
+				_menu = searchChildren(value);
+		}			
+		
+		
+		private var _frame:*;
+		/**
+		 * Sets the frame element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */		
+		public function get frame():* {return _frame}
+		public function set frame(value:*):void 
+		{	
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_frame = value;
+			else
+				_frame = searchChildren(value);				
+		}			
+		
+		
+		private var _hideFrontOnFlip:Boolean = false;
+		/**
+		 * Specifies whether the front is hidden when the the back is shown
+		 * @default false
+		 */		
+		public function get hideFrontOnFlip():* {return _hideFrontOnFlip}
+		public function set hideFrontOnFlip(value:*):void 
+		{	
+			_hideFrontOnFlip = value;			
+		}				
+		
+		
+		private var _autoTextLayout:Boolean = true;
+		/**
+		 * Specifies whether text fields will be automatically adjusted to the component's width
+		 * @default true
+		 */		
+		public function get autoTextLayout():Boolean {return _autoTextLayout}
+		public function set autoTextLayout(value:Boolean):void 
+		{	
+			_autoTextLayout = value;			
 		}
 		
 		override public function displayComplete():void
 		{			
-			//trace("panoramicViewer complete")
-			initUI();
-			setupUI();
-			updateLayout();
+			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
-			this.addEventListener(StateEvent.CHANGE, onStateEvent)
-		}
-
-	
-		private function initUI():void
-		{
-			//trace("initUI");
+			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
+			if (!panoramic)
+				panoramic = searchChildren(".panoramic_element");
+			if (!menu)
+				menu = searchChildren(".menu_container");
+			if (!frame)
+				frame = searchChildren(".frame_element");
+			if (!front)
+				front = searchChildren(".image_container");
+			if (!back)
+				back = searchChildren(".info_container");				
+			if (!backBackground)
+				backBackground = searchChildren(".info_bg");	
 			
-			if (_projectionType == "sphere") {
+			// automatically try to find elements based on AS3 class
+			if (!panoramic)
+				panoramic = searchChildren(PanoramicElement);
+			if (!menu)
+				menu = searchChildren(Menu);
+			if (!frame)
+				frame = searchChildren(FrameElement);
+			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
+				backBackground = back.searchChildren(GraphicElement);	
 			
-				shape_net = this.childList.getCSSClass("panoramic", 0).childList.getCSSClass("sphere_net", 0).bitmap;
-			}
-			
-			if (_projectionType == "cube") {
+			// this is the v2.0-v2.1 implementation, it is on by default
+			if (autoTextLayout)
+				textFields = searchChildren(TextElement, Array);
 				
-				if (!cubeFace)
-				{
-					// build net
-					shape_net = this.childList.getCSSClass("panoramic", 0).childList.getCSSClass("cube_net", 0).bitmap;
-				}
-				if (cubeFace)
-				{
-					//---------- build cube faces ------------------------//
-					faceNum = this.childList.getCSSClass("panoramic", 0).childList.getCSSClass("cube_face").length
-					
-					if (faceNum == 6){
-					
-						for (var i:int = 0; i < faceNum; i++)
-						{
-							cube_face[i] = this.childList.getCSSClass("panoramic", 0).childList.getCSSClass("cube_face", i).bitmapData;
-						}
-					createCubeNet();
-					}
-					else trace("incorrect number of cube faces");
-					
-				}
-			}
-		}
-		
-		private function setupUI():void
-		{ 
-			//trace("setupUI");
-			
-			// update 
-			GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, update);
-			
-			// set frame size
-			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).width = width;
-			this.childList.getCSSClass("touch_frame", 0).childList.getCSSClass("frame", 0).height = height;
-			
-			//touch container
-			panoramic = this.childList.getCSSClass("panoramic", 0)
-				panoramic.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-				panoramic.addEventListener(GWGestureEvent.SCALE, gestureScaleHandler);
-			addChild(panoramic);
-			
-			// create a "hovering" camera
-			cam = new HoverCamera3D({zoom:100, focus:7});
-            cam.hover(true);
-			
-			// create a viewport
-			view = new View3D({x:width/2,y:height/2,camera:cam});
-				view.camera.lookAt(new Number3D(0, 0, 0));
-				view.clipping = new RectangleClipping({minX:-width/2,minY:-height/2, maxX:width/2,maxY:height/2});
-			panoramic.addChild(view);
-			
-			//----------------------------------// 
-			
-			// add a huge surrounding sphere
-			if(_projectionType =="sphere"){
-				
-				var rad:Number = (width / 2) * 45;//80000
-				mat = new BitmapMaterial(Cast.bitmap(shape_net));
-				var largeSphere:Sphere = new Sphere({radius:rad,material:mat,segmentsW:14,segmentsH:28});
-					largeSphere.scaleX = -1;
-				view.scene.addChild(largeSphere);
-			}
-			
-			if(_projectionType=="cube"){
-					mat = new BitmapMaterial(Cast.bitmap(shape_net));
-					mat.smooth = true;
-					largeCube = new Skybox6(mat);
-					largeCube.quarterFaces();
-				view.scene.addChild(largeCube);
-				view.render();
-			}
+			updateLayout();	
 		}
 		
 		private function updateLayout():void
 		{
-			info = childList.getCSSClass("info_container", 0);						
-			menu = childList.getCSSClass("menu_container", 0);
-			
-			if (menu.autoHide) {
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				else if	(GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				else	
-					this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-			}	
-			
-			
-			// update frame size
-			if (childList.getCSSClass("frame_container", 0))
+			// update width and height to the size of the video, if not already specified
+			if (!width && panoramic)
+				width = panoramic.width;
+			if (!height && panoramic)
+				height = panoramic.height;
+							
+			if (front)
 			{
-				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).width = width;
-				childList.getCSSClass("frame_container", 0).childList.getCSSClass("frame_element", 0).height = height;
-			}
-			// update info panel size
-			if (childList.getCSSClass("info_container", 0))
+				front.width = width;
+				front.height = height;				
+			}			
+			
+			if (back)
 			{
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).width = width;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_bg", 0).height = height;
-			}
-		
-			// update info text size
-			if (childList.getCSSClass("info_container", 0)) 
-			{
-				var textpaddingX:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingLeft;
-				var textpaddingY:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingTop;
-				var textSep:Number = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).paddingBottom;
-				
-				
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).x = textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).y = textpaddingY;
-				
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).x = textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).y = childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height + textpaddingY + textSep;
-				
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).width = width - 2*textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).width = width-2*textpaddingX;
-				childList.getCSSClass("info_container", 0).childList.getCSSClass("info_description", 0).height = height-2*textpaddingY-textSep-childList.getCSSClass("info_container", 0).childList.getCSSClass("info_title", 0).height;
+				back.width = width;
+				back.height = height;				
 			}
 			
-			// update button placement
-			if (childList.getCSSClass("menu_container", 0))
+			if (backBackground)
 			{
-				var btnWidth:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).width;
-				var btnHeight:Number = menu.childList.getCSSClass("close_btn", 0).childList.getCSSClass("down", 0).childList.getCSSClass("btn-bg-down", 0).height;
-				var paddingLeft:Number = menu.paddingLeft;
-				var paddingRight:Number = menu.paddingRight;
-				var paddingBottom:Number = menu.paddingBottom;
-				var position:String = menu.position;
+				backBackground.width = width;
+				backBackground.height = height;
+			}
 				
-						if(position=="bottom"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						else if(position=="top"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
+			if (frame)
+			{
+				frame.width = width;
+				frame.height = height;
+			}			
+			
+			if (menu)
+			{
+				menu.updateLayout(width, height);
+				
+				if (menu.autoHide) {
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 						
-						else if(position=="topLeft"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
-						}
-						else if(position=="topRight"){
-							menu.y = paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-						
-						else if(position=="bottomLeft"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = paddingLeft;
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = btnWidth + paddingLeft +paddingRight;
-						}
-						else if(position=="bottomRight"){
-							menu.y = height - btnHeight -paddingBottom;
-							if(menu.childList.getCSSClass("info_btn", 0)) menu.childList.getCSSClass("info_btn", 0).x = width - 2*btnWidth - paddingLeft -paddingRight
-							if(menu.childList.getCSSClass("close_btn", 0)) menu.childList.getCSSClass("close_btn", 0).x = width - btnWidth - paddingLeft
-						}
-			}	
+					if (GestureWorks.activeTUIO)
+						this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					else if	(GestureWorks.supportsTouch)
+						this.addEventListener(TouchEvent.TOUCH_END, onUp);
+					else	
+						this.addEventListener(MouseEvent.MOUSE_UP, onUp);						
+				}					
+			}
+			
+			if (textFields && autoTextLayout)
+			{
+				for (var i:int = 0; i < textFields.length; i++) 
+				{
+					textFields[i].x = textFields[i].x + textFields[i].paddingLeft;
+					
+					textFields[i].autoSize = "left";
+					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
+										
+					if (i == 0)
+						textFields[i].y = textFields[i].paddingTop;
+					else
+						textFields[i].y = textFields[i].paddingTop + textFields[i-1].paddingBottom + textFields[i-1].height;
+				}
+			}
 		}
 		
 		private function onDown(event:*):void
 		{
-			menu.visible = true;
-			menu.startTimer();
+			if (menu)
+			{
+				menu.visible = true;
+				menu.startTimer();
+			}
+		}
+		
+		public function onUp(event:*):void
+		{
+			if (menu)
+				menu.mouseChildren = true;
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void
 		{	
-			//trace("StateEvent change", event.value);
-			var info:* = childList.getCSSClass("info_container", 0)
-			
-			if (event.value == "info") {
-				if (!info.visible) {
-					info.visible = true;
-					panoramic.visible = false;
+			if (event.value == "info") 
+			{
+				if (back)
+				{
+					if (!back.visible) { 
+						back.visible = true;
+					}
+					else { 
+						back.visible = false;
+					}
 				}
-				else {
-					info.visible = false;
-					panoramic.visible = true;
+				if (front && hideFrontOnFlip)
+				{
+					if (!front.visible) { 
+						front.visible = true;
+					}
+					else { 
+						front.visible = false;
+					}
 				}
 			}
-			else if (event.value == "close") 	this.visible = false;
+			else if (event.value == "close")
+			{
+				this.visible = false;
+			}
 		}
 		
-		public function update(e:GWEvent):void
-		{
-        	//trace("updating render");
-			cam.tiltAngle = _pitch;
-			cam.panAngle = _yaw;
-			cam.zoom = _zoom;
-			cam.hover();
-				
-			//// overides any clipping that may occure when objects are placed partly on stage initall y
-		  	view.render(); 
-		}
-		
-		// yaw and pitch control
-		private function gestureDragHandler(e:GWGestureEvent):void 
-		{
-			//trace("drag")
-			_yaw += e.value.dx;
-			_pitch += e.value.dy;
-		}
-		
-		// scale control
-		private function gestureScaleHandler(event:GWGestureEvent):void 
-		{
-			//trace("zoom", _zoom)
-			if (_zoomMin < _zoom < _zoomMax) _zoom += event.value.dsx;
-			if (_zoom > _zoomMax) _zoom = _zoomMax;
-			if (_zoom < _zoomMin) _zoom = _zoomMin;
-		}
-		
-		private var _cubeFace:Boolean = true;
-		
-		/**
-		 * Sets default projection geometry
-		 * @default false
-		 */		
-		public function get cubeFace():Boolean{return _cubeFace;}
-		public function set cubeFace(value:Boolean):void
-		{			
-			_cubeFace = value;
-		}
-		
-		private var _projectionType:String = "cube";
-		/**
-		 * Sets default projection geometry
-		 * @default "cube"
-		 */		
-		public function get projectionType():String{return _projectionType;}
-		public function set projectionType(value:String):void
-		{			
-			_projectionType = value;
-		}
-		
-		private var _zoomMax:Number = 150;
-		/**
-		 * Sets maximum zoom value of view
-		 * @default 150
-		 */		
-		public function get zoomMax():Number{return _zoomMax;}
-		public function set zoomMax(value:Number):void
-		{			
-			_zoomMax = value;
-		}
-		
-		private var _zoomMin:Number = 50;
-		/**
-		 * Sets minumum zoom value of zoom
-		 * @default 50
-		 */		
-		public function get zoomMin():Number{return _zoomMin;}
-		public function set zoomMin(value:Number):void
-		{			
-			_zoomMin = value;
-		}	
-		
-		private function createCubeNet():void {
+		override public function dispose():void {
+			super.dispose();
 			
-			// max width = 1670
+			textFields = null;
+			panoramic = null;
+			front = null;
+			back = null;
+			backBackground = null;
+			menu = null;
+			frame = null;
 			
-			var cubeWidth:Number = cube_face[0].width
-			var bitmapData:BitmapData=new BitmapData(3*cubeWidth,2*cubeWidth, false, 0xFFFFFF);
-			var tMatrix:Matrix;
-				
-				tMatrix = new Matrix(1,0,0,1,0,0);
-				bitmapData.draw(cube_face[0], tMatrix);
-				cube_face[0] = null;
-					
-				tMatrix = new Matrix(1,0,0,1,cubeWidth,0);
-				bitmapData.draw(cube_face[1], tMatrix);
-				cube_face[1] = null;
-				
-				tMatrix = new Matrix(1,0,0,1,2*cubeWidth,0);
-				bitmapData.draw(cube_face[2], tMatrix);
-				cube_face[2] = null;
-					
-				tMatrix= new Matrix(1,0,0,1,0,cubeWidth);
-				bitmapData.draw(cube_face[3], tMatrix);
-				cube_face[3] = null;
-					
-				tMatrix= new Matrix(-1,0,0,-1,2*cubeWidth,2*cubeWidth);
-				bitmapData.draw(cube_face[4], tMatrix);
-				cube_face[4] = null;
-					
-				tMatrix= new Matrix(-1,0,0,-1,3*cubeWidth,2*cubeWidth);
-				bitmapData.draw(cube_face[5], tMatrix);
-				cube_face[5] = null;
-					
-				shape_net = new Bitmap(bitmapData,PixelSnapping.NEVER,true);
-				cube_face = null;				
+			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
 		}
-		
 	}
 }
