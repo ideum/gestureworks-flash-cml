@@ -767,7 +767,6 @@ package com.gestureworks.cml.factories
 		public function get radius():Number{return _radius;}
 		public function set radius(value:Number):void
 		{
-			if (shape != "circle") return;
 			_radius = value;
 			width = radius * 2;
 			height = radius * 2;
