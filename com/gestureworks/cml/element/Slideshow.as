@@ -84,7 +84,7 @@ package com.gestureworks.cml.element
 			slideshowItems.array = childList.getValueArray();
 			
 			for (var i:Number = slideshowItems.length - 1; i > 0; i--) {
-				trace("Removing item: " + slideshowItems.array[i]);
+				//trace("Removing item: " + slideshowItems.array[i]);
 				removeChildAt(slideshowItems.array[i]);
 			}
 			
