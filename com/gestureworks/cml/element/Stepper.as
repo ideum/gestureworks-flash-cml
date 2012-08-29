@@ -15,6 +15,7 @@ package com.gestureworks.cml.element
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
 	import flash.events.MouseEvent;
+	import flash.events.FocusEvent;
 	import com.gestureworks.core.GestureWorks;
 	import flash.text.*;
 	
@@ -28,7 +29,7 @@ package com.gestureworks.cml.element
 	   st.x = 50;
 	   st.y = 50;
 	   addChild(st);
-	   
+	
 	 *
 	 * </codeblock>
 	 * @author Uma
@@ -50,14 +51,9 @@ package com.gestureworks.cml.element
 		 */
 		public override function displayComplete():void
 		{
-		   super.displayComplete();
-		   init();
-		} 
-		
-		/**
-		 * Defines the square which is a rectangle.
-		 */
-		public var square:TouchSprite = new TouchSprite();
+			super.displayComplete();
+			init();
+		}
 		
 		/**
 		 * Defines the background which is a rectangle
@@ -67,12 +63,12 @@ package com.gestureworks.cml.element
 		/**
 		 * Defines the bottom square of background
 		 */
-		public var bottomSquare:TouchSprite =  new TouchSprite();
+		public var bottomSquare:TouchSprite = new TouchSprite();
 		
 		/**
 		 * Defines the top square of background
 		 */
-		public 	var topSquare:TouchSprite = new TouchSprite();
+		public var topSquare:TouchSprite = new TouchSprite();
 		
 		/**
 		 * Defines the top triangle of square
@@ -95,6 +91,7 @@ package com.gestureworks.cml.element
 		public var inputTxt:TextElement = new TextElement();
 		
 		private var _data:Number = 0.1;
+		
 		/**
 		 * Sets the default Number in Text Field
 		 * @default = 0;
@@ -109,8 +106,8 @@ package com.gestureworks.cml.element
 			_data = value;
 		}
 		
-		
 		private var _backgroundLineStroke:Number = 3;
+		
 		/**
 		 * Sets the line stroke of background
 		 * @default = 3;
@@ -236,15 +233,20 @@ package com.gestureworks.cml.element
 		{
 			_textColor = value;
 		}
-	
-		private var lastY:Number;
+		
+	 	/**
+		 * Sets the boolean flag for decimal or integers.
+		 */
+		private var float:Boolean = true;
+		
+		private var ts:TouchSprite = new TouchSprite();
+		
 		/**
 		 * Initializes the configuration and display of Numbers
 		 */
 		private function init():void
 		{
 			displayNum();
-			lastY = 50;
 		}
 		
 		/**
@@ -257,7 +259,7 @@ package com.gestureworks.cml.element
 			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRect(0, 0, 100, 50);
 			background.graphics.endFill();
-							
+			
 			topTriangle.graphics.beginFill(topTriangleColor, topTriangleAlpha);
 			topTriangle.graphics.moveTo(90, 0);
 			topTriangle.graphics.lineTo(80, 23);
@@ -267,7 +269,7 @@ package com.gestureworks.cml.element
 			topSquare.graphics.beginFill(0xCCCCCC);
 			topSquare.graphics.drawRect(70, 2, 30, 22);
 			topSquare.graphics.endFill();
-					
+			
 			bottomTriangle.graphics.beginFill(bottomTriangleColor, bottomTriangleAlpha);
 			bottomTriangle.graphics.moveTo(90, 50);
 			bottomTriangle.graphics.lineTo(80, 25);
@@ -278,136 +280,145 @@ package com.gestureworks.cml.element
 			bottomSquare.graphics.drawRect(70, 25, 30, 23);
 			bottomSquare.graphics.endFill();
 			
-		//	background.addEventListener(TouchEvent.TOUCH_MOVE , onMove);
-									
+		   	ts.gestureEvents = true;
+			ts.gestureList = {"n-drag": true, "n-tap": true};
+			topSquare.gestureList = {"n-tap": true};
+			bottomSquare.gestureList = {"n-tap": true};
+
+			ts.addEventListener(GWGestureEvent.DRAG, onDrag);
+			//	ts.addEventListener(TouchEvent.TOUCH_TAP, onTap);
+			ts.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			topSquare.addEventListener(GWGestureEvent.TAP, upArrow);
 			bottomSquare.addEventListener(GWGestureEvent.TAP, downArrow);
-			
-		//	background.addEventListener(TouchEvent.TOUCH_BEGIN , onBegin);
-					
+							
 			topSquare.addEventListener(MouseEvent.MOUSE_UP, incrementText);
-			bottomSquare.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
-			
-				if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_MOVE, onMove);
-			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_MOVE, onMove);
-			else
-				this.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
+	    	bottomSquare.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
 				
-				if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_UP, onBegin);
+			if (GestureWorks.activeTUIO)
+				this.addEventListener(TuioTouchEvent.TAP, onTap);
 			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+				this.addEventListener(TouchEvent.TOUCH_TAP, onTap);
 			else
-				this.addEventListener(MouseEvent.MOUSE_UP, onBegin);	
-				
-			
-			txt.x = 25;
-			txt.y = 10;
-			txt.width = 40;
-			txt.height = 25;
-			txt.font = "OpenSansBold";
-			txt.text = data.toString();
-			txt.textColor = textColor;
-			background.addChild(txt);
-			
+				this.addEventListener(MouseEvent.CLICK, onTap);	
+
 			inputTxt.x = 25;
 			inputTxt.y = 10;
-			inputTxt.width = 40;
+			inputTxt.width = 50;
 			inputTxt.height = 25;
 			inputTxt.font = "OpenSansBold";
 			inputTxt.text = data.toString();
-			inputTxt.type = "input";
+			inputTxt.type = "dynamic";
+			inputTxt.restrict = "0.1-0.9 0-9";
 			inputTxt.textColor = textColor;
+			inputTxt.selectable = false;
 			background.addChild(inputTxt);
-			
-			addChild(square);
-			addChild(background);
+						
+			addChild(ts);
+			ts.addChild(background);
 			addChild(topSquare);
 			topSquare.addChild(topTriangle);
 			addChild(bottomSquare);
 			bottomSquare.addChild(bottomTriangle);
-		
-		}
+        }
 		
 		/**
-		 * input text field visible when touch event happens.
+		 * creates input textfield when tap event happens.
 		 * @param	event
 		 */
-		private function onBegin(event:TouchEvent):void
+		private function onTap(event:TouchEvent):void
 		{
-			txt.visible = false;
-		    inputTxt.visible = true;
-	    }
-		
-		/**
-		 * Increments text when dragged
-		 * * @param	event
-		 */
-		private function onMove(event:TouchEvent):void
-		{
-	        var Dy:Number;
-			var K:Number = 30;
-			Dy = event.localY - lastY;
-            data = data + Dy/K;  
-		    lastY = event.localY;
-		
-			data++;
-			txt.text = data.toString();
-																
-			if(inputTxt)
-			{
-			var myText:String = "";
-			myText = inputTxt.text;
-			var value:Number = Number(myText);
-			value++;
-			inputTxt.text = value.toString();
-			}
-			
+		    ts.mouseChildren = true;
+			inputTxt.type = "input";
+			inputTxt.textColor = 0x0000FF;
 		}
 		
 		/**
-		 * Increments text when up arrow pressed
+		 * creates dynamic textfield when focus out event happens.
+		 * @param	event
+		 */
+		private function onFocusOut(event:FocusEvent):void
+		{
+			ts.mouseChildren = false;
+			inputTxt.selectable = false;
+			inputTxt.textColor = 0x0000FF;
+    	    inputTxt.type = "dynamic";
+			data = Number(inputTxt.text);
+			data++;
+			inputTxt.text = data.toString();
+		}
+		
+		/**
+		 * Increments and decrements text when dragged.
+		 * * @param	event
+		 */
+		private function onDrag(event:GWGestureEvent):void
+		{
+			inputTxt.selectable = true;
+			ts.mouseChildren = false;
+			var K:Number = 20;
+			var value:Number = 20;
+			var Dy:Number = event.value.drag_dy - value;
+     
+		 if(float)
+            {
+			data = Number(inputTxt.text);
+			data = data + Dy / K;
+			data = roundNumber(data , 5);
+			data++;
+			inputTxt.text = data.toString();
+           }
+          else
+           {
+			data = int(inputTxt.text);
+			data = data + Dy / K;
+			data = roundNumber(data , 5);
+			data++;
+			inputTxt.text = data.toString();
+           }
+		}
+		
+		/**
+		 * Increments text when up arrow pressed.
 		 * @param	event
 		 */
 		private function upArrow(event:GWGestureEvent):void
 		{
-
-			data++;
-			txt.text = data.toString();
-			
-		    if(inputTxt)
+			if (float)
 			{
-			var myText:String ="";
-			myText = inputTxt.text;
-			var value:Number = Number(myText);
-			value++;
-			inputTxt.text = value.toString();
+			data = Number(inputTxt.text);
+			data = roundNumber(data , 5);
+			data++;
+		    inputTxt.text = data.toString();
 			}
-		
+			else
+			{
+			data = int(inputTxt.text);
+			data = roundNumber(data , 5);
+			data++;
+			inputTxt.text = data.toString();
+			}
 		}
 		
 		/**
-		 * Decrement text when down arrow pressed
+		 * Decrement text when down arrow pressed.
 		 * @param	event
 		 */
-		
 		private function downArrow(event:GWGestureEvent):void
 		{
-
-			data--;
-			txt.text = data.toString();
-      
-		    if(inputTxt)
+			if (float)
 			{
-			var myText:String ="";
-			myText = inputTxt.text;
-			var value:Number = Number(myText);
-			value--;
-			inputTxt.text = value.toString();
+			data = Number(inputTxt.text);
+			data = roundNumber(data , 5);
+			data--;
+			inputTxt.text = data.toString();
 			}
-
+			else
+			{
+			data = int(inputTxt.text);
+			data = roundNumber(data , 5);
+			data--;
+			inputTxt.text = data.toString();
+			}
 		}
 		
 		/**
@@ -416,18 +427,21 @@ package com.gestureworks.cml.element
 		 */
 		private function incrementText(event:MouseEvent):void
 		{
-            data++;
-			txt.text = data.toString();
-
-			if(inputTxt)
+			if (float)
 			{
-			var myText:String ="";
-			myText = inputTxt.text;
-			var value:Number = Number(myText);
-			value++;
-			inputTxt.text = value.toString();
+			data = Number(inputTxt.text);
+			data = roundNumber(data , 5);
+			data++;
+			inputTxt.text = data.toString();
 			}
-	    }
+			else
+			{
+			data = int(inputTxt.text);
+			data = roundNumber(data , 5);
+			data++;
+			inputTxt.text = data.toString();
+			}
+		}
 		
 		/**
 		 * handles mouse event decrement text when down arrow pressed
@@ -435,20 +449,31 @@ package com.gestureworks.cml.element
 		 */
 		private function decrementText(event:MouseEvent):void
 		{
-
-			data--;
-			txt.text = data.toString();
-			
-		    if (inputTxt)
+			if (float)
 			{
-			var myText:String ="";
-			myText = inputTxt.text;
-			var value:Number = Number(myText);
-			value--;
-			inputTxt.text = value.toString();
+			data = Number(inputTxt.text);
+			data = roundNumber(data , 5);
+			data--;
+			inputTxt.text = data.toString();
+			}
+			else
+			{
+			data = int(inputTxt.text);
+			data = roundNumber(data , 5);
+			data--;
+			inputTxt.text = data.toString();	
 			}
 		}
-		
-		
-}
+	    
+		/**
+		 * Rounding the number to decimal place.
+		 * @param	num
+		 * @param	decimal
+		 * @return
+		 */
+		private function roundNumber(num:Number, decimal:Number):Number
+		{
+            return Math.round(num*decimal)/decimal;
+        }
+	}
 }

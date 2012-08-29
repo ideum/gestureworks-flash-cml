@@ -31,7 +31,16 @@ package com.gestureworks.cml.utils
 			return num2;
 		}
 
-
+		/**
+		 * rounding the number to decimal places
+		 * @param	num
+		 * @param	decimal
+		 * @return
+		 */
+        public static function roundNumber(num:Number, decimal:Number):Number
+		{
+          return Math.round(num*decimal)/decimal;
+        }
 	}
 
 
