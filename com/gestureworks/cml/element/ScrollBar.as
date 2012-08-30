@@ -4,12 +4,14 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.*;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.*;
+	import org.tuio.TuioTouchEvent;
     
 	/**
 	 * The Scrollbar element scrolls the text.
@@ -107,7 +109,7 @@ public class ScrollBar extends Container
 	public var bottomSquare_V:TouchSprite = new TouchSprite();
 	
 	
-	private var _horizontal:Boolean = false;
+	private var _horizontal:Boolean = true;
 	/**
 	* Defines the flag for vertical or horizontal  background 
 	*/
@@ -645,27 +647,57 @@ private function displayScroll():void
 	{
 	scrollbar.gestureList = {"n-drag":true};
 	scrollbar.addEventListener(GWGestureEvent.DRAG , onDrag);
-	square1.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-	square2.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+	//square1.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+	//square2.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+	
+	if (GestureWorks.activeTUIO)
+	 this.addEventListener(TuioTouchEvent.TAP , leftArrow);
+	else if (GestureWorks.supportsTouch)
+	 this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+	else
+	 this.addEventListener(MouseEvent.CLICK, leftArrow);
+	
+	 if (GestureWorks.activeTUIO)
+	 this.addEventListener(TuioTouchEvent.TAP , rightArrow);
+	else if (GestureWorks.supportsTouch)
+	 this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+	else
+	 this.addEventListener(MouseEvent.CLICK, rightArrow);
+			
 	}
 	else 
 	{
 	scrollbar_V.gestureList = {"n-drag":true};
 	scrollbar_V.addEventListener(GWGestureEvent.DRAG , onDrag);
-	topSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-	bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);	
+	//topSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+	//bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+	
+	if (GestureWorks.activeTUIO)
+	 this.addEventListener(TuioTouchEvent.TAP , leftArrow);
+	else if (GestureWorks.supportsTouch)
+	 this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+	else
+	 this.addEventListener(MouseEvent.CLICK, leftArrow);
+	
+	 if (GestureWorks.activeTUIO)
+	 this.addEventListener(TuioTouchEvent.TAP , rightArrow);
+	else if (GestureWorks.supportsTouch)
+	 this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+	else
+	 this.addEventListener(MouseEvent.CLICK, rightArrow);
+	 
 	}
 	
-	//if (horizontal)
-	//{
-	//square1.addEventListener(MouseEvent.MOUSE_UP , lArrow);
-	//square2.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-	//}
-	//else 
-	//{
-	//topSquare_V.addEventListener(MouseEvent.MOUSE_UP , lArrow);
-	//bottomSquare_V.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-	//}
+	if (horizontal)
+	{
+	square1.addEventListener(MouseEvent.MOUSE_UP , lArrow);
+	square2.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+	}
+	else 
+	{
+	topSquare_V.addEventListener(MouseEvent.MOUSE_UP , lArrow);
+	bottomSquare_V.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+	}
 	
 	if (horizontal)
 	{
@@ -691,7 +723,6 @@ private function displayScroll():void
 	
 	scrollbar_VminPos = topSquare_V.y + topSquare_V.height;
 	scrollbar_VmaxPos = background_V.height - scrollbar.height - scrollbar.width;
-	//background_V.height - scrollbar_V.height - scrollbar_V.width - bottomSquare_V.width - scrollbar_V.width/2;
 	
  }
  	private var scrollbarminPos:Number;
@@ -739,7 +770,7 @@ private function displayScroll():void
 		}
 		else
 		{
-		if (scrollbar_V.y > (background_V.y - topSquare_V.height - scrollbar_V.width/2 + 70))
+	     if (scrollbar_V.y > (background_V.y - topSquare_V.height/2 + scrollbar_V.height/2 - topSquare_V.height))
 		 scrollbar_V.y = scrollbar_V.y - offset;
 		}
 	}
@@ -779,10 +810,8 @@ private function displayScroll():void
 		}
 		else
 		{
-		if (scrollbar_V.y > (scrollbar_V.height + topSquare_V.width - scrollbar_V.height/2 - topSquare_V.height))
+	     if (scrollbar_V.y > (background_V.y - topSquare_V.height/2 + scrollbar_V.height/2 - topSquare_V.height))
 		 scrollbar_V.y = scrollbar_V.y - offset;
-		else
-		 scrollbar_V.y = background_V.y + topSquare_V.width + scrollbar_V.width;
 		}
 	}
 	
@@ -804,6 +833,44 @@ private function displayScroll():void
 		 scrollbar_V.y = scrollbar_V.y - offset;	
 		}
 	}	
-	  
+	 
+		override public function dispose(): void
+		{
+			super.dispose();
+			background = null;
+			scrollbar = null;
+			leftTriangle = null;
+			rightTriangle = null;
+			square2 = null;
+			square1 = null;
+			background_V = null;
+			scrollbar_V = null;
+			topTriangle_V = null;
+			bottomTriangle_V = null;
+			topSquare_V = null;
+			bottomSquare_V = null;
+			
+			scrollbar.removeEventListener(GWGestureEvent.DRAG , onDrag);
+			square1.removeEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+			square2.removeEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+			
+			scrollbar_V.removeEventListener(GWGestureEvent.DRAG , onDrag);
+			topSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+			bottomSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);	
+			
+			square1.removeEventListener(MouseEvent.MOUSE_UP , lArrow);
+			square2.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+			
+			topSquare_V.removeEventListener(MouseEvent.MOUSE_UP , lArrow);
+			bottomSquare_V.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+			
+			this.removeEventListener(TuioTouchEvent.TAP , leftArrow);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+			this.removeEventListener(MouseEvent.CLICK, leftArrow);
+			this.removeEventListener(TuioTouchEvent.TAP , rightArrow);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+			this.removeEventListener(MouseEvent.CLICK, rightArrow);
+				
+		}
 }
 }

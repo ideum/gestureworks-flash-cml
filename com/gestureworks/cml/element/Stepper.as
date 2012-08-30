@@ -4,19 +4,15 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.globalization.NumberFormatter;
-	import flash.globalization.NumberParseResult;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import flash.events.MouseEvent;
 	import flash.events.FocusEvent;
-	import com.gestureworks.core.GestureWorks;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
 	import flash.text.*;
+	import org.tuio.TuioTouchEvent;
 	
 
 	
@@ -480,7 +476,11 @@ package com.gestureworks.cml.element
 			inputTxt.text = data.toString();	
 			}
 		}
-			override public function dispose(): void
+		
+		/**
+		 * dispose method
+		 */
+		override public function dispose(): void
 		{
 			super.dispose();
 			background = null;
@@ -497,6 +497,9 @@ package com.gestureworks.cml.element
 			bottomSquare.removeEventListener(GWGestureEvent.TAP, downArrow);
 			topSquare.removeEventListener(MouseEvent.MOUSE_UP, incrementText);
 			bottomSquare.removeEventListener(MouseEvent.MOUSE_DOWN, decrementText);
+			this.removeEventListener(TuioTouchEvent.TAP, onTap);
+			this.removeEventListener(TouchEvent.TOUCH_TAP, onTap);
+			this.removeEventListener(MouseEvent.CLICK, onTap);	
 		}
 		
 }

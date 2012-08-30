@@ -9,11 +9,10 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.*;
 	import flash.events.MouseEvent;
-	import org.tuio.TuioTouchEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.*;
 	import flash.text.*;
-	import com.gestureworks.core.GestureWorks;
+	import org.tuio.TuioTouchEvent;
     
 	/**
 	 * The Scrollpane element scrolls the text when event happens.
@@ -604,8 +603,11 @@ public class ScrollPane extends Container
 		 ell_H.y = offset - event.localY;
 	}
 
-		override public function dispose(): void
-		{
+	/**
+	 * dispose method
+	 */
+	override public function dispose(): void
+	{
 			super.dispose();
 			ell_H = null;
 			ell_V = null;
@@ -618,7 +620,13 @@ public class ScrollPane extends Container
             background_V.removeEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
 		    scrollbar_H.removeEventListener(GWGestureEvent.DRAG , hDrag);
             scrollbar_V.removeEventListener(GWGestureEvent.DRAG , vDrag);
+			this.removeEventListener(TuioTouchEvent.TOUCH_MOVE , vBegin);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
+			this.removeEventListener(MouseEvent.MOUSE_MOVE, vBegin);
+			this.removeEventListener(MouseEvent.MOUSE_MOVE, hBegin);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
+			this.removeEventListener(TuioTouchEvent.TOUCH_MOVE , hBegin);
 			
-		}
+	}
 }
 }
