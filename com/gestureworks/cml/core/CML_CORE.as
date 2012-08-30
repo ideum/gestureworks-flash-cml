@@ -35,7 +35,7 @@ package com.gestureworks.cml.core
 		]		
 	}
 	
-	
+	import com.gestureworks.components.CMLDisplay; CMLDisplay;	
 	
 	/////////////////////
 	//  COMPONENTS   

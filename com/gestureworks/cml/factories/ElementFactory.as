@@ -225,9 +225,23 @@ package com.gestureworks.cml.factories
 		
 		
 		
+		private var _scale:Number = 1;
+		/**
+		 * Sets both the x and y scale values
+		 * @default 1
+		 */				
+		public function get scale():Number{	return _scale;}
+		public function set scale(value:Number):void
+		{
+			_scale = value;
+			scaleX = value;
+			scaleY = value;
+		}		
+		
+		
 		
 		/**
-		 * Sets minimum scale of the display object in pixels
+		 * 
 		 * @default 0
 		 */		
 		override public function set alpha(value:Number):void
@@ -307,18 +321,6 @@ package com.gestureworks.cml.factories
 		{
 			_fixedScale = value;
 			originalScale = scaleX;
-		}
-		
-		private var _scale:Number = 1;
-		/**
-		 * Scales display object
-		 */	
-		public function get scale():Number{return _scale;}
-		public function set scale(value:Number):void
-		{
-			_scale = value;
-			scaleX = scale;
-			scaleY = scale;
 		}
 		
 

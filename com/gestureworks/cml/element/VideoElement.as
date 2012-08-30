@@ -280,8 +280,10 @@ package com.gestureworks.cml.element
 					 if (debug) print("Unable to locate video: " + src);
 					 break;
 				case "NetStream.Buffer.Full":
-					 progressTimer.removeEventListener(TimerEvent.TIMER, onProgress);
-					 progressTimer.stop();
+					 if (progressTimer){
+						progressTimer.removeEventListener(TimerEvent.TIMER, onProgress);
+						progressTimer.stop();
+					 }
 					 break;	
 				case "NetStream.Play.Start":
 					 trace("video started");
