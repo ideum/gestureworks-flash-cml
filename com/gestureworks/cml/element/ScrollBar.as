@@ -45,7 +45,7 @@ public class ScrollBar extends Container
 	   super.displayComplete();
 	   init();
 	   } 	
-
+	   
 	/**
 	* Defines the horizontal background which is a rectangle
 	*/
@@ -106,6 +106,7 @@ public class ScrollBar extends Container
 	*/
 	public var bottomSquare_V:TouchSprite = new TouchSprite();
 	
+	
 	private var _horizontal:Boolean = false;
 	/**
 	* Defines the flag for vertical or horizontal  background 
@@ -120,7 +121,6 @@ public class ScrollBar extends Container
 	}
 	
 	private var _backgroundLineStroke:Number = 0;
-		
 	/**
 	* Sets the line stroke of horizontal background
 	* @default = 1;
@@ -648,7 +648,7 @@ private function displayScroll():void
 	square1.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
 	square2.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
 	}
-	else
+	else 
 	{
 	scrollbar_V.gestureList = {"n-drag":true};
 	scrollbar_V.addEventListener(GWGestureEvent.DRAG , onDrag);
@@ -656,16 +656,16 @@ private function displayScroll():void
 	bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);	
 	}
 	
-	if (horizontal)
-	{
-	square1.addEventListener(MouseEvent.MOUSE_UP , lArrow);
-	square2.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-	}
-	else
-	{
-	topSquare_V.addEventListener(MouseEvent.MOUSE_UP , lArrow);
-	bottomSquare_V.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-	}
+	//if (horizontal)
+	//{
+	//square1.addEventListener(MouseEvent.MOUSE_UP , lArrow);
+	//square2.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+	//}
+	//else 
+	//{
+	//topSquare_V.addEventListener(MouseEvent.MOUSE_UP , lArrow);
+	//bottomSquare_V.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+	//}
 	
 	if (horizontal)
 	{
@@ -676,7 +676,7 @@ private function displayScroll():void
 	square1.addChild(leftTriangle);
 	square2.addChild(rightTriangle);
 	}
-	else 
+	else
 	{
 	addChild(background_V);
 	addChild(scrollbar_V);
@@ -700,7 +700,7 @@ private function displayScroll():void
 	private var scrollbar_VmaxPos:Number;
 	
 	/**
-	 * defines boundary for horizontal or vertical scrollbar. 
+	 * defines boundary for horizontal scrollbar. 
 	 * @param	event
 	 */
 	private function onDrag(event:GWGestureEvent):void
@@ -716,12 +716,12 @@ private function displayScroll():void
 		}
 		else
 		{
-	    if ((event.value.drag_dy + event.target.y) > scrollbar_VmaxPos)
+		 if ((event.value.drag_dy + event.target.y) > scrollbar_VmaxPos)
         event.target.y = scrollbar_VmaxPos ;
 	    else if ((event.value.drag_dy + event.target.y) < scrollbar_VminPos)
 		event.target.y = scrollbar_VminPos;
 	    else 
-		 event.target.y += event.value.drag_dy;
+		 event.target.y += event.value.drag_dy;	
 		}
 	}
 	
@@ -739,12 +739,8 @@ private function displayScroll():void
 		}
 		else
 		{
-		if (scrollbar_V.y > (background_V.y - topSquare_V.height)) //(scrollbar_V.height + topSquare_V.height - scrollbar_V.height))
-		{
-		 trace("aa");
+		if (scrollbar_V.y > (background_V.y - topSquare_V.height - scrollbar_V.width/2 + 70))
 		 scrollbar_V.y = scrollbar_V.y - offset;
-		 trace("scrollbar_V.y :" + scrollbar_V.y);
-		}
 		}
 	}
 	

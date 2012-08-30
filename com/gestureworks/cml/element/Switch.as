@@ -63,8 +63,19 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
+		/**
+		 * Defines the background which is a rectangle
+		 */
 		public var background:Sprite = new Sprite();
+		
+		/**
+		 * Defines the button of background
+		 */
 		public var button:Sprite = new Sprite();
+		
+		/**
+		 * Defines the button state
+		 */
 		public var state:Boolean = false;
 		
 		private var _backgroundColor:uint = 0xFFFFFF;

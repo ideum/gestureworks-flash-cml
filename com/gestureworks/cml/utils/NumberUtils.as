@@ -42,6 +42,4 @@ package com.gestureworks.cml.utils
           return Math.round(num*decimal)/decimal;
         }
 	}
-
-
 }

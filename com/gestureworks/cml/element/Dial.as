@@ -474,7 +474,7 @@ package com.gestureworks.cml.element
 			_centerLineAlpha = value;
 		}
 		
-		private var _continuous:Boolean = false;
+		private var _continuous:Boolean = true;
 		/**
 		 * Specifies whether the dial is continuous or not
 		 */		

@@ -89,15 +89,17 @@ package com.gestureworks.cml.layouts
 			{		
 				var obj:* = container.getChildAt(i);
 				
-				if (!closePacking) {
+				if (0) {
 		
 					obj.x = i * blockX + i * (2*marginX);
-					obj.y = 0;					
+					obj.y = 0;	
+					
 				}
 				else {
 					
 					obj.x = useMargins ? sumx + i * (2*marginX) : i * spacingX;
 					obj.y = 0;
+					trace(obj.width);
 				}
 				sumx += obj.width;
 			}

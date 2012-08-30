@@ -476,27 +476,27 @@ public class ScrollPane extends Container
 	{
 	scrollbar_H.gestureList = { "n-drag": true };
 	scrollbar_H.addEventListener(GWGestureEvent.DRAG , hDrag);
-	//background_H.addEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
+	background_H.addEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
 	
-		if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_MOVE , hBegin);
-			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
-			else
-				this.addEventListener(MouseEvent.MOUSE_MOVE, hBegin);
+		//if (GestureWorks.activeTUIO)
+				//this.addEventListener(TuioTouchEvent.TOUCH_MOVE , hBegin);
+			//else if (GestureWorks.supportsTouch)
+				//this.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
+			//else
+				//this.addEventListener(MouseEvent.MOUSE_MOVE, hBegin);
 	}
 	if(vertical)	
 	{
 	scrollbar_V.gestureList = { "n-drag": true };
 	scrollbar_V.addEventListener(GWGestureEvent.DRAG , vDrag);
-	//background_V.addEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
+	background_V.addEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
 	
-		if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_MOVE , vBegin);
-			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
-			else
-				this.addEventListener(MouseEvent.MOUSE_MOVE, vBegin);
+		//if (GestureWorks.activeTUIO)
+				//this.addEventListener(TuioTouchEvent.TOUCH_MOVE , vBegin);
+			//else if (GestureWorks.supportsTouch)
+				//this.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
+			//else
+				//this.addEventListener(MouseEvent.MOUSE_MOVE, vBegin);
 	} 
 	
 	addChild(square);
@@ -604,5 +604,21 @@ public class ScrollPane extends Container
 		 ell_H.y = offset - event.localY;
 	}
 
+		override public function dispose(): void
+		{
+			super.dispose();
+			ell_H = null;
+			ell_V = null;
+			square = null;
+			background_V = null;
+			background_H = null;
+			scrollbar_V = null;
+			scrollbar_H = null;
+		 	background_H.removeEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
+            background_V.removeEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
+		    scrollbar_H.removeEventListener(GWGestureEvent.DRAG , hDrag);
+            scrollbar_V.removeEventListener(GWGestureEvent.DRAG , vDrag);
+			
+		}
 }
 }

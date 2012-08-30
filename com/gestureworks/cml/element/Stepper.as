@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element
 {
-	import com.codeazur.as3swf.utils.NumberUtils;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.factories.*;
@@ -19,9 +18,11 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.GestureWorks;
 	import flash.text.*;
 	
+
+	
 	/**
 	 * The Stepper element provides increment and decrement of Numbers.
-	 * It has the following parameters: backgroundLinecolor, backgroundLineStroke, backgroundColor, topTriangleColor, topTriangleAlpha, bottomTriangleAlpha, bottomTriangleColor, textColor, text .
+	 * It has the following parameters: backgroundLinecolor, backgroundLineStroke, backgroundColor, topTriangleColor, topTriangleAlpha, bottomTriangleAlpha, bottomTriangleColor, textColor, data, float .
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -234,10 +235,18 @@ package com.gestureworks.cml.element
 			_textColor = value;
 		}
 		
-	 	/**
+	    private var _float:Boolean = true;
+		/**
 		 * Sets the boolean flag for decimal or integers.
 		 */
-		private var float:Boolean = true;
+		public function get float():Boolean
+	    { 
+	     return _float;
+	    }
+	    public function set float(value:Boolean):void
+	    {
+	    _float = value;
+	    }
 		
 		private var ts:TouchSprite = new TouchSprite();
 		
@@ -254,7 +263,6 @@ package com.gestureworks.cml.element
 		 */
 		private function displayNum():void
 		{
-			
 			background.graphics.lineStyle(backgroundLineStroke, backgroundLineColor);
 			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRect(0, 0, 100, 50);
@@ -286,7 +294,7 @@ package com.gestureworks.cml.element
 			bottomSquare.gestureList = {"n-tap": true};
 
 			ts.addEventListener(GWGestureEvent.DRAG, onDrag);
-			//	ts.addEventListener(TouchEvent.TOUCH_TAP, onTap);
+			//ts.addEventListener(TouchEvent.TOUCH_TAP, onTap);
 			ts.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			topSquare.addEventListener(GWGestureEvent.TAP, upArrow);
 			bottomSquare.addEventListener(GWGestureEvent.TAP, downArrow);
@@ -306,7 +314,15 @@ package com.gestureworks.cml.element
 			inputTxt.width = 50;
 			inputTxt.height = 25;
 			inputTxt.font = "OpenSansBold";
+			if (float)
+			{
 			inputTxt.text = data.toString();
+			}
+			else
+			{
+			data = Number(data.toFixed(0));
+			inputTxt.text = data.toString();
+			}
 			inputTxt.type = "dynamic";
 			inputTxt.restrict = "0.1-0.9 0-9";
 			inputTxt.textColor = textColor;
@@ -330,6 +346,7 @@ package com.gestureworks.cml.element
 		    ts.mouseChildren = true;
 			inputTxt.type = "input";
 			inputTxt.textColor = 0x0000FF;
+			//stage.focus = true;
 		}
 		
 		/**
@@ -357,21 +374,24 @@ package com.gestureworks.cml.element
 			ts.mouseChildren = false;
 			var K:Number = 20;
 			var value:Number = 20;
+			var value1:Number = 10;
 			var Dy:Number = event.value.drag_dy - value;
+			var dy:Number = event.value.drag_dy - value1;
      
 		 if(float)
             {
 			data = Number(inputTxt.text);
 			data = data + Dy / K;
-			data = roundNumber(data , 5);
+			trace("data:" + data);
+			data = NumberUtils.roundNumber(data , 10);
+			trace(data);
 			data++;
 			inputTxt.text = data.toString();
            }
           else
            {
 			data = int(inputTxt.text);
-			data = data + Dy / K;
-			data = roundNumber(data , 5);
+			data = int(data + dy / K);
 			data++;
 			inputTxt.text = data.toString();
            }
@@ -386,14 +406,13 @@ package com.gestureworks.cml.element
 			if (float)
 			{
 			data = Number(inputTxt.text);
-			data = roundNumber(data , 5);
+			data = NumberUtils.roundNumber(data , 10);
 			data++;
 		    inputTxt.text = data.toString();
 			}
 			else
 			{
 			data = int(inputTxt.text);
-			data = roundNumber(data , 5);
 			data++;
 			inputTxt.text = data.toString();
 			}
@@ -408,14 +427,13 @@ package com.gestureworks.cml.element
 			if (float)
 			{
 			data = Number(inputTxt.text);
-			data = roundNumber(data , 5);
+			data = NumberUtils.roundNumber(data , 10);
 			data--;
 			inputTxt.text = data.toString();
 			}
 			else
 			{
 			data = int(inputTxt.text);
-			data = roundNumber(data , 5);
 			data--;
 			inputTxt.text = data.toString();
 			}
@@ -430,14 +448,13 @@ package com.gestureworks.cml.element
 			if (float)
 			{
 			data = Number(inputTxt.text);
-			data = roundNumber(data , 5);
+			data = NumberUtils.roundNumber(data , 10);
 			data++;
 			inputTxt.text = data.toString();
 			}
 			else
 			{
 			data = int(inputTxt.text);
-			data = roundNumber(data , 5);
 			data++;
 			inputTxt.text = data.toString();
 			}
@@ -452,28 +469,35 @@ package com.gestureworks.cml.element
 			if (float)
 			{
 			data = Number(inputTxt.text);
-			data = roundNumber(data , 5);
+			data = NumberUtils.roundNumber(data , 10);
 			data--;
 			inputTxt.text = data.toString();
 			}
 			else
 			{
 			data = int(inputTxt.text);
-			data = roundNumber(data , 5);
 			data--;
 			inputTxt.text = data.toString();	
 			}
 		}
-	    
-		/**
-		 * Rounding the number to decimal place.
-		 * @param	num
-		 * @param	decimal
-		 * @return
-		 */
-		private function roundNumber(num:Number, decimal:Number):Number
+			override public function dispose(): void
 		{
-            return Math.round(num*decimal)/decimal;
-        }
-	}
+			super.dispose();
+			background = null;
+			bottomSquare = null;
+			topSquare = null;
+			topTriangle = null;
+			bottomTriangle = null;
+			txt = null;
+			inputTxt = null;
+			ts = null;
+			ts.removeEventListener(GWGestureEvent.DRAG, onDrag);
+			ts.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
+			topSquare.removeEventListener(GWGestureEvent.TAP, upArrow);
+			bottomSquare.removeEventListener(GWGestureEvent.TAP, downArrow);
+			topSquare.removeEventListener(MouseEvent.MOUSE_UP, incrementText);
+			bottomSquare.removeEventListener(MouseEvent.MOUSE_DOWN, decrementText);
+		}
+		
+}
 }
