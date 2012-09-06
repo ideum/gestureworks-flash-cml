@@ -91,7 +91,8 @@ package com.gestureworks.cml.core
     import com.gestureworks.cml.element.Switch; Switch;
 	import com.gestureworks.cml.element.DatePicker; DatePicker;
 	import com.gestureworks.cml.element.ColorPicker; ColorPicker;
-	
+	import com.gestureworks.cml.element.TabbedContainer; TabbedContainer;
+	import com.gestureworks.cml.element.TabElement; TabElement;
 	
 	
 	/////////////////////

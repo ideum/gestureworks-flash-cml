@@ -758,7 +758,7 @@ package com.gestureworks.cml.factories
 		////////////////////////
 		
 		
-		private var _radius:Number = 100;
+		private var _radius:Number = 0;
 		/**
 		 * Sets radius (in pixels) of circle.
 		 * Shape type must be circle.
@@ -767,10 +767,13 @@ package com.gestureworks.cml.factories
 		public function get radius():Number{return _radius;}
 		public function set radius(value:Number):void
 		{
-			_radius = value;
-			width = radius * 2;
-			height = radius * 2;
-			layoutUI();
+			if (value > 0)
+			{
+				_radius = value;
+				width = radius * 2;
+				height = radius * 2;
+				layoutUI();
+			}
 		}
 	
 		
@@ -931,8 +934,42 @@ package com.gestureworks.cml.factories
 			_cornerHeight = value;
 			layoutUI();			
 		}
-	
 		
+		private var _topLeftRadius:Number = 0;
+		
+		public function get topLeftRadius():Number { return _topLeftRadius; }
+		public function set topLeftRadius(r:Number):void
+		{
+			_topLeftRadius = r;
+			layoutUI();
+		}
+		
+		private var _topRightRadius:Number = 0;
+		
+		public function get topRightRadius():Number { return _topRightRadius; }
+		public function set topRightRadius(r:Number):void
+		{
+			_topRightRadius = r;
+			layoutUI();
+		}
+
+		private var _bottomLeftRadius:Number = 0;
+		
+		public function get bottomLeftRadius():Number { return _bottomLeftRadius; }
+		public function set bottomLeftRadius(r:Number):void
+		{
+			_bottomLeftRadius = r;
+			layoutUI();
+		}	
+		
+		private var _bottomRightRadius:Number = 0;
+		
+		public function get bottomRightRadius():Number { return _bottomRightRadius; }
+		public function set bottomRightRadius(r:Number):void
+		{
+			_bottomRightRadius = r;
+			layoutUI();
+		}
 		
 		////////////////////
 		// PUBLIC METHODS //

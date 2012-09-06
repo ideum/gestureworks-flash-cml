@@ -112,6 +112,12 @@ package com.gestureworks.cml.element
 					break;
 				}
 				
+				case "roundRectangleComplex":
+				{
+					graphics.drawRoundRectComplex(0, 0, width, height, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius); 	
+					break;
+				}
+				
 				case "circle":
 				{
 					graphics.drawCircle(radius, radius, radius);
