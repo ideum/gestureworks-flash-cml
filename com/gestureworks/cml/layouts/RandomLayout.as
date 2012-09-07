@@ -126,8 +126,6 @@ package com.gestureworks.cml.layouts
 			
 			for (var i:int = 0; i < container.numChildren; i++) 
 			{
-				trace(i);
-				
 				container.getChildAt(i).x = randomMinMax(minX, maxX);
 			}			
 		}

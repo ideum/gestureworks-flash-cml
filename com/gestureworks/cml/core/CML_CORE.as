@@ -28,6 +28,7 @@ package com.gestureworks.cml.core
 		// searchable packages
 		protected static var CML_CORE_PACKAGES:Array = 
 		[
+			"",
 			"com.gestureworks.cml.components.",		
 			"com.gestureworks.cml.element.", 
 			"com.gestureworks.cml.kits.",
