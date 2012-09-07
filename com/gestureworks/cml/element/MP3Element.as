@@ -4,6 +4,7 @@ package com.gestureworks.cml.element
 {	
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.cml.utils.Waveform;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.media.*;
@@ -22,10 +23,9 @@ package com.gestureworks.cml.element
 		private var soundTrans:SoundTransform;
 		private var Position:uint;		
 		private var loading:Boolean = false;
+		private var waveForm:Waveform;
 		
-		// graphic
-		private var sp:Sprite;
-		private var g:Graphics;
+		// graphics
 		private var bgGraphic:Sprite;
 
 		private var bytes:ByteArray;
@@ -286,8 +286,8 @@ package com.gestureworks.cml.element
 			sound = null;
 			channel = null;
 			soundTrans = null;
-			sp = null;
-			g = null;
+			//sp = null;
+			//g = null;
 			bgGraphic = null;
 			bytes = null;
 			timer = null;
@@ -311,7 +311,7 @@ package com.gestureworks.cml.element
 			}
 			if (sound) sound = null;
 			if (bytes) bytes = null;
-			if (sp) sp = null;
+			//if (sp) sp = null;
 			if (parent) parent.removeChild(this);
 		}
 		
@@ -431,7 +431,17 @@ package com.gestureworks.cml.element
 			
 			if (display == "waveform") 
 			{
-				sp = new Sprite();
+				bgGraphic = new Sprite;
+				bgGraphic.graphics.beginFill(backgroundColor, backgroundAlpha);
+				bgGraphic.graphics.drawRect(0, 0, _width, _height);
+				bgGraphic.graphics.endFill();
+				addChild(bgGraphic);
+				
+				waveForm = new Waveform();
+				waveForm.waveColor = _waveColor;
+				waveForm.waveWidth = _width;
+				waveForm.waveHeight = _height;
+				addChild(waveForm);
 				bytes = new ByteArray();
 			}
 			
@@ -448,19 +458,6 @@ package com.gestureworks.cml.element
 			soundTrans.pan = _pan;
 			_isPlaying = false;
 			Position = 0;
-
-			//graphic
-			if (display == "waveform") 
-			{
-				bgGraphic = new Sprite;
-				bgGraphic.graphics.beginFill(backgroundColor, backgroundAlpha);
-				bgGraphic.graphics.drawRect(0, 0, _width, _height);
-				bgGraphic.graphics.endFill();
-				addChild(bgGraphic);
-				
-				g = sp.graphics;
-				addChild(sp);
-			}
 			
 			if (autoplay) play();
 
@@ -494,26 +491,21 @@ package com.gestureworks.cml.element
 			sound.extract(bytes, 2048, (channel.position*44.1));
 			bytes.position = 0;
 			
-			g.clear();
-			g.lineStyle(0, waveColor);
-			g.beginFill(waveColor, 0.5);
-			g.moveTo(0, origin);
-			
 			var i:int = 0;
 			var cnt:int = 0;
 			while(bytes.bytesAvailable > 0)
 			{
 				var average:Number = bytes.readFloat() + bytes.readFloat() * .5;
+				//trace("Average", average);
+				
 				if (cnt % 8 == 0) {
-					g.lineTo(i*(_width/255), average * _height  * _volume * 0.75 + origin);
-					g.lineTo(i*(_width/255), origin);
-					i++
+					waveForm.averageGain[cnt] = average;
+					waveForm.draw();
 				}	
 				cnt++;
 			}
 			
 			bytes.position = 0;
-			g.endFill();		
 		}	
 		
 		//id3 metadata method
