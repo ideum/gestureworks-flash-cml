@@ -28,4 +28,8 @@ package com.gestureworks.cml.core
 	public class CML_AIR {}
 	//import com.gestureworks.cml.kits.WindowKit; WindowKit;
 	//import com.gestureworks.cml.managers.WindowManager; WindowManager;
+	
+	import com.gestureworks.cml.components.WavPlayer; WavPlayer;
+	
+	import com.gestureworks.cml.element.WavElement; WavElement;
 }
