@@ -93,6 +93,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ColorPicker; ColorPicker;
 	import com.gestureworks.cml.element.TabbedContainer; TabbedContainer;
 	import com.gestureworks.cml.element.TabElement; TabElement;
+	import com.gestureworks.cml.element.KeyElement; KeyElement;	
+	import com.gestureworks.cml.element.TouchKeyboard; TouchKeyboard;
 	
 	
 	/////////////////////

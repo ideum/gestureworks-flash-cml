@@ -130,7 +130,7 @@ package com.gestureworks.cml.element
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			
 			if (over)
-				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);
+				hitObject.addEventListener(TouchEvent.TOUCH_OVER, onOver, false, 1);
 				
 			if (down)
 			{
@@ -432,7 +432,7 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////
 		
 		
-		public function onMouseDown(event:MouseEvent):void
+		protected function onMouseDown(event:MouseEvent):void
 		{
 			if (debug)
 				trace("mouse down");
@@ -466,7 +466,7 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		public function onMouseUp(event:MouseEvent):void
+		protected function onMouseUp(event:MouseEvent):void
 		{
 			if (debug)
 				trace("mouse up");
@@ -501,7 +501,7 @@ package com.gestureworks.cml.element
 		}		
 		
 		
-		private function onMouseOver(event:MouseEvent):void
+		protected function onMouseOver(event:MouseEvent):void
 		{
 			if (debug)			
 				trace("mouse over");											
@@ -530,7 +530,7 @@ package com.gestureworks.cml.element
 		}	
 		
 				
-		private function onMouseOut(event:MouseEvent):void
+		protected function onMouseOut(event:MouseEvent):void
 		{
 			if (debug)
 				trace("mouse out");
@@ -570,7 +570,7 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////
 		
 		
-		private function onTouchDown(event:*):void
+		protected function onTouchDown(event:*):void
 		{	
 			if (debug)
 				trace("touch down");
@@ -620,7 +620,7 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		private function onTouchUp(event:TouchEvent):void
+		protected function onTouchUp(event:TouchEvent):void
 		{
 			if (debug)
 				trace("touch up");
@@ -657,7 +657,7 @@ package com.gestureworks.cml.element
 		}			
 		
 		
-		private function onTouchOut(event:TouchEvent):void
+		protected function onTouchOut(event:TouchEvent):void
 		{
 			if (debug)
 				trace("touch out");
@@ -699,7 +699,7 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////
 		
 		
-		private function onDown(event:*):void
+		protected function onDown(event:*):void
 		{	
 			if (debug)
 				trace("down");
@@ -757,8 +757,8 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "down", true, true));		
 		}
 		
-		private function onOver(event:*):void
-		{
+		protected function onOver(event:*):void
+		{						
 			if (debug)			
 				trace("over");											
 			
@@ -782,10 +782,10 @@ package com.gestureworks.cml.element
 					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
 					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
 				}	
-				else {
+				else
 					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
 					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
-				}
+			
 			}
 			
 			if (dispatchDict["over"])
@@ -795,7 +795,7 @@ package com.gestureworks.cml.element
 											
 		}	
 		
-		private function onUp(event:*):void
+		protected function onUp(event:*):void
 		{	
 			if (debug)
 				trace("up");
@@ -854,7 +854,7 @@ package com.gestureworks.cml.element
 		}		
 		
 		
-		private function onOut(event:*):void
+		protected function onOut(event:*):void
 		{	
 			if (debug)
 				trace("out");

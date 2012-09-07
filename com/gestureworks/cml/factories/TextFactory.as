@@ -98,7 +98,7 @@ package com.gestureworks.cml.factories
 		override public function get htmlText():String { return super.htmlText; }
 		override public function set htmlText(value:String):void
 		{
-			trace("html", value);
+			//trace("html", value);
 			super.htmlText = value;			
 			verticalAlign = _verticalAlign;
 		}
