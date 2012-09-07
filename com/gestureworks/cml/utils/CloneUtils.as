@@ -1,6 +1,7 @@
 package com.gestureworks.cml.utils 
 {
 	import com.gestureworks.cml.element.TextElement;
+	import flash.display.DisplayObjectContainer;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
@@ -29,6 +30,21 @@ package com.gestureworks.cml.utils
 						copyData(source, cloneObj);
 					}
 				}
+				
+				if (source is DisplayObjectContainer) {
+					if (DisplayObjectContainer(source).numChildren > 0){
+						for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
+							var childClone:* = clone(DisplayObjectContainer(source).getChildAt(i));
+							
+							if (childClone["displayComplete"]) {
+								childClone["displayComplete"]();
+							}
+							
+							DisplayObjectContainer(cloneObj).addChild(childClone);
+						}
+					}
+				}
+				
 				return cloneObj;
 		}
 			
