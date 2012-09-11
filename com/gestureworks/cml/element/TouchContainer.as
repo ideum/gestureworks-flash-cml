@@ -12,21 +12,11 @@ package com.gestureworks.cml.element
 		public function TouchContainer()
 		{
 			super();
-			//mouseChildren = false;
-		}
-		
-		/*
-		override public function get mouseChildren():Boolean 
-		{
-			return super.mouseChildren;
-		}
-		
-		override public function set mouseChildren(value:Boolean):void 
-		{
-			//trace("mouseChildren in touch container:", value)
-			super.mouseChildren = value;
-		}*/
+			mouseChildren = false;
+			disableAffineTransform = false; 
+			disableNativeTransform = false; 
 
+		}
 		
 		public function showIndex(index:int):void
 		{
