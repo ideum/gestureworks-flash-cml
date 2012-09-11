@@ -25,19 +25,19 @@ package com.gestureworks.cml.element
 		
 		private const LOADED:String = "LOADED";
 		
-		private var graphicArray:List;
+		protected var graphicArray:List;
 		
-		private var overallMask:GraphicElement;
-		private var hitShape:GraphicElement
-		private var borderShape:GraphicElement;	
-		private var wShape:GraphicElement;
+		protected var overallMask:GraphicElement;
+		protected var hitShape:GraphicElement
+		protected var borderShape:GraphicElement;	
+		protected var wShape:GraphicElement;
 		
 		private var counter:Number = 0;
 		
 		private var _x:Number;
 		private var _y:Number;
 		
-		private var _mShape:GraphicElement;
+		protected var _mShape:GraphicElement;
 		public function get mShape():GraphicElement { return _mShape; }
 		
 		public function MaskContainer() 

@@ -12,7 +12,6 @@ package com.gestureworks.cml.utils
 	public class CloneUtils 
 	{
 		
-		
 		public function CloneUtils():void
 		{						
 			

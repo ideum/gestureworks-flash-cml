@@ -45,7 +45,7 @@ package com.gestureworks.cml.element
 			_class = getDefinitionByName(_classRef) as Class;
 			asset = new _class
 			addChild(asset);
-			color = _color;
+			//color = _color;
 		}
 		
 		private var _color:Number;
