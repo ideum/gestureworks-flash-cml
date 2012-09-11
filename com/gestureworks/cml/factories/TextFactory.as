@@ -335,6 +335,12 @@ package com.gestureworks.cml.factories
 			if (parent) height = parent.height * (number / 100);
 		}
 		
+		override public function set height(value:Number):void 
+		{			
+			super.height = value;
+			verticalAlign = verticalAlign;
+		}
+		
 		private var _horizontalCenter:Number=0;
 		public function get horizontalCenter():Number{return _horizontalCenter;}
 		public function set horizontalCenter(value:Number):void
