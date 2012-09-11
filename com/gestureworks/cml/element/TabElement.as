@@ -47,6 +47,10 @@ package com.gestureworks.cml.element
 		private var _tabFontSize:Number = 20;
 		private var _tabFontColor:uint = 0xFFFFFF;
 		private var _tabX:Number;
+		private var _tabWidth:Number;
+		private var _tabHeight:Number;
+		private var _tabLeftRadius:Number;
+		private var _tabRightRadius:Number;
 		
 		private var standAlone:Boolean = true;
 		private var display:GraphicElement;
@@ -61,8 +65,8 @@ package com.gestureworks.cml.element
 		{
 			super();
 			addEventListener(Event.ADDED, tabAdded);
-			width = 500;
-			height = 385;
+			width = 462;
+			height = 423;
 			mouseChildren = false;
 			
 			text = new TextElement();
@@ -183,7 +187,32 @@ package com.gestureworks.cml.element
 		/**
 		 * The width of the tab
 		 */
-		public function get tabWidth():Number { return tabGE.width; }
+		public function get tabWidth():Number { return _tabWidth; }
+		public function set tabWidth(w:Number):void
+		{
+			_tabWidth = w;
+		}
+		
+		/**
+		 * The height of the tab
+		 */
+		public function get tabHeight():Number { return _tabHeight; }
+		public function set tabHeight(h:Number):void
+		{
+			_tabHeight = h;
+		}
+		
+		public function get tabLeftRadius():Number { return _tabLeftRadius; }
+		public function set tabRightRadius(r:Number):void
+		{
+			_tabLeftRadius = r;
+		}
+		
+		public function get tabRightRadius():Number { return _tabRightRadius; }
+		public function set tabRighRadius(r:Number):void
+		{
+			_tabRightRadius = r;
+		}
 		
 		/**
 		 * Configures all of the UI elements of the container
@@ -192,18 +221,21 @@ package com.gestureworks.cml.element
 		{	
 			//setup text
 			text.text = title;
-			text.autoSize = "left";
-			text.selectable = false;
+			text.textAlign = "center";
+			text.verticalAlign = true;
+			text.selectable = false;			
 			text.fontSize = tabFontSize;
 			text.font = tabFont;
 			text.textColor = tabFontColor;
+			text.width = tabWidth ? tabWidth : text.width;
+			text.height = tabHeight ? tabHeight : text.height;
 			
 			//setup tab graphics
 			tabGE.lineStroke = 0;
 			tabGE.color = displayColor;
 			tabGE.shape = "roundRectangleComplex";
-			tabGE.topLeftRadius = 5;
-			tabGE.topRightRadius = 5;
+			tabGE.topLeftRadius = tabLeftRadius ? tabLeftRadius : 13;
+			tabGE.topRightRadius = tabRightRadius ? tabRightRadius : 13;
 			tabGE.width = text.width;
 			tabGE.height = text.height;
 			tabGE.x = tabX;
