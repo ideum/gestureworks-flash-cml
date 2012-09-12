@@ -32,7 +32,7 @@ package com.gestureworks.cml.utils
 		}
 
 		/**
-		 * rounding the number to decimal places
+		 * Rounding the number to decimal places
 		 * @param	num
 		 * @param	decimal
 		 * @return
@@ -41,5 +41,16 @@ package com.gestureworks.cml.utils
 		{
           return Math.round(num*decimal)/decimal;
         }
+		
+		/**
+		 * defines the random number within a specified range.
+		 * @param	minNum
+		 * @param	maxNum
+		 * @return
+		 */
+		public static function randomNumber(minNum:Number, maxNum:Number):Number   
+        {  
+          return (Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum);  
+	    } 
 	}
 }

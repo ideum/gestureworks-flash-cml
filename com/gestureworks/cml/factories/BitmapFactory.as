@@ -250,6 +250,7 @@ package com.gestureworks.cml.factories
 					imageSrc = propertyStates[0]["src"];
 				else
 					imageSrc = src;				
+					trace(imageSrc);
 				fileData = FileManager.instance.fileList.getKey(imageSrc).loader;				
 			}
 
