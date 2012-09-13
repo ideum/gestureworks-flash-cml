@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.google.maps.styles.ButtonStyle;
 	import flash.display.*;
 	import flash.display.GradientType;
 	import flash.events.*;
@@ -554,7 +555,17 @@ package com.gestureworks.cml.element
   	private function onDrag(event:GWGestureEvent):void
 		{
 		 background.visible = true;
+		 
+		 if (attractMode && timer)
+		 {
+		 timer.reset();
+		 tweener.stop();
+		 tweener.onComplete = null;
+		 this.x += event.value.drag_dx;
+		 this.y += event.value.drag_dy;
+		 }
 		} 
+		
 	
 	/**
 	* Background is invisible when event happens.
