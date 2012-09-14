@@ -7,7 +7,7 @@ package com.gestureworks.cml.utils
 	import flash.text.*;
     
 	/**
-	 * CircleText defines the curve shape text.
+	 * CircleText defines the text in curve shape.
 	 * @author Uma
 	 */
 		

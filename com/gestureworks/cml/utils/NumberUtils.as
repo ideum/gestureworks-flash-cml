@@ -43,7 +43,7 @@ package com.gestureworks.cml.utils
         }
 		
 		/**
-		 * defines the random number within a specified range.
+		 * gets the random number within a specified range.
 		 * @param	minNum
 		 * @param	maxNum
 		 * @return

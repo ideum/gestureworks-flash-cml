@@ -497,11 +497,11 @@ package com.gestureworks.cml.element
 	{	
 		
 		dropShadow.color = 0x000000;
-		dropShadow.blurX = 400;
-		dropShadow.blurY = 400;
+		dropShadow.blurX = 300;
+		dropShadow.blurY = 200;
 		dropShadow.angle = 360;
 		dropShadow.alpha = 1;
-		dropShadow.distance = 20;
+		dropShadow.distance = 15;
 				
 		matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
 		
