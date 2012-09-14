@@ -486,7 +486,7 @@ package com.gestureworks.cml.element
 	*/	
 	public function init():void
 		{
-		  //displayOrb();
+		    //displayOrb();
 			displayComplete();
 		}
 	
@@ -548,7 +548,7 @@ package com.gestureworks.cml.element
   	}
 	
 	/**
-	 * Background is visible when event happens.
+	 * Floating stops when event happens.
 	 * @param	event
 	 */		
   	private function onDrag(event:GWGestureEvent):void
@@ -565,9 +565,8 @@ package com.gestureworks.cml.element
 		 }
 	} 
 		
-	
 	/**
-	* Background is invisible when event happens.
+	* Floating stops when event happens.
 	* @param	event
 	*/
 	private function onBegin(event:TouchEvent):void
@@ -614,7 +613,7 @@ package com.gestureworks.cml.element
 		
 	    if (buttons.length > 1)
 		 {
-			 background.graphics.beginFill(backgroundColor);
+		  background.graphics.beginFill(backgroundColor);
 	   	  background.graphics.drawRoundRect(0-width, 0,(orbRadius + width)+(width*buttons.length), 135, 25, 25);
 		 }
 	    else
@@ -627,7 +626,7 @@ package com.gestureworks.cml.element
 	private var timer:Timer;
 	
 	/**
-	 * tween
+	 * tween method for floating - display object.
 	 */
 	private function tween():void
 	{
@@ -639,6 +638,9 @@ package com.gestureworks.cml.element
 		}
 	}
 	
+	/**
+	 * Starts floating after certain period of time.
+	 */
 	private function setTime():void 
 	{
         timer = new Timer(1000,repeatTimer);
@@ -651,6 +653,9 @@ package com.gestureworks.cml.element
 	   tween();
 	} 
 	
+	/**
+	 * Dispose methods.
+	 */
 	override public function dispose():void
 	{
 		tweener = null;

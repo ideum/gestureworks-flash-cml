@@ -31,7 +31,6 @@ package com.gestureworks.cml.element
 		
 public class ScrollPane extends Container
 {
-	
 	/**
 	* ScrollPane constructor
 	*/
@@ -424,7 +423,7 @@ public class ScrollPane extends Container
 	square.graphics.endFill();
 	square.x = 100;
 	square.y = 100;
-
+	
 	ell_H.graphics.lineStyle(ellipseLineStroke, ellipseOutlineColor);
 	ell_H.graphics.beginFill(ellipseColor);
 	ell_H.graphics.drawEllipse(0, 0, 700, 270);
@@ -449,7 +448,7 @@ public class ScrollPane extends Container
 	 
 	background_V.graphics.lineStyle(verticalBgLineStroke, verticalBgOutlineColor); 
     background_V.graphics.beginFill(verticalBgColor);
-    background_V.graphics.drawRoundRect(0, 0, 15, 285, 25, 30);
+    background_V.graphics.drawRoundRect(0, 0, 15, 300, 25, 30);
 	background_V.graphics.endFill();
 		
 	background_V.x = square.width - background_V.width;
