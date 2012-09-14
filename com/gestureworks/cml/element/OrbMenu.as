@@ -120,7 +120,7 @@ package com.gestureworks.cml.element
 				_gradientType = GradientType.LINEAR;
 		} 
 	
-	 private var gradientColorArray:Array = [0x404040 , 0x404040]; 
+	  private var gradientColorArray:Array = [0x404040 , 0x404040]; 
 		private var _gradientColors:String = "0x404040 , 0x404040";
 		/**
 		 * Sets the array of color values of gradient for shapes
@@ -309,7 +309,7 @@ package com.gestureworks.cml.element
 			_shape2OutlineColor = value;
 		}	
 		
-	private var _backgroundColor:uint = 0xC0C0C0;
+	private var _backgroundColor:uint = 0x808080;
 	/**
 	* Sets the background color
 	*  @default = 0x666666;
@@ -494,13 +494,13 @@ package com.gestureworks.cml.element
 	* creats OrbMenu Graphics and the curved text on OrbMenu.
 	*/
 	private function displayOrb():void
-		{	
+	{	
 		
 		dropShadow.color = 0x000000;
 		dropShadow.blurX = 400;
 		dropShadow.blurY = 400;
 		dropShadow.angle = 360;
-		dropShadow.alpha = 4;
+		dropShadow.alpha = 1;
 		dropShadow.distance = 20;
 				
 		matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
@@ -520,7 +520,6 @@ package com.gestureworks.cml.element
 		shape2.filters = filtersArray;
 		
 		background.graphics.lineStyle(backgroundLineStoke , backgroundOutlineColor);
-		background.graphics.beginFill(backgroundColor);
 		background.x = 170;
 		background.y = 60;  
 		background.rotation = 45;
@@ -546,14 +545,14 @@ package com.gestureworks.cml.element
 		addChild(shape1);
 		shape1.addChild(shape2);
 	    addChild(c1);
-  		}
+  	}
 	
 	/**
 	 * Background is visible when event happens.
 	 * @param	event
 	 */		
   	private function onDrag(event:GWGestureEvent):void
-		{
+	{
 		 background.visible = true;
 		 
 		 if (attractMode && timer)
@@ -564,7 +563,7 @@ package com.gestureworks.cml.element
 		 this.x += event.value.drag_dx;
 		 this.y += event.value.drag_dy;
 		 }
-		} 
+	} 
 		
 	
 	/**
@@ -615,6 +614,7 @@ package com.gestureworks.cml.element
 		
 	    if (buttons.length > 1)
 		 {
+			 background.graphics.beginFill(backgroundColor);
 	   	  background.graphics.drawRoundRect(0-width, 0,(orbRadius + width)+(width*buttons.length), 135, 25, 25);
 		 }
 	    else
