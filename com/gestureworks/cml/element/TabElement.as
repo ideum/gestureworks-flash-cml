@@ -231,6 +231,8 @@ package com.gestureworks.cml.element
 			text.height = tabHeight ? tabHeight : text.height;
 			
 			//setup tab graphics
+			tabWidth = text.width;
+			tabHeight = text.height;
 			tabGE.lineStroke = 0;
 			tabGE.color = displayColor;
 			tabGE.shape = "roundRectangleComplex";
@@ -240,8 +242,8 @@ package com.gestureworks.cml.element
 			tabGE.height = text.height;
 			tabGE.x = tabX;
 			tabGE.fill = "gradient";
-			tabGE.gradientWidth = tabGE.width;
-			tabGE.gradientHeight = tabGE.height;
+			tabGE.gradientWidth = tabWidth;
+			tabGE.gradientHeight = tabWidth;
 			tabGE.gradientRotation = 90;
 			tabGE.gradientColors = tabGE.color+","+tabGE.color;
 			tabGE.gradientAlphas = "1,.5";
