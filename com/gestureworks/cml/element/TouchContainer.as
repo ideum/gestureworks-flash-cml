@@ -241,7 +241,7 @@ package com.gestureworks.cml.element
 		public function applyLayout(value:*=null):void
 		{			
 			if (!value && layout is ILayout)
-				ILayout(value).layout(this);
+				ILayout(layout).layout(this);
 			else if (!value) {
 				layoutList[String(layout)].layout(this);
 			}
