@@ -111,7 +111,7 @@ package com.gestureworks.cml.element
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public final class Microphone extends ObjectFactory
+	public final class MicrophoneElement extends ObjectFactory
 	{
 		/**
 		 * The amount of sound the microphone is detecting. Values range from 
@@ -143,7 +143,12 @@ package com.gestureworks.cml.element
 		{
 			return mp.codec;
 		}
-		public function set codec (codec:String) : void;
+		public function set codec (codec:String) : void
+		{
+			mp.codec = codec;
+			
+			
+		}
 
 		/**
 		 * Enable Speex voice activity detection.
@@ -231,9 +236,9 @@ package com.gestureworks.cml.element
 		 * @playerversion	Flash 10.1
 		 * @playerversion	AIR 2
 		 */
-		public static function get isSupported () : Boolean
+		public function get isSupported () : Boolean
 		{
-	      return mp.isSupported;
+	      return Microphone.isSupported;
 		}
 
 		/**
@@ -273,9 +278,9 @@ package com.gestureworks.cml.element
 		 * @langversion	3.0
 		 * @playerversion	Flash 9
 		 */
-		public static function get names () : Array
+		public  function get names () : Array
 		{
-			return mp.names;
+			return Microphone.names;
 		}
 
 		/**
@@ -410,13 +415,13 @@ package com.gestureworks.cml.element
 		 * @langversion	3.0
 		 * @playerversion	Flash 9
 		 */
-		public static function getMicrophone (index:int = -1) : flash.media.Microphone
+		public function getMicrophone (index:int = -1) : flash.media.Microphone
 		{
-			mp.getMicrophone(index);
+			return Microphone.getMicrophone(index);
 		}
 
 		private var mp:Microphone;
-		public function Microphone ()
+		public function MicrophoneElement ()
 		{
 			mp = new Microphone();
 		}
@@ -462,8 +467,7 @@ package com.gestureworks.cml.element
 		public function setSilenceLevel (silenceLevel:Number, timeout:int = -1) : void
 		{
 			mp.setSilenceLevel(silenceLevel, timeout);
-			
-		}
+	    }
 
 		/**
 		 * Specifies whether to use the echo suppression feature of the audio codec. The default value is 

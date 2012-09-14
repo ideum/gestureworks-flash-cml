@@ -5,6 +5,7 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
+	import flash.display.DisplayObject;
 	import flash.events.*;
 	import flash.utils.*;
 	
@@ -196,6 +197,7 @@ package com.gestureworks.cml.factories
 		{			
 			for (var i:int = 0; i < _childList.length; i++) 
 			{
+				if(childList.getIndex(i) is DisplayObject)
 				addChild(_childList.getIndex(i));
 			}
 		}		

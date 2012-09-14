@@ -92,8 +92,14 @@ package com.gestureworks.cml.element
 	 * @langversion	3.0
 	 * @playerversion	Flash 9
 	 */
-	public final class Camera extends ObjectFactory
+	public final class CameraElement extends ObjectFactory
 	{
+		private var cam:Camera;
+		public function CameraElement ()
+		{
+			cam = new Camera();
+		}
+		
 		/**
 		 * The amount of motion the camera is detecting. Values range from 0 (no motion is being detected) to 
 		 * 100 (a large amount of motion is being detected). The value of this property can help you determine if you need to pass a setting 
@@ -180,7 +186,7 @@ package com.gestureworks.cml.element
 		 */
 		public static function get isSupported () : Boolean
 		{
-			return cam.isSupported;
+			return Camera.isSupported;
 		}
 
 		/**
@@ -280,7 +286,7 @@ package com.gestureworks.cml.element
 		 */
 		public static function get names () : Array
 		{
-			return cam.names;
+			return Camera.names;
 		}
 
 		/**
@@ -308,16 +314,12 @@ package com.gestureworks.cml.element
 			return cam.width;
 		}
 
-		static function _scanHardware () : void
-		{
-			cam._scanHardware;
-		}
+		//static function _scanHardware () : void
+		//{
+			//Camera._scanHardware;
+		//}
         
-		private var cam:Camera;
-		public function Camera ()
-		{
-			cam = new Camera();
-		}
+		
 
 		/**
 		 * Returns a reference to a Camera object for capturing video. To begin capturing
@@ -376,9 +378,9 @@ package com.gestureworks.cml.element
 		 * @langversion	3.0
 		 * @playerversion	Flash 9
 		 */
-		public static function getCamera (name:String = null) : flash.media.Camera
+		public  function getCamera (name:String = null) : flash.media.Camera
 		{
-			cam.getCamera(name);
+			return Camera.getCamera(name);
 		}
 
 		public function setCursor (value:Boolean) : void

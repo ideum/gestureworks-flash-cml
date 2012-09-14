@@ -657,13 +657,12 @@ private function displayScroll():void
 	else
 	 this.addEventListener(MouseEvent.CLICK, leftArrow);
 	
-	 if (GestureWorks.activeTUIO)
+	if (GestureWorks.activeTUIO)
 	 this.addEventListener(TuioTouchEvent.TAP , rightArrow);
 	else if (GestureWorks.supportsTouch)
 	 this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
 	else
 	 this.addEventListener(MouseEvent.CLICK, rightArrow);
-			
 	}
 	else 
 	{
@@ -679,13 +678,12 @@ private function displayScroll():void
 	else
 	 this.addEventListener(MouseEvent.CLICK, leftArrow);
 	
-	 if (GestureWorks.activeTUIO)
+	if (GestureWorks.activeTUIO)
 	 this.addEventListener(TuioTouchEvent.TAP , rightArrow);
 	else if (GestureWorks.supportsTouch)
 	 this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
 	else
 	 this.addEventListener(MouseEvent.CLICK, rightArrow);
-	 
 	}
 	
 	if (horizontal)
@@ -834,43 +832,40 @@ private function displayScroll():void
 		}
 	}	
 	 
-		override public function dispose(): void
-		{
-			super.dispose();
-			background = null;
-			scrollbar = null;
-			leftTriangle = null;
-			rightTriangle = null;
-			square2 = null;
-			square1 = null;
-			background_V = null;
-			scrollbar_V = null;
-			topTriangle_V = null;
-			bottomTriangle_V = null;
-			topSquare_V = null;
-			bottomSquare_V = null;
-			
-			scrollbar.removeEventListener(GWGestureEvent.DRAG , onDrag);
-			square1.removeEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-			square2.removeEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
-			
-			scrollbar_V.removeEventListener(GWGestureEvent.DRAG , onDrag);
-			topSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-			bottomSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);	
-			
-			square1.removeEventListener(MouseEvent.MOUSE_UP , lArrow);
-			square2.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-			
-			topSquare_V.removeEventListener(MouseEvent.MOUSE_UP , lArrow);
-			bottomSquare_V.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-			
-			this.removeEventListener(TuioTouchEvent.TAP , leftArrow);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-			this.removeEventListener(MouseEvent.CLICK, leftArrow);
-			this.removeEventListener(TuioTouchEvent.TAP , rightArrow);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-			this.removeEventListener(MouseEvent.CLICK, rightArrow);
-				
-		}
+	/**
+	 * dispose method
+	 */
+	override public function dispose(): void
+    {
+		super.dispose();
+		background = null;
+		scrollbar = null;
+		leftTriangle = null;
+		rightTriangle = null;
+		square2 = null;
+		square1 = null;
+		background_V = null;
+		scrollbar_V = null;
+		topTriangle_V = null;
+		bottomTriangle_V = null;
+		topSquare_V = null;
+		bottomSquare_V = null;
+		scrollbar.removeEventListener(GWGestureEvent.DRAG , onDrag);
+		square1.removeEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+		square2.removeEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+		scrollbar_V.removeEventListener(GWGestureEvent.DRAG , onDrag);
+		topSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+		bottomSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);	
+		square1.removeEventListener(MouseEvent.MOUSE_UP , lArrow);
+		square2.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+		topSquare_V.removeEventListener(MouseEvent.MOUSE_UP , lArrow);
+		bottomSquare_V.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+		this.removeEventListener(TuioTouchEvent.TAP , leftArrow);
+		this.removeEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+		this.removeEventListener(MouseEvent.CLICK, leftArrow);
+		this.removeEventListener(TuioTouchEvent.TAP , rightArrow);
+		this.removeEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+		this.removeEventListener(MouseEvent.CLICK, rightArrow);
+	}
 }
 }

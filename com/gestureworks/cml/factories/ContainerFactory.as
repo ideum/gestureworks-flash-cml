@@ -3,6 +3,7 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.cml.factories.ElementFactory;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
@@ -38,6 +39,7 @@ package com.gestureworks.cml.factories
 		{			
 			for (var i:int = 0; i < _childList.length; i++) 
 			{
+				if(childList.getIndex(i) is DisplayObject)
 				addChild(_childList.getIndex(i));
 			}
 		}

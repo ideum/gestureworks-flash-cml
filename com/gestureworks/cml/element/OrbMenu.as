@@ -466,7 +466,7 @@ package com.gestureworks.cml.element
 			_attractMode = value;
 		}
 	
-	private var _repeatTimer:Number = 5;
+	private var _repeatTimer:Number = 3;
 	/**
 	 * number of times the timer will tick before the timer stops itself
 	 * @default = 1;
@@ -522,7 +522,7 @@ package com.gestureworks.cml.element
 		background.graphics.lineStyle(backgroundLineStoke , backgroundOutlineColor);
 		background.graphics.beginFill(backgroundColor);
 		background.x = 170;
-		background.y = 60;
+		background.y = 60;  
 		background.rotation = 45;
 		background.visible = false;
 		background.graphics.endFill();

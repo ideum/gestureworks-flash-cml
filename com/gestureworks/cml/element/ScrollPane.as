@@ -406,15 +406,15 @@ public class ScrollPane extends Container
 	}
 	
 	public function init():void
-		{   
-			displayPane();
-		}
+	{   
+		displayPane();
+	}
 	
 	/**
 	*  Creates vertical or horizontal scrollbar and scrollpane
 	*/
     private function displayPane():void
-		{
+	{
 			
 	this.mouseChildren = true;
     
@@ -440,7 +440,7 @@ public class ScrollPane extends Container
 	 
     background_H.graphics.lineStyle(bgLineStroke, bgOutlineColor); 
     background_H.graphics.beginFill(bgColor);
-    background_H.graphics.drawRoundRect(0, 0, square.width, 15, 25, 30);
+    background_H.graphics.drawRoundRect(0, 0,square.width, 15, 25, 30);
 	background_H.graphics.endFill();
 	
 	//background_H.x = square.x;
@@ -449,7 +449,7 @@ public class ScrollPane extends Container
 	 
 	background_V.graphics.lineStyle(verticalBgLineStroke, verticalBgOutlineColor); 
     background_V.graphics.beginFill(verticalBgColor);
-    background_V.graphics.drawRoundRect(0, 0, 15, 300, 25, 30);
+    background_V.graphics.drawRoundRect(0, 0, 15, 285, 25, 30);
 	background_V.graphics.endFill();
 		
 	background_V.x = square.width - background_V.width;
@@ -518,7 +518,8 @@ public class ScrollPane extends Container
 	scrollbar_VminPos = background_V.y;
 	scrollbar_VmaxPos = background_V.height - scrollbar_V.height;
 	
-}  
+    }  
+	
 	private var	scrollbar_HminPos:Number;
 	private var	scrollbar_HmaxPos:Number;
 	private var	scrollbar_VminPos:Number;
@@ -530,8 +531,8 @@ public class ScrollPane extends Container
 	 */
     private function hDrag(event:GWGestureEvent):void
 	{
-		 var offset:Number = 25;
-		 var dx:Number = event.value.drag_dx - scrollbar_H.x;
+		var offset:Number = 25;
+		var dx:Number = event.value.drag_dx - scrollbar_H.x;
 	
 		if ((event.value.drag_dx + event.target.x) > scrollbar_HmaxPos)
 		 event.target.x = scrollbar_HmaxPos ;
@@ -566,12 +567,12 @@ public class ScrollPane extends Container
 	 */
 	private function hBegin(event:TouchEvent):void
     {
-		 var offset:Number = 10;
+		var offset:Number = 10;
 		 
-		 var touchX:Number = event.localX;
-		 var scrollBarCenter:Number = scrollbar_H.width/2;
-		 var rightBoundary:Number = background_H.width - scrollBarCenter;
-		 var leftBoundary:Number = scrollBarCenter;  
+		var touchX:Number = event.localX;
+		var scrollBarCenter:Number = scrollbar_H.width/2;
+		var rightBoundary:Number = background_H.width - scrollBarCenter;
+		var leftBoundary:Number = scrollBarCenter;  
 
 		if (touchX > rightBoundary)
     	 scrollbar_H.x =  background_H.width - scrollbar_H.width;
@@ -608,25 +609,24 @@ public class ScrollPane extends Container
 	 */
 	override public function dispose(): void
 	{
-			super.dispose();
-			ell_H = null;
-			ell_V = null;
-			square = null;
-			background_V = null;
-			background_H = null;
-			scrollbar_V = null;
-			scrollbar_H = null;
-		 	background_H.removeEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
-            background_V.removeEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
-		    scrollbar_H.removeEventListener(GWGestureEvent.DRAG , hDrag);
-            scrollbar_V.removeEventListener(GWGestureEvent.DRAG , vDrag);
-			this.removeEventListener(TuioTouchEvent.TOUCH_MOVE , vBegin);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
-			this.removeEventListener(MouseEvent.MOUSE_MOVE, vBegin);
-			this.removeEventListener(MouseEvent.MOUSE_MOVE, hBegin);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
-			this.removeEventListener(TuioTouchEvent.TOUCH_MOVE , hBegin);
-			
+		super.dispose();
+		ell_H = null;
+		ell_V = null;
+		square = null;
+		background_V = null;
+		background_H = null;
+		scrollbar_V = null;
+		scrollbar_H = null;
+		background_H.removeEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
+		background_V.removeEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
+		scrollbar_H.removeEventListener(GWGestureEvent.DRAG , hDrag);
+		scrollbar_V.removeEventListener(GWGestureEvent.DRAG , vDrag);
+		this.removeEventListener(TuioTouchEvent.TOUCH_MOVE , vBegin);
+		this.removeEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
+		this.removeEventListener(MouseEvent.MOUSE_MOVE, vBegin);
+		this.removeEventListener(MouseEvent.MOUSE_MOVE, hBegin);
+		this.removeEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
+		this.removeEventListener(TuioTouchEvent.TOUCH_MOVE , hBegin);
 	}
 }
 }

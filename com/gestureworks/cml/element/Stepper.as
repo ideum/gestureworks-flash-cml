@@ -13,9 +13,7 @@ package com.gestureworks.cml.element
 	import flash.events.TouchEvent;
 	import flash.text.*;
 	import org.tuio.TuioTouchEvent;
-	
 
-	
 	/**
 	 * The Stepper element provides increment and decrement of Numbers.
 	 * It has the following parameters: backgroundLinecolor, backgroundLineStroke, backgroundColor, topTriangleColor, topTriangleAlpha, bottomTriangleAlpha, bottomTriangleColor, textColor, data, float .
