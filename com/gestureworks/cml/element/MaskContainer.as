@@ -3,7 +3,6 @@ package com.gestureworks.cml.element
 	import away3d.events.MouseEvent3D;
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.core.TouchSprite;
-	import com.google.maps.wrappers.EventDispatcherWrapper;
 	import flash.events.Event;
 	import flash.events.GestureEvent;
 	import com.gestureworks.events.GWGestureEvent;
