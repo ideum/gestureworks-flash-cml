@@ -42,8 +42,6 @@ package com.gestureworks.cml.core
 	//  COMPONENTS   
 	/////////////////////	
 	import com.gestureworks.cml.components.MediaViewer; MediaViewer;
-	import com.gestureworks.cml.components.AlbumListViewer; AlbumListViewer;
-	import com.gestureworks.cml.components.ListViewer; ListViewer;
 	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
 	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;	
 	import com.gestureworks.cml.components.MP3Player; MP3Player;	
@@ -96,6 +94,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.TabElement; TabElement;
 	import com.gestureworks.cml.element.KeyElement; KeyElement;	
 	import com.gestureworks.cml.element.TouchKeyboard; TouchKeyboard;
+	import com.gestureworks.cml.element.AlbumElement; AlbumElement;
 	
 	
 	/////////////////////
