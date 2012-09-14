@@ -99,7 +99,6 @@ package com.gestureworks.cml.layouts
 					
 					obj.x = useMargins ? sumx + i * (2*marginX) : i * spacingX;
 					obj.y = 0;
-					trace(obj.width);
 				}
 				sumx += obj.width;
 			}
