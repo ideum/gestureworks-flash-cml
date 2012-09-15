@@ -1,7 +1,9 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
+	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.geom.Matrix;
 	
 	/**
 	 * Positions a display container's children randomly about the x and y axes
@@ -102,8 +104,10 @@ package com.gestureworks.cml.layouts
 				case "randomY" : randomY(container); break;
 				case "randomXY" : randomXY(container); break;
 				case "randomXYRotation" : randomXYRotation(container); break;
-				default: break;
-			}	
+				default: return;
+			}
+			
+			super.layout(container);
 		}		
 		
 		
@@ -122,11 +126,17 @@ package com.gestureworks.cml.layouts
 		 */
 		public function randomX(container:DisplayObjectContainer):void
 		{
-			trace("hi", container.numChildren);
+			var matrix:Matrix;
+			var child:*;
 			
 			for (var i:int = 0; i < container.numChildren; i++) 
 			{
-				container.getChildAt(i).x = randomMinMax(minX, maxX);
+				child = container.getChildAt(i);
+				if (!child is DisplayObject) return;
+				
+				matrix = child.transform.matrix;
+				matrix.translate(randomMinMax(minX, maxX), 0);			
+				childTransformations.push(matrix);				
 			}			
 		}
 		
@@ -137,9 +147,17 @@ package com.gestureworks.cml.layouts
 		 */		
 		public function randomY(container:DisplayObjectContainer):void
 		{
+			var matrix:Matrix;
+			var child:*;
+			
 			for (var i:int = 0; i < container.numChildren; i++) 
 			{				
-				container.getChildAt(i).y = randomMinMax(minY, maxY);	
+				child = container.getChildAt(i);
+				if (!child is DisplayObject) return;
+				
+				matrix = child.transform.matrix;
+				matrix.translate(0, randomMinMax(minY, maxY));			
+				childTransformations.push(matrix);
 			}			
 		}
 		
@@ -150,10 +168,17 @@ package com.gestureworks.cml.layouts
 		 */		
 		public function randomXY(container:DisplayObjectContainer):void
 		{
+			var matrix:Matrix;
+			var child:*;
+			
 			for (var i:int = 0; i < container.numChildren; i++) 
 			{
-				container.getChildAt(i).x = randomMinMax(minX, maxX);
-				container.getChildAt(i).y = randomMinMax(minY, maxY);		
+				child = container.getChildAt(i);
+				if (!child is DisplayObject) return;
+				
+				matrix = child.transform.matrix;
+				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));			
+				childTransformations.push(matrix);
 			}			
 		}
 		
@@ -165,11 +190,18 @@ package com.gestureworks.cml.layouts
 		 */		
 		public function randomXYRotation(container:DisplayObjectContainer):void
 		{
+			var matrix:Matrix;
+			var child:*;
+			
 			for (var i:int = 0; i < container.numChildren; i++) 
 			{
-				container.getChildAt(i).x = randomMinMax(minX, maxX);
-				container.getChildAt(i).y = randomMinMax(minY, maxY);
-				container.getChildAt(i).rotation = randomMinMax(minRot, maxRot);		
+				child = container.getChildAt(i);
+				if (!child is DisplayObject) return;
+				
+				matrix = child.transform.matrix;
+				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));
+				matrix.rotate(degreesToRadians(randomMinMax(minRot, maxRot)));
+				childTransformations.push(matrix);	
 			}			
 		}	
 

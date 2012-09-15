@@ -53,16 +53,6 @@ package com.gestureworks.cml.layouts
 		}
 
 		/**
-		 * Centers the object on the origin
-		 * @param	obj  the display object
-		 */
-		private function centerOnOrigin(obj:*):void
-		{
-			obj.x = originX - obj.width/2;
-			obj.y = originY - obj.height/2;			
-		}
-
-		/**
 		 * Centers and rotates the container's display objects around a common point. If the angle of rotation has
 		 * not been defined, the angle is random. 
 		 * @param	container
@@ -75,12 +65,16 @@ package com.gestureworks.cml.layouts
 			for (var i:int = 0; i < c.numChildren; i++) 
 			{		
 				var child:DisplayObject = c.getChildAt(i);
-				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
+				if (!child is DisplayObject) return;
 				
-				centerOnOrigin(child);
+				var matrix:Matrix = child.transform.matrix;
+				matrix.translate(originX - child.width / 2, originY - child.height / 2);
 				nextAngle = angle ? nextAngle += angle : randomMinMax(0, 360); 				
-				rotateAroundPoint(child, nextAngle, originX, originY);						
-			}					
+				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
+				childTransformations.push(matrix);				
+			}
+			
+			super.layout(container);
 		}
 		
 		/**

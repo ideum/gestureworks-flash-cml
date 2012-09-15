@@ -1,8 +1,14 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
+	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;;
 	import flash.display.Sprite;
+	import flash.geom.Matrix;
+	import org.libspark.betweenas3.BetweenAS3;
+	import org.libspark.betweenas3.easing.Exponential;
+	import org.libspark.betweenas3.tweens.ITween;
+	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
 	 * Positions the corners of the container's objects in the same location and rotates them individually
@@ -43,6 +49,7 @@ package com.gestureworks.cml.layouts
 		
 		/**
 		 * The angle of rotation
+		 * @default 5
 		 */
 		private var _angle:Number = 5;
 		public function get angle():Number { return _angle; }
@@ -63,8 +70,10 @@ package com.gestureworks.cml.layouts
 				case "topRightOrigin" : topRightPivot(container); break;
 				case "bottomLeftOrigin" : bottomLeftPivot(container); break;
 				case "bottomRightOrigin" : bottomRightPivot(container); break;
-				default: break;
+				default: return;
 			}
+			
+			super.layout(container);
 		}
 		
 		/**
@@ -78,14 +87,15 @@ package com.gestureworks.cml.layouts
 			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
+				if (!child is DisplayObject) return;
 				
-				child.x = originX;
-				child.y = originY;
-				child.rotation = nextAngle;
+				var matrix:Matrix = child.transform.matrix;
+				matrix.translate(originX, originY);
+				matrix.rotate(degreesToRadians(nextAngle));
+				childTransformations.push(matrix);
 				nextAngle += angle;
-			}
-		}
+			}			
+		}        
 		
 		/**
 		 * Positions the top right corner of the objects at the origin and rotates them around
@@ -98,11 +108,12 @@ package com.gestureworks.cml.layouts
 			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
+				if (!child is DisplayObject) return;
 				
-				child.x = originX - child.width;
-				child.y = originY;
-				rotateAroundPoint(child, nextAngle, originX, originY);				
+				var matrix:Matrix = child.transform.matrix;
+				matrix.translate(originX - child.width, originY);
+				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
+				childTransformations.push(matrix);
 				nextAngle += angle;
 			}			
 		}
@@ -118,11 +129,12 @@ package com.gestureworks.cml.layouts
 			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
+				if (!child is DisplayObject) return;
 				
-				child.x = originX;
-				child.y = originY - child.height;
-				rotateAroundPoint(child, nextAngle, originX, originY);				
+				var matrix:Matrix = child.transform.matrix;
+				matrix.translate(originX, originY-child.height);
+				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
+				childTransformations.push(matrix);
 				nextAngle += angle;
 			}			
 		}		
@@ -138,11 +150,12 @@ package com.gestureworks.cml.layouts
 			for (var i:int = 0; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
+				if (!child is DisplayObject) return;
 				
-				child.x = originX - child.width;
-				child.y = originY - child.height;
-				rotateAroundPoint(child, nextAngle, originX, originY);				
+				var matrix:Matrix = child.transform.matrix;
+				matrix.translate(originX-child.width, originY-child.height);
+				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
+				childTransformations.push(matrix);
 				nextAngle += angle;
 			}			
 		}		

@@ -100,10 +100,14 @@ package com.gestureworks.cml.element
 					
 					//apply attributes
 					for each (var attrValue:* in item.@*)
-					{				
-						attrName = attrValue.name().toString();
+					{											
+						attrName = attrValue.name().toString();						
+						if (attrValue == "true")
+							attrValue = true;
+						if (attrValue == "false")
+							attrValue = false;
 						if (attrName != "classRef")
-							obj[attrName] = attrValue;
+							obj[attrName] = attrValue;	
 					}					
 					
 					//layout id is either user defined or index

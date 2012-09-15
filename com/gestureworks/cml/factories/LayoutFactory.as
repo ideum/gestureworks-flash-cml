@@ -1,8 +1,12 @@
 package com.gestureworks.cml.factories 
 {
 	import com.gestureworks.cml.interfaces.ILayout;	
+	import flash.display.DisplayObject;
 	import flash.geom.Matrix;
 	import flash.display.DisplayObjectContainer;
+	import org.libspark.betweenas3.BetweenAS3;
+	import org.libspark.betweenas3.easing.Exponential;
+	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
 	 * Base layout class
@@ -10,6 +14,7 @@ package com.gestureworks.cml.factories
 	 */
 	public class LayoutFactory extends ObjectFactory implements ILayout
 	{
+		protected var childTransformations:Array;
 		
 		/**
 		 * Constructor
@@ -17,24 +22,25 @@ package com.gestureworks.cml.factories
 		public function LayoutFactory() 
 		{
 			super();
+			childTransformations = new Array();
 		}
 		
+		private var _spacingX:Number = 100;
 		/**
 		 * Horizontal distance between the origins of two objects
 		 * @default 100
 		 */
-		private var _spacingX:Number = 100;
 		public function get spacingX():Number { return _spacingX; }
 		public function set spacingX(s:Number):void
 		{
 			_spacingX = s;
 		}
 		
+		private var _spacingY:Number = 100;		
 		/**
 		 * Vertical distance between the origins of two objects
 		 * @default 100
 		 */
-		private var _spacingY:Number = 100;
 		public function get spacingY():Number { return _spacingY; }
 		public function set spacingY(s:Number):void
 		{
@@ -52,37 +58,95 @@ package com.gestureworks.cml.factories
 			_marginX = m;
 		}
 		
+		private var _marginY:Number = 10;		
 		/**
 		 * Spacing added to the height of an object
 		 * @default 10
 		 */
-		private var _marginY:Number = 10;
 		public function get marginY():Number { return _marginY; }
 		public function set marginY(m:Number):void
 		{
 			_marginY = m;
 		}				
 		
+		private var _useMargins:Boolean = false;		
 		/**
 		 * Flag indicating the use of margins or spacing
 		 * @default false
 		 */
-		private var _useMargins:Boolean = false;
 		public function get useMargins():Boolean { return _useMargins; }
 		public function set useMargins(um:Boolean):void
 		{
 			_useMargins = um;
 		}
 		
+		
+		private var _type:String;		
 		/**
 		 * Specifies a layout subtype
 		 * @default null
 		 */
-		private var _type:String;
 		public function get type():String { return _type; }
 		public function set type(t:String):void
 		{
 			_type = t;
+		}
+		
+		private var _tween:Boolean = false;
+		/**
+		 * Flag indicating the display objects will animate to their layout positions. If false,
+		 * the objects will be positioned at initialization.
+		 * @default true
+		 */
+		public function get tween():Boolean { return _tween; }
+		public function set tween(t:Boolean):void
+		{
+			_tween = t;
+		}
+		
+		private var _tweenTime:Number = 500;
+		/**
+		 * The time(ms) the display objects will take to move into positions
+		 * @default 500
+		 */
+		public function get tweenTime():Number { return _tweenTime; }
+		public function set tweenTime(t:Number):void
+		{
+			_tweenTime = t;
+		}
+		
+		/**
+		 * The object distribution function. If tween is on, creates a tween for each child and applies the child transformations. If tween is off,
+		 * assigns the child transformations to the corresponding children. 
+		 * @param	container  
+		 */
+		public function layout(container:DisplayObjectContainer):void 
+		{
+			var layoutTween:ITweenGroup;
+			var childTweens:Array;
+			
+			if (tween)
+			{
+				childTweens = new Array();
+				for (var i:int = 0; i < container.numChildren; i++) 
+				{				
+					var child:* = container.getChildAt(i);
+					if (!child is DisplayObject) return;
+					
+					if(i < childTransformations.length)
+						childTweens.push(BetweenAS3.tween(child, getMatrixObj(childTransformations[i]), null, tweenTime/1000, Exponential.easeOut));
+				}
+				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
+				layoutTween.play();
+			}
+			else
+			{
+				for (var j:int = 0; j < container.numChildren; j++)
+				{
+					child = container.getChildAt(j);
+					child.transform.matrix = childTransformations[j];
+				}
+			}
 		}
 		
 		/**
@@ -91,9 +155,19 @@ package com.gestureworks.cml.factories
 		 * @param	max  the top limit
 		 * @return  a random number
 		 */
-		protected function randomMinMax(min:Number, max:Number):Number
+		protected static function randomMinMax(min:Number, max:Number):Number
 		{
 			return min + Math.random() * (max - min);
+		}
+		
+		/**
+		 * Converts degrees to radians
+		 * @param	degrees  value in degrees
+		 * @return  value in radians
+		 */
+		protected static function degreesToRadians(degrees:Number):Number
+		{
+			return Math.PI * degrees / 180;
 		}
 		
 		/**
@@ -103,20 +177,39 @@ package com.gestureworks.cml.factories
 		 * @param	aroundX  the x coordinate of the point to rotate around
 		 * @param	aroundY  the y coordinate of the point to rotate around
 		 */
-		protected function rotateAroundPoint(obj:*, angle:Number, aroundX:Number, aroundY:Number):void
+		protected static function rotateAroundPoint(obj:*, angle:Number, aroundX:Number, aroundY:Number):void
 		{		
 			var m:Matrix = obj.transform.matrix;			 
+			m = pointRotateMatrix(angle, aroundX, aroundY, m);
+			obj.transform.matrix = m;
+		}	
+		
+		/**
+		 * Returns a matrix rotated around a specific point at a specific angle
+		 * @param	angle  the angle of rotation
+		 * @param	aroundX  the x coordinate of the point to rotate around
+		 * @param	aroundY  the y coordinate of the point to rotate around
+		 * @param	m  the matrix to rotate
+		 * @return
+		 */
+		protected static function pointRotateMatrix(angle:Number, aroundX:Number, aroundY:Number, m:Matrix=null):Matrix
+		{
+			if (!m) m = new Matrix();
 			m.translate( -aroundX, -aroundY );
 			m.rotate(Math.PI * angle / 180);
 			m.translate( aroundX, aroundY );
-			obj.transform.matrix = m;
-		}				
+			return m;
+		}
 		
 		/**
-		 * The object distribution function 
-		 * @param	container
+		 * Converts transformation matrix to BetweenAS3 syntax
+		 * @param	mtx  transformation matrix
+		 * @return  tween matrix
 		 */
-		public function layout(container:DisplayObjectContainer):void {}
+		protected static function getMatrixObj(mtx:Matrix):Object
+        {
+            return {transform:{matrix:{a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty}}}
+        }
 	}
 
 }

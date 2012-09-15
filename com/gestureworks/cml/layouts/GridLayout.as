@@ -1,6 +1,8 @@
 package com.gestureworks.cml.layouts 
 {
+import away3d.core.math.MatrixAway3D;
 import flash.display.DisplayObject;
+import flash.geom.Matrix;
     import flash.geom.Point;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.element.*;
@@ -63,26 +65,32 @@ import flash.display.DisplayObject;
 		 */
 		override public function layout(container:DisplayObjectContainer):void
 		{
-			var c:DisplayObjectContainer = container;	
             var row:Number;
             var col:Number;
 			var sumx:Number = 0;
 			var sumy:Number = 0;
             var num:int = (columns * rows);
+			var child:*;
+			var xVal:Number;
+			var yVal:Number;
+			var matrix:Matrix;
 						
-			
-			for (var i:int = 0; i < c.numChildren; i++) 
+			for (var i:int = 0; i < container.numChildren; i++) 
 			{		
-				var child:DisplayObject = c.getChildAt(i);
-				if (!child.hasOwnProperty("x") || !child.hasOwnProperty("y")) return;
+				child = container.getChildAt(i);				
+				if (!child is DisplayObject) return;
 				
 				if (leftToRight)
 				{					
                     row = Math.floor(i / columns);               
                     col = (i % columns);
-					
-                    child.x = useMargins ? sumx + col * (2*marginX) : col * spacingX;
-                    child.y = useMargins ? sumy + row * (2*marginY) : row * spacingY;
+
+                    xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX;
+                    yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY;
+
+					matrix = child.transform.matrix;
+					matrix.translate(xVal, yVal);			
+					childTransformations.push(matrix);
 					
 					sumx = col == columns - 1 ? 0 : sumx + child.width;
 					sumy = col == columns-1 ? sumy + child.height  : sumy;						
@@ -92,14 +100,19 @@ import flash.display.DisplayObject;
                     row = (i % rows);
                     col = Math.floor(i / rows);
                
-                    child.x = useMargins ? sumx + col * (2*marginX) : col * spacingX;
-                    child.y = useMargins ? sumy + row * (2*marginY) : row * spacingY;	
+                    xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX;
+                    yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY;	
+
+					matrix = child.transform.matrix;
+					matrix.translate(xVal, yVal);			
+					childTransformations.push(matrix);
 
 					sumx = row == rows-1 ? sumx + child.width : sumx;
 					sumy = row == rows - 1 ? 0 : sumy + child.height;					
-                }				
+                }
 			}
 	
+			super.layout(container);
 		}	
    
 		override public function dispose():void 

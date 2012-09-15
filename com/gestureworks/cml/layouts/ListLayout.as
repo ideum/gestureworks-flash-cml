@@ -2,7 +2,10 @@ package com.gestureworks.cml.layouts
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
 	import com.gestureworks.cml.interfaces.IContainer;
+	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.geom.Matrix;
+	import flash.sampler.NewObjectSample;
 	
 	/**	 
 	 * List Layout
@@ -17,35 +20,7 @@ package com.gestureworks.cml.layouts
 			super();
 			type = "horizontal";
 		}
-		
-		private var _close_packing:Boolean = true;
-		[Deprecated(replacement="closePacking()")] 
-		public function get close_packing():Boolean{return _close_packing;}
-		public function set close_packing(value:Boolean):void 
-		{
-			_close_packing = value;
-		}
-
-		private var _closePacking:Boolean = false;
-		public function get closePacking():Boolean { return _closePacking; }
-		public function set closePacking(value:Boolean):void 
-		{
-			_closePacking= value;
-		}		
-		
-		private var _blockX:Number = 400;
-		public function get blockX():Number{return _blockX;}
-		public function set blockX(value:Number):void 
-		{
-			_blockX = value;
-		}
-		
-		private var _blockY:Number = 400;
-		public function get blockY():Number{return _blockY;}
-		public function set blockY(value:Number):void 
-		{
-			_blockY = value;
-		}			
+				
 		
 		/**
 		 * Apply layout type to container object
@@ -61,8 +36,10 @@ package com.gestureworks.cml.layouts
 			{
 				case "vertical" : vertical(container); break;
 				case "horizontal" : horizontal(container); break;
-				default: break;
-			}	
+				default: return;
+			}
+			
+			super.layout(container);
 		}		
 		
 		
@@ -83,24 +60,20 @@ package com.gestureworks.cml.layouts
 		public function horizontal(container:DisplayObjectContainer):void
 		{		
 			n = container.numChildren;
-			var sumx:Number = 0;			
+			var sumx:Number = 0;
+			var xVal:Number;
+			var matrix:Matrix;
 			
 			for (var i:int = 0; i < n; i++) 
 			{		
-				var obj:* = container.getChildAt(i);
-				
-				if (0) {
-		
-					obj.x = i * blockX + i * (2*marginX);
-					obj.y = 0;	
-					
-				}
-				else {
-					
-					obj.x = useMargins ? sumx + i * (2*marginX) : i * spacingX;
-					obj.y = 0;
-				}
-				sumx += obj.width;
+				var child:* = container.getChildAt(i);
+				if (!child is DisplayObject) return;
+
+				xVal = useMargins ? sumx + i * (2*marginX) : i * spacingX;
+				matrix = child.transform.matrix;
+				matrix.translate(xVal, 0);			
+				childTransformations.push(matrix);
+				sumx += child.width;
 			}
 		}
 		
@@ -114,20 +87,19 @@ package com.gestureworks.cml.layouts
 		{
 			n = container.numChildren; 
 			var sumy:Number = 0;
+			var yVal:Number;
+			var matrix:Matrix;
 			
 			for (var i:int = 0; i < n; i++) 
 			{				
-				var obj:* = container.getChildAt(i);
+				var child :* = container.getChildAt(i);
+				if (!child is DisplayObject) return;
 							
-					if (!closePacking) {
-						obj.x = 0;
-						obj.y = i * blockY + i * (2*marginY);
-					}
-					else {
-						obj.x = 0;
-						obj.y = useMargins ? sumy + i * (2*marginY) : i * spacingY;
-					}
-					sumy += obj.height;
+				yVal = useMargins ? sumy + i * (2 * marginY) : i * spacingY;
+				matrix = child.transform.matrix;
+				matrix.translate(0, yVal);			
+				childTransformations.push(matrix);						
+				sumy += child.height;
 			}
 		}
 		
