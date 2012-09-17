@@ -88,6 +88,12 @@ package com.gestureworks.cml.element
 				removeChildAt(slideshowItems.array[i]);
 			}
 			
+			//play();
+			init();
+		}
+		
+		public function init():void
+		{
 			play();
 		}
 		

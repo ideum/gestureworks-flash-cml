@@ -31,7 +31,7 @@ package com.gestureworks.cml.element
 			super.dispose();
 			image = null;
 			list = null;
-							
+						
 		}
 		
 		/**
@@ -98,6 +98,7 @@ package com.gestureworks.cml.element
 		}		
 
 		public function getIndex(index:int):*
+		
 		{
 			return list.getIndex(index);
 		}			

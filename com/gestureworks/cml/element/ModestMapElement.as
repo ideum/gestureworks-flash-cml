@@ -151,6 +151,12 @@ package com.gestureworks.cml.element
 			trace("MAP MARKERS: ");
 			trace(mapMarkers);
 			createMap();
+			
+		}
+		
+		public function init():void
+		{
+			displayComplete();
 		}
 		
 		private function createMap():void {

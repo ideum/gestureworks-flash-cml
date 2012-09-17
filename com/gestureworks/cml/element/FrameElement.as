@@ -14,8 +14,18 @@ package com.gestureworks.cml.element
 		{			
 			super();
 			layoutUI();
+		//	init();
 		}		
 		
+		override public function displayComplete():void
+		{			
+			init();
+		}
+		
+		public function init():void
+		{
+			layoutUI();
+		}
 		
 		override protected function layoutUI():void
 		{			

@@ -18,6 +18,11 @@ package com.gestureworks.cml.element
 			super();
 		}
 		
+		public function init():void
+		{
+			
+		}
+		
 		private var _src:String = "";
 		/**
 		 * src loads a swf movie file
@@ -61,6 +66,13 @@ package com.gestureworks.cml.element
 			if (asset)
 				asset.transform.colorTransform = colorTransform;
 			colorTransform = null;
+		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			asset = null;
+            _class = null;
 		}
 		
 	}

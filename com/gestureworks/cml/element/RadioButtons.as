@@ -325,6 +325,17 @@
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel));		
 			}
 		}	
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			 selected = null;
+			_textElements = null;
+			_radioButtons = null;
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, buttonSelected);
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
 			
+		}
 	}
 }

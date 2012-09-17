@@ -92,6 +92,11 @@ package com.gestureworks.cml.element
 			createMenu();
 		}
 		
+		public function init():void
+		{
+			displayComplete();
+		}
+		
 		private function createMenu():void {
 			//Find longest string
 			var widthField:TextElement = new TextElement();

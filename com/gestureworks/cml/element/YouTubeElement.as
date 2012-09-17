@@ -86,6 +86,12 @@ package  com.gestureworks.cml.element
 			super.displayComplete();
 			
 			loadVideo();
+		
+		}
+		
+		public function init():void
+		{
+			displayComplete();
 		}
 		
 		//Start playing from the beginning.

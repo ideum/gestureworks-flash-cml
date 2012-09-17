@@ -423,6 +423,21 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value));			
 		}
 		
+		override public function dispose():void
+		{
+			super.dispose();
+			stepknobPositions = null;
+			touchKnob = null;
+			hit = null;
+			rail = null;
+			knob = null;
+			touchKnob.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
+			touchKnob.removeEventListener(TouchEvent.TOUCH_END, onComplete);
+			hit.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
+			hit.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
+			hit.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
+		}
+		
 	}
 
 }

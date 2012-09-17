@@ -17,13 +17,17 @@ package com.gestureworks.cml.element
 			else addEventListener(Event.ADDED_TO_STAGE, init);				
 		}
 		
-		private function init(e:Event = null):void 
+        public function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);			
 			this.width = stage.width;
 			this.height = stage.height;
 		}		
-		
+		override public function dispose():void
+		{
+			super.dispose();
+			removeEventListener(Event.ADDED_TO_STAGE, init);	
+		}
 		
 	}
 }

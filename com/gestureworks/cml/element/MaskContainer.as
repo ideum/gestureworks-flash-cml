@@ -136,6 +136,11 @@ package com.gestureworks.cml.element
 			createMasks();
 		}
 		
+		public function init():void
+		{
+			displayComplete();
+		}
+		
 		private function createMasks():void {
 			overallMask = new GraphicElement();
 			

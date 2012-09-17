@@ -23,6 +23,10 @@ package com.gestureworks.cml.element
 		{						
 			super();
 		}
+		public function init():void
+		{
+			
+		}
 		
 		override protected function bitmapComplete():void 
 		{						

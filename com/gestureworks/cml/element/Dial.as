@@ -49,7 +49,7 @@ package com.gestureworks.cml.element
 		/**
 		 * CML display initialization callback
 		 */
-		public override function displayComplete():void
+		override public function displayComplete():void
 		{
 			super.displayComplete();
 			init();

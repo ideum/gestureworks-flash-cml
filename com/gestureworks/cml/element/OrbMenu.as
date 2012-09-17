@@ -14,16 +14,16 @@ package com.gestureworks.cml.element
 	import flash.events.TouchEvent;
 	import flash.filters.DropShadowFilter;
 	import flash.events.MouseEvent;
-    import org.tuio.TuioTouchEvent;
+	import org.tuio.TuioTouchEvent;
 	import flash.geom.*;
 	import flash.utils.Timer;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.*;
 	import org.libspark.betweenas3.tweens.*;
-		
+	
 	/**
 	 * The OrbMenu provides list of Menus.
-	 * It has the following parameters: orbRadius ,gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, gradientHeight, gradientWidth, gradientRotation, gradientX, gradientY, shape1LineStoke, shape1OutlineColor, shape2LineStoke, shape2OutlineColor, backgroundColor, backgroundOutlineColor, backgroundLineStoke, repeatTime, attractMode. 
+	 * It has the following parameters: orbRadius ,gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, gradientHeight, gradientWidth, gradientRotation, gradientX, gradientY, shape1LineStoke, shape1OutlineColor, shape2LineStoke, shape2OutlineColor, backgroundColor, backgroundOutlineColor, backgroundLineStoke, repeatTime, attractMode.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -39,69 +39,72 @@ package com.gestureworks.cml.element
 	
 	public class OrbMenu extends Menu
 	{
-	
-	/**
-	* OrbMenu constructor.
-	*/	
-	public function OrbMenu() 
+		
+		/**
+		 * OrbMenu constructor.
+		 */
+		public function OrbMenu()
 		{
 			super();
 		}
-	
-	/**
-	* Defines the OuterCircle which is a rectangle
-	*/
-	 public var shape1:TouchSprite = new TouchSprite();	
-	
-	/**
-	* Defines the InnerCircle which is a rectangle
-	*/	
-	 public var shape2:TouchSprite = new TouchSprite(); 
-	  
-	/**
-	 * Defines background in rectangle shape of orbMenu.
-	 */  
-	 public var background:Sprite = new Sprite();
-	 
-	/**
-	* Defines array of buttons.
-	*/  
-	 public var buttons:Array = [];
-	 
-	/**
-	* Defines intersection lines of background.
-	*/  
-	 public var line:Sprite = new Sprite();
-	 
-	/**
-	* Defines dropshadow filter for shape.
-	*/  
-	 public var dropShadow:DropShadowFilter = new DropShadowFilter();
-	 
-	/**
-	* Defines array for drop shadow filter.
-	*/  
-	 public var filtersArray:Array = new Array(dropShadow);
-		 
-	 private var _orbRadius:Number = 100;
-	/**
-	* Defines radius of orbmenu.
-	*  @default = 100;
-	*/ 
-	    public function get orbRadius():Number
+		
+		/**
+		 * Defines the OuterCircle which is a rectangle
+		 */
+		public var shape1:TouchSprite = new TouchSprite();
+		
+		/**
+		 * Defines the InnerCircle which is a rectangle
+		 */
+		public var shape2:TouchSprite = new TouchSprite();
+		
+		/**
+		 * Defines background in rectangle shape of orbMenu.
+		 */
+		public var background:Sprite = new Sprite();
+		
+		/**
+		 * Defines array of buttons.
+		 */
+		public var buttons:Array = [];
+		
+		/**
+		 * Defines intersection lines of background.
+		 */
+		public var line:Sprite = new Sprite();
+		
+		/**
+		 * Defines dropshadow filter for shape.
+		 */
+		public var dropShadow:DropShadowFilter = new DropShadowFilter();
+		
+		/**
+		 * Defines array for drop shadow filter.
+		 */
+		public var filtersArray:Array = new Array(dropShadow);
+		
+		private var _orbRadius:Number = 100;
+		
+		/**
+		 * Defines radius of orbmenu.
+		 *  @default = 100;
+		 */
+		public function get orbRadius():Number
 		{
 			return _orbRadius;
 		}
-	    public function set orbRadius(value:Number):void
+		
+		public function set orbRadius(value:Number):void
 		{
 			_orbRadius = value;
 		}
-	/**
-	 * Defines to control gradient appearance of shapes.
-	 */	
-	 public var matrix:Matrix = new Matrix(); 
-	 
-	 private var _gradientType:String = GradientType.LINEAR;
+		/**
+		 * Defines to control gradient appearance of shapes.
+		 */
+		public var matrix:Matrix = new Matrix();
+		
+		private var _gradientType:String = GradientType.LINEAR;
+		
 		/**
 		 * Sets the gardient type for shapes
 		 * @default = GradientType.LINEAR;
@@ -109,19 +112,21 @@ package com.gestureworks.cml.element
 		public function get gradientType():String
 		{
 			if (_gradientType == GradientType.RADIAL)
-				return "radial";			
-			return "linear"; 
+				return "radial";
+			return "linear";
 		}
+		
 		public function set gradientType(value:String):void
 		{
 			if (value == "radial")
 				_gradientType = GradientType.RADIAL;
 			else
 				_gradientType = GradientType.LINEAR;
-		} 
-	
-	  private var gradientColorArray:Array = [0x404040 , 0x404040]; 
+		}
+		
+		private var gradientColorArray:Array = [0x404040, 0x404040];
 		private var _gradientColors:String = "0x404040 , 0x404040";
+		
 		/**
 		 * Sets the array of color values of gradient for shapes
 		 * @default = [0x404040 , 0x404040];
@@ -135,10 +140,11 @@ package com.gestureworks.cml.element
 		{
 			_gradientColors = value;
 			gradientColorArray = _gradientColors.split(",");
-		} 	
-	
-	 private var gradientAlphaArray:Array = [1, 1];
+		}
+		
+		private var gradientAlphaArray:Array = [1, 1];
 		private var _gradientAlphas:String = "1, 1";
+		
 		/**
 		 * Sets the alpha transparency of gradient for shapes
 		 * @default = [1, 1];
@@ -152,10 +158,11 @@ package com.gestureworks.cml.element
 		{
 			_gradientAlphas = value;
 			gradientAlphaArray = _gradientAlphas.split(",");
-		} 	
+		}
 		
-	 private var gradientRatioArray:Array = [0, 255];
+		private var gradientRatioArray:Array = [0, 255];
 		private var _gradientRatios:String = "0, 255";
+		
 		/**
 		 * Sets the ratios of gradient for shapes
 		 * @default = [0, 255];
@@ -169,9 +176,10 @@ package com.gestureworks.cml.element
 		{
 			_gradientRatios = value;
 			gradientRatioArray = _gradientRatios.split(",");
-		}	
-	
-	 private var _gradientWidth:Number = 50;
+		}
+		
+		private var _gradientWidth:Number = 50;
+		
 		/**
 		 * the width (in pixels) to which the gradient will spread
 		 * @default = 50;
@@ -186,8 +194,9 @@ package com.gestureworks.cml.element
 		{
 			_gradientWidth = value;
 		}
-			
-	 private var _gradientHeight:Number = 100;
+		
+		private var _gradientHeight:Number = 100;
+		
 		/**
 		 * the width (in pixels) to which the gradient will spread
 		 * @default = 100;
@@ -203,7 +212,8 @@ package com.gestureworks.cml.element
 			_gradientHeight = value;
 		}
 		
-	 private var _gradientRotation:Number = 0;
+		private var _gradientRotation:Number = 0;
+		
 		/**
 		 * the rotation (in radians) that will be applied to the gradient
 		 * @default = 0;
@@ -219,7 +229,8 @@ package com.gestureworks.cml.element
 			_gradientRotation = value;
 		}
 		
-	 private var _gradientX:Number = 25;
+		private var _gradientX:Number = 25;
+		
 		/**
 		 * how far (in pixels) the gradient is shifted horizontally
 		 * @default = 25;
@@ -234,8 +245,9 @@ package com.gestureworks.cml.element
 		{
 			_gradientX = value;
 		}
-			
-	 private var _gradientY:Number = 0;
+		
+		private var _gradientY:Number = 0;
+		
 		/**
 		 * how far (in pixels) the gradient is shifted horizontally
 		 * @default = 0;
@@ -249,27 +261,30 @@ package com.gestureworks.cml.element
 		public function set gradientY(value:Number):void
 		{
 			_gradientY = value;
-		}	
-	
-	 private var _shape1LineStoke:Number = 4;	
-	/**
-	 * Defines linestoke of shape1.
-	 * @default = 4;
-	 */
-	    public function get shape1LineStoke():Number
-	    {
-		 return _shape1LineStoke;
-	    }
-	    public function set(value:Number):void
-	    {
-		 _shape1LineStoke = value;
-	    }
-	
-	private var _shape1OutlineColor:uint = 0x000000;
-	/**
-	* Sets the  outline color of shape1
-	*  @default = 0x000000;
-	*/
+		}
+		
+		private var _shape1LineStoke:Number = 4;
+		
+		/**
+		 * Defines linestoke of shape1.
+		 * @default = 4;
+		 */
+		public function get shape1LineStoke():Number
+		{
+			return _shape1LineStoke;
+		}
+		
+		public function set(value:Number):void
+		{
+			_shape1LineStoke = value;
+		}
+		
+		private var _shape1OutlineColor:uint = 0x000000;
+		
+		/**
+		 * Sets the  outline color of shape1
+		 *  @default = 0x000000;
+		 */
 		public function get shape1OutlineColor():uint
 		{
 			return _shape1OutlineColor;
@@ -280,25 +295,28 @@ package com.gestureworks.cml.element
 			_shape1OutlineColor = value;
 		}
 		
-	private var _shape2LineStoke:Number = 4;	
-	/**
-	 * Defines linestoke of shape2.
-	 * @default = 4;
-	 */
-	    public function get shape2LineStoke():Number
-	    {
-		 return _shape2LineStoke;
-	    }
-	    public function set shape2LineStoke(value:Number):void
-	    {
-		 _shape2LineStoke = value;
-	    }
-	
-	private var _shape2OutlineColor:uint = 0x000000;
-	/**
-	* Sets the  outline color of shape2
-	*  @default = 0x000000;
-	*/
+		private var _shape2LineStoke:Number = 4;
+		
+		/**
+		 * Defines linestoke of shape2.
+		 * @default = 4;
+		 */
+		public function get shape2LineStoke():Number
+		{
+			return _shape2LineStoke;
+		}
+		
+		public function set shape2LineStoke(value:Number):void
+		{
+			_shape2LineStoke = value;
+		}
+		
+		private var _shape2OutlineColor:uint = 0x000000;
+		
+		/**
+		 * Sets the  outline color of shape2
+		 *  @default = 0x000000;
+		 */
 		public function get shape2OutlineColor():uint
 		{
 			return _shape2OutlineColor;
@@ -307,13 +325,14 @@ package com.gestureworks.cml.element
 		public function set shape2OutlineColor(value:uint):void
 		{
 			_shape2OutlineColor = value;
-		}	
+		}
 		
-	private var _backgroundColor:uint = 0x808080;
-	/**
-	* Sets the background color
-	*  @default = 0x666666;
-	*/
+		private var _backgroundColor:uint = 0x808080;
+		
+		/**
+		 * Sets the background color
+		 *  @default = 0x666666;
+		 */
 		public function get backgroundColor():uint
 		{
 			return _backgroundColor;
@@ -322,13 +341,14 @@ package com.gestureworks.cml.element
 		public function set backgroundColor(value:uint):void
 		{
 			_backgroundColor = value;
-		}	
-	
-	private var _backgroundOutlineColor:uint = 0x000000;
-	/**
-	* Sets the background out line color
-	*  @default = 0x000000;
-	*/
+		}
+		
+		private var _backgroundOutlineColor:uint = 0x000000;
+		
+		/**
+		 * Sets the background out line color
+		 *  @default = 0x000000;
+		 */
 		public function get backgroundOutlineColor():uint
 		{
 			return _backgroundOutlineColor;
@@ -338,12 +358,13 @@ package com.gestureworks.cml.element
 		{
 			_backgroundOutlineColor = value;
 		}
-	
-	private var _backgroundLineStoke:uint = 3;
-	/**
-	* Sets the background line stoke
-	*  @default = 3;
-	*/
+		
+		private var _backgroundLineStoke:uint = 3;
+		
+		/**
+		 * Sets the background line stoke
+		 *  @default = 3;
+		 */
 		public function get backgroundLineStoke():uint
 		{
 			return _backgroundLineStoke;
@@ -353,11 +374,12 @@ package com.gestureworks.cml.element
 		{
 			_backgroundLineStoke = value;
 		}
-	
-	private var _centerX:Number = 90;
-	/**
-	 * defines the centerX position of text
-	 */	
+		
+		private var _centerX:Number = 90;
+		
+		/**
+		 * defines the centerX position of text
+		 */
 		public function get centerX():Number
 		{
 			return _centerX;
@@ -367,12 +389,13 @@ package com.gestureworks.cml.element
 		{
 			_centerX = value;
 		}
-	
-	private var _centerY:Number = 80;
-	/**
-	 * Defines centerY position of text
-	 */
-    	public function get centerY():Number
+		
+		private var _centerY:Number = 80;
+		
+		/**
+		 * Defines centerY position of text
+		 */
+		public function get centerY():Number
 		{
 			return _centerY;
 		}
@@ -381,11 +404,12 @@ package com.gestureworks.cml.element
 		{
 			_centerY = value;
 		}
-	
-	private var _radius:Number = 100;
-	/**
-	 * defines radius of text
-	 */
+		
+		private var _radius:Number = 100;
+		
+		/**
+		 * defines radius of text
+		 */
 		public function get radius():Number
 		{
 			return _radius;
@@ -395,11 +419,12 @@ package com.gestureworks.cml.element
 		{
 			_radius = value;
 		}
-	
-	private var _curveText:String = "MENU";	
-	/**
-	 * defines the text
-	 */
+		
+		private var _curveText:String = "MENU";
+		
+		/**
+		 * defines the text
+		 */
 		public function get curveText():String
 		{
 			return _curveText;
@@ -409,12 +434,13 @@ package com.gestureworks.cml.element
 		{
 			_curveText = value;
 		}
-	
-	private var _coverage:Number = 0.4;	
-	/**
-	 * defines the coverage of text
-	 */
-	public function get coverage():Number
+		
+		private var _coverage:Number = 0.4;
+		
+		/**
+		 * defines the coverage of text
+		 */
+		public function get coverage():Number
 		{
 			return _coverage;
 		}
@@ -423,12 +449,13 @@ package com.gestureworks.cml.element
 		{
 			_coverage = value;
 		}
-	
-	private var _startAngle:Number = 100;	
-	/**
-	 * defines start angle for text
-	 */
-    	public function get startAngle():Number
+		
+		private var _startAngle:Number = 100;
+		
+		/**
+		 * defines start angle for text
+		 */
+		public function get startAngle():Number
 		{
 			return _startAngle;
 		}
@@ -437,12 +464,13 @@ package com.gestureworks.cml.element
 		{
 			_startAngle = value;
 		}
-	
-    private var _stopAngle:Number = 100;			
-	/**
-	 * defines stop angle for text
-	 */
-    	public function get stopAngle():Number
+		
+		private var _stopAngle:Number = 100;
+		
+		/**
+		 * defines stop angle for text
+		 */
+		public function get stopAngle():Number
 		{
 			return _stopAngle;
 		}
@@ -452,11 +480,12 @@ package com.gestureworks.cml.element
 			_stopAngle = value;
 		}
 		
-	private var _attractMode:Boolean = true;
-	/**
-	 * defines whether Orbmenu is floating or not
-	 */
-    	public function get attractMode():Boolean
+		private var _attractMode:Boolean = true;
+		
+		/**
+		 * defines whether Orbmenu is floating or not
+		 */
+		public function get attractMode():Boolean
 		{
 			return _attractMode;
 		}
@@ -465,13 +494,14 @@ package com.gestureworks.cml.element
 		{
 			_attractMode = value;
 		}
-	
-	private var _repeatTimer:Number = 3;
-	/**
-	 * number of times the timer will tick before the timer stops itself
-	 * @default = 1;
-	 */
-    	public function get repeatTimer():Number
+		
+		private var _repeatTimer:Number = 3;
+		
+		/**
+		 * number of times the timer will tick before the timer stops itself
+		 * @default = 1;
+		 */
+		public function get repeatTimer():Number
 		{
 			return _repeatTimer;
 		}
@@ -479,198 +509,199 @@ package com.gestureworks.cml.element
 		public function set repeatTimer(value:Number):void
 		{
 			_repeatTimer = value;
-		}	
-		
-	/**
-	* Initializes the configuration and display of orbMenu
-	*/	
-	public function init():void
-		{
-		    //displayOrb();
-			displayComplete();
 		}
-	
-	/**
-	* creats OrbMenu Graphics and the curved text on OrbMenu.
-	*/
-	private function displayOrb():void
-	{	
 		
-		dropShadow.color = 0x000000;
-		dropShadow.blurX = 300;
-		dropShadow.blurY = 200;
-		dropShadow.angle = 360;
-		dropShadow.alpha = 1;
-		dropShadow.distance = 15;
-				
-		matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
+		/**
+		 * Initializes the configuration and display of orbMenu
+		 */
+		override public function init():void
+		{
+			displayOrb();
+			//displayComplete();
+		}
 		
-		shape1.graphics.lineStyle(shape1LineStoke, shape1OutlineColor);
-		shape1.graphics.beginGradientFill(gradientType,gradientColorArray,gradientAlphaArray,gradientRatioArray,matrix); 
-		shape1.graphics.drawCircle(0, 0, orbRadius); 
-		shape1.x = 100;
-		shape1.y = 70;
-				
-		shape2.graphics.lineStyle(shape2LineStoke, shape2OutlineColor);
-		shape2.graphics.beginGradientFill(gradientType,gradientColorArray,gradientAlphaArray,gradientRatioArray,matrix); 
-		shape2.graphics.drawCircle(0, 0, (orbRadius/2)); 
-		shape2.x = 0;
-		shape2.y = 0;
-		
-		shape2.filters = filtersArray;
-		
-		background.graphics.lineStyle(backgroundLineStoke , backgroundOutlineColor);
-		background.x = 170;
-		background.y = 60;  
-		background.rotation = 45;
-		background.visible = false;
-		background.graphics.endFill();
-		
-	     var c1:CircleText = new CircleText(centerX, centerY, radius, curveText, coverage, startAngle, stopAngle);
-	 //  var c1:CircleText = new CircleText(-10, 10, 100, "MENU", 0.4, 0, 0);
-		
-		shape1.gestureEvents = true;
-		shape1.gestureList = {"n-drag": true,"n-tap":true};
-		shape1.addEventListener(GWGestureEvent.DRAG, onDrag);
-	//	shape1.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
-		
+		/**
+		 * creats OrbMenu Graphics and the curved text on OrbMenu.
+		 */
+		private function displayOrb():void
+		{
+			
+			dropShadow.color = 0x000000;
+			dropShadow.blurX = 300;
+			dropShadow.blurY = 200;
+			dropShadow.angle = 360;
+			dropShadow.alpha = 1;
+			dropShadow.distance = 15;
+			
+			matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
+			
+			shape1.graphics.lineStyle(shape1LineStoke, shape1OutlineColor);
+			shape1.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
+			shape1.graphics.drawCircle(0, 0, orbRadius);
+			shape1.x = 100;
+			shape1.y = 70;
+			
+			shape2.graphics.lineStyle(shape2LineStoke, shape2OutlineColor);
+			shape2.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
+			shape2.graphics.drawCircle(0, 0, (orbRadius / 2));
+			shape2.x = 0;
+			shape2.y = 0;
+			
+			shape2.filters = filtersArray;
+			
+			background.graphics.lineStyle(backgroundLineStoke, backgroundOutlineColor);
+			background.x = 170;
+			background.y = 60;
+			background.rotation = 45;
+			background.visible = false;
+			background.graphics.endFill();
+			
+			var c1:CircleText = new CircleText(centerX, centerY, radius, curveText, coverage, startAngle, stopAngle);
+			//  var c1:CircleText = new CircleText(-10, 10, 100, "MENU", 0.4, 0, 0);
+			
+			shape1.gestureEvents = true;
+			shape1.gestureList = {"n-drag": true, "n-tap": true};
+			shape1.addEventListener(GWGestureEvent.DRAG, onDrag);
+			//	shape1.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TAP, onBegin);
 			else if (GestureWorks.supportsTouch)
 				this.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 			else
 				this.addEventListener(MouseEvent.CLICK, onBegin);
-		
-        addChild(background);
-		addChild(shape1);
-		shape1.addChild(shape2);
-	    addChild(c1);
-  	}
-	
-	/**
-	 * Floating stops when event happens.
-	 * @param	event
-	 */		
-  	private function onDrag(event:GWGestureEvent):void
-	{
-		 background.visible = true;
-		 
-		 if (attractMode && timer)
-		 {
-		 timer.reset();
-		 tweener.stop();
-		 tweener.onComplete = null;
-		 this.x += event.value.drag_dx;
-		 this.y += event.value.drag_dy;
-		 }
-	} 
-		
-	/**
-	* Floating stops when event happens.
-	* @param	event
-	*/
-	private function onBegin(event:TouchEvent):void
-	{
-		 background.visible = false;
-		 
-		 if (attractMode && timer)
-		 {
-		 timer.reset();
-		 tweener.stop();
-		 tweener.onComplete = null;
-		 }
-	}
 			
-	/**
-	* CML display initialization callback
-	* defines positions for buttons,lines and rectangle.
-	*/
-	override public function displayComplete():void
-    {	
-		if (attractMode)
-		{
-		setTime();
+			addChild(background);
+			addChild(shape1);
+			shape1.addChild(shape2);
+			addChild(c1);
 		}
 		
-		displayOrb();
-		
-		buttons = childList.getValueArray();
-		height = 135;
-		width = 100;
-	
-		for (var i:int = 0; i < buttons.length; i++)
-	    {
-		line.graphics.lineStyle(0, 0x000000, 1);
-		line.graphics.moveTo((width * i + orbRadius), 0);
-		line.graphics.lineTo((width * i + orbRadius), height);
-					
-		buttons[i].x = orbRadius + width * i;
-		buttons[i].y = 0;
-	
-		background.addChild(buttons[i]);
-	  	}
-		background.addChild(line);
-		
-	    if (buttons.length > 1)
-		 {
-		  background.graphics.beginFill(backgroundColor);
-	   	  background.graphics.drawRoundRect(0-width, 0,(orbRadius + width)+(width*buttons.length), 135, 25, 25);
-		 }
-	    else
-		 {
-		  background.graphics.drawRoundRect(0, 0,(orbRadius + width), 135, 25, 25);
-		 }
-	} 
-
-	private var tweener:ITween;
-	private var timer:Timer;
-	
-	/**
-	 * tween method for floating - display object.
-	 */
-	private function tween():void
-	{
-		if (attractMode)
+		/**
+		 * Floating stops when event happens.
+		 * @param	event
+		 */
+		private function onDrag(event:GWGestureEvent):void
 		{
-		tweener = BetweenAS3.tween(this, {x:NumberUtils.randomNumber(0, (stage.stageWidth - orbRadius)), y:NumberUtils.randomNumber(0, (stage.stageHeight - orbRadius))}, null, 40, Elastic.easeOut);
-		tweener.play();
-		tweener.onComplete = tween;
+			background.visible = true;
+			
+			if (attractMode && timer)
+			{
+				timer.reset();
+				tweener.stop();
+				tweener.onComplete = null;
+				this.x += event.value.drag_dx;
+				this.y += event.value.drag_dy;
+			}
+		}
+		
+		/**
+		 * Floating stops when event happens.
+		 * @param	event
+		 */
+		private function onBegin(event:TouchEvent):void
+		{
+			background.visible = false;
+			
+			if (attractMode && timer)
+			{
+				timer.reset();
+				tweener.stop();
+				tweener.onComplete = null;
+			}
+		}
+		
+		/**
+		 * CML display initialization callback
+		 * defines positions for buttons,lines and rectangle.
+		 */
+		override public function displayComplete():void
+		{
+			if (attractMode)
+			{
+				setTime();
+			}
+			
+			init();
+			//displayOrb();
+			
+			buttons = childList.getValueArray();
+			height = 135;
+			width = 100;
+			
+			for (var i:int = 0; i < buttons.length; i++)
+			{
+				line.graphics.lineStyle(0, 0x000000, 1);
+				line.graphics.moveTo((width * i + orbRadius), 0);
+				line.graphics.lineTo((width * i + orbRadius), height);
+				
+				buttons[i].x = orbRadius + width * i;
+				buttons[i].y = 0;
+				
+				background.addChild(buttons[i]);
+			}
+			background.addChild(line);
+			
+			if (buttons.length > 1)
+			{
+				background.graphics.beginFill(backgroundColor);
+				background.graphics.drawRoundRect(0 - width, 0, (orbRadius + width) + (width * buttons.length), 135, 25, 25);
+			}
+			else
+			{
+				background.graphics.drawRoundRect(0, 0, (orbRadius + width), 135, 25, 25);
+			}
+		}
+		
+		private var tweener:ITween;
+		private var timer:Timer;
+		
+		/**
+		 * tween method for floating - display object.
+		 */
+		private function tween():void
+		{
+			if (attractMode)
+			{
+				tweener = BetweenAS3.tween(this, {x: NumberUtils.randomNumber(0, (stage.stageWidth - orbRadius)), y: NumberUtils.randomNumber(0, (stage.stageHeight - orbRadius))}, null, 40, Elastic.easeOut);
+				tweener.play();
+				tweener.onComplete = tween;
+			}
+		}
+		
+		/**
+		 * Starts floating after certain period of time.
+		 */
+		private function setTime():void
+		{
+			timer = new Timer(1000, repeatTimer);
+			timer.start();
+			timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
+		}
+		
+		private function timerListener(e:TimerEvent):void
+		{
+			tween();
+		}
+		
+		/**
+		 * Dispose methods.
+		 */
+		override public function dispose():void
+		{
+			tweener = null;
+			timer = null;
+			matrix = null;
+			dropShadow = null;
+			filtersArray = null;
+			line = null;
+			buttons = null;
+			background = null;
+			shape2 = null;
+			shape1 = null;
+			shape1.removeEventListener(GWGestureEvent.DRAG, onDrag);
+			shape1.removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
 		}
 	}
-	
-	/**
-	 * Starts floating after certain period of time.
-	 */
-	private function setTime():void 
-	{
-        timer = new Timer(1000,repeatTimer);
-        timer.start();
-		timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
-    }
-
-	private function timerListener(e:TimerEvent):void
-	{
-	   tween();
-	} 
-	
-	/**
-	 * Dispose methods.
-	 */
-	override public function dispose():void
-	{
-		tweener = null;
-		timer = null;
-		matrix = null;
-		dropShadow = null;
-		filtersArray = null;
-		line = null;
-		buttons = null;
-		background = null;
-		shape2 = null;
-		shape1 = null;
-		shape1.removeEventListener(GWGestureEvent.DRAG, onDrag);
-		shape1.removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
-		timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
-	}
-}
 }

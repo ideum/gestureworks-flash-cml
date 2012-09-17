@@ -65,6 +65,11 @@ package  com.gestureworks.cml.element
 			service.photos.getInfo(_imageId);
 		}
 		
+		public function init():void
+		{
+			displayComplete();
+		}
+		
 		private function loadImage(e:FlickrResultEvent):void {
 			//trace(e.data.photo.server);
 			//trace(e.data.photo.id);

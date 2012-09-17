@@ -55,7 +55,7 @@ package  com.gestureworks.cml.element
 		/**
 		 * Initialization function
 		 */
-		public function initUI():void
+		public function init():void
 		{
 			setBackground();
 			setText();
@@ -72,7 +72,7 @@ package  com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void
 		{
-			initUI();
+			init();
 		}
 				
 		/**
@@ -435,6 +435,14 @@ package  com.gestureworks.cml.element
 		private function isUpperCaseLetter():Boolean
 		{
 			return text.length == 1 && (text >= "A" && text <= "Z");
+		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			background = null;
+			keyText = null;
+			dropShadow = null;
 		}
 	}
 

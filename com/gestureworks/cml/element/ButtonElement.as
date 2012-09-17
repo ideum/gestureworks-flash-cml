@@ -25,7 +25,7 @@ package com.gestureworks.cml.element
 			super();
 			buttonStates = new Dictionary(true);
 		}		
-		
+	
 		
 	override public function dispose():void
 		{
@@ -182,9 +182,10 @@ package com.gestureworks.cml.element
 			
 			
 			updateLayout();
+
 		}
 		
-		
+
 		public function updateLayout():void
 		{
 						

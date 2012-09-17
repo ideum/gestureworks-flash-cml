@@ -15,6 +15,9 @@ package com.gestureworks.cml.element
 			super();
 		}
 		
+		public function init():void {
+			
+		}
 		private var _classRef:String;
 		public function get classRef():String { return _classRef; }
 		public function set classRef(value:String):void 
@@ -35,7 +38,12 @@ package com.gestureworks.cml.element
 			asset.transform.colorTransform = colorTransform;
 			colorTransform = null;
 		}
-		
+		override public function dispose():void
+		{
+			super.dispose();
+			asset = null;
+            _class = null;
+		}	
 		
 	}
 }

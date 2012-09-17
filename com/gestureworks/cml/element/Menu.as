@@ -75,6 +75,11 @@ package com.gestureworks.cml.element
 		
 		override public function displayComplete():void {
 			//**updateLayout(this.width, this.height)**//
+		//	init();
+			}
+			
+		public function init():void {
+			updateLayout(this.width, this.height);	
 			}
 		
 		private function onClick(event:*):void

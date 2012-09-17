@@ -138,7 +138,9 @@ package com.gestureworks.cml.element
 		public function get isPlaying():Boolean { return _isPlaying; }
    		
 	
-			
+		public function init():void {
+		
+		}
 		
 		
 		/// PUBLIC METHODS ///
@@ -436,8 +438,25 @@ package com.gestureworks.cml.element
 		{
 			if (loop) play();
 			else stop();
-	
 		}		
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			netConnection = null;
+			netStream = null;
+			video = null;
+			videoObject = null;
+			customClient = null;
+			positionTimer = null;
+			progressTimer = null;
+			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);	
+			netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+	        netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+		}
 			
 	}
 }

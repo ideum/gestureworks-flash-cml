@@ -336,6 +336,15 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		override public function dispose():void
+		{
+			super.dispose();
+			_notepad = null;
+			_background = null;
+			keys = null;
+			currentTF = null;
+			removeEventListener(KeyboardEvent.KEY_DOWN, keyHandler);
+		}
 	}
 
 }

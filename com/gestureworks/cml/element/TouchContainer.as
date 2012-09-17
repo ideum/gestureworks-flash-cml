@@ -17,6 +17,7 @@ package com.gestureworks.cml.element
 			disableNativeTransform = false; 
 
 		}
+
 		
 		public function showIndex(index:int):void
 		{

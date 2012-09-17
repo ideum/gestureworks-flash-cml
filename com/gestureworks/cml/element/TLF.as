@@ -40,6 +40,11 @@ package com.gestureworks.cml.element
 			configuration.textFlowInitialFormat = textFormat;
 			textFlow = new TextFlow;
 		}	
+		
+		public function init():void
+		{
+			
+		}
 	
 		override public function parseCML(cml:XMLList):XMLList
 		{
@@ -145,7 +150,15 @@ package com.gestureworks.cml.element
 				textFlow.flowComposer.updateAllControllers();	
 			}
 		}
-
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			textFormat = null;
+            configuration = null;
+            textFlow = null;
+            container = null;
+		}
 		
 	}
 }

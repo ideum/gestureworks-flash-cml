@@ -493,7 +493,16 @@ package com.gestureworks.cml.element
 				button.x = maxButtonPos;
 			else
 				button.x = minButtonPos;
+		}
 		
+		override public function dispose():void
+		{
+				super.dispose();
+				background = null;
+                button = null;
+		        this.removeEventListener(TuioTouchEvent.TOUCH_UP, onEnd);
+                this.removeEventListener(TouchEvent.TOUCH_END, onEnd);
+	            this.removeEventListener(MouseEvent.MOUSE_UP, onEnd);
 		}
 	}
 }

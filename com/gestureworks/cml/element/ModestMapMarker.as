@@ -28,6 +28,16 @@ package com.gestureworks.cml.element
 		override public function dispose():void {
 			super.dispose();
 		}
+		
+		public function init():void
+		{
+			trace("modest map marker---------------------------------------------------",this.id);
+		}
+		
+		override public function displayComplete():void
+		{			
+			init();
+		}
 	}
 
 }

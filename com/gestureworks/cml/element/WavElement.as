@@ -393,6 +393,12 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void {
 			super.displayComplete();
 			//bytes = new ByteArray();
+			//load();
+			init();
+		}
+		
+		public function init():void
+		{
 			load();
 		}
 		

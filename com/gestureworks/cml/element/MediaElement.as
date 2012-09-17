@@ -40,6 +40,10 @@ package com.gestureworks.cml.element
 			mp3Types = /^.*\.(mp3)$/i;			
 		}
 
+		public function init():void
+		{
+	
+		}
 
 		override public function dispose():void
 		{

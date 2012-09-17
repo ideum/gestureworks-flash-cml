@@ -156,6 +156,10 @@
 			setupUI();
 		}
 		
+		public function init():void
+		{
+			displayComplete();
+		}
 		private function setupUI():void
 		{ 
 			// create a "hovering" camera

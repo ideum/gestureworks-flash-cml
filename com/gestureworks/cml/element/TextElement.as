@@ -18,6 +18,16 @@ package com.gestureworks.cml.element
 			
 			updateTextFormat();
 		}
+		public function init():void
+		{
+				createUI();
+			commitUI();
+			layoutUI();
+			updateUI();
+			
+			updateTextFormat();
+		}
+		
 		
 		override protected function createUI():void 
 		{
@@ -61,6 +71,12 @@ package com.gestureworks.cml.element
 		{
 			defaultTextFormat = textFormat;
 			updateText();
+		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			removeEventListener(Event.RESIZE, changeHandler);
 		}
 		
 	}

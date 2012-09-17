@@ -320,6 +320,13 @@ package com.gestureworks.cml.element
 		 */		
 		override public function displayComplete():void
 		{
+			//if (preload)
+				//load();
+				init();
+		}
+		
+		public function init():void
+		{
 			if (preload)
 				load();
 		}
@@ -557,5 +564,6 @@ package com.gestureworks.cml.element
 			}
 			else return "00:00";
 		}	
+
 	}
 }
