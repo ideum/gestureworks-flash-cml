@@ -34,7 +34,11 @@ package com.gestureworks.cml.factories
 		// IObject
 		////////////////////////////////
 		
-		public function dispose():void{};
+		public function dispose():void
+		{
+			textFormat = null;
+			propertyStates = null;
+		}
 		
 		public var propertyStates:Array;
 		

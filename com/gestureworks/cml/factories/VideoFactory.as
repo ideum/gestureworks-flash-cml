@@ -23,7 +23,6 @@ package com.gestureworks.cml.factories
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;
 		private var video:Video;
-		private var videoObject:Object;
 		private var customClient:Object;
 		private var timer:Timer;
 		private var sizeLoaded:Boolean = false;
@@ -181,7 +180,7 @@ package com.gestureworks.cml.factories
 				
 				netStream = null;
 			}
-			
+
 			if (customClient)
 				customClient = null;
 			
@@ -410,7 +409,13 @@ package com.gestureworks.cml.factories
 			else stop();
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", "end", true, true));
-		}		
+		}	
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+			close();
+		}
 			
 	}
 }

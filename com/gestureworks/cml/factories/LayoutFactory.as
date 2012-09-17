@@ -210,6 +210,15 @@ package com.gestureworks.cml.factories
         {
             return {transform:{matrix:{a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty}}}
         }
+		
+		/**
+		 * Deconstructor
+		 */
+		override public function dispose():void 
+		{
+			super.dispose();
+			childTransformations = null;
+		}
 	}
 
 }

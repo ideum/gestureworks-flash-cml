@@ -17,14 +17,12 @@ package com.gestureworks.cml.factories
 			super();
 			propertyStates = [];
 			propertyStates[0] = new Dictionary(false);
+		}	
+		
+		public function dispose():void 
+		{ 			
+			propertyStates = null;
 		}
-		
-		
-		////////////////
-		//  IOBJECT  
-		///////////////		
-		
-		public function dispose():void{};
 		
 		public var propertyStates:Array;
 		

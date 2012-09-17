@@ -199,7 +199,7 @@ package com.gestureworks.cml.factories
 	        id3Year = null;
 	        id3Copyright = null;
 	        id3Comment = null;
-			
+			bgGraphic = null;			
 			
 			if (timer) {
 				timer.stop();
