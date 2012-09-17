@@ -165,11 +165,10 @@ package com.gestureworks.cml.components
 		
 		// public methods // 
 	
-		
 		/**
-		 * This is part of the CML parsing process.
+		 * Initialization function
 		 */
-		override public function displayComplete():void
+		override public function init():void 
 		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
@@ -208,7 +207,14 @@ package com.gestureworks.cml.components
 			if (autoTextLayout)
 				textFields = searchChildren(TextElement, Array);
 			
-			//updateLayout();		
+			//updateLayout();	
+		}
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void
+		{
+			init();
 		}		
 			
 		
@@ -346,24 +352,25 @@ package com.gestureworks.cml.components
 			super.dispose();
 			
 			textFields = null;
-			map = null;
 			front = null;
 			back = null;
 			backBackground = null;
 			menu = null;
 			frame = null;
 			
-			if (GestureWorks.activeTUIO)
-				this.removeEventListener(TuioTouchEvent.DOUBLE_TAP, onDouble);
-			else if	(GestureWorks.supportsTouch)
-				this.removeEventListener(GWGestureEvent.DOUBLE_TAP, onDouble);
-			else	
-				this.removeEventListener(MouseEvent.DOUBLE_CLICK, onDouble);
+			if (map)
+			{
+				map.removeEventListener(StateEvent.CHANGE, onStateEvent);
+				map = null;
+			}
 			
 			this.removeEventListener(StateEvent.CHANGE, onStateEvent);			
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);		
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);		
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);				
 		}
 		
 	}

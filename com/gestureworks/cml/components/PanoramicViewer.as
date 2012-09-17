@@ -188,8 +188,11 @@
 			_autoTextLayout = value;			
 		}
 		
-		override public function displayComplete():void
-		{			
+		/**
+		 * Initialization function
+		 */
+		override public function init():void 
+		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
@@ -221,6 +224,14 @@
 				textFields = searchChildren(TextElement, Array);
 				
 			updateLayout();	
+		}
+		
+		/**
+		 * CML initialization 
+		 */
+		override public function displayComplete():void
+		{			
+			init();
 		}
 		
 		private function updateLayout():void
@@ -352,6 +363,9 @@
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);					
 		}
 	}
 }

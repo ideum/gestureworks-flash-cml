@@ -80,15 +80,11 @@ package com.gestureworks.cml.components
 			
 		}
 		
-		override public function displayComplete():void
-		{			
-			//trace("node viewer complete");
-			initUI();
-			setupUI();
-		}
-		
-		private function initUI():void
-		{ 	
+		/**
+		 * Initialization function
+		 */
+		override public function init():void 
+		{
 			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).id);
 			//trace("------------------------------------------", this.childList.getCSSClass("album_list_viewer", 0).id);
 			//trace("------------------------------------------", this.childList.getCSSClass("node_list_viewer", 0).childList.length);
@@ -99,7 +95,16 @@ package com.gestureworks.cml.components
 			album_holder = this.childList.getCSSClass("album_list_viewer", 0);
 			albums = this.childList.getCSSClass("album_list_viewer", 0).childList.getCSSClass("album");
 			slider = this.childList.getCSSClass("slider", 0);
-			background = this.childList.getCSSClass("background", 0);
+			background = this.childList.getCSSClass("background", 0);			
+			setupUI();
+		}
+		
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void
+		{			
+			init();
 		}
 		
 		private function setupUI():void

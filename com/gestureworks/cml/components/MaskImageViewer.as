@@ -200,8 +200,11 @@ package com.gestureworks.cml.components
 			_autoTextLayout = value;			
 		}
 		
-		override public function displayComplete():void
-		{			
+		/**
+		 * Initialization function
+		 */
+		override public function init():void 
+		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
@@ -239,15 +242,12 @@ package com.gestureworks.cml.components
 			updateLayout();
 		}
 		
-			
-		private function initUI():void
-		{				
-			
-		}
-			
-		private function setupUI():void
-		{ 
-			
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void
+		{			
+			init();
 		}
 		
 		private function updateLayout():void
@@ -400,6 +400,9 @@ package com.gestureworks.cml.components
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);					
 		}
 	}
 }

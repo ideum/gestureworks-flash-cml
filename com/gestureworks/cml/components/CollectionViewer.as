@@ -32,7 +32,7 @@ package com.gestureworks.cml.components
 			queue = new List;
 		}
 		
-		override public function displayComplete():void
+		override public function init():void 
 		{
 			cover = new Sprite;
 		
@@ -78,7 +78,11 @@ package com.gestureworks.cml.components
 					queue.append(childList.getIndex(i));
 				}	
 			}
-			
+		}
+		
+		override public function displayComplete():void
+		{
+			init();
 		}			
 		
 		private var cover:Sprite;

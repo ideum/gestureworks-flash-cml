@@ -28,7 +28,50 @@ package com.gestureworks.cml.components
 			disableAffineTransform = false;			
 		}
 		
+		override public function init():void 
+		{
+			this.addEventListener(StateEvent.CHANGE, onStateEvent);
+			
+			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
+			if (!image)
+				image = searchChildren(".flickr_element");
+			if (!menu)
+				menu = searchChildren(".menu_container");
+			if (!frame)
+				frame = searchChildren(".frame_element");
+			if (!front)
+				front = searchChildren(".flickr_container");
+			if (!back)
+				back = searchChildren(".info_container");				
+			if (!backBackground)
+				backBackground = searchChildren(".info_bg");	
+			
+			// automatically try to find elements based on AS3 class
+			if (!image)
+				image = searchChildren(FlickrElement);
+				image.addEventListener(StateEvent.CHANGE, onStateEvent);
+			if (!menu)
+				menu = searchChildren(Menu);
+			if (!frame)
+				frame = searchChildren(FrameElement);
+			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
+				backBackground = back.searchChildren(GraphicElement);	
+			
+			// this is the v2.0-v2.1 implementation
+			if (autoTextLayout)
+				textFields = searchChildren(TextElement, Array);
+			
+			//updateLayout();
+		}
 		
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void
+		{
+			init();
+		}	
+				
 		private var _image:*;
 		/**
 		 * Sets the image element.
@@ -159,50 +202,7 @@ package com.gestureworks.cml.components
 		{	
 			_autoTextLayout = value;			
 		}		
-		
-		
-		// public methods // 
-	
-		
-		/**
-		 * This is part of the CML parsing process.
-		 */
-		override public function displayComplete():void
-		{
-			this.addEventListener(StateEvent.CHANGE, onStateEvent);
-			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!image)
-				image = searchChildren(".flickr_element");
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".flickr_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
-			
-			// automatically try to find elements based on AS3 class
-			if (!image)
-				image = searchChildren(FlickrElement);
-				image.addEventListener(StateEvent.CHANGE, onStateEvent);
-			if (!menu)
-				menu = searchChildren(Menu);
-			if (!frame)
-				frame = searchChildren(FrameElement);
-			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
-				backBackground = back.searchChildren(GraphicElement);	
-			
-			// this is the v2.0-v2.1 implementation
-			if (autoTextLayout)
-				textFields = searchChildren(TextElement, Array);
-			
-			//updateLayout();	
-		}		
-			
+					
 		
 		///////////////////////////////////////////////////////////////////////
 		// Private Methods
@@ -345,7 +345,10 @@ package com.gestureworks.cml.components
 			this.removeEventListener(StateEvent.CHANGE, onStateEvent);			
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);		
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);		
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);			
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);				
 		}
 		
 	}

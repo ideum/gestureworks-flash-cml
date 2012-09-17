@@ -147,8 +147,11 @@ package  com.gestureworks.cml.components
 			_autoTextLayout = value;			
 		}
 		
-		override public function displayComplete():void {
-			
+		/**
+		 * Initialization function
+		 */
+		override public function init():void 
+		{
 			super.displayComplete();
 			
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
@@ -182,6 +185,14 @@ package  com.gestureworks.cml.components
 			updateLayout();
 			
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
+		}
+		
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void 
+		{
+			init();
 		}
 		
 		private function updateLayout():void

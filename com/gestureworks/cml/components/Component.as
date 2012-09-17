@@ -22,7 +22,7 @@ package com.gestureworks.cml.components
 			super();
 		}
 		
-		override public function displayComplete():void
+		public function init():void
 		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
@@ -40,8 +40,12 @@ package com.gestureworks.cml.components
 					else	
 						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
 				}					
-			}
-			
+			}			
+		}
+		
+		override public function displayComplete():void
+		{
+			init();
 		}
 		
 		private function onDown(event:*):void

@@ -28,7 +28,39 @@ package com.gestureworks.cml.components
 			super();
 			mouseChildren = true;
 			addEventListener(StateEvent.CHANGE, albumComplete);
+		}		
+		
+		/**
+		 * Initialization function
+		 */
+		override public function init():void 
+		{
+			this.addEventListener(StateEvent.CHANGE, onStateEvent);				
+			
+			// automatically try to find elements based on AS3 class
+			if (!album)
+				album = searchChildren(AlbumElement);
+			if (!menu)
+				menu = searchChildren(Menu);
+			if (!frame)
+				frame = searchChildren(FrameElement);
+			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
+				backBackground = back.searchChildren(GraphicElement);	
+			
+			// this is the v2.0-v2.1 implementation
+			if (autoTextLayout)
+				textFields = searchChildren(TextElement, Array);
+				
+			updateLayout();	
 		}
+		
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void
+		{
+			init();
+		}			
 		
 		private var _album:*;
 		/**
@@ -185,31 +217,7 @@ package com.gestureworks.cml.components
 		{
 			super.rotationX = value;
 			if(album) album.dragAngle = value;
-		}		
-		
-		/**
-		 * This is part of the CML parsing process.
-		 */
-		override public function displayComplete():void
-		{
-			this.addEventListener(StateEvent.CHANGE, onStateEvent);				
-			
-			// automatically try to find elements based on AS3 class
-			if (!album)
-				album = searchChildren(AlbumElement);
-			if (!menu)
-				menu = searchChildren(Menu);
-			if (!frame)
-				frame = searchChildren(FrameElement);
-			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
-				backBackground = back.searchChildren(GraphicElement);	
-			
-			// this is the v2.0-v2.1 implementation
-			if (autoTextLayout)
-				textFields = searchChildren(TextElement, Array);
-				
-			updateLayout();	
-		}		
+		}			
 		
 		/**
 		 * Updates dimensions and other attributes
@@ -370,10 +378,14 @@ package com.gestureworks.cml.components
 			menu = null;
 			frame = null;
 			
+			this.removeEventListener(StateEvent.CHANGE, albumComplete);
 			this.removeEventListener(StateEvent.CHANGE, onStateEvent);			
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);		
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);		
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);		
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
 		}
 		
 	}

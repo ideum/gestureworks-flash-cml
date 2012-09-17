@@ -27,9 +27,14 @@ package com.gestureworks.cml.components
 			super.dispose();
 		}
 		
+		public function init():void
+		{
+			trace("node list viewer---------------------------------------------------",this.id);
+		}
+		
 		override public function displayComplete():void
 		{			
-			trace("node list viewer---------------------------------------------------",this.id);
+			init();
 		}
 	}
 }

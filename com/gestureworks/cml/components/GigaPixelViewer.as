@@ -182,20 +182,21 @@
 			_autoTextLayout = value;			
 		}
 		
-		override public function displayComplete():void
-		{			
-			//trace("panoramicViewer complete")
-			initUI();
+		/**
+		 * Initialization function
+		 */
+		override public function init():void 
+		{
 			setupUI();
 			updateLayout();
 		}
-
-	
-		private function initUI():void
-		{
-			//trace("initUI");
-			// set easing
-			// duration
+		
+		/**
+		 * CML initialization
+		 */
+		override public function displayComplete():void
+		{			
+			init();
 		}
 		
 		private function setupUI():void
@@ -345,7 +346,7 @@
 			}
 		}
 		
-		/*override public function dispose():void
+		override public function dispose():void
 		{
 			super.dispose();
 			frame = null;
@@ -354,17 +355,21 @@
 			menu = null;
 			sceneNavigator = null;
 			scaleConstraint = null;
+			textFields = null;
 			
-			if (image)
+			if (gigapixel)
 			{
-				gigapixel.removeEventListener(Event.COMPLETE, image_completeHandler);
+				gigapixel.removeEventListener(StateEvent.CHANGE, onStateEvent);
 				gigapixel = null;
 			}	
 			
 			this.removeEventListener(StateEvent.CHANGE, onStateEvent);
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
-		}*/
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);			
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
+		}
 	}
 }
