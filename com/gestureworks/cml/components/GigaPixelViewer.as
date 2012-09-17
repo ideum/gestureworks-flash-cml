@@ -350,7 +350,6 @@
 		{
 			super.dispose();
 			frame = null;
-			touch_giga_image = null;
 			info = null;
 			menu = null;
 			sceneNavigator = null;
