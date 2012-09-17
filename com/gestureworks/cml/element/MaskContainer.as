@@ -44,7 +44,9 @@ package com.gestureworks.cml.element
 			super();
 			
 			graphicArray = new List();
-			
+			disableNativeTransform = true;
+			gestureEvents = true;
+			gestureList = { "n-drag":true, "n-rotate":true, "n-scale":true, "double_tap_n":true };
 		}
 		
 		//Mask SHAPE (STRING)

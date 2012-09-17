@@ -216,7 +216,7 @@ package com.gestureworks.cml.components
 			if (!frame)
 				frame = searchChildren(".frame_element");
 			if (!front)
-				front = searchChildren(".image_container");
+				front = searchChildren(".mask_container");
 			if (!back)
 				back = searchChildren(".info_container");				
 			if (!backBackground)
@@ -250,7 +250,7 @@ package com.gestureworks.cml.components
 			init();
 		}
 		
-		private function updateLayout():void
+		public function updateLayout():void
 		{
 			// update width and height to the size of the image, if not already specified
 			if (!width && maskCon)

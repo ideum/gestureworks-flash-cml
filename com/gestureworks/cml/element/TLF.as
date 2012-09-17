@@ -14,6 +14,8 @@ package com.gestureworks.cml.element
 	import flashx.textLayout.elements.Configuration;
 	import flashx.textLayout.elements.TextFlow;
 	import flashx.textLayout.formats.TextLayoutFormat;
+	import flashx.textLayout.formats.BackgroundColor;
+	import flashx.textLayout.formats.*;
 
 	/**
 	 * This is a wrapper for AS3's TLF system. The input is in the form of XML,
@@ -90,6 +92,22 @@ package com.gestureworks.cml.element
 		{ 
 			_font = v; 
 			textFlow.fontFamily = font;
+			if (initialized) updateContainer();
+		}
+		
+		private var _backgroundAlpha:Number;
+		public function get backgroundAlpha():Number { return _backgroundAlpha; }
+		public function set backgroundAlpha(value:Number):void {
+			_backgroundAlpha = value;
+			textFlow.backgroundAlpha = _backgroundAlpha;
+			if (initialized) updateContainer();
+		}
+		
+		private var _backgroundColor:uint;
+		public function get backgroundColor():uint { return _backgroundColor; }
+		public function set backgroundColor(value:uint):void {
+			_backgroundColor = value;
+			textFlow.backgroundColor = _backgroundColor;
 			if (initialized) updateContainer();
 		}
 		

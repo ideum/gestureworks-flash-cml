@@ -13,6 +13,10 @@ package com.gestureworks.cml.factories
 	import flash.utils.Dictionary;	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.net.registerClassAlias;
+	import flash.utils.ByteArray;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 	
 	
 	/**
@@ -365,9 +369,6 @@ package com.gestureworks.cml.factories
 		 */
 		public function clone():Object {return new Object};	
 				
-		
-		
-		
 		
 		/**
 		 * Prints to console

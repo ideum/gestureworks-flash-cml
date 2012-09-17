@@ -32,7 +32,8 @@ package com.gestureworks.cml.core
 			"com.gestureworks.cml.components.",		
 			"com.gestureworks.cml.element.", 
 			"com.gestureworks.cml.kits.",
-			"com.gestureworks.cml.layouts."
+			"com.gestureworks.cml.layouts.",
+			""
 		]		
 	}
 	
@@ -51,9 +52,12 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
-	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
 	import com.gestureworks.cml.components.MP3Player; MP3Player;
+	import com.gestureworks.cml.components.YouTubeViewer; YouTubeViewer;
 	import com.gestureworks.cml.components.Component; Component;	
+	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
+	import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
+	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
 	
 	
 	
@@ -89,14 +93,23 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.RadioButtons; RadioButtons;
     import com.gestureworks.cml.element.Switch; Switch;
 	import com.gestureworks.cml.element.DatePicker; DatePicker;
+	import com.gestureworks.cml.element.DropDownMenu; DropDownMenu;
+	import com.gestureworks.cml.element.YouTubeElement; YouTubeElement;
+	import com.gestureworks.cml.element.FlickrElement; FlickrElement;
+	import com.gestureworks.cml.element.Slideshow; Slideshow;
 	import com.gestureworks.cml.element.ColorPicker; ColorPicker;
+	import com.gestureworks.cml.element.ModestMapElement; ModestMapElement;
+	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
+	import com.gestureworks.cml.element.GigapixelElement; GigapixelElement;
+	import com.gestureworks.cml.element.PanoramicElement; PanoramicElement;
+	import com.gestureworks.cml.element.MaskContainer; MaskContainer;
+	import com.gestureworks.cml.element.MagnifierElement; MagnifierElement;
 	import com.gestureworks.cml.element.TabbedContainer; TabbedContainer;
 	import com.gestureworks.cml.element.TabElement; TabElement;
 	import com.gestureworks.cml.element.KeyElement; KeyElement;	
 	import com.gestureworks.cml.element.TouchKeyboard; TouchKeyboard;
 	import com.gestureworks.cml.element.AlbumElement; AlbumElement;
-	
-	
+
 	/////////////////////
 	//  KITS  
 	/////////////////////
@@ -113,6 +126,7 @@ package com.gestureworks.cml.core
 	//////////////////////
 	import com.gestureworks.cml.layouts.RandomLayout; RandomLayout;
 	import com.gestureworks.cml.layouts.ListLayout; ListLayout;
+	//import com.gestureworks.cml.layouts.StackLayout; StackLayout;
 	import com.gestureworks.cml.layouts.GridLayout; GridLayout;
 	import com.gestureworks.cml.layouts.PointLayout; PointLayout;
 	import com.gestureworks.cml.layouts.PileLayout; PileLayout;
