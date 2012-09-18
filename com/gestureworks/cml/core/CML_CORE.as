@@ -43,13 +43,11 @@ package com.gestureworks.cml.core
 	//  COMPONENTS   
 	/////////////////////	
 	import com.gestureworks.cml.components.MediaViewer; MediaViewer;
-	import com.gestureworks.cml.components.NodeListViewer; NodeListViewer;
 	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;	
 	import com.gestureworks.cml.components.MP3Player; MP3Player;	
 	import com.gestureworks.cml.components.VideoViewer; VideoViewer;	
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
-	import com.gestureworks.cml.components.NodeMapViewer; NodeMapViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.MP3Player; MP3Player;
