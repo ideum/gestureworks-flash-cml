@@ -55,7 +55,8 @@ package  com.gestureworks.cml.element
 		/**
 		 * Initialization function
 		 */
-		public function init():void
+		
+		public function initUI():void
 		{
 			setBackground();
 			setText();
@@ -72,7 +73,7 @@ package  com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void
 		{
-			init();
+			initUI();
 		}
 				
 		/**

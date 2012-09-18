@@ -139,7 +139,7 @@ package com.gestureworks.cml.element
 			
 			//applyFilter();
 			applyMask();
-			init();
+			init2();
 		}
 		
 		private function readyBitmaps():void {
@@ -176,7 +176,7 @@ package com.gestureworks.cml.element
 			this.mask = mSprite;
 		}
 		
-		private function init():void {
+		private function init2():void {
 			//Initialize the timer to render things on the stage. Runs at ~30 FPS.
 			timer = new Timer(34);
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
