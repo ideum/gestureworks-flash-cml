@@ -50,7 +50,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialization method
 		 */
-		public function init():void
+		override public function init():void
 		{
 			displayComplete();
 		}

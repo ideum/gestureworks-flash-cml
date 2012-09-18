@@ -22,7 +22,7 @@ package com.gestureworks.cml.components
 			super();
 		}
 		
-		public function init():void
+		override public function init():void
 		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			

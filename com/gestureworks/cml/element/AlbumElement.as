@@ -52,7 +52,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialization function
 		 */
-		public function init():void
+		override public function init():void
 		{	
 			sizeAlbumToContent();
 			initBelt();
