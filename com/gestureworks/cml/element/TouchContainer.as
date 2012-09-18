@@ -17,9 +17,11 @@ package com.gestureworks.cml.element
 			disableNativeTransform = false; 
 		}
 
-		public function init():void 
+		public function init():void
 		{
+			
 		}
+		
 		public function showIndex(index:int):void
 		{
 			childList.getIndex(index).visible = false;

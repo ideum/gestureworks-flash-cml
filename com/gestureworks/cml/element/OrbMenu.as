@@ -359,7 +359,7 @@ package com.gestureworks.cml.element
 			_backgroundOutlineColor = value;
 		}
 		
-		private var _backgroundLineStoke:uint = 3;
+		private var _backgroundLineStoke:uint = 2;
 		
 		/**
 		 * Sets the background line stoke
@@ -543,7 +543,7 @@ package com.gestureworks.cml.element
 			
 			shape2.graphics.lineStyle(shape2LineStoke, shape2OutlineColor);
 			shape2.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
-			shape2.graphics.drawCircle(0, 0, (orbRadius / 2));
+			shape2.graphics.drawCircle(0, 0, (orbRadius/2));
 			shape2.x = 0;
 			shape2.y = 0;
 			
