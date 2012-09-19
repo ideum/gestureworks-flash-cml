@@ -37,7 +37,7 @@ package com.gestureworks.cml.factories
 		
 		/**
 		 * Calls the dispose method for each child possessing a dispose method then removes all children. 
-		 * This is the root deconstructor intended to be called by overriding dispose functions. 
+		 * This is the root destructor intended to be called by overriding dispose functions. 
 		 */
 		public function dispose():void 		
 		{

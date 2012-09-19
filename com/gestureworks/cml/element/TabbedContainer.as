@@ -250,7 +250,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Deconstructor
+		 * Destructor
 		 */
 		override public function dispose():void 
 		{

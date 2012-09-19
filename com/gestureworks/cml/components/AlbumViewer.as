@@ -364,7 +364,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Deconstructor
+		 * Destructor
 		 */
 		override public function dispose():void 
 		{

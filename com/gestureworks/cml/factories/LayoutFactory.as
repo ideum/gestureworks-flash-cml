@@ -212,7 +212,7 @@ package com.gestureworks.cml.factories
         }
 		
 		/**
-		 * Deconstructor
+		 * Destructor
 		 */
 		override public function dispose():void 
 		{
