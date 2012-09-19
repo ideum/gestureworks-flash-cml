@@ -50,11 +50,10 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
-	import com.gestureworks.cml.components.MP3Player; MP3Player;
 	import com.gestureworks.cml.components.YouTubeViewer; YouTubeViewer;
 	import com.gestureworks.cml.components.Component; Component;	
-	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
-	import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
+	//import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
+	//import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
 	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
 	
 	
@@ -93,10 +92,10 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.DatePicker; DatePicker;
 	import com.gestureworks.cml.element.DropDownMenu; DropDownMenu;
 	import com.gestureworks.cml.element.YouTubeElement; YouTubeElement;
-	import com.gestureworks.cml.element.FlickrElement; FlickrElement;
+	//import com.gestureworks.cml.element.FlickrElement; FlickrElement;
 	import com.gestureworks.cml.element.Slideshow; Slideshow;
 	import com.gestureworks.cml.element.ColorPicker; ColorPicker;
-	import com.gestureworks.cml.element.ModestMapElement; ModestMapElement;
+	//import com.gestureworks.cml.element.ModestMapElement; ModestMapElement;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
 	import com.gestureworks.cml.element.GigapixelElement; GigapixelElement;
 	import com.gestureworks.cml.element.PanoramicElement; PanoramicElement;
