@@ -197,7 +197,13 @@ package com.gestureworks.cml.element
 		/**
 		 * The color of the containerRec
 		 */
-		private var _skin:uint = 0xE8E8E8;			
+		private var _skin:uint = 0xE8E8E8;	
+		
+		/**
+		 * The color of the labels
+		 */
+		private var _labelColor:uint = 0x000000;
+		
 		private static const HEX_RANGE:Number = Math.PI / 3;
 			
 		/**
@@ -271,7 +277,7 @@ package com.gestureworks.cml.element
 		{
 			containerRec = new Sprite();
 			var g:Graphics = containerRec.graphics;
-			g.beginFill(_skin);			
+			g.beginFill(skin);			
 			g.drawRect(0, 0, 480, 375);
 			g.endFill();
 			addChild(containerRec);
@@ -475,6 +481,7 @@ package com.gestureworks.cml.element
 		{
 			var label:TextElement = new TextElement();
 			label.autoSize = "center";
+			label.color = labelColor;
 			label.text = lab;
 			label.selectable = false;
 			label.x = _x;
@@ -828,10 +835,19 @@ package com.gestureworks.cml.element
 		/**
 		 * The skin color of the containerRec
 		 */
-		public function get skin():uint { return _skin; };
+		public function get skin():uint { return _skin; }
 		public function set skin(s:uint):void
 		{
 			_skin = s;
+		}
+		
+		/**
+		 * The color of the labels
+		 */
+		public function get labelColor():uint { return _labelColor; }
+		public function set labelColor(c:uint):void
+		{
+			_labelColor = c;
 		}
 		
 	}

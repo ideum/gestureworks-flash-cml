@@ -103,6 +103,10 @@ package com.gestureworks.cml.element
 		 */
 		private var _selectedDate:String;				
 		public function get selectedDate():String { return _selectedDate; }
+		public function set selectedDate(d:String):void
+		{
+			_selectedDate = d;
+		}
 		
 		/**
 		 * A comma delimited string representing the days of the week
@@ -244,6 +248,9 @@ package com.gestureworks.cml.element
 				nr_txt.text = String(i);
 				nr_txt.selectable = false;	
 				
+				//initialize selected date to today's date
+				selectedDate = todayDate.getMonth()+1 + "/" + todayDate.getDate() + "/" + todayDate.getFullYear();
+				
 				// format text & highlight date of today:
 				(todayDate.getFullYear() == yy && todayDate.getMonth() == mm  && todayDate.getDate() == i) ? nr_txt.setTextFormat(txtFormat("today")) : nr_txt.setTextFormat(txtFormat("dateGrid"));
 				nr_spr.addChild(nr_txt);
@@ -340,7 +347,7 @@ package com.gestureworks.cml.element
 		 * @param	e  the selection event
 		 */
 		private function onDateSelect(e:*):void{
-			_selectedDate = e.target.name;
+			selectedDate = e.target.name;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedDate", _selectedDate));			
 		}
 
