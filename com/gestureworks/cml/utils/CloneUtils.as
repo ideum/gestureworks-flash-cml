@@ -35,7 +35,7 @@ package com.gestureworks.cml.utils
 						for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
 							var childClone:* = clone(DisplayObjectContainer(source).getChildAt(i));
 							
-							if (childClone["displayComplete"]) {
+							if (childClone.hasOwnProperty("displayComplete")) {
 								childClone["displayComplete"]();
 							}
 							
