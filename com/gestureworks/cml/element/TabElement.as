@@ -42,6 +42,7 @@ package com.gestureworks.cml.element
 		private var _title:String = "";
 		private var _displayColor:uint = 0x000000;
 		private var _isSelected:Boolean = true;
+		private var _applyMask:Boolean = true;
 		
 		private var _tabFont:String = "OpenSansRegular";
 		private var _tabFontSize:Number = 20;
@@ -52,10 +53,11 @@ package com.gestureworks.cml.element
 		private var _tabLeftRadius:Number;
 		private var _tabRightRadius:Number;
 		
-		private var standAlone:Boolean = true;
-		private var display:GraphicElement;
+		private var contentContainer:Container;
+		private var displayBkg:GraphicElement;
 		private var tabGE:GraphicElement;	
 		private var text:TextElement;
+		private var contentMask:GraphicElement;
 		
 		
 		/**
@@ -64,14 +66,14 @@ package com.gestureworks.cml.element
 		public function TabElement() 
 		{
 			super();
-			addEventListener(Event.ADDED, tabAdded);
 			width = 462;
 			height = 423;
 			mouseChildren = false;
 			
 			text = new TextElement();
 			tabGE = new GraphicElement();
-			display = new GraphicElement();			
+			contentContainer = new Container();
+			displayBkg = new GraphicElement();
 		}
 		
 		/**
@@ -103,6 +105,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Mask the content to prevent objects from exceeding the boundaries 
+		 */
+		public function get applyMask():Boolean { return _applyMask; }
+		public function set applyMask(m:Boolean):void
+		{
+			_applyMask = m;
+		}
+		
+		/**
 		 * The background color of the container
 		 * @default 0x000000
 		 */
@@ -111,7 +122,7 @@ package com.gestureworks.cml.element
 		{
 			_displayColor = c;
 		}
-		
+						
 		/**
 		 * The font of tab's text
 		 * @default OpenSansRegular
@@ -161,7 +172,7 @@ package com.gestureworks.cml.element
 			_isSelected = s;
 			alpha = _isSelected ? 1 : .5;
 			tabGE.fill = _isSelected ? "color" : "gradient";
-			updateDisplayList();
+			updateDisplay();
 		}		
 				
 		/**
@@ -171,7 +182,12 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void 
 		{
 			super.height = value;
-			if (display && tabGE) display.height = value - tabGE.height;
+			if (contentContainer && tabGE) 
+			{
+				contentContainer.height = value - tabGE.height;
+				displayBkg.height = contentContainer.height;
+				if (applyMask) contentMask.height = contentContainer.height;
+			}
 		}
 		
 		/**
@@ -181,7 +197,12 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void 
 		{
 			super.width = value;
-			if (display) display.width = value;
+			if (contentContainer) 
+			{
+				contentContainer.width = value;
+				displayBkg.width = value;
+				if (applyMask) contentMask.width = value;
+			}
 		}
 		
 		/**
@@ -202,12 +223,18 @@ package com.gestureworks.cml.element
 			_tabHeight = h;
 		}
 		
+		/**
+		 * The radius of the upper left corner of the tab in pixels
+		 */
 		public function get tabLeftRadius():Number { return _tabLeftRadius; }
 		public function set tabRightRadius(r:Number):void
 		{
 			_tabLeftRadius = r;
 		}
 		
+		/**
+		 * The radius of the upper right corner of the tab in pixels
+		 */
 		public function get tabRightRadius():Number { return _tabRightRadius; }
 		public function set tabRighRadius(r:Number):void
 		{
@@ -250,19 +277,37 @@ package com.gestureworks.cml.element
 			tabGE.addChild(text);
 			addUIComponent(tabGE);	
 			
-			//setup panel background graphics
-			display.lineStroke = standAlone ? 1.5 : 0;
-			display.color = displayColor;
-			display.shape = "rectangle";
-			display.width = width;
-			display.height = height - tabGE.height;
-			display.y = tabGE.height;
-			addUIComponent(display);									
+			//setup content container
+			contentContainer.width = width;
+			contentContainer.height = height - tabHeight;
+			if (!isSelected) contentContainer.visible = false;
+			addUIComponent(contentContainer);
+			
+			//setup content background 
+			displayBkg.lineStroke = 0;
+			displayBkg.color = displayColor;
+			displayBkg.shape = "rectangle";
+			displayBkg.width = contentContainer.width;
+			displayBkg.height = contentContainer.height;
+			displayBkg.y = tabGE.height;
+			contentContainer.addChild(displayBkg);			
+			
+			//create mask and apply it to the content container
+			if (applyMask)
+			{
+				contentMask = new GraphicElement();
+				contentMask.shape = "rectangle";
+				contentMask.width = width;
+				contentMask.height = displayBkg.height;
+				contentMask.y = displayBkg.y;
+				contentContainer.addChild(contentMask)
+				contentContainer.mask = contentMask;
+			}
 		}
 		
 		/**
-		 * A special child addition to exclude UI elements from selected state events
-		 * @param	child
+		 * Adds child to the <code>TabElement</code> rather than the content container
+		 * @param	child  the object to add
 		 */
 		private function addUIComponent(child:DisplayObject):void
 		{
@@ -270,62 +315,50 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets visibility of children based on the selected state of the container
-		 * @param	child
-		 * @return
+		 * Adds children to the content container
+		 * @param	child  object to add
+		 * @return  the object added
 		 */
 		override public function addChild(child:DisplayObject):DisplayObject 
 		{
-			//child.mask = getContentMask();
-			if (!isSelected) child.visible = false;
-			return super.addChild(child);
+			return contentContainer.addChild(child);
 		}
 		
 		/**
-		 * Hides or displays all children depending on the selected state
+		 * Return layout from content container
 		 */
-		private function updateDisplayList():void
+		override public function get layout():* 
+		{
+			return contentContainer.layout;
+		}
+		
+		/**
+		 * Add layout to content container
+		 */
+		override public function set layout(value:*):void 
+		{
+			contentContainer.layout = value;
+			contentContainer.layoutList = layoutList;
+		}
+		
+		/**
+		 * Apply layout to content container
+		 * @param	value
+		 */
+		override public function applyLayout(value:* = null):void 
+		{
+			contentContainer.applyLayout(value);
+		}
+		
+		/**
+		 * Hides or displays content depending on the selected state
+		 */
+		private function updateDisplay():void
 		{
 			if (isSelected)
-			{
-				for (var i:int = 1; i < numChildren; i++)
-					getChildAt(i).visible = true;
-			}
+				contentContainer.visible = true;
 			else 
-			{
-				for (var j:int = 1; j < numChildren; j++)
-					getChildAt(j).visible = false;				
-			}
-		}
-		
-		/**
-		 * Mechanism to determine if a <code>TabElement</code> belongs to a <code>TabbedContainer</code> or not.
-		 * @param	e
-		 */
-		private function tabAdded(e:Event):void
-		{
-			if (e.target.parent is TabbedContainer)
-			{
-				standAlone = false;
-				display.lineStroke = 0;
-			}
-		}
-		
-		/**
-		 * @todo implement display masking option to prevent display objects from exceeding the boundaries of
-		 * the container
-		 * @return
-		 */
-		private function getContentMask():GraphicElement
-		{
-			var contentMask:GraphicElement = new GraphicElement();
-			contentMask.alpha = 0;
-			contentMask.shape = display.shape;
-			contentMask.height = display.height;
-			contentMask.width = display.width;
-			contentMask.y = display.y;
-			addUIComponent(contentMask);
-			return contentMask;
+				contentContainer.visible = false;
 		}
 		
 		/**
@@ -334,11 +367,9 @@ package com.gestureworks.cml.element
 		override public function dispose():void 
 		{
 			super.dispose();
-			display = null;
+			displayBkg = null;
 			tabGE = null;
-			text = null;
-			
-			removeEventListener(Event.ADDED, tabAdded);
+			text = null;			
 		}
 						
 	}
