@@ -42,7 +42,7 @@ public class ScrollPane extends Container
 	public function ScrollPane():void
 		{
 			super();
-			init();
+		//	init();
 		}
 		
 	/**
@@ -51,7 +51,7 @@ public class ScrollPane extends Container
 	public override function displayComplete():void
 	   {
 	   super.displayComplete();
-	   //init();
+	   init();
 	   }	
     
 	/**
@@ -334,7 +334,7 @@ public class ScrollPane extends Container
 	 _bgX = value;
 	}
 	
-	private var _bgY:Number = 0;
+	private var _bgY:Number = 605;
 	/**
 	* Sets the horizontal background y position
 	* @default = 0;
@@ -364,7 +364,7 @@ public class ScrollPane extends Container
 	 _bgHeight = value;
 	}
 	
-	private var _bgWidth:Number = 7;
+	private var _bgWidth:Number = 600;
 	/**
 	* Sets the horizontal background width
 	* @default = 600;
@@ -394,7 +394,7 @@ public class ScrollPane extends Container
 	 _bgEllipseHeight = value;
 	}
 	
-	private var _bgEllipseWidth:Number = 25;
+	private var _bgEllipseWidth:Number = 20;
 	/**
 	* Sets the horizontal background y position
 	* @default = 0;
@@ -409,7 +409,7 @@ public class ScrollPane extends Container
 	 _bgEllipseWidth = value;
 	}
 		
-	private var _vBgX:Number = 0;
+	private var _vBgX:Number = 605;
 	/**
 	* Sets the vertical background x position
 	* @default = 0;
@@ -454,7 +454,7 @@ public class ScrollPane extends Container
 	 _vBgWidth = value;
 	}
 	
-	private var _vBgHeight:Number = 585;
+	private var _vBgHeight:Number = 600;
 	/**
 	* Sets the vertical background width
 	* @default = 600;
@@ -469,7 +469,7 @@ public class ScrollPane extends Container
 	 _vBgHeight = value;
 	}
 	
-	private var _vBgEllipseWidth:Number = 25;
+	private var _vBgEllipseWidth:Number = 30;
 	/**
 	* Sets the vertical background ellipse width
 	* @default = 0;
@@ -484,7 +484,7 @@ public class ScrollPane extends Container
 	 _vBgEllipseWidth = value;
 	}
 	
-	private var _vBgEllipseHeight:Number = 30;
+	private var _vBgEllipseHeight:Number = 20;
 	/**
 	* Sets the vertical background ellipse height
 	* @default = 0;
@@ -514,7 +514,7 @@ public class ScrollPane extends Container
 	 _scrollbarX = value;
 	}
 	
-	private var _scrollbarY:Number = 0;
+	private var _scrollbarY:Number = 605;
 	/**
 	* Sets the scrollbar y position of background
 	* @default = 0;
@@ -559,7 +559,7 @@ public class ScrollPane extends Container
 	 _scrollbarHeight = value;
 	}
 	
-	private var _scrollbarEllipseHeight:Number = 25;
+	private var _scrollbarEllipseHeight:Number = 30;
 	/**
 	* Sets the scrollbar ellipse height of background
 	* @default = 50;
@@ -574,7 +574,7 @@ public class ScrollPane extends Container
 	 _scrollbarEllipseHeight = value;
 	}
 	
-	private var _scrollbarEllipseWidth:Number = 30;
+	private var _scrollbarEllipseWidth:Number = 20;
 	/**
 	* Sets the scrollbar ellipse width of background
 	* @default = 50;
@@ -589,7 +589,7 @@ public class ScrollPane extends Container
 	 _scrollbarEllipseWidth = value;
 	}
 	
-	private var _vScrollbarX:Number = 0;
+	private var _vScrollbarX:Number = 605;
 	/**
 	* Sets the vertical scrollbar x position of background
 	* @default = 0;
@@ -664,7 +664,7 @@ public class ScrollPane extends Container
 	 _vScrollbarEllipseWidth = value;
 	}
 	
-	private var _vScrollbarEllipseHeight:Number = 25;
+	private var _vScrollbarEllipseHeight:Number = 20;
 	/**
 	* Sets the vertical scrollbar ellipse height of background
 	* @default = 50;
@@ -745,76 +745,72 @@ public class ScrollPane extends Container
 	square.x = 100;
 	square.y = 100;
 	
+	var square1:Sprite = new Sprite();
+	square1.graphics.lineStyle(squareLineStroke, squareOutlineColor);
+	square1.graphics.beginFill(squareColor);
+	square1.graphics.drawRect(0, 0, squareWidth , squareHeight);
+	square1.graphics.endFill();
+	square1.x = 100;
+	square1.y = 100;
+	
 	Loader0.load(new URLRequest(imageUrl));
-	 
-	square.scrollRect = new Rectangle(0, 0, squareWidth, squareHeight);
-	 
+
+	square1.scrollRect = new Rectangle(0, 0, squareWidth, squareHeight);
+	
     background_H.graphics.lineStyle(bgLineStroke, bgOutlineColor); 
     background_H.graphics.beginFill(bgColor);
-    background_H.graphics.drawRoundRect(bgX, bgY, (squareWidth-bgWidth), bgHeight, bgEllipseWidth, bgEllipseHeight);
+	background_H.graphics.drawRoundRect(bgX, bgY, bgWidth, bgHeight, bgEllipseWidth, bgEllipseHeight);
 	background_H.graphics.endFill();
-	
-	//background_H.x = square.x;
-	background_H.y = square.height - background_H.height;
-	background_H.width = square.width-bgWidth;
-	 
+
 	background_V.graphics.lineStyle(verticalBgLineStroke, verticalBgOutlineColor); 
     background_V.graphics.beginFill(verticalBgColor);
     background_V.graphics.drawRoundRect(vBgX, vBgY, vBgWidth, vBgHeight, vBgEllipseWidth, vBgEllipseHeight);
 	background_V.graphics.endFill();
-		
-	background_V.x = square.width - background_V.width;
-	//background_V.y = square.y;
 
 	scrollbar_H.graphics.lineStyle(scrollBarLineStroke, scrollBarOutlineColor);  
     scrollbar_H.graphics.beginFill(scrollBarColor);
     scrollbar_H.graphics.drawRoundRect(scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight, scrollbarEllipseWidth, scrollbarEllipseHeight);
 	scrollbar_H.graphics.endFill();
-	
-	scrollbar_H.x = background_H.x;
-	scrollbar_H.y = background_H.y;
 
 	scrollbar_V.graphics.lineStyle(verticalScrollbarLineStroke, verticalScrollBarOutlineColor); 
     scrollbar_V.graphics.beginFill(verticalScrollBarColor);
     scrollbar_V.graphics.drawRoundRect(vScrollbarX, vScrollbarY, vScrollbarWidth, vScrollbarHeight, vScrollbarEllipseWidth, vScrollbarEllipseHeight);
 	scrollbar_V.graphics.endFill();
-		
-	scrollbar_V.x = background_V.x; 
-	scrollbar_V.y = background_V.y;
-	
-   	if(horizontal)
+
+	if(horizontal)
 	{
 	scrollbar_H.gestureEvents = true;
 	scrollbar_H.gestureList = {"n-drag": true};
 	scrollbar_H.addEventListener(GWGestureEvent.DRAG , hDrag);
-	background_H.addEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
+	//background_H.addEventListener(TouchEvent.TOUCH_BEGIN , hBegin);
 	
-		//if (GestureWorks.activeTUIO)
-			//this.addEventListener(TuioTouchEvent.TOUCH_DOWN, hBegin);
-		//else if (GestureWorks.supportsTouch)
-			//this.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
-		//else
-			//this.addEventListener(MouseEvent.MOUSE_DOWN, hBegin);
+		if (GestureWorks.activeTUIO)
+			background_H.addEventListener(TuioTouchEvent.TOUCH_DOWN, hBegin);
+		else if (GestureWorks.supportsTouch)
+			background_H.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
+		else
+			background_H.addEventListener(MouseEvent.MOUSE_DOWN, hBegin);
 	}
 	if(vertical)	
 	{
 	scrollbar_V.gestureEvents = true;
 	scrollbar_V.gestureList = {"n-drag": true};
 	scrollbar_V.addEventListener(GWGestureEvent.DRAG , vDrag);
-	background_V.addEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
+	//background_V.addEventListener(TouchEvent.TOUCH_BEGIN , vBegin);
 	
-		//if (GestureWorks.activeTUIO)
-		    //this.addEventListener(TuioTouchEvent.TOUCH_DOWN, vBegin);
-		//else if (GestureWorks.supportsTouch)
-			//this.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
-		//else
-			//this.addEventListener(MouseEvent.MOUSE_DOWN, vBegin);
+		if (GestureWorks.activeTUIO)
+		    background_V.addEventListener(TuioTouchEvent.TOUCH_DOWN, vBegin);
+		else if (GestureWorks.supportsTouch)
+			background_V.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
+		else
+			background_V.addEventListener(MouseEvent.MOUSE_DOWN, vBegin);
 	} 
-	
+
 	addChild(square);
-    square.addChild(Loader0);
- 
-	if(horizontal)
+	addChild(square1);
+    square1.addChild(Loader0);
+		
+ 	if(horizontal)
 	{
 	square.addChild(background_H);
 	square.addChild(scrollbar_H);
@@ -824,7 +820,7 @@ public class ScrollPane extends Container
 	square.addChild(background_V);
 	square.addChild(scrollbar_V);
 	} 
-	
+
 	scrollbar_HminPos = background_H.x ;
 	scrollbar_HmaxPos = background_H.width - scrollbar_H.width;
 	

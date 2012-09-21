@@ -248,7 +248,7 @@ package com.gestureworks.cml.element
 		{
 			return _shape1LineStoke;
 		}
-		public function set(value:Number):void
+		public function set shape1LineStoke(value:Number):void
 		{
 			_shape1LineStoke = value;
 		}
