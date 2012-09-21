@@ -3,20 +3,33 @@ package  com.gestureworks.cml.element
 	import com.gestureworks.cml.element.ButtonElement;
 	import com.gestureworks.cml.element.GraphicElement;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.cml.utils.NumberUtils;
-	import com.gestureworks.core.GestureWorks;
-	import com.gestureworks.text.DefaultFonts;
-	import flash.display.BitmapData;
-	import flash.display.Sprite;
-	import flash.events.Event;
+	import flash.display.DisplayObject;
 	import flash.events.KeyboardEvent;
 	import flash.filters.DropShadowFilter;
 	import flash.ui.Keyboard;
-	import flash.utils.Dictionary;
 
 	/**
 	 * The key element simulates a key on a keyboard by dispatching a keyboard event, containing the assigned character and key unicode values, when
 	 * touched.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+		override protected function gestureworksInit():void
+ 		{
+			trace("gestureWorksInit()");
+			keyElementTestAS();
+		}
+		
+		private function keyElementTestAS():void
+		{
+			var ke:KeyElement = new KeyElement();
+			ke.text = "a";
+			ke.init();
+			addChild(ke);
+		}
+	 *  
+	 * </codeblock>
+	 * 
 	 * @author Shaun
 	 */
 	public class KeyElement extends ButtonElement
@@ -25,9 +38,9 @@ package  com.gestureworks.cml.element
 		private var _shiftOn:Boolean = false;
 		private var _keyCode:uint;
 		private var _charCode:uint;
-		private var _shiftKeyCode:uint;
 		private var _shiftCharCode:uint;
 		
+		private var _icon:*;
 		private var _text:String;
 		private var _shiftText:String;
 		
@@ -37,10 +50,9 @@ package  com.gestureworks.cml.element
 		private var _overTextColor:uint;
 		private var _outTextColor:uint;
 		
-		private var background:GraphicElement;
+		private var background:*;
 		private var keyText:TextElement;
 		private var dropShadow:DropShadowFilter = new DropShadowFilter();
-		private var keyCodeRef:uint;
 		private var charCodeRef:uint;
 		
 		
@@ -51,29 +63,30 @@ package  com.gestureworks.cml.element
 		{
 			super();
 		}
-		
+
 		/**
 		 * Initialization function
 		 */
-		
-		public function initUI():void
+		override public function init():void 
 		{
 			setBackground();
+			setIcon();
 			setText();
 			setCodes();
 
 			if (!dispatch)
 				dispatch = "down:" + text;
 			
-			super.displayComplete();
+			super.init();
 		}
 		
 		/**
 		 * CML initialization
 		 */
 		override public function displayComplete():void
-		{
-			initUI();
+		{ 
+			if(!parent || !(parent is TouchKeyboard))
+				init();
 		}
 				
 		/**
@@ -109,14 +122,12 @@ package  com.gestureworks.cml.element
 			_shiftOn = s;			
 			if (shiftOn)
 			{
-				keyText.text = shiftText;	
-				keyCodeRef = shiftKeyCode;
+				keyText.text = shiftText;
 				charCodeRef = shiftCharCode;
 			}
 			else 
 			{
 				keyText.text = text;
-				keyCodeRef = keyCode;
 				charCodeRef = charCode;
 			}
 		}		
@@ -137,15 +148,6 @@ package  com.gestureworks.cml.element
 		public function set charCode(c:uint):void
 		{
 			_charCode = c;
-		}
-		
-		/**
-		 * The shift key code (unicode) value of the key pressed while in a shift state
-		 */
-		public function get shiftKeyCode():uint { return _shiftKeyCode; }
-		public function set shiftKeyCode(c:uint):void
-		{
-			_shiftKeyCode = c;
 		}
 		
 		/**
@@ -220,6 +222,12 @@ package  com.gestureworks.cml.element
 			_outTextColor = t;
 		}
 		
+		public function get icon():* { return _icon };
+		public function set icon(i:*):void
+		{
+			_icon = i;
+		}
+		
 		/**
 		 * Set the background graphics for the key in each state. If a graphic is not provided for the initial state, 
 		 * a default is generated. Each remaining state, without a provided graphic, is a copy or slight variation of 
@@ -227,15 +235,17 @@ package  com.gestureworks.cml.element
 		 */
 		private function setBackground():void
 		{
-			if (init)
+			if (initial)
 			{
-				background = childList.getKey(init) as GraphicElement;
+				background = childList.getKey(initial);
+				width = background.width;
+				height = background.height;
 			}
 			else 
 			{
-				init = "initKey";
+				initial = "initKey";
 				background = new GraphicElement();											
-				background.id = init;
+				background.id = initial;
 				background.shape = "roundRectangle";
 				background.cornerWidth = 12;
 				background.width = width && width > 0? width : 45;
@@ -263,7 +273,7 @@ package  com.gestureworks.cml.element
 			if (!hit)
 			{
 				hit = "hitKey";
-				var hitBkg:GraphicElement = CloneUtils.clone(background) as GraphicElement;
+				var hitBkg:* = CloneUtils.clone(background);
 				hitBkg.id = hit;
 				hitBkg.alpha = 0;				
 				addStateElements(hitBkg);
@@ -271,7 +281,7 @@ package  com.gestureworks.cml.element
 			if (!down)
 			{
 				down = "downKey";
-				var downBkg:GraphicElement = CloneUtils.clone(background) as GraphicElement;
+				var downBkg:* = CloneUtils.clone(background);
 				downBkg.id = down;
 				downBkg.alpha = .5;
 				addStateElements(downBkg);
@@ -279,14 +289,14 @@ package  com.gestureworks.cml.element
 			if (!up)
 			{
 				up = "upKey";
-				var upBkg:GraphicElement = CloneUtils.clone(background) as GraphicElement;
+				var upBkg:* = CloneUtils.clone(background);
 				upBkg.id = up;
 				addStateElements(upBkg);
 			}
 			if (!over)
 			{		
 				over = "overKey";
-				var overBkg:GraphicElement = CloneUtils.clone(background) as GraphicElement;								
+				var overBkg:* = CloneUtils.clone(background);								
 				overBkg.id = over;
 				overBkg.alpha = .5;				
 				addStateElements(overBkg);
@@ -294,7 +304,7 @@ package  com.gestureworks.cml.element
 			if (!out)
 			{
 				out = "outKey";
-				var outBkg:GraphicElement = CloneUtils.clone(background) as GraphicElement;
+				var outBkg:* = CloneUtils.clone(background);
 				outBkg.id = out;
 				addStateElements(outBkg);
 			}
@@ -307,6 +317,9 @@ package  com.gestureworks.cml.element
 		 */
 		private function setText():void
 		{
+			//override text with character code
+			if (charCode)
+				text = String.fromCharCode(charCode);
 			if (!text)
 				text = "";
 				
@@ -332,12 +345,15 @@ package  com.gestureworks.cml.element
 				addStateElements(keyText);
 			}
 			
-			//default init color
+			//default initital color
 			if (!initTextColor)
 				initTextColor = keyText.textColor;
+			//override text with character code
+			if (shiftCharCode)
+				shiftText = String.fromCharCode(shiftCharCode);
 			//default shift value for letter characters		
-			if (!shiftText)
-				shiftText = isLowerCaseLetter() ? text.toUpperCase() : isUpperCaseLetter() ? text.toLowerCase() : text; 				
+			if(!shiftText)
+				shiftText = isLowerCaseLetter() ? text.toUpperCase() : isUpperCaseLetter() ? text.toLowerCase() : text; 
 		}
 		
 		/**
@@ -349,13 +365,23 @@ package  com.gestureworks.cml.element
 				keyCode = text ? Keyboard[text.toUpperCase()] : 0;
 			if (!charCode)
 				charCode = text ? text.length == 1 ? text.charCodeAt(0) : 0 : 0;	
-			if (!shiftKeyCode)
-				shiftKeyCode = shiftText ? Keyboard[shiftText.toUpperCase()] : 0;
 			if (!shiftCharCode)
-				shiftCharCode = shiftText ? text.length == 1 ? shiftText.charCodeAt(0): 0 : 0;		
+				shiftCharCode = shiftText ? text.length == 1 ? shiftText.charCodeAt(0): 0 : 0;
 				
-			keyCodeRef = keyCode;
 			charCodeRef = charCode;
+		}
+		
+		/**
+		 * Sets the key icon if provided
+		 */
+		private function setIcon():void
+		{
+			if (icon)
+			{
+				if(!(icon is DisplayObject))
+					icon = childList.getKey(String(icon));				
+				addStateElements(icon);
+			}
 		}
 		
 		/**
@@ -378,7 +404,7 @@ package  com.gestureworks.cml.element
 		{	
 			super.onDown(event);						
 			keyText.textColor = downTextColor ? downTextColor : initTextColor; 			    
-			dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, false, charCodeRef, keyCodeRef, 10));
+			dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, false, charCodeRef, keyCode, 10));
 		}		
 		
 		/**

@@ -1,20 +1,46 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.element.ButtonElement;
 	import com.gestureworks.cml.element.Container;
-	import com.gestureworks.cml.element.GraphicElement;
 	import com.gestureworks.cml.element.KeyElement;
-	import com.gestureworks.cml.element.TextElement;
-	import com.gestureworks.core.GestureWorks;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.FocusEvent;
+	import flash.display.StageDisplayState;
 	import flash.events.KeyboardEvent;
 	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	/**
+	 * The <code>TouchKeyboard</code> is a virtual keyboard providing an interface for a collection of <code>KeyElement</code> objects
+	 * and output management for key events. Default configurations are in place for convenience but the keyboard's style, layout, and key
+	 * actions are customizable. 
+	 * 
+	 * 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+		override protected function gestureworksInit():void
+ 		{
+			trace("gestureWorksInit()");
+			touchKeyboardTestAS();
+		}
+		
+		private function touchKeyboardTestAS():void
+		{
+			var tk:TouchKeyboard = new TouchKeyboard();
+			tk.init();
+			addChild(tk);
+			
+			var txt1:TextElement = new TextElement();
+			txt1.width = 400;
+			txt1.height = 400;
+			txt1.x = 1000;
+			txt1.border = true;
+			txt1.multiline = true;
+			txt1.type = "input";
+			addChild(txt1);	
+		}
+	 * 
+	 * 
+	 * </codeblock>
+	 * 
 	 * @author Shaun
 	 */
 	public class TouchKeyboard extends Container
@@ -22,14 +48,18 @@ package com.gestureworks.cml.element
 		private var _notepad:TextField;
 		private var _bkgPadding:Number;		
 		private var _keySpacing:Number;
-		private var _background:Sprite;
+		private var _background:*;
 		
 		private var keys:Dictionary;
 		private var shift:Boolean = false;
 		private var bkgWidth:Number;
 		private var bkgHeight:Number;
 		private var currentTF:TextField;
+		private var caret:int = 0;
 		
+		/**
+		 * Constructor
+		 */
 		public function TouchKeyboard() 
 		{
 			super();
@@ -39,49 +69,75 @@ package com.gestureworks.cml.element
 			addEventListener(KeyboardEvent.KEY_DOWN, keyHandler);
 		}
 		
-		public function init(event:Event = null): void
+		/**
+		 * Initialization function
+		 * @param	event
+		 */
+		public function init(): void
 		{	
 			generateKeys();
 			setLayout();
 		}
 		
+		/**
+		 * CML initialization
+		 */
 		override public function displayComplete():void
 		{
 			init();
 		}		
 		
-		public function get background():Sprite { return _background; }
-		public function set background(b:Sprite):void
+		/**
+		 * The graphical canvas containing the keys
+		 */
+		public function get background():* { return _background; }
+		public function set background(b:*):void
 		{
 			_background = b;
 		}
 		
+		/**
+		 * A specified output text field
+		 */
 		public function get notepad():TextField { return _notepad; }
 		public function set notepad(n:TextField):void
 		{
 			_notepad = n;
 		}
 			
+		/**
+		 * The space between the outermost keys and the edges of the background
+		 */
 		public function get bkgPadding():Number { return _bkgPadding; }
 		public function set bkgPadding(b:Number):void
 		{
 			_bkgPadding = b;
 		}
 		
+		/**
+		 * The spacing between the keys
+		 */
 		public function get keySpacing():Number { return _keySpacing; }
 		public function set keySpacing(ks:Number):void
 		{
 			_keySpacing = ks;
 		}
 		
+		/**
+		 * If the keys are not customized through CML (the CML instantiation does not contain a
+		 * container of KeyElements), the default keys are generated.
+		 */
 		private function generateKeys():void
 		{
-			if (childList.length > 0)
+			if (searchChildren(KeyElement))  
 				generateCMLKeys();
 			else
 				generateDefKeys();
 		}
 		
+		/**
+		 * Key distribution function
+		 */
 		private function setLayout():void
 		{	
 			bkgWidth = bkgPadding;
@@ -90,6 +146,9 @@ package com.gestureworks.cml.element
 			addKeys();
 		}
 		
+		/**
+		 * Adds the background to the stage. If not provided, the default is added.
+		 */
 		private function addBackground():void
 		{
 			if (!background)
@@ -99,9 +158,16 @@ package com.gestureworks.cml.element
 				background.graphics.drawRoundRect(0, 0, bkgPadding, bkgPadding,2, 5);
 				background.graphics.endFill();				
 			}
+			else if (!(background is DisplayObject))
+				background = childList.getKey(String(background));	
+
 			addChild(background);
 		}
 		
+		/**
+		 * Adds the keys to the background according to the specified spacing and dynamically adjusts the
+		 * background to the key dimensions
+		 */
 		private function addKeys():void
 		{
 			var rowWidth:Number;
@@ -124,52 +190,13 @@ package com.gestureworks.cml.element
 				bkgHeight += maxKeyHeight + keySpacing;
 				bkgWidth = bkgWidth > rowWidth ? bkgWidth : rowWidth;						
 			}
-			
-			background.width = bkgWidth + bkgPadding;
-			background.height = bkgHeight + bkgPadding;
+			background.width = bkgWidth + bkgPadding - keySpacing;
+			background.height = bkgHeight + bkgPadding - keySpacing;
 		}
 		
-		private function keyHandler(event:KeyboardEvent):void
-		{	
-			if (!notepad)
-			{
-				var focusedObj:* = stage.focus;
-				if ((focusedObj is TextField) && !(focusedObj.parent is KeyElement))
-					currentTF = focusedObj;
-			}
-			else
-				currentTF = notepad;
-						
-			if (event.keyLocation != 10 || !currentTF) return;								
-			var charCode:Number = event.charCode;
-			var keyCode:Number = event.keyCode;
-			applyShift(keyCode);
-			
-			if (charCode != 0)
-				currentTF.appendText(String.fromCharCode(charCode));
-			else
-			{
-				switch(keyCode)
-				{
-					case 20:
-						applyCapsLock();
-						break;
-					case 13:
-						if(currentTF.multiline) currentTF.appendText("\n");
-						currentTF.appendText(String.fromCharCode(keyCode));
-						break;
-					case 8:
-						var cText:String = currentTF.text;
-						currentTF.text = cText.substring(0, cText.length - 1);
-						break;
-					default:
-						currentTF.appendText(String.fromCharCode(keyCode));						
-				}				
-			}
-			
-			stage.focus = currentTF;
-		}
-		
+		/**
+		 * Generate deafault keys
+		 */
 		private function generateDefKeys():void
 		{				
 			var rowNum:int = 1;
@@ -186,18 +213,24 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Generate custom keys from CML
+		 */
 		private function generateCMLKeys():void
 		{
 			var rownNum:int = 1;
 			var rowArray:Array = new Array();
 			for (var i:int = 0; i < childList.length; i++)
 			{
-				var r:Container = Container(childList.getIndex(i));
-				for (var j:int = 0; j < r.childList.length; j++)
+				var container:* = childList.getIndex(i);
+				if (!(container is Container)) continue;
+
+				for (var j:int = 0; j < container.childList.length; j++)
 				{
-					var ke:KeyElement = KeyElement(r.childList.getIndex(j));
-					ke.initUI();
-					rowArray.push(ke);
+					var key:* = container.childList.getIndex(j);
+					if (!(key is KeyElement)) continue;
+					key.init();
+					rowArray.push(key);
 				}
 					
 				keys[rownNum] = rowArray;
@@ -206,6 +239,11 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Parse the provided key specs to generate a default key element
+		 * @param	specs
+		 * @return
+		 */
 		private function getKeyElement(specs:String):KeyElement
 		{
 			var key:KeyElement = new KeyElement();
@@ -216,11 +254,15 @@ package com.gestureworks.cml.element
 			key.shiftText = specsArray[1] != "--" ? specsArray[1] : null;
 			key.width = specsArray[2] != "--" ? Number(specsArray[2]) : null;
 			key.keyCode = specsArray[3] != "--" ? Number(specsArray[3]) : null;
-			key.initUI();
+			key.init();
 			
 			return key;
 		}
 		
+		/**
+		 * The deafault key specs
+		 * @return  a dictionary containing the default key specs
+		 */
 		private function getDefKeySpecs():Dictionary
 		{
 			var defKeySpecs:Dictionary = new Dictionary();
@@ -260,7 +302,7 @@ package com.gestureworks.cml.element
 			defKeySpecs[2] = row2;
 			
 			var row3:Array = new Array();
-			row3.push("Caps_Lock -- 98 --");
+			row3.push("CapsLock -- 98 20");
 			row3.push("a -- -- --");
 			row3.push("s -- -- --");
 			row3.push("d -- -- --");
@@ -291,7 +333,7 @@ package com.gestureworks.cml.element
 			defKeySpecs[4] = row4;
 			
 			var row5:Array = new Array();
-			row5.push("-- -- 75 --");
+			row5.push("-- -- 75 27");
 			row5.push("-- -- 60 --");
 			row5.push("-- -- 60 --");
 			row5.push("-- -- 375 32");
@@ -301,10 +343,150 @@ package com.gestureworks.cml.element
 			defKeySpecs[5] = row5;	
 			
 			return defKeySpecs;			
+		}		
+				
+		//*****************KEY ACTIONS**********************************//
+		
+		/**
+		 * Manages the key events dispatched by the key elements. If a notepad is not provided, the designated output is
+		 * the most recently focused text field. 
+		 * @param	event
+		 */
+		private function keyHandler(event:KeyboardEvent):void
+		{	
+			//key event was not dispatched from KeyElement 
+			if (event.keyLocation != 10) return;								
+			
+			//operations don't require a text field
+			var charCode:Number = event.charCode;
+			var keyCode:Number = event.keyCode;
+			applyShift(keyCode);	
+			applyCapsLock(keyCode);
+			if(keyCode == 27) stage.displayState = StageDisplayState.NORMAL;  //ESCAPE KEY
+			
+			//designated text field or focused text field
+			if (!notepad)
+			{
+				var focusedObj:* = stage.focus;
+				if ((focusedObj is TextField) && !(focusedObj.parent is KeyElement))
+					currentTF = focusedObj;
+			}
+			else
+				currentTF = notepad;
+			
+			//if text field not provided, don't process the key events
+			if (!currentTF) return;
+
+			//prioritize char codes, if none evaluate key codes
+			if (charCode != 0)
+				addCharacter(String.fromCharCode(charCode));
+			else
+			{
+				switch(keyCode)
+				{
+					case 8: //BACKSPACE
+						if (currentTF.selectedText)
+							deleteText();
+						else
+							backspace();
+						break;
+					case 13: //ENTER
+						if (currentTF.multiline) addCharacter("\n");
+						break;
+					case 37: //LEFT ARROW
+						caret--;
+						currentTF.setSelection(caret, caret);
+						break;
+					case 39: //RIGHT ARROW
+						caret++;
+						currentTF.setSelection(caret, caret);
+						break;
+					case 38: //UP ARROW
+						upArrow();
+						break;
+					case 40: //DOWN ARROW
+						downArrow();
+						break;
+					case 46: //DELETE
+						deleteText();
+						break;
+					default:
+						addCharacter(String.fromCharCode(keyCode));
+				}				
+			}
+				
+			stage.focus = currentTF; //restore focus
+			currentTF.setSelection(caret, caret); //reset caret
+		}				
+		
+		/**
+		 * Inserts a character into the current text field at the caret index
+		 * @param	char
+		 */
+		private function addCharacter(char:String):void
+		{
+			var temp:String = currentTF.text;
+			caret = currentTF.caretIndex;
+
+			currentTF.text = temp.substring(0, caret) + char + temp.substring(caret, currentTF.length);
+			caret += char.length;			
+		}	
+		
+		/**
+		 * Removes the selected text from the current text field
+		 */
+		private function deleteText():void
+		{
+			var cText:String = currentTF.text;
+			caret = currentTF.selectionBeginIndex;
+			currentTF.text = cText.substring(0, caret) + cText.substring(currentTF.selectionEndIndex, cText.length);
 		}
 		
-		private function applyCapsLock():void
+		/**
+		 * Moves the caret back a space and deletes the character at that index
+		 */
+		private function backspace():void
 		{
+			var cText:String = currentTF.text;
+			caret = currentTF.caretIndex;
+			currentTF.text = cText.substring(0, caret - 1) + cText.substring(caret, cText.length);
+			caret--;				
+		}
+		
+		/**
+		 * Moves the caret up to the previous line
+		 * TODO requires the parsing of the text to determine previous lines and storing the
+		 * index of the caret relative to the line and attempting to place the caret in the
+		 * same position in the above line
+		 */
+		private function upArrow():void
+		{			
+			//caret = currentTF.caretIndex;
+			//trace(caret);
+			//var text:String = currentTF.text;
+			//var lastNL:int = text.lastIndexOf("\r");
+			//var upCaret:int = text.substring(lastNL, caret).length;
+			//caret = text.substring(0, lastNL).lastIndexOf("\r") + upCaret;
+			//trace(caret);
+		}
+		
+		/**
+		 * Moves the caret down to the next line
+		 * TODO reverse the up arrow algorithm
+		 */
+		private function downArrow():void
+		{
+			
+		}
+		
+		/**
+		 * Applies the caps lock action to each key
+		 */
+		private function applyCapsLock(code:Number):void
+		{
+			if (code != 20)
+				return;
+				
 			for each(var row:Array in keys)
 			{
 				for each(var key:KeyElement in row)
@@ -312,11 +494,13 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Applies the shift action to each key
+		 * @param	key
+		 */
 		private function applyShift(key:Number):void
-		{
-			var shiftKey:Boolean = key == 16;			
-			
-			if (!shift && shiftKey)
+		{		
+			if (!shift && key == 16)
 			{
 				shift = true;
 				for each(var row:Array in keys)
@@ -335,7 +519,6 @@ package com.gestureworks.cml.element
 				}
 			}
 		}
-		
 		override public function dispose():void
 		{
 			super.dispose();

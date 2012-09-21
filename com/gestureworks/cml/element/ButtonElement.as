@@ -1,15 +1,12 @@
 package com.gestureworks.cml.element
 {	
-	import com.gestureworks.cml.interfaces.IButton;
-	import com.gestureworks.cml.interfaces.IContainer;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;	
-	import flash.utils.Dictionary;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.interfaces.IButton;
 	import com.gestureworks.core.GestureWorks;
+	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.utils.Dictionary;
 	import org.tuio.TuioTouchEvent;
 
 	public class ButtonElement extends Container implements IButton
@@ -20,118 +17,52 @@ package com.gestureworks.cml.element
 		public var dispatchDefault:Boolean = false;
 		private var dispatchDict:Dictionary;		
 		
+		/**
+		 * Contructor
+		 */
 		public function ButtonElement()
 		{
 			super();
 			buttonStates = new Dictionary(true);
 		}		
-	
 		
-	override public function dispose():void
-		{
-			super.dispose();
-			buttonStates = null;
-			dispatchDict = null;	
-			hitObject = null;
-			
-			if (over)
-			{
-			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);	
-			hitObject = null;
-			}
-			if (mouseOver)
-			{
-			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);	
-			hitObject = null;
-			}
-			if (mouseDown)
-			{
-			hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			hitObject = null;
-			}
-			if (mouseUp)
-			{
-			hitObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);												
-			hitObject = null;
-			}
-			if (mouseOut)
-			{
-			hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);												
-			hitObject = null;
-			}
-			if (up)
-			{
-			hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-			hitObject = null;
-			}
-			if(up)
-			{
-			hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-			hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
-			hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
-			hitObject = null;
-			}
-			if(out)
-			{
-			hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
-			hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-			hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);
-			hitObject = null;
-			}
-			if(down)
-			{
-			hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
-			hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-			hitObject = null;
-			}
-			hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
-			hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
-			hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
-		    hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);	
-		    hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
-				
-		}
-
 		/**
-		 * CML display initialization callback
+		 * Initialization function
 		 */
-		override public function displayComplete():void
+		public function init():void
 		{
-			// try to auto-find init
-			if (!init && (childList.length > 0))
-				init = childList.getIndex(0);			
+			// try to auto-find initital
+			if (!initial && (childList.length > 0))
+				initial = childList.getIndex(0);			
 			
 			for each (var state:* in buttonStates)
 			{
-				if (state != init)
+				if (state != initial)
 					hideKey(state);	
-			}
-				
+			}				
 
 			if (!hit && (childList.length > 0))
 				hitObject = childList.getIndex(0) as DisplayObject;
 			else
 				hitObject = childList.getKey(hit);
-			
+
 			// float hit area to the top of the display list
 			if (hitObject)
 				addChildAt(hitObject, numChildren - 1);
 			
+			//initial mouse events	
 			if (mouseOver)
-				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);	
-			
+				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);				
 			if (mouseDown)
 				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			
+				
+			//inital touch events	
 			if (touchDown && GestureWorks.activeTUIO)
 				hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
 			else if (touchDown)
 				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			
-			if (over)
-				hitObject.addEventListener(TouchEvent.TOUCH_OVER, onOver, false, 1);
-				
+			//initial auto events
 			if (down)
 			{
 				if (GestureWorks.activeTUIO)
@@ -140,9 +71,17 @@ package com.gestureworks.cml.element
 					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 				else
 					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			}			
+			if (over)
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+				else if(GestureWorks.supportsTouch)
+					hitObject.addEventListener(TouchEvent.TOUCH_OVER, onOver);			
+				else
+					hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);
 			}
 						
-
 			// toggle
 			if (toggle == "mouseOver")
 				this.addEventListener(MouseEvent.MOUSE_OVER, onToggle);	
@@ -177,24 +116,26 @@ package com.gestureworks.cml.element
 				else
 					this.addEventListener(MouseEvent.MOUSE_UP, onToggle);					
 			}					
-			
-			
-			
-			
-			updateLayout();
+						
+			updateLayout();			
+		}
 
+		/**
+		 * CML display initialization callback
+		 */
+		override public function displayComplete():void
+		{
+			init();
 		}
 		
-
 		public function updateLayout():void
-		{
-						
+		{					
 			// we need containers to automatically take on the dimensions of the largest child, so I don't have to do this!!
-			if (childList.getKey(buttonStates["init"]) is Container)
+			if (childList.getKey(buttonStates["initital"]) is Container)
 			{
-				if (childList.getKey(buttonStates["init"]).width == 0)
+				if (childList.getKey(buttonStates["initital"]).width == 0)
 				{
-					for each (var item:* in childList.getKey(buttonStates["init"]).childList.getValueArray()) 
+					for each (var item:* in childList.getKey(buttonStates["initital"]).childList.getValueArray()) 
 					{
 						if (item.hasOwnProperty("width"))
 						{							
@@ -204,9 +145,9 @@ package com.gestureworks.cml.element
 					}
 				}
 				
-				if (childList.getKey(buttonStates["init"]).height == 0)
+				if (childList.getKey(buttonStates["initital"]).height == 0)
 				{
-					for each (var item2:* in childList.getKey(buttonStates["init"]).childList.getValueArray()) 
+					for each (var item2:* in childList.getKey(buttonStates["initital"]).childList.getValueArray()) 
 					{
 						if (item.hasOwnProperty("height"))
 						{
@@ -216,9 +157,7 @@ package com.gestureworks.cml.element
 					}
 				}				
 			}
-			
-			
-
+						
 			for (var i:int = 0; i < childList.length; i++) 
 			{
 				if (childList.getIndex(i) is ButtonElement) {
@@ -280,14 +219,14 @@ package com.gestureworks.cml.element
 		}		
 				
 		
-		private var _init:String;
+		private var _initial:String;
 		/**
 		 * Sets button state association with mouse down event
 		 */
-		public function get init():String {return buttonStates["init"];}
-		public function set init(value:String):void 
+		public function get initial():String {return buttonStates["initial"];}
+		public function set initial(value:String):void 
 		{
-			buttonStates["init"] = value;						
+			buttonStates["initial"] = value;						
 		}
 		
 		
@@ -337,7 +276,6 @@ package com.gestureworks.cml.element
 		{			
 			buttonStates["mouseOut"] = value;												
 		}			
-
 		
 		
 		////////////////////////////////////////////////////
@@ -610,8 +548,7 @@ package com.gestureworks.cml.element
 				else {
 					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);											
 					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
-				}
-				
+				}				
 			}	
 			
 			if (dispatchDict["touchDown"])
@@ -699,19 +636,12 @@ package com.gestureworks.cml.element
 		/// AUTO EVENT HANDLERS
 		///////////////////////////////////////////////////
 		
-		
 		protected function onDown(event:*):void
 		{	
 			if (debug)
 				trace("down");
-			
-			if (GestureWorks.activeTUIO)
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-			else if (GestureWorks.supportsTouch)
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			else
-				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
-											
+				
+			listenDown(false);																				
 			for each (var state:* in buttonStates)
 			{
 				if (state != down)
@@ -720,37 +650,13 @@ package com.gestureworks.cml.element
 			
 			showKey(buttonStates["down"]);
 				
+			//listen for up event to proceed down event
 			if (up)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-				}
-				else if (GestureWorks.supportsTouch) {
-					hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
-					hitObject.addEventListener(TouchEvent.TOUCH_END, onUp);
-				}	
-				else {
-					hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
-					hitObject.addEventListener(MouseEvent.MOUSE_UP, onUp);	
-				}
-			}
+				listenUp();
 			
-			if (out)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
-				}
-				else if (GestureWorks.supportsTouch) {
-					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
-				}	
-				else {
-					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
-					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
-				}
-			}
+			//prevent over event from executing after down event
+			if (over)
+				listenOver(false);
 			
 			if (dispatchDict["down"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["down"], true, true));	
@@ -762,9 +668,8 @@ package com.gestureworks.cml.element
 		{						
 			if (debug)			
 				trace("over");											
-			
-			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);															
-			
+																		
+			listenOver(false);
 			for each (var state:* in buttonStates)
 			{
 				if (state != over)
@@ -773,22 +678,10 @@ package com.gestureworks.cml.element
 	
 			showKey(buttonStates["over"]);	
 			
+			//listen for out event to proceed over event
 			if (out)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);	
-				}
-				else if (GestureWorks.supportsTouch) {
-					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
-				}	
-				else
-					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
-					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
-			
-			}
-			
+				listenOut();
+						
 			if (dispatchDict["over"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["over"], true, true));	
 			else if (dispatchDefault)
@@ -801,13 +694,7 @@ package com.gestureworks.cml.element
 			if (debug)
 				trace("up");
 			
-			if (GestureWorks.activeTUIO)
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-			else if (GestureWorks.supportsTouch)
-				hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
-			else
-				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);	
-											
+			listenUp(false);								
 			for each (var state:* in buttonStates)
 			{
 				if (state != up)
@@ -816,57 +703,30 @@ package com.gestureworks.cml.element
 			
 			showKey(buttonStates["up"]);
 				
+			//listen for down event
 			if (down)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				}
-				else if (GestureWorks.supportsTouch) {
-					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				}	
-				else {
-					hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
-					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);	
-				}
-			}
+				listenDown();
 			
+			//listen for over events
+			if (over)
+				listenOver();
+			
+			//prevent out event from proceeding up event
 			if (out)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);	
-				}
-				else if (GestureWorks.supportsTouch) {
-					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
-				}	
-				else {
-					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
-					hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);	
-				}
-			}
+				listenOut(false);
 			
 			if (dispatchDict["up"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["up"], true, true));	
 			else if (dispatchDefault)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "up", true, true));		
 		}		
-		
-		
+				
 		protected function onOut(event:*):void
 		{	
 			if (debug)
 				trace("out");
 			
-			if (GestureWorks.activeTUIO)
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-			else if (GestureWorks.supportsTouch)
-				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-			else
-				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);	
-											
+			listenOut(false);											
 			for each (var state:* in buttonStates)
 			{
 				if (state != out)
@@ -875,27 +735,13 @@ package com.gestureworks.cml.element
 			
 			showKey(buttonStates["out"]);
 			
+			//listen for over events
 			if (over)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);												
-				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-			}
+				listenOver();
 			
+			//listen for down events
 			if (down)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				}
-				else if (GestureWorks.supportsTouch) {
-					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				}	
-				else {
-					hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
-					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);	
-				}
-			}
+				listenDown();
 			
 			if (dispatchDict["out"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["out"], true, true));	
@@ -903,7 +749,94 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "out", true, true));		
 		}
 		
-				
+		private function listenDown(listen:Boolean = true):void
+		{
+			if (listen)
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				else if (GestureWorks.supportsTouch)
+					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				else
+					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);			
+			}
+			else
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				else if (GestureWorks.supportsTouch)
+					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				else
+					hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);					
+			}
+		}
+			
+		private function listenUp(listen:Boolean = true):void
+		{
+			if (listen)
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+				else if (GestureWorks.supportsTouch)
+					hitObject.addEventListener(TouchEvent.TOUCH_END, onUp);
+				else
+					hitObject.addEventListener(MouseEvent.MOUSE_UP, onUp);				
+			}
+			else
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+				else if (GestureWorks.supportsTouch)
+					hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
+				else
+					hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);
+			}
+		}
+		
+		private function listenOver(listen:Boolean = true):void
+		{
+			if (listen)
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+				else if (GestureWorks.supportsTouch)
+					hitObject.addEventListener(TouchEvent.TOUCH_OVER, onOver);
+				else
+					hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);							
+			}
+			else
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+				else if (GestureWorks.supportsTouch)
+					hitObject.removeEventListener(TouchEvent.TOUCH_OVER, onOver);
+				else
+					hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);					
+			}
+		}		
+		
+		private function listenOut(listen:Boolean = true):void
+		{
+			if (listen)
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
+				else if (GestureWorks.supportsTouch)
+					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
+				else
+				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);										
+			}
+			else
+			{
+				if (GestureWorks.activeTUIO)
+					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
+				else if (GestureWorks.supportsTouch)
+					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+				else
+					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);					
+			}
+		}
+			
 		private function onToggle(event:*):void
 		{			
 			if (childList.hasNext())
@@ -918,10 +851,60 @@ package com.gestureworks.cml.element
 				childList.reset();
 				childList.currentValue.visible = true;			
 			}
-			
-			
+						
 			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
-		}		
+		}
+		
+		/**
+		 * Destructor
+		 */
+		override public function dispose():void 
+		{
+			super.dispose();
+			buttonStates = null;
+			dispatchDict = null;						
+			
+			if (hitObject)
+			{
+				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);
+				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);				
+				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);	
+				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);
+				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);			
+				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);
+				hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
+				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
+				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
+				hitObject.removeEventListener(TouchEvent.TOUCH_OVER, onOver);			
+				hitObject.removeEventListener(TouchEvent.TOUCH_OVER, onOver);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
+				hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);		
+				hitObject = null;
+			}
+			
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onToggle);			
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, onToggle);
+			this.removeEventListener(MouseEvent.MOUSE_OVER, onToggle);				
+			this.removeEventListener(MouseEvent.MOUSE_UP, onToggle);		
+			this.removeEventListener(MouseEvent.MOUSE_UP, onToggle);	
+			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
+			this.removeEventListener(TouchEvent.TOUCH_END, onToggle);
+			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
+			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onToggle);			
+		}
 		
 		
 	}
