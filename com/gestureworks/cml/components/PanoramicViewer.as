@@ -38,7 +38,7 @@
 	import away3d.primitives.Skybox6;
     import away3d.core.utils.Cast;
     import away3d.materials.BitmapMaterial;
-	import away3d.materials.BitmapFileMaterial;
+//	import away3d.materials.BitmapFileMaterial;
 	import away3d.core.clip.RectangleClipping;
 	import away3d.core.math.Number3D;
 	import away3d.primitives.Cube;
