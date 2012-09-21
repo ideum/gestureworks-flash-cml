@@ -40,7 +40,7 @@ package com.gestureworks.cml.element
 			_fadeDuration = value; 
 		}
 		
-		private var _currentIndex:int = 0;
+		private var _currentIndex:int = -1;
 		public function get currentIndex():int { return _currentIndex; }
 		public function set currentIndex(value:int):void {
 			_currentIndex = value;
@@ -83,8 +83,8 @@ package com.gestureworks.cml.element
 			
 			slideshowItems.array = childList.getValueArray();
 			
-			for (var i:Number = slideshowItems.length - 1; i > 0; i--) {
-				//trace("Removing item: " + slideshowItems.array[i]);
+			for (var i:Number = slideshowItems.length; i > 0; i--) {
+				trace("Removing item: " + slideshowItems.array[i] + ", " + i);
 				removeChildAt(slideshowItems.array[i]);
 			}
 			
@@ -172,6 +172,7 @@ package com.gestureworks.cml.element
 			var last:int;
 			last = _currentIndex;
 			_currentIndex++;
+			trace("Last:", last, "Current: ", _currentIndex);
 			
 			if (slideshowItems.hasIndex(_currentIndex)) {
 				fadeout(last);

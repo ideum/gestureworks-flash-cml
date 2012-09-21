@@ -226,8 +226,8 @@ package com.gestureworks.cml.element
 		
 		private function gestureHandler(e:*):void {
 			//trace("Gesture handling");
-			_x = e.stageX;
-			_y = e.stageY;
+			_x = e.localX;
+			_y = e.localY;
 		}
 		
 		private function dragHandler(event:GWGestureEvent):void 
@@ -278,7 +278,8 @@ package com.gestureworks.cml.element
 		
 		private function rotateHandler(e:GWGestureEvent):void 
 		{
-			//trace("mask rotation");
+			trace("mask rotation");
+			trace(_x, _y);
 			
 			var m:Matrix = hitShape.transform.matrix;
 			m.tx -= _x;
@@ -288,6 +289,8 @@ package com.gestureworks.cml.element
 			m.tx += _x;
 			m.ty += _y;
 			hitShape.transform.matrix = m;
+			
+			trace(hitShape.x, hitShape.y);
 			
 			_mShape.x = hitShape.x;
 			borderShape.x = hitShape.x;
@@ -324,7 +327,6 @@ package com.gestureworks.cml.element
 			if (counter >= graphicArray.length - 1) {
 				counter = 0;
 			}
-			trace("Counter: " + counter);
 			addChild(graphicArray.array[counter]);
 			graphicArray.array[counter].mask = mShape;
 			graphicArray.array[counter].visible = true;

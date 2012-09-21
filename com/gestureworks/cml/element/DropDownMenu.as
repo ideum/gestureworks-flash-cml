@@ -25,6 +25,7 @@ package com.gestureworks.cml.element
 		private var _hit:Sprite;
 		private var _width:Number;
 		private var _height:Number;
+		private var triangle:GraphicElement;
 		
 		public function DropDownMenu():void {
 			super();
@@ -46,7 +47,6 @@ package com.gestureworks.cml.element
 		public function set menuItems(value:String):void {
 			_menuItems = value;
 			menuItemsArray = _menuItems.split(",");
-			//_menuItemsArray[menuItemsArray.length] = new Array();
 		}
 		
 		private var _fill:uint = 0x777777;
@@ -85,6 +85,16 @@ package com.gestureworks.cml.element
 			_fontSize = value;
 		}
 		
+		private var _menuMarker:Boolean = true;
+		/**
+		 * Sets whether or not to display a triangle to help indicate this is a drop down menu.
+		 * @default: true
+		 */
+		public function get menuMarker():Boolean { return _menuMarker; }
+		private function set menuMarker(value:Boolean):void {
+			_menuMarker = value;
+		}
+		
 		override public function displayComplete():void {
 			super.displayComplete();
 			
@@ -98,22 +108,46 @@ package com.gestureworks.cml.element
 		}
 		
 		private function createMenu():void {
+			if (_menuMarker){
+				triangle = new GraphicElement();
+				triangle.shape = "triangle";
+				triangle.width = _fontSize / 2;
+				triangle.height = _fontSize / 2;
+				triangle.color = _color;
+				triangle.lineAlpha = 0;
+				triangle.rotation = 180;
+			}
+			
 			//Find longest string
 			var widthField:TextElement = new TextElement();
 			widthField.text = _title;
 			widthField.autoSize = "left";
+			widthField.font = _font;
+			widthField.fontSize = _fontSize;
 			addChild(widthField);
 			
-			_width = Math.floor(widthField.width);
+			if (_menuMarker)
+				_width = Math.floor(widthField.width + (triangle.width * 2));
+			else _width = Math.floor(widthField.width);
 			_height = Math.floor(widthField.height);
 			
 			removeChild(widthField);
 			
 			for each (var i:String in menuItemsArray) {
 				var iField:TextElement = new TextElement();
+				iField.text = i;
+				iField.autoSize = "left";
+				iField.font = _font;
+				iField.fontSize = _fontSize;
 				addChild(iField);
-				if (Math.floor(iField.width) > _width) {
-					_width = Math.floor(iField.width);
+				if(_menuMarker){
+					if (Math.floor(iField.width + (triangle.width * 2)) > _width) {
+						_width = Math.floor(iField.width + (triangle.width * 2));
+					}
+				} else {
+					if (Math.floor(iField.width) > _width) {
+						_width = Math.floor(iField.width);
+					}
 				}
 				removeChild(iField);
 			}
@@ -125,13 +159,14 @@ package com.gestureworks.cml.element
 			//Create TextElement specifically for the menu.
 			_menuTitle = createMenuItem(_title, "menu");
 			addChild(_menuTitle);
+			trace("Menu: ", _menuTitle.x, _menuTitle.y);
 			//Add event listener for mouseDown/touchDown
 			if (GestureWorks.supportsTouch)
-					_menuTitle.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-				else if (GestureWorks.activeTUIO)
-					_menuTitle.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-				else
-					_menuTitle.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
+				_menuTitle.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
+			else if (GestureWorks.activeTUIO)
+				_menuTitle.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
+			else
+				_menuTitle.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 			
 			//Create TextElement for each menu item.
 			for (var j:int = 0; j < menuItemsArray.length; j++) {
@@ -139,22 +174,28 @@ package com.gestureworks.cml.element
 				trace(_menuItemsArray);
 				trace("j = " + j);
 				_menuItemsArray[j] = createMenuItem(menuItemsArray[j]);
-				_menuItemsArray[j].y = y + (_height * (j + 1));
+				_menuItemsArray[j].y = _menuTitle.y + (_height * (j + 1));
+				trace("Item: ", _menuItemsArray[j].y);
 				if (GestureWorks.supportsTouch){
-					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
-				}
-				else if (GestureWorks.activeTUIO){
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OVER, onOver);
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OUT, onItemOut);
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_END, onItemSelected);
+				}
+				else if (GestureWorks.activeTUIO){
+					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
+					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
 				}
 				else {
 					_menuItemsArray[j].addEventListener(MouseEvent.MOUSE_OVER, onOver);
 					_menuItemsArray[j].addEventListener(MouseEvent.MOUSE_OUT, onItemOut);
 					_menuItemsArray[j].addEventListener(MouseEvent.MOUSE_UP, onItemSelected);
 				}
+			}
+			if (_menuMarker){
+				triangle.y = (_height / 2) + (triangle.height / 2);
+				triangle.x = _width - (triangle.width / 2);
+				addChild(triangle);
 			}
 		}
 		
@@ -166,7 +207,6 @@ package com.gestureworks.cml.element
 			_hit.graphics.endFill();
 			_hit.alpha = 0;
 			addChild(_hit);
-			//_hit.buttonMode = true;
 			//AddEventListeners.
 		}
 		
@@ -175,6 +215,7 @@ package com.gestureworks.cml.element
 			menuElement.width = _width;
 			menuElement.height = _height;
 			menuElement.text = s;
+			menuElement.selectable = false;
 			
 			menuElement.background = true;
 			menuElement.backgroundColor = _fill;
@@ -212,7 +253,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onItemSelected(event:*):void {
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "itemSelected", event.target.text ));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "itemSelected", event.target.text, true));
 			hideMenu();
 		}
 		
@@ -226,6 +267,8 @@ package com.gestureworks.cml.element
 			_menuTitle.backgroundColor = _color;
 			_menuTitle.color = _fill;
 			
+			if (_menuMarker)	triangle.color = _fill;
+			
 			for each (var i:TextElement in _menuItemsArray) {
 				i.backgroundColor = _color;
 				i.color = _fill;
@@ -233,9 +276,9 @@ package com.gestureworks.cml.element
 			}
 			
 			if (GestureWorks.supportsTouch)
-				_hit.addEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
-			else if (GestureWorks.activeTUIO)
 				_hit.addEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
+			else if (GestureWorks.activeTUIO)
+				_hit.addEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
 			else
 				_hit.addEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
 		}
@@ -247,14 +290,16 @@ package com.gestureworks.cml.element
 			_menuTitle.backgroundColor = _fill;
 			_menuTitle.color = _color;
 			
+			if (_menuMarker)	triangle.color = _color;
+			
 			for each (var i:TextElement in _menuItemsArray) {
 				removeChild(i);
 			}
 			
 			if (GestureWorks.supportsTouch)
-				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
-			else if (GestureWorks.activeTUIO)
 				_hit.removeEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
+			else if (GestureWorks.activeTUIO)
+				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
 			else
 				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
 		}
@@ -263,29 +308,29 @@ package com.gestureworks.cml.element
 			super.dispose();
 			
 			if (GestureWorks.supportsTouch)
-				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
-			else if (GestureWorks.activeTUIO)
 				_hit.removeEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
+			else if (GestureWorks.activeTUIO)
+				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
 			else
 				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
 				
 			if (GestureWorks.supportsTouch)
-					_menuTitle.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-				else if (GestureWorks.activeTUIO)
 					_menuTitle.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
+				else if (GestureWorks.activeTUIO)
+					_menuTitle.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
 				else
 					_menuTitle.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 					
 			for (var i:Number = 0; i < _menuItemsArray.length; i++) {
 				if (GestureWorks.supportsTouch){
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
-				}
-				else if (GestureWorks.activeTUIO){
 					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OVER, onOver);
 					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OUT, onItemOut);
 					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_END, onItemSelected);
+				}
+				else if (GestureWorks.activeTUIO){
+					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
+					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
 				}
 				else {
 					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OVER, onOver);

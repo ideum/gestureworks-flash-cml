@@ -138,8 +138,7 @@ package com.gestureworks.cml.element
 			urlLoader.load(urlRequest);
 			
 			//applyFilter();
-			applyMask();
-			init2();
+			
 		}
 		
 		private function readyBitmaps():void {
@@ -164,6 +163,9 @@ package com.gestureworks.cml.element
 			shaderFilter = new ShaderFilter(shader);
 			urlLoader = null;
 			urlRequest = null;
+			
+			applyMask();
+			init2();
 		}
 		
 		private function applyMask():void {
@@ -211,15 +213,15 @@ package com.gestureworks.cml.element
 		}
 		
 		private function scaleHandler(e:GWGestureEvent):void {
-			//trace("Handling scale");
-			_radius += e.value.scale_dsx + e.value.scale_dsy;
-			width += (e.value.scale_dsx + e.value.scale_dsy) * 2;
-			height += (e.value.scale_dsx + e.value.scale_dsy) * 2;
+			trace("Handling scale");
+			_radius += (e.value.scale_dsx + e.value.scale_dsy) * 20;
+			width = _radius * 2;
+			height = _radius * 2;
 			mSprite.width = _radius * 2;
 			mSprite.height = _radius * 2;
 			
-			mSprite.x += e.value.scale_dsx * 2;
-			mSprite.y += e.value.scale_dsy * 2;
+			mSprite.x += e.value.scale_dsx * 40;
+			mSprite.y += e.value.scale_dsy * 40;
 		}
 		
 		private function rotateFilter(e:GWGestureEvent):void {

@@ -62,11 +62,6 @@
 		
 		override public function displayComplete():void
 		{			
-			init();
-		}
-		
-		public function init():void
-		{ 
 			image = new MultiScaleImage();
 			image.mouseChildren = true;
 			image.addEventListener(Event.COMPLETE, image_completeHandler)
@@ -109,6 +104,11 @@
 			
 			_loaded = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
+		}
+		
+		public function init():void
+		{ 
+			displayComplete();
 		}
 		
 		

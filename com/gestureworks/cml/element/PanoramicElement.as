@@ -215,7 +215,7 @@
 		// yaw and pitch control
 		private function gestureDragHandler(e:GWGestureEvent):void 
 		{
-			//trace("drag")
+			trace("drag", e.value.drag_dx, e.value.drag_dy);
 			_yaw += e.value.drag_dx * DRAG_LIMITER;
 			_pitch += e.value.drag_dy * DRAG_LIMITER;
 		}

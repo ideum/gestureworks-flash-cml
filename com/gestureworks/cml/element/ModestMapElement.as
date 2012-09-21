@@ -138,8 +138,6 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void {
 			super.displayComplete();
 			
-			trace(this.numChildren);
-			
 			while (this.numChildren > 0) {
 				if (this.getChildAt(this.numChildren - 1) is DisplayObject) {
 					mapMarkers.push(this.getChildAt(this.numChildren - 1));
@@ -160,7 +158,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function createMap():void {
-			//map = new Map(width, height, _draggable, _mapProvider);
 			map = new TweenMap(width, height, _draggable, _mapProvider);
 			
 			lastLoc = new Location(_latitude, _longitude);
@@ -190,23 +187,26 @@ package com.gestureworks.cml.element
 			if (this.parent && this.parent is TouchContainer) {
 				this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
 				map.addEventListener(StateEvent.CHANGE, onZoom);
+			} else {
+				map.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+				map.addEventListener(StateEvent.CHANGE, onZoom);
 			}
 		}
 		
-		private function onZoom(e:*):void {
-			trace("Zooming in ModestMapElement");
+		private function onZoom(e:StateEvent):void {
+			trace("Zooming in ModestMapElement", e.value);
 			map.zoomByAbout(e.value);
 		}
 		
 		public function switchMapProvider(e:*):void {
-			trace("Switching map provider.");
+			//trace("Switching map provider.");
 			currentIndex++;
 			if (currentIndex >= providers.length) currentIndex = 0;
 			map.setMapProvider(providers[currentIndex]);
 		}
 		
 		public function updateFrame():void {
-			trace("Updating frame from ModestMapElement");
+			//trace("Updating frame from ModestMapElement");
 			width = map.width;
 			height = map.height;
 		}

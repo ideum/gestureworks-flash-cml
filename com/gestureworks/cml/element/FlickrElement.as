@@ -7,9 +7,9 @@ package  com.gestureworks.cml.element
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	import flash.system.Security;
-	//import com.adobe.webapis.flickr.*;
-	//import com.adobe.webapis.flickr.events.*;
-	//import com.adobe.webapis.flickr.events.FlickrResultEvent;
+	import com.adobe.webapis.flickr.*;
+	import com.adobe.webapis.flickr.events.*;
+	import com.adobe.webapis.flickr.events.FlickrResultEvent;
 	/**
 	 * ...
 	 * @author josh
@@ -69,7 +69,7 @@ package  com.gestureworks.cml.element
 		{
 			displayComplete();
 		}
-		/*
+		
 		private function loadImage(e:FlickrResultEvent):void {
 			//trace(e.data.photo.server);
 			//trace(e.data.photo.id);
@@ -83,7 +83,7 @@ package  com.gestureworks.cml.element
 				loader.load(imageRequest);
 			}
 			else { trace("Image " + _imageId + " failed to load. Please check your image ID and make sure it is accurate.");}
-		}*/
+		}
 		
 		private function displayImage(e:Event):void {
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, displayImage);
