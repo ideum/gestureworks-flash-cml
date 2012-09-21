@@ -10,12 +10,17 @@ package com.gestureworks.cml.element
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
 	import flash.events.MouseEvent;
+	import flash.filters.DropShadowFilter;
 	import flash.display.*;
 	import flash.geom.*;
 	import flash.text.*;
 	
 	/**
-	 * The Dial element provides list of text elements with drag , snap and dial mode functionality.
+	 * Dial provides a list of text elements.The text can be moved from top to bottom or bottom to top through the drag event.Dial has two different modes - Continous and Non-Continous. 
+	 * In continous dial the text elements move continously without stopping at the end or beginning through the drag event.In non-continous dial the motion stops when the first element or the last element reaches the center line.
+	 * The text element closest to the center snaps to the center line and also changes its color.<br/>
+	 * It allows the user to set the dial mode from continous to non-continous or non-continous to continous by setting the continous flag to true or false.<br/>
+	 * The number of elements on dial can be increased or decreased by setting the maxItemsOnScreen attribute.
 	 * It has the following parameters: gradientType, gradientColors, gradientAlphas, gradientRatios, gradientWidth, gradientHeight, gradientX, gradientY, gradientRotation, backgroundLineStoke, backgroundAlpha, leftTriangleColor, rightTriangleColor, centerLineLineStoke, centerLineOutlineColor, centerLineOutlineAlpha, centerLineColor, centerLineAlpha, text, maxItemsOnScreen, textColor, selectedTextColor, continuous .
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
@@ -44,6 +49,7 @@ package com.gestureworks.cml.element
 		public function Dial():void
 		{
 			super();
+		//	init();
 		}
 		
 		/**
@@ -90,7 +96,7 @@ package com.gestureworks.cml.element
 		 */
 		public var textContainer:Sprite = new Sprite();
 		
-		private var _textColor:uint = 0x000000;
+		private var _textColor:uint = 0xDDDDDD;// 0x000000;
 		/**
 		 * Sets the default text Color 
 		 * @default = 0x000000;
@@ -104,7 +110,7 @@ package com.gestureworks.cml.element
 			_textColor = value;
 		}  
 		
-		private var _selectedTextColor:uint = 0xFFFFFF;  
+		private var _selectedTextColor:uint = 0x000000;// 0xFFFFFF;  
 		/**
 		 * Sets the text Color for selected text
 		 * @default = 0xFFFFFF;
@@ -474,7 +480,7 @@ package com.gestureworks.cml.element
 			_centerLineAlpha = value;
 		}
 		
-		private var _continuous:Boolean = true;
+		private var _continuous:Boolean = false;
 		/**
 		 * Specifies whether the dial is continuous or not
 		 */		
@@ -505,6 +511,17 @@ package com.gestureworks.cml.element
 			background.graphics.lineStyle(backgroundLineStoke, backgroundAlpha);
 			background.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
 			background.graphics.drawRect(0, 0, 300, 200);
+			
+			var dropShadow:DropShadowFilter = new DropShadowFilter();
+			var filtersArray:Array = new Array(dropShadow);
+			dropShadow.color = 0x000000;
+			dropShadow.blurX = 5;
+			dropShadow.blurY = 5;
+			dropShadow.angle = 45;
+			dropShadow.alpha = 1;
+			dropShadow.distance = 0.4;
+			
+			background.filters = filtersArray;
 			
 			leftTriangle.graphics.beginFill(leftTriangleColor, leftTriangleAlpha);
 			leftTriangle.graphics.moveTo(0, 80);
@@ -590,7 +607,7 @@ package com.gestureworks.cml.element
 						
 			// check max and min bounds
 			if (!continuous) {
-				if ( (textFieldArray[0].y+textFieldArray[0].height + dy > maxPos) || (textFieldArray[textFieldArray.length-1].y + dy < minPos) )
+				if ( (textFieldArray[0].y + textFieldArray[0].height + dy > maxPos) || (textFieldArray[textFieldArray.length-1].y + dy < minPos) )
 					return; 
 			} 
 			
@@ -647,8 +664,8 @@ package com.gestureworks.cml.element
 				else
 					textFieldArray[j].textColor = textColor; 
 			}
-			if (event.value.localY < minPos || event.value.localY > maxPos)
-				onEnd();
+			//if (event.value.localY < minPos || event.value.localY > maxPos)
+				//onEnd();
 		}
 		/**
 		 * Finds the closest value and snaps to the center with change in text color

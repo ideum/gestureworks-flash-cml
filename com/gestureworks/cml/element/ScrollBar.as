@@ -14,15 +14,17 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * The Scrollbar element scrolls the text.
+	 * This tag scrolls the content and allows the user to set the location of scrollbar from vertical to horizontal or horizontal to vertical.
+	 * The change of scrollbar position can be accomplished by setting the horizontal flag to true or false.
 	 * It has the following parameters: backgroundLinecolor, backgroundLineStroke, backgroundColor,background_VLineStroke, background_VLineColor, background_VColor, topTriangle_VColor, bottomTriangle_VColor, leftTriangleColor,rightTriangleColor,square1LineStroke, square1LineColor, square1Color, square2LineStroke, square2LineColor, square2Color, topSquare_VLineStroke, topSquare_VLineColor,topSquare_VColor, bottomSquare_VLineStroke, bottomSquare_VLineColor,bottomSqaureColor, horizontal.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 	   var sb:ScrollBar = new ScrollBar();
-	   addChild(sb);
 	   sb.x = 100;
 	   sb.y = 100;
+	   addChild(sb);
+	   
 	 *
 	 * </codeblock>
 	 * @author Uma
@@ -36,7 +38,7 @@ package com.gestureworks.cml.element
 		public function ScrollBar():void
 		{
 			super();
-			//	init();
+		//	init();
 		}
 		
 		/**
@@ -598,7 +600,7 @@ package com.gestureworks.cml.element
 			scrollbar.graphics.beginFill(scrollbarColor);
 			scrollbar.graphics.drawRect(40, 0, 200, 30);
 			scrollbar.graphics.endFill();
-			
+					
 			scrollbar_V.graphics.lineStyle(scrollbar_VLineStroke, scrollbar_VLineColor);
 			scrollbar_V.graphics.beginFill(scrollbar_VColor);
 			scrollbar_V.graphics.drawRect(0, 0, 30, 200);
@@ -635,7 +637,7 @@ package com.gestureworks.cml.element
 			bottomSquare_V.graphics.beginFill(bottomSquare_VColor);
 			bottomSquare_V.graphics.drawRect(0, 660, 30, 40);
 			bottomSquare_V.graphics.endFill();
-			
+					
 			rightTriangle.graphics.beginFill(rightTriangleColor);
 			rightTriangle.graphics.moveTo(670, 0);
 			rightTriangle.graphics.lineTo(695, 15);
@@ -650,43 +652,45 @@ package com.gestureworks.cml.element
 			{
 				scrollbar.gestureList = {"n-drag": true};
 				scrollbar.addEventListener(GWGestureEvent.DRAG, onDrag);
-				//square1.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-				//square2.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+				square1.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+				square2.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+				background.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
 				
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TAP, leftArrow);
-				else if (GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-				else
-					this.addEventListener(MouseEvent.CLICK, leftArrow);
-				
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TAP, rightArrow);
-				else if (GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-				else
-					this.addEventListener(MouseEvent.CLICK, rightArrow);
+				//if (GestureWorks.activeTUIO)
+					//this.addEventListener(TuioTouchEvent.TAP, leftArrow);
+				//else if (GestureWorks.supportsTouch)
+					//this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+				//else
+					//this.addEventListener(MouseEvent.CLICK, leftArrow);
+				//
+				//if (GestureWorks.activeTUIO)
+					//this.addEventListener(TuioTouchEvent.TAP, rightArrow);
+				//else if (GestureWorks.supportsTouch)
+					//this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+				//else
+					//this.addEventListener(MouseEvent.CLICK, rightArrow);
 			}
 			else
 			{
 				scrollbar_V.gestureList = {"n-drag": true};
 				scrollbar_V.addEventListener(GWGestureEvent.DRAG, onDrag);
-				//topSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-				//bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+				topSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
+				bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+				background_V.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
 				
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TAP, leftArrow);
-				else if (GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-				else
-					this.addEventListener(MouseEvent.CLICK, leftArrow);
-				
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TAP, rightArrow);
-				else if (GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-				else
-					this.addEventListener(MouseEvent.CLICK, rightArrow);
+				//if (GestureWorks.activeTUIO)
+					//this.addEventListener(TuioTouchEvent.TAP, leftArrow);
+				//else if (GestureWorks.supportsTouch)
+					//this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+				//else
+					//this.addEventListener(MouseEvent.CLICK, leftArrow);
+				//
+				//if (GestureWorks.activeTUIO)
+					//this.addEventListener(TuioTouchEvent.TAP, rightArrow);
+				//else if (GestureWorks.supportsTouch)
+					//this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+				//else
+					//this.addEventListener(MouseEvent.CLICK, rightArrow);
 			}
 			
 			if (horizontal)
@@ -834,6 +838,35 @@ package com.gestureworks.cml.element
 					scrollbar_V.y = scrollbar_V.y - offset;
 			}
 		}
+		
+	    private function hBegin(event:TouchEvent):void
+        {
+		  var touchX:Number = event.localX;
+		  var scrollBarCenter:Number = scrollbar.width/2;
+		  var rightBoundary:Number = background.width - scrollBarCenter;
+		  var leftBoundary:Number = scrollBarCenter;  
+
+		  if (touchX > rightBoundary)
+    	    scrollbar.x = background.width - scrollbar.width - square2.width - square2.height;
+		  else if (touchX < leftBoundary)
+		   scrollbar.x = background.x;
+		  else			 
+		   scrollbar.x = touchX - scrollBarCenter;	
+	    }
+	
+		private function vBegin(event:TouchEvent):void
+        {
+		  var touchY:Number = event.localY;
+		  var topBoundary:Number = scrollbar_V.height/2;
+		  var bottomBoundary:Number = background_V.height - scrollbar_V.height; 
+
+		  if (touchY < topBoundary)
+		   scrollbar_V.y = topBoundary - scrollbar_V.height/2 + topSquare_V.height;
+		  else if (touchY > bottomBoundary)
+		   scrollbar_V.y = bottomBoundary - bottomSquare_V.height;
+		  else
+		   scrollbar_V.y = touchY - scrollbar_V.height/2;
+	    }
 		
 		/**
 		 * dispose method

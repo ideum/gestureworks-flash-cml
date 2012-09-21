@@ -490,5 +490,11 @@ package com.gestureworks.cml.element
 		{
 			mp.setUseEchoSuppression(useEchoSuppression);
 		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			mp = null;
+		}
 	}
 }

@@ -552,5 +552,11 @@ package com.gestureworks.cml.element
 		{
 			cam.setQuality(bandwidth, quality);
 		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			cam = null;
+		}
 	}
 }

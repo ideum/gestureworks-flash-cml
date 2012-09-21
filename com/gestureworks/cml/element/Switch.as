@@ -52,6 +52,7 @@ package com.gestureworks.cml.element
 		public function Switch()
 		{
 			super();
+		//	init();
 		}
 		
 		/**
@@ -288,12 +289,12 @@ package com.gestureworks.cml.element
 		 * Sets the button X position of Rounded Rectangle
 		 * @default = 0;
 		 */
-		public function get buttonX():uint
+		public function get buttonX():Number
 		{
 			return _buttonX;
 		}
 		
-		public function set buttonX(value:uint):void
+		public function set buttonX(value:Number):void
 		{
 			_buttonX = value;
 		//	displayButton();
@@ -305,12 +306,12 @@ package com.gestureworks.cml.element
 		 * Sets the button Y position of Rounded Rectangle
 		 * @default = 0;
 		 */
-		public function get buttonY():uint
+		public function get buttonY():Number
 		{
 			return _buttonY;
 		}
 		
-		public function set buttonY(value:uint):void
+		public function set buttonY(value:Number):void
 		{
 			_buttonY = value;
 			//displayButton();
@@ -322,12 +323,12 @@ package com.gestureworks.cml.element
 		 * Sets the button Width  of Rounded Rectangle
 		 * @default = 50;
 		 */
-		public function get buttonWidth():uint
+		public function get buttonWidth():Number
 		{
 			return _buttonWidth;
 		}
 		
-		public function set buttonWidth(value:uint):void
+		public function set buttonWidth(value:Number):void
 		{
 			_buttonWidth = value;
 			//displayButton();
@@ -356,12 +357,12 @@ package com.gestureworks.cml.element
 		 * Sets the button Ellipse Width  of Rounded Rectangle
 		 * @default = 25;
 		 */
-		public function get buttonEllipseWidth():uint
+		public function get buttonEllipseWidth():Number
 		{
 			return _buttonEllipseWidth;
 		}
 		
-		public function set buttonEllipseWidth(value:uint):void
+		public function set buttonEllipseWidth(value:Number):void
 		{
 			_backgroundEllipseWidth = value;
 		//	displayButton();
@@ -384,6 +385,8 @@ package com.gestureworks.cml.element
 			//displayButton();
 		}
 		
+		private var touchSprite:TouchSprite = new TouchSprite();
+		
 		/**
 		 * Initializes the configuration and display of the Switch
 		 */
@@ -397,25 +400,24 @@ package com.gestureworks.cml.element
 			
 			this.mouseChildren = true;
 			
-			background.graphics.lineStyle(backgroundlineStroke, backgroundoutlineColor);
+		//	background.graphics.lineStyle(backgroundlineStroke, backgroundoutlineColor);
 			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRoundRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight, backgroundEllipseWidth, backgroundEllipseHeight);
 			background.graphics.endFill();
 			
-			button.graphics.lineStyle(buttonlineStroke, buttonoutlineColor);
+		//	button.graphics.lineStyle(buttonlineStroke, buttonoutlineColor);
 			button.graphics.beginFill(buttonColor);
 			button.graphics.drawRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, buttonEllipseWidth, buttonEllipseHeight);
 			button.graphics.endFill();
 			button.visible = true;
 			
-			var touchSprite:TouchSprite = new TouchSprite();
 			touchSprite.gestureReleaseInertia = false;
 			touchSprite.gestureEvents = true;
 			touchSprite.mouseChildren = false;
 			touchSprite.disableNativeTransform = true;
 			touchSprite.disableAffineTransform = false;
 			touchSprite.gestureList = {"n-drag": true, "n-tap": true};
-		//	touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
+			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 			//touchSprite.addEventListener(TouchEvent.TOUCH_END, onEnd);
 			//touchSprite.addEventListener(TouchEvent.TOUCH_OUT, onEnd);
 			
@@ -458,19 +460,19 @@ package com.gestureworks.cml.element
 		private function gestureDragHandler(event:GWGestureEvent):void
 		{
 			
-			if ((event.value.dx + button.x) > maxButtonPos)
+			if ((event.value.drag_dx + button.x) > maxButtonPos)
 			{
 				button.x = maxButtonPos;
 				state = true;
 			}
-			else if ((event.value.dx + button.x) < minButtonPos)
+			else if ((event.value.drag_dx + button.x) < minButtonPos)
 			{
 				button.x = minButtonPos;
 				state = false;
 			}
 			else
 			{
-				button.x += event.value.dx;
+				button.x += event.value.drag_dx;
 			}
 			
 			if (event.value.localY < background.y || event.value.localY > background.height)
@@ -481,7 +483,7 @@ package com.gestureworks.cml.element
 		{
 			
 			if (button.x < button.width)
-				button.x = maxButtonPos;
+				button.x = maxButtonPos; 
 			else
 				button.x = minButtonPos;
 		}
@@ -489,7 +491,7 @@ package com.gestureworks.cml.element
 		private function onEnd(event:* = null):void
 		{
 			
-			if (button.x + button.width / 2 >= (background.width / 2))
+			if (button.x + button.width/2 >= (background.width/2))
 				button.x = maxButtonPos;
 			else
 				button.x = minButtonPos;
@@ -500,6 +502,7 @@ package com.gestureworks.cml.element
 				super.dispose();
 				background = null;
                 button = null;
+				touchSprite.removeEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 		        this.removeEventListener(TuioTouchEvent.TOUCH_UP, onEnd);
                 this.removeEventListener(TouchEvent.TOUCH_END, onEnd);
 	            this.removeEventListener(MouseEvent.MOUSE_UP, onEnd);

@@ -85,20 +85,20 @@ package com.gestureworks.cml.element
 		 */
 		public var inputTxt:TextElement = new TextElement();
 		
-		private var _data:Number = 0.1;
+		private var _text:Number = 0.1;
 		
 		/**
 		 * Sets the default Number in Text Field
 		 * @default = 0;
 		 */
-		public function get data():Number
+		public function get text():Number
 		{
-			return _data;
+			return _text;
 		}
 		
-		public function set data(value:Number):void
+		public function set text(value:Number):void
 		{
-			_data = value;
+			_text = value;
 		}
 		
 		private var _backgroundLineStroke:Number = 3;
@@ -229,7 +229,7 @@ package com.gestureworks.cml.element
 			_textColor = value;
 		}
 		
-	    private var _float:Boolean = true;
+	    private var _float:Boolean = false;
 		/**
 		 * Sets the boolean flag for decimal or integers.
 		 */
@@ -288,13 +288,13 @@ package com.gestureworks.cml.element
 			bottomSquare.gestureList = {"n-tap": true};
 
 			ts.addEventListener(GWGestureEvent.DRAG, onDrag);
-			//ts.addEventListener(TouchEvent.TOUCH_TAP, onTap);
+		//	ts.addEventListener(TouchEvent.TOUCH_TAP, onTap);
 			ts.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			topSquare.addEventListener(GWGestureEvent.TAP, upArrow);
 			bottomSquare.addEventListener(GWGestureEvent.TAP, downArrow);
 							
-			topSquare.addEventListener(MouseEvent.MOUSE_UP, incrementText);
-	    	bottomSquare.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
+		//	topSquare.addEventListener(MouseEvent.MOUSE_UP, incrementText);
+	    //	bottomSquare.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
 				
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TAP, onTap);
@@ -310,12 +310,12 @@ package com.gestureworks.cml.element
 			inputTxt.font = "OpenSansBold";
 			if (float)
 			{
-			inputTxt.text = data.toString();
+			inputTxt.text = text.toString();
 			}
 			else
 			{
-			data = Number(data.toFixed(0));
-			inputTxt.text = data.toString();
+			text = Number(text.toFixed(0));
+			inputTxt.text = text.toString();
 			}
 			inputTxt.type = "dynamic";
 			inputTxt.restrict = "0.1-0.9 0-9";
@@ -353,9 +353,9 @@ package com.gestureworks.cml.element
 			inputTxt.selectable = false;
 			inputTxt.textColor = 0x0000FF;
     	    inputTxt.type = "dynamic";
-			data = Number(inputTxt.text);
-			data++;
-			inputTxt.text = data.toString();
+			text = Number(inputTxt.text);
+			text++;
+			inputTxt.text = text.toString();
 		}
 		
 		/**
@@ -374,20 +374,18 @@ package com.gestureworks.cml.element
      
 		 if(float)
             {
-			data = Number(inputTxt.text);
-			data = data + Dy / K;
-			trace("data:" + data);
-			data = NumberUtils.roundNumber(data , 10);
-			trace(data);
-			data++;
-			inputTxt.text = data.toString();
+			text = Number(inputTxt.text);
+			text = text + Dy / K;
+			text = NumberUtils.roundNumber(text , 10);
+			text++;
+			inputTxt.text = text.toString();
            }
           else
            {
-			data = int(inputTxt.text);
-			data = int(data + dy / K);
-			data++;
-			inputTxt.text = data.toString();
+			text = int(inputTxt.text);
+			text = int(text + dy / K);
+			text++;
+			inputTxt.text = text.toString();
            }
 		}
 		
@@ -399,16 +397,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			data = Number(inputTxt.text);
-			data = NumberUtils.roundNumber(data , 10);
-			data++;
-		    inputTxt.text = data.toString();
+			text = Number(inputTxt.text);
+			text = NumberUtils.roundNumber(text , 10);
+			text++;
+		    inputTxt.text = text.toString();
 			}
 			else
 			{
-			data = int(inputTxt.text);
-			data++;
-			inputTxt.text = data.toString();
+			text = int(inputTxt.text);
+			text++;
+			inputTxt.text = text.toString();
 			}
 		}
 		
@@ -420,16 +418,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			data = Number(inputTxt.text);
-			data = NumberUtils.roundNumber(data , 10);
-			data--;
-			inputTxt.text = data.toString();
+			text = Number(inputTxt.text);
+			text = NumberUtils.roundNumber(text , 10);
+			text--;
+			inputTxt.text = text.toString();
 			}
 			else
 			{
-			data = int(inputTxt.text);
-			data--;
-			inputTxt.text = data.toString();
+			text = int(inputTxt.text);
+			text--;
+			inputTxt.text = text.toString();
 			}
 		}
 		
@@ -441,16 +439,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			data = Number(inputTxt.text);
-			data = NumberUtils.roundNumber(data , 10);
-			data++;
-			inputTxt.text = data.toString();
+			text = Number(inputTxt.text);
+			text = NumberUtils.roundNumber(text , 10);
+			text++;
+			inputTxt.text = text.toString();
 			}
 			else
 			{
-			data = int(inputTxt.text);
-			data++;
-			inputTxt.text = data.toString();
+			text = int(inputTxt.text);
+			text++;
+			inputTxt.text = text.toString();
 			}
 		}
 		
@@ -462,16 +460,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			data = Number(inputTxt.text);
-			data = NumberUtils.roundNumber(data , 10);
-			data--;
-			inputTxt.text = data.toString();
+			text = Number(inputTxt.text);
+			text = NumberUtils.roundNumber(text , 10);
+			text--;
+			inputTxt.text = text.toString();
 			}
 			else
 			{
-			data = int(inputTxt.text);
-			data--;
-			inputTxt.text = data.toString();	
+			text = int(inputTxt.text);
+			text--;
+			inputTxt.text = text.toString();	
 			}
 		}
 		

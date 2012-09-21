@@ -7,7 +7,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import com.gestureworks.events.GWGestureEvent;
-	import com.google.maps.styles.ButtonStyle;
+//	import com.google.maps.styles.ButtonStyle;
 	import flash.display.*;
 	import flash.display.GradientType;
 	import flash.events.*;
@@ -22,7 +22,7 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.tweens.*;
 	
 	/**
-	 * The OrbMenu provides list of Menus.
+	 * The OrbMenu contains a list of Menus.
 	 * It has the following parameters: orbRadius ,gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, gradientHeight, gradientWidth, gradientRotation, gradientX, gradientY, shape1LineStoke, shape1OutlineColor, shape2LineStoke, shape2OutlineColor, backgroundColor, backgroundOutlineColor, backgroundLineStoke, repeatTime, attractMode.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
@@ -30,6 +30,7 @@ package com.gestureworks.cml.element
 	   var ob:OrbMenu = new OrbMenu();
 	   ob.x = 100;
 	   ob.y = 100;
+	   ob.init();
 	   addChild(ob);
 	
 	 *
@@ -41,59 +42,57 @@ package com.gestureworks.cml.element
 	{
 		
 		/**
-		 * OrbMenu constructor.
-		 */
+		* OrbMenu constructor.
+		*/
 		public function OrbMenu()
 		{
 			super();
 		}
 		
 		/**
-		 * Defines the OuterCircle which is a rectangle
-		 */
+		* Defines the OuterCircle which is a rectangle
+		*/
 		public var shape1:TouchSprite = new TouchSprite();
 		
 		/**
-		 * Defines the InnerCircle which is a rectangle
-		 */
+		* Defines the InnerCircle which is a rectangle
+		*/
 		public var shape2:TouchSprite = new TouchSprite();
 		
 		/**
-		 * Defines background in rectangle shape of orbMenu.
-		 */
+		* Defines background in rectangle shape of orbMenu.
+		*/
 		public var background:Sprite = new Sprite();
 		
 		/**
-		 * Defines array of buttons.
-		 */
+		* Defines array of buttons.
+		*/
 		public var buttons:Array = [];
 		
 		/**
-		 * Defines intersection lines of background.
-		 */
+		* Defines intersection lines of background.
+		*/
 		public var line:Sprite = new Sprite();
 		
 		/**
-		 * Defines dropshadow filter for shape.
-		 */
+		* Defines dropshadow filter for shape.
+		*/
 		public var dropShadow:DropShadowFilter = new DropShadowFilter();
 		
 		/**
-		 * Defines array for drop shadow filter.
-		 */
+		* Defines array for drop shadow filter.
+		*/
 		public var filtersArray:Array = new Array(dropShadow);
 		
 		private var _orbRadius:Number = 100;
-		
 		/**
-		 * Defines radius of orbmenu.
-		 *  @default = 100;
-		 */
+		* Defines radius of orbmenu.
+		*  @default = 100;
+		*/
 		public function get orbRadius():Number
 		{
 			return _orbRadius;
 		}
-		
 		public function set orbRadius(value:Number):void
 		{
 			_orbRadius = value;
@@ -104,18 +103,16 @@ package com.gestureworks.cml.element
 		public var matrix:Matrix = new Matrix();
 		
 		private var _gradientType:String = GradientType.LINEAR;
-		
 		/**
-		 * Sets the gardient type for shapes
-		 * @default = GradientType.LINEAR;
-		 */
+		* Sets the gardient type for shapes
+		* @default = GradientType.LINEAR;
+		*/
 		public function get gradientType():String
 		{
-			if (_gradientType == GradientType.RADIAL)
-				return "radial";
-			return "linear";
+		    if (_gradientType == GradientType.RADIAL)
+			   return "radial";
+			   return "linear";
 		}
-		
 		public function set gradientType(value:String):void
 		{
 			if (value == "radial")
@@ -126,16 +123,14 @@ package com.gestureworks.cml.element
 		
 		private var gradientColorArray:Array = [0x404040, 0x404040];
 		private var _gradientColors:String = "0x404040 , 0x404040";
-		
 		/**
-		 * Sets the array of color values of gradient for shapes
-		 * @default = [0x404040 , 0x404040];
-		 */
+		* Sets the array of color values of gradient for shapes
+		* @default = [0x404040 , 0x404040];
+		*/
 		public function get gradientColors():String
 		{
 			return _gradientColors;
 		}
-		
 		public function set gradientColors(value:String):void
 		{
 			_gradientColors = value;
@@ -144,16 +139,14 @@ package com.gestureworks.cml.element
 		
 		private var gradientAlphaArray:Array = [1, 1];
 		private var _gradientAlphas:String = "1, 1";
-		
 		/**
-		 * Sets the alpha transparency of gradient for shapes
-		 * @default = [1, 1];
-		 */
+		* Sets the alpha transparency of gradient for shapes
+		* @default = [1, 1];
+		*/
 		public function get gradientAlphas():String
 		{
 			return _gradientAlphas;
 		}
-		
 		public function set gradientAlphas(value:String):void
 		{
 			_gradientAlphas = value;
@@ -162,16 +155,14 @@ package com.gestureworks.cml.element
 		
 		private var gradientRatioArray:Array = [0, 255];
 		private var _gradientRatios:String = "0, 255";
-		
 		/**
-		 * Sets the ratios of gradient for shapes
-		 * @default = [0, 255];
-		 */
+		* Sets the ratios of gradient for shapes
+		* @default = [0, 255];
+		*/
 		public function get gradientRatios():String
 		{
 			return _gradientRatios;
 		}
-		
 		public function set gradientRatios(value:String):void
 		{
 			_gradientRatios = value;
@@ -179,333 +170,286 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _gradientWidth:Number = 50;
-		
 		/**
-		 * the width (in pixels) to which the gradient will spread
-		 * @default = 50;
-		 */
-		
+		* the width (in pixels) to which the gradient will spread
+		* @default = 50;
+		*/
 		public function get gradientWidth():Number
 		{
 			return _gradientWidth;
 		}
-		
 		public function set gradientWidth(value:Number):void
 		{
 			_gradientWidth = value;
 		}
 		
 		private var _gradientHeight:Number = 100;
-		
 		/**
-		 * the width (in pixels) to which the gradient will spread
-		 * @default = 100;
-		 */
-		
+		* the width (in pixels) to which the gradient will spread
+		* @default = 100;
+		*/
 		public function get gradientHeight():Number
 		{
 			return _gradientHeight;
 		}
-		
 		public function set gradientHeight(value:Number):void
 		{
 			_gradientHeight = value;
 		}
 		
 		private var _gradientRotation:Number = 0;
-		
 		/**
-		 * the rotation (in radians) that will be applied to the gradient
-		 * @default = 0;
-		 */
-		
+		* the rotation (in radians) that will be applied to the gradient
+		* @default = 0;
+		*/
 		public function get gradientRotation():Number
 		{
 			return _gradientRotation;
 		}
-		
 		public function set gradientRotation(value:Number):void
 		{
 			_gradientRotation = value;
 		}
 		
 		private var _gradientX:Number = 25;
-		
 		/**
-		 * how far (in pixels) the gradient is shifted horizontally
-		 * @default = 25;
-		 */
-		
+		* how far (in pixels) the gradient is shifted horizontally
+		* @default = 25;
+		*/
 		public function get gradientX():Number
 		{
 			return _gradientX;
 		}
-		
 		public function set gradientX(value:Number):void
 		{
 			_gradientX = value;
 		}
 		
 		private var _gradientY:Number = 0;
-		
 		/**
-		 * how far (in pixels) the gradient is shifted horizontally
-		 * @default = 0;
-		 */
-		
+		* how far (in pixels) the gradient is shifted horizontally
+		* @default = 0;
+		*/
 		public function get gradientY():Number
 		{
 			return _gradientY;
 		}
-		
 		public function set gradientY(value:Number):void
 		{
 			_gradientY = value;
 		}
 		
-		private var _shape1LineStoke:Number = 4;
-		
+		private var _shape1LineStoke:Number = 5;
 		/**
-		 * Defines linestoke of shape1.
-		 * @default = 4;
-		 */
+		* Defines linestoke of shape1.
+		* @default = 5;
+		*/
 		public function get shape1LineStoke():Number
 		{
 			return _shape1LineStoke;
 		}
-		
 		public function set(value:Number):void
 		{
 			_shape1LineStoke = value;
 		}
 		
 		private var _shape1OutlineColor:uint = 0x000000;
-		
 		/**
-		 * Sets the  outline color of shape1
-		 *  @default = 0x000000;
-		 */
+		* Sets the  outline color of shape1
+		*  @default = 0x000000;
+		*/
 		public function get shape1OutlineColor():uint
 		{
 			return _shape1OutlineColor;
 		}
-		
 		public function set shape1OutlineColor(value:uint):void
 		{
 			_shape1OutlineColor = value;
 		}
 		
-		private var _shape2LineStoke:Number = 4;
-		
+		private var _shape2LineStoke:Number = 5;
 		/**
-		 * Defines linestoke of shape2.
-		 * @default = 4;
-		 */
+		* Defines linestoke of shape2.
+		* @default = 4;
+		*/
 		public function get shape2LineStoke():Number
 		{
 			return _shape2LineStoke;
 		}
-		
 		public function set shape2LineStoke(value:Number):void
 		{
 			_shape2LineStoke = value;
 		}
 		
 		private var _shape2OutlineColor:uint = 0x000000;
-		
 		/**
-		 * Sets the  outline color of shape2
-		 *  @default = 0x000000;
-		 */
+		* Sets the  outline color of shape2
+		*  @default = 0x000000;
+		*/
 		public function get shape2OutlineColor():uint
 		{
 			return _shape2OutlineColor;
 		}
-		
 		public function set shape2OutlineColor(value:uint):void
 		{
 			_shape2OutlineColor = value;
 		}
 		
 		private var _backgroundColor:uint = 0x808080;
-		
 		/**
-		 * Sets the background color
-		 *  @default = 0x666666;
-		 */
+		* Sets the background color
+		*  @default = 0x666666;
+		*/
 		public function get backgroundColor():uint
 		{
 			return _backgroundColor;
 		}
-		
 		public function set backgroundColor(value:uint):void
 		{
 			_backgroundColor = value;
 		}
 		
 		private var _backgroundOutlineColor:uint = 0x000000;
-		
 		/**
-		 * Sets the background out line color
-		 *  @default = 0x000000;
-		 */
+		* Sets the background out line color
+		*  @default = 0x000000;
+		*/
 		public function get backgroundOutlineColor():uint
 		{
 			return _backgroundOutlineColor;
 		}
-		
 		public function set backgroundOutlineColor(value:uint):void
 		{
 			_backgroundOutlineColor = value;
 		}
 		
 		private var _backgroundLineStoke:uint = 2;
-		
 		/**
-		 * Sets the background line stoke
-		 *  @default = 3;
-		 */
+		* Sets the background line stoke
+		*  @default = 3;
+		*/
 		public function get backgroundLineStoke():uint
 		{
 			return _backgroundLineStoke;
 		}
-		
 		public function set backgroundLineStoke(value:uint):void
 		{
 			_backgroundLineStoke = value;
 		}
 		
 		private var _centerX:Number = 90;
-		
 		/**
-		 * defines the centerX position of text
-		 */
+		* defines the centerX position of text
+		*/
 		public function get centerX():Number
 		{
 			return _centerX;
 		}
-		
 		public function set centerX(value:Number):void
 		{
 			_centerX = value;
 		}
 		
 		private var _centerY:Number = 80;
-		
 		/**
-		 * Defines centerY position of text
-		 */
+		* Defines centerY position of text
+		*/
 		public function get centerY():Number
 		{
 			return _centerY;
 		}
-		
 		public function set centerY(value:Number):void
 		{
 			_centerY = value;
 		}
 		
 		private var _radius:Number = 100;
-		
 		/**
-		 * defines radius of text
-		 */
+		* defines radius of text
+		*/
 		public function get radius():Number
 		{
 			return _radius;
 		}
-		
 		public function set radius(value:Number):void
 		{
 			_radius = value;
 		}
 		
 		private var _curveText:String = "MENU";
-		
 		/**
-		 * defines the text
-		 */
+		* defines the text
+		*/
 		public function get curveText():String
 		{
 			return _curveText;
 		}
-		
 		public function set curveText(value:String):void
 		{
 			_curveText = value;
 		}
 		
 		private var _coverage:Number = 0.4;
-		
 		/**
-		 * defines the coverage of text
-		 */
+		* defines the coverage of text
+		*/
 		public function get coverage():Number
 		{
 			return _coverage;
 		}
-		
 		public function set coverage(value:Number):void
 		{
 			_coverage = value;
 		}
 		
 		private var _startAngle:Number = 100;
-		
 		/**
-		 * defines start angle for text
-		 */
+		* defines start angle for text
+		*/
 		public function get startAngle():Number
 		{
 			return _startAngle;
 		}
-		
 		public function set startAngle(value:Number):void
 		{
 			_startAngle = value;
 		}
 		
 		private var _stopAngle:Number = 100;
-		
 		/**
-		 * defines stop angle for text
-		 */
+		* defines stop angle for text
+		*/
 		public function get stopAngle():Number
 		{
 			return _stopAngle;
 		}
-		
 		public function set stopAngle(value:Number):void
 		{
 			_stopAngle = value;
 		}
 		
 		private var _attractMode:Boolean = true;
-		
 		/**
-		 * defines whether Orbmenu is floating or not
-		 */
+		* defines whether Orbmenu is floating or not
+		*/
 		public function get attractMode():Boolean
 		{
 			return _attractMode;
 		}
-		
 		public function set attractMode(value:Boolean):void
 		{
 			_attractMode = value;
 		}
 		
 		private var _repeatTimer:Number = 3;
-		
 		/**
-		 * number of times the timer will tick before the timer stops itself
-		 * @default = 1;
-		 */
+		* number of times the timer will tick before the timer stops itself
+		* @default = 1;
+		*/
 		public function get repeatTimer():Number
 		{
 			return _repeatTimer;
 		}
-		
 		public function set repeatTimer(value:Number):void
 		{
 			_repeatTimer = value;
