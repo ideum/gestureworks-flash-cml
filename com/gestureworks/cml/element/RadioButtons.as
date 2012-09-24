@@ -151,6 +151,7 @@
 			caption.height = caption.fontSize;
 			caption.x = button.x + button.width;
 			caption.y = button.y - (caption.height - caption.getLineMetrics(0).height);
+			caption.selectable = false;
 			
 			_radioButtons[label] = button;
 			_textElements[label] = caption;
@@ -168,7 +169,7 @@
 		{
 			var lastLabel:TextElement = getLastChild(TextElement);
 			if (lastLabel)
-			{
+			{			
 				//set a minimum distance to prevent overlap
 				var min:Number;
 				var offset:Number;
@@ -322,7 +323,7 @@
 					button.addChild(selected);
 					_selectedLabel = button.name;
 				}
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel));		
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));		
 			}
 		}	
 		
