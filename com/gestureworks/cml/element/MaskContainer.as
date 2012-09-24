@@ -3,6 +3,7 @@ package com.gestureworks.cml.element
 	import away3d.events.MouseEvent3D;
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.core.TouchSprite;
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.GestureEvent;
 	import com.gestureworks.events.GWGestureEvent;
@@ -123,13 +124,20 @@ package com.gestureworks.cml.element
 			_maskBorderAlpha = value;
 		}
 		
+		private var _dragAngle:Number = 0;
+		public function get dragAngle():Number { return _dragAngle; }
+		public function set dragAngle(value:Number):void {
+			//trace("drag angle being set");
+			_dragAngle = value;
+		}
+		
 		override public function displayComplete():void {
 			super.displayComplete();
 			
 			graphicArray.array = childList.getValueArray();
 			
 			for (var i:Number = graphicArray.length - 1; i > -1; i--) {
-				trace("Removing item: " + graphicArray.array[i] + " at " + i);
+				//trace("Removing item: " + graphicArray.array[i] + " at " + i);
 				removeChild(graphicArray.array[i]);
 			}
 			
@@ -232,15 +240,21 @@ package com.gestureworks.cml.element
 		
 		private function dragHandler(event:GWGestureEvent):void 
 		{
-			//trace("Dragging");
-			var ang2:Number = rotation * (Math.PI / 180);
+			
+			//Calculate vector transformations in case contained within a viewer or other container.
+			//This prevents an inversion in translations from occurring when the container has been
+			//flipped upside down.
+			
+			var ang2:Number = _dragAngle * (Math.PI / 180);
 			var COS2:Number = Math.cos(ang2);
 			var SIN2:Number = Math.sin(ang2);
+			var dX:Number = event.value.drag_dx * COS2 + event.value.drag_dy * SIN2;
+			var dY:Number = (-1 * event.value.drag_dx * SIN2) + event.value.drag_dy * COS2;
 			
-				_mShape.x += event.value.drag_dx;
-				borderShape.x += event.value.drag_dx;
-				hitShape.x += event.value.drag_dx;
-				wShape.x += event.value.drag_dx;
+				_mShape.x += dX;
+				borderShape.x += dX;
+				hitShape.x += dX;
+				wShape.x += dX;
 			
 			if (_mShape.x < 0) {
 				_mShape.x = 0;
@@ -254,13 +268,11 @@ package com.gestureworks.cml.element
 				hitShape.x = width - hitShape.width;
 				wShape.x = width - wShape.width;
 			}
-				//_mShape.y += (event.value.drag_dy * COS2 - event.value.drag_dx * SIN2);//e.value.dy;
-				_mShape.y += event.value.drag_dy;
-				//borderShape.y += (event.value.drag_dy * COS2 - event.value.drag_dx * SIN2);//e.value.dy;
-				borderShape.y += event.value.drag_dy;
-				//hitShape.y += (event.value.drag_dy * COS2 - event.value.drag_dx * SIN2);//e.value.dy;
-				hitShape.y += event.value.drag_dy;
-				wShape.y += event.value.drag_dy;
+				
+				_mShape.y += dY;
+				borderShape.y += dY;
+				hitShape.y += dY;
+				wShape.y += dY;
 			
 			if (_mShape.y < 0) {
 				_mShape.y = 0;
@@ -274,13 +286,15 @@ package com.gestureworks.cml.element
 				hitShape.y = height - hitShape.height;
 				wShape.y = height - wShape.height;
 			}
+			
 		}
 		
 		private function rotateHandler(e:GWGestureEvent):void 
 		{
-			trace("mask rotation");
-			trace(_x, _y);
+			//trace("mask rotation");
+			//trace(_x, _y);
 			
+			//Calculate rotation transformations for all the pieces of the mask.
 			var m:Matrix = hitShape.transform.matrix;
 			m.tx -= _x;
 			m.ty -= _y;
@@ -290,7 +304,7 @@ package com.gestureworks.cml.element
 			m.ty += _y;
 			hitShape.transform.matrix = m;
 			
-			trace(hitShape.x, hitShape.y);
+			//trace(hitShape.x, hitShape.y);
 			
 			_mShape.x = hitShape.x;
 			borderShape.x = hitShape.x;
@@ -307,7 +321,7 @@ package com.gestureworks.cml.element
 		
 		private function scaleHandler(e:GWGestureEvent):void 
 		{
-			//trace("mask scale");
+			trace("mask scale");
 			_mShape.scaleX += e.value.scale_dsx;
 			_mShape.scaleY += e.value.scale_dsy;
 			

@@ -209,7 +209,8 @@ package com.gestureworks.cml.components
 			
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
 			if (!maskCon){
-				maskCon = searchChildren(".mask_element");
+				_maskCon = searchChildren(".mask_element");
+				addEventListener(GWGestureEvent.ROTATE, onRotate);
 			}
 			if (!menu)
 				menu = searchChildren(".menu_container");
@@ -224,7 +225,8 @@ package com.gestureworks.cml.components
 			
 			// automatically try to find elements based on AS3 class
 			if (!maskCon){
-				maskCon = searchChildren(MaskContainer);
+				_maskCon = searchChildren(MaskContainer);
+				addEventListener(GWGestureEvent.ROTATE, onRotate);
 			}
 			if (!menu)
 				menu = searchChildren(Menu);
@@ -384,6 +386,10 @@ package com.gestureworks.cml.components
 			
 		}
 		
+		private function onRotate(e:GWGestureEvent):void {
+			_maskCon.dragAngle = this.rotation;
+		}
+		
 		override public function dispose():void
 		{
 			super.dispose();
@@ -402,7 +408,8 @@ package com.gestureworks.cml.components
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);	
 			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
 			this.removeEventListener(TouchEvent.TOUCH_END, onUp);
-			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);					
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);
+			removeEventListener(GWGestureEvent.ROTATE, onRotate);
 		}
 	}
 }
