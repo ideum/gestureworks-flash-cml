@@ -129,13 +129,13 @@ package com.gestureworks.cml.element
 		}
 		
 		public function updateLayout():void
-		{					
+		{								
 			// we need containers to automatically take on the dimensions of the largest child, so I don't have to do this!!
-			if (childList.getKey(buttonStates["initital"]) is Container)
+			if (childList.getKey(buttonStates["initial"]) is Container)
 			{
-				if (childList.getKey(buttonStates["initital"]).width == 0)
+				if (childList.getKey(buttonStates["initial"]).width == 0)
 				{
-					for each (var item:* in childList.getKey(buttonStates["initital"]).childList.getValueArray()) 
+					for each (var item:* in childList.getKey(buttonStates["initial"]).childList.getValueArray()) 
 					{
 						if (item.hasOwnProperty("width"))
 						{							
@@ -145,9 +145,9 @@ package com.gestureworks.cml.element
 					}
 				}
 				
-				if (childList.getKey(buttonStates["initital"]).height == 0)
+				if (childList.getKey(buttonStates["initial"]).height == 0)
 				{
-					for each (var item2:* in childList.getKey(buttonStates["initital"]).childList.getValueArray()) 
+					for each (var item2:* in childList.getKey(buttonStates["initial"]).childList.getValueArray()) 
 					{
 						if (item.hasOwnProperty("height"))
 						{
@@ -653,6 +653,10 @@ package com.gestureworks.cml.element
 			//listen for up event to proceed down event
 			if (up)
 				listenUp();
+				
+			//listen for out event
+			if (out)
+				listenOut();
 			
 			//prevent over event from executing after down event
 			if (over)
@@ -677,6 +681,10 @@ package com.gestureworks.cml.element
 			}				
 	
 			showKey(buttonStates["over"]);	
+			
+			//listen for up event
+			if (up)
+				listenUp();
 			
 			//listen for out event to proceed over event
 			if (out)
