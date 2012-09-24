@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.element.Container;
 	import com.gestureworks.cml.element.KeyElement;
 	import flash.display.DisplayObject;
@@ -45,7 +46,7 @@ package com.gestureworks.cml.element
 	 */
 	public class TouchKeyboard extends Container
 	{	
-		private var _notepad:TextField;
+		private var _output:TextField;
 		private var _bkgPadding:Number;		
 		private var _keySpacing:Number;
 		private var _background:*;
@@ -93,16 +94,22 @@ package com.gestureworks.cml.element
 		public function get background():* { return _background; }
 		public function set background(b:*):void
 		{
-			_background = b;
+			if (!(b is DisplayObject))
+				_background = childList.getKey(String(b));	
+			else
+				_background = b;
 		}
 		
 		/**
 		 * A specified output text field
 		 */
-		public function get notepad():TextField { return _notepad; }
-		public function set notepad(n:TextField):void
+		public function get output():* { return _output; }
+		public function set output(o:*):void
 		{
-			_notepad = n;
+			if(o is TextField)
+				_output = o;
+			else 
+				_output = CMLObjectList.instance.getId(String(o));
 		}
 			
 		/**
@@ -158,8 +165,6 @@ package com.gestureworks.cml.element
 				background.graphics.drawRoundRect(0, 0, bkgPadding, bkgPadding,2, 5);
 				background.graphics.endFill();				
 			}
-			else if (!(background is DisplayObject))
-				background = childList.getKey(String(background));	
 
 			addChild(background);
 		}
@@ -240,7 +245,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Parse the provided key specs to generate a default key element
+		 * Parses the provided key specs to generate a default key element
 		 * @param	specs
 		 * @return
 		 */
@@ -260,7 +265,8 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * The deafault key specs
+		 * Populates the default key specs. The rows are represented by Arrays and the key specs are "white space" delimited
+		 * Strings. The spec order is text, shiftText, width, and key code. Double dashes "--" represent null values. 
 		 * @return  a dictionary containing the default key specs
 		 */
 		private function getDefKeySpecs():Dictionary
@@ -281,11 +287,11 @@ package com.gestureworks.cml.element
 			row1.push("0 ) -- --");
 			row1.push("- _ -- --");
 			row1.push("= + -- --");
-			row1.push("Backspace -- 110 --");
+			row1.push("Backspace -- 110 --");     //Since "BACKSPACE" is a flash.ui.Keyboard constant, the associated keyCode/action is automatically resolved
 			defKeySpecs[1] = row1;
 			
 			var row2:Array = new Array();
-			row2.push("Tab -- 80 --");
+			row2.push("Tab -- 80 --");    
 			row2.push("q -- -- --");
 			row2.push("w -- -- --");
 			row2.push("e -- -- --");
@@ -302,7 +308,7 @@ package com.gestureworks.cml.element
 			defKeySpecs[2] = row2;
 			
 			var row3:Array = new Array();
-			row3.push("CapsLock -- 98 20");
+			row3.push("CapsLock -- 98 20");         //Since CAPSLOCK is not recognized by flash.ui.Keyboard, the keyCode must be specified to associate an action 
 			row3.push("a -- -- --");
 			row3.push("s -- -- --");
 			row3.push("d -- -- --");
@@ -333,10 +339,10 @@ package com.gestureworks.cml.element
 			defKeySpecs[4] = row4;
 			
 			var row5:Array = new Array();
-			row5.push("-- -- 75 27");
+			row5.push("-- -- 75 --");
 			row5.push("-- -- 60 --");
 			row5.push("-- -- 60 --");
-			row5.push("-- -- 375 32");
+			row5.push("-- -- 375 32");     //Since the space bar has no text, the keyCode must be specified to associate an action
 			row5.push("-- -- 60 --");
 			row5.push("-- -- 60 --");
 			row5.push("-- -- 75 --");
@@ -348,7 +354,7 @@ package com.gestureworks.cml.element
 		//*****************KEY ACTIONS**********************************//
 		
 		/**
-		 * Manages the key events dispatched by the key elements. If a notepad is not provided, the designated output is
+		 * Manages the key events dispatched by the key elements. If an output is not provided, the designated output is
 		 * the most recently focused text field. 
 		 * @param	event
 		 */
@@ -365,14 +371,14 @@ package com.gestureworks.cml.element
 			if(keyCode == 27) stage.displayState = StageDisplayState.NORMAL;  //ESCAPE KEY
 			
 			//designated text field or focused text field
-			if (!notepad)
+			if (!output)
 			{
 				var focusedObj:* = stage.focus;
 				if ((focusedObj is TextField) && !(focusedObj.parent is KeyElement))
 					currentTF = focusedObj;
 			}
 			else
-				currentTF = notepad;
+				currentTF = output;
 			
 			//if text field not provided, don't process the key events
 			if (!currentTF) return;
@@ -522,7 +528,7 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
-			_notepad = null;
+			_output = null;
 			_background = null;
 			keys = null;
 			currentTF = null;

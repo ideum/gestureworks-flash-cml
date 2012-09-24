@@ -222,10 +222,16 @@ package  com.gestureworks.cml.element
 			_outTextColor = t;
 		}
 		
+		/**
+		 * The icon displayed on the key element
+		 */
 		public function get icon():* { return _icon };
 		public function set icon(i:*):void
 		{
-			_icon = i;
+			if(!(i is DisplayObject))
+				_icon = childList.getKey(String(i));	
+			else
+				_icon = i;
 		}
 		
 		/**
@@ -239,7 +245,7 @@ package  com.gestureworks.cml.element
 			{
 				background = childList.getKey(initial);
 				width = background.width;
-				height = background.height;
+				height = background.height;				
 			}
 			else 
 			{
@@ -376,12 +382,8 @@ package  com.gestureworks.cml.element
 		 */
 		private function setIcon():void
 		{
-			if (icon)
-			{
-				if(!(icon is DisplayObject))
-					icon = childList.getKey(String(icon));				
+			if (icon)			
 				addStateElements(icon);
-			}
 		}
 		
 		/**
@@ -469,6 +471,7 @@ package  com.gestureworks.cml.element
 			super.dispose();
 			background = null;
 			keyText = null;
+			icon = null;
 			dropShadow = null;
 		}
 	}
