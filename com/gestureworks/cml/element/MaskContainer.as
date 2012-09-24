@@ -321,7 +321,7 @@ package com.gestureworks.cml.element
 		
 		private function scaleHandler(e:GWGestureEvent):void 
 		{
-			trace("mask scale");
+			//trace("mask scale");
 			_mShape.scaleX += e.value.scale_dsx;
 			_mShape.scaleY += e.value.scale_dsy;
 			

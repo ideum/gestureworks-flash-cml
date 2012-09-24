@@ -34,6 +34,7 @@ package com.gestureworks.cml.managers
 		
 		public function loadCSS(filePath:String):void
 		{
+			trace("Filepath: ", filePath);
 			file = filePath;
 			CSSLoader.getInstance(file).loadStyle(file);
 			CSSLoader.getInstance(file).addEventListener(FileEvent.CSS_LOADED, onCSSLoad);			

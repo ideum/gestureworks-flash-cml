@@ -14,7 +14,7 @@ package com.gestureworks.cml.element
 			super();
 			mouseChildren = false;
 			disableAffineTransform = false; 
-			disableNativeTransform = false; 
+			disableNativeTransform = false;
 		}
 
 		public function init():void

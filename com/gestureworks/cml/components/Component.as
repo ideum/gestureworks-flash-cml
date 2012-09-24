@@ -45,7 +45,7 @@ package com.gestureworks.cml.components
 		
 		override public function displayComplete():void
 		{
-			init();
+			//init();
 		}
 		
 		private function onDown(event:*):void
