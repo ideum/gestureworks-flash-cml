@@ -18,7 +18,7 @@ package com.gestureworks.cml.utils
 		{	
 
 			var letters:Array = curveText.split("");
-			var rotation:Number = 45;
+			var rotation:Number = 200;
 			var degrees:Number = 180;
 			var total:Number = Math.abs(startAngle - stopAngle);
 			

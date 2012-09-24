@@ -7,19 +7,19 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import com.gestureworks.events.GWGestureEvent;
-//	import com.google.maps.styles.ButtonStyle;
 	import flash.display.*;
 	import flash.display.GradientType;
 	import flash.events.*;
+	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.filters.DropShadowFilter;
-	import flash.events.MouseEvent;
-	import org.tuio.TuioTouchEvent;
 	import flash.geom.*;
 	import flash.utils.Timer;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.*;
 	import org.libspark.betweenas3.tweens.*;
+	import org.tuio.TuioTouchEvent;
+//	import com.google.maps.styles.ButtonStyle;
 	
 	/**
 	 * The OrbMenu contains a list of Menus.
@@ -460,8 +460,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void
 		{
-			displayOrb();
-			//displayComplete();
+			//displayOrb();
+			displayComplete();
 		}
 		
 		/**
@@ -498,15 +498,14 @@ package com.gestureworks.cml.element
 			background.y = 60;
 			background.rotation = 45;
 			background.visible = false;
-			background.graphics.endFill();
-			
+						
 			var c1:CircleText = new CircleText(centerX, centerY, radius, curveText, coverage, startAngle, stopAngle);
 			//  var c1:CircleText = new CircleText(-10, 10, 100, "MENU", 0.4, 0, 0);
 			
 			shape1.gestureEvents = true;
 			shape1.gestureList = {"n-drag": true, "n-tap": true};
 			shape1.addEventListener(GWGestureEvent.DRAG, onDrag);
-			//	shape1.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			//shape1.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 			
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TAP, onBegin);
@@ -519,6 +518,7 @@ package com.gestureworks.cml.element
 			addChild(shape1);
 			shape1.addChild(shape2);
 			addChild(c1);
+			
 		}
 		
 		/**
@@ -566,8 +566,8 @@ package com.gestureworks.cml.element
 				setTime();
 			}
 			
-			init();
-			//displayOrb();
+			//init();
+			displayOrb();
 			
 			buttons = childList.getValueArray();
 			height = 135;

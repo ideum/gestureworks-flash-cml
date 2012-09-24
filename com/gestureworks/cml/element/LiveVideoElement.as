@@ -9,7 +9,7 @@ package com.gestureworks.cml.element
 	import flash.net.NetStream;
 	
 	/**
-	 * The LiveVideoElement is meant for livevideo and audio. .
+	 * The LiveVideoElement captures and displays live video input from a user’s camera and also captures audio from microphone.
 	 * It has the following parameters: width, height. 
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
@@ -34,8 +34,6 @@ package com.gestureworks.cml.element
 		public function LiveVideoElement() 
 		{
 			video = new Video();
-			width = 320;
-			height = 240;
 			addChild(video);
 			load();
 		}
@@ -88,15 +86,20 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		* sets the mic element.
+		* sets the microphone element.
 		*/
-		public function get mic():MicrophoneElement
+		public function get mic():*
 		{
 			return _mic;
 		}
-		public function set mic(value:MicrophoneElement):void
+		public function set mic(value:*):void
 		{
-			_mic = value;
+			if (!value) return;
+			
+			if (value is MicrophoneElement)
+				_mic = value;
+			else 
+				_mic = searchChildren(value);
 		}
 		
 		private var micro:Microphone;
@@ -127,8 +130,8 @@ package com.gestureworks.cml.element
            video.attachCamera(cam);
 		   //netstream.attachCamera(cam);
 		   }
-			
-		  if (mic)
+
+		   if (mic)
 		   {
 		   micro = mic.getMicrophone();
 		   micro.setLoopBack(true);
