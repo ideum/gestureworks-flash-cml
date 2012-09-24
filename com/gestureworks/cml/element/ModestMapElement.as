@@ -6,7 +6,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.cml.element.ModestMapMarker;
-	import com.google.maps.MapEvent;
 	import com.modestmaps.extras.MapControls;
 	import com.modestmaps.extras.ZoomSlider;
 	import com.modestmaps.geo.Location;

@@ -36,9 +36,7 @@ package com.gestureworks.cml.core
 			""
 		]		
 	}
-	
-	import com.gestureworks.components.CMLDisplay; CMLDisplay;	
-	
+		
 	/////////////////////
 	//  COMPONENTS   
 	/////////////////////	
@@ -52,6 +50,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.YouTubeViewer; YouTubeViewer;
 	import com.gestureworks.cml.components.Component; Component;	
+	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
+	//import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
 	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
 	import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
 	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
@@ -106,6 +106,10 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.KeyElement; KeyElement;	
 	import com.gestureworks.cml.element.TouchKeyboard; TouchKeyboard;
 	import com.gestureworks.cml.element.AlbumElement; AlbumElement;
+	import com.gestureworks.cml.element.Dial; Dial;
+	import com.gestureworks.cml.element.ScrollBar; ScrollBar;
+	import com.gestureworks.cml.element.ScrollPane; ScrollPane;
+	import com.gestureworks.cml.element.Stepper; Stepper;
 
 	/////////////////////
 	//  KITS  
