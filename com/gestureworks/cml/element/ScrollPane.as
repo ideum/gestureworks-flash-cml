@@ -744,7 +744,7 @@ public class ScrollPane extends Container
 	square.graphics.endFill();
 	square.x = 100;
 	square.y = 100;
-	
+		
 	var square1:Sprite = new Sprite();
 	square1.graphics.lineStyle(squareLineStroke, squareOutlineColor);
 	square1.graphics.beginFill(squareColor);
@@ -858,7 +858,7 @@ public class ScrollPane extends Container
 	 */
     private function vDrag(event:GWGestureEvent):void
 	{
-		 var offset:Number = 10;
+		 var offset:Number = 25;
 		 var dy:Number = event.value.drag_dy - scrollbar_V.y;
 		
 		if ((event.value.drag_dy + event.target.y) > scrollbar_VmaxPos)
@@ -867,7 +867,7 @@ public class ScrollPane extends Container
 		 event.target.y = scrollbar_VminPos;
 	    else 
 		 event.target.y += event.value.drag_dy;
-		 Loader0.y = dy + offset;
+		 Loader0.y = dy - offset;
 	}
 
 	/**
