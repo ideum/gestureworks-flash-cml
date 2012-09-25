@@ -15,7 +15,7 @@ package com.gestureworks.cml.components
 	/**
 	 * The AlbumViewer is a component that is primarily meant to display an <code>AlbumElement</code> on the front side and meta-data on the back side.
 	 * It is composed of the following elements: album, front, back, menu, and frame. The width and height of the component is automatically set to the 
-	 * dimensions of the image unless it is previously specifed by the component.
+	 * dimensions of the album unless it is previously specifed by the component.
 	 */
 	public class AlbumViewer extends Component 
 	{
