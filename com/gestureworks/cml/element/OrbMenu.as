@@ -545,7 +545,7 @@ package com.gestureworks.cml.element
 		 */
 		private function onBegin(event:TouchEvent):void
 		{
-			background.visible = false;
+			//background.visible = false;
 			
 			if (attractMode && timer)
 			{
