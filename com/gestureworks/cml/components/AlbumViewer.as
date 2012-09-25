@@ -3,6 +3,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -28,6 +29,7 @@ package com.gestureworks.cml.components
 			super();
 			mouseChildren = true;
 			addEventListener(StateEvent.CHANGE, albumComplete);
+			addEventListener(GWGestureEvent.ROTATE, updateAngle);
 		}		
 		
 		/**
@@ -190,7 +192,7 @@ package com.gestureworks.cml.components
 		public function set autoTextLayout(value:Boolean):void 
 		{	
 			_autoTextLayout = value;			
-		}	
+		}
 		
 		/**
 		 * Updates the angle of the album element
@@ -217,7 +219,16 @@ package com.gestureworks.cml.components
 		{
 			super.rotationX = value;
 			if(album) album.dragAngle = value;
-		}			
+		}	
+		
+	   /**
+		* Updates the angle of the album element
+		*/
+		private function updateAngle(e:GWGestureEvent):void
+		{
+			if (album)
+				album.dragAngle = rotation;
+		}
 		
 		/**
 		 * Updates dimensions and other attributes

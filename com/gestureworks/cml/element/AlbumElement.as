@@ -21,7 +21,7 @@ package com.gestureworks.cml.element
 		private var _applyMask:Boolean = true;
 		private var _horizontal:Boolean = true;
 		private var _margin:Number = 1;
-		private var _dragAngle:Number;
+		private var _dragAngle:Number = 0;
 		
 		private var belt:TouchContainer;
 		private var snapPoints:Array;
@@ -99,7 +99,7 @@ package com.gestureworks.cml.element
 		public function get dragAngle():Number { return _dragAngle; }
 		public function set dragAngle(a:Number):void
 		{
-			_dragAngle = a;
+			_dragAngle = Math.PI * a / 180;
 		}			
 		
 		/**
@@ -132,7 +132,34 @@ package com.gestureworks.cml.element
 		 * set by the "horizontal" attribute and the spacing can be adjusted through the
 		 * "margin" attribute. 
 		 */
-		override public function applyLayout(value:* = null):void {}
+		override public function applyLayout(value:* = null):void { }
+		
+		/**
+		 * Synchronize the drag angle with the album's rotation
+		 */
+		override public function set rotation(value:Number):void 
+		{
+			dragAngle = value;
+			super.rotation = value;
+		}
+
+		/**
+		 * Synchronize the drag angle with the album's rotation
+		 */		
+		override public function set rotationX(value:Number):void 
+		{
+			dragAngle = value;
+			super.rotationX = value;
+		}
+		
+		/**
+		 * Synchronize the drag angle with the album's rotation
+		 */		
+		override public function set rotationY(value:Number):void 
+		{
+			dragAngle = value;
+			super.rotationY = value;
+		}		
 			
 		/**
 		 * Initializes the the belt container which is the nested container of the album that handles
@@ -288,7 +315,7 @@ package com.gestureworks.cml.element
 				var COS:Number = Math.cos(dragAngle);
 				var SIN:Number = Math.sin(dragAngle);
 				var dx:Number = e.value.drag_dy * SIN + e.value.drag_dx * COS;
-				belt.x -= dx;
+				belt.x += dx;
 			}
 		}
 		
@@ -303,7 +330,7 @@ package com.gestureworks.cml.element
 				var COS:Number = Math.cos(dragAngle);
 				var SIN:Number = Math.sin(dragAngle);
 				var dy:Number = e.value.drag_dy * COS - e.value.drag_dx * SIN;
-				belt.y -= dy;
+				belt.y += dy;
 			}
 		}		
 		
