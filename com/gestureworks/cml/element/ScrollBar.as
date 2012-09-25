@@ -38,7 +38,7 @@ package com.gestureworks.cml.element
 		public function ScrollBar():void
 		{
 			super();
-			init();
+		//	init();
 		}
 		
 		/**
@@ -47,7 +47,7 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{
 			super.displayComplete();
-		//	init();
+			init();
 		}
 		
 		/**
@@ -590,97 +590,85 @@ package com.gestureworks.cml.element
 			background.graphics.beginFill(backgroundColor);
 			background.graphics.drawRect(0, 0, 700, 30);
 			background.graphics.endFill();
+						
+			scrollbar.graphics.lineStyle(scrollbarLineStroke, scrollbarLineColor);
+			scrollbar.graphics.beginFill(scrollbarColor);
+			scrollbar.graphics.drawRect(31, 0, 200, 30);
+			scrollbar.graphics.endFill();
+					
+			square1.graphics.lineStyle(square1LineStroke, square1LineColor);
+			square1.graphics.beginFill(square1Color);
+			square1.graphics.drawRect(0, 0, 30, 30);
+			square1.graphics.endFill();
 			
+		    square2.graphics.lineStyle(square2LineStroke, square2LineColor);
+			square2.graphics.beginFill(square2Color);
+			square2.graphics.drawRect(670, 0, 30, 30);
+			square2.graphics.endFill();
+			
+			leftTriangle.graphics.beginFill(leftTriangleColor);
+			leftTriangle.graphics.moveTo(22, 5);
+			leftTriangle.graphics.lineTo(5, 15);
+			leftTriangle.graphics.lineTo(22, 25);
+				
+			rightTriangle.graphics.beginFill(rightTriangleColor);
+			rightTriangle.graphics.moveTo(678, 5);
+			rightTriangle.graphics.lineTo(695, 15);
+			rightTriangle.graphics.lineTo(678, 25);
+
 			background_V.graphics.lineStyle(background_VLineStroke, background_VLineColor);
 			background_V.graphics.beginFill(background_VColor);
 			background_V.graphics.drawRect(0, 0, 30, 700);
 			background_V.graphics.endFill();
 			
-			scrollbar.graphics.lineStyle(scrollbarLineStroke, scrollbarLineColor);
-			scrollbar.graphics.beginFill(scrollbarColor);
-			scrollbar.graphics.drawRect(40, 0, 200, 30);
-			scrollbar.graphics.endFill();
-					
 			scrollbar_V.graphics.lineStyle(scrollbar_VLineStroke, scrollbar_VLineColor);
 			scrollbar_V.graphics.beginFill(scrollbar_VColor);
 			scrollbar_V.graphics.drawRect(0, 0, 30, 200);
 			scrollbar_V.graphics.endFill();
 			
-			scrollbar_V.y = 40;
-			
-			square1.graphics.lineStyle(square1LineStroke, square1LineColor);
-			square1.graphics.beginFill(square1Color);
-			square1.graphics.drawRect(0, 0, 40, 30);
-			square1.graphics.endFill();
+			scrollbar_V.y = 31;
 			
 			topSquare_V.graphics.lineStyle(topSquare_VLineStroke, topSquare_VLineColor);
 			topSquare_V.graphics.beginFill(topSquare_VColor);
-			topSquare_V.graphics.drawRect(0, 0, 30, 40);
+			topSquare_V.graphics.drawRect(0, 0, 30, 30);
 			topSquare_V.graphics.endFill();
-			
-			leftTriangle.graphics.beginFill(leftTriangleColor);
-			leftTriangle.graphics.moveTo(30, 0);
-			leftTriangle.graphics.lineTo(5, 10);
-			leftTriangle.graphics.lineTo(30, 25);
-			
-			//leftTriangle.graphics.moveTo(30, 0);
-			//leftTriangle.graphics.lineTo(5, 15);
-			//leftTriangle.graphics.lineTo(30, 30);
-			
-			rightTriangle.graphics.beginFill(rightTriangleColor);
-			rightTriangle.graphics.moveTo(670, 5);
-			rightTriangle.graphics.lineTo(685, 15);
-			rightTriangle.graphics.lineTo(670, 25);
-			
-			//rightTriangle.graphics.moveTo(670, 0);
-			//rightTriangle.graphics.lineTo(695, 15);
-			//rightTriangle.graphics.lineTo(670, 30);
-			
-			square2.graphics.lineStyle(square2LineStroke, square2LineColor);
-			square2.graphics.beginFill(square2Color);
-			square2.graphics.drawRect(660, 0, 30, 30);
-			square2.graphics.endFill();
 			
 			bottomSquare_V.graphics.lineStyle(bottomSquare_VLineStroke, bottomSquare_VLineColor);
 			bottomSquare_V.graphics.beginFill(bottomSquare_VColor);
-			bottomSquare_V.graphics.drawRect(0, 660, 30, 40);
+			bottomSquare_V.graphics.drawRect(0, 670, 30, 30);
 			bottomSquare_V.graphics.endFill();
 					
 		    topTriangle_V.graphics.beginFill(topTriangle_VColor);
-			topTriangle_V.graphics.moveTo(0, 30);
-			topTriangle_V.graphics.lineTo(30, 30);
-			topTriangle_V.graphics.lineTo(15, 0);
+			topTriangle_V.graphics.moveTo(4, 24);
+			topTriangle_V.graphics.lineTo(25, 24);
+			topTriangle_V.graphics.lineTo(15, 4);
 			
 			bottomTriangle_V.graphics.beginFill(bottomTriangle_VColor);
-			bottomTriangle_V.graphics.moveTo(0, 670);
-			bottomTriangle_V.graphics.lineTo(15, 670);
-			bottomTriangle_V.graphics.lineTo(15, 685);
-			
-			//bottomTriangle_V.graphics.moveTo(0, 670);
-			//bottomTriangle_V.graphics.lineTo(30, 670);
-			//bottomTriangle_V.graphics.lineTo(15, 700);
-			
+			bottomTriangle_V.graphics.moveTo(4, 678);
+			bottomTriangle_V.graphics.lineTo(25, 678);
+			bottomTriangle_V.graphics.lineTo(15, 696);
+				
 			if (horizontal)
 			{
 				scrollbar.gestureList = {"n-drag": true};
 				scrollbar.addEventListener(GWGestureEvent.DRAG, onDrag);
-				square1.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-				square2.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
+				square1.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+				square2.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
 				background.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
 				
 				//if (GestureWorks.activeTUIO)
-					//this.addEventListener(TuioTouchEvent.TAP, leftArrow);
+					//square2.addEventListener(TuioTouchEvent.TAP, leftArrow);
 				//else if (GestureWorks.supportsTouch)
-					//this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+					//square2.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
 				//else
-					//this.addEventListener(MouseEvent.CLICK, leftArrow);
+					//square2.addEventListener(MouseEvent.CLICK, leftArrow);
 				//
 				//if (GestureWorks.activeTUIO)
-					//this.addEventListener(TuioTouchEvent.TAP, rightArrow);
+					//background.addEventListener(TuioTouchEvent.TAP, rightArrow);
 				//else if (GestureWorks.supportsTouch)
-					//this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+					//background.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
 				//else
-					//this.addEventListener(MouseEvent.CLICK, rightArrow);
+					//background.addEventListener(MouseEvent.CLICK, rightArrow);
 			}
 			else
 			{
@@ -691,18 +679,18 @@ package com.gestureworks.cml.element
 				background_V.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
 				
 				//if (GestureWorks.activeTUIO)
-					//this.addEventListener(TuioTouchEvent.TAP, leftArrow);
+					//bottomSquare_V.addEventListener(TuioTouchEvent.TAP, leftArrow);
 				//else if (GestureWorks.supportsTouch)
-					//this.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
+					//bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
 				//else
-					//this.addEventListener(MouseEvent.CLICK, leftArrow);
+					//bottomSquare_V.addEventListener(MouseEvent.CLICK, leftArrow);
 				//
 				//if (GestureWorks.activeTUIO)
-					//this.addEventListener(TuioTouchEvent.TAP, rightArrow);
+					//background_V.addEventListener(TuioTouchEvent.TAP, rightArrow);
 				//else if (GestureWorks.supportsTouch)
-					//this.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
+					//background_V.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
 				//else
-					//this.addEventListener(MouseEvent.CLICK, rightArrow);
+					//background_V.addEventListener(MouseEvent.CLICK, rightArrow);
 			}
 			
 			if (horizontal)
@@ -782,12 +770,12 @@ package com.gestureworks.cml.element
 			
 			if (horizontal)
 			{
-				if (scrollbar.x > (background.x - square1.height / 2 + square1.width / 2))
+				if (scrollbar.x > (background.x - square1.height/2 + square1.width/2))
 					scrollbar.x = scrollbar.x - offset;
 			}
 			else
 			{
-				if (scrollbar_V.y > (background_V.y - topSquare_V.height / 2 + scrollbar_V.height / 2 - topSquare_V.height))
+				if (scrollbar_V.y > (background_V.y - topSquare_V.height/2 + scrollbar_V.height/2 - topSquare_V.height))
 					scrollbar_V.y = scrollbar_V.y - offset;
 			}
 		}
@@ -797,12 +785,12 @@ package com.gestureworks.cml.element
 		 */
 		private function rightArrow(event:TouchEvent):void
 		{
-			var center:Number = scrollbar.x - scrollbar.width / 2;
+			var center:Number = scrollbar.x - scrollbar.width/2;
 			var offset:Number = -25;
 			
 			if (horizontal)
 			{
-				if (scrollbar.x < (background.width - scrollbar.width + square2.width / 2 - scrollbar.width / 2))
+				if (scrollbar.x < (background.width - scrollbar.width + square2.width - scrollbar.width/2))
 					scrollbar.x = scrollbar.x - offset;
 			}
 			else
@@ -817,17 +805,17 @@ package com.gestureworks.cml.element
 		 */
 		private function lArrow(event:MouseEvent):void
 		{
-			var center:Number = scrollbar.x - scrollbar.width / 2;
+			var center:Number = scrollbar.x - scrollbar.width/ 2;
 			var offset:Number = 25;
 			
 			if (horizontal)
 			{
-				if (scrollbar.x > (background.x - square1.height / 2 + square1.width / 2))
+				if (scrollbar.x > (background.x - square1.height/2 + square1.width/2))
 					scrollbar.x = scrollbar.x - offset;
 			}
 			else
 			{
-				if (scrollbar_V.y > (background_V.y - topSquare_V.height / 2 + scrollbar_V.height / 2 - topSquare_V.height))
+			    if (scrollbar_V.y > (background_V.y - topSquare_V.height/2 + scrollbar_V.height/2 - topSquare_V.height))
 					scrollbar_V.y = scrollbar_V.y - offset;
 			}
 		}
@@ -841,7 +829,7 @@ package com.gestureworks.cml.element
 			
 			if (horizontal)
 			{
-				if (scrollbar.x < (background.width - scrollbar.width + square2.width / 2 - scrollbar.width / 2))
+				if (scrollbar.x < (background.width - scrollbar.width + square2.width - scrollbar.width/2))
 					scrollbar.x = scrollbar.x - offset;
 			}
 			else
