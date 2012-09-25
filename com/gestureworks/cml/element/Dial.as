@@ -480,7 +480,7 @@ package com.gestureworks.cml.element
 			_centerLineAlpha = value;
 		}
 		
-		private var _continuous:Boolean = false;
+		private var _continuous:Boolean = true;
 		/**
 		 * Specifies whether the dial is continuous or not
 		 */		
@@ -524,9 +524,9 @@ package com.gestureworks.cml.element
 			background.filters = filtersArray;
 			
 			leftTriangle.graphics.beginFill(leftTriangleColor, leftTriangleAlpha);
-			leftTriangle.graphics.moveTo(0, 80);
+			leftTriangle.graphics.moveTo(2, 80);
 			leftTriangle.graphics.lineTo(20, 100);
-			leftTriangle.graphics.lineTo(0, 120);
+			leftTriangle.graphics.lineTo(2, 120);
 			leftTriangle.graphics.endFill();
 			
 			rightTriangle.graphics.beginFill(rightTriangleColor, rightTriangleAlpha);
