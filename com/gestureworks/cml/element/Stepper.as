@@ -38,7 +38,7 @@ package com.gestureworks.cml.element
 		public function Stepper()
 		{
 			super();
-			init();
+		//	init();
 		}
 		
 		/**
@@ -229,7 +229,7 @@ package com.gestureworks.cml.element
 			_textColor = value;
 		}
 		
-	    private var _float:Boolean = false;
+	    private var _float:Boolean = true;
 		/**
 		 * Sets the boolean flag for decimal or integers.
 		 */
@@ -354,7 +354,7 @@ package com.gestureworks.cml.element
 			inputTxt.textColor = 0x0000FF;
     	    inputTxt.type = "dynamic";
 			text = Number(inputTxt.text);
-			text++;
+			//text++;
 			inputTxt.text = text.toString();
 		}
 		
