@@ -38,7 +38,7 @@ package com.gestureworks.cml.element
 		public function ScrollBar():void
 		{
 			super();
-		//	init();
+			init();
 		}
 		
 		/**
@@ -47,7 +47,7 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{
 			super.displayComplete();
-			init();
+		//	init();
 		}
 		
 		/**
@@ -620,17 +620,25 @@ package com.gestureworks.cml.element
 			
 			leftTriangle.graphics.beginFill(leftTriangleColor);
 			leftTriangle.graphics.moveTo(30, 0);
-			leftTriangle.graphics.lineTo(5, 15);
-			leftTriangle.graphics.lineTo(30, 30);
+			leftTriangle.graphics.lineTo(5, 10);
+			leftTriangle.graphics.lineTo(30, 25);
 			
-			topTriangle_V.graphics.beginFill(topTriangle_VColor);
-			topTriangle_V.graphics.moveTo(0, 30);
-			topTriangle_V.graphics.lineTo(30, 30);
-			topTriangle_V.graphics.lineTo(15, 0);
+			//leftTriangle.graphics.moveTo(30, 0);
+			//leftTriangle.graphics.lineTo(5, 15);
+			//leftTriangle.graphics.lineTo(30, 30);
+			
+			rightTriangle.graphics.beginFill(rightTriangleColor);
+			rightTriangle.graphics.moveTo(670, 5);
+			rightTriangle.graphics.lineTo(685, 15);
+			rightTriangle.graphics.lineTo(670, 25);
+			
+			//rightTriangle.graphics.moveTo(670, 0);
+			//rightTriangle.graphics.lineTo(695, 15);
+			//rightTriangle.graphics.lineTo(670, 30);
 			
 			square2.graphics.lineStyle(square2LineStroke, square2LineColor);
 			square2.graphics.beginFill(square2Color);
-			square2.graphics.drawRect(660, 0, 40, 30);
+			square2.graphics.drawRect(660, 0, 30, 30);
 			square2.graphics.endFill();
 			
 			bottomSquare_V.graphics.lineStyle(bottomSquare_VLineStroke, bottomSquare_VLineColor);
@@ -638,15 +646,19 @@ package com.gestureworks.cml.element
 			bottomSquare_V.graphics.drawRect(0, 660, 30, 40);
 			bottomSquare_V.graphics.endFill();
 					
-			rightTriangle.graphics.beginFill(rightTriangleColor);
-			rightTriangle.graphics.moveTo(670, 0);
-			rightTriangle.graphics.lineTo(695, 15);
-			rightTriangle.graphics.lineTo(670, 30);
+		    topTriangle_V.graphics.beginFill(topTriangle_VColor);
+			topTriangle_V.graphics.moveTo(0, 30);
+			topTriangle_V.graphics.lineTo(30, 30);
+			topTriangle_V.graphics.lineTo(15, 0);
 			
 			bottomTriangle_V.graphics.beginFill(bottomTriangle_VColor);
 			bottomTriangle_V.graphics.moveTo(0, 670);
-			bottomTriangle_V.graphics.lineTo(30, 670);
-			bottomTriangle_V.graphics.lineTo(15, 700);
+			bottomTriangle_V.graphics.lineTo(15, 670);
+			bottomTriangle_V.graphics.lineTo(15, 685);
+			
+			//bottomTriangle_V.graphics.moveTo(0, 670);
+			//bottomTriangle_V.graphics.lineTo(30, 670);
+			//bottomTriangle_V.graphics.lineTo(15, 700);
 			
 			if (horizontal)
 			{
