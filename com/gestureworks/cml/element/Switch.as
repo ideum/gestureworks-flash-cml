@@ -387,6 +387,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private var touchSprite:TouchSprite = new TouchSprite();
+		private var text:TextElement = new TextElement();
 		
 		/**
 		 * Initializes the configuration and display of the Switch
@@ -444,6 +445,16 @@ package com.gestureworks.cml.element
 			touchSpriteBg.disableAffineTransform = false;
 			touchSpriteBg.gestureList = {"n-tap": true};
 			touchSpriteBg.addEventListener(GWGestureEvent.TAP, onTap);
+	
+							
+			text.text = "TRUE";
+			text.x = 30;
+			text.y = -70;
+			text.visible = false;
+			text.color = 0x0000FF;
+			text.fontSize = 25;
+			touchSpriteBg.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
+			addChild(text);
 			
 			touchSpriteBg.addChild(background);
 			addChild(touchSpriteBg);
@@ -498,6 +509,12 @@ package com.gestureworks.cml.element
 				button.x = minButtonPos;
 		}
 		
+	    private function onTouchBegin(event:TouchEvent):void
+	    {
+		    text.visible = !text.visible;
+		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "visible", text.visible));
+	    }
+	
 		override public function dispose():void
 		{
 				super.dispose();

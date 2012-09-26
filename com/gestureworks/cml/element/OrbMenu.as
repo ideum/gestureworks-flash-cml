@@ -19,6 +19,7 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.easing.*;
 	import org.libspark.betweenas3.tweens.*;
 	import org.tuio.TuioTouchEvent;
+	import com.gestureworks.cml.events.StateEvent;
 //	import com.google.maps.styles.ButtonStyle;
 	
 	/**
@@ -518,7 +519,7 @@ package com.gestureworks.cml.element
 			addChild(shape1);
 			shape1.addChild(shape2);
 			addChild(c1);
-			
+		
 		}
 		
 		/**
@@ -553,7 +554,7 @@ package com.gestureworks.cml.element
 				tweener.stop();
 				tweener.onComplete = null;
 			}
-		}
+    	}
 		
 		/**
 		 * CML display initialization callback
@@ -595,6 +596,7 @@ package com.gestureworks.cml.element
 			{
 				background.graphics.drawRoundRect(0, 0, (orbRadius + width), 135, 25, 25);
 			}
+			
 		}
 		
 		private var tweener:ITween;
