@@ -190,6 +190,7 @@ package com.gestureworks.cml.element
 			
 			toggleGraphic.visible = false
 			addChild(toggleGraphic);
+	
 			
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchBegin);
