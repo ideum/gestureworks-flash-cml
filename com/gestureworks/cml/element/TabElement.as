@@ -52,6 +52,8 @@ package com.gestureworks.cml.element
 		private var _tabHeight:Number;
 		private var _tabLeftRadius:Number;
 		private var _tabRightRadius:Number;
+		private var _displayLeftRadius:Number;
+		private var _displayRightRadius:Number
 		
 		private var contentContainer:Container;
 		private var displayBkg:GraphicElement;
@@ -242,6 +244,24 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * The radius of the upper left corner of the display in pixels
+		 */
+		public function get displayLeftRadius():Number { return _displayLeftRadius; }
+		public function set displayLeftRadius(r:Number):void
+		{
+			_displayLeftRadius = r;
+		}
+		
+		/**
+		 * The radius of the upper right corner of the display in pixels
+		 */
+		public function get displayRightRadius():Number { return _displayRightRadius; }
+		public function set displayRightRadius(r:Number):void
+		{
+			_displayRightRadius = r;
+		}		
+		
+		/**
 		 * Configures all of the UI elements of the container
 		 */
 		private function setupUI():void
@@ -286,10 +306,12 @@ package com.gestureworks.cml.element
 			//setup content background 
 			displayBkg.lineStroke = 0;
 			displayBkg.color = displayColor;
-			displayBkg.shape = "rectangle";
+			displayBkg.shape = "roundRectangleComplex";
+			displayBkg.topLeftRadius = displayLeftRadius ? displayLeftRadius : 0;
+			displayBkg.topRightRadius = displayRightRadius ? displayRightRadius : 0;
 			displayBkg.width = contentContainer.width;
 			displayBkg.height = contentContainer.height;
-			displayBkg.y = tabGE.height;
+			displayBkg.y = tabGE.height - 1;
 			contentContainer.addChild(displayBkg);			
 			
 			//create mask and apply it to the content container
