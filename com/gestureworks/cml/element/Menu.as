@@ -123,6 +123,7 @@ package com.gestureworks.cml.element
 		
 		public function updateLayout(containerWidth:Number, containerHeight:Number):void
 		{
+			buttonArray = [];
 			
 			for (var j:int = 0; j < childList.length; j++) 
 			{
@@ -137,7 +138,6 @@ package com.gestureworks.cml.element
 			{
 				buttonArray[i].updateLayout();
 			}
-			
 			
 			if (position == "bottom" || position == "top")	
 			{						
@@ -179,7 +179,6 @@ package com.gestureworks.cml.element
 			
 			else if (position == "bottomLeft" || position == "topLeft")	
 			{
-				
 				
 				// position buttons		
 				for (i = 0; i < buttonArray.length; i++) 

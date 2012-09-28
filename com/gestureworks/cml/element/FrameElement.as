@@ -20,6 +20,8 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{			
 			init();
+			
+			trace("new Frame");
 		}
 		
 		public function init():void
@@ -42,7 +44,7 @@ package com.gestureworks.cml.element
 			}
 			
 			// complete			
-			dispatchEvent(new Event(Event.COMPLETE));
+			//dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
 		protected var _shape:String="rectangle";
