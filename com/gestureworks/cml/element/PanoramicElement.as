@@ -48,7 +48,92 @@
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.core.GestureWorks;		
 	
-	 
+	/**
+	 * PanoramicElement provides a touch-enabled, 3-Dimensional panorama using the Away3D library.
+	 * The PanoramicElement has two projection types: sphere, or cube, which may be set using the projectionType attribute/property.
+	 * 
+	 * For a sphere projectionType, a single, spherical panoramic image needs to be provided in an ImageElement. The maximum with of the image can be up to 80,000 pixels wide. 
+	 * If using CML, this ImageElement should be added between the open and close tags of the PanoramicElement to make it a child of the PanoramicElement; 
+	 * in AS3 the ImageElement should be added to the PanoramicElement object as a child, and the object should be initialized after the image's Event.Complete is called.
+	 * 
+	 * For a cube projectionType, six cubic panorama images need to be provided in CML or AS3 in the same way as the sphere. In AS3 each image should have its Event.Complete called and
+	 * added to the PanoramicElement's display list before the init() method is called. The maximum size for cubic faces is 1,670 pixels wide, and 1,670 tall. Cubic faces
+	 * should be perfectly square.
+	 * 
+	 * The PanoramicElement will actually consist of two objects, the Away3D projection/view, and a TouchContainer which holds the projection and provides the enabled touch interaction.
+	 * 
+	 * The PanoramicElement has the following parameters: cubeFace, projectionType, zoomMax, zoomMin
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   pano = new PanoramicElement();
+		pano.projectionType = "cube";
+		pano.cubeFace = true;
+		pano.width = 700;
+		pano.height = 500;
+		pano.x = 500;
+		pano.zoomMin = 30;
+		pano.zoomMax = 200;
+		pano.mouseChildren = true;
+		
+		var touchC:TouchContainer = new TouchContainer();
+		touchC.nestedTransform = false;
+		touchC.gestureEvents = true;
+		touchC.mouseChildren = false;
+		touchC.disableAffineTransform = true;
+		touchC.disableNativeTransform = true;
+		touchC.gestureList = { "n-drag":true, "n-scale":true };
+		touchC.init();
+		
+		var imageBack:ImageElement = new ImageElement();
+		imageBack.open("../../../../assets/panoramic/30kabah_b.jpg");
+		imageBack.addEventListener(Event.COMPLETE, imageComplete);
+		
+		var imageLeft:ImageElement = new ImageElement();
+		imageLeft.open("../../../../assets/panoramic/30kabah_l.jpg");
+		imageLeft.addEventListener(Event.COMPLETE, imageComplete);
+		
+		var imageFront:ImageElement = new ImageElement();
+		imageFront.open("../../../../assets/panoramic/30kabah_f.jpg");
+		imageFront.addEventListener(Event.COMPLETE, imageComplete);
+		
+		var imageRight:ImageElement = new ImageElement();
+		imageRight.open("../../../../assets/panoramic/30kabah_r.jpg");
+		imageRight.addEventListener(Event.COMPLETE, imageComplete);
+		
+		var imageUp:ImageElement = new ImageElement();
+		imageUp.open("../../../../assets/panoramic/30kabah_u.jpg");
+		imageUp.addEventListener(Event.COMPLETE, imageComplete);
+		
+		var imageDown:ImageElement = new ImageElement();
+		imageDown.open("../../../../assets/panoramic/30kabah_d.jpg");
+		imageDown.addEventListener(Event.COMPLETE, imageComplete);
+		
+		function imageComplete(e:Event):void {
+			e.target.removeEventListener(Event.COMPLETE, imageComplete);
+			e.target.init();
+			
+			if ( counter == 5 ) {
+				
+				pano.addChild(imageBack);
+				pano.addChild(imageLeft);
+				pano.addChild(imageFront);
+				pano.addChild(imageRight);
+				pano.addChild(imageUp);
+				pano.addChild(imageDown);
+				
+				pano.addChild(touchC);
+				
+				pano.init();
+				
+				addChild(pano);
+			}
+			else { counter++; }
+		}
+	 *
+	 * </codeblock>
+	 * @author Josh
+	 */
 	public class PanoramicElement extends Container
 	{	
 		private var panoramic:TouchContainer;
@@ -160,8 +245,10 @@
 		{
 			displayComplete();
 		}
+		
 		private function setupUI():void
 		{ 
+			
 			// create a "hovering" camera
 			addChild(panoramic);
 			
@@ -215,7 +302,7 @@
 		// yaw and pitch control
 		private function gestureDragHandler(e:GWGestureEvent):void 
 		{
-			trace("drag", e.value.drag_dx, e.value.drag_dy);
+			//trace("drag", e.value.drag_dx, e.value.drag_dy);
 			_yaw += e.value.drag_dx * DRAG_LIMITER;
 			_pitch += e.value.drag_dy * DRAG_LIMITER;
 		}
@@ -223,14 +310,13 @@
 		// scale control
 		private function gestureScaleHandler(event:GWGestureEvent):void 
 		{
-			trace("zoom", _zoom)
+			//trace("zoom", _zoom)
 			if (_zoomMin < _zoom < _zoomMax) _zoom += event.value.scale_dsx * SCALE_MULTIPLIER;
 			if (_zoom > _zoomMax) _zoom = _zoomMax;
 			if (_zoom < _zoomMin) _zoom = _zoomMin;
 		}	
 		
 		private function createCubeNet():void {
-			
 			// max width = 1670
 			
 			var cubeWidth:Number = cube_face[0].width

@@ -32,6 +32,9 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _title:String = "Menu Title";
+		/**
+		 * The menu's title that will always be visible.
+		 */
 		public function get menuTitle():String { return _title; }
 		public function set menuTitle(value:String):void {
 			_title = value;

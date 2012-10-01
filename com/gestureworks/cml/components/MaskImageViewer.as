@@ -141,7 +141,7 @@ package com.gestureworks.cml.components
 		}
 		
 		
-		private var _menu:*;
+		protected var _menu:*;
 		/**
 		 * Sets the menu element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.

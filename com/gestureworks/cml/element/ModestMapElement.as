@@ -80,10 +80,6 @@ package com.gestureworks.cml.element
 			else if (value == "yahooroadmapprovider") _mapProvider = new YahooRoadMapProvider;
 			else trace("Invalid MapProvider entered.");
 			
-			while (providers[currentIndex].toString() != _mapProvider.toString()) {
-				trace(providers[currentIndex] + " " + _mapProvider);
-				currentIndex++;
-			}
 		}
 		
 		private var _latitude:Number = 0;
@@ -141,12 +137,12 @@ package com.gestureworks.cml.element
 				if (this.getChildAt(this.numChildren - 1) is DisplayObject) {
 					mapMarkers.push(this.getChildAt(this.numChildren - 1));
 				}
-				trace(this.getChildAt(this.numChildren - 1));
+				//trace(this.getChildAt(this.numChildren - 1));
 				removeChildAt(this.numChildren - 1);
 			}
 			
-			trace("MAP MARKERS: ");
-			trace(mapMarkers);
+			//trace("MAP MARKERS: ");
+			//trace(mapMarkers);
 			createMap();
 			
 		}
@@ -193,7 +189,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onZoom(e:StateEvent):void {
-			trace("Zooming in ModestMapElement", e.value);
+			//trace("Zooming in ModestMapElement", e.value);
 			map.zoomByAbout(e.value);
 		}
 		
