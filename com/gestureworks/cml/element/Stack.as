@@ -8,7 +8,30 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * ...
+	 * Stack is a container that gathers its children into a stack, and allows the user to move through the list using a specified user input.
+	 * Stack can hold any display object.
+	 * 
+	 * It has the following parameters: toggle, loop
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var stack:Stack = new Stack();
+		stack.toggle = "up";
+		stack.loop = false;
+		addChild(stack);
+		
+		stack.addChild(text1);
+		stack.childToList("text", text1);
+		
+		stack.addChild(img1);
+		stack.childToList("img1", img1);
+		
+		stack.addChild(text2);
+		stack.childToList("text2", text2);
+		
+		stack.init();
+	 *
+	 * </codeblock>
 	 * @author ...
 	 */
 	public class Stack extends TouchContainer

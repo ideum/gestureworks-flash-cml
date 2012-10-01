@@ -13,7 +13,31 @@ package com.gestureworks.cml.element
 	import flash.events.Event;
 	
 	/**
-	 * ...
+	 * Slideshow takes a set of display objects to its childList and plays through them with a crossfade set through tis rate and fade duration.
+	 * The slideshow can be set to autoplay and loop, and has play(), pause(), and resume() functions accessible by other classes or AS3 code.
+	 * Slideshow can take anything that is a display object.
+	 * 
+	 * Slideshow has the following parameters: fadeDuration, loop, autoPlay, rate
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var slideShow:Slideshow = new Slideshow();
+		slideShow.x = 500;
+		slideShow.y = 100;
+		slideShow.rate = 2000;
+		slideShow.fadeDuration = 1000;
+		slideShow.loop = true;
+		slideShow.autoplay = true;
+		
+		addChild(slideShow);
+		
+		slideShow.addChild(text1);
+		slideShow.childToList("text1", text1);
+		slidheShow.addChild(graphic1);
+		slideShow.childToList("circle", graphic1);
+		slideShow.init();
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class Slideshow extends Container
@@ -88,13 +112,13 @@ package com.gestureworks.cml.element
 				removeChildAt(slideshowItems.array[i]);
 			}
 			
-			//play();
-			init();
+			play();
+			//init();
 		}
 		
 		public function init():void
 		{
-			play();
+			displayComplete();
 		}
 		
 		public function play():void {

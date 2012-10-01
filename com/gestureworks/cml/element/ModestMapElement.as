@@ -25,7 +25,25 @@ package com.gestureworks.cml.element
 	import com.modestmaps.mapproviders.*;
 	import org.tuio.*;
 	/**
-	 * ...
+	 * ModestMapsElement uses the ModestMaps API to generate an interactive map that can be touched and zoomed. Optionally ModestMapMarkers can be included with it to
+	 * give points of interest. A ModestMapMarker is primarily a container for graphic objects that attaches itself to a map point, so it is invisible until display
+	 * objects are added to its display list.
+	 * 
+	 * When declaring a map, the important parts are latitude, longitude, zoom, and the mapprovider, which is the style of map that will be seen.
+	 * 
+	 * When declaring latitude, negative values are west of the Prime Meridian, and for longitude, negative values are south of the equator.
+	 * 
+	 * ModestMapElement has the following parameters: mapProvider, latitude, longitude, draggable.
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+		var map1:ModestMapElement = new ModestMapElement;
+		map1.latitude = 51.1789;
+		map1.longitude = -1.8624;
+		map1.zoom = 7;
+		map1.mapprovider = "MicrosoftRoadMapProvider";
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class ModestMapElement extends Container

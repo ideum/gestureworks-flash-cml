@@ -12,10 +12,27 @@ package com.gestureworks.cml.element
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	/**
-	 * The MaskContainer is a class that takes in one or multiple images and applies a mask designated in CML to them, similar to a GraphicElement.
+	 * The MaskContainer is a class that takes in one or multiple images and applies a mask designated in CML to all images in its child list.
 	 * If there are multiple images, the class automatically cycles through them using double-tap. Gesture responsiveness may be turned off in CML.
 	 * This element is touch-enabled already, and does not need to be wrapped in a touchContainer.
+	 * 
+	 * MaskContainer has the following parameters: maskShape, maskRadius, maskWidth, maskHeight, maskBorderStroke, maskBorderAlpha, maskBorderColor
 	 * ...
+	 * * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var maskContainer:MaskContainer = new MaskContainer();
+		maskContainer.maskShape = "rectangle";
+		maskContainer.maskWidth = 100;
+		maskContainer.maskHeight = 64;
+		maskContainer.maskBorderColor = 0xff0000;
+		maskContainer.maskBorderStroke = 2;
+		maskContainer.maskBorderAlpha = 0.75;
+		
+		maskContainer.addChild(img);
+		maskContainer.childToList("image", img);
+		maskContainer.init();
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class MaskContainer extends TouchContainer
@@ -46,8 +63,9 @@ package com.gestureworks.cml.element
 			
 			graphicArray = new List();
 			disableNativeTransform = true;
+			nestedTransform = true;
 			gestureEvents = true;
-			gestureList = { "n-drag":true, "n-rotate":true, "n-scale":true, "double_tap_n":true };
+			gestureList = { "n-double_tap":true, "n-drag":true, "n-rotate":true, "n-scale":true };
 		}
 		
 		//Mask SHAPE (STRING)
@@ -137,7 +155,7 @@ package com.gestureworks.cml.element
 			graphicArray.array = childList.getValueArray();
 			
 			for (var i:Number = graphicArray.length - 1; i > -1; i--) {
-				//trace("Removing item: " + graphicArray.array[i] + " at " + i);
+				trace("Removing item: " + graphicArray.array[i] + " at " + i);
 				removeChild(graphicArray.array[i]);
 			}
 			
@@ -240,7 +258,6 @@ package com.gestureworks.cml.element
 		
 		private function dragHandler(event:GWGestureEvent):void 
 		{
-			
 			//Calculate vector transformations in case contained within a viewer or other container.
 			//This prevents an inversion in translations from occurring when the container has been
 			//flipped upside down.
@@ -335,6 +352,7 @@ package com.gestureworks.cml.element
 		}
 		
 		public function cycleMasks(e:GWGestureEvent):void {
+			//trace("cycle masks");
 			removeChild(graphicArray.array[counter]);
 			counter++;
 			
