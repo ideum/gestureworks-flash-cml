@@ -6,6 +6,26 @@ package com.gestureworks.cml.element
 	import flash.media.*;
 	import flash.net.*;
 	import flash.utils.*;
+	
+	/**
+	 * VideoElement loads a video and plays it, and provides access to play, pause, stop, and seek methods.
+	 * 
+	 * Supported file types are: .mp4, .FLV, .MPEG-4, .m4v, .3GPP, .MOV, .F4V
+	 * 
+	 * VideoElement has the following parameters: autoplay, autoload, loop, src, deblocking
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var video:VideoElement = new VideoElement();
+		video.src = "assets/Ancient Ice and Our Planet's Future.mp4";
+		video.autoplay = true;
+		addChild(video);
+		
+		video.init();
+		video.play();
+	 *
+	 * </codeblock>
+	 */
 
 	public class VideoElement extends ElementFactory
 	{

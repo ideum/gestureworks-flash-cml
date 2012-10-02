@@ -12,7 +12,30 @@ package com.gestureworks.cml.element
 	import flash.utils.*;
 	
 	/**
+	 * The MP3Element is an object that loads a .MP3 file and plays it, with the options to pause, stop, seek, and resume play. The MP3Element will automatically load any id3 data
+	 * if it is present. The MP3Element also provides the option of a graphical waveform by setting the display property to "waveform", otherwise "none". The waveform's color can be set.
 	 * 
+	 * MP3Element has the following parameters: backgroundColor, backgroundAlpha, waveColor, preload, autoplay, loop, src, volume, pan, display
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var mp3Element:MP3Element = new MP3Element();
+		mp3Element.src = "../../../../assets/RuthCalledShot_vbr.mp3";
+		mp3Element.display = "waveform";
+		mp3Element.backgroundAlpha = 0.5;
+		mp3Element.backgroundColor = 0x333333;
+		mp3Element.waveColor = 0x558855;
+		mp3Element.volume = 1.0;
+		mp3Element.pan = 0;
+		mp3Element.loop = true;
+		mp3Element.preload = true;
+		mp3Element.autoplay = true;
+		
+		addChild(mp3Element);
+		
+		mp3Element.init();
+	 *
+	 * </codeblock>
 	 */		
 	public class MP3Element extends ElementFactory
 	{

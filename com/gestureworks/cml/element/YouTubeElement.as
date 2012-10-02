@@ -8,7 +8,27 @@ package  com.gestureworks.cml.element
 	import flash.net.URLRequest;
 	
 	/**
-	 * ...
+	 * The YoutubeElement is an object that retrieves and streams a Youtube video using the Youtube API. The source of the file will be the Youtube video's ID.
+	 * The video must be set to allow embedding and accessible without a user sign in.
+	 * 
+	 * The Video ID is the 10-digit ID associated with the video link. For example, a direct URL to the video used in this example is:
+	 * http://www.youtube.com/watch?v=h0MZX-D8xzA. Notice the "h0MZX-D8xzA" is the video's id. A video must be set to allow embedding from its owner
+	 * to be used by the YouTube API. If you receive "Error 100" or "Error 101", or "150", the video either no longer exists, or its embedding has 
+	 * been disabled.
+	 * 
+	 * YoutubeElement has the following parameters: src, chrome, autoplay
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var ytElement:YouTubeElement = new YouTubeElement();
+		ytElement.src = "h0MZX-D8xzA";
+		ytElement.autoplay = true;
+		ytElement.chrome = true;
+		addChild(ytElement);
+		
+		ytElement.init();
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class YouTubeElement extends ElementFactory

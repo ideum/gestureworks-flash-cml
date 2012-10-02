@@ -22,9 +22,28 @@ package com.gestureworks.cml.element
 	import flash.utils.Endian;
 	import flash.utils.Timer;
 	import flash.net.URLLoaderDataFormat;
-	//import filestream
+	
 	/**
-	 * ...
+	 * The WavElement is an AIR required element that loads in a .WAV file and plays it, with the options to pause, stop, and resume play. The WavElement will automatically load any XMP data
+	 * if it is present. The WavElement also provides the option of a graphical waveform by setting the display property to "waveform", otherwise "none". The waveform's color can be set.
+	 * 
+	 * To use the WavElement, it absolutely MUST be compiled in an AIR project.
+	 * 
+	 * WavElement has the following parameters: cueStart, bufferSize, backgroundColor, backgroundAlpha, waveColor, preload, autoplay, loop, src, volume, pan, display
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var wavElement:WavElement = new WavElement();
+		wavElement.src = "library/assets/FDR-Infamy.wav";
+		wavElement.autoplay = true;
+		wavElement.display = "waveform";
+		wavElement.volume = 0.5;
+		
+		addChild(wavElement);
+		
+		wavElement.init();
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class WavElement extends ElementFactory
@@ -73,26 +92,29 @@ package com.gestureworks.cml.element
 		public function get printData():Boolean { return _printData; }
 		public function set printData(val:Boolean):void { _printData = val; }
 		
+			
+		private var _cueStart:Number = 0;
 		/**
 		 * Cue start point in milliseconds
 		 * @default 0 
-		 */		
-		private var _cueStart:Number = 0;
+		 */	
 		public function get cueStart():Number { return _cueStart; }
 		public function set cueStart(val:Number):void { _cueStart = val; }
 		
+			
+		private var _byteRate:uint = 0;
 		/**
 		 * Audio byte rate (bytes per second)
 		 * @default 0 
-		 */		
-		private var _byteRate:uint = 0;
+		 */	
 		public function get byteRate():uint { return _byteRate; }
 		
+			
+		private var _bufferSize:uint = 2048;	
 		/**
 		 * Audio buffer size
 		 * @default 2048
-		 */	
-		private var _bufferSize:uint = 2048;		
+		 */
 		public function get bufferSize():uint { return _bufferSize; }
 		public function set bufferSize(val:uint):void { 		
 			if (val == 2048 || val == 4096 || val == 8192)
@@ -146,7 +168,7 @@ package com.gestureworks.cml.element
 	
 		private var _preload:Boolean = false;
 		/**
-		 * Indicates whether the mp3 file is preloaded by the cml parser
+		 * Indicates whether the wav file is preloaded by the cml parser
 		 * @default true
 		 */			
 		public function get preload():Boolean { return _preload; }
@@ -158,7 +180,7 @@ package com.gestureworks.cml.element
 		
 		private var _autoplay:Boolean = false;
 		/**
-		 * Indicates whether the mp3 file plays upon load
+		 * Indicates whether the wav file plays upon load
 		 * @default true
 		 */			
 		public function get autoplay():Boolean { return _autoplay; }
@@ -170,7 +192,7 @@ package com.gestureworks.cml.element
 			
 		private var _loop:Boolean = false;
 		/**
-		 * Specifies wether the mp3 file will to loop to the beginning and continue playing upon completion
+		 * Specifies wether the wav file will to loop to the beginning and continue playing upon completion
 		 * @default false
 		 */			
 		public function get loop():Boolean { return _loop; }
@@ -179,7 +201,7 @@ package com.gestureworks.cml.element
 		
 		private var _src:String;
 		/**
-		 * Sets the mp3 file path
+		 * Sets the wav file path
 		 * @default
 		 */			
 		public function get src():String{ return _src;}
@@ -403,8 +425,8 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets the src property from the argument and loads the mp3 file
-		 * @param file Full path and file name of mp3 file
+		 * Sets the src property from the argument and loads the wav file
+		 * @param file Full path and file name of wav file
 		 */		
 		public function open(file:String):void
 		{
