@@ -11,7 +11,22 @@ package  com.gestureworks.cml.element
 	import com.adobe.webapis.flickr.events.*;
 	import com.adobe.webapis.flickr.events.FlickrResultEvent;
 	/**
-	 * ...
+	 * FlickrElement provides access to images stored on Flickr through the Flickr API. To access the image, one must have the image's ID from the flickr server, and a Flickr API Key.
+	 * Flickr API keys start out at free and have some subscription plans depending on the amount of use they receive. They are available at: http://www.flickr/com/service/api
+	 * 
+	 * FlickrElement has the following parameters: apikey, src
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	   var flickrImg:FlickrElement = new FlickrElement();
+		flickrImg.apikey = "ENTER YOUR FLICKR API KEY";
+		flickrImg.src = "5703998760";
+		addChild(flickrImg);
+		
+		//Call init() once you're ready to display the class.
+		flickrImg.init();
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class FlickrElement extends ElementFactory
