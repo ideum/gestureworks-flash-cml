@@ -171,7 +171,7 @@ package com.gestureworks.cml.element
 			belt = new TouchContainer();
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
-			belt.gestureList = { "n-drag":true };
+			belt.gestureList = { "n-drag-inertia":true };
 			belt.disableAffineTransform = true;
 			
 			var scrollAlbum:Function = horizontal ? scrollH : scrollV;
@@ -265,7 +265,7 @@ package com.gestureworks.cml.element
 		 * Animates a snaping action to the snap point closest to the current belt location.
 		 * @param	e  the drag complete event
 		 */
-		private function snap(e:GWGestureEvent):void
+		private function snap(e:*):void
 		{	
 			if(horizontal)
 				snapTween = BetweenAS3.tween(belt, { x:getClosestSnapPoint(belt.x) }, null, .4, Exponential.easeOut);
