@@ -208,25 +208,46 @@ package com.gestureworks.cml.element
 		}			
 		
 		
-		private var _hit:String;
+		private var _hit:*;
 		/**
 		 * Sets hit object
 		 */
-		public function get hit():String {return _hit;}
-		public function set hit(value:String):void 
+		public function get hit():* {return _hit;}
+		public function set hit(value:*):void 
 		{
-			_hit = value;
+			if (value is DisplayObject)
+			{
+				_hit = "hit_area";
+				childToList(_hit, value);
+				addChild(value);
+			}
+			else
+			{
+				_hit = value.toString();
+			}
 		}		
 				
 		
-		private var _initial:String;
+		private var _initial:*;
 		/**
 		 * Sets button state association with mouse down event
 		 */
-		public function get initial():String {return buttonStates["initial"];}
-		public function set initial(value:String):void 
+		public function get initial():* {return _initial;}
+		public function set initial(value:*):void 
 		{
-			buttonStates["initial"] = value;						
+			if (value is DisplayObject)
+			{
+				_initial = "initial";
+				childToList(_initial, value);
+				addChild(value);
+				buttonStates[_initial] = _initial;
+			}
+			else
+			{
+				value = value.toString();
+				_initial = value;
+				buttonStates["initial"] = value;						
+			}
 		}
 		
 		
@@ -322,46 +343,94 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////		
 		
 		
-		private var _down:String;
+		private var _down:*;
 		/**
 		 * Sets button state association with down event
 		 */		
-		public function get down():String {return buttonStates["down"];}
-		public function set down(value:String):void 
+		public function get down():* {return _down;}
+		public function set down(value:*):void 
 		{			
-			buttonStates["down"] = value;
+			if (value is DisplayObject)
+			{
+				_down = "down";
+				childToList(_down, value);
+				addChild(value);
+				buttonStates[_down] = _down;
+			}
+			else
+			{
+				value = value.toString();
+				_down = value;
+				buttonStates["down"] = value;						
+			}			
 		}
 		
-		private var _over:String;
+		private var _over:*;
 		/**
 		 * Sets button state association with over event (mouse only)
 		 */		
-		public function get over():String {return buttonStates["over"];}
-		public function set over(value:String):void 
+		public function get over():* {return _over;}
+		public function set over(value:*):void 
 		{			
-			buttonStates["over"] = value;
+			if (value is DisplayObject)
+			{
+				_over = "over";
+				childToList(_over, value);
+				addChild(value);
+				buttonStates[_over] = _over;
+			}
+			else
+			{
+				value = value.toString();
+				_over = value;
+				buttonStates["over"] = value;						
+			}			
 		}
 		
 		
-		private var _up:String;
+		private var _up:*;
 		/**
 		 * Sets button state association with up event
 		 */		
-		public function get up():String {return buttonStates["up"];}
-		public function set up(value:String):void 
+		public function get up():String {return _up;}
+		public function set up(value:*):void 
 		{			
-			buttonStates["up"] = value;
+			if (value is DisplayObject)
+			{
+				_up = "up";
+				childToList(_up, value);
+				addChild(value);
+				buttonStates[_up] = _up;
+			}
+			else
+			{
+				value = value.toString();
+				_up = value;
+				buttonStates["up"] = value;						
+			}			
 		}			
 
 		
-		private var _out:String;
+		private var _out:*;
 		/**
 		 * Sets button state association with out event
 		 */		
-		public function get out():String {return buttonStates["out"];}
-		public function set out(value:String):void 
+		public function get out():* {return _out;}
+		public function set out(value:*):void 
 		{			
-			buttonStates["out"] = value;
+			if (value is DisplayObject)
+			{
+				_out = "out";
+				childToList(_out, value);
+				addChild(value);
+				buttonStates[_out] = _out;
+			}
+			else
+			{
+				value = value.toString();
+				_out = value;
+				buttonStates["out"] = value;						
+			}			
 		}
 		
 		

@@ -249,9 +249,7 @@ package  com.gestureworks.cml.element
 			}
 			else 
 			{
-				initial = "initKey";
 				background = new GraphicElement();											
-				background.id = initial;
 				background.shape = "roundRectangle";
 				background.cornerWidth = 12;
 				background.width = width && width > 0? width : 45;
@@ -274,45 +272,33 @@ package  com.gestureworks.cml.element
 				dropShadow.distance = 5;
 				background.filters = new Array(dropShadow);
 				
-				addStateElements(background);
+				initial = background;
 			}			
 			if (!hit)
 			{
-				hit = "hitKey";
 				var hitBkg:* = CloneUtils.clone(background);
-				hitBkg.id = hit;
 				hitBkg.alpha = 0;				
-				addStateElements(hitBkg);
+				hit = hitBkg;
 			}
 			if (!down)
 			{
-				down = "downKey";
 				var downBkg:* = CloneUtils.clone(background);
-				downBkg.id = down;
 				downBkg.alpha = .5;
-				addStateElements(downBkg);
+				down = downBkg;
 			}
 			if (!up)
 			{
-				up = "upKey";
-				var upBkg:* = CloneUtils.clone(background);
-				upBkg.id = up;
-				addStateElements(upBkg);
+				up = CloneUtils.clone(background);				
 			}
 			if (!over)
 			{		
-				over = "overKey";
 				var overBkg:* = CloneUtils.clone(background);								
-				overBkg.id = over;
 				overBkg.alpha = .5;				
-				addStateElements(overBkg);
+				over = overBkg;
 			}
 			if (!out)
 			{
-				out = "outKey";
-				var outBkg:* = CloneUtils.clone(background);
-				outBkg.id = out;
-				addStateElements(outBkg);
+				out = CloneUtils.clone(background);
 			}
 		}
 		
@@ -334,7 +320,7 @@ package  com.gestureworks.cml.element
 				keyText = childList.getKey(text) as TextElement;
 				keyText.textColor = initTextColor ? initTextColor : keyText.textColor;
 				text = keyText.text;
-				addStateElements(keyText);
+				addChild(keyText);
 			}
 			else
 			{
@@ -348,7 +334,7 @@ package  com.gestureworks.cml.element
 				keyText.fontSize = 16;
 				keyText.font = "HelveticaFont";
 				keyText.textColor = initTextColor ? initTextColor : 0xFFFFFF;						
-				addStateElements(keyText);
+				addChild(keyText);
 			}
 			
 			//default initital color
@@ -383,18 +369,7 @@ package  com.gestureworks.cml.element
 		private function setIcon():void
 		{
 			if (icon)			
-				addStateElements(icon);
-		}
-		
-		/**
-		 * Adds the elements to both the display list and the cml childList to allow the <code>ButtonElement</code> to
-		 * handle the graphic transitions
-		 * @param	g
-		 */
-		private function addStateElements(g:*):void
-		{
-			childToList(g.id, g);
-			addChild(g);
+				addChild(icon);
 		}
 		
 		/**
