@@ -41,7 +41,7 @@ package  com.gestureworks.cml.element
 		private var _shiftCharCode:uint;
 		
 		private var _icon:*;
-		private var _text:String;
+		private var _text:*;
 		private var _shiftText:String;
 		
 		private var _initTextColor:uint;
@@ -171,10 +171,15 @@ package  com.gestureworks.cml.element
 		/**
 		 * The text displayed on the key
 		 */
-		public function get text():String { return _text; }
-		public function set text(t:String):void
+		public function get text():* { return _text; }
+		public function set text(t:*):void
 		{
-			_text = t;
+			if (t is TextElement)
+				_text = TextElement(t);
+			else if(t)
+				_text = t.toString();
+			else
+				_text = t;
 		}
 		
 		/**
@@ -305,27 +310,34 @@ package  com.gestureworks.cml.element
 		/**
 		 * Set the text element displayed on the key. Allows the specification of a text or <code>TextElement</code> id through CML. If the 
 		 * text value references a <code>TextElement</code>, the object is retrieved and displayed on the key. If it does not, a default 
-		 * <code>TextElement</code> is generated and the text value becomes the text of the new element and the element is displayed on the key. 
+		 * <code>TextElement</code> is generated and the text value becomes the text of the new element and the element is displayed on the key
+		 * Character codes will override the text displayed on the TextElement. 
 		 */
 		private function setText():void
 		{
-			//override text with character code
-			if (charCode)
-				text = String.fromCharCode(charCode);
 			if (!text)
 				text = "";
-				
-			if (childList.hasKey(text))
+			
+			if (text && text is TextElement) 
+			{				
+				keyText = text;
+				keyText.textColor = initTextColor ? initTextColor: keyText.textColor;
+				keyText.text = charCode ? String.fromCharCode(charCode) : keyText.text;
+				text = keyText.text;
+				addChild(keyText);
+			}
+			else if (childList.hasKey(text))
 			{
 				keyText = childList.getKey(text) as TextElement;
 				keyText.textColor = initTextColor ? initTextColor : keyText.textColor;
+				keyText.text = charCode ? String.fromCharCode(charCode) : keyText.text;
 				text = keyText.text;
 				addChild(keyText);
 			}
 			else
 			{
 				keyText = new TextElement();
-				keyText.text = text;
+				keyText.text = charCode ? String.fromCharCode(charCode) : text;
 				keyText.height = background.height;
 				keyText.width = background.width;
 				keyText.textAlign = "center";

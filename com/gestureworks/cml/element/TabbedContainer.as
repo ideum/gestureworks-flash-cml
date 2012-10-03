@@ -83,12 +83,11 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML initialization. Listens for events triggered by display complete of tab children. 
+		 * CML initialization. 
 		 */
 		override public function displayComplete():void 
 		{			
 			init();	
-			addEventListener(StateEvent.CHANGE, updateTab);
 		}
 		
 		/**
@@ -158,7 +157,17 @@ package com.gestureworks.cml.element
 			background.shape = "rectangle";
 			background.width = width;
 			background.height = height;
-			addChild(background);			
+			addChild(background);	
+			
+			for (var i:int = this.numChildren - 1; i >= 0; i--)
+			{
+				var child:* = getChildAt(i);
+				if (child is TabElement)
+				{
+					child.init();
+					addTab(child);
+				}
+			}
 		}
 		
 		/**
@@ -174,7 +183,7 @@ package com.gestureworks.cml.element
 		 * Adds a new tab to the container and/or gives focus to the selected tab.
 		 * @param	tab
 		 */
-		public function addTab(tab:TabElement):void
+		private function addTab(tab:TabElement):void
 		{
 			var previousTab:TabElement = tabs.length > 0 ? tabs[selectedIndex] : null;
 				
@@ -240,25 +249,13 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Updates cml generated tab elements
-		 * @param	e
-		 */
-		private function updateTab(e:StateEvent):void
-		{
-			if (e.value is TabElement)
-				addTab(TabElement(e.value));
-		}
-		
-		/**
 		 * Destructor
 		 */
 		override public function dispose():void 
 		{
 			super.dispose();
 			background = null;
-			tabs = null;
-			
-			removeEventListener(StateEvent.CHANGE, updateTab);
+			tabs = null;			
 		}
 		
 	}

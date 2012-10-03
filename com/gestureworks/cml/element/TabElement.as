@@ -76,6 +76,7 @@ package com.gestureworks.cml.element
 			tabGE = new GraphicElement();
 			contentContainer = new Container();
 			displayBkg = new GraphicElement();
+			contentMask = new GraphicElement();
 		}
 		
 		/**
@@ -84,6 +85,7 @@ package com.gestureworks.cml.element
 		public function init():void
 		{
 			setupUI();
+			addAllChildren();
 		}
 		
 		/**
@@ -91,9 +93,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void 
 		{
-			init();
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "updateTab", this, true));	 
-			addAllChildren();
+			if(!(parent is TabbedContainer))
+				init();			
 		}	
 		
 		/**
@@ -188,7 +189,7 @@ package com.gestureworks.cml.element
 			{
 				contentContainer.height = value - tabGE.height;
 				displayBkg.height = contentContainer.height;
-				if (applyMask) contentMask.height = contentContainer.height;
+				if (contentMask) contentMask.height = contentContainer.height;
 			}
 		}
 		
@@ -203,7 +204,7 @@ package com.gestureworks.cml.element
 			{
 				contentContainer.width = value;
 				displayBkg.width = value;
-				if (applyMask) contentMask.width = value;
+				if (contentMask) contentMask.width = value;
 			}
 		}
 		
@@ -316,8 +317,7 @@ package com.gestureworks.cml.element
 			
 			//create mask and apply it to the content container
 			if (applyMask)
-			{
-				contentMask = new GraphicElement();
+			{				
 				contentMask.shape = "rectangle";
 				contentMask.width = width;
 				contentMask.height = displayBkg.height;
@@ -344,6 +344,20 @@ package com.gestureworks.cml.element
 		override public function addChild(child:DisplayObject):DisplayObject 
 		{
 			return contentContainer.addChild(child);
+		}
+		
+		/**
+		 * Adds all children after initialization to ensure content is in front of background
+		 */
+		override public function addAllChildren():void 
+		{
+			if (childList.length > 0)
+				super.addAllChildren();
+			else
+			{
+				for (var i:int = contentContainer.numChildren-1; i >= 0; i--)
+					contentContainer.addChild(contentContainer.getChildAt(i));
+			}
 		}
 		
 		/**
