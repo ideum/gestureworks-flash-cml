@@ -57,7 +57,6 @@
 		private var _clickZoomInFactor:Number = 1.7
 		private var _scaleZoomFactor:Number = 1.4
     	public var smoothPanning:Boolean = true;
-		private var gigapixel:GigapixelElement;
     	private var sceneNavigator:SceneNavigator;
     	private var scaleConstraint:ScaleConstraint;
 	
@@ -65,6 +64,23 @@
 		public function GigaPixelViewer()
 		{
 			super();
+		}
+		
+		private var _gigapixel:*;
+		/**
+		 * Sets the gigapixel element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned. 
+		 */		
+		public function get gigapixel():* {return _gigapixel}
+		public function set gigapixel(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_gigapixel = value;
+			else 
+				_gigapixel = searchChildren(value);					
 		}
 		
 		private var _minScaleConstraint:Number = 0.001;

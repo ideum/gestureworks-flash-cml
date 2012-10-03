@@ -192,7 +192,8 @@ package com.gestureworks.cml.element
 			_loaded = "loaded";
 			
 			if (this.parent) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded));
+				//trace("Modest Map Element dispatching");
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
 			}
 		}
 		

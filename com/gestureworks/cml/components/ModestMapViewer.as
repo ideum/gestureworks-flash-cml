@@ -337,7 +337,7 @@ package com.gestureworks.cml.components
 			}
 			else if (event.value == "loaded") {
 				//map.removeEventListener(StateEvent.CHANGE, onStateEvent);
-				trace("Traced mapElement loaded.");
+				//trace("Traced mapElement loaded.");
 				map.updateFrame();
 				updateLayout();
 			}
