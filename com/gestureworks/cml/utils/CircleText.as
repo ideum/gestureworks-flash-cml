@@ -14,7 +14,7 @@ package com.gestureworks.cml.utils
  public class CircleText extends ElementFactory
 	{
 
- public function CircleText(centerX:Number, centerY:Number, radius:Number, curveText:String, coverage:Number, startAngle:Number, stopAngle:Number)
+ public function CircleText(textX:Number, textY:Number, textRadius:Number, curveText:String, coverage:Number, startAngle:Number, stopAngle:Number)
 		{	
 
 			var letters:Array = curveText.split("");
@@ -28,13 +28,13 @@ package com.gestureworks.cml.utils
 			for (var s:int = 0; s < letters.length; s++)
 			{
 				var letter:TextElement = letter(letters[s].toString());
-				letter.x = radius * Math.cos(step * s);
-				letter.y = radius * Math.sin(step * s);
+				letter.x = textRadius * Math.cos(step * s);
+				letter.y = textRadius * Math.sin(step * s);
 				letter.rotation = (step * s) * 180 / Math.PI + 90;
 				this.addChild(letter);
 			}
-			this.x = centerX;
-            this.y = centerY;
+			this.x = textX;
+            this.y = textY;
 			this.rotation = total - 90;
 		}
 

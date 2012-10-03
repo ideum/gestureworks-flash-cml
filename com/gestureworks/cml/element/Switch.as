@@ -446,7 +446,6 @@ package com.gestureworks.cml.element
 			touchSpriteBg.gestureList = {"n-tap": true};
 			touchSpriteBg.addEventListener(GWGestureEvent.TAP, onTap);
 	
-							
 			text.text = "TRUE";
 			text.x = 30;
 			text.y = -70;
@@ -493,7 +492,6 @@ package com.gestureworks.cml.element
 		
 		private function onTap(event:GWGestureEvent):void
 		{
-			
 			if (button.x < button.width)
 				button.x = maxButtonPos; 
 			else

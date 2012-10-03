@@ -30,7 +30,8 @@ package com.gestureworks.cml.element
 		
 		private var _src:String;
 		/**
-		 * 
+		 * Sets the src xml file
+		 *  @default 
 		 */
 		public function get src():String {return _src;}
 		public function set src(value:String):void 

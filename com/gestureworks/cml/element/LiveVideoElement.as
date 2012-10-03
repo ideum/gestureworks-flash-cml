@@ -46,7 +46,7 @@ package com.gestureworks.cml.element
 		/**
 		* Defines netstream object.
 		*/
-		public var netsream:NetStream;
+		public var netstream:NetStream;
 		
 		/**
 		* defines the video element
@@ -136,8 +136,8 @@ package com.gestureworks.cml.element
 		   micro = mic.getMicrophone();
 		   micro.setLoopBack(true);
 		   micro.setUseEchoSuppression(true);
-		   netsream.attachAudio(micro);
-		  //video.attachNetStream(netsream);
+		   netstream.attachAudio(micro);
+		  //video.attachNetStream(netstream);
 		   micro.addEventListener(ActivityEvent.ACTIVITY , testMic);
 		  }
 		}
@@ -161,7 +161,7 @@ package com.gestureworks.cml.element
 		{
 		 netConnection = new NetConnection;
 		 netConnection.connect(null);
-		 netsream = new NetStream(netConnection);
+		 netstream = new NetStream(netConnection);
 		}	
 		
 		/**
@@ -213,7 +213,7 @@ package com.gestureworks.cml.element
 	override public function dispose():void
 	{
 		netConnection = null;
-		netsream = null;
+		netstream = null;
 		mic = null;
 		cam = null;
 		camera = null;

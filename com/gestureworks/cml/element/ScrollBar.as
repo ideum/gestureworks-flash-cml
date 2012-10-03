@@ -38,7 +38,7 @@ package com.gestureworks.cml.element
 		public function ScrollBar():void
 		{
 			super();
-		//	init();
+			init();
 		}
 		
 		/**
@@ -47,7 +47,7 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{
 			super.displayComplete();
-			init();
+		//	init();
 		}
 		
 		/**
@@ -843,11 +843,11 @@ package com.gestureworks.cml.element
         {
 		  var touchX:Number = event.localX;
 		  var scrollBarCenter:Number = scrollbar.width/2;
-		  var rightBoundary:Number = background.width - scrollBarCenter;
+		  var rightBoundary:Number = background.width - scrollbar.width;
 		  var leftBoundary:Number = scrollBarCenter;  
 
 		  if (touchX > rightBoundary)
-    	    scrollbar.x = background.width - scrollbar.width - square2.width - square2.height;
+    	    scrollbar.x = rightBoundary - square2.width - square2.height;
 		  else if (touchX < leftBoundary)
 		   scrollbar.x = background.x;
 		  else			 

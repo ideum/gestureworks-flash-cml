@@ -3,6 +3,7 @@
 //
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.factories.ObjectFactory;
 	import flash.events.EventDispatcher;
 	import flash.media.Camera;

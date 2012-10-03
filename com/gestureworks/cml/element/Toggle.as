@@ -9,7 +9,7 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * The Toggle is a element that acts as a toggle button.
+	 * The Toggle is a element that acts as a toggle button. It adds crossline inside square when toggled.
 	 * It has the following parameters: fillColor, backgroundLineColor, backgroundLineStoke, toggleColor and toggleLineStoke.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">

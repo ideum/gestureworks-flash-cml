@@ -23,6 +23,7 @@ package com.gestureworks.cml.element
 	   var st:Stepper = new Stepper();
 	   st.x = 50;
 	   st.y = 50;
+	   st.init();
 	   addChild(st);
 	
 	 *
@@ -247,7 +248,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initializes the configuration and display of Numbers
 		 */
-		private function init():void
+		public function init():void
 		{
 			displayNum();
 		}
@@ -263,9 +264,9 @@ package com.gestureworks.cml.element
 			background.graphics.endFill();
 			
 			topTriangle.graphics.beginFill(topTriangleColor, topTriangleAlpha);
-			topTriangle.graphics.moveTo(90, 0);
-			topTriangle.graphics.lineTo(80, 23);
-			topTriangle.graphics.lineTo(100, 23);
+			topTriangle.graphics.moveTo(90, 2);
+			topTriangle.graphics.lineTo(80, 22);
+			topTriangle.graphics.lineTo(100, 22);
 			topTriangle.graphics.endFill();
 			
 			topSquare.graphics.beginFill(0xCCCCCC);
@@ -273,9 +274,9 @@ package com.gestureworks.cml.element
 			topSquare.graphics.endFill();
 			
 			bottomTriangle.graphics.beginFill(bottomTriangleColor, bottomTriangleAlpha);
-			bottomTriangle.graphics.moveTo(90, 50);
-			bottomTriangle.graphics.lineTo(80, 25);
-			bottomTriangle.graphics.lineTo(100, 25);
+			bottomTriangle.graphics.moveTo(90, 48);
+			bottomTriangle.graphics.lineTo(80, 27);
+			bottomTriangle.graphics.lineTo(100, 27);
 			bottomTriangle.graphics.endFill();
 			
 			bottomSquare.graphics.beginFill(0xCCCCCC);
@@ -303,7 +304,7 @@ package com.gestureworks.cml.element
 			else
 				this.addEventListener(MouseEvent.CLICK, onTap);	
 
-			inputTxt.x = 25;
+			inputTxt.x = 30;
 			inputTxt.y = 10;
 			inputTxt.width = 50;
 			inputTxt.height = 25;

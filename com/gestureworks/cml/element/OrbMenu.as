@@ -338,43 +338,43 @@ package com.gestureworks.cml.element
 			_backgroundLineStoke = value;
 		}
 		
-		private var _centerX:Number = 90;
+		private var _textX:Number = 90;
 		/**
 		* defines the centerX position of text
 		*/
-		public function get centerX():Number
+		public function get textX():Number
 		{
-			return _centerX;
+			return _textX;
 		}
-		public function set centerX(value:Number):void
+		public function set textX(value:Number):void
 		{
-			_centerX = value;
+			_textX = value;
 		}
 		
-		private var _centerY:Number = 80;
+		private var _textY:Number = 80;
 		/**
 		* Defines centerY position of text
 		*/
-		public function get centerY():Number
+		public function get textY():Number
 		{
-			return _centerY;
+			return _textY;
 		}
-		public function set centerY(value:Number):void
+		public function set textY(value:Number):void
 		{
-			_centerY = value;
+			_textY = value;
 		}
 		
-		private var _radius:Number = 100;
+		private var _textRadius:Number = 100;
 		/**
 		* defines radius of text
 		*/
-		public function get radius():Number
+		public function get textRadius():Number
 		{
-			return _radius;
+			return _textRadius;
 		}
-		public function set radius(value:Number):void
+		public function set textRadius(value:Number):void
 		{
-			_radius = value;
+			_textRadius = value;
 		}
 		
 		private var _curveText:String = "MENU";
@@ -500,7 +500,7 @@ package com.gestureworks.cml.element
 			background.rotation = 45;
 			background.visible = false;
 						
-			var c1:CircleText = new CircleText(centerX, centerY, radius, curveText, coverage, startAngle, stopAngle);
+			var c1:CircleText = new CircleText(textX, textY, textRadius, curveText, coverage, startAngle, stopAngle);
 			//  var c1:CircleText = new CircleText(-10, 10, 100, "MENU", 0.4, 0, 0);
 			
 			shape1.gestureEvents = true;
