@@ -10,6 +10,7 @@ package com.gestureworks.cml.element
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.filters.ShaderFilter;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
@@ -22,8 +23,22 @@ package com.gestureworks.cml.element
 	 */
 	public class MagnifierElement extends TouchContainer
 	{
+		private const PItoRAD:Number = Math.PI / 180;
+		
 		//[Embed(source = "../../../gwas/lib/magnify.pbj", mimeType = "application/octet-stream")]
 		//var magnifierShader:Class;
+		
+		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
+		private var DefaultGraphic:Class;
+		
+		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.mDefaultMagnifier")]
+		private var mDefaultGraphic:Class;
+		
+		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.NotchMagnifier")]
+		private var NotchGraphic:Class;
+		
+		private var _border:Sprite;
+		private var mBorder:Sprite;
 		
 		private const ZERO_POINT:Point = new Point(0,0);
 		
@@ -46,6 +61,15 @@ package com.gestureworks.cml.element
 			super();
 		}
 		
+		private var _graphic:String;
+		/**
+		 * Sets the graphic type: default, notch, or none.
+		 */
+		public function get graphic():String { return _graphic; }
+		public function set graphic(value:String):void {
+			_graphic = value;
+		}
+		
 		private var _radius:Number = 100;
 		/**
 		 * Radius of the total area of the lens, including distortion effects if any.
@@ -62,6 +86,8 @@ package com.gestureworks.cml.element
 		 * This amount is subtracted from the radius to create the focal area, so if the radius is 100,
 		 * and the distortionRadius is 30, then the "focused" area will have a radius of 70. If the distortion and
 		 * radius are equal, there will be no in-focus area. The maximum is whatever the radius is, the minimum is 0.
+		 * 
+		 * Setting a graphic will hide the distortion unless it is made fairly large.
 		 * @default: 30
 		 */
 		public function get distortionRadius():Number { return _distortionRadius; }
@@ -131,14 +157,39 @@ package com.gestureworks.cml.element
 			
 			readyBitmaps();
 			
+			if (_graphic == "notch") {
+				_border = new NotchGraphic as Sprite;
+				mBorder = null;
+				var tempRad:Number = _radius + 15;
+				var num:Number = (tempRad * 2) / _border.width;
+				_border.width *= num;
+				_border.height *= num;
+				
+				this.width = _border.width;
+				this.height = _border.height;
+				
+			} else if (_graphic == "default") {
+				
+				_border = new DefaultGraphic as Sprite;
+				mBorder = new mDefaultGraphic as Sprite;
+				var tempRad:Number = _radius + 15;
+				var num:Number = (tempRad * 2) * (_border.height / _border.width) / _border.height;
+				_border.height *= num;
+				num = (tempRad * 2) / _border.width;
+				_border.width *= num;
+				
+				this.width = _border.width;
+				this.height = _border.height;
+			} else {
+				this.width = _radius * 2;
+				this.height = _radius * 2;
+			}
+			
 			urlRequest = new URLRequest("../lib/magnify.pbj");
 			urlLoader = new URLLoader();
 			urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
 			urlLoader.addEventListener(Event.COMPLETE, applyFilter);
 			urlLoader.load(urlRequest);
-			
-			//applyFilter();
-			
 		}
 		
 		private function readyBitmaps():void {
@@ -169,13 +220,41 @@ package com.gestureworks.cml.element
 		}
 		
 		private function applyMask():void {
-			mSprite = new Sprite();
-			mSprite.graphics.beginFill(0xffffff, 1);
-			mSprite.graphics.drawCircle(0, 0, _radius);
-			mSprite.graphics.endFill();
 			
-			addChild(mSprite);
-			this.mask = mSprite;
+			if (_graphic == "notch") {
+				
+				var tempRad:Number = (radius + 15);
+				
+				mSprite = new Sprite();
+				mSprite.graphics.beginFill(0xffffff, 1);
+				mSprite.graphics.drawCircle(0, 0, tempRad);
+				mSprite.graphics.endFill();
+				
+				addChild(mSprite);
+			
+				addChild(_border);
+			
+				this.mask = mSprite;
+			} else if (_graphic == "default") {
+				mBorder.width = _border.width;
+				mBorder.height = _border.height;
+				
+				addChild(mBorder);
+				
+				addChild(_border);
+				
+				this.mask = mBorder;
+			} else if (_graphic == "none") {
+				
+				mSprite = new Sprite();
+				mSprite.graphics.beginFill(0xffffff, 1);
+				mSprite.graphics.drawCircle(0, 0, _radius);
+				mSprite.graphics.endFill();
+				
+				addChild(mSprite);
+				
+				this.mask = mSprite;
+			}
 		}
 		
 		private function init2():void {
@@ -213,20 +292,69 @@ package com.gestureworks.cml.element
 		}
 		
 		private function scaleHandler(e:GWGestureEvent):void {
-			trace("Handling scale");
+			//trace("Handling scale");
 			_radius += (e.value.scale_dsx + e.value.scale_dsy) * 20;
 			width = _radius * 2;
 			height = _radius * 2;
-			mSprite.width = _radius * 2;
-			mSprite.height = _radius * 2;
 			
-			mSprite.x += e.value.scale_dsx * 40;
-			mSprite.y += e.value.scale_dsy * 40;
+			var tempRad:Number = _radius + 15;
+			
+			if (_graphic == "notch") {
+				mSprite.width = tempRad * 2;
+				mSprite.height = tempRad * 2;
+				
+				mSprite.x += e.value.scale_dsx * 40;
+				mSprite.y += e.value.scale_dsy * 40;
+				
+				_border.width = tempRad * 2;
+				_border.height = tempRad * 2;
+				
+				_border.x = mSprite.x;
+				_border.y = mSprite.y;
+			} else if (_graphic == "default") {
+				var num:Number = (tempRad * 2) * (_border.height / _border.width) / _border.height;
+				_border.height *= num;
+				num = (tempRad * 2) / _border.width;
+				_border.width *= num;
+				
+				mBorder.width = _border.width;
+				mBorder.height = _border.height;
+				
+				width = _border.width;
+				height = _border.height;
+				
+				mBorder.x += e.value.scale_dsx * 40;
+				mBorder.y += e.value.scale_dsy * 40;
+				_border.x = mBorder.x;
+				_border.y = mBorder.y;
+			} else if (_graphic == "none") {
+				mSprite.width = _radius * 2;
+				mSprite.height = _radius * 2;
+				
+				mSprite.x += e.value.scale_dsx * 40;
+				mSprite.y += e.value.scale_dsy * 40;
+			}
 		}
 		
 		private function rotateFilter(e:GWGestureEvent):void {
 			//trace("Magnifying");
 			magnification += e.value.rotate_dtheta * 0.1;
+			if (_graphic == "notch") {
+				_border.rotation += e.value.rotate_dtheta;
+				mSprite.rotation = _border.rotation;
+			} else if (_graphic == "default") {
+				var m:Matrix = _border.transform.matrix;
+				
+				m.rotate(e.value.rotate_dtheta * PItoRAD);
+				m.tx = _border.x;
+				m.ty = _border.y;
+				
+				_border.transform.matrix = m;
+				
+				mBorder.x = _border.x;
+				mBorder.y = _border.y;
+				mBorder.rotation = _border.rotation;
+			}
 		}
 		
 		private function dragHandler(e:GWGestureEvent):void {

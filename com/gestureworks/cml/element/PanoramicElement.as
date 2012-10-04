@@ -1,6 +1,9 @@
 ﻿package com.gestureworks.cml.element
 {
 	//----------------adobe--------------//
+	import away3d.cameras.lenses.PerspectiveLens;
+	import away3d.controllers.HoverController;
+	import away3d.textures.CubeTextureBase;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -35,8 +38,8 @@
 	import away3d.cameras.HoverCamera3D;
 	import away3d.cameras.Camera3D;
     import away3d.containers.View3D;
-    import away3d.primitives.Sphere;
-	import away3d.primitives.Skybox6;
+    import away3d.primitives.SphereGeometry;
+	import away3d.primitives.SkyBox
     import away3d.core.utils.Cast;
     import away3d.materials.BitmapMaterial;
 	//import away3d.materials.BitmapFileMaterial;
@@ -45,6 +48,7 @@
 	import away3d.primitives.Cube;
 	import away3d.materials.BitmapMaterial;
 	import away3d.core.utils.Cast;
+	
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.core.GestureWorks;		
 	
@@ -139,9 +143,8 @@
 		private var panoramic:TouchContainer;
 		private var faceNum:int = 0;
 		
-		private var cam:HoverCamera3D;
+		private var cam:Camera3D;
 		private var view:View3D;
-		private var largeCube:Skybox6;
 		private var cube:Cube;
 		private var shape_net:Bitmap;
 		private var cube_face:Array = new Array();
@@ -252,14 +255,20 @@
 			// create a "hovering" camera
 			addChild(panoramic);
 			
-			cam = new HoverCamera3D({zoom:100, focus:7});
-            cam.hover(true);
+			//cam = new HoverCamera3D({zoom:100, focus:7});
+			cam = new Camera3D()
+			var camController:HoverController = new HoverController(cam);
+            //cam.hover(true);
 			
 			// create a viewport
-			view = new View3D({x:width/2,y:height/2,camera:cam});
-				view.camera.lookAt(new Number3D(0, 0, 0));
-				view.clipping = new RectangleClipping({minX:-width/2,minY:-height/2, maxX:width/2,maxY:height/2});
-			panoramic.addChild(view);
+			//view = new View3D({x:width/2,y:height/2,camera:cam});
+				//view.camera.lookAt(new Number3D(0, 0, 0));
+				//view.clipping = new RectangleClipping({minX:-width/2,minY:-height/2, maxX:width/2,maxY:height/2});
+			//panoramic.addChild(view);
+			
+			view = new View3D();
+			view.camera = cam;
+			view.camera.lens = new PerspectiveLens(90);
 			
 			//----------------------------------// 
 			
@@ -268,16 +277,21 @@
 				
 				var rad:Number = (width / 2) * 45;//80000
 				mat = new BitmapMaterial(Cast.bitmap(shape_net));
-				var largeSphere:Sphere = new Sphere({radius:rad,material:mat,segmentsW:14,segmentsH:28});
+				//var largeSphere:SphereGeometry = new SphereGeometry(rad, 16, 28);
+				
+				//var largeSphere:SphereGeometry = new Sphere({radius:rad,material:mat,segmentsW:14,segmentsH:28});
 					largeSphere.scaleX = -1;
 				view.scene.addChild(largeSphere);
 			}
 			
 			if(_projectionType=="cube"){
-					mat = new BitmapMaterial(Cast.bitmap(shape_net));
-					mat.smooth = true;
-					largeCube = new Skybox6(mat);
-					largeCube.quarterFaces();
+					//mat = new BitmapMaterial(Cast.bitmap(shape_net));
+					//mat.smooth = true;
+					//largeCube = new Skybox6(mat);
+					//largeCube.quarterFaces();
+				
+				var skyboxCubeMap:CubeTextureBase = new CubeTextureBase();
+					
 				view.scene.addChild(largeCube);
 				view.render();
 			}

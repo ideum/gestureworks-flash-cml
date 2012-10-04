@@ -47,7 +47,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
-	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
+	//import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.YouTubeViewer; YouTubeViewer;
 	import com.gestureworks.cml.components.Component; Component;	
 	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
@@ -95,7 +95,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ModestMapElement; ModestMapElement;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
 	import com.gestureworks.cml.element.GigapixelElement; GigapixelElement;
-	import com.gestureworks.cml.element.PanoramicElement; PanoramicElement;
+	//import com.gestureworks.cml.element.PanoramicElement; PanoramicElement;
 	import com.gestureworks.cml.element.MaskContainer; MaskContainer;
 	import com.gestureworks.cml.element.MagnifierElement; MagnifierElement;
 	import com.gestureworks.cml.element.TabbedContainer; TabbedContainer;
