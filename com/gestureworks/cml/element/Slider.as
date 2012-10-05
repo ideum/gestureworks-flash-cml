@@ -182,9 +182,9 @@ package com.gestureworks.cml.element
 				throw new Error("rail must be set");
 			
 			if (mouseEnabled) {
-				if (GestureWorks.supportsTouch)
+				if (GestureWorks.activeTUIO)
 					hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-				else if (GestureWorks.activeTUIO)
+				else if (GestureWorks.supportsTouch)
 					hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 				else
 					hit.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
@@ -194,7 +194,7 @@ package com.gestureworks.cml.element
 				touchKnob.disableAffineTransform = true;
 				touchKnob.disableNativeTransform = true;	
 				touchKnob.gestureEvents = true;
-				touchKnob.gestureList = { "n-drag": true };
+				touchKnob.gestureList = { "n-drag-inertia": true };
 				touchKnob.gestureReleaseInertia = gestureReleaseInertia;
 				touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
 				if (gestureReleaseInertia)
@@ -323,9 +323,9 @@ package com.gestureworks.cml.element
 			var newValue:Number = 0;	
 				
 			if (orientation == "horizontal")
-				newValue = knob.x + event.value.dx;
+				newValue = knob.x + event.value.drag_dx;
 			else if (orientation == "vertical")
-				newValue = knob.y + event.value.dy;
+				newValue = knob.y + event.value.drag_dy;
 			
 			if (newValue < minPos) {
 				if (orientation == "horizontal")	
