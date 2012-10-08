@@ -1,32 +1,57 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Shader;
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.filters.ShaderFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.net.URLLoader;
-	import flash.net.URLLoaderDataFormat;
-	import flash.net.URLRequest;
 	import flash.utils.Timer;
 	import org.tuio.*;
 	/**
-	 * ...
+	 * PanoramicElement provides a touch-enabled, 3-Dimensional panorama using the Away3D library.
+	 * The PanoramicElement has two projection types: sphere, or cube, which may be set using the projectionType attribute/property.
+	 * 
+	 * For a sphere projectionType, a single, spherical panoramic image needs to be provided in an ImageElement. The maximum size of the panorama's longest edge can be no greater than 2048, and
+	 * this may be set in the CML or Actionscript rather than resizing the actual image file itself.
+	 * If using CML, this ImageElement should be added between the open and close tags of the PanoramicElement to make it a child of the PanoramicElement; 
+	 * in AS3 the ImageElement should be added to the PanoramicElement object as a child, and the object should be initialized after the image's Event.Complete is called.
+	 * 
+	 * For a cube projectionType, six cubic panorama images need to be provided in CML or AS3 in the same way as the sphere. In AS3 each image should have its Event.Complete called and
+	 * added to the PanoramicElement's display list before the init() method is called. Cubic faces must be sized in powers of 2. The maximum size for cubic faces is 2,048 pixels wide, and 2,048 tall. Cubic faces
+	 * should be perfectly square.
+	 * 
+	 * The PanoramicElement will actually consist of two objects, the Away3D projection/view, and a TouchContainer which holds the projection and provides the enabled touch interaction.
+	 * 
+	 * The PanoramicElement has the following parameters: cubeFace, projectionType, fovMax, fovMin, src
+	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+	    var magnifier:MagnifierElement = new MagnifierElement();
+		magnifier.x = 550;
+		magnifier.y = 150;
+		magnifier.radius = 100;
+		magnifier.magnification = 2;
+		magnifier.distortionRadius = 40;
+		magnifier.graphic = "default";
+		
+		addChild(magnifier);
+		
+		magnifier.init();
+	 *
+	 * </codeblock>
 	 * @author josh
 	 */
 	public class MagnifierElement extends TouchContainer
 	{
 		private const PItoRAD:Number = Math.PI / 180;
 		
-		//[Embed(source = "../../../gwas/lib/magnify.pbj", mimeType = "application/octet-stream")]
-		//var magnifierShader:Class;
+		[Embed(source = "../../../../../lib/shaders/magnify.pbj", mimeType = "application/octet-stream")]
+		private var MagnifierShader:Class;
 		
 		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
 		private var DefaultGraphic:Class;
@@ -48,9 +73,6 @@ package com.gestureworks.cml.element
 		private var canvas:BitmapData;
 		private var canvasContainer:Bitmap;
 		public var bitmapData:BitmapData;
-	
-		private var urlRequest:URLRequest;
-		private var urlLoader:URLLoader;
 		
 		private var mSprite:Sprite;
 		
@@ -141,9 +163,6 @@ package com.gestureworks.cml.element
 			canvas = null;
 			bitmapData = null;
 			
-			if (urlRequest) urlRequest = null;
-			if (urlLoader) urlLoader = null;
-			
 		}
 		
 		override public function displayComplete():void {
@@ -185,17 +204,18 @@ package com.gestureworks.cml.element
 				this.height = _radius * 2;
 			}
 			
-			urlRequest = new URLRequest("../lib/magnify.pbj");
-			urlLoader = new URLLoader();
-			urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
-			urlLoader.addEventListener(Event.COMPLETE, applyFilter);
-			urlLoader.load(urlRequest);
+			applyFilter();
+		}
+		
+		override public function init():void {
+			displayComplete();
 		}
 		
 		private function readyBitmaps():void {
 			bitmapData = new BitmapData(stage.width, stage.height, true, 0xffffff);
 			
-			bitmapData.draw(CMLParser.instance.defaultContainer);
+			
+			bitmapData.draw(this.stage);
 			
 			canvas = new BitmapData(stage.width, stage.height, false, 0x0);
 			
@@ -207,13 +227,11 @@ package com.gestureworks.cml.element
 			canvasContainer.y = -_radius;
 		}
 		
-		private function applyFilter(e:Event):void {
-			urlLoader.removeEventListener(Event.COMPLETE, applyFilter);
+		private function applyFilter():void {
 			
-			shader = new Shader(e.target.data);
+			shader = new Shader();
+			shader.byteCode = new MagnifierShader();
 			shaderFilter = new ShaderFilter(shader);
-			urlLoader = null;
-			urlRequest = null;
 			
 			applyMask();
 			init2();

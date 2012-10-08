@@ -1,52 +1,16 @@
 ﻿package com.gestureworks.cml.components
 {
 	//----------------adobe--------------//
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.display.DisplayObject;
-	import flash.geom.*;
-	import flash.ui.Mouse;
-	import adobe.utils.CustomActions;
-	import flash.display.Sprite;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.PixelSnapping;
-	import flash.display.Sprite;
-	import flash.geom.Matrix;
-	import flash.events.*;
-	//---------- gestureworks ------------//
-	import com.gestureworks.cml.factories.TouchContainerFactory;
-	import com.gestureworks.core.GestureWorks;
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.element.TouchContainer
-	import com.gestureworks.cml.element.ImageElement;
-	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.events.GWEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.GWTransformEvent;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.core.DisplayList;
-	//----------------away3d--------------//
-	import away3d.cameras.HoverCamera3D;
-	import away3d.cameras.Camera3D;
-    import away3d.containers.View3D;
-    import away3d.primitives.Sphere;
-	import away3d.primitives.Skybox6;
-    import away3d.core.utils.Cast;
-    import away3d.materials.BitmapMaterial;
-//	import away3d.materials.BitmapFileMaterial;
-	import away3d.core.clip.RectangleClipping;
-	import away3d.core.math.Number3D;
-	import away3d.primitives.Cube;
-	import away3d.materials.BitmapMaterial;
-	import away3d.core.utils.Cast;
+	import com.gestureworks.core.GestureWorks;
+	import flash.display.DisplayObject;
+	import flash.events.*;
+	import flash.events.MouseEvent;
+	import flash.geom.*;
 	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;		
-	
+	//---------- gestureworks ------------//
 	 
 	public class PanoramicViewer extends Component
 	{

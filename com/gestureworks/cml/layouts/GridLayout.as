@@ -1,8 +1,8 @@
 package com.gestureworks.cml.layouts 
 {
-import away3d.core.math.MatrixAway3D;
-import flash.display.DisplayObject;
-import flash.geom.Matrix;
+	//import away3d.core.math.MatrixAway3D;
+	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
     import flash.geom.Point;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.element.*;
