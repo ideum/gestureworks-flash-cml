@@ -82,7 +82,25 @@ package com.gestureworks.cml.element
 			scaleY = scale;
 		}		
 		
+		private var _layoutComplete:Function;		
+		/**
+		 * Sets the function to call when the layout is complete
+		 */
+		public function get layoutComplete():Function { return _layoutComplete; }
+		public function set layoutComplete(f:Function):void
+		{
+			_layoutComplete = f;
+		}				
 		
+		private var _layoutUpdate:Function;		
+		/**
+		 * Sets the function to call when the layout updates
+		 */
+		public function get layoutUpdate():Function { return _layoutUpdate; }
+		public function set layoutUpdate(f:Function):void
+		{
+			_layoutUpdate = f;
+		}					
 		
 		/**
 		 * This method does a depth first search of childLists. Search parameter can a simple CSS selector 
@@ -272,22 +290,36 @@ package com.gestureworks.cml.element
 		/**
 		 * Apply the containers layout
 		 * @param	value
-		 */
+		 */		
 		public function applyLayout(value:*=null):void
 		{			
 			if (!value && layout is ILayout)
-				ILayout(layout).layout(this);
+			{
+				value.onComplete = layoutComplete;
+				value.onUpdate = layoutUpdate;
+				ILayout(value).layout(this);
+			}
 			else if (!value) {
+				layoutList[String(layout)].onComplete = layoutComplete;								
+				layoutList[String(layout)].onUpdate = layoutUpdate;
 				layoutList[String(layout)].layout(this);
 			}
 			else {
 				layout = value;					
 				if (value is ILayout)
+				{
+					value.onComplete = layoutComplete;
+					value.onUpdate = layoutUpdate;;
 					value.layout(this);
+				}
 				else
+				{
+					layoutList[value].onComplete = layoutComplete;
+					layoutList[value].onUpdate = layoutUpdate;
 					layoutList[value].layout(this);
+				}
 			}
-		}	
+		}			
 		
 		/**
 		 * dispose method

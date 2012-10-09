@@ -95,6 +95,25 @@ package com.gestureworks.cml.element
 			_paddingBottom = value;
 		}	
 		
+		private var _layoutComplete:Function;		
+		/**
+		 * Sets the function to call when the layout is complete
+		 */
+		public function get layoutComplete():Function { return _layoutComplete; }
+		public function set layoutComplete(f:Function):void
+		{
+			_layoutComplete = f;
+		}				
+		
+		private var _layoutUpdate:Function;		
+		/**
+		 * Sets the function to call when the layout updates
+		 */
+		public function get layoutUpdate():Function { return _layoutUpdate; }
+		public function set layoutUpdate(f:Function):void
+		{
+			_layoutUpdate = f;
+		}			
 		
 		/**
 		 * Parse cml for local layouts.
@@ -150,7 +169,7 @@ package com.gestureworks.cml.element
 			CMLParser.instance.parseCML(this, cml);
 			
 			return cml.*;
-		}		
+		}
 
 		/**
 		 * Apply the containers layout
@@ -159,16 +178,30 @@ package com.gestureworks.cml.element
 		public function applyLayout(value:*=null):void
 		{			
 			if (!value && layout is ILayout)
+			{
+				value.onComplete = layoutComplete;
+				value.onUpdate = layoutUpdate;
 				ILayout(value).layout(this);
+			}
 			else if (!value) {
+				layoutList[String(layout)].onComplete = layoutComplete;								
+				layoutList[String(layout)].onUpdate = layoutUpdate;
 				layoutList[String(layout)].layout(this);
 			}
 			else {
 				layout = value;					
 				if (value is ILayout)
+				{
+					value.onComplete = layoutComplete;
+					value.onUpdate = layoutUpdate;;
 					value.layout(this);
+				}
 				else
+				{
+					layoutList[value].onComplete = layoutComplete;
+					layoutList[value].onUpdate = layoutUpdate;
 					layoutList[value].layout(this);
+				}
 			}
 		}		
 		

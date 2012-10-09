@@ -115,6 +115,22 @@ package com.gestureworks.cml.factories
 			_tweenTime = t;
 		}
 		
+		private var _onComplete:Function;
+		
+		public function get onComplete():Function { return _onComplete; }
+		public function set onComplete(f:Function):void
+		{
+			_onComplete = f;
+		}
+		
+		private var _onUpdate:Function;
+		
+		public function get onUpdate():Function { return _onUpdate; }
+		public function set onUpdate(f:Function):void
+		{
+			_onUpdate = f;
+		}		
+		
 		/**
 		 * The object distribution function. If tween is on, creates a tween for each child and applies the child transformations. If tween is off,
 		 * assigns the child transformations to the corresponding children. 
@@ -137,6 +153,8 @@ package com.gestureworks.cml.factories
 						childTweens.push(BetweenAS3.tween(child, getMatrixObj(childTransformations[i]), null, tweenTime/1000, Exponential.easeOut));
 				}
 				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
+				if (onComplete) layoutTween.onComplete = onComplete;
+				if (onUpdate) layoutTween.onUpdate = onUpdate;
 				layoutTween.play();
 			}
 			else
@@ -146,6 +164,8 @@ package com.gestureworks.cml.factories
 					child = container.getChildAt(j);
 					child.transform.matrix = childTransformations[j];
 				}
+				if (onComplete) onComplete.call();
+				if (onUpdate) onUpdate.call();
 			}
 		}
 		
