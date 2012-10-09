@@ -41,7 +41,11 @@ package com.gestureworks.cml.core
 	 * @see com.gestureworks.cml.core.CMLParser
 	 */
 	public class CMLObjectList extends LinkedMap
-	{		
+	{	
+		/**
+		 * constructor
+		 * @param	enforcer
+		 */
 		public function CMLObjectList(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:CMLObjectList;

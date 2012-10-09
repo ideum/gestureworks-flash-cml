@@ -5,9 +5,16 @@ package com.gestureworks.cml.core
 	import flash.display.*;
 	import flash.events.*;
 	
+	/**
+	 * displays CMl objects
+	 * 
+	 *  @author..
+	 */
 	public class CMLDisplay extends Sprite
 	{
-		
+		/**
+		 * constructor
+		 */
 		public function CMLDisplay()
 		{
 			if (stage) init();
@@ -15,6 +22,10 @@ package com.gestureworks.cml.core
 			super();
 		}
 		
+		/**
+		 * initialisation method
+		 * @param	e
+		 */
 		private function init(e:Event = null):void 
 		{	
 			removeEventListener(Event.ADDED_TO_STAGE, init);

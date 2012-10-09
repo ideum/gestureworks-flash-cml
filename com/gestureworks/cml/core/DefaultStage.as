@@ -10,11 +10,21 @@ package com.gestureworks.cml.core
 	
 	public class DefaultStage
 	{	
+		/**
+		 * stage variable
+		 */
 		public var stage:Stage;	
 		
+		/**
+		 * constructor
+		 * @param	enforcer
+		 */
 		public function DefaultStage(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:DefaultStage;
+		/**
+		 * singleton
+		 */
 		public static function get instance():DefaultStage
 		{
 			if (_instance == null)
