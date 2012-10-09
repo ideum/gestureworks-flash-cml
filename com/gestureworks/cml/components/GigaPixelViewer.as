@@ -60,8 +60,10 @@
     	private var sceneNavigator:SceneNavigator;
     	private var scaleConstraint:ScaleConstraint;
 	
-	
-		public function GigaPixelViewer()
+		/**
+		 * gigaPixelViewer constructor
+		 */
+	  	public function GigaPixelViewer()
 		{
 			super();
 		}
@@ -215,6 +217,10 @@
 			init();
 		}
 		
+		///////////////////////////////////////////////////////////////////////
+		// Private Methods
+		//////////////////////////////////////////////////////////////////////
+				
 		private function setupUI():void
 		{ 
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
@@ -251,6 +257,7 @@
 				
 			updateLayout();
 		}
+		
 		
 		private function updateLayout():void
 		{
@@ -331,6 +338,10 @@
 			menu.startTimer();
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -362,6 +373,9 @@
 			}
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

@@ -9,7 +9,7 @@ package com.gestureworks.cml.components
 	import flash.events.MouseEvent;
 	
 	/**
-	 * ...
+	 * Component is basic display container
 	 * @author ...
 	 */
 	public class Component extends TouchContainer 
@@ -17,11 +17,17 @@ package com.gestureworks.cml.components
 		
 		private var menu:Menu;
 		
+		/**
+		 * component constructor
+		 */
 		public function Component() 
 		{
 			super();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		override public function init():void
 		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
@@ -43,6 +49,9 @@ package com.gestureworks.cml.components
 			}			
 		}
 		
+		/**
+		 * CML initialisation callback
+		 */
 		override public function displayComplete():void
 		{
 			//init();
@@ -57,12 +66,19 @@ package com.gestureworks.cml.components
 			}
 		}	
 		
+		/**
+		 * state event
+		 * @param	event
+		 */
 		protected function onStateEvent(event:StateEvent):void
 		{				
 			if (event.value == "close") 
 				this.visible = false;				
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

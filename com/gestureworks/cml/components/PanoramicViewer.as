@@ -11,11 +11,22 @@
 	import flash.geom.*;
 	import org.tuio.TuioTouchEvent;
 	//---------- gestureworks ------------//
-	 
+	/**
+	 * PanoramicViewer provides interaction with a panorama, allowing the entire element to be viewed and scaled while maintaining the same touch, pinch, and zoom interaction as the standalone element does.
+	 * It is composed of the following elements: panoramic, front, back, menu,hideFrontOnFlip, autoTextLayout and frame. The video and front may be the same thing. 
+	 * The width and height of the component is automatically set to the dimensions of the video element unless it is 
+	 * previously specifed by the component.
+	 * 
+	 * @author ...josh
+	 */ 
+	
 	public class PanoramicViewer extends Component
 	{
 		private var textFields:Array;
 	
+		/**
+		 * constructor
+		 */
 		public function PanoramicViewer()
 		{
 			super();
@@ -277,6 +288,10 @@
 			}
 		}
 		
+		/**
+		 * handles touch events
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -312,6 +327,9 @@
 			}
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

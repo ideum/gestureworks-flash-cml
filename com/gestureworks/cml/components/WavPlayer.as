@@ -15,11 +15,16 @@ package com.gestureworks.cml.components
 	 * It is composed of the following elements: wav, front, back, menu, and frame. The wav and front may be the same thing. 
 	 * The wav is required. The width and height of the component is automatically set to the dimensions of the wav element unless it is 
 	 * previously specifed by the component.
+	 * 
+	 *@author ...
 	 */
 	public class WavPlayer extends Component 
 	{
 		private var textFields:Array;	
 		
+		/**
+		 * constructor
+		 */
 		public function WavPlayer() 
 		{
 			super();			
@@ -288,6 +293,10 @@ package com.gestureworks.cml.components
 							
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu){
@@ -296,6 +305,10 @@ package com.gestureworks.cml.components
 			}
 		}			
 
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -337,6 +350,9 @@ package com.gestureworks.cml.components
 				wav.pause();				
 		}	
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

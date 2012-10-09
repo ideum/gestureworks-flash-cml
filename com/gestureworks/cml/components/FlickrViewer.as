@@ -15,11 +15,16 @@ package com.gestureworks.cml.components
 	 * It is composed of the following elements: image, front, back, menu, and frame. The image and front may be the same thing. 
 	 * The image is required. The width and height of the component is automatically set to the dimensions of the image unless it is 
 	 * previously specifed by the component.
+	 * 
+	 * @author..
 	 */
 	public class FlickrViewer extends Component 
 	{
 		private var textFields:Array;	
 		
+		/**
+		 * constructor
+		 */
 		public function FlickrViewer() 
 		{
 			super();
@@ -28,6 +33,9 @@ package com.gestureworks.cml.components
 			disableAffineTransform = false;			
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		override public function init():void 
 		{
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
@@ -280,6 +288,10 @@ package com.gestureworks.cml.components
 							
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -289,6 +301,10 @@ package com.gestureworks.cml.components
 			}
 		}			
 
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -330,6 +346,9 @@ package com.gestureworks.cml.components
 			}
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

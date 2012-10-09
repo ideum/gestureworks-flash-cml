@@ -9,14 +9,25 @@ package  com.gestureworks.cml.components
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.core.GestureWorks;	
+	
+	
 	/**
-	 * ...
-	 * @author josh
+	 * The YouTubeViewer is a component that is primarily meant to play audio and video files on the front side and meta-data on the back side.
+	 * It is composed of the following elements: video, front, back, backBackground, hideFrontOnFlip, menu, and frame. The wav and front may be the same thing. 
+	 * The wav is required. The width and height of the component is automatically set to the dimensions of the wav element unless it is 
+	 * previously specifed by the component.
+	 * 
+	 *@author ...josh
 	 */
+	
 	public class YouTubeViewer extends Component
 	{
 		private var textFields:Array;
 		
+		
+		/**
+		 * youtube constructor
+		 */
 		public function YouTubeViewer() 
 		{
 			super();
@@ -258,6 +269,10 @@ package  com.gestureworks.cml.components
 			}
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -302,6 +317,9 @@ package  com.gestureworks.cml.components
 				video.pause();				
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

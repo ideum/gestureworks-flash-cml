@@ -13,9 +13,14 @@ package com.gestureworks.cml.components
 	import org.tuio.*;	
 	
 	/**
-	 * CollectionViewer
+	 * CollectionViewer is a template that uses a collection of Components to load various types of media and display the content on stage in the form of interactive windows. 
+	 * This version loads an instance of the ImageViewer, VideoViewer, and MP3Player and randomly places and orients them on the stage.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * 
 	 * @author Ideum
 	 */
+	
 	public class CollectionViewer extends Component
 	{
 		public var amountToShow:int = -1;
@@ -26,12 +31,18 @@ package com.gestureworks.cml.components
 		
 		private var boundsTimer:Timer;
 		
+		/**
+		 * collection viewer constructor
+		 */
 		public function CollectionViewer() 
 		{
 			super();
 			queue = new List;
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		override public function init():void 
 		{
 			cover = new Sprite;
@@ -80,6 +91,9 @@ package com.gestureworks.cml.components
 			}
 		}
 		
+		/**
+		 * CML display initialization callback
+		 */
 		override public function displayComplete():void
 		{
 			init();
@@ -183,6 +197,9 @@ package com.gestureworks.cml.components
 						
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

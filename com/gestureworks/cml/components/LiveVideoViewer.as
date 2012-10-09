@@ -12,15 +12,26 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.GestureWorks;	
 	
 	/**
-	 * The LiveVideoViewer is a component that is meant to video files on the front and metadata on the back.
-	 * It is composed of the following elements: video, front, back, menu, and frame. The video and front may be the same thing. 
+	 * The LiveVideoViewer is a component that is meant to play video files on the front and metadata on the back.
+	 * It is composed of the following elements: liveVideo, front, back, menu, and frame. The video and front may be the same thing. 
 	 * The video is required. The width and height of the component is automatically set to the dimensions of the video element unless it is 
 	 * previously specifed by the component.
+	 * 
+	 * 
+	 * var livevideoviewer:LiveVideoViewer = new LiveVideoViewer();
+	 * addChild(livevideoviewer);
+	 * 
+	 * @author Uma and shaun
 	 */
+	
 	public class LiveVideoViewer extends Component 
 	{
-		private var textFields:Array;	
 		
+		private var textFields:Array;	
+				
+		/**
+		 * live video viewer constructor
+		 */
 		public function LiveVideoViewer() 
 		{
 			super();			
@@ -294,6 +305,10 @@ package com.gestureworks.cml.components
 							
 		}
 		
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -303,6 +318,10 @@ package com.gestureworks.cml.components
 			}
 		}			
 		
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -346,6 +365,9 @@ package com.gestureworks.cml.components
 		
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

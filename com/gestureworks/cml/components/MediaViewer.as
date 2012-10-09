@@ -15,11 +15,17 @@
 	 * It is composed of the following elements: media, front, back, menu, and frame. The media and front may be the same thing. 
 	 * The media is required. The width and height of the component is automatically set to the dimensions of the media element unless it is 
 	 * previously specifed by the component.
+	 * 
+	 *  @author ...
 	 */
+	
 	public class MediaViewer extends Component 
 	{
 		private var textFields:Array;	
 		
+		/**
+		 * media viewer constructor
+		 */
 		public function MediaViewer() 
 		{
 			super();			
@@ -280,6 +286,10 @@
 							
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -324,6 +334,9 @@
 				media.pause();				
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

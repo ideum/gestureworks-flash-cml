@@ -20,6 +20,9 @@ package com.gestureworks.cml.components
 	{
 		private var textFields:Array;	
 		
+		/**
+		 * image viewer constructor
+		 */
 		public function ImageViewer() 
 		{
 			super();
@@ -285,6 +288,11 @@ package com.gestureworks.cml.components
 							
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
+		
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -294,6 +302,10 @@ package com.gestureworks.cml.components
 			}
 		}			
 
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -329,6 +341,9 @@ package com.gestureworks.cml.components
 			}			
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

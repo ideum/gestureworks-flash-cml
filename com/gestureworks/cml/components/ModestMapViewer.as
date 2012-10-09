@@ -16,11 +16,17 @@ package com.gestureworks.cml.components
 	 * It is composed of the following elements: map, front, back, menu, and frame. The image and front may be the same thing. 
 	 * The map is required. The width and height of the component is automatically set to the dimensions of the map unless it is 
 	 * previously specifed by the component.
+	 * 
+	 *  @author ...
 	 */
+	
 	public class ModestMapViewer extends Component 
 	{
 		private var textFields:Array;	
 		
+		/**
+		 * constructor
+		 */
 		public function ModestMapViewer() 
 		{
 			super();
@@ -209,8 +215,9 @@ package com.gestureworks.cml.components
 			
 			//updateLayout();	
 		}
+		
 		/**
-		 * CML initialization
+		 * CML initialization callback
 		 */
 		override public function displayComplete():void
 		{
@@ -293,6 +300,10 @@ package com.gestureworks.cml.components
 							
 		}
 		
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -302,6 +313,10 @@ package com.gestureworks.cml.components
 			}
 		}			
 
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -347,6 +362,9 @@ package com.gestureworks.cml.components
 			map.switchMapProvider();
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

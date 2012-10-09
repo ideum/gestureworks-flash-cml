@@ -11,15 +11,21 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.GestureWorks;	
 	
 	/**
-	 * The VideoViewer is a component that is meant to video files on the front and metadata on the back.
+	 * The VideoViewer is a component that is meant to play video files on the front and metadata on the back.
 	 * It is composed of the following elements: video, front, back, menu, and frame. The video and front may be the same thing. 
 	 * The video is required. The width and height of the component is automatically set to the dimensions of the video element unless it is 
 	 * previously specifed by the component.
+	 * 
+	 * @author ...
 	 */
+	
 	public class VideoViewer extends Component 
 	{
 		private var textFields:Array;	
 		
+		/**
+		 * constructor
+		 */
 		public function VideoViewer() 
 		{
 			super();			
@@ -288,6 +294,10 @@ package com.gestureworks.cml.components
 							
 		}
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -297,6 +307,10 @@ package com.gestureworks.cml.components
 			}
 		}			
 		
+		/**
+		 * handles touch event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -339,6 +353,9 @@ package com.gestureworks.cml.components
 				video.pause();				
 		}
 		
+		/**
+		 * dispose methods
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

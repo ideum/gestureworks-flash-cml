@@ -64,6 +64,9 @@ package com.gestureworks.cml.components
 	{
 		private var textFields:Array;
 	
+		/**
+		 * constructor
+		 */
 		public function MaskImageViewer()
 		{
 			super();
@@ -252,6 +255,9 @@ package com.gestureworks.cml.components
 			init();
 		}
 		
+		/**
+		 * sets the width and height for front,back,backBackground,frame and menu element
+		 */
 		public function updateLayout():void
 		{
 			// update width and height to the size of the image, if not already specified
@@ -323,6 +329,10 @@ package com.gestureworks.cml.components
 			}
 		}
 		
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onDown(event:*):void
 		{
 			if (menu)
@@ -332,6 +342,10 @@ package com.gestureworks.cml.components
 			}
 		}	
 		
+		/**
+		 * handles event
+		 * @param	event
+		 */
 		public function onUp(event:*):void
 		{
 			if (menu)
@@ -390,6 +404,9 @@ package com.gestureworks.cml.components
 			_maskCon.dragAngle = this.rotation;
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void
 		{
 			super.dispose();
