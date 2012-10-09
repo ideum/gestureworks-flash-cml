@@ -37,6 +37,9 @@ package com.gestureworks.cml.element
 	public class Stack extends TouchContainer
 	{
 		
+		/**
+		 * constructor
+		 */
 		public function Stack() 
 		{
 			super();
@@ -155,6 +158,9 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
 		}
 		
+		/**
+		 * dispose method to remove listeners
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

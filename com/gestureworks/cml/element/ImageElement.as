@@ -18,11 +18,19 @@ package com.gestureworks.cml.element
 	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	 	
 	public class ImageElement extends BitmapFactory
-	{				
+	{	
+		
+		/**
+		 * constructor
+		 */
 		public function ImageElement() 
 		{						
 			super();
 		}
+		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			
@@ -33,6 +41,9 @@ package com.gestureworks.cml.element
 			dispatchEvent(new Event(Event.COMPLETE, true, true));
 		}
 		
+		/**
+		 * dispose method
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

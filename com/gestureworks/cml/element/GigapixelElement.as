@@ -15,6 +15,12 @@
 	import org.openzoom.flash.viewport.controllers.TouchController;
 	import org.openzoom.flash.viewport.transformers.TweenerTransformer;	
 	 
+	/**
+	 * GigapixelElement load in a gigapixel image. Gigapixel images are massive images made by tiling smaller images in a seamless, pyramid structured fashion. 
+	 * It has following parameters:minScaleConstraint, src, loaded, image,smoothPanning.
+	 * 
+	 * @author..
+	 */
 	public class GigapixelElement extends ElementFactory
 	{
 		private var _clickZoomInFactor:Number = 1.7
@@ -24,12 +30,19 @@
     	private var sceneNavigator:SceneNavigator
     	private var scaleConstraint:ScaleConstraint;
 		
+		/**
+		 * constructor
+		 */
 		public function GigapixelElement()
 		{
 			super();
 		}
 		
 		private var _minScaleConstraint:Number = 0.001;
+		/**
+		 * sets the scaling
+		 * @default = 0.001;
+		 */
 		public function get minScaleConstraint():Number { return _minScaleConstraint; }
 		public function set minScaleConstraint(value:Number):void {
 			if(!isNaN(value) && value >=0){
@@ -38,7 +51,11 @@
 		}
 		
 		private var _srcXML:String = "";
-		[Deprecated(replacement="src")]
+		[Deprecated(replacement = "src")]
+		/**
+		 * Sets the src xml file
+		 * @default 
+		 */	
 		public function get srcXML():String{return _srcXML;}
 		public function set srcXML(value:String):void
 		{			
@@ -58,8 +75,15 @@
 		}
 
 		private var _loaded:Boolean;
+		/**
+		 * loaded
+		 */
 		public function get loaded():Boolean { return _loaded; }
 		
+		
+		/**
+		 * CML call back initialisation
+		 */
 		override public function displayComplete():void
 		{			
 			image = new MultiScaleImage();
@@ -106,6 +130,9 @@
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{ 
 			displayComplete();
@@ -119,6 +146,9 @@
 				scaleConstraint.maxScale = descriptor.width / image.sceneWidth;
 		}
 		
+		/**
+		 * dispose method to nullify children and remove listener
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

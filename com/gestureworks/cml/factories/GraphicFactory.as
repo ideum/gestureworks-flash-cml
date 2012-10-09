@@ -9,14 +9,24 @@ package com.gestureworks.cml.factories
 	import flash.display.JointStyle;
 	import flash.geom.Matrix;
 
+	/**
+	 * This class creates various graphics objects
+	 * Base class for graphics
+	 * @author..
+	 */
 	public class GraphicFactory extends ElementFactory
 	{
-		
+		/**
+		 * constructor
+		 */
 		public function GraphicFactory() 
 		{ 
 			super();		
 		}
 		
+		/**
+		 * dispose method to nullify attribute
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();
@@ -921,7 +931,6 @@ package com.gestureworks.cml.factories
 			layoutUI();			
 		}
 		
-		
 		private var _cornerHeight:Number = 10;
 		/**
 		 * Sets the height of the ellipse that is used to round the rectangle.
@@ -936,7 +945,10 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _topLeftRadius:Number = 0;
-		
+		/**
+		 * sets the top left radius of the graphic object
+		 * @default=0;
+		 */
 		public function get topLeftRadius():Number { return _topLeftRadius; }
 		public function set topLeftRadius(r:Number):void
 		{
@@ -945,7 +957,10 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _topRightRadius:Number = 0;
-		
+		/**
+		 * sets the top right radius of the grpahic object
+		 * @default=0;
+		 */
 		public function get topRightRadius():Number { return _topRightRadius; }
 		public function set topRightRadius(r:Number):void
 		{
@@ -954,7 +969,10 @@ package com.gestureworks.cml.factories
 		}
 
 		private var _bottomLeftRadius:Number = 0;
-		
+		/**
+		 * sets the bottom left radius of the graphic object
+		 * @default=0;
+		 */
 		public function get bottomLeftRadius():Number { return _bottomLeftRadius; }
 		public function set bottomLeftRadius(r:Number):void
 		{
@@ -963,7 +981,10 @@ package com.gestureworks.cml.factories
 		}	
 		
 		private var _bottomRightRadius:Number = 0;
-		
+		/**
+		 * sets the bottom right radius of the graphic object
+		 * @default=0;
+		 */
 		public function get bottomRightRadius():Number { return _bottomRightRadius; }
 		public function set bottomRightRadius(r:Number):void
 		{

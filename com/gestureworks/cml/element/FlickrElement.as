@@ -35,6 +35,9 @@ package  com.gestureworks.cml.element
 		private var loader:Loader;
 		private var service:FlickrService;
 		
+		/**
+		 * constructor
+		 */
 		public function FlickrElement() 
 		{
 			super();
@@ -71,7 +74,11 @@ package  com.gestureworks.cml.element
 		 * Read-only property indicating if the element is loaded or not.
 		 */
 		public function get loaded():String { return _loaded;}
-		 
+		
+		
+		/**
+		 * CML display callback initialisation
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			
@@ -80,10 +87,15 @@ package  com.gestureworks.cml.element
 			service.photos.getInfo(_imageId);
 		}
 		
+		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			displayComplete();
 		}
+		
 		
 		private function loadImage(e:FlickrResultEvent):void {
 			//trace(e.data.photo.server);
@@ -120,11 +132,17 @@ package  com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded));
 		}
 		
+		/**
+		 * sets the width and height of frame
+		 */
 		public function updateFrame():void {
 			width = displayPic.width;
 			height = displayPic.height;
 		}
 		
+		/**
+		 * dispose method to nullify the children and remove listener
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

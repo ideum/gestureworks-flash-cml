@@ -544,7 +544,7 @@ package com.gestureworks.cml.element
 			mymask.graphics.drawRect(0, 0, background.width - 3, background.height - 3);
 			
 			touchSprite = new TouchSprite();
-			touchSprite.gestureList = {"n-drag": true};
+			touchSprite.gestureList = {"n-drag-inertia": true};
 			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 		    touchSprite.gestureReleaseInertia = true;
 			touchSprite.addEventListener(GWGestureEvent.COMPLETE, onEnd);
@@ -778,6 +778,9 @@ package com.gestureworks.cml.element
 			return num2;
 		}		
 	
+		/**
+		 * dispose method nullify attributes and remove listener
+		 */
 		override public function dispose(): void
 		{
 			super.dispose();

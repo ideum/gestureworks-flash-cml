@@ -453,6 +453,9 @@ package  com.gestureworks.cml.element
 			return text.length == 1 && (text >= "A" && text <= "Z");
 		}
 		
+		/**
+		 * dispose method to nullify attributes
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

@@ -3,21 +3,31 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.managers.FileManager;
 	import flash.display.DisplayObject;
-	
-	
 	import flash.geom.ColorTransform;
 	import flash.utils.getDefinitionByName;
 	
+	/**
+	 * SWFElement displays an external class from a SWF library file that has been loaded through a LibraryKit.
+	 * It has following parameters:src, color and classRef.
+	 *
+	 * @author..
+	 */
 	public class SWFElement extends ElementFactory
 	{
 		private var asset:*;
 		private var _class:Class;
 		
+		/**
+		 * constructor
+		 */
 		public function SWFElement()
 		{
 			super();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			
@@ -68,6 +78,9 @@ package com.gestureworks.cml.element
 			colorTransform = null;
 		}
 		
+		/**
+		 * dispose method
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

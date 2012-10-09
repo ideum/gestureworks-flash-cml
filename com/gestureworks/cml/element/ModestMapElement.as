@@ -69,6 +69,9 @@ package com.gestureworks.cml.element
 		private var zoomFactor:Number = 0;
 		private var mapMarkers:Array;
 		
+		/**
+		 * constructor
+		 */
 		public function ModestMapElement() 
 		{
 			super();
@@ -148,6 +151,9 @@ package com.gestureworks.cml.element
 		 */
 		public function get loaded():String { return _loaded; }
 		
+		/**
+		 * CML callbcak initialisation
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			
@@ -165,6 +171,9 @@ package com.gestureworks.cml.element
 			
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			displayComplete();
@@ -212,6 +221,10 @@ package com.gestureworks.cml.element
 			map.zoomByAbout(e.value);
 		}
 		
+		/**
+		 * sets the current index value
+		 * @param	e
+		 */
 		public function switchMapProvider(e:*):void {
 			//trace("Switching map provider.");
 			currentIndex++;
@@ -219,12 +232,18 @@ package com.gestureworks.cml.element
 			map.setMapProvider(providers[currentIndex]);
 		}
 		
+		/**
+		 * update frame
+		 */
 		public function updateFrame():void {
 			//trace("Updating frame from ModestMapElement");
 			width = map.width;
 			height = map.height;
 		}
 		
+		/**
+		 * dispose method to nullify children
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

@@ -11,6 +11,11 @@ package com.gestureworks.cml.element
 	import org.tuio.*;
 	
 	/**
+	 * Slider can be used through touch and mouse input devices. It also allows for the input value to be fed through a function call, allowing the slider to updated by another process.
+	 * The slider can be orientated horizontally or vertically. It can act as a continuous slider or one that snaps to x-number of discrete steps.
+	 * 
+	 * It has following parametrs:hit, rail, knob, orientation, discrete, steps, min, max and gestureReleaseInertia.
+	 * 
 	 * @author Ideum (Charles Veasey)
 	 */
 	
@@ -23,7 +28,9 @@ package com.gestureworks.cml.element
 		private var minPos:Number		
 		private var maxPos:Number;
 		
-		
+		/**
+		 * constructor
+		 */
 		public function Slider() 
 		{
 			super();
@@ -180,8 +187,14 @@ package com.gestureworks.cml.element
 		{
 			if (!rail)
 				throw new Error("rail must be set");
+			if (!hit)
+				throw new Error("hit must be set");
+			if (!knob)
+				throw new Error("knob must be set");	
 			
+				
 			if (mouseEnabled) {
+
 				if (GestureWorks.activeTUIO)
 					hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
 				else if (GestureWorks.supportsTouch)
@@ -221,7 +234,7 @@ package com.gestureworks.cml.element
 				knob.y = minPos;					
 			}
 			
-			
+						
 			if (discrete)
 			{				
 				stepknobPositions = [];
@@ -423,6 +436,9 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value));			
 		}
 		
+		/**
+		 * dispose method to nullify attributes and remove listeners
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

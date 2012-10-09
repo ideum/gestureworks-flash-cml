@@ -20,7 +20,7 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.tweens.*;
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.cml.events.StateEvent;
-//	import com.google.maps.styles.ButtonStyle;
+
 	
 	/**
 	 * The OrbMenu contains a list of Menus.
@@ -494,7 +494,13 @@ package com.gestureworks.cml.element
 			
 			shape2.filters = filtersArray;
 			
+			width = 100;
+			
 			background.graphics.lineStyle(backgroundLineStoke, backgroundOutlineColor);
+			background.graphics.beginFill(0x808080);
+			//background.graphics.drawRoundRect(0, 0, 400, 135, 25, 25);
+			//background.graphics.drawRoundRect(0, 0, (orbRadius + width) + (width * buttons.length), 135, 25, 25);
+			background.graphics.endFill();
 			background.x = 170;
 			background.y = 60;
 			background.rotation = 45;
@@ -568,9 +574,13 @@ package com.gestureworks.cml.element
 			}
 			
 			//init();
-			displayOrb();
+			 displayOrb();
 			
+			if (!buttons)
+			{
 			buttons = childList.getValueArray();
+			}
+			
 			height = 135;
 			width = 100;
 			
@@ -631,7 +641,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods.
+		 * Dispose methods to nullify attributes and remove listeners
 		 */
 		override public function dispose():void
 		{

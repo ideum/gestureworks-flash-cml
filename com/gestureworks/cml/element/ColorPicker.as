@@ -215,6 +215,9 @@ package com.gestureworks.cml.element
 			init();			
 		}
 		
+		/**
+		 * dispose method to nullify the attributes and remove listener
+		 */
 		override public function dispose():void
 		{
 		   super.dispose();

@@ -22,7 +22,7 @@ package com.gestureworks.cml.element
 	
 	 *
 	 * </codeblock>
-	 * @author Uma
+	 * @author Uma and shaun
 	 */
 	
 	public class LiveVideoElement extends Container
@@ -142,12 +142,18 @@ package com.gestureworks.cml.element
 		  }
 		}
 		
+		/**
+		 * sets the height of the video
+		 */
 		override public function set height(value:Number):void 
 		{
 		 video.height = value;
 		 super.height = value;
 		}
 	
+		/**
+		 * setd the width of the video
+		 */
 		override public function set width(value:Number):void 
 		{
 		 video.width = value;
@@ -208,7 +214,7 @@ package com.gestureworks.cml.element
 		}
 
 	/**
-	 * dispose method
+	 * dispose method to remove listener
 	 */	
 	override public function dispose():void
 	{

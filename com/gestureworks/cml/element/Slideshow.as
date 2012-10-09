@@ -47,6 +47,9 @@ package com.gestureworks.cml.element
 		
 		protected var timer:Timer;
 		
+		/**
+		 * constructor
+		 */
 		public function Slideshow() {
 			super();
 			slideshowItems = new List();
@@ -65,6 +68,10 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _currentIndex:int = -1;
+		/**
+		 * sets the current index of slides
+		 * @default =-1;
+		 */
 		public function get currentIndex():int { return _currentIndex; }
 		public function set currentIndex(value:int):void {
 			_currentIndex = value;
@@ -101,6 +108,9 @@ package com.gestureworks.cml.element
 			_loop = value;
 		}
 		
+		/**
+		 * CML callback initialisation
+		 */
 		override public function displayComplete():void 
 		{
 			super.displayComplete();
@@ -116,41 +126,68 @@ package com.gestureworks.cml.element
 			//init();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			displayComplete();
 		}
 		
+		/**
+		 * plays the slideshow
+		 */
 		public function play():void {
 			reset();
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 			timer.start();
 		}
 		
+		/**
+		 * pauses the slideshow
+		 */
 		public function pause():void {
 			timer.removeEventListener(TimerEvent.TIMER, onTimer);
 			timer.stop();
 		}
 		
+		/**
+		 * resume method
+		 */
 		public function resume():void {
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 			timer.start();
 		}
 		
+		/**
+		 * stops the slideshow
+		 */
 		public function stop():void {
 			timer.removeEventListener(TimerEvent.TIMER, onTimer);
 			timer.stop();
 			reset();
 		}
 		
+		/**
+		 * timer event
+		 * @param	event
+		 */
 		public function onTimer(event:TimerEvent):void {
 			showNext();
 		}
 		
+		/**
+		 * plays the slideshow
+		 * @param	event
+		 */
 		public function onComplete(event:TimerEvent):void {
 			play();
 		}
 		
+		/**
+		 * tweening for last item and removes the slide show items
+		 * @param	index
+		 */
 		public function fadeout(index:int):void
 		{
 			var lastItem:DisplayObject = slideshowItems.array[index];
@@ -173,6 +210,10 @@ package com.gestureworks.cml.element
 			}				
 		}
 		
+		/**
+		 * adds the slideshow items and tweening for current item
+		 * @param	index
+		 */
 		public function fadein(index:int):void
 		{
 			var currentItem:* = slideshowItems.array[index];
@@ -241,6 +282,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * dispose method to remove children
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

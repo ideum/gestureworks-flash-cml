@@ -5,10 +5,18 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.interfaces.ILayout;
 	import com.gestureworks.cml.core.CMLParser;
 	
+	/**
+	 * TouchContainer can be used to create display hierarchies. It keeps track of children through the childlist property.
+	 * 
+	 * @author..
+	 */
 	public class TouchContainer extends TouchContainerFactory
 	{	
 		public var layoutList:Dictionary = new Dictionary(true);
 		
+		/**
+		 * constructor
+		 */
 		public function TouchContainer()
 		{
 			super();
@@ -17,26 +25,45 @@ package com.gestureworks.cml.element
 			disableNativeTransform = false;
 		}
 
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			
 		}
 		
+		/**
+		 * shows index of the child list
+		 * @param	index
+		 */
 		public function showIndex(index:int):void
 		{
 			childList.getIndex(index).visible = false;
 		}
 		
+		/**
+		 * hides child list index 
+		 * @param	index
+		 */
 		public function hideIndex(index:int):void
 		{
 			childList.getIndex(index).visible = false;
 		}		
-			
+		
+		/**
+		 * shows the child list key visibility
+		 * @param	key
+		 */
 		public function showKey(key:String):void
 		{
 			childList.getKey(key).visible = true;
 		}
-				
+		
+		/**
+		 * hides childlist key visibility
+		 * @param	key
+		 */
 		public function hideKey(key:String):void
 		{
 			childList.getKey(key).visible = false;
@@ -262,6 +289,9 @@ package com.gestureworks.cml.element
 			}
 		}	
 		
+		/**
+		 * dispose method
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

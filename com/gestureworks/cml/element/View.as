@@ -10,6 +10,9 @@ package com.gestureworks.cml.element
 	
 	public class View extends Container
 	{		
+		/**
+		 * constructor
+		 */
 		public function View() 
 		{
 			super();
@@ -17,12 +20,19 @@ package com.gestureworks.cml.element
 			else addEventListener(Event.ADDED_TO_STAGE, init);				
 		}
 		
+		/**
+		 * initialisation method
+		 * @param	e
+		 */
         public function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);			
 			this.width = stage.width;
 			this.height = stage.height;
-		}		
+		}	
+		/**
+		 * dispose method to remove listener
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

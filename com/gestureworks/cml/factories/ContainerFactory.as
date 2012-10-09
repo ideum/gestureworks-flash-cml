@@ -9,13 +9,23 @@ package com.gestureworks.cml.factories
 	import flash.utils.Dictionary;
 	import com.gestureworks.events.DisplayEvent;
 	
+	/**
+	 * ContainerFactory create display hierarchies. It keeps track of children through the childlist property.
+	 * base class for container 
+	 */
 	public class ContainerFactory extends ElementFactory
 	{
+		/**
+		 * constructor
+		 */
 		public function ContainerFactory()
 		{
 			_childList = new LinkedMap;
 		}	
 		
+		/**
+		 * dispose method to nullify child
+		 */
 		override public function dispose():void
 		{
 			super.dispose();
@@ -24,17 +34,25 @@ package com.gestureworks.cml.factories
 				
 		
 		private var _childList:LinkedMap;
+		/**
+		 * store the child list
+		 */
 		public function get childList():LinkedMap {return _childList;}	
 		
 		
 		private var _dimensionsTo:String;
+		/**
+		 * sets the dimensions of the container
+		 */
 		public function get dimensionsTo():String { return _dimensionsTo ; }
 		public function set dimensionsTo(value:String):void
 		{
 			_dimensionsTo = value;	
 		}
 		
-		
+		/**
+		 * This method searches the childlist and add the children
+		 */
 		public function addAllChildren():void
 		{			
 			for (var i:int = 0; i < _childList.length; i++) 
@@ -44,18 +62,26 @@ package com.gestureworks.cml.factories
 			}
 		}
 		
-		private var _infoSource:String="";
+		private var _infoSource:String = "";
+		/**
+		 * sets info source
+		 */
 		public function get infoSource():String{return _infoSource;}
 		public function set infoSource(value:String):void{_infoSource = value;}
-		
-		
-		
+				
+		/**
+		 * this method append to the childlist
+		 * @param	id
+		 * @param	child
+		 */
 		public function childToList(id:String, child:*):void
 		{		
 			childList.append(id, child);
 		}
 		
-
+        /**
+         * This method sets the dimensions of childlist
+         */
 		// called in layoutCML() method of DisplayManager
 		public function setDimensionsToChild():void
 		{			

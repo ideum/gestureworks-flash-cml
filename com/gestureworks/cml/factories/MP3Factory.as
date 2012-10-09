@@ -45,70 +45,77 @@ package com.gestureworks.cml.factories
 		
 				
 		//update timer
-		private var _timerFormated:String="00:00";
+		private var _timerFormated:String = "00:00";
+		
+		/**
+		 * time variable
+		 */
 		public static var TIME:String = "Time";
+		
+		/**
+		 * defines timer variable
+		 */
 		public var timer:Timer;
 		
-		
+		/**
+		 * constructor
+		 */
 		public function MP3Factory()
 		{
 			super();
 		}
 		
+		private var _width:Number = 500;
 		/**
 		 * Sets the width
-		 */		
-		private var _width:Number=500
+		 */	
 		override public function get width():Number{ return _width;}
 		override public function set width(value:Number):void
 		{
 			_width = value;
 		}
 		
+		private var _height:Number = 300;
 		/**
 		 * Sets the height
-		 */		
-		private var _height:Number=300;
+		 */	
 		override public function get height():Number{ return _height;}
 		override public function set height(value:Number):void
 		{
 			_height = value;
 		}			
 		
-		
-		
-		
+		private var _autoLoad:Boolean = true;
 		/**
 		 * Indicates whether the mp3 file is loaded when the src property is set
-		 */		
-		private var _autoLoad:Boolean=true;
+		 */	
 		public function get autoLoad():Boolean { return _autoLoad; }
 		public function set autoLoad(value:Boolean):void 
 		{ 
 			_autoLoad = value; 
 		}
-		
+	
+		private var _autoplay:Boolean = false;
 		/**
 		 * Indicates whether the mp3 file plays upon load
-		 */		
-		private var _autoplay:Boolean=false;
+		 */	
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 
 		{	
 			_autoplay = value;
 		}
 
+		private var _loop:Boolean = false;
 		/**
 		 * Mp3 loop play
-		 */				
-		private var _loop:Boolean=false;
+		 */
 		public function get loop():Boolean { return _loop; }
 		public function set loop(value:Boolean):void { _loop = value; }		
 		
-		/**
-		 * Sets the mp3 file path
-		 */			
 		private var _src:String;
+			/**
+		 * Sets the mp3 file path
+		 */	
 		public function get src():String{ return _src;}
 		public function set src(value:String):void
 		{
@@ -117,10 +124,10 @@ package com.gestureworks.cml.factories
 			if (autoLoad) load();
 		}		
 		
+		private var _volume:Number = 1;
 		/**
 		 * Sets the volume
-		 */			
-		private var _volume:Number = 1;
+		 */	
 		public function get volume():Number {return _volume;}		
 		public function set volume(value:Number):void
 		{
@@ -129,11 +136,10 @@ package com.gestureworks.cml.factories
 			else _volume = value;
 		}
 		
-		
+		private var _pan:Number = 0;
 		/**
 		 * Sets the pan
-		 */			
-		private var _pan:Number = 0;
+		 */	
 		public function get pan():Number {return _pan;}				
 		public function set pan(value:Number):void
 		{
@@ -171,13 +177,6 @@ package com.gestureworks.cml.factories
 		 */		
 		private var _position:Number=0;
 		public function get position():Number { return _position; }		
-		
-
-		
-		
-		
-		
-		
 		
 		
 		/**
@@ -377,12 +376,13 @@ package com.gestureworks.cml.factories
 		
 
 		
-		//graphics
+		/**
+		 * sets the wave color 
+		 */
 		public function set waveColor(value:int):void
 		{
 			_waveColor = value;
 		}
-		
 		public function get waveColor():int
 		{
 			return _waveColor;
@@ -399,26 +399,37 @@ package com.gestureworks.cml.factories
 		private var _id3Copyright:String;
 		private var _id3Comment:String;
 		
+		/**
+		 * sets the id of mp3
+		 */
 		public function set useId3(value:String):void
 		{
 			_useId3 = value;
 		}
-		
 		public function get useId3():String
 		{
 			return _useId3;
 		}
 		
+		/**
+		 * returns the title 
+		 */
 		public function get id3Title():String
 		{
 			return _id3Title;
 		}
 		
+		/**
+		 * returns the author id 
+		 */
 		public function get id3Author():String
 		{
 			return _id3Author;
 		}
 		
+		/**
+		 * returns the album id
+		 */
 		public function get id3Album():String
 		{
 			return _id3Album;
@@ -429,18 +440,26 @@ package com.gestureworks.cml.factories
 			return _id3Year;
 		}
 		
+		/**
+		 * returns the copyright id
+		 */
 		public function get id3Copyright():String
 		{
 			return _id3Copyright
 		}
 		
+		/**
+		 * returns the comment
+		 */
 		public function get id3Comment():String
 		{
 			return _id3Comment;
 		}
 		
 
-		//update timer
+		/**
+		 * update timer
+		 */
 		public function get time():String
 		{
 			return _timerFormated;

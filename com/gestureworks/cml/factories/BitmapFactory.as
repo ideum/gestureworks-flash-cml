@@ -9,6 +9,8 @@ package com.gestureworks.cml.factories
 	/** 
 	 * The BitmapFactory class load and stores bitmap data, usually in the form an external image file
 	 * 
+	 * It has following parameters: width, height, src, bitmapDataCache, resample, normalize, avatar and sizeArray. 
+	 * 
 	 * @playerversion Flash 10.1
 	 * @playerversion AIR 2.5
 	 * @langversion 3.0
@@ -24,12 +26,18 @@ package com.gestureworks.cml.factories
 		// loaded bitmap data from file
 		private var fileData:*;
 		
+		/**
+		 * constructor
+		 */
 		public function BitmapFactory() 
 		{
 			super();	
 			mouseChildren = false;
 		}
 			
+		/**
+		 * dispose method to nullify attributes and remove listener
+		 */
 	    override public function dispose():void
 		{
 			super.dispose();
@@ -122,14 +130,21 @@ package com.gestureworks.cml.factories
 			
 	
 		private var _normalize:Boolean = false;
+		/**
+		 * specifies whether loaded image is normalised or not
+		 * @default= false;
+		 */
 		public function get normalize():Boolean{return _normalize;}
 		public function set normalize(value:Boolean):void
 		{
 			_normalize = value;
 		}
 		
-		
 		private var _avatar:Boolean = false;
+		/**
+		 * sets the avatar value
+		 * @default = false;
+		 */
 		public function get avatar():Boolean{return _avatar;}
 		public function set avatar(value:Boolean):void
 		{
@@ -138,10 +153,18 @@ package com.gestureworks.cml.factories
 		
 		
 		private var _portrait:Boolean = false;
+		/**
+		 * specifies whether the loaded image is portrait or not
+		 * @default=false;
+		 */
 		public function get portrait():Boolean{return _portrait;}
 		
 		
 		private var _landscape:Boolean = false;
+		/**
+		 * specifies whether the loaded image is landscape or not
+		 * @default=false;
+		 */
 		public function get landscape():Boolean{return _landscape;}
 	
 		
@@ -149,12 +172,16 @@ package com.gestureworks.cml.factories
 	
 		
 		private var _bitmapArray:Array = new Array();
+		/**
+		 * stores images in an array
+		 */
 		public function get bitmapArray():Array {return _bitmapArray;}
 		
 		//private var _sizeArray:Array = new Array(20, 50, 100, 200, 400, 800, 1200, 1600); // default size array list
 		private var _sizeArray:Array = new Array(20, 50, 100, 200); // default size array list
-		
-		
+		/**
+		 * stores array list size 
+		 */
 		public function get sizeArray():Array {return _sizeArray;}
 		public function set sizeArray(value:Array):void
 		{
@@ -162,6 +189,9 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _bitmapDataArray:Array;
+		/**
+		 * stores bitmap data array
+		 */
 		public function get bitmapDataArray():Array { return _bitmapDataArray; }
 		
 		
@@ -191,7 +221,9 @@ package com.gestureworks.cml.factories
 			img.addEventListener(Event.COMPLETE, loadComplete);
 		}	
 		
-		
+		/**
+		 * loads external image file
+		 */
 		[Deprecated(replacement="open()")] 
 		public function load(file:String):void
 		{
@@ -386,6 +418,10 @@ package com.gestureworks.cml.factories
 		// Private Methods
 		////////////////////////////////////////////////////////////////////////////////		
 		
+		/**
+		 * loads the file
+		 * @param	file
+		 */
 		public function preloadFile(file:String):void
 		{
 			src = file;

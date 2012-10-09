@@ -869,7 +869,7 @@ package com.gestureworks.cml.element
 	    }
 		
 		/**
-		 * dispose method
+		 * dispose method to remove listeners and nullify attributes
 		 */
 		override public function dispose():void
 		{

@@ -43,6 +43,9 @@ package  com.gestureworks.cml.element
 		private var _loaded:Boolean = false;
 		public function get loaded():Boolean { return _loaded; }
 		
+		/**
+		 * constructor
+		 */
 		public function YouTubeElement() 
 		{
 			super();
@@ -102,6 +105,9 @@ package  com.gestureworks.cml.element
 			_autoplay = value;
 		}
 		
+		/**
+		 * CML callback initialisation
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			
@@ -109,12 +115,17 @@ package  com.gestureworks.cml.element
 		
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			displayComplete();
 		}
 		
-		//Start playing from the beginning.
+		/**
+		 * Start playing from the beginning.
+		 */
 		public function play():void {
 			player.seekTo(0, true);
 			if (!playing){
@@ -122,30 +133,42 @@ package  com.gestureworks.cml.element
 			}
 		}
 		
-		//Resume from last spot.
+		/**
+		 * Resume from last spot.
+		 */
 		public function resume():void {
 			player.playVideo();
 			playing = true;
 		}
 		
-		//Pause
+		/**
+		 * pauses the video
+		 */
 		public function pause():void {
 			player.pauseVideo();
 			playing = false;
 		}
 		
-		//Stop
+		/**
+		 * stops the video
+		 */
 		public function stop():void {
 			player.pauseVideo();
 			player.seekTo(0, true);
 			playing = false;
 		}
 		
-		//Seek
+		/**
+		 * seek 
+		 * @param	value
+		 */
 		public function seek(value:Number):void {
 			player.seekTo(value, true);
 		}
 		
+		/**
+		 * closes the video
+		 */
 		public function close():void {
 			player.stopVideo();
 			player.visible = false;
@@ -188,6 +211,9 @@ package  com.gestureworks.cml.element
 			trace("Player error: ", Object(e).data);
 		}
 		
+		/**
+		 * dispose method to remove children
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

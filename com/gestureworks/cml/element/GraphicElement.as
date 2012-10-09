@@ -5,25 +5,55 @@ package com.gestureworks.cml.element
 	import flash.geom.*;
 	import flash.display.*;
 
+	/**
+	 * Graphic Element creates vector objects with a wide variety of displays.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * 
+	 * var ge:GraphicElement = new GraphicElement();
+	 *		ge.fill = "color";
+	 *		ge.color = 0xFF0000;
+	 *		ge.x = 100;
+	 *		ge.y = 100;
+	 *		ge.shape = "ellipse";
+	 *		ge.width = 100;
+	 *	   ge.height = 50;
+	 *     addChild(ge);
+	 *	  
+	 *	 </codeblock> 
+	 * @author..
+	 */
 	public class GraphicElement extends GraphicFactory
 	{
 		
+		/**
+		 * constructor
+		 */
 		public function GraphicElement() 
 		{			
 			super();
 			layoutUI();
 		}		
 		
+		/**
+		 * CML display callback initialisation
+		 */
 		override public function displayComplete():void
 		{			
 			init();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{ 
 			layoutUI();
 		}
 		
+		/**
+		 * dispose method to nullify attributes
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

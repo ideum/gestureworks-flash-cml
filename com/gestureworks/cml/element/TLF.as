@@ -31,6 +31,9 @@ package com.gestureworks.cml.element
 		private var container:ContainerController;
 		private var initialized:Boolean=false;
 		
+		/**
+		 * constructor
+		 */
 		public function TLF()
 		{
 			super();		
@@ -41,11 +44,19 @@ package com.gestureworks.cml.element
 			textFlow = new TextFlow;
 		}	
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			
 		}
 	
+		/**
+		 * parses cml file
+		 * @param	cml
+		 * @return
+		 */
 		override public function parseCML(cml:XMLList):XMLList
 		{
 			XML.ignoreWhitespace = true;			
@@ -88,10 +99,10 @@ package com.gestureworks.cml.element
 			if (initialized) updateContainer();
 		}	
 		
+		private var _font:String = "MyriadProRegularTLF";
 		/**
-		 * font name, use CFF embeded fonts 
-		 */		
-		private var _font:String="MyriadProRegularTLF";
+		* font name, use CFF embeded fonts 
+		*/	
 		public function get font():String { return _font; }
 		public function set font(v:String):void 
 		{ 
@@ -101,6 +112,9 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _backgroundAlpha:Number;
+		/**
+		 * sets the background alpha
+		 */
 		public function get backgroundAlpha():Number { return _backgroundAlpha; }
 		public function set backgroundAlpha(value:Number):void {
 			_backgroundAlpha = value;
@@ -109,6 +123,9 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _backgroundColor:uint;
+		/**
+		 * sets the background color
+		 */
 		public function get backgroundColor():uint { return _backgroundColor; }
 		public function set backgroundColor(value:uint):void {
 			_backgroundColor = value;
@@ -151,6 +168,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * dispose method
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

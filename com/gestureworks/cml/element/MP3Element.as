@@ -58,7 +58,9 @@ package com.gestureworks.cml.element
 		public static var TIME:String = "Time";
 		public var timer:Timer;
 
-		
+		/**
+		 * constructor
+		 */
 		public function MP3Element()
 		{
 			super();
@@ -124,6 +126,10 @@ package com.gestureworks.cml.element
 		}					
 		
 		
+		/**
+		 * Indicates whether the mp3 file is autoloaded 
+		 * @default true
+		 */
 		private var _autoLoad:Boolean = true;
 		[Deprecated(replacement="preload")] 		
 		public function get autoLoad():Boolean { return _preload; }
@@ -348,6 +354,9 @@ package com.gestureworks.cml.element
 				init();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			if (preload)

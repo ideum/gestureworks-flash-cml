@@ -16,6 +16,9 @@ package com.gestureworks.cml.element
 		protected var lastIndex:int=0;
 		
 		
+		/**
+		 * constructor
+		 */
 		public function ImageSequence()
 		{
 			super();
@@ -137,6 +140,9 @@ package com.gestureworks.cml.element
 				show(currentIndex);
 		}
 		
+		/**
+		 * dispose method to nullify attributes and remove listener
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

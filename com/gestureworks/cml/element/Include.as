@@ -1,17 +1,19 @@
 package com.gestureworks.cml.element 
 {
 	/**
-	 * ...
+	 * Include element allows to nest external files.
+	 * 
 	 * @author ...
 	 */
 	public class Include 
 	{
-		
+		/**
+		 * include constructor
+		 */
 		public function Include() 
 		{
 			
 		}
-
 		
 		private var _cml:String;
 		/**

@@ -165,6 +165,9 @@
 		private const DRAG_LIMITER:Number = 0.25;
 		private const SCALE_MULTIPLIER:Number = 50;
 	
+		/**
+		 * constructor
+		 */
 		public function PanoramicElement()
 		{
 			super();
@@ -218,6 +221,9 @@
 			_fovMin = value;
 		}
 		
+		/**
+		 * CML callback initialisation
+		 */
 		override public function displayComplete():void
 		{
 			if (projectionType == "cube"){
@@ -254,6 +260,9 @@
 			setupUI();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			displayComplete();
@@ -315,6 +324,10 @@
 			GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, update);
 		}
 		
+		/**
+		 * updates camera angle
+		 * @param	e
+		 */
 		public function update(e:GWEvent):void
 		{
         	//trace("updating render");
@@ -352,6 +365,9 @@
 			if (_fov < _fovMin) _fov = _fovMin;
 		}	
 		
+		/**
+		 * dispose methods to nullify children
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

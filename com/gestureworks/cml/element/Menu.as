@@ -7,16 +7,28 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.cml.interfaces.IButton;
 	
+	/**
+	 * Menu constructs a custom menu using nested ButtonElement(s).
+	 * It has following attributes: autoHide, position and autoHideTime.
+	 * 
+	 * @author..
+	 */
 	public class Menu extends Container 
 	{
 		private var frameCount:int = 0;
 		private var buttonArray:Array = [];
-
+ 
+		/**
+		 * constructor
+		 */
 		public function Menu() 
 		{
 			super();
 		}
 
+		/**
+		 * dispose method to nullify children
+		 */
 		override public function dispose():void
 		{
 			super.dispose();
@@ -72,12 +84,17 @@ package com.gestureworks.cml.element
 			_position = value; 
 		}		
 		
-		
+		/**
+		 * CML initialisation call back
+		 */
 		override public function displayComplete():void {
-			//**updateLayout(this.width, this.height)**//
-		//	init();
+			//updateLayout(this.width, this.height)
+			//init();
 			}
-			
+		
+		/**
+		 * initialisation method
+		 */
 		public function init():void {
 			updateLayout(this.width, this.height);	
 			}
@@ -87,7 +104,9 @@ package com.gestureworks.cml.element
 			startTimer();
 		}
 		
-		
+		/**
+		 * if autohide on, adds the listener 
+		 */
 		public function startTimer():void
 		{	
 			if (autoHide)
@@ -120,7 +139,11 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		
+		/**
+		 * sets the layout depending on the position
+		 * @param	containerWidth
+		 * @param	containerHeight
+		 */
 		public function updateLayout(containerWidth:Number, containerHeight:Number):void
 		{
 			buttonArray = [];
@@ -137,6 +160,7 @@ package com.gestureworks.cml.element
 			for (i = 0; i < buttonArray.length; i++)
 			{
 				buttonArray[i].updateLayout();
+				trace("buttonArray[i]: "+ buttonArray[i]);
 			}
 			
 			if (position == "bottom" || position == "top")	

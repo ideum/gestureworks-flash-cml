@@ -70,6 +70,9 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
+		/**
+		 * dispose method nullify attributes
+		 */
 	override public function dispose():void
 		{
 			super.dispose();

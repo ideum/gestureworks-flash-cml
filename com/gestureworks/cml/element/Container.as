@@ -7,20 +7,33 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
 	import flash.utils.Dictionary;
+		
+	/**
+	 * Container controls the layout characteristics of child components.
+	 * The container gives a large amount of control in keeping track of objects and can hold a variety of items.
+	 * 
+	 * @author ...
+	 */
 	
 	public class Container extends ContainerFactory implements IContainer
 	{				
 		
+		/**
+		 * container constructor
+		 */
 		public function Container()
 		{
 			super();
 		}	
 		
+		/**
+		 * Defines the layoutlist
+		 */
 		public var layoutList:Dictionary = new Dictionary(true);
 		
 		private var _layout:*;
 		/**
-		 * 
+		 * sets the layout of the container
 		 */
 		public function get layout():* {return _layout;}
 		public function set layout(value:*):void 
@@ -30,7 +43,7 @@ package com.gestureworks.cml.element
 		
 		private var _position:String;
 		/**
-		 * 
+		 * sets the position 
 		 */
 		public function get position():String {return _position;}
 		public function set position(value:String):void 
@@ -40,7 +53,8 @@ package com.gestureworks.cml.element
 		
 		private var _paddingLeft:Number=0;
 		/**
-		 * 
+		 * sets the number of pixels between the component's left border and the left edge of its content area.
+		 * @default =0;
 		 */
 		public function get paddingLeft():Number {return _paddingLeft;}
 		public function set paddingLeft(value:Number):void 
@@ -50,7 +64,8 @@ package com.gestureworks.cml.element
 		
 		private var _paddingRight:Number=0;
 		/**
-		 * 
+		 * sets the number of pixels between the component's right border and the right edge of its content area.
+		 * @default =0;
 		 */
 		public function get paddingRight():Number {return _paddingRight;}
 		public function set paddingRight(value:Number):void 
@@ -60,7 +75,8 @@ package com.gestureworks.cml.element
 		
 		private var _paddingTop:Number=0;
 		/**
-		 * 
+		 * sets the number of pixels between the container's top border and the top of its content area.
+		 * @default =0;
 		 */
 		public function get paddingTop():Number {return _paddingTop;}
 		public function set paddingTop(value:Number):void 
@@ -70,7 +86,8 @@ package com.gestureworks.cml.element
 		
 		private var _paddingBottom:Number=0;
 		/**
-		 * 
+		 * sets the number of pixels between the container's bottom border and the bottom of its content area.
+		 * @default =0;
 		 */
 		public function get paddingBottom():Number {return _paddingBottom;}
 		public function set paddingBottom(value:Number):void 
@@ -155,31 +172,57 @@ package com.gestureworks.cml.element
 			}
 		}		
 		
+		/**
+		 * shows the childlist index 
+		 * @param	index
+		 */
 		public function showIndex(index:int):void
 		{
 			childList.getIndex(index).visible = true;
 		}
 		
+		/**
+		 * hides the childlist index
+		 * @param	index
+		 */
 		public function hideIndex(index:int):void
 		{
 			childList.getIndex(index).visible = false;
 		}		
 			
+		/**
+		 * shows the childlist key
+		 * @param	key
+		 */
 		public function showKey(key:String):void
 		{
 			childList.getKey(key).visible = true;
 		}
 				
+		/**
+		 * hides the childlist key
+		 * @param	key
+		 */
 		public function hideKey(key:String):void
 		{
 			childList.getKey(key).visible = false;
 		}
 		
+		/**
+		 * returns the childlist key
+		 * @param	key
+		 * @return
+		 */
 		public function getKey(key:String):*
 		{
 			return childList.getKey(key);
 		}
-			
+		
+		/**
+		 * returns childlist index
+		 * @param	index
+		 * @return
+		 */
 		public function getIndex(index:int):*
 		{
 			return childList.getIndex(index);
@@ -316,7 +359,10 @@ package com.gestureworks.cml.element
 				return returnVal;
 		}		
 		
-	override public function dispose():void 
+		/**
+		 * dispose method nullify the attributes 
+		 */
+	    override public function dispose():void 
 		{
 			super.dispose();
 			layoutList = null;	

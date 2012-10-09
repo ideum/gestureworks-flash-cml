@@ -397,6 +397,9 @@ package com.gestureworks.cml.element
 			displayButton();
 		}
 		
+		/**
+		 * creates graphics for background and button
+		 */
 		public function displayButton():void
 		{
 			
@@ -513,6 +516,9 @@ package com.gestureworks.cml.element
 		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "visible", text.visible));
 	    }
 	
+		/**
+		 * dispose method to nullify attributes and remove listeners
+		 */
 		override public function dispose():void
 		{
 				super.dispose();

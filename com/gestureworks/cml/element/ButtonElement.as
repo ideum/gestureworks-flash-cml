@@ -9,6 +9,14 @@ package com.gestureworks.cml.element
 	import flash.utils.Dictionary;
 	import org.tuio.TuioTouchEvent;
 
+    /**
+	 * ButtonElement hides or shows DisplayObjects on specified state events.
+	 * The available button states are initial, down, up, over and out.
+	 * 
+	 * 
+	 * @author ...
+	 */
+	
 	public class ButtonElement extends Container implements IButton
 	{
 		public var debug:Boolean = false;		
@@ -128,6 +136,9 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
+		/**
+		 * sets the dimensions
+		 */
 		public function updateLayout():void
 		{								
 			// we need containers to automatically take on the dimensions of the largest child, so I don't have to do this!!

@@ -9,11 +9,16 @@ package com.gestureworks.cml.factories
 	import flash.events.*;
 	import flash.utils.*;
 	
-	
+	/**
+	 * Touch container creates display hierarchies. It keeps track of children through the childlist property.
+	 * base class for touch container
+	 */
 	
 	public class TouchContainerFactory extends TouchSprite implements IContainer, ICSS
 	{
-				
+		/**
+		 * constructor
+		 */		
 		public function TouchContainerFactory()
 		{
 			super();
@@ -57,10 +62,16 @@ package com.gestureworks.cml.factories
 			removeEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);			
 		}
 		
+		/**
+		 * defines array for propertyStates of childlist
+		 */
 		public var propertyStates:Array;
 		
 		
 		private var _id:String
+		/**
+		 * sets childlist id
+		 */
 		public function get id():String {return _id};
 		public function set id(value:String):void
 		{
@@ -68,13 +79,20 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _cmlIndex:int;
+		/**
+		 * sets the cml index
+		 */
 		public function get cmlIndex():int {return _cmlIndex};
 		public function set cmlIndex(value:int):void
 		{
 			_cmlIndex = value;
 		}	
 		
-		
+		/**
+		 * parses cml file
+		 * @param	cml
+		 * @return
+		 */
 		public function parseCML(cml:XMLList):XMLList
 		{
 			var obj:XMLList = CMLParser.instance.parseCML(this, cml);			
@@ -82,10 +100,16 @@ package com.gestureworks.cml.factories
 			return obj;
 		}
 		
-		
+		/**
+		 * postparse method
+		 * @param	cml
+		 */
 		public function postparseCML(cml:XMLList):void {}
 			
-		
+		/**
+		 * update properties of child
+		 * @param	state
+		 */
 		public function updateProperties(state:Number=0):void
 		{
 			CMLParser.instance.updateProperties(this, state);		
@@ -93,6 +117,9 @@ package com.gestureworks.cml.factories
 			
 		/////////////////////////////////////////
 		private var _group:String
+		/**
+		 * 
+		 */
 		public function get group():String {return _group};
 		public function set group(value:String):void
 		{
@@ -107,6 +134,9 @@ package com.gestureworks.cml.factories
 		
 		
 		private var _width:Number = 0;
+		/**
+		 * sets the width of the container
+		 */
 		override public function get width():Number{return _width;}
 		override public function set width(value:Number):void
 		{
@@ -114,6 +144,9 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _height:Number = 0;
+		/**
+		 * sets the height of the container
+		 */
 		override public function get height():Number{return _height;}
 		override public function set height(value:Number):void
 		{
@@ -122,12 +155,18 @@ package com.gestureworks.cml.factories
 		
 		
 		private var _className:String;
+		/**
+		 * sets the class name of displayobject
+		 */
 		public function get className():String { return _className ; }
 		public function set className(value:String):void
 		{
 			_className = value;
 		}			
 		
+		/**
+		 * CML callback initialisation
+		 */
 		public function displayComplete():void{}
 		
 
@@ -156,11 +195,17 @@ package com.gestureworks.cml.factories
 		
 		
 		private var _childList:LinkedMap;
+		/**
+		 * returns the childlist
+		 */
 		public function get childList():LinkedMap {return _childList;}			
 		
 		
 		
 		private var _dimensionsTo:String;
+		/**
+		 * sets the dimensions of touchcontainer
+		 */
 		public function get dimensionsTo():String { return _dimensionsTo ; }
 		public function set dimensionsTo(value:String):void
 		{
@@ -169,6 +214,9 @@ package com.gestureworks.cml.factories
 		}		
 		
 		private var _autoShuffle:Boolean = false;
+		/**
+		 * autoshuffles
+		 */
 		public function get autoShuffle():Boolean{return _autoShuffle;}
 		public function set autoShuffle(value:Boolean):void
 		{
@@ -177,22 +225,26 @@ package com.gestureworks.cml.factories
 		
 		private var _layout:*;
 		/**
-		 * 
+		 * speciffies the type of layout
 		 */
 		public function get layout():* {return _layout;}
 		public function set layout(value:*):void 
 		{
 			_layout = value;
 		}
-		
+		/**
+		 * child appended to the childlist
+		 * @param	id
+		 * @param	child
+		 */
 		public function childToList(id:String, child:*):void
 		{			
 			childList.append(id, child);			
 		}		
 		
-		
-		
-		
+		/**
+		 * method searches the child and adds to the list
+		 */
 		public function addAllChildren():void
 		{			
 			for (var i:int = 0; i < _childList.length; i++) 
@@ -201,12 +253,11 @@ package com.gestureworks.cml.factories
 				addChild(_childList.getIndex(i));
 			}
 		}		
-		
-		
-		
 
-		
 		// called in layoutCML() method of DisplayManager
+		/**
+		 * method sets the dimensions of each child
+		 */
 		public function setDimensionsToChild():void
 		{
 			for (var i:int = 0; i < childList.length; i++) 
@@ -225,23 +276,26 @@ package com.gestureworks.cml.factories
 			
 		}	
 		
-		
+		/**
+		 * sets the mousechildren value to true or false.
+		 */
 		override public function get mouseChildren():Boolean 
 		{
 			return super.mouseChildren;
 		}
-		
 		override public function set mouseChildren(value:Boolean):void 
 		{
 			//trace("mouseChildren in touch container:", value)
 			super.mouseChildren = value;
 		}
-		
-		
-		
-		
+
 		protected var cmlGestureList:Object;
 		
+		/**
+		 * 
+		 * @param	value
+		 * @return
+		 */
 		public function makeGestureList(value:XMLList):Object
 		{			
 			var gl:*;
@@ -260,9 +314,10 @@ package com.gestureworks.cml.factories
 			
 			return object;
 		}	
-		
-		
-		
+				
+		/**
+		 * 
+		 */
 		public function activateTouch():void
 		{
 			this.gestureList = cmlGestureList;

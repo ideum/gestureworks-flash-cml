@@ -96,6 +96,10 @@ package com.gestureworks.cml.element
 	public final class CameraElement extends ObjectFactory
 	{
 		private var cam:Camera;
+		
+		/**
+		 * constructor
+		 */
 		public function CameraElement ()
 		{
 			cam = new Camera();
@@ -554,6 +558,9 @@ package com.gestureworks.cml.element
 			cam.setQuality(bandwidth, quality);
 		}
 		
+		/**
+		 * dispose method to nullify the attribute
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

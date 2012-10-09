@@ -525,6 +525,9 @@ package com.gestureworks.cml.element
 				}
 			}
 		}
+		/**
+		 * dispose method
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

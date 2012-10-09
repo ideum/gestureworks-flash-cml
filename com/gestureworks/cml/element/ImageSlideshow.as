@@ -3,7 +3,6 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.core.tweens.IITween;
 	import org.libspark.betweenas3.tweens.ITween;
-	
 	import flash.events.TimerEvent;
 	import flash.events.Event;
 
@@ -16,11 +15,17 @@ package com.gestureworks.cml.element
 	{	
 		private var tween:ITween;
 		
+		/**
+		 * constructor
+		 */
 		public function ImageSlideshow()
 		{
 			super();
 		}
 		
+		/**
+		 * dispose method to nullify attribute
+		 */
 		override public function dispose():void
 		{
 			super.dispose();
@@ -38,12 +43,19 @@ package com.gestureworks.cml.element
 			_defaultIndex = value;
 		}	
 			
+		/**
+		 * loads image
+		 * @param	index
+		 */
 		public function loadDefault(index:int):void
 		{	
 			currentIndex = index
 			fadein(index);
 		}
 
+		/**
+		 * image load callback
+		 */
 		override public function loadComplete():void 
 		{
 			loaded = true;  
@@ -122,6 +134,7 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+	
 		override protected function showNext():void
 		{
 			var last:int = currentIndex;

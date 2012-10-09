@@ -5,11 +5,8 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.interfaces.ICSS;
 	import com.gestureworks.cml.interfaces.IClone;
 	import com.gestureworks.cml.core.CMLObjectList;
-	
 	//import com.gestureworks.core.TouchSprite;
-	
 	import com.gestureworks.cml.core.*;
-
 	import flash.utils.Dictionary;	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -22,11 +19,17 @@ package com.gestureworks.cml.factories
 	/**
 	 * ElementFactory
 	 * Base class for display elements
+	 * It has following parameters:id, cmlIndex, className, width, height,scaleX, scaleY, minScale, maxScale, scale, widthPercent,heightPercent, horizontalCenter,
+	 *                             verticalCenter,top, left, bottom, right, index, debugStyle, fixedScale, displayEvents, and class.
+	 * 
 	 * @authors Charles Veasey
 	 */	
 	
 	public class ElementFactory extends Sprite implements IElement, ICSS, IClone
 	{
+		/**
+		 * constructor
+		 */
 		public function ElementFactory() 
 		{
 			mouseChildren = true;
@@ -63,9 +66,15 @@ package com.gestureworks.cml.factories
 			debugStyle = null;
 		}
 		
+		/**
+		 * creates propertystates array
+		 */
 		public var propertyStates:Array;
 		
 		private var _id:String
+		/**
+		 * sets the id of child
+		 */
 		public function get id():String {return _id};
 		public function set id(value:String):void
 		{
@@ -75,22 +84,35 @@ package com.gestureworks.cml.factories
 		
 		
 		private var _cmlIndex:int;
+		/**
+		 * sets the cml index
+		 */
 		public function get cmlIndex():int {return _cmlIndex};
 		public function set cmlIndex(value:int):void
 		{
 			_cmlIndex = value;
 		}
 		
-		
+		/**
+		 * parses cml file
+		 * @param	cml
+		 * @return
+		 */
 		public function parseCML(cml:XMLList):XMLList
 		{			
 			return CMLParser.instance.parseCML(this, cml);
 		}
 		
-		
+		/**
+		 * post parses the cml file
+		 * @param	cml
+		 */
 		public function postparseCML(cml:XMLList):void {}
 		
-		
+		/**
+		 * this method updates the properties
+		 * @param	state
+		 */
 		public function updateProperties(state:Number=0):void
 		{
 			CMLParser.instance.updateProperties(this, state);		
@@ -98,6 +120,9 @@ package com.gestureworks.cml.factories
 		
 
 		private var _className:String;
+		/**
+		 * specifies the class name of the displayobject
+		 */
 		public function get className():String { return _className ; }
 		public function set className(value:String):void
 		{
@@ -208,6 +233,9 @@ package com.gestureworks.cml.factories
 
 		
 		private var _widthPercent:String = "";		
+		/**
+		 * sets the percent of width of display object
+		 */
 		public function get widthPercent():String{return _widthPercent;}
 		public function set widthPercent(value:String):void
 		{
@@ -217,7 +245,10 @@ package com.gestureworks.cml.factories
 		}
 				
 		
-		private var _heightPercent:*="";
+		private var _heightPercent:*= "";
+		/**
+		 * sets the height percent of display object
+		 */
 		public function get heightPercent():String{	return _heightPercent;}
 		public function set heightPercent(value:String):void
 		{
@@ -255,7 +286,11 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		private var _horizontalCenter:Number=0;
+		private var _horizontalCenter:Number = 0;
+		/**
+		 * sets the horizontal center of display object
+		 * @default =0;
+		 */
 		public function get horizontalCenter():Number{return _horizontalCenter;}
 		public function set horizontalCenter(value:Number):void
 		{
@@ -263,7 +298,11 @@ package com.gestureworks.cml.factories
 			if (parent) x = ((parent.width - width) / 2) + value;
 		}
 		
-		private var _verticalCenter:Number=0;
+		private var _verticalCenter:Number = 0;
+		/**
+		 * sets the vertical center of display object
+		 * @default=0;
+		 */
 		public function get verticalCenter():Number{return _verticalCenter;}
 		public function set verticalCenter(value:Number):void
 		{
@@ -271,7 +310,10 @@ package com.gestureworks.cml.factories
 			if (parent) y = ((parent.height - height) / 2) + value;
 		}
 		
-		private var _top:Number=0;
+		private var _top:Number = 0;
+		/**
+		 * sets top value
+		 */
 		public function get top():Number{return _top;}
 		public function set top(value:Number):void
 		{
@@ -279,7 +321,10 @@ package com.gestureworks.cml.factories
 			y = value;
 		}
 		
-		private var _left:Number=0;
+		private var _left:Number = 0;
+		/**
+		 * sets left value
+		 */
 		public function get left():Number{return _left;}
 		public function set left(value:Number):void
 		{
@@ -287,7 +332,10 @@ package com.gestureworks.cml.factories
 			x = value
 		}		
 		
-		private var _bottom:Number=0;
+		private var _bottom:Number = 0;
+		/**
+		 * sets the bottom value
+		 */
 		public function get bottom():Number{return _bottom;}
 		public function set bottom(value:Number):void
 		{
@@ -295,7 +343,10 @@ package com.gestureworks.cml.factories
 			if (parent) y = (parent.height - height) + value;
 		}
 		
-		private var _right:Number=0;
+		private var _right:Number = 0;
+		/**
+		 * sets the right value
+		 */
 		public function get right():Number{return _right;}
 		public function set right(value:Number):void
 		{
@@ -303,9 +354,10 @@ package com.gestureworks.cml.factories
 			if (parent) x = (parent.width - width) + value;
 		}
 		
-
-		
 		private var _index:int;
+		/**
+		 * sets the index of display object
+		 */
 		public function get index():int{return _index;}
 		public function set index(value:int):void
 		{
@@ -313,6 +365,9 @@ package com.gestureworks.cml.factories
 		}	
 		
 		private var _debugStyle:*;
+		/**
+		 * sets the debug style
+		 */
 		public function get debugStyle():*{return _debugStyle;}
 		public function set debugStyle(value:*):void
 		{
@@ -320,6 +375,9 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _fixedScale:Boolean = false;
+		/**
+		 * specifies the fixed scaling of display object
+		 */
 		public function get fixedScale():Boolean{return _fixedScale;}
 		public function set fixedScale(value:Boolean):void
 		{
@@ -338,9 +396,9 @@ package com.gestureworks.cml.factories
 			_displayEvents = value;
 		}
 	
-		
-		
-		
+		/**
+		 * CML callback
+		 */		
 		public function displayComplete():void {}		
 		
 		

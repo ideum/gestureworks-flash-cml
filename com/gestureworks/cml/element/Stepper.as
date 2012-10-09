@@ -475,7 +475,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method
+		 * dispose method to nullify attributes
 		 */
 		override public function dispose(): void
 		{

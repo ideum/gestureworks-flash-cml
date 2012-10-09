@@ -11,6 +11,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
+	
 	/**
 	 * The MaskContainer is a class that takes in one or multiple images and applies a mask designated in CML to all images in its child list.
 	 * If there are multiple images, the class automatically cycles through them using double-tap. Gesture responsiveness may be turned off in CML.
@@ -35,6 +36,7 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author josh
 	 */
+		
 	public class MaskContainer extends TouchContainer
 	{
 		private const PItoRAD:Number = Math.PI / 180;
@@ -57,6 +59,9 @@ package com.gestureworks.cml.element
 		protected var _mShape:GraphicElement;
 		public function get mShape():GraphicElement { return _mShape; }
 		
+		/**
+		 * constructor
+		 */
 		public function MaskContainer() 
 		{
 			super();
@@ -149,6 +154,9 @@ package com.gestureworks.cml.element
 			_dragAngle = value;
 		}
 		
+		/**
+		 * CML call back initialisation
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			
@@ -162,6 +170,9 @@ package com.gestureworks.cml.element
 			createMasks();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		override public function init():void
 		{
 			displayComplete();
@@ -351,6 +362,10 @@ package com.gestureworks.cml.element
 			wShape.scaleY += e.value.scale_dsy;
 		}
 		
+		/**
+		 * cycles through multiple images
+		 * @param	e
+		 */
 		public function cycleMasks(e:GWGestureEvent):void {
 			//trace("cycle masks");
 			removeChild(graphicArray.array[counter]);
@@ -364,6 +379,9 @@ package com.gestureworks.cml.element
 			graphicArray.array[counter].visible = true;
 		}
 		
+		/**
+		 * dispose method to nullify listeners
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

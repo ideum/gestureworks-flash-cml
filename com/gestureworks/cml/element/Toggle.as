@@ -211,6 +211,9 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", toggleGraphic.visible));
 		}
 		
+		/**
+		 * dispose method to remove listeners and nullify attributes
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

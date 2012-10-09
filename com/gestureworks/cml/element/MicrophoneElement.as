@@ -421,6 +421,10 @@ package com.gestureworks.cml.element
 		}
 
 		private var mp:Microphone;
+		
+		/**
+		 * constructor
+		 */
 		public function MicrophoneElement ()
 		{
 			mp = new Microphone();
@@ -491,6 +495,9 @@ package com.gestureworks.cml.element
 			mp.setUseEchoSuppression(useEchoSuppression);
 		}
 		
+		/**
+		 * dispose method to nullify attribute
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

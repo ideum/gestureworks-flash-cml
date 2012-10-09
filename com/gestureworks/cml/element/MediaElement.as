@@ -31,6 +31,9 @@ package com.gestureworks.cml.element
 		private var dictionary:Dictionary;
 		private var currentFile:String;
 		
+		/**
+		 * constructor
+		 */
 		public function MediaElement()
 		{
 			super();
@@ -40,11 +43,17 @@ package com.gestureworks.cml.element
 			mp3Types = /^.*\.(mp3)$/i;			
 		}
 
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 	
 		}
 
+		/**
+		 * dispose method to nullify attributes
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

@@ -38,6 +38,9 @@ package com.gestureworks.cml.element
 		private var progressTimer:Timer;
 		private var sizeLoaded:Boolean = false;
 		
+		/**
+		 * constructor
+		 */
 		public function VideoElement() {}
 
 		private var _debug:Boolean=false;
@@ -460,6 +463,9 @@ package com.gestureworks.cml.element
 			else stop();
 		}		
 		
+		/**
+		 * dispose method to nullify attributes and remove listeners
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

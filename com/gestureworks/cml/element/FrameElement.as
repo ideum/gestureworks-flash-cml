@@ -7,9 +7,17 @@ package com.gestureworks.cml.element
 	import flash.events.Event;
 	import flash.geom.Matrix;
 
+	/**
+	 * Frame element create display object frames
+	 * 
+	 * @author..
+	 */
 	public class FrameElement extends GraphicFactory
 	{
 		
+		/**
+		 * constructor
+		 */
 		public function FrameElement() 
 		{			
 			super();
@@ -17,6 +25,9 @@ package com.gestureworks.cml.element
 		//	init();
 		}		
 		
+		/**
+		 * CML display callback initialisation
+		 */
 		override public function displayComplete():void
 		{			
 			init();
@@ -24,6 +35,9 @@ package com.gestureworks.cml.element
 			trace("new Frame");
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			layoutUI();
@@ -94,6 +108,9 @@ package com.gestureworks.cml.element
 			layoutUI();
 		}
  
+		/**
+		 * dispose method to nullify attributes
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

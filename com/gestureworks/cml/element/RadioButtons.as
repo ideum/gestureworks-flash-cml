@@ -327,6 +327,9 @@
 			}
 		}	
 		
+		/**
+		 * dispose method to nullify attributes and remove listeners
+		 */
 		override public function dispose():void
 		{
 			super.dispose();

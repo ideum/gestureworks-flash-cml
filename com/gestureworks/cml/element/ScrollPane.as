@@ -914,7 +914,7 @@ public class ScrollPane extends Container
 	}
 
 	/**
-	 * dispose method
+	 * dispose method to nullify attributes and remove listeners
 	 */
 	override public function dispose(): void
 	{

@@ -2,6 +2,10 @@ package com.gestureworks.cml.events
 {
 	import flash.events.Event;
 	
+	/**
+	 * This class contains the types and other definitions of file event dispatched by the application.
+	 * @author..
+	 */
 	public class FileEvent extends Event 
 	{	
 		/**

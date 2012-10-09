@@ -12,9 +12,12 @@ package com.gestureworks.cml.element
 	import org.tuio.*;
 	
 	/**
-	 * ...
+	 * Drop down menu is used to create a simple menu from a text string of items.
+	 * It has the following parameters: menuTitle, font, fontsize, color, fill, menuMarker and menuItems, which will be a comma separated list of items to populate the menu.
+	 * 
 	 * @author josh
 	 */
+	
 	public class DropDownMenu extends ElementFactory
 	{
 		private var _open:Boolean = false;
@@ -27,6 +30,9 @@ package com.gestureworks.cml.element
 		private var _height:Number;
 		private var triangle:GraphicElement;
 		
+		/**
+		 * dropdown menu constructor
+		 */
 		public function DropDownMenu():void {
 			super();
 		}
@@ -83,6 +89,10 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _fontSize:Number = 15;
+		/**
+		 * defines the font size
+		 * @default=15;
+		 */
 		public function get fontSize():Number { return _fontSize; }
 		public function set fontSize(value:Number):void {
 			_fontSize = value;
@@ -98,6 +108,10 @@ package com.gestureworks.cml.element
 			_menuMarker = value;
 		}
 		
+		/**
+		 * CML display initialization callback
+		 * creates menu
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			
@@ -105,6 +119,9 @@ package com.gestureworks.cml.element
 			createMenu();
 		}
 		
+		/**
+		 * inialisation method 
+		 */
 		public function init():void
 		{
 			displayComplete();
@@ -307,6 +324,9 @@ package com.gestureworks.cml.element
 				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
 		}
 		
+		/**
+		 * dispose method to nullify attributes and remove listeners
+		 */
 		override public function dispose():void {
 			super.dispose();
 			

@@ -74,6 +74,9 @@ package com.gestureworks.cml.element
 		 */			
 		private var _cueStreamStart:Number;
 		
+		/**
+		 * constructor
+		 */
 		public function WavElement() 
 		{
 			super();
@@ -89,6 +92,9 @@ package com.gestureworks.cml.element
 		public function get channels():uint { return _channels; }
 		
 		private var _printData:Boolean;		
+		/**
+		 * print data
+		 */
 		public function get printData():Boolean { return _printData; }
 		public function set printData(val:Boolean):void { _printData = val; }
 		
@@ -158,7 +164,10 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _autoLoad:Boolean = true;
-		[Deprecated(replacement="preload")] 		
+		[Deprecated(replacement = "preload")] 	
+		/**
+		 * Indicates whether the wav file is autoloaded 
+		 */
 		public function get autoLoad():Boolean { return _preload; }
 		public function set autoLoad(value:Boolean):void 
 		{ 
@@ -257,14 +266,21 @@ package com.gestureworks.cml.element
 		// READ ONLY // 
 		
 		private var _bitDepth:uint;
+		/**
+		 * depth of wav file
+		 */
 		public function get bitDepth():uint { return _bitDepth; }
 		
 		private var _length:uint;
+		/**
+		 * length of wav file
+		 */
 		public function get length():uint { return _length; }
 	
 		private var _duration:Number = 0;
 		/**
 		 * Total duration
+		 * @default=0;
 		 */			
 		public function get duration():Number { return _duration; }
 		
@@ -272,6 +288,7 @@ package com.gestureworks.cml.element
 		private var _percentLoaded:Number = 0;
 		/**
 		 * Percent of file loaded 
+		 * @default=0;
 		 */			
 		public function get percentLoaded():Number { return _percentLoaded; }
 		
@@ -279,16 +296,22 @@ package com.gestureworks.cml.element
 		private var _position:Number = 0;
 		/**
 		 * Playhead position in ms
+		 * @default=0;
 		 */			
 		public function get position():Number { return _position; }
 		
 		private var _isPlaying:Boolean = false;
 		/**
 		 * Sets video playing status
+		 * @default = false;
 		 */
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
 		private var _paused:Boolean = false;
+		/**
+		 * specifies whether the wav file is paused or not
+		 * @default=false;
+		 */
 		public function get paused():Boolean { return _paused; }
 		
 		/**
@@ -412,6 +435,9 @@ package com.gestureworks.cml.element
 		
 		// PUBLIC METHODS //
 		
+		/**
+		 * CML callback initialisation
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			//bytes = new ByteArray();
@@ -419,6 +445,9 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
+		/**
+		 * initialisation method
+		 */
 		public function init():void
 		{
 			load();
@@ -434,6 +463,9 @@ package com.gestureworks.cml.element
 			load();
 		}
 		
+		/**
+		 * closes wav file
+		 */
 		public function close():void 
 		{
 			channel.stop();
@@ -444,7 +476,9 @@ package com.gestureworks.cml.element
 			timer.stop();
 		}
 		
-		//Play
+		/**
+		 * plays wav file
+		 */
 		public function play():void {
 			
 			if (_isPlaying == false) {
@@ -475,7 +509,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		//Pause			
+		/**
+		 * pauses the wav file
+		 */			
 		public function pause():void {
 			//stop playback and set pause to true
 			sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
@@ -484,7 +520,10 @@ package com.gestureworks.cml.element
 			_paused = true;
 		}
 		
-		//Seek
+		/**
+		 * seek method
+		 * @param	pos
+		 */
 		public function seek(pos:Number):void
 		{
 			pause();
@@ -495,7 +534,9 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , _stream.position));
 		}
 		
-		//Stop
+		/**
+		 * stops wav file
+		 */
 		public function stop():void {
 			//stop playback 
 			sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
@@ -832,7 +873,9 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		// DISPOSE //
+		/**
+		 * dispose method to remove listeners and nullify attributes
+		 */
 		override public function dispose():void {
 			super.dispose();
 			
