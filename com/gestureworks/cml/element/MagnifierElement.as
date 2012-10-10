@@ -205,7 +205,7 @@ package com.gestureworks.cml.element
 				var dRad:Number = _radius + 15;
 				var dNum:Number = (dRad * 2) * (_border.height / _border.width) / _border.height;
 				_border.height *= dNum;
-				num = (dRad * 2) / _border.width;
+				dNum = (dRad * 2) / _border.width;
 				_border.width *= dNum;
 				
 				this.width = _border.width;
