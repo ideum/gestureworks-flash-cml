@@ -14,9 +14,7 @@ package com.gestureworks.cml.element
 	import org.tuio.*;
 	
 	/**
-<<<<<<< .mine
 	 * 
-=======
 	 * PanoramicElement provides a touch-enabled, 3-Dimensional panorama using the Away3D library.
 	 * The PanoramicElement has two projection types: sphere, or cube, which may be set using the projectionType attribute/property.
 	 * 
@@ -48,7 +46,6 @@ package com.gestureworks.cml.element
 		magnifier.init();
 	 *
 	 * </codeblock>
->>>>>>> .r1442
 	 * @author josh
 	 */
 	public class MagnifierElement extends TouchContainer
@@ -193,10 +190,10 @@ package com.gestureworks.cml.element
 			if (_graphic == "notch") {
 				_border = new NotchGraphic as Sprite;
 				mBorder = null;
-				var tempRad:Number = _radius + 15;
-				var num:Number = (tempRad * 2) / _border.width;
-				_border.width *= num;
-				_border.height *= num;
+				var nRad:Number = _radius + 15;
+				var nNum:Number = (nRad * 2) / _border.width;
+				_border.width *= nNum;
+				_border.height *= nNum;
 				
 				this.width = _border.width;
 				this.height = _border.height;
@@ -205,11 +202,11 @@ package com.gestureworks.cml.element
 				
 				_border = new DefaultGraphic as Sprite;
 				mBorder = new mDefaultGraphic as Sprite;
-				var tempRad:Number = _radius + 15;
-				var num:Number = (tempRad * 2) * (_border.height / _border.width) / _border.height;
-				_border.height *= num;
-				num = (tempRad * 2) / _border.width;
-				_border.width *= num;
+				var dRad:Number = _radius + 15;
+				var dNum:Number = (dRad * 2) * (_border.height / _border.width) / _border.height;
+				_border.height *= dNum;
+				num = (dRad * 2) / _border.width;
+				_border.width *= dNum;
 				
 				this.width = _border.width;
 				this.height = _border.height;
