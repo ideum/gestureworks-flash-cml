@@ -42,26 +42,44 @@ package com.gestureworks.cml.core
 
 	public class CMLParser extends CML_CORE
 	{		
-		public function CMLParser(enforcer:SingletonEnforcer) {}
+		public function CMLParser() {}
 		
-		private static var _instance:CMLParser;
-		public static function get instance():CMLParser 
+		private static var _instance:*;
+		public static function get instance():*
 		{ 
-			if (_instance == null)
-				_instance = new CMLParser(new SingletonEnforcer());			
-			return _instance;	
+			return CMLParser;	
 		}
 		
-		public var debug:Boolean = false;		
+		public static var debug:Boolean = false;		
 		private static var GXMLComponent:Class;
-		public var defaultContainer:DisplayObjectContainer;
+		public static var defaultContainer:DisplayObjectContainer;
 		public static const COMPLETE:String = "COMPLETE";
-		public var cssFile:String;
-		public var cmlFile:String;
-		private var cmlTreeNodes:Array = [];
-		public var relativePaths:Boolean = false;
-		public var extensions:RegExp;			
-		public var rootDirectory:String = "";		
+		public static var cssFile:String;
+		public static var cmlFile:String;
+		private static var cmlTreeNodes:Array = [];
+		public static var relativePaths:Boolean = false;
+		public static var extensions:RegExp;			
+		public static var rootDirectory:String = "";		
+		
+		
+        private static var _dispatcher:EventDispatcher = new EventDispatcher();
+ 
+        public static function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
+            _dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+        }
+        public static function dispatchEvent(event:Event):Boolean {
+            return _dispatcher.dispatchEvent(event);
+        }
+        public static function hasEventListener(type:String):Boolean {
+            return _dispatcher.hasEventListener(type);
+        }
+        public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+            _dispatcher.removeEventListener(type, listener, useCapture);
+        }
+        public static function willTrigger(type:String):Boolean {
+            return _dispatcher.willTrigger(type);
+        }		
+		
 		
 		/**
 		 * Initial parsing of the cml document
@@ -69,30 +87,22 @@ package com.gestureworks.cml.core
 		 * @param	parent
 		 * @param	properties
 		 */
-		public function init(cml:XML, parent:*, properties:*=null):void
+		public static function init(cml:XML, parent:*, properties:*=null):void
 		{
 			extensions = /^.*\.(cml|gml|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|png|gif|jpg|mp3|swf|swc)$/i;			
 			
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
 				
-			if (cml.@rootDirectory != undefined)
-				rootDirectory = cml.@rootDirectory;				
-			
-			var cssStr:String = "";
-				
 			// get css file
-			if (cml.@css != undefined) {
-				cssStr = cml.@css;			
+			var cssStr:String = cml.@css;			
 			
-				if (relativePaths && rootDirectory.length > 1)
-					cssStr = relToAbsPath(rootDirectory.concat(cssStr));
-				else if (rootDirectory.length > 1)
-					cssStr = rootDirectory.concat(cssStr);				
-			}
-			
+			if (relativePaths)
+				cssStr = relToAbsPath(rootDirectory+cssStr);
+							
+							
 			CMLParser.instance.cssFile = cssStr;	
-			
+							
 			if (debug)
 				trace("\n\n========================== CML parser initialized ===============================");
 			
@@ -223,7 +233,7 @@ package com.gestureworks.cml.core
 		
 		
 		
-		private function loadExtFiles():void
+		private static function loadExtFiles():void
 		{			
 			if (debug)
 				trace("\n 5) Begin loading non-CML external files");	
@@ -233,7 +243,7 @@ package com.gestureworks.cml.core
 		}
 		
 				
-		private function onLoadComplete(event:Event):void
+		private static function onLoadComplete(event:Event):void
 		{
 			FileManager.instance.removeEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
 			
@@ -243,7 +253,7 @@ package com.gestureworks.cml.core
 			loadCSS();
 		}
 
-		private function loadCSS():void
+		private static function loadCSS():void
 		{		
 			if (debug)
 				trace("\n 6) Search for main CSS file");					
@@ -269,7 +279,7 @@ package com.gestureworks.cml.core
 		}
 		
 		
-		private function onCSSLoaded(event:FileEvent):void
+		private static function onCSSLoaded(event:FileEvent):void
 		{
 			CSSManager.instance.removeEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
 		
@@ -281,7 +291,7 @@ package com.gestureworks.cml.core
 		}
 		
 		
-		private function loadDisplay():void
+		private static function loadDisplay():void
 		{
 			if (debug)
 			{
@@ -346,11 +356,11 @@ package com.gestureworks.cml.core
 		}		
 		
 
-		private var cmlFilesComplete:int = 0;
-		private var cmlRenderer:XMLList;
-		private var cmlRendererKitFileComplete:int = 0;
+		private static var cmlFilesComplete:int = 0;
+		private static var cmlRenderer:XMLList;
+		private static var cmlRendererKitFileComplete:int = 0;
 		
-		private function onCMLLoadComplete(event:FileEvent):void
+		private static function onCMLLoadComplete(event:FileEvent):void
 		{	
 			cmlFilesComplete++;
 			
@@ -394,9 +404,9 @@ package com.gestureworks.cml.core
 			
 		}			
 		
-		private var currentParent:*;
+		private static var currentParent:*;
 		
-		public function createElements(cml:*, parent:*=null):void
+		public static function createElements(cml:*, parent:*=null):void
 		{
 			if (debug)
 					trace(StringUtils.printf("\n%4s%s", "", "Create AS3 objects from CML elements"));				
@@ -415,7 +425,7 @@ package com.gestureworks.cml.core
 		
 		
 		
-		public function loadRenderer(renderKit:*, parent:*):void
+		public static function loadRenderer(renderKit:*, parent:*):void
 		{
 			if (debug)
 				trace("\n\nloading renderer");
@@ -442,8 +452,8 @@ package com.gestureworks.cml.core
 
 					
 
-		private var index:int = 0;
-		private var includeParentIndex:Array = [];
+		private static var index:int = 0;
+		private static var includeParentIndex:Array = [];
 		
 		/**
 		 * Recursive CML parsing
@@ -451,7 +461,7 @@ package com.gestureworks.cml.core
 		 * @param	parent
 		 * @param	properties
 		 */
-		public function loopCML(cml:*, parent:*=null, properties:*=null):void
+		public static function loopCML(cml:*, parent:*=null, properties:*=null):void
 		{			
 			var className:String = null;
 			var obj:* = null;
@@ -478,15 +488,13 @@ package com.gestureworks.cml.core
 						if ((attrName == "cml" || attrName == "src") && attrValue.toString().length > 0)
 						{
 							// rootDirectory allows you to change root path	
-							if (relativePaths && rootDirectory.length > 1){	
+							if (relativePaths && rootDirectory 
+								&& rootDirectory.length > 1){	
 								if (attrValue.search(extensions) >= 0){
-									attrValue = rootDirectory.concat(attrValue);
+									attrValue = rootDirectory + attrValue;
 									attrValue = relToAbsPath(attrValue);	
 								}
-							}
-							else if (rootDirectory.length > 1){
-								attrValue = rootDirectory.concat(attrValue);
-							}
+							}	
 							
 														
 							includeParentIndex.push(parent);
@@ -633,7 +641,7 @@ package com.gestureworks.cml.core
 		 * @param	className
 		 * @return
 		 */
-		public function createObject(className:String):Object
+		public static function createObject(className:String):Object
 		{
 			//new object reference
 			var obj:* = null;			
@@ -678,7 +686,7 @@ package com.gestureworks.cml.core
 		 * @param	packageArray
 		 * @return
 		 */
-		private function searchPackages(className:String, packageArray:Array):Object
+		private static function searchPackages(className:String, packageArray:Array):Object
 		{
 			var obj:* = null;
 			
@@ -705,7 +713,7 @@ package com.gestureworks.cml.core
 		 * @param	cml
 		 * @return
 		 */
-		public function parseCML(obj:*, cml:XMLList):XMLList
+		public static function parseCML(obj:*, cml:XMLList):XMLList
 		{
 			var attrName:String;
 			var returnNode:XMLList = new XMLList;
@@ -719,25 +727,16 @@ package com.gestureworks.cml.core
 					attrName = "class_";				
 				
 				
-				if (attrValue.search(extensions) >= 0)
+				// rootDirectory allows you to change root path	
+				if (relativePaths && rootDirectory && rootDirectory.length > 1)	
 				{	
-					
-					// rootDirectory allows you to change root path	
-					if (relativePaths && rootDirectory.length > 1)	
-					{	
-						if (attrValue.search(extensions) >= 0)
-						{
-							attrValue = rootDirectory.concat(attrValue);
-							attrValue = relToAbsPath(attrValue);
-						}
-					}
-					
-					else if (rootDirectory.length > 1)
+					if (attrValue.search(extensions) >= 0)
 					{
-						attrValue = rootDirectory.concat(attrValue);
+						attrValue = rootDirectory + attrValue;
+						attrValue = relToAbsPath(attrValue);	
 					}
-		
 				}
+				
 				obj.propertyStates[0][attrName] = attrValue;				
 			}
 			
@@ -750,7 +749,7 @@ package com.gestureworks.cml.core
 		}		
 		
 		
-		public function relToAbsPath(string:String):String
+		public static function relToAbsPath(string:String):String
 		{			
 			var newString:String;
 			var cnt:int = 0;
@@ -782,7 +781,7 @@ package com.gestureworks.cml.core
 		 * @param	obj
 		 * @param	state
 		 */
-		public function updateProperties(obj:*, state:Number=0):void
+		public static function updateProperties(obj:*, state:Number=0):void
 		{
 			var propertyValue:String;
 			var objType:String;
@@ -816,7 +815,7 @@ package com.gestureworks.cml.core
 		 * @param	state
 		 * @return
 		 */
-		public function filterProperty(propertyName:String, propertyValue:*, propertyStates:*, state:*):*
+		public static function filterProperty(propertyName:String, propertyValue:*, propertyStates:*, state:*):*
 		{			
 			propertyValue = propertyStates[state][propertyName].toString();
 			
@@ -885,7 +884,7 @@ package com.gestureworks.cml.core
 		
 		
 		
-		public function printObjectList():void
+		public static function printObjectList():void
 		{			
 			var cmlIndex:int;
 			var id:String;
@@ -988,5 +987,3 @@ package com.gestureworks.cml.core
 		
 	}
 }
-
-class SingletonEnforcer{}		

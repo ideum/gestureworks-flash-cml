@@ -23,7 +23,7 @@ package com.gestureworks.cml.core
 	 *
 	 * @see com.gestureworks.cml.core.CML_AIR
 	 */		
-	public class CML_CORE extends EventDispatcher
+	public class CML_CORE
 	{
 		// searchable packages
 		protected static var CML_CORE_PACKAGES:Array = 
@@ -47,7 +47,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
-	import com.gestureworks.cml.components.PanoramicViewer; PanoramicViewer;
 	import com.gestureworks.cml.components.YouTubeViewer; YouTubeViewer;
 	import com.gestureworks.cml.components.Component; Component;	
 	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
