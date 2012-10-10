@@ -240,8 +240,6 @@
 					}
 					this.removeChildAt(0);
 				}
-				
-				//createCubeNet();
 			}
 			else if (projectionType == "sphere") {
 				while (this.numChildren > 0) {
@@ -256,7 +254,7 @@
 					this.removeChildAt(0);
 				}
 			}
-
+			
 			setupUI();
 		}
 		
@@ -295,14 +293,6 @@
 				largeSphere.scaleX = -1;
 				largeSphere.position = cam.position;
 				
-				//largeSphere.z = rad * 3 * -1;
-				
-				view.backgroundColor = 0x00ff00;
-				
-				trace("Making sphere");
-				trace(view.x, view.y);
-				trace(this.x, this.y);
-				
 				camController = null;
 				
 				view.scene.addChild(largeSphere);
@@ -311,7 +301,6 @@
 			
 			if (_projectionType == "cube") {
 				
-				trace("Making cubeTexture");
 				var bmCubeText:BitmapCubeTexture = new BitmapCubeTexture(Cast.bitmapData(cube_face[0]), Cast.bitmapData(cube_face[1]), Cast.bitmapData(cube_face[2]), Cast.bitmapData(cube_face[3]), Cast.bitmapData(cube_face[4]), Cast.bitmapData(cube_face[5]));
 				//															right							left							up							down							front							back
 				_skyBox = new SkyBox(bmCubeText);
@@ -329,8 +318,8 @@
 		 * @param	e
 		 */
 		public function update(e:GWEvent):void
-		{
-        	//trace("updating render");
+		{	
+			//trace("updating render");
 			if(_skyBox){
 				camController.tiltAngle = _pitch;
 				camController.panAngle = _yaw;
@@ -340,11 +329,9 @@
 			
 			if (largeSphere) {
 				cam.rotateTo(_pitch, _yaw, 0);
-				//cam.pitch(_pitch);
 				_lens.fieldOfView = _fov;
 			}
 			
-			//// overides any clipping that may occure when objects are placed partly on stage initall y
 		  	view.render(); 
 		}
 		

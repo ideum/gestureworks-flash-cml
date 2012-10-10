@@ -212,8 +212,10 @@ package com.gestureworks.cml.element
 				touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
 				if (gestureReleaseInertia)
 				  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-				else
-					touchKnob.addEventListener(TouchEvent.TOUCH_END, onComplete);
+				else{
+					touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
+					hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+				}
 				touchKnob.addChild(knob);
 				addChild(touchKnob);					
 			}
@@ -448,7 +450,8 @@ package com.gestureworks.cml.element
 			rail = null;
 			knob = null;
 			touchKnob.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
-			touchKnob.removeEventListener(TouchEvent.TOUCH_END, onComplete);
+			touchKnob.removeEventListener(GWTouchEvent.TOUCH_END, onComplete);
+			hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
 			hit.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 			hit.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 			hit.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);

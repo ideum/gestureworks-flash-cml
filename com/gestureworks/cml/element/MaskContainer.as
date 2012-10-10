@@ -70,7 +70,7 @@ package com.gestureworks.cml.element
 			disableNativeTransform = true;
 			nestedTransform = true;
 			gestureEvents = true;
-			gestureList = { "n-double_tap":true, "n-drag":true, "n-rotate":true, "n-scale":true };
+			//gestureList = { "n-double_tap":true, "n-drag":true, "n-rotate":true, "n-scale":true };
 		}
 		
 		//Mask SHAPE (STRING)
