@@ -121,8 +121,8 @@ package com.gestureworks.cml.components
 
 		   
 		private var tweens:Dictionary = new Dictionary(true)
-		private function updateLayout(event:*=null):void
-		{			
+		override protected function updateLayout(event:* = null):void 
+		{
 			var target:*;
 			
 			if (GestureWorks.activeTUIO && event.target.parent.hasOwnProperty("mouseChildren") && !event.target.parent.mouseChildren)
@@ -145,9 +145,7 @@ package com.gestureworks.cml.components
 					addChild(target.parent);
 				}
 			}
-			
 		}
-		
 
 		override protected function onStateEvent(event:StateEvent):void
 		{			

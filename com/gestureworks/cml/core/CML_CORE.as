@@ -53,6 +53,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
 	import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
 	import com.gestureworks.cml.components.GigaPixelViewer; GigaPixelViewer;
+	import com.gestureworks.cml.components.LiveVideoViewer; LiveVideoViewer;
 	
 	
 	
