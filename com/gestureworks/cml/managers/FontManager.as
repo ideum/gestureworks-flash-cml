@@ -11,28 +11,6 @@ package com.gestureworks.cml.managers
 		// Keep the default fonts to a miminum. OpenSans is the chosen font for Open Exhibits.
 		// For custom projects embed fonts into the directly project, not here.
 		
-		// Open Sans (embedAsCFF='false')
-		[Embed(source="../../../../../lib/defaultFonts/OpenSansRegular.ttf",fontName='OpenSansRegular',fontFamily='OpenSans',fontWeight='normal',fontStyle='normal',mimeType='application/x-font-truetype',advancedAntiAliasing='true',embedAsCFF='true')]
-		/**
-		 * specifies the OpenSansRegular  font name
-		 */public static var OpenSansRegular:Class;
-		Font.registerFont(OpenSansRegular);	
-		
-		[Embed(source="../../../../../lib/defaultFonts/OpenSansItalic.ttf",fontName='OpenSansItalic',fontFamily='OpenSans', fontStyle='italic',mimeType='application/x-font-truetype',advancedAntiAliasing='true',embedAsCFF='true')]
-		/**
-		 * specifies the OpenSansItalic font name
-		 */
-		public static var OpenSansItalic:Class;
-		Font.registerFont(OpenSansItalic);
-		
-		[Embed(source="../../../../../lib/defaultFonts/OpenSansBold.ttf",fontName='OpenSansBold',fontFamily='OpenSans', fontStyle='bold',mimeType='application/x-font-truetype',advancedAntiAliasing='true',embedAsCFF='true')]
-		/**
-		 * specifies the OpenSansBold font name
-		 */
-		public static var OpenSansBold:Class;
-		Font.registerFont(OpenSansBold);
-		
-		
 		// Open Sans TLF (embedAsCFF='true')
 		[Embed(source="../../../../../lib/defaultFonts/OpenSansRegular.ttf",fontName='OpenSansRegularTLF',fontFamily='OpenSans',fontWeight='normal',fontStyle='normal',mimeType='application/x-font-truetype',advancedAntiAliasing='true',embedAsCFF='true')]
 		/**
