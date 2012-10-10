@@ -132,7 +132,7 @@ package com.gestureworks.cml.factories
 		private var _normalize:Boolean = false;
 		/**
 		 * specifies whether loaded image is normalised or not
-		 * @default= false;
+		 * @default false
 		 */
 		public function get normalize():Boolean{return _normalize;}
 		public function set normalize(value:Boolean):void
@@ -143,7 +143,7 @@ package com.gestureworks.cml.factories
 		private var _avatar:Boolean = false;
 		/**
 		 * sets the avatar value
-		 * @default = false;
+		 * @default false
 		 */
 		public function get avatar():Boolean{return _avatar;}
 		public function set avatar(value:Boolean):void
@@ -155,7 +155,7 @@ package com.gestureworks.cml.factories
 		private var _portrait:Boolean = false;
 		/**
 		 * specifies whether the loaded image is portrait or not
-		 * @default=false;
+		 * @default false
 		 */
 		public function get portrait():Boolean{return _portrait;}
 		
@@ -163,7 +163,7 @@ package com.gestureworks.cml.factories
 		private var _landscape:Boolean = false;
 		/**
 		 * specifies whether the loaded image is landscape or not
-		 * @default=false;
+		 * @default false
 		 */
 		public function get landscape():Boolean{return _landscape;}
 	

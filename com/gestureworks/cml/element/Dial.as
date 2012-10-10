@@ -99,7 +99,7 @@ package com.gestureworks.cml.element
 		private var _textColor:uint = 0xDDDDDD;// 0x000000;
 		/**
 		 * Sets the default text Color 
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get textColor():uint
 		{
@@ -113,7 +113,7 @@ package com.gestureworks.cml.element
 		private var _selectedTextColor:uint = 0x000000;// 0xFFFFFF;  
 		/**
 		 * Sets the text Color for selected text
-		 * @default = 0xFFFFFF;
+		 * @default 0xFFFFFF
 		 */
 		public function get selectedTextColor():uint
 		{
@@ -127,7 +127,7 @@ package com.gestureworks.cml.element
 		private var _maxItemsOnScreen:int = 5;
 		/**
 		 * Sets the maximum Text Elements on dial
-		 * @default = 5;
+		 * @default 5
 		 */
 		public function get maxItemsOnScreen():int
 		{
@@ -142,7 +142,7 @@ package com.gestureworks.cml.element
 		private var _text:String = "Collection 1, Collection 2, Collection 3, Collection 4, Collection 5, Collection 6, Collection 7, Collection 8, Collection 9, Collection 10";
 		/**
 		 * Sets array of text elements
-		 * @default = 10;
+		 * @default 10
 		 */
 		public function get text():String
 		{
@@ -157,7 +157,7 @@ package com.gestureworks.cml.element
 		private var _gradientType:String = GradientType.LINEAR;
 		/**
 		 * Sets the gardient type for background
-		 * @default = GradientType.LINEAR;
+		 * @default GradientType.LINEAR
 		 */
 		public function get gradientType():String
 		{
@@ -177,7 +177,7 @@ package com.gestureworks.cml.element
 		private var _gradientColors:String = "0x111111, 0xDDDDDD, 0x111111";
 		/**
 		 * Sets the array of color values of gradient for background
-		 * @default = [0x111111, 0xDDDDDD, 0x111111];
+		 * @default [0x111111, 0xDDDDDD, 0x111111]
 		 */
 		public function get gradientColors():String
 		{
@@ -194,7 +194,7 @@ package com.gestureworks.cml.element
 		private var _gradientAlphas:String = "1, 1, 1";
 		/**
 		 * Sets the alpha transparency of gradient for background
-		 * @default = [1, 1, 1];
+		 * @default [1, 1, 1]
 		 */
 		public function get gradientAlphas():String
 		{
@@ -211,7 +211,7 @@ package com.gestureworks.cml.element
 		private var _gradientRatios:String = "0, 127.5, 255";
 		/**
 		 * Sets the ratios of gradient for background
-		 * @default = [0, 127.5, 255];
+		 * @default [0, 127.5, 255]
 		 */
 		public function get gradientRatios():String
 		{
@@ -227,7 +227,7 @@ package com.gestureworks.cml.element
 		private var _gradientWidth:Number = 300;
 		/**
 		 * the width (in pixels) to which the gradient will spread
-		 * @default = 300;
+		 * @default 300
 		 */
 		
 		public function get gradientWidth():Number
@@ -243,7 +243,7 @@ package com.gestureworks.cml.element
 		private var _gradientHeight:Number = 200;
 		/**
 		 * the height (in pixels) to which the gradient will spread
-		 * @default = 200;
+		 * @default 200
 		 */
 		
 		public function get gradientHeight():Number
@@ -259,7 +259,7 @@ package com.gestureworks.cml.element
 		private var _gradientX:Number = 25;
 		/**
 		 * how far (in pixels) the gradient is shifted horizontally
-		 * @default = 25;
+		 * @default 25
 		 */
 		
 		public function get gradientX():Number
@@ -275,7 +275,7 @@ package com.gestureworks.cml.element
 		private var _gradientY:Number = 0;
 		/**
 		 * how far (in pixels) the gradient is shifted vertically
-		 * @default = 0;
+		 * @default 0
 		 */
 		
 		public function get gradientY():Number
@@ -291,7 +291,7 @@ package com.gestureworks.cml.element
 		private var _gradientRotation:Number = Math.PI / 2;
 		/**
 		 * the rotation (in radians) that will be applied to the gradient
-		 * @default = Math.PI / 2;
+		 * @default Math.PI / 2
 		 */
 		
 		public function get gradientRotation():Number
@@ -308,7 +308,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Line Stoke
-		 *  @default = 1;
+		 *  @default 1
 		 */
 		public function get backgroundLineStoke():Number
 		{
@@ -324,7 +324,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Transparency
-		 *  @default = 0;
+		 *  @default 0
 		 */
 		public function get backgroundAlpha():Number
 		{
@@ -340,7 +340,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the left triangle color of background
-		 *  @default = 0x303030;
+		 *  @default 0x303030
 		 */
 		public function get leftTriangleColor():Number
 		{
@@ -356,7 +356,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the left triangle Transparency of background
-		 *  @default = 1;
+		 *  @default 1
 		 */
 		public function get leftTriangleAlpha():Number
 		{
@@ -372,7 +372,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right triangle color of background
-		 *  @default = 0x303030;
+		 *  @default 0x303030
 		 */
 		public function get rightTriangleColor():Number
 		{
@@ -388,7 +388,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right triangle Transparency of background
-		 *  @default = 1;
+		 *  @default 1
 		 */
 		public function get rightTriangleAlpha():Number
 		{
@@ -404,7 +404,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the center line line stroke of background
-		 *  @default = 1;
+		 *  @default 1
 		 */
 		public function get centerLineLineStoke():Number
 		{
@@ -420,7 +420,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the center line outline color of background
-		 *  @default = 0xAAAAAAA;
+		 *  @default 0xAAAAAAA
 		 */
 		public function get centerLineOutlineColor():uint
 		{
@@ -436,7 +436,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the outline transparency of center line of background
-		 *  @default = 0.4;
+		 *  @default 0.4
 		 */
 		public function get centerLineOutlineAlpha():Number
 		{
@@ -452,7 +452,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the center line color of background
-		 *  @default = 0x666666;
+		 *  @default 0x666666
 		 */
 		public function get centerLineColor():uint
 		{
@@ -468,7 +468,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the center line transparency of background
-		 *  @default = 0.2;
+		 *  @default 0.2
 		 */
 		public function get centerLineAlpha():Number
 		{

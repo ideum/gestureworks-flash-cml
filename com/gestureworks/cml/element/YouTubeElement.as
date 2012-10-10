@@ -65,7 +65,7 @@ package  com.gestureworks.cml.element
 		private var _width:Number = 480;
 		/**
 		 * Sets the video width.
-		 * @default: 480;
+		 * @default 480
 		 */
 		override public function get width():Number { return _width; }
 		override public function set width(value:Number):void {
@@ -75,7 +75,7 @@ package  com.gestureworks.cml.element
 		private var _height:Number = 360;
 		/**
 		 * Sets the video height.
-		 * @default: 360;
+		 * @default 360
 		 */
 		override public function get height():Number { return _height; }
 		override public function set height(value:Number):void {
@@ -85,7 +85,7 @@ package  com.gestureworks.cml.element
 		private var _chrome:Boolean = false;
 		/**
 		 * Sets whether or not to use the chromed (player with buttons) or not.
-		 * @default: false
+		 * @default false
 		 */
 		public function get chrome():Boolean { return _chrome; }
 		public function set chrome(value:Boolean):void { 
@@ -97,7 +97,7 @@ package  com.gestureworks.cml.element
 		 * Sets whether or not the video plays immediately. Note: the player does not
 		 * start loading the FLV it requests until a call to play the video, or seek to
 		 * the video is called.
-		 * @default: false;
+		 * @default false;
 		 */
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 

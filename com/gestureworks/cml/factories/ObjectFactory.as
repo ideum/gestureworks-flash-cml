@@ -8,6 +8,7 @@ package com.gestureworks.cml.factories
 	
 	/**
 	 * ObjectFactory
+	 * base class for display objects
 	 * @authors Charles Veasey 
 	 */
 	public class ObjectFactory extends EventDispatcher implements IObject

@@ -78,7 +78,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the inside color of the background
-		 * @default = 0x333333;
+		 * @default 0x333333
 		 */
 		public function get backgroundColor():uint
 		{
@@ -95,7 +95,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the color of the background line color
-		 * @default = 0x00ff00;
+		 * @default 0x00ff00
 		 */
 		public function get backgroundLineColor():uint
 		{
@@ -112,7 +112,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Line Stoke
-		 *  @default = 1;
+		 *  @default  1
 		 */
 		public function get backgroundLineStoke():Number
 		{
@@ -129,7 +129,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the toggle Line Stoke of the background
-		 *  @default = 1;
+		 *  @default 1
 		 */
 		public function get toggleLineStoke():Number
 		{
@@ -146,7 +146,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the toggle color of the background
-		 *  @default = 0x00FF00;
+		 *  @default 0x00FF00
 		 */
 		public function get toggleColor():uint
 		{

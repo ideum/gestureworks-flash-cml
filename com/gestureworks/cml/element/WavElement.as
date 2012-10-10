@@ -280,7 +280,7 @@ package com.gestureworks.cml.element
 		private var _duration:Number = 0;
 		/**
 		 * Total duration
-		 * @default=0;
+		 * @default 0
 		 */			
 		public function get duration():Number { return _duration; }
 		
@@ -288,7 +288,7 @@ package com.gestureworks.cml.element
 		private var _percentLoaded:Number = 0;
 		/**
 		 * Percent of file loaded 
-		 * @default=0;
+		 * @default 0
 		 */			
 		public function get percentLoaded():Number { return _percentLoaded; }
 		
@@ -296,21 +296,21 @@ package com.gestureworks.cml.element
 		private var _position:Number = 0;
 		/**
 		 * Playhead position in ms
-		 * @default=0;
+		 * @default 0
 		 */			
 		public function get position():Number { return _position; }
 		
 		private var _isPlaying:Boolean = false;
 		/**
 		 * Sets video playing status
-		 * @default = false;
+		 * @default false
 		 */
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
 		private var _paused:Boolean = false;
 		/**
 		 * specifies whether the wav file is paused or not
-		 * @default=false;
+		 * @default false
 		 */
 		public function get paused():Boolean { return _paused; }
 		

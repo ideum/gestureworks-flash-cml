@@ -129,7 +129,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the line stroke of horizontal background
-		 * @default = 1;
+		 * @default 1
 		 */
 		public function get backgroundLineStroke():Number
 		{
@@ -145,7 +145,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the horizontal background line color
-		 * @default = 0x383838;
+		 * @default 0x383838
 		 */
 		public function get backgroundLineColor():uint
 		{
@@ -161,7 +161,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the color of horizontal background
-		 * @default = 0x383838;
+		 * @default 0x383838
 		 */
 		public function get backgroundColor():uint
 		{
@@ -177,7 +177,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the line stroke of vertical background
-		 * @default = 1;
+		 * @default 1
 		 */
 		public function get background_VLineStroke():Number
 		{
@@ -193,7 +193,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the vertical background line color
-		 * @default = 0x383838;
+		 * @default 0x383838
 		 */
 		public function get background_VLineColor():uint
 		{
@@ -209,7 +209,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the color of vertical background
-		 * @default = 0x383838;
+		 * @default 0x383838
 		 */
 		public function get background_VColor():uint
 		{
@@ -225,7 +225,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the scroll bar color of vertical background
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get scrollbar_VColor():uint
 		{
@@ -241,7 +241,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the scroll bar line stroke of vertical background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get scrollbar_VLineStroke():uint
 		{
@@ -257,7 +257,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the scroll bar line color of vertical background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get scrollbar_VLineColor():uint
 		{
@@ -273,7 +273,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the scroll bar color of vertical background
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get scrollbarColor():uint
 		{
@@ -289,7 +289,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the scroll bar line stroke of horizontal background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get scrollbarLineStroke():uint
 		{
@@ -305,7 +305,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the scroll bar color of horizontal background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get scrollbarLineColor():uint
 		{
@@ -321,7 +321,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the square color of horizontal background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get square1Color():uint
 		{
@@ -337,7 +337,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the square line stroke of horizontal background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get square1LineStroke():uint
 		{
@@ -353,7 +353,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the square line color of horizontal background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get square1LineColor():uint
 		{
@@ -369,7 +369,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square color of horizontal background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get square2Color():uint
 		{
@@ -385,7 +385,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square line stroke of horizontal background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get square2LineStroke():uint
 		{
@@ -401,7 +401,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square line color of horizontal background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get square2LineColor():uint
 		{
@@ -417,7 +417,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square color of vertical background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get bottomSquare_VColor():uint
 		{
@@ -433,7 +433,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square line stroke of vertical background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get bottomSquare_VLineStroke():uint
 		{
@@ -449,7 +449,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square line color of vertical background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get bottomSquare_VLineColor():uint
 		{
@@ -465,7 +465,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square color of vertical background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get topSquare_VColor():uint
 		{
@@ -481,7 +481,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square line stroke of vertical background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get topSquare_VLineStroke():uint
 		{
@@ -497,7 +497,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the right square line color of vertical background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get topSquare_VLineColor():uint
 		{
@@ -513,7 +513,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the top triangle color of vertical background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get topTriangle_VColor():uint
 		{
@@ -529,7 +529,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the top triangle color of vertical background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get bottomTriangle_VColor():uint
 		{
@@ -545,7 +545,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the top triangle color of horizontal background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get leftTriangleColor():uint
 		{
@@ -561,7 +561,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the top triangle color of horizontal background
-		 * @default = 0xA0A0A0;
+		 * @default 0xA0A0A0
 		 */
 		public function get rightTriangleColor():uint
 		{

@@ -84,7 +84,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background inside color of the Rounded Rectangle
-		 * @default = 0xFFFFFF;
+		 * @default 0xFFFFFF
 		 */
 		public function get backgroundColor():uint
 		{
@@ -101,7 +101,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background outline color of Rounded Rectangle
-		 * @default = 0x333333;
+		 * @default 0x333333
 		 */
 		public function get backgroundoutlineColor():uint
 		{
@@ -118,7 +118,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background linestroke of the Rounded Rectangle
-		 *  @default = 3;
+		 *  @default 3
 		 */
 		public function get backgroundlineStroke():Number
 		{
@@ -135,7 +135,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button inside color of the Rounded Rectangle
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get buttonColor():uint
 		{
@@ -152,7 +152,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button outline color of Rounded Rectangle
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get buttonoutlineColor():uint
 		{
@@ -169,7 +169,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button line stroke of the Rounded Rectangle
-		 *  @default = 1;
+		 *  @default 1
 		 */
 		public function get buttonlineStroke():Number
 		{
@@ -186,7 +186,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background X position of Rounded Rectangle
-		 * @default = 0;
+		 * @default 0
 		 */
 		public function get backgroundX():uint
 		{
@@ -203,7 +203,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Y position of Rounded Rectangle
-		 * @default = 0;
+		 * @default 0
 		 */
 		public function get backgroundY():uint
 		{
@@ -220,7 +220,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Width  of Rounded Rectangle
-		 * @default = 100;
+		 * @default 100
 		 */
 		public function get backgroundWidth():uint
 		{
@@ -237,7 +237,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Height of Rounded Rectangle
-		 *  @default = 50;
+		 *  @default 50
 		 */
 		public function get backgroundHeight():Number
 		{
@@ -254,7 +254,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Ellipse Width  of Rounded Rectangle
-		 * @default = 25;
+		 * @default 25
 		 */
 		public function get backgroundEllipseWidth():uint
 		{
@@ -271,7 +271,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background Ellipse Height of Rounded Rectangle
-		 *  @default = 25;
+		 *  @default 25
 		 */
 		public function get backgroundEllipseHeight():Number
 		{
@@ -288,7 +288,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button X position of Rounded Rectangle
-		 * @default = 0;
+		 * @default 0
 		 */
 		public function get buttonX():Number
 		{
@@ -305,7 +305,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button Y position of Rounded Rectangle
-		 * @default = 0;
+		 * @default 0
 		 */
 		public function get buttonY():Number
 		{
@@ -322,7 +322,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button Width  of Rounded Rectangle
-		 * @default = 50;
+		 * @default 50
 		 */
 		public function get buttonWidth():Number
 		{
@@ -339,7 +339,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button Height of Rounded Rectangle
-		 *  @default = 50;
+		 *  @default 50
 		 */
 		public function get buttonHeight():Number
 		{
@@ -356,7 +356,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button Ellipse Width  of Rounded Rectangle
-		 * @default = 25;
+		 * @default 25
 		 */
 		public function get buttonEllipseWidth():Number
 		{
@@ -373,7 +373,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the button Ellipse Height of Rounded Rectangle
-		 *  @default = 25;
+		 *  @default 25
 		 */
 		public function get buttonEllipseHeight():Number
 		{

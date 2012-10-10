@@ -106,7 +106,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the line stroke of background
-		 * @default = 3;
+		 * @default 3
 		 */
 		public function get backgroundLineStroke():Number
 		{
@@ -122,7 +122,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the background line color
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get backgroundLineColor():uint
 		{
@@ -138,7 +138,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the color of background
-		 * @default = 0xCCCCCC;
+		 * @default 0xCCCCCC
 		 */
 		public function get backgroundColor():uint
 		{
@@ -154,7 +154,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the top triangle color of background
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get topTriangleColor():uint
 		{
@@ -170,7 +170,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the top triangle alpha of background
-		 * @default = 1;
+		 * @default 1
 		 */
 		public function get topTriangleAlpha():Number
 		{
@@ -186,7 +186,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the bottom triangle color of background
-		 * @default = 0x000000;
+		 * @default 0x000000
 		 */
 		public function get bottomTriangleColor():uint
 		{
@@ -202,7 +202,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the bottom triangle alpha of background
-		 * @default = 1;
+		 * @default 1
 		 */
 		public function get bottomTriangleAlpha():Number
 		{
@@ -218,7 +218,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the text color
-		 * @default = 0x0000FF;
+		 * @default 0x0000FF
 		 */
 		public function get textColor():Number
 		{

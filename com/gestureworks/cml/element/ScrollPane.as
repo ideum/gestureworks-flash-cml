@@ -82,7 +82,7 @@ public class ScrollPane extends Container
 	private var _squareLineStroke:Number = 3;
 	/**
 	 * Sets line stroke of square.
-	 * @default = 3;
+	 * @default 3
 	 */ 
 	public function get squareLineStroke():Number
 	{
@@ -96,7 +96,7 @@ public class ScrollPane extends Container
 	private var _squareOutlineColor:uint = 0xCCCCCC;
 	/**
 	 * Sets out line color of square.
-	 * @default = 0xCCCCCC;
+	 * @default 0xCCCCCC
 	 */ 
 	public function get squareOutlineColor():uint
 	{
@@ -110,7 +110,7 @@ public class ScrollPane extends Container
 	private var _squareColor:uint = 0x909090;
 	/**
 	 * Sets color of square.
-	 * @default = 0x909090 ;
+	 * @default 0x909090 
 	 */ 
 	public function get squareColor():uint
 	{
@@ -124,7 +124,7 @@ public class ScrollPane extends Container
 	private var _bgOutlineColor:uint = 0x000000;
 	/**
 	 * Sets out line color of background of square.
-	 * @default = 0x000000;
+	 * @default 0x000000
 	 */ 
 	public function get bgOutlineColor():uint
 	{
@@ -138,7 +138,7 @@ public class ScrollPane extends Container
 	private var _bgColor:uint = 0x000000;
 	/**
 	 * Sets color of background of square.
-	 * @default = 0x000000;
+	 * @default 0x000000
 	 */ 
 	public function get bgColor():uint
 	{
@@ -152,7 +152,7 @@ public class ScrollPane extends Container
 	private var _bgLineStroke:Number = 3;
 	/**
 	 * Sets line stroke of background of square.
-	 * @default = 3;
+	 * @default 3
 	 */ 
 	public function get bgLineStroke():uint
 	{
@@ -166,7 +166,7 @@ public class ScrollPane extends Container
 	private var _verticalBgOutlineColor:uint = 0x000000;
 	/**
 	 * Sets out line color of vertical background of square.
-	 * @default = 0x000000;
+	 * @default 0x000000
 	 */ 
 	public function get verticalBgOutlineColor():uint
 	{
@@ -180,7 +180,7 @@ public class ScrollPane extends Container
 	private var _verticalBgColor:uint = 0x000000;
 	/**
 	 * Sets color of vertical background of square.
-	 * @default = 0x000000;
+	 * @default 0x000000
 	 */ 
 	public function get verticalBgColor():uint
 	{
@@ -194,7 +194,7 @@ public class ScrollPane extends Container
 	private var _verticalBgLineStroke:Number = 3;
 	/**
 	 * Sets line stroke of background of square.
-	 * @default = 3;
+	 * @default 3
 	 */ 
 	public function get verticalBgLineStroke():uint
 	{
@@ -208,7 +208,7 @@ public class ScrollPane extends Container
 	private var _scrollBarColor:uint = 0x383838;
 	/**
 	 * Sets color of horizontal scrollbar of square.
-	 * @default = 0x383838;
+	 * @default 0x383838
 	 */ 
 	public function get scrollBarColor():uint
 	{
@@ -222,7 +222,7 @@ public class ScrollPane extends Container
 	private var _scrollBarOutlineColor:uint = 0x383838;
 	/**
 	 * Sets out line color of horizontal scrollbar of square.
-	 * @default = 0x383838;
+	 * @default 0x383838
 	 */ 
 	public function get scrollBarOutlineColor():uint
 	{
@@ -236,7 +236,7 @@ public class ScrollPane extends Container
 	private var _scrollBarLineStroke:Number = 3;
 	/**
 	 * Sets line stroke of horizontal scrollbar of square.
-	 * @default = 3;
+	 * @default 3
 	 */ 
 	public function get scrollBarLineStroke():uint
 	{
@@ -250,7 +250,7 @@ public class ScrollPane extends Container
 	private var _verticalScrollBarColor:uint = 0x383838;
 	/**
 	 * Sets color of vertical scrollbar of square.
-	 * @default = 0x383838;
+	 * @default 0x383838
 	 */ 
 	public function get verticalScrollBarColor():uint
 	{
@@ -264,7 +264,7 @@ public class ScrollPane extends Container
 	private var _verticalScrollBarOutlineColor:uint = 0x383838;
 	/**
 	 * Sets out line color of horizontal scrollbar of square.
-	 * @default = 0x383838;
+	 * @default 0x383838
 	 */ 
 	public function get verticalScrollBarOutlineColor():uint
 	{
@@ -278,7 +278,7 @@ public class ScrollPane extends Container
 	private var _verticalScrollbarLineStroke:Number = 3;
 	/**
 	 * Sets line stroke of horizontal scrollbar of square.
-	 * @default = 3;
+	 * @default 3
 	 */ 
 	public function get verticalScrollbarLineStroke():uint
 	{
@@ -292,7 +292,7 @@ public class ScrollPane extends Container
 	private var _squareWidth:Number = 600;
 	/**
 	* Sets the square width
-	* @default = 600;
+	* @default 600
 	*/
 	public function get squareWidth():Number
 	{
@@ -307,7 +307,7 @@ public class ScrollPane extends Container
 	private var _squareHeight:Number = 600;
 	/**
 	* Sets the square height  
-	* @default = 600;
+	* @default 600
 	*/
 	public function get squareHeight():Number
 	{
@@ -322,7 +322,7 @@ public class ScrollPane extends Container
 	private var _bgX:Number = 0;
 	/**
 	* Sets the horizontal background x position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get bgX():Number
 	{
@@ -337,7 +337,7 @@ public class ScrollPane extends Container
 	private var _bgY:Number = 605;
 	/**
 	* Sets the horizontal background y position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get bgY():Number
 	{
@@ -352,7 +352,7 @@ public class ScrollPane extends Container
 	private var _bgHeight:Number = 15;
 	/**
 	* Sets the horizontal background y position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get bgHeight():Number
 	{
@@ -367,7 +367,7 @@ public class ScrollPane extends Container
 	private var _bgWidth:Number = 600;
 	/**
 	* Sets the horizontal background width
-	* @default = 600;
+	* @default 600
 	*/
 	public function get bgWidth():Number
 	{
@@ -382,7 +382,7 @@ public class ScrollPane extends Container
 	private var _bgEllipseHeight:Number = 30;
 	/**
 	* Sets the horizontal background y position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get bgEllipseHeight():Number
 	{
@@ -397,7 +397,7 @@ public class ScrollPane extends Container
 	private var _bgEllipseWidth:Number = 20;
 	/**
 	* Sets the horizontal background y position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get bgEllipseWidth():Number
 	{
@@ -412,7 +412,7 @@ public class ScrollPane extends Container
 	private var _vBgX:Number = 605;
 	/**
 	* Sets the vertical background x position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get vBgX():Number
 	{
@@ -427,7 +427,7 @@ public class ScrollPane extends Container
 	private var _vBgY:Number = 0;
 	/**
 	* Sets the vertical background y position
-	* @default = 0;
+	* @default 0
 	*/
 	public function get vBgY():Number
 	{
@@ -442,7 +442,7 @@ public class ScrollPane extends Container
 	private var _vBgWidth:Number = 15;
 	/**
 	* Sets the vertical background width
-	* @default = 0;
+	* @default 0
 	*/
 	public function get vBgWidth():Number
 	{
@@ -457,7 +457,7 @@ public class ScrollPane extends Container
 	private var _vBgHeight:Number = 600;
 	/**
 	* Sets the vertical background width
-	* @default = 600;
+	* @default 600
 	*/
 	public function get vBgHeight():Number
 	{
@@ -472,7 +472,7 @@ public class ScrollPane extends Container
 	private var _vBgEllipseWidth:Number = 30;
 	/**
 	* Sets the vertical background ellipse width
-	* @default = 0;
+	* @default 0
 	*/
 	public function get vBgEllipseWidth():Number
 	{
@@ -487,7 +487,7 @@ public class ScrollPane extends Container
 	private var _vBgEllipseHeight:Number = 20;
 	/**
 	* Sets the vertical background ellipse height
-	* @default = 0;
+	* @default 0
 	*/
 	public function get vBgEllipseHeight():Number
 	{
@@ -502,7 +502,7 @@ public class ScrollPane extends Container
 	private var _scrollbarX:Number = 0;
 	/**
 	* Sets the scrollbar x position of background
-	* @default = 0;
+	* @default 0
 	*/
 	public function get scrollbarX():Number
 	{
@@ -517,7 +517,7 @@ public class ScrollPane extends Container
 	private var _scrollbarY:Number = 605;
 	/**
 	* Sets the scrollbar y position of background
-	* @default = 0;
+	* @default 0
 	*/
 	public function get scrollbarY():Number
 	{
@@ -532,7 +532,7 @@ public class ScrollPane extends Container
 	private var _scrollbarWidth:Number = 100;
 	/**
 	* Sets the scrollbar width of background
-	* @default = 100;
+	* @default 100
 	*/
 	public function get scrollbarWidth():Number
 	{
@@ -547,7 +547,7 @@ public class ScrollPane extends Container
 	private var _scrollbarHeight:Number = 15;
 	/**
 	* Sets the scrollbar height of background
-	* @default = 15;
+	* @default 15
 	*/
 	public function get scrollbarHeight():Number
 	{
@@ -562,7 +562,7 @@ public class ScrollPane extends Container
 	private var _scrollbarEllipseHeight:Number = 30;
 	/**
 	* Sets the scrollbar ellipse height of background
-	* @default = 50;
+	* @default 50
 	*/
 	public function get scrollbarEllipseHeight():Number
 	{
@@ -577,7 +577,7 @@ public class ScrollPane extends Container
 	private var _scrollbarEllipseWidth:Number = 20;
 	/**
 	* Sets the scrollbar ellipse width of background
-	* @default = 50;
+	* @default 50
 	*/
 	public function get scrollbarEllipseWidth():Number
 	{
@@ -592,7 +592,7 @@ public class ScrollPane extends Container
 	private var _vScrollbarX:Number = 605;
 	/**
 	* Sets the vertical scrollbar x position of background
-	* @default = 0;
+	* @default 0
 	*/
 	public function get vScrollbarX():Number
 	{
@@ -622,7 +622,7 @@ public class ScrollPane extends Container
 	private var _vScrollbarWidth:Number = 15;
 	/**
 	* Sets the vertical scrollbar width of background
-	* @default = 15;
+	* @default 15
 	*/
 	public function get vScrollbarWidth():Number
 	{
@@ -637,7 +637,7 @@ public class ScrollPane extends Container
 	private var _vScrollbarHeight:Number = 100;
 	/**
 	* Sets the vertical scrollbar height of background
-	* @default = 100;
+	* @default 100
 	*/
 	public function get vScrollbarHeight():Number
 	{
@@ -652,7 +652,7 @@ public class ScrollPane extends Container
 	private var _vScrollbarEllipseWidth:Number = 30;
 	/**
 	* Sets the vertical scrollbar ellipse width of background
-	* @default = 30;
+	* @default 30
 	*/
 	public function get vScrollbarEllipseWidth():Number
 	{
@@ -667,7 +667,7 @@ public class ScrollPane extends Container
 	private var _vScrollbarEllipseHeight:Number = 20;
 	/**
 	* Sets the vertical scrollbar ellipse height of background
-	* @default = 50;
+	* @default 50
 	*/
 	public function get vScrollbarEllipseHeight():Number
 	{
@@ -708,7 +708,7 @@ public class ScrollPane extends Container
 	private var _imageUrl:String = "library/assets/demos/Train_wreck_at_Montparnasse_1895.jpg";
 	/**
 	* Sets the image path
-	* @default = 50;
+	* @default 50
 	*/
 	public function get imageUrl():String
 	{

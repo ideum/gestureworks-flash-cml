@@ -54,7 +54,7 @@ package com.gestureworks.cml.element
 		private var _paddingLeft:Number=0;
 		/**
 		 * sets the number of pixels between the component's left border and the left edge of its content area.
-		 * @default =0;
+		 * @default 0
 		 */
 		public function get paddingLeft():Number {return _paddingLeft;}
 		public function set paddingLeft(value:Number):void 
@@ -65,7 +65,7 @@ package com.gestureworks.cml.element
 		private var _paddingRight:Number=0;
 		/**
 		 * sets the number of pixels between the component's right border and the right edge of its content area.
-		 * @default =0;
+		 * @default 0
 		 */
 		public function get paddingRight():Number {return _paddingRight;}
 		public function set paddingRight(value:Number):void 
@@ -76,7 +76,7 @@ package com.gestureworks.cml.element
 		private var _paddingTop:Number=0;
 		/**
 		 * sets the number of pixels between the container's top border and the top of its content area.
-		 * @default =0;
+		 * @default 0
 		 */
 		public function get paddingTop():Number {return _paddingTop;}
 		public function set paddingTop(value:Number):void 
@@ -87,7 +87,7 @@ package com.gestureworks.cml.element
 		private var _paddingBottom:Number=0;
 		/**
 		 * sets the number of pixels between the container's bottom border and the bottom of its content area.
-		 * @default =0;
+		 * @default 0
 		 */
 		public function get paddingBottom():Number {return _paddingBottom;}
 		public function set paddingBottom(value:Number):void 

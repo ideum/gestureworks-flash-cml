@@ -276,7 +276,7 @@ package com.gestureworks.cml.factories
 		
 		
 		/**
-		 * 
+		 * sets the alpha for display objects
 		 * @default 0
 		 */		
 		override public function set alpha(value:Number):void
@@ -289,7 +289,7 @@ package com.gestureworks.cml.factories
 		private var _horizontalCenter:Number = 0;
 		/**
 		 * sets the horizontal center of display object
-		 * @default =0;
+		 * @default 0
 		 */
 		public function get horizontalCenter():Number{return _horizontalCenter;}
 		public function set horizontalCenter(value:Number):void
@@ -301,7 +301,7 @@ package com.gestureworks.cml.factories
 		private var _verticalCenter:Number = 0;
 		/**
 		 * sets the vertical center of display object
-		 * @default=0;
+		 * @default 0
 		 */
 		public function get verticalCenter():Number{return _verticalCenter;}
 		public function set verticalCenter(value:Number):void
