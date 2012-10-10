@@ -15,21 +15,17 @@ package com.gestureworks.cml.element
 	
 	/**
 	 * 
-	 * PanoramicElement provides a touch-enabled, 3-Dimensional panorama using the Away3D library.
-	 * The PanoramicElement has two projection types: sphere, or cube, which may be set using the projectionType attribute/property.
+	 * MagnifierElement provides a touch enabled element with an optional graphical lens that will increase the magnification when placed over any display object on the stage.
 	 * 
-	 * For a sphere projectionType, a single, spherical panoramic image needs to be provided in an ImageElement. The maximum size of the panorama's longest edge can be no greater than 2048, and
-	 * this may be set in the CML or Actionscript rather than resizing the actual image file itself.
-	 * If using CML, this ImageElement should be added between the open and close tags of the PanoramicElement to make it a child of the PanoramicElement; 
-	 * in AS3 the ImageElement should be added to the PanoramicElement object as a child, and the object should be initialized after the image's Event.Complete is called.
+	 * Note that if the stage does not have a background image or display object of some sort, the MagnifierElement will simply retain visual data from the last object it was
+	 * held over until brought to another display object.
 	 * 
-	 * For a cube projectionType, six cubic panorama images need to be provided in CML or AS3 in the same way as the sphere. In AS3 each image should have its Event.Complete called and
-	 * added to the PanoramicElement's display list before the init() method is called. Cubic faces must be sized in powers of 2. The maximum size for cubic faces is 2,048 pixels wide, and 2,048 tall. Cubic faces
-	 * should be perfectly square.
+	 * The MagnifierElement has an optional fish-eye effect that can be altered using distortionRadius. The magnifier has two optional graphics, or can be left on its own with
+	 * "default", "notch", or "none".
 	 * 
-	 * The PanoramicElement will actually consist of two objects, the Away3D projection/view, and a TouchContainer which holds the projection and provides the enabled touch interaction.
+	 * Rotation gestures on the magnifier will zoom it in.
 	 * 
-	 * The PanoramicElement has the following parameters: cubeFace, projectionType, fovMax, fovMin, src
+	 * The MagnifierElement has the following parameters: cubeFace, projectionType, fovMax, fovMin, src
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -100,7 +96,7 @@ package com.gestureworks.cml.element
 		private var _radius:Number = 100;
 		/**
 		 * Radius of the total area of the lens, including distortion effects if any.
-		 * @default: 100
+		 * @default 100
 		 */
 		public function get radius():Number { return _radius; }
 		public function set radius(value:Number):void {
@@ -115,7 +111,7 @@ package com.gestureworks.cml.element
 		 * radius are equal, there will be no in-focus area. The maximum is whatever the radius is, the minimum is 0.
 		 * 
 		 * Setting a graphic will hide the distortion unless it is made fairly large.
-		 * @default: 30
+		 * @default 30
 		 */
 		public function get distortionRadius():Number { return _distortionRadius; }
 		public function set distortionRadius(value:Number):void {
@@ -131,7 +127,7 @@ package com.gestureworks.cml.element
 		/**
 		 * The value of magnification of the lens, this can be increased or decreasted by performing a rotation
 		 * gesture on the lens, and its starting value can be set in CML. The max magnification is 50, the minimum is 1.
-		 * @default: 5;
+		 * @default 5;
 		 */
 		public function get magnification():Number { return _magnification; }
 		public function set magnification(value:Number):void {
