@@ -76,15 +76,23 @@ package com.gestureworks.cml.core
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
 				
-			// get css file
-			var cssStr:String = cml.@css;			
+			if (cml.@rootDirectory != undefined)
+				rootDirectory = cml.@rootDirectory;				
 			
-			if (relativePaths)
-				cssStr = relToAbsPath(rootDirectory+cssStr);
-							
-							
+			var cssStr:String = "";
+				
+			// get css file
+			if (cml.@css != undefined) {
+				cssStr = cml.@css;			
+			
+				if (relativePaths && rootDirectory.length > 1)
+					cssStr = relToAbsPath(rootDirectory.concat(cssStr));
+				else if (rootDirectory.length > 1)
+					cssStr = rootDirectory.concat(cssStr);				
+			}
+			
 			CMLParser.instance.cssFile = cssStr;	
-							
+			
 			if (debug)
 				trace("\n\n========================== CML parser initialized ===============================");
 			
@@ -470,13 +478,15 @@ package com.gestureworks.cml.core
 						if ((attrName == "cml" || attrName == "src") && attrValue.toString().length > 0)
 						{
 							// rootDirectory allows you to change root path	
-							if (relativePaths && rootDirectory 
-								&& rootDirectory.length > 1){	
+							if (relativePaths && rootDirectory.length > 1){	
 								if (attrValue.search(extensions) >= 0){
-									attrValue = rootDirectory + attrValue;
+									attrValue = rootDirectory.concat(attrValue);
 									attrValue = relToAbsPath(attrValue);	
 								}
-							}	
+							}
+							else if (rootDirectory.length > 1){
+								attrValue = rootDirectory.concat(attrValue);
+							}
 							
 														
 							includeParentIndex.push(parent);
@@ -709,16 +719,25 @@ package com.gestureworks.cml.core
 					attrName = "class_";				
 				
 				
-				// rootDirectory allows you to change root path	
-				if (relativePaths && rootDirectory && rootDirectory.length > 1)	
+				if (attrValue.search(extensions) >= 0)
 				{	
-					if (attrValue.search(extensions) >= 0)
-					{
-						attrValue = rootDirectory + attrValue;
-						attrValue = relToAbsPath(attrValue);	
+					
+					// rootDirectory allows you to change root path	
+					if (relativePaths && rootDirectory.length > 1)	
+					{	
+						if (attrValue.search(extensions) >= 0)
+						{
+							attrValue = rootDirectory.concat(attrValue);
+							attrValue = relToAbsPath(attrValue);
+						}
 					}
+					
+					else if (rootDirectory.length > 1)
+					{
+						attrValue = rootDirectory.concat(attrValue);
+					}
+		
 				}
-				
 				obj.propertyStates[0][attrName] = attrValue;				
 			}
 			
