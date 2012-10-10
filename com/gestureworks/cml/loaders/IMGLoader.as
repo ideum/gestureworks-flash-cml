@@ -10,20 +10,32 @@ package com.gestureworks.cml.loaders
 	import flash.events.EventDispatcher;	
 	
 	/**
-	 * ...
+	 * loads the image file
 	 * @author Charles Veasey
 	 */
 	
 	public class IMGLoader extends EventDispatcher
 	{
+		/**
+		 * constructor
+		 */
 		public function IMGLoader() {}
-				
+		
+		/**
+		 * holds the information of image files
+		 */
 		public var loader:Loader
 		
 		private var _loaded:Boolean = false;
+		/**
+		 * returns the loaded value
+		 */
 		public function get loaded():Boolean { return _loaded; }	
 		
 		private var _src:String = "";		
+		/**
+		 * sets the file source path
+		 */
 		public function get src():String {return _src;}
 		public function set src(value:String):void 
 		{
@@ -34,6 +46,10 @@ package com.gestureworks.cml.loaders
 				load(src);
 		}
 
+		/**
+		 * loads the image file
+		 * @param	url
+		 */
 		public function load(url:String):void
 		{
 			if (src == "")

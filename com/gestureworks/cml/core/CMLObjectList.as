@@ -43,7 +43,7 @@ package com.gestureworks.cml.core
 	public class CMLObjectList extends LinkedMap
 	{	
 		/**
-		 * constructor
+		 * constructor allows single instance
 		 * @param	enforcer
 		 */
 		public function CMLObjectList(enforcer:SingletonEnforcer) {}
@@ -76,5 +76,7 @@ package com.gestureworks.cml.core
 	
 	}
 }
-
+/**
+ * class can only be access by the CMLObjectlist class only. 
+ */
 class SingletonEnforcer{}

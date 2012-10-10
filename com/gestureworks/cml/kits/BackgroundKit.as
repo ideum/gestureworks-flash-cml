@@ -3,16 +3,27 @@ package com.gestureworks.cml.kits
 	import com.gestureworks.cml.element.*;	
 	import flash.events.Event;
 	
+	/**
+	 * The BackgroundKit updates background
+	 */
 	public class BackgroundKit extends Container
 	{
-		
+		/**
+		 * constructor
+		 */
 		public function BackgroundKit() 
 		{
 			super();
 		}
 		
+		/**
+		 * automatically update
+		 */
 		public var autoupdate:Boolean = true;
 		
+		/**
+		 * CML call back initialisation
+		 */
 		override public function displayComplete():void
 		{
 			if (autoupdate)
@@ -20,7 +31,10 @@ package com.gestureworks.cml.kits
 			updateLayout();
 		}
 		
-		
+		/**
+		 * method updates the child x and y position
+		 * @param	event
+		 */
 		public function updateLayout(event:Event=null):void
 		{
 			var child:*;

@@ -13,6 +13,10 @@ package com.gestureworks.cml.managers
 	 */
 	public class FileManager extends EventDispatcher
 	{
+		/**
+		 * constructor allow single instance for this Filemanger class
+		 * @param	enforcer
+		 */
 		public function FileManager(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:FileManager;
@@ -26,16 +30,35 @@ package com.gestureworks.cml.managers
 			return _instance; 
 		}	
 		
+		/**
+		 * turns on the debug information
+		 */
 		public var debug:Boolean = true;
 		
+		/**
+		 * number of files in file list
+		 */
 		public var fileCount:int = 0;
 		private var fileQueue:LinkedMap = new LinkedMap;
+		/**
+		 * list of files that file manager process
+		 */
 		public var fileList:LinkedMap = new LinkedMap;
 		
+		/**
+		 * number of cml's in cml queue
+		 */
 		public var cmlCount:int = 0;
+		
+		/**
+		 * list of cml in the queue
+		 */
 		public var cmlQueue:LinkedMap = new LinkedMap;
 		private var cmlLoaded:Boolean = false;
 		
+		/**
+		 * turns off stopped
+		 */
 		public var stopped:Boolean = false;
 		
 		// supported file types
@@ -46,7 +69,11 @@ package com.gestureworks.cml.managers
 		
 		private var rendererDataCount:int;
 		
-		
+		/**
+		 * searches the type of file and append to the cml queue
+		 * @param	file - file name
+		 * @param	type - type of file
+		 */
 		public function addToQueue(file:String, type:String=null):void
 		{
 			if (type == "cml" && file.search(cmlType) >= 0)
@@ -85,15 +112,19 @@ package com.gestureworks.cml.managers
 		}
 		
 		
-		
+		/**
+		 * process the cml file
+		 */
 		public function startCMLQueue():void
 		{					
 			stopped = false;						
 			if (cmlLoaded < cmlCount)
 				processCMLQueue();
 		}
-		
-		
+	
+		/**
+		 * resumes the process
+		 */
 		public function resumeCMLQueue():void
 		{
 			stopped = false;
@@ -103,19 +134,26 @@ package com.gestureworks.cml.managers
 		}		
 		
 		
-		
+		/**
+		 * start processing the cml files
+		 */
 		public function startFileQueue():void
 		{
 			stopped = false;
 			processFileQueue();
 		}		
 		
+		/**
+		 * stops processing
+		 */
 		public function stopQueue():void
 		{
 			stopped = true;
 		}
 		
-		
+		/**
+		 * process the cml files in the queue depending on stopped information
+		 */
 		public function processCMLQueue():void
 		{						
 			if (!stopped)
@@ -244,4 +282,7 @@ package com.gestureworks.cml.managers
 	
 }
 
+/**
+ * class can only be access by the FileManager class only. 
+ */
 class SingletonEnforcer{}

@@ -8,10 +8,17 @@ package com.gestureworks.cml.managers
 	 * @author Charles Veasey 
 	 */	
 	public class ScreenManager
-	{				
+	{	
+		/**
+		 * allows single instance for this ScreenManager class
+		 * @param	enforcer
+		 */
 		public function ScreenManager(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:ScreenManager;
+		/**
+		 * method returns screen manager
+		 */
 		public static function get instance():ScreenManager 
 		{ 
 			if (_instance == null)
@@ -20,11 +27,19 @@ package com.gestureworks.cml.managers
 		}
 		
 		private var _screens:Array;
+		/**
+		 * returns the number of screens
+		 */
 		public function get screen():Array 
 		{ 
 			return Screen.screens;
 		}
 		
+		/**
+		 * adds the x and y position of the window
+		 * @param	window
+		 * @param	screenIndex
+		 */
 		public function addWindow(window:Object, screenIndex:int):void
 		{
 			window.x = Screen.screens[screenIndex - 1].bounds.left;
@@ -33,4 +48,7 @@ package com.gestureworks.cml.managers
 	}
 }
 
+/**
+ * class can only be access by the screenManager class only. 
+ */
 class SingletonEnforcer{}

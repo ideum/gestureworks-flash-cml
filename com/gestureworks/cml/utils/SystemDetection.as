@@ -2,15 +2,50 @@ package com.gestureworks.cml.utils
 {
 	import flash.system.Capabilities
 		
+	/**
+	 * SystemDetection class detects the operating system, version,version number, player and browser
+	 * @author..
+	 */
 	public class SystemDetection
 	{
+		/**
+		 * specifies the player versions
+		 */
 		public static var VERSION:String
+		
+		/**
+		 * specifies the player version number
+		 */
 		public static var VERSION_NUMBER:Number;
+		
+		/**
+		 * specifies the opearting system
+		 */
 		public static var OS:String;
+		
+		/**
+		 * debugger information
+		 */
 		public static var DEBUGGER:Boolean;
+		
+		/**
+		 * AIR
+		 */
 		public static var AIR:Boolean;
+		
+		/**
+		 * flash player information
+		 */
 		public static var FLASHPLAYER:Boolean;
+		
+		/**
+		 * browser type
+		 */
 		public static var BROWSER:Boolean;
+		
+		/**
+		 * external information
+		 */
 		public static var OTHER:Boolean;		
 		{
 			VERSION = (Capabilities.version);

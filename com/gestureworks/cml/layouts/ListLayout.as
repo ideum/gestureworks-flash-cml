@@ -15,6 +15,9 @@ package com.gestureworks.cml.layouts
 	{
 		private var n:int;
 		
+		/**
+		 * constructor
+		 */
 		public function ListLayout() 
 		{
 			super();

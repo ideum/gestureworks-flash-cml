@@ -17,6 +17,9 @@ package com.gestureworks.cml.kits
 		public function LayoutKit(enforcer:SingletonEnforcer) {}		
 		
 		private static var _instance:LayoutKit;
+		/**
+		 * singleton
+		 */
 		public static function get instance():LayoutKit 
 		{ 
 			if (_instance == null)
@@ -24,6 +27,11 @@ package com.gestureworks.cml.kits
 			return _instance;	
 		}		
 		
+		/**
+		 * parses cml file
+		 * @param	cml
+		 * @return
+		 */
 		public function parseCML(cml:XMLList):XMLList
 		{
 			var xmlList:XMLList = null;

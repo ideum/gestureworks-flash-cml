@@ -16,7 +16,10 @@ package com.gestureworks.cml.layouts
      * @version
      */
     public class GridLayout extends LayoutFactory 
-    {       
+    {      
+		/**
+		 * constructor
+		 */ 
         public function GridLayout():void 
 		{ 
 			super();		
@@ -115,6 +118,9 @@ package com.gestureworks.cml.layouts
 			super.layout(container);
 		}	
    
+		/**
+		 * dispose function
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();			

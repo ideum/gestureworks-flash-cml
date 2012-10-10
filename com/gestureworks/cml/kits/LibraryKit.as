@@ -11,9 +11,18 @@ package com.gestureworks.cml.kits
 	
 	public class LibraryKit implements ICML
 	{
-		public function LibraryKit(enforcer:SingletonEnforcer) {}		
+		
+		/**
+		 * allows single instance for this LibraryKit class
+		 * @param	enforcer
+		 */		 
+		public function LibraryKit(enforcer:SingletonEnforcer) { }		
+		
 		
 		private static var _instance:LibraryKit;
+		/**
+		 * singleton
+		 */
 		public static function get instance():LibraryKit 
 		{ 
 			if (_instance == null)
@@ -21,6 +30,11 @@ package com.gestureworks.cml.kits
 			return _instance;	
 		}		
 		
+		/**
+		 * parses cml file
+		 * @param	cml
+		 * @return
+		 */
 		public function parseCML(cml:XMLList):XMLList
 		{
 			var xmlList:XMLList = null;
@@ -50,4 +64,7 @@ package com.gestureworks.cml.kits
 	}
 }
 
+/**
+ * class can only be access by the Library kit class only. 
+ */
 class SingletonEnforcer{}		

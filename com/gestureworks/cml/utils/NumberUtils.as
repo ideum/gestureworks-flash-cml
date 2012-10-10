@@ -1,11 +1,14 @@
 package com.gestureworks.cml.utils 
 {
 	/**
-	 * ...
+	 * NumberUtils class is a collection of static methods for working with number objects
 	 * @author Ideum (Charles Veasey)
 	 */
 	public class NumberUtils 
 	{
+		/**
+		 * constructor
+		 */
 		public function NumberUtils():void{}
 		
 		/**

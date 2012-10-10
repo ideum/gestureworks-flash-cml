@@ -14,6 +14,16 @@ package com.gestureworks.cml.utils
  public class CircleText extends ElementFactory
 	{
 
+		/**
+		 * constructor
+		 * @param	textX x position of text
+		 * @param	textY y position of text
+		 * @param	textRadius radius of the text
+		 * @param	curveText name of the text
+		 * @param	coverage coverage area of the text
+		 * @param	startAngle start angle of the text
+		 * @param	stopAngle stop angle of the text
+		 */
  public function CircleText(textX:Number, textY:Number, textRadius:Number, curveText:String, coverage:Number, startAngle:Number, stopAngle:Number)
 		{	
 

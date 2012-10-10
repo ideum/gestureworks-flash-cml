@@ -18,16 +18,31 @@ package com.gestureworks.cml.loaders
 	
 	public class SWFLoader extends EventDispatcher
 	{ 
+		/**
+		 * constructor
+		 */
 		public function SWFLoader() {}		
 		
+		/**
+		 * stores the file loaded information
+		 */
 		public static const FILE_LOADED:String = "FILE_LOADED";				
 		
+		/**
+		 * hold information of loaded swf file
+		 */
 		public var loader:Loader;
 		
 		private var _loaded:Boolean = false;
+		/**
+		 * returns loaded to true or false
+		 */
 		public function get loaded():Boolean { return _loaded; }	
 		
 		private var _src:String = "";		
+		/**
+		 * sets the file source path
+		 */
 		public function get src():String {return _src;}
 		public function set src(value:String):void 
 		{
@@ -38,6 +53,10 @@ package com.gestureworks.cml.loaders
 				load(src);
 		}
 
+		/**
+		 * loads external file
+		 * @param	url
+		 */
 		public function load(url:String):void
 		{
 			if (src == "")

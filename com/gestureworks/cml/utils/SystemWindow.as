@@ -17,6 +17,10 @@ package com.gestureworks.cml.utils
 	{
 		private var background:Shape;
 		
+		/**
+		 * constructor
+		 * @param	initOptions
+		 */
 		public function SystemWindow(initOptions:NativeWindowInitOptions)
 		{
 			super(initOptions);
@@ -25,6 +29,9 @@ package com.gestureworks.cml.utils
 		}
 		
 		private var _id:String;
+		/**
+		 * sets the id
+		 */
 		public function get id():String {return _id;}
 		public function set id(value:String):void 
 		{ 
@@ -32,6 +39,9 @@ package com.gestureworks.cml.utils
 		}
 		
 		private var _backgroundColor:int;
+		/**
+		 * sets the background color of window
+		 */
 		public function get backgroundColor():int {return _backgroundColor;}
 		public function set backgroundColor(value:int):void 
 		{

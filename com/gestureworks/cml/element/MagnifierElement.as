@@ -12,7 +12,11 @@ package com.gestureworks.cml.element
 	import flash.geom.Point;
 	import flash.utils.Timer;
 	import org.tuio.*;
+	
 	/**
+<<<<<<< .mine
+	 * 
+=======
 	 * PanoramicElement provides a touch-enabled, 3-Dimensional panorama using the Away3D library.
 	 * The PanoramicElement has two projection types: sphere, or cube, which may be set using the projectionType attribute/property.
 	 * 
@@ -44,6 +48,7 @@ package com.gestureworks.cml.element
 		magnifier.init();
 	 *
 	 * </codeblock>
+>>>>>>> .r1442
 	 * @author josh
 	 */
 	public class MagnifierElement extends TouchContainer
@@ -78,6 +83,9 @@ package com.gestureworks.cml.element
 		
 		private var timer:Timer;
 		
+		/**
+		 * constructor
+		 */
 		public function MagnifierElement() 
 		{
 			super();
@@ -138,6 +146,9 @@ package com.gestureworks.cml.element
 			_magnification = value;
 		}
 		
+		/**
+		 * dispose method to nullify the children
+		 */
 		override public function dispose():void {
 			super.dispose();
 			
@@ -165,6 +176,9 @@ package com.gestureworks.cml.element
 			
 		}
 		
+		/**
+		 * CML call back initialisation
+		 */
 		override public function displayComplete():void {
 			super.displayComplete();
 			

@@ -27,22 +27,25 @@ package com.gestureworks.cml.factories
 		private var timer:Timer;
 		private var sizeLoaded:Boolean = false;
 		
+		/**
+		 * constructor
+		 */
 		public function VideoFactory() {}
 
+		private var _debug:Boolean = false;
 		/**
 		 * Prints status message to console
-		 */				
-		private var _debug:Boolean=false;
+		 */	
 		public function get debug():Boolean { return _debug; }
 		public function set debug(value:Boolean):void 
 		{ 
 			_debug = value; 
 		}		
 		
+		private var _width:Number = 0;
 		/**
 		 * Sets the video width
-		 */		
-		private var _width:Number=0;
+		 */	
 		override public function get width():Number{ return _width;}
 		override public function set width(value:Number):void
 		{
@@ -50,10 +53,10 @@ package com.gestureworks.cml.factories
 			if (video) video.width = value;
 		}
 		
+		private var _height:Number = 0;
 		/**
 		 * Sets the video height
 		 */		
-		private var _height:Number=0;
 		override public function get height():Number{ return _height;}
 		override public function set height(value:Number):void
 		{
@@ -61,37 +64,37 @@ package com.gestureworks.cml.factories
 			if (video) video.height = value;
 		}		
 		
+		private var _autoLoad:Boolean = true;
 		/**
 		 * Indicates whether the video file is loaded when the src property is set
-		 */		
-		private var _autoLoad:Boolean=true;
+		 */
 		public function get autoLoad():Boolean { return _autoLoad; }
 		public function set autoLoad(value:Boolean):void 
 		{ 
 			_autoLoad = value; 
 		}
 		
+		private var _autoplay:Boolean = false;
 		/**
 		 * Indicates whether the video file plays upon load
-		 */		
-		private var _autoplay:Boolean=false;
+		 */	
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 
 		{	
 			_autoplay = value;
 		}
-
+		
+		private var _loop:Boolean = false;
 		/**
 		 * Video loop play
-		 */				
-		private var _loop:Boolean=false;
+		 */	
 		public function get loop():Boolean { return _loop; }
 		public function set loop(value:Boolean):void { _loop = value; }		
 		
+		private var _src:String;
 		/**
 		 * Sets the video file path
-		 */			
-		private var _src:String;
+		 */		
 		public function get src():String{ return _src;}
 		public function set src(value:String):void
 		{
@@ -100,21 +103,21 @@ package com.gestureworks.cml.factories
 			if (autoLoad) load();
 		}		
 		
+		private var _deblocking:int;
 		/**
 		 * Indicates the type of filter applied to decoded video as part of post-processing. 
 		 */		
-		private var _deblocking:int;
 		public function get deblocking():int { return _deblocking; }
 		public function set deblocking(value:int):void 
 		{ 
 			_deblocking = value; 
 			if (video) video.deblocking = value 
 		}
-		
+	
+		private var _smoothing:Boolean;
 		/**
 		 * Specifies whether the video should be smoothed (interpolated) when it is scaled. 
-		 */		
-		private var _smoothing:Boolean;
+		 */	
 		public function get smoothing():Boolean { return _smoothing; }
 		public function set smoothing(value:Boolean):void 
 		{ 
@@ -122,23 +125,22 @@ package com.gestureworks.cml.factories
 			if (video) video.smoothing = value;
 		}
 		
-		
+		private var _duration:Number = 0;
 		/**
 		 * Total video duration
-		 */		
-		private var _duration:Number=0;
+		 */	
 		public function get duration():Number { return _duration; }
 		
+		private var _percentLoaded:Number = 0;
 		/**
 		 * Percent of file loaded 
-		 */		
-		private var _percentLoaded:Number=0;
+		 */	
 		public function get percentLoaded():Number { return _percentLoaded; }
 		
+		private var _position:Number = 0;
 		/**
 		 * Playhead position in ms
-		 */		
-		private var _position:Number=0;
+		 */	
 		public function get position():Number { return _position; }
 		
 		
@@ -411,6 +413,9 @@ package com.gestureworks.cml.factories
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", "end", true, true));
 		}	
 		
+		/**
+		 * dispose method
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

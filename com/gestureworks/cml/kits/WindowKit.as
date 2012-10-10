@@ -19,10 +19,17 @@ package com.gestureworks.cml.kits
 	
 	public class WindowKit
 	{		
+		/**
+		 * constructor
+		 * @param	enforcer
+		 */
 		public function WindowKit(enforcer:SingletonEnforcer){}
 
 		
 		private static var _instance:WindowKit;
+		/**
+		 * singleton
+		 */
 		public static function get instance():WindowKit 
 		{ 
 			if (_instance == null)
@@ -30,7 +37,10 @@ package com.gestureworks.cml.kits
 			return _instance;	
 		}			
 		
-		
+		/**
+		 * parses cml file
+		 * @param	cml
+		 */
 		public function parseCML(cml:XMLList):void
 		{						
 			var window:Object;

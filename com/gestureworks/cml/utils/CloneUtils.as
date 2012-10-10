@@ -5,18 +5,26 @@ package com.gestureworks.cml.utils
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
+	
 	/**
-	 * ...
+	 * TODo
 	 * @author 
 	 */
 	public class CloneUtils 
 	{
-		
+		/**
+		 * constructor
+		 */
 		public function CloneUtils():void
 		{						
 			
 		}
 		
+		/**
+		 * TODO
+		 * @param	source
+		 * @return
+		 */
 		public static function clone(source:*):* 
 		{
 				
@@ -46,7 +54,12 @@ package com.gestureworks.cml.utils
 				
 				return cloneObj;
 		}
-			
+		
+		/**
+		 * TODO
+		 * @param	source
+		 * @return
+		 */
 		public static function newInstance(source:*):*
 		{
 			if (source)
@@ -62,7 +75,12 @@ package com.gestureworks.cml.utils
 			}
 			return null;
 		}
-			
+		
+		/**
+		 * TODO
+		 * @param	source
+		 * @param	destination
+		 */
 		public static function copyData(source:*, destination:*):void {
 			
 			if (source && destination)

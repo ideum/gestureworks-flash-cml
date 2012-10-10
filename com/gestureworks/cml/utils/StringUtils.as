@@ -1,11 +1,14 @@
 package com.gestureworks.cml.utils 
 {
 	/**
-	 * ...
+	 * StringUtils class is a collection of static methods for working with string objects
 	 * @author 
 	 */
 	public class StringUtils 
 	{
+		/**
+		 * constructor
+		 */
 		public function StringUtils():void{}		
 		
 		///////////////////////////////////////////////////////////////////////////////////

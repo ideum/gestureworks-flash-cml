@@ -16,6 +16,9 @@ package com.gestureworks.cml.layouts
 	 */
 	public class RandomLayout extends LayoutFactory
 	{
+		/**
+		 * constructor
+		 */
 		public function RandomLayout() 
 		{
 			super();

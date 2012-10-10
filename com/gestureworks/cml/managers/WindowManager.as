@@ -35,6 +35,10 @@ package com.gestureworks.cml.managers
 		private var background:Shape;		
 		public var nativeWindowInitOptions:NativeWindowInitOptions;
 		
+		/**
+		 * constructor
+		 * @param	enforcer
+		 */
 		public function WindowManager(enforcer:SingletonEnforcer)
 		{
 			//windows = new Map;
@@ -137,7 +141,7 @@ package com.gestureworks.cml.managers
 		public function removeDisplay(display:*, windowId:String):void {}
 		
 		/**
-		 * 
+		 * method sets the background color of the window
 		 * @param windowId
 		 * @param color 
 		 */		
@@ -172,4 +176,7 @@ package com.gestureworks.cml.managers
 	}
 }
 
+/**
+ * class can only be access by the window Manager class only.
+ */
 class SingletonEnforcer{}

@@ -15,9 +15,16 @@ package com.gestureworks.cml.managers
 	
 	public class DisplayManager extends EventDispatcher
 	{		
+		/**
+		 * allows single instance for this CMLLoader class
+		 * @param	enforcer
+		 */
 		public function DisplayManager(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:DisplayManager;
+		/**
+		 * method returns display manager
+		 */
 		public static function get instance():DisplayManager 
 		{ 
 			if (_instance == null)
@@ -29,7 +36,9 @@ package com.gestureworks.cml.managers
 			return _instance; 
 		}
 		
-		
+		/**
+		 * searches the object and updates each display object properties
+		 */
 		public function updateCMLProperties():void
 		{	
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -38,6 +47,9 @@ package com.gestureworks.cml.managers
 			}
 		}		
 		
+		/**
+		 * searches the child and add the children to cml
+		 */
 		public function addCMLChildren():void
 		{	
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -47,6 +59,9 @@ package com.gestureworks.cml.managers
 			}
 		}
 
+		/**
+		 * removes the children
+		 */
 		public function removeCMLChildren():void
 		{	
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -60,6 +75,9 @@ package com.gestureworks.cml.managers
 			}
 		}		
 
+		/**
+		 * CML callback initialisation
+		 */
 		public function displayComplete():void
 		{			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -69,7 +87,9 @@ package com.gestureworks.cml.managers
 			}
 		}			
 		
-		
+		/**
+		 * method checks whether an object has a specified property defined.
+		 */
 		public function loadRenderer():void
 		{
 			
@@ -97,6 +117,9 @@ package com.gestureworks.cml.managers
 			}
 		}
 		
+		/**
+		 * method checks whether an object has a specified property defined.
+		 */
 		public function activateTouch():void
 		{			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -106,7 +129,9 @@ package com.gestureworks.cml.managers
 			}
 		}			
 		
-		
+		/**
+		 * method checks whether an object has a specified property defined.
+		 */
 		public function loadComplete():void
 		{			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -117,7 +142,9 @@ package com.gestureworks.cml.managers
 		}		
 		
 
-		
+		/**
+		 * applies the layout
+		 */
 		public function layoutCML():void
 		{
 			var layoutString:String;
@@ -143,7 +170,9 @@ package com.gestureworks.cml.managers
 			}
 		}
 	
-		
+		/**
+		 * method checks whether an object has a onEnterFrame property defined.
+		 */
 		public function updateDisplay():void
 		{
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -153,7 +182,10 @@ package com.gestureworks.cml.managers
 			}
 		}	
 		
-		
+		/**
+		 * event
+		 * @param	event
+		 */
 		public static function onEnterFrame(event:Event=null):void
 		{
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -164,7 +196,10 @@ package com.gestureworks.cml.managers
 		}
 		
 	
-		
+		/**
+		 * event handlers
+		 * @param	event
+		 */
 		public static function onExitFrame(event:Event):void
 		{
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
@@ -177,5 +212,7 @@ package com.gestureworks.cml.managers
 		
 	}
 }
-
+/**
+ * class can only be access by the DisplayManager class only. 
+ */
 class SingletonEnforcer{}

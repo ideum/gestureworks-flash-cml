@@ -4,25 +4,30 @@ package com.gestureworks.cml.kits
 	import flash.display.*;
 	import flash.events.Event;
 
+	/**
+	 * StageKit creates and manages the stage
+	 */
 	public class StageKit extends ElementFactory
 	{
+		/**
+		 * CONSTRUCTOR
+		 */
 		public function StageKit() 
 		{
 			super();
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		
+		/**
+		 * This method provides the stage width and height and also the fullscreen depending on the condition
+		 * @param	event
+		 */
 		public function onAddedToStage(event:Event = null):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
-
-			
 			stage.stageWidth = width;				
 			stage.stageHeight = height;
-			
-			
+						
 			// fullscreen overrides dims
 			if (_fullscreen)
 				stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;

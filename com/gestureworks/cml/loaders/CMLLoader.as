@@ -14,20 +14,37 @@ package com.gestureworks.cml.loaders
 	
 	public class CMLLoader extends EventDispatcher
 	{
+		/**
+		 * stores the init 
+		 */
 		static public const INIT:String = "init";		
 		static private var instances:Dictionary = new Dictionary;
 		
 		private var urlLoader:URLLoader;
+		/**
+		 * holds the data
+		 */
 		public var data:XML = new XML;
 
 		private var _isLoaded:Boolean;		
+		/**
+		 * returns the isloaded value
+		 */
 		public function get isLoaded():Boolean { return _isLoaded; }		
 		
+		/**
+		 * constructor - this will allow single instance for this CMLLoader class
+		 * @param	enforcer
+		 */
 		public function CMLLoader(enforcer:SingletonEnforcer)
 		{
 			_isLoaded = false;
 		}	
 		
+		/**
+		 * loads the cml file
+		 * @param	url
+		 */
 		public function loadCML(url:String):void
 		{			
 			var urlRequest:URLRequest = new URLRequest(url);
@@ -36,6 +53,10 @@ package com.gestureworks.cml.loaders
 			urlLoader.load(urlRequest);
 		}
 		
+		/**
+		 * dispatches an event
+		 * @param	e
+		 */
 		public function onCMLDataLoaded(e:Event):void
 		{
 			data = XML(urlLoader.data);			
@@ -43,6 +64,11 @@ package com.gestureworks.cml.loaders
 			dispatchEvent(new Event(CMLLoader.INIT, true, true));
 		}
 		
+		/**
+		 * returns the CMLLoader key
+		 * @param	key
+		 * @return
+		 */
 		public static function getInstance(key:*):CMLLoader
 		{
 			if (instances[key] == null)
@@ -53,4 +79,7 @@ package com.gestureworks.cml.loaders
 	}
 }
 
+/**
+ * class can only be access by the CMLLoader class only. 
+ */
 class SingletonEnforcer{}

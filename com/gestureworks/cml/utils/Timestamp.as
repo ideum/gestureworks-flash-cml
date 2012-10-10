@@ -1,9 +1,16 @@
 package com.gestureworks.cml.utils
 {	
+	/**
+	 * Timestamp class is a wrapper class,it contains time,date and months.
+	 * @author..
+	 */
 	public class Timestamp
 	{
 		private var date:Date;
 		
+		/**
+		 * constructor
+		 */
 		public function Timestamp()
 		{
 			date = new Date;
@@ -41,7 +48,11 @@ package com.gestureworks.cml.utils
 			return hrs + ":" + min + ":" + sec;
 		}
 		
-		
+		/**
+		 * returns the month
+		 * @param	num
+		 * @return
+		 */
 		public function getMonthAbbreviation(num:int):String
 		{
 			var month:String = "";
@@ -65,7 +76,11 @@ package com.gestureworks.cml.utils
 			return month;
 		}
 		
-		
+		/**
+		 * returns the number suffix
+		 * @param	num
+		 * @return
+		 */
 		public function getNumberSuffix(num:int):String
 		{
 			if (num == 0) return "";

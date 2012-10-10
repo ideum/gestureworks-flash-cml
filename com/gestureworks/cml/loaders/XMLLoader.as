@@ -14,20 +14,38 @@ package com.gestureworks.cml.loaders
 	
 	public class XMLLoader extends EventDispatcher
 	{
+		/**
+		 * stores initial state
+		 */
 		static public const INIT:String = "init";		
 		static private var instances:Dictionary = new Dictionary;
 		
 		private var urlLoader:URLLoader;
+		
+		/**
+		 * data the xml file manages
+		 */
 		public var data:XML = new XML;
 
 		private var _isLoaded:Boolean;		
+		/**
+		 * returns the loaded value
+		 */
 		public function get isLoaded():Boolean { return _isLoaded; }		
 		
+		/**
+		 * constructor will allow single instance for this XMLLoader class
+		 * @param	enforcer
+		 */	 
 		public function XMLLoader(enforcer:SingletonEnforcer)
 		{
 			_isLoaded = false;
 		}	
 		
+		/**
+		 * loads the xml file
+		 * @param	url
+		 */
 		public function loadXML(url:String):void
 		{
 			var urlRequest:URLRequest = new URLRequest(url);
@@ -36,6 +54,10 @@ package com.gestureworks.cml.loaders
 			urlLoader.load(urlRequest);
 		}
 		
+		/**
+		 * dispatches an event on loaded file
+		 * @param	e
+		 */
 		public function onXMLDataLoaded(e:Event):void
 		{
 			data = XML(urlLoader.data);
@@ -43,6 +65,11 @@ package com.gestureworks.cml.loaders
 			dispatchEvent(new Event(XML_.INIT, true, true));
 		}
 		
+		/**
+		 * returns the XML loader key value
+		 * @param	key
+		 * @return
+		 */
 		public static function getInstance(key:*):XMLLoader
 		{
 			if (instances[key] == null)
@@ -52,4 +79,7 @@ package com.gestureworks.cml.loaders
 	}
 }
 
+/**
+ * class can only be access by the XMLLoader class only. 
+ */
 class SingletonEnforcer{}

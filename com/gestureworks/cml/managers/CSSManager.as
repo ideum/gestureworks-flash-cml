@@ -12,15 +12,27 @@ package com.gestureworks.cml.managers
 	
 	/**
 	 * Singleton 
+	 * manages the css file
+	 * 
 	 * @authors Charles Veasey
 	 */
 	
 	public class CSSManager extends EventDispatcher
 	{
+		/**
+		 * file name that css manger process
+		 */
 		public var file:String;
+		
+		/**
+		 * turns off the debug information
+		 */
 		public var debug:Boolean = false;
 
 		private static var _instance:CSSManager;
+		/**
+		 * this method returns CSSManager
+		 */
 		public static function get instance():CSSManager 
 		{ 
 			if (_instance == null)
@@ -28,10 +40,16 @@ package com.gestureworks.cml.managers
 			return _instance; 
 		}
 		
-		
+		/**
+		 * constructor - this will allow single instance for this CSSManager class
+		 * @param	enforcer
+		 */
 		public function CSSManager(enforcer:SingletonEnforcer){}
 				
-		
+		/**
+		 * loads the file
+		 * @param	filePath
+		 */
 		public function loadCSS(filePath:String):void
 		{
 			trace("Filepath: ", filePath);
@@ -46,6 +64,9 @@ package com.gestureworks.cml.managers
 			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED, "css", file));
 		}
 		
+		/**
+		 * parses the class selectors and the id selectors
+		 */
 		public function parseCSS():void
 		{
 			if (debug)
@@ -151,4 +172,7 @@ package com.gestureworks.cml.managers
 	}
 }
 
+/**
+ * class can only be access by the CSSManager class only. 
+ */
 class SingletonEnforcer{}
