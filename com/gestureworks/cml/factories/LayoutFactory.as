@@ -153,8 +153,8 @@ package com.gestureworks.cml.factories
 						childTweens.push(BetweenAS3.tween(child, getMatrixObj(childTransformations[i]), null, tweenTime/1000, Exponential.easeOut));
 				}
 				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
-				if (onComplete) layoutTween.onComplete = onComplete;
-				if (onUpdate) layoutTween.onUpdate = onUpdate;
+				if (onComplete != null) layoutTween.onComplete = onComplete;
+				if (onUpdate != null) layoutTween.onUpdate = onUpdate;
 				layoutTween.play();
 			}
 			else
@@ -164,8 +164,8 @@ package com.gestureworks.cml.factories
 					child = container.getChildAt(j);
 					child.transform.matrix = childTransformations[j];
 				}
-				if (onComplete) onComplete.call();
-				if (onUpdate) onUpdate.call();
+				if (onComplete != null) onComplete.call();
+				if (onUpdate != null) onUpdate.call();
 			}
 		}
 		

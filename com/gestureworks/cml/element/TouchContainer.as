@@ -295,9 +295,9 @@ package com.gestureworks.cml.element
 		{			
 			if (!value && layout is ILayout)
 			{
-				value.onComplete = layoutComplete;
-				value.onUpdate = layoutUpdate;
-				ILayout(value).layout(this);
+				layout.onComplete = layoutComplete;
+				layout.onUpdate = layoutUpdate;
+				ILayout(layout).layout(this);
 			}
 			else if (!value) {
 				layoutList[String(layout)].onComplete = layoutComplete;								
