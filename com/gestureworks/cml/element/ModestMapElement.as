@@ -124,7 +124,7 @@ package com.gestureworks.cml.element
 		private var _zoom:Number = 1;
 		/**
 		 * Sets and retrieves the Zoom at which the map will start. Must be a value of 1 or larger or no map will be seen at runtime.
-		 * @default: 1
+		 * @default 1
 		 */
 		public function get zoom():Number { return _zoom; }
 		public function set zoom(value:Number):void {
@@ -138,7 +138,7 @@ package com.gestureworks.cml.element
 		private var _draggable:Boolean = true;
 		/**
 		 * Sets the draggable property of the map.
-		 * @default: true
+		 * @default true
 		 */
 		public function get draggable():Boolean { return _draggable; }
 		public function set draggable(value:Boolean):void {
@@ -222,7 +222,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * sets the current index value
+		 * Event called to cycle through map providers
 		 * @param	e
 		 */
 		public function switchMapProvider(e:*):void {

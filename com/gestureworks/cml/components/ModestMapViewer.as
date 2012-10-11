@@ -77,6 +77,7 @@ package com.gestureworks.cml.components
 			if (!map){
 				map = searchChildren(ModestMapElement);
 				map.addEventListener(StateEvent.CHANGE, onStateEvent);
+				map.addEventListener(GWGestureEvent.DOUBLE_TAP, onDouble);
 			}	
 			
 			super.init();
@@ -111,7 +112,7 @@ package com.gestureworks.cml.components
 		}
 		
 		private function onDouble(e:*):void {
-			map.switchMapProvider();
+			map.switchMapProvider(e);
 		}
 		
 		/**
