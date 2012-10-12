@@ -173,7 +173,7 @@ package com.gestureworks.cml.utils
 			var result:*=null;
 			for each (var k:* in dictionary)
 			{
-				if (dictionary[k] == value)
+				if (k == value)
 					result = k;
 			}
 			return result;			

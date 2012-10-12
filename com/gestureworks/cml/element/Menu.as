@@ -160,7 +160,6 @@ package com.gestureworks.cml.element
 			for (i = 0; i < buttonArray.length; i++)
 			{
 				buttonArray[i].updateLayout();
-				trace("buttonArray[i]: "+ buttonArray[i]);
 			}
 			
 			if (position == "bottom" || position == "top")	

@@ -10,20 +10,17 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 
     /**
-	 * ButtonElement hides or shows DisplayObjects on specified state events.
-	 * The available button states are initial, down, up, over and out.
-	 * 
-	 * 
-	 * @author ...
+	 * The ButtonElement hides or shows DisplayObjects on specified state events. The available button states are exclusive touch states, exclusive mouse states, and auto-states.
+	 * Mouse states are triggered by <code>MouseEvent</code> events and touch states are triggered by <code>TuioTouchEvent</code> and <code>TouchEvent</code> event types. Auto-states
+	 * automate the registration of event types based on system properties. 
 	 */
-	
 	public class ButtonElement extends Container implements IButton
 	{
 		public var debug:Boolean = false;		
-		protected var buttonStates:Dictionary;		
-		public var hitObject:*;
+		protected var buttonStates:Array;		
 		public var dispatchDefault:Boolean = false;
-		private var dispatchDict:Dictionary;		
+		private var dispatchDict:Dictionary;
+		private var buttonId:int = 0;
 		
 		/**
 		 * Contructor
@@ -31,7 +28,7 @@ package com.gestureworks.cml.element
 		public function ButtonElement()
 		{
 			super();
-			buttonStates = new Dictionary(true);
+			buttonStates = new Array();
 		}		
 		
 		/**
@@ -39,91 +36,43 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-			// try to auto-find initital
+			//initialize toggle listener
+			if (toggle)
+			{
+				listenToggle();
+				for (var i:int = 1; i < childList.length; i++)
+					childList.getIndex(i).visible = false;
+				return; //if toggle is used, bypass state events
+			}
+			
+			// try to auto-find initital and hit
 			if (!initial && (childList.length > 0))
 				initial = childList.getIndex(0);			
+			if (!hit && (childList.length > 0))
+				hit = childList.getIndex(0) as DisplayObject;				
 			
-			for each (var state:* in buttonStates)
+			//hide all but initial state
+			for each(var state:* in buttonStates)
 			{
 				if (state != initial)
-					hideKey(state);	
+					state.visible = false;	
 			}				
 
-			if (!hit && (childList.length > 0))
-				hitObject = childList.getIndex(0) as DisplayObject;
-			else
-				hitObject = childList.getKey(hit);
-
 			// float hit area to the top of the display list
-			if (hitObject)
-				addChildAt(hitObject, numChildren - 1);
+			if (hit)
+				addChildAt(hit, numChildren - 1);
+				
+			//initialize auto listeners 
+			if (down) listenDown();
+			if (over) listenOver();
 			
-			//initial mouse events	
-			if (mouseOver)
-				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);				
-			if (mouseDown)
-				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-				
-			//inital touch events	
-			if (touchDown && GestureWorks.activeTUIO)
-				hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
-			else if (touchDown)
-				hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
+			//initaialize exclusive touch listeners
+			if (touchDown) listenTouchDown();
+			if (touchOver) listenTouchOver();
 			
-			//initial auto events
-			if (down)
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				else if (GestureWorks.supportsTouch)
-					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				else
-					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-			}			
-			if (over)
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-				else if(GestureWorks.supportsTouch)
-					hitObject.addEventListener(TouchEvent.TOUCH_OVER, onOver);			
-				else
-					hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-			}
-						
-			// toggle
-			if (toggle == "mouseOver")
-				this.addEventListener(MouseEvent.MOUSE_OVER, onToggle);	
-			
-			else if (toggle == "mouseDown")
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
-				
-			else if (toggle == "mouseUp")
-				this.addEventListener(MouseEvent.MOUSE_UP, onToggle);	
-				
-			else if (toggle == "touchDown")
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
-				
-			else if (toggle == "touchUp")
-				this.addEventListener(TouchEvent.TOUCH_END, onToggle);
-				
-			else if (toggle == "down")
-			{
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
-				else if (GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
-				else
-					this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
-			}
-			else if (toggle == "up")
-			{
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_UP, onToggle);
-				else if (GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_END, onToggle);
-				else
-					this.addEventListener(MouseEvent.MOUSE_UP, onToggle);					
-			}					
+			//initialize exclusive mouse listeners
+			if (mouseDown) listenMouseDown();
+			if (mouseOver) listenMouseOver();
 						
 			updateLayout();			
 		}
@@ -137,69 +86,91 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * sets the dimensions
+		 * Adds child to display list and, if not already added, the child list
+		 * TODO: This mechanism should be abstracted to better syncrhonize child and display lists  
+		 * @param	child
+		 * @return
+		 */
+		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
+		{
+			if (!childList.search(child))
+				childToList("button_" + buttonId++, child);
+			
+			return super.addChild(child);
+		}
+		
+		/**
+		 * Adds or removes a listener based on the value of the <code>add</code> flag
+		 * @param	type  the type of event
+		 * @param	listener  the listener function that processes the event
+		 * @param	add  the flag indicating to add or remove the event
+		 * @param	obj  the object to add/remove the event to/from, defaults to this object
+		 */
+		private function addListener(type:String, listener:Function, add:Boolean=true, obj:*=null):void
+		{
+			if (!obj) obj = this;
+			if (add)
+				obj.addEventListener(type, listener);
+			else
+				obj.removeEventListener(type, listener);
+		}
+		
+		/**
+		 * Updates dimensions
 		 */
 		public function updateLayout():void
 		{								
-			// we need containers to automatically take on the dimensions of the largest child, so I don't have to do this!!
-			if (childList.getKey(buttonStates["initial"]) is Container)
-			{
-				if (childList.getKey(buttonStates["initial"]).width == 0)
-				{
-					for each (var item:* in childList.getKey(buttonStates["initial"]).childList.getValueArray()) 
-					{
-						if (item.hasOwnProperty("width"))
-						{							
-							if (item.width > this.width)
-								this.width = item.width;								
-						}						
-					}
-				}
-				
-				if (childList.getKey(buttonStates["initial"]).height == 0)
-				{
-					for each (var item2:* in childList.getKey(buttonStates["initial"]).childList.getValueArray()) 
-					{
-						if (item.hasOwnProperty("height"))
-						{
-							if (item2.height > this.height)
-								this.height = item2.height;
-						}						
-					}
-				}				
-			}
-						
-			for (var i:int = 0; i < childList.length; i++) 
-			{
-				if (childList.getIndex(i) is ButtonElement) {
-					childList.getIndex(i).updateLayout();
-					this.width = childList.getIndex(i).width ;
-					this.height = childList.getIndex(i).height;
-				}
-			
-			}	
-			
+			sizeToChildren();			
 		}
-
 		
-		private var _toggle:String = "";
 		/**
-		 * sets toggle event by string name:
-		 * mouseOver, mouseDown, mouseUp, touchDown, touchUp, down, and up 
-		 * (the last two auto-switch between input device)
-		 * @default ""
-		 */		
+		 * Recursively accesses the children of the button element hierarchy and sets its dimensions to the maximum child dimensions.
+		 * NOTE: This funcition will be unceccessary when containers automatically resize to children.
+		 * @param	obj
+		 */
+		private function sizeToChildren(obj:* = null):void
+		{
+			if (!obj) 
+				obj = this;	
+			
+			if (!obj.hasOwnProperty("numChildren"))
+				return;
+			
+			for (var i:int = 0; i < obj.numChildren; i++)
+			{
+				var child:* = obj.getChildAt(i);
+				
+				if (child is ButtonElement) child.updateLayout();
+				
+				if (child.hasOwnProperty("width") && (child.width > this.width))
+					this.width = child.width;
+					
+				if (child.hasOwnProperty("height") && (child.height > this.height))
+					this.height = child.height;
+					
+				sizeToChildren(child);
+			}
+		}
+		
+		private var _toggle:String;		
+		/**
+		 * An alternative to button state events, the toggle displays the next child at each event defined by the 
+		 * <code>toggle</code> value (e.g. toggle="up" or toggle="mouseDown"). Setting the toggle value bypasses the 
+		 * button state events. The original intention of the toggle mechanism, was to allow a button element to house 
+		 * multiple button elements and toggle between them without interfering with their individual states. 
+		 */
 		public function get toggle():String {return _toggle}
 		public function set toggle(value:String):void 
 		{			
-			_toggle = value;		
+			if (_toggle)
+				listenToggle(false);
+			_toggle = value;
 		}	
-		
-				
-				
-		private var _dispatch:String;
+										
+		private var _dispatch:String;		
 		/**
-		 * Sets type of button, returned in the down event string
+		 * Assigns a message to dispatch with a button state event. The value is a colon-delimited string defining
+		 * events and associated messages (e.g. "down:button is down:up:button is up").
 		 */
 		public function get dispatch():String {return _dispatch;}
 		public function set dispatch(value:String):void 
@@ -221,92 +192,133 @@ package com.gestureworks.cml.element
 		
 		private var _hit:*;
 		/**
-		 * Sets hit object
+		 * The hit object is the object recieving the input events
 		 */
 		public function get hit():* {return _hit;}
 		public function set hit(value:*):void 
 		{
 			if (value is DisplayObject)
 			{
-				_hit = "hit_area";
-				childToList(_hit, value);
+				_hit = value;
 				addChild(value);
 			}
 			else
 			{
-				_hit = value.toString();
+				value = value.toString();
+				_hit = childList.getKey(value);
 			}
 		}		
 				
 		
 		private var _initial:*;
 		/**
-		 * Sets button state association with mouse down event
+		 * Sets the initial button state object
 		 */
 		public function get initial():* {return _initial;}
 		public function set initial(value:*):void 
 		{
 			if (value is DisplayObject)
 			{
-				_initial = "initial";
-				childToList(_initial, value);
-				addChild(value);
-				buttonStates[_initial] = _initial;
+				_initial = value;
+				addChild(_initial);
+				buttonStates.push(_initial);
 			}
 			else
 			{
 				value = value.toString();
-				_initial = value;
-				buttonStates["initial"] = value;						
+				_initial = childList.getKey(value);
+				buttonStates.push(_initial);						
 			}
 		}
 		
 		
 		////////////////////////////////////////////////////
 		/// MOUSE STATES
-		///////////////////////////////////////////////////		
+		///////////////////////////////////////////////////					
 		
-		private var _mouseOver:String;
-		/**
-		 * Sets button state association with mouse over event
-		 */		
-		public function get mouseOver():String {return buttonStates["mouseOver"];}
-		public function set mouseOver(value:String):void 
-		{			
-			buttonStates["mouseOver"] = value;			
-		}			
-		
-
-		private var _mouseDown:String;
+		private var _mouseDown:*;
 		/**
 		 * Sets button state association with mouse down event
 		 */
-		public function get mouseDown():String {return buttonStates["mouseDown"];}
-		public function set mouseDown(value:String):void 
+		public function get mouseDown():* {return _mouseDown;}
+		public function set mouseDown(value:*):void 
 		{
-			buttonStates["mouseDown"] = value;													
+			if (value is DisplayObject)
+			{
+				_mouseDown = value;
+				addChild(_mouseDown);
+				buttonStates.push(_mouseDown);
+			}
+			else
+			{
+				value = value.toString();
+				_mouseDown = childList.getKey(value);
+				buttonStates.push(_mouseDown);						
+			}	
 		}
 		
 		
-		private var _mouseUp:String;
+		private var _mouseUp:*;
 		/**
 		 * Sets button state association with mouse up event
 		 */		
-		public function get mouseUp():String {return buttonStates["mouseUp"];}
-		public function set mouseUp(value:String):void 
-		{			
-			buttonStates["mouseUp"] = value;											
+		public function get mouseUp():* {return _mouseUp;}
+		public function set mouseUp(value:*):void 
+		{
+			if (value is DisplayObject)
+			{
+				_mouseUp = value;
+				addChild(_mouseUp);
+				buttonStates.push(_mouseUp);
+			}
+			else
+			{
+				value = value.toString();
+				_mouseUp = childList.getKey(value);
+				buttonStates.push(_mouseUp);						
+			}										
 		}		
 		
+		private var _mouseOver:*;
+		/**
+		 * Sets button state association with mouse over event
+		 */		
+		public function get mouseOver():* {return _mouseOver;}
+		public function set mouseOver(value:*):void 
+		{			
+			if (value is DisplayObject)
+			{
+				_mouseOver = value;
+				addChild(_mouseOver);
+				buttonStates.push(_mouseOver);
+			}
+			else
+			{
+				value = value.toString();
+				_mouseOver = childList.getKey(value);
+				buttonStates.push(_mouseOver);						
+			}
+		}
 		
-		private var _mouseOut:String;
+		private var _mouseOut:*;
 		/**
 		 * Sets button state association with mouse out event
 		 */		
-		public function get mouseOut():String {return buttonStates["mouseOut"];}
-		public function set mouseOut(value:String):void 
+		public function get mouseOut():* {return _mouseOut;}
+		public function set mouseOut(value:*):void 
 		{			
-			buttonStates["mouseOut"] = value;												
+			if (value is DisplayObject)
+			{
+				_mouseOut = value;
+				addChild(_mouseOut);
+				buttonStates.push(_mouseOut);
+			}
+			else
+			{
+				value = value.toString();
+				_mouseOut = childList.getKey(value);
+				buttonStates.push(_mouseOut);						
+			}												
 		}			
 		
 		
@@ -315,39 +327,91 @@ package com.gestureworks.cml.element
 		///////////////////////////////////////////////////		
 		
 		
-		private var _touchDown:String;
+		private var _touchDown:*;
 		/**
 		 * Sets button state association with touch down event
 		 */		
-		public function get touchDown():String {return buttonStates["touchDown"];}
-		public function set touchDown(value:String):void 
+		public function get touchDown():* {return _touchDown;}
+		public function set touchDown(value:*):void 
 		{			
-			buttonStates["touchDown"] = value;
+			if (value is DisplayObject)
+			{
+				_touchDown = value;				
+				addChild(_touchDown);
+				buttonStates.push(_touchDown);
+			}
+			else
+			{
+				value = value.toString();
+				_touchDown = childList.getKey(value);
+				buttonStates.push(_touchDown);						
+			}
 		}
 		
 		
-		private var _touchUp:String;
+		private var _touchUp:*;
 		/**
 		 * Sets button state association with touch up event
 		 */		
-		public function get touchUp():String {return buttonStates["touchUp"];}
-		public function set touchUp(value:String):void 
+		public function get touchUp():* {return _touchUp;}
+		public function set touchUp(value:*):void 
 		{			
-			buttonStates["touchUp"] = value;
+			if (value is DisplayObject)
+			{
+				_touchUp = value;				
+				addChild(_touchUp);
+				buttonStates.push(_touchUp);
+			}
+			else
+			{
+				value = value.toString();
+				_touchUp = childList.getKey(value);
+				buttonStates.push(_touchUp);						
+			}
 		}			
-
 		
-		private var _touchOut:String;
+		private var _touchOver:*;
 		/**
 		 * Sets button state association with touch out event
 		 */		
-		public function get touchOut():String {return buttonStates["touchOut"];}
-		public function set touchOut(value:String):void 
+		public function get touchOver():* {return _touchOver;}
+		public function set touchOver(value:*):void 
 		{			
-			buttonStates["touchOut"] = value;
+			if (value is DisplayObject)
+			{
+				_touchOver = value;				
+				addChild(_touchOver);
+				buttonStates.push(_touchOver);
+			}
+			else
+			{
+				value = value.toString();
+				_touchOver = childList.getKey(value);
+				buttonStates.push(_touchOver);						
+			}
+		}		
+		
+		private var _touchOut:*;
+		/**
+		 * Sets button state association with touch out event
+		 */		
+		public function get touchOut():* {return _touchOut;}
+		public function set touchOut(value:*):void 
+		{			
+			if (value is DisplayObject)
+			{
+				_touchOut = value;				
+				addChild(_touchOut);
+				buttonStates.push(_touchOut);
+			}
+			else
+			{
+				value = value.toString();
+				_touchOut = childList.getKey(value);
+				buttonStates.push(_touchOut);						
+			}
 		}			
-		
-		
+				
 		
 		////////////////////////////////////////////////////
 		/// AUTO STATES
@@ -363,18 +427,38 @@ package com.gestureworks.cml.element
 		{			
 			if (value is DisplayObject)
 			{
-				_down = "down";
-				childToList(_down, value);
-				addChild(value);
-				buttonStates[_down] = _down;
+				_down = value;				
+				addChild(_down);
+				buttonStates.push(_down);
 			}
 			else
 			{
 				value = value.toString();
-				_down = value;
-				buttonStates["down"] = value;						
-			}			
+				_down = childList.getKey(value);
+				buttonStates.push(_down);						
+			}	
 		}
+				
+		private var _up:*;
+		/**
+		 * Sets button state association with up event
+		 */		
+		public function get up():* {return _up;}
+		public function set up(value:*):void 
+		{			
+			if (value is DisplayObject)
+			{
+				_up = value;
+				addChild(_up);
+				buttonStates.push(_up);
+			}
+			else
+			{
+				value = value.toString();
+				_up = childList.getKey(value);
+				buttonStates.push(_up);						
+			}			
+		}			
 		
 		private var _over:*;
 		/**
@@ -385,43 +469,18 @@ package com.gestureworks.cml.element
 		{			
 			if (value is DisplayObject)
 			{
-				_over = "over";
-				childToList(_over, value);
-				addChild(value);
-				buttonStates[_over] = _over;
-			}
-			else
-			{
-				value = value.toString();
 				_over = value;
-				buttonStates["over"] = value;						
-			}			
-		}
-		
-		
-		private var _up:*;
-		/**
-		 * Sets button state association with up event
-		 */		
-		public function get up():String {return _up;}
-		public function set up(value:*):void 
-		{			
-			if (value is DisplayObject)
-			{
-				_up = "up";
-				childToList(_up, value);
-				addChild(value);
-				buttonStates[_up] = _up;
+				addChild(_over);				
+				buttonStates.push(_over);
 			}
 			else
 			{
 				value = value.toString();
-				_up = value;
-				buttonStates["up"] = value;						
-			}			
-		}			
+				_over = childList.getKey(value);
+				buttonStates.push(_over);						
+			}	
+		}		
 
-		
 		private var _out:*;
 		/**
 		 * Sets button state association with out event
@@ -431,16 +490,15 @@ package com.gestureworks.cml.element
 		{			
 			if (value is DisplayObject)
 			{
-				_out = "out";
-				childToList(_out, value);
-				addChild(value);
-				buttonStates[_out] = _out;
+				_out = value;
+				addChild(_out);
+				buttonStates.push(_out);
 			}
 			else
 			{
 				value = value.toString();
-				_out = value;
-				buttonStates["out"] = value;						
+				_out = childList.getKey(value);
+				buttonStates.push(_out);						
 			}			
 		}
 		
@@ -448,287 +506,401 @@ package com.gestureworks.cml.element
 		
 		////////////////////////////////////////////////////
 		/// MOUSE EVENT HANDLERS
-		///////////////////////////////////////////////////
+		///////////////////////////////////////////////////			
 		
-		
-		protected function onMouseDown(event:MouseEvent):void
-		{
+		/**
+		 * Processes the mouse down event by displaying the mouseDown state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the mouse down event
+		 */
+		protected function onMouseDown(event:*):void
+		{	
 			if (debug)
-				trace("mouse down");
-			
-			hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);															
-			
-			for each (var state:* in buttonStates)
+				trace("mouseDown");
+				
+			listenMouseDown(false);																				
+			for each(var state:* in buttonStates)
 			{
 				if (state != mouseDown)
-					hideKey(state);	
+					state.visible = false;
 			}
 			
-			showKey(buttonStates["mouseDown"]);
+			mouseDown.visible = true;
 				
+			//listen for mouseUp event to proceed mouseDown event
 			if (mouseUp)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);												
-				hitObject.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			}
-			
+				listenMouseUp();
+				
+			//listen for mouseOut event
 			if (mouseOut)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);												
-				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-			}			
+				listenMouseOut();
+			
+			//prevent mouseOver event from executing after mouseDown event
+			if (mouseOver)
+				listenMouseOver(false);
 			
 			if (dispatchDict["mouseDown"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseDown"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseDown"], true, true));	
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseDown", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseDown", true, true));		
 		}
 		
-		
-		protected function onMouseUp(event:MouseEvent):void
-		{
+		/**
+		 * Processes the mouse up event by displaying the mouseUp state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the mouse up event
+		 */			
+		protected function onMouseUp(event:*):void
+		{	
 			if (debug)
-				trace("mouse up");
-				
-			hitObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-
-			for each (var state:* in buttonStates)
+				trace("mouseUp");
+			
+			listenMouseUp(false);								
+			for each(var state:* in buttonStates)
 			{
 				if (state != mouseUp)
-					hideKey(state);	
+					state.visible = false;	
 			}
-
-			showKey(buttonStates["mouseUp"]);
 			
+			mouseUp.visible = true;
+				
+			//listen for mouseDown event
 			if (mouseDown)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);												
-				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			}
+				listenMouseDown();
 			
+			//listen for mouseOver events
+			if (mouseOver)
+				listenMouseOver();
+			
+			//prevent mouseOut event from proceeding mouseUp event
 			if (mouseOut)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);												
-				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-			}
-			
+				listenMouseOut(false);
 			
 			if (dispatchDict["mouseUp"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseUp"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseUp"], true, true));	
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseUp", true, true));			
-		}		
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseUp", true, true));		
+		}
 		
-		
-		protected function onMouseOver(event:MouseEvent):void
-		{
+		/**
+		 * Processes the mouse over event by displaying the mouseOver state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the mouse over event
+		 */		
+		protected function onMouseOver(event:*):void
+		{						
 			if (debug)			
-				trace("mouse over");											
-			
-			hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);															
-			
-			for each (var state:* in buttonStates)
+				trace("mouseOver");											
+																		
+			listenMouseOver(false);
+			for each(var state:* in buttonStates)
 			{
 				if (state != mouseOver)
-					hideKey(state);	
+					state.visible = false;	
 			}				
 	
-			showKey(buttonStates["mouseOver"]);	
+			mouseOver.visible = true;	
 			
+			//listen for mouseUp event
+			if (mouseUp)
+				listenMouseUp();
+			
+			//listen for mouseOut event to proceed mouseOver event
 			if (mouseOut)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);												
-				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-			}
-			
+				listenMouseOut();
+						
 			if (dispatchDict["mouseOver"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseOver"], true, true));	
 			else if (dispatchDefault)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOver", true, true));					
 											
-		}	
-		
+		}			
 				
-		protected function onMouseOut(event:MouseEvent):void
-		{
+		/**
+		 * Processes the mouse out event by displaying the mouseOut state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the mouse out event
+		 */			
+		protected function onMouseOut(event:*):void
+		{	
 			if (debug)
-				trace("mouse out");
+				trace("mouseOut");
 			
-			hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);															
-			
-			for each (var state:* in buttonStates)
+			listenMouseOut(false);											
+			for each(var state:* in buttonStates)
 			{
 				if (state != mouseOut)
-					hideKey(state);	
-			}				
-	
-			showKey(buttonStates["mouseOut"]);
-			
-			if (mouseOver)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);												
-				hitObject.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+					state.visible = false;	
 			}
 			
+			mouseOut.visible = true;
+			
+			//listen for mouseOver events
+			if (mouseOver)
+				listenMouseOver();
+			
+			//listen for mouseDown events
 			if (mouseDown)
-			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);												
-				hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			}			
+				listenMouseDown();
 			
 			if (dispatchDict["mouseOut"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseOut"], true, true));	
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));									
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));		
+		}
+		
+		/**
+		 * Enables ore disables mouse down events
+		 * @param	listen  adds mouse listener if true, removes if false
+		 */
+		private function listenMouseDown(listen:Boolean = true):void
+		{
+			addListener(MouseEvent.MOUSE_DOWN, onMouseDown, listen, hit);			
+		}
+
+		/**
+		 * Enables ore disables mouse up events
+		 * @param	listen  adds mouse listener if true, removes if false
+		 */		
+		private function listenMouseUp(listen:Boolean = true):void
+		{
+			addListener(MouseEvent.MOUSE_UP, onMouseUp, listen, hit);				
+		}
+		
+		/**
+		 * Enables ore disables mouse over events
+		 * @param	listen  adds mouse listener if true, removes if false
+		 */		
+		private function listenMouseOver(listen:Boolean = true):void
+		{
+			addListener(MouseEvent.MOUSE_OVER, onMouseOver, listen, hit);							
 		}		
 		
-		
+		/**
+		 * Enables ore disables mouse out events
+		 * @param	listen  adds mouse listener if true, removes if false
+		 */		
+		private function listenMouseOut(listen:Boolean = true):void
+		{
+			addListener(MouseEvent.MOUSE_OUT, onMouseOut, listen, hit);														
+		}		
+				
 
 		////////////////////////////////////////////////////
 		/// TOUCH EVENT HANDLERS
 		///////////////////////////////////////////////////
 		
-		
+		/**
+		 * Processes the touch down event by displaying the touchDown state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the touch down event
+		 */		
 		protected function onTouchDown(event:*):void
 		{	
 			if (debug)
-				trace("touch down");
-			
-			if (GestureWorks.activeTUIO)	
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
-			else 
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
-			
-			for each (var state:* in buttonStates)
+				trace("touchDown");
+				
+			listenTouchDown(false);																				
+			for each(var state:* in buttonStates)
 			{
 				if (state != touchDown)
-					hideKey(state);	
+					state.visible = false;
 			}
 			
-			showKey(buttonStates["touchDown"]);
+			touchDown.visible = true;
 				
+			//listen for touchUp event to proceed touchDown event
 			if (touchUp)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
-				}
-				else {
-					hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
-					hitObject.addEventListener(TouchEvent.TOUCH_END, onTouchUp);
-				}															
-			}
-			
+				listenTouchUp();
+				
+			//listen for touchOut event
 			if (touchOut)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
-				}
-				else {
-					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);											
-					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
-				}				
-			}	
+				listenTouchOut();
+			
+			//prevent touchOver event from executing after touchDown event
+			if (touchOver)
+				listenTouchOver(false);
 			
 			if (dispatchDict["touchDown"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchDown"], true, true));	
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));						
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));		
 		}
 		
+		/**
+		 * Processes the touch over event by displaying the touchOver state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the touch over event
+		 */				
+		protected function onTouchOver(event:*):void
+		{						
+			if (debug)			
+				trace("touchOver");											
+																		
+			listenTouchOver(false);
+			for each(var state:* in buttonStates)
+			{
+				if (state != touchOver)
+					state.visible = false;	
+			}				
+	
+			touchOver.visible = true;	
+			
+			//listen for touchUp event
+			if (touchUp)
+				listenTouchUp();
+			
+			//listen for touchOut event to proceed touchOver event
+			if (touchOut)
+				listenTouchOut();
+						
+			if (dispatchDict["touchOver"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchOver"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchOver", true, true));					
+											
+		}	
 		
-		protected function onTouchUp(event:TouchEvent):void
-		{
+		/**
+		 * Processes the touch up event by displaying the touchUp state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the touch up event
+		 */				
+		protected function onTouchUp(event:*):void
+		{	
 			if (debug)
-				trace("touch up");
+				trace("touchUp");
 			
-			if (GestureWorks.activeTUIO)
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchUp);															
-			else
-				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);															
-			
-			for each (var state:* in buttonStates)
+			listenTouchUp(false);								
+			for each(var state:* in buttonStates)
 			{
 				if (state != touchUp)
-					hideKey(state);	
+					state.visible = false;	
 			}
 			
-			showKey(buttonStates["touchUp"]);
+			touchUp.visible = true;
 				
+			//listen for touchDown event
 			if (touchDown)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);															
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
-				}
-				else {
-					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
-					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
-				}
-			}
+				listenTouchDown();
+			
+			//listen for touchOver events
+			if (touchOver)
+				listenTouchOver();
+			
+			//prevent touchOut event from proceeding touchUp event
+			if (touchOut)
+				listenTouchOut(false);
 			
 			if (dispatchDict["touchUp"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchUp"], true, true));	
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchUp", true, true));					
-		}			
-		
-		
-		protected function onTouchOut(event:TouchEvent):void
-		{
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchUp", true, true));		
+		}		
+			
+		/**
+		 * Processes the touch out event by displaying the touchOut state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the touch out event
+		 */				
+		protected function onTouchOut(event:*):void
+		{	
 			if (debug)
-				trace("touch out");
+				trace("touchOut");
 			
-			if (GestureWorks.activeTUIO)
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);															
-			else
-				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);															
-			
-			for each (var state:* in buttonStates)
+			listenTouchOut(false);											
+			for each(var state:* in buttonStates)
 			{
 				if (state != touchOut)
-					hideKey(state);	
+					state.visible = false;	
 			}
 			
-			showKey(buttonStates["touchOut"]);
+			touchOut.visible = true;
 			
+			//listen for touchOver events
+			if (touchOver)
+				listenTouchOver();
+			
+			//listen for touchDown events
 			if (touchDown)
-			{
-				if (GestureWorks.activeTUIO) {
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);															
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
-				}
-				else {
-					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);															
-					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
-				}
-			}
+				listenTouchDown();
 			
 			if (dispatchDict["touchOut"])
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchOut"], true, true));	
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchOut", true, true));					
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchOut", true, true));		
+		}
+		
+		/**
+		 * Enables ore disables touch down events
+		 * @param	listen  adds touch listener if true, removes if false
+		 */				
+		private function listenTouchDown(listen:Boolean = true):void
+		{
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown, listen, hit);
+			else 
+				addListener(TouchEvent.TOUCH_BEGIN, onTouchDown, listen, hit);			
 		}
 
+		/**
+		 * Enables ore disables touch up events
+		 * @param	listen  adds touch listener if true, removes if false
+		 */						
+		private function listenTouchUp(listen:Boolean = true):void
+		{
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_UP, onTouchUp, listen, hit);
+			else 
+				addListener(TouchEvent.TOUCH_END, onTouchUp, listen, hit);
+		}
+		
+		/**
+		 * Enables ore disables touch over events
+		 * @param	listen  adds touch listener if true, removes if false
+		 */						
+		private function listenTouchOver(listen:Boolean = true):void
+		{
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_OVER, onTouchOver, listen, hit);
+			else 
+				addListener(TouchEvent.TOUCH_OVER, onTouchOver, listen, hit);
+		}		
+		
+		/**
+		 * Enables ore disables touch out events
+		 * @param	listen  adds touch listener if true, removes if false
+		 */						
+		private function listenTouchOut(listen:Boolean = true):void
+		{
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_OUT, onTouchOut, listen, hit);
+			else 
+				addListener(TouchEvent.TOUCH_OUT, onTouchOut, listen, hit);								
+		}
 
 		////////////////////////////////////////////////////
 		/// AUTO EVENT HANDLERS
 		///////////////////////////////////////////////////
 		
+		/**
+		 * Processes the down event by displaying the down state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the down event
+		 */				
 		protected function onDown(event:*):void
 		{	
 			if (debug)
 				trace("down");
 				
 			listenDown(false);																				
-			for each (var state:* in buttonStates)
+			for each(var state:* in buttonStates)
 			{
 				if (state != down)
-					hideKey(state);	
+					state.visible = false;
 			}
 			
-			showKey(buttonStates["down"]);
+			down.visible = true;
 				
 			//listen for up event to proceed down event
 			if (up)
@@ -748,19 +920,24 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "down", true, true));		
 		}
 		
+		/**
+		 * Processes the over event by displaying the over state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the over event
+		 */			
 		protected function onOver(event:*):void
 		{						
 			if (debug)			
 				trace("over");											
 																		
 			listenOver(false);
-			for each (var state:* in buttonStates)
+			for each(var state:* in buttonStates)
 			{
 				if (state != over)
-					hideKey(state);	
+					state.visible = false;	
 			}				
 	
-			showKey(buttonStates["over"]);	
+			over.visible = true;	
 			
 			//listen for up event
 			if (up)
@@ -777,19 +954,24 @@ package com.gestureworks.cml.element
 											
 		}	
 		
+		/**
+		 * Processes the down event by displaying the up state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the up event
+		 */			
 		protected function onUp(event:*):void
 		{	
 			if (debug)
 				trace("up");
 			
 			listenUp(false);								
-			for each (var state:* in buttonStates)
+			for each(var state:* in buttonStates)
 			{
 				if (state != up)
-					hideKey(state);	
+					state.visible = false;	
 			}
 			
-			showKey(buttonStates["up"]);
+			up.visible = true;
 				
 			//listen for down event
 			if (down)
@@ -808,27 +990,32 @@ package com.gestureworks.cml.element
 			else if (dispatchDefault)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "up", true, true));		
 		}		
-				
+			
+		/**
+		 * Processes the out event by displaying the out state and hiding the other states. Enables
+		 * and disables appropriate listeners to control event flow.
+		 * @param	event  the out event
+		 */			
 		protected function onOut(event:*):void
 		{	
 			if (debug)
 				trace("out");
 			
 			listenOut(false);											
-			for each (var state:* in buttonStates)
+			for each(var state:* in buttonStates)
 			{
 				if (state != out)
-					hideKey(state);	
+					state.visible = false;	
 			}
 			
-			showKey(buttonStates["out"]);
+			out.visible = true;
 			
 			//listen for over events
 			if (over)
 				listenOver();
 			
 			//listen for down events
-			if (down)
+			if (out)
 				listenDown();
 			
 			if (dispatchDict["out"])
@@ -837,99 +1024,77 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "out", true, true));		
 		}
 		
+		/**
+		 * Enables ore disables touch/mouse down events
+		 * @param	listen  adds touch/mouse listener if true, removes if false
+		 */			
 		private function listenDown(listen:Boolean = true):void
 		{
-			if (listen)
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				else if (GestureWorks.supportsTouch)
-					hitObject.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				else
-					hitObject.addEventListener(MouseEvent.MOUSE_DOWN, onDown);			
-			}
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_DOWN, onDown, listen, hit);
+			else if (GestureWorks.supportsTouch)
+				addListener(TouchEvent.TOUCH_BEGIN, onDown, listen, hit);
 			else
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				else if (GestureWorks.supportsTouch)
-					hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				else
-					hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);					
-			}
+				addListener(MouseEvent.MOUSE_DOWN, onDown, listen, hit);			
+
 		}
-			
+		
+		/**
+		 * Enables ore disables touch/mouse up events
+		 * @param	listen  adds touch/mouse listener if true, removes if false
+		 */					
 		private function listenUp(listen:Boolean = true):void
 		{
-			if (listen)
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-				else if (GestureWorks.supportsTouch)
-					hitObject.addEventListener(TouchEvent.TOUCH_END, onUp);
-				else
-					hitObject.addEventListener(MouseEvent.MOUSE_UP, onUp);				
-			}
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_UP, onUp, listen, hit);
+			else if (GestureWorks.supportsTouch)
+				addListener(TouchEvent.TOUCH_END, onUp, listen, hit);
 			else
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-				else if (GestureWorks.supportsTouch)
-					hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
-				else
-					hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);
-			}
+				addListener(MouseEvent.MOUSE_UP, onUp, listen, hit);				
 		}
 		
+		/**
+		 * Enables ore disables touch/mouse over events
+		 * @param	listen  adds touch/mouse listener if true, removes if false
+		 */					
 		private function listenOver(listen:Boolean = true):void
 		{
-			if (listen)
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-				else if (GestureWorks.supportsTouch)
-					hitObject.addEventListener(TouchEvent.TOUCH_OVER, onOver);
-				else
-					hitObject.addEventListener(MouseEvent.MOUSE_OVER, onOver);							
-			}
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_OVER, onOver, listen, hit);
+			else if (GestureWorks.supportsTouch)
+				addListener(TouchEvent.TOUCH_OVER, onOver, listen, hit);
 			else
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-				else if (GestureWorks.supportsTouch)
-					hitObject.removeEventListener(TouchEvent.TOUCH_OVER, onOver);
-				else
-					hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);					
-			}
+				addListener(MouseEvent.MOUSE_OVER, onOver, listen, hit);							
 		}		
 		
+		/**
+		 * Enables ore disables touch/mouse out events
+		 * @param	listen  adds touch/mouse listener if true, removes if false
+		 */					
 		private function listenOut(listen:Boolean = true):void
 		{
-			if (listen)
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-				else if (GestureWorks.supportsTouch)
-					hitObject.addEventListener(TouchEvent.TOUCH_OUT, onOut);
-				else
-				hitObject.addEventListener(MouseEvent.MOUSE_OUT, onOut);										
-			}
+			if (GestureWorks.activeTUIO)
+				addListener(TuioTouchEvent.TOUCH_OUT, onOut, listen, hit);
+			else if (GestureWorks.supportsTouch)
+				addListener(TouchEvent.TOUCH_OUT, onOut, listen, hit);
 			else
-			{
-				if (GestureWorks.activeTUIO)
-					hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-				else if (GestureWorks.supportsTouch)
-					hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-				else
-					hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);					
-			}
+				addListener(MouseEvent.MOUSE_OUT, onOut, listen, hit);										
 		}
 			
-		private function onToggle(event:*):void
-		{			
+		
+		////////////////////////////////////////////////////
+		/// TOGGLE EVENT HANDLER
+		///////////////////////////////////////////////////
+		
+		/**
+		 * Displays the the next child on the specified button event. If toggle is used, 
+		 * the button states are ignored. 
+		 * @param	event
+		 */
+		protected function onToggle(event:*):void
+		{					
 			if (childList.hasNext())
-			{
-				
+			{				
 				childList.currentValue.visible = false;
 				childList.next().visible = true;
 			}
@@ -938,9 +1103,94 @@ package com.gestureworks.cml.element
 				childList.currentValue.visible = false;				
 				childList.reset();
 				childList.currentValue.visible = true;			
-			}
-						
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
+			}							
+			
+			if (dispatchDict["toggle"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", dispatchDict["toggle"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", "toggle", true, true));			
+		}
+		
+		/**
+		 * Enables ore disables touch/mouse events
+		 * @param	listen  adds touch/mouse listener if true, removes if false
+		 */					
+		private function listenToggle(listen:Boolean = true):void
+		{
+			if (!toggle) return;			
+			switch(toggle)
+			{
+				case "mouseDown":
+					addListener(MouseEvent.MOUSE_DOWN, onToggle, listen);
+					break;
+				case "mouseUp":
+					addListener(MouseEvent.MOUSE_UP, onToggle, listen);
+					break;
+				case "mouseOver":
+					addListener(MouseEvent.MOUSE_OVER, onToggle, listen);
+					break;
+				case "mouseOut":
+					addListener(MouseEvent.MOUSE_OUT, onToggle, listen);
+					break;	
+				case "touchDown":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_DOWN, onToggle, listen);
+					else
+						addListener(TouchEvent.TOUCH_BEGIN, onToggle, listen);
+					break;
+				case "touchUp":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_UP, onToggle, listen);
+					else
+						addListener(TouchEvent.TOUCH_END, onToggle, listen);
+					break;
+				case "touchOver":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_OVER, onToggle, listen);
+					else
+						addListener(TouchEvent.TOUCH_OVER, onToggle, listen);
+					break;
+				case "touchOut":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_OUT, onToggle, listen);
+					else
+						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
+					break;	
+				case "down":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_DOWN, onToggle, listen);
+					else if (GestureWorks.supportsTouch)
+						addListener(TouchEvent.TOUCH_BEGIN, onToggle, listen);
+					else
+						addListener(MouseEvent.MOUSE_DOWN, onToggle, listen);
+					break;
+				case "up":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_UP, onToggle, listen);
+					else if (GestureWorks.supportsTouch)
+						addListener(TouchEvent.TOUCH_END, onToggle, listen);
+					else
+						addListener(MouseEvent.MOUSE_UP, onToggle, listen);
+					break;
+				case "over":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_OVER, onToggle, listen);
+					else if (GestureWorks.supportsTouch)
+						addListener(TouchEvent.TOUCH_OVER, onToggle, listen);
+					else
+						addListener(MouseEvent.MOUSE_OVER, onToggle, listen);
+					break;
+				case "out":
+					if (GestureWorks.activeTUIO)
+						addListener(TuioTouchEvent.TOUCH_OUT, onToggle, listen);
+					else if (GestureWorks.supportsTouch)
+						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
+					else
+						addListener(MouseEvent.MOUSE_OUT, onToggle, listen);
+					break;
+				default:
+					break;
+			}			
 		}
 		
 		/**
@@ -950,48 +1200,38 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			buttonStates = null;
-			dispatchDict = null;						
+			dispatchDict = null;
+			mouseDown = null;
+			mouseUp = null;
+			mouseOver = null;
+			mouseOut = null;
+			touchDown = null;
+			touchUp = null;
+			touchOver = null;
+			touchOut = null;
+			down = null;
+			up = null;
+			over = null;
+			out = null;
 			
-			if (hitObject)
+			if (hit)
 			{
-				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
-				hitObject.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-				hitObject.removeEventListener(MouseEvent.MOUSE_OUT, onOut);
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);				
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);	
-				hitObject.removeEventListener(MouseEvent.MOUSE_OVER, onOver);
-				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-				hitObject.removeEventListener(MouseEvent.MOUSE_UP, onUp);
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);			
-				hitObject.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
-				hitObject.removeEventListener(TouchEvent.TOUCH_END, onTouchUp);
-				hitObject.removeEventListener(TouchEvent.TOUCH_END, onUp);
-				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onOut);
-				hitObject.removeEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
-				hitObject.removeEventListener(TouchEvent.TOUCH_OVER, onOver);			
-				hitObject.removeEventListener(TouchEvent.TOUCH_OVER, onOver);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OUT, onTouchOut);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onTouchUp);
-				hitObject.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);		
-				hitObject = null;
+				listenMouseDown(false);
+				listenMouseUp(false);
+				listenMouseOver(false);
+				listenMouseOut(false);
+				listenTouchDown(false);
+				listenTouchUp(false);
+				listenTouchOver(false);
+				listenTouchOut(false);
+				listenDown(false);
+				listenUp(false);
+				listenOver(false);
+				listenOut(false);				
+				hit = null;
 			}
 			
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onToggle);			
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onToggle);
-			this.removeEventListener(MouseEvent.MOUSE_OVER, onToggle);				
-			this.removeEventListener(MouseEvent.MOUSE_UP, onToggle);		
-			this.removeEventListener(MouseEvent.MOUSE_UP, onToggle);	
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
-			this.removeEventListener(TouchEvent.TOUCH_END, onToggle);
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
-			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onToggle);			
+			listenToggle(false);
 		}
 		
 		
