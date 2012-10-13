@@ -24,12 +24,12 @@ package com.gestureworks.cml.components
 	public class CollectionViewer extends Component
 	{
 		public var amountToShow:int = -1;
-		public var animateIn:Boolean = false;
+		public var animateIn:Boolean = true;
 		
 		private var queue:List;
 		private var currentTween:*;
 		
-		private var boundsTimer:Timer;
+		//private var boundsTimer:Timer;
 		
 		/**
 		 * collection viewer constructor
@@ -54,9 +54,9 @@ package com.gestureworks.cml.components
 			cover.visible = false;
 			this.addChildAt(cover, 0);
 						
-			boundsTimer = new Timer(500);
-			boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
-			boundsTimer.start();
+			//boundsTimer = new Timer(500);
+			//boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
+			//boundsTimer.start();			
 			
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
@@ -76,6 +76,7 @@ package com.gestureworks.cml.components
 				}
 				
 				childList.getIndex(i).addEventListener(StateEvent.CHANGE, onStateEvent, false, -1);
+				childList.getIndex(i).addEventListener(GWGestureEvent.COMPLETE, onBoundsTimer);
 				
 				if (i < amountToShow)
 				{					
@@ -101,21 +102,17 @@ package com.gestureworks.cml.components
 		
 		private var cover:Sprite;
 		
-		private function onBoundsTimer(event:TimerEvent):void
-		{
-			for (var i:int = 1; i < this.numChildren; i++)
+		private function onBoundsTimer(event:GWGestureEvent):void
+		{				
+			var onscreen:Boolean = CollisionDetection.isColliding(DisplayObject(event.target), cover, this, true, 0);								
+			trace(onscreen);
+			if (!onscreen)
 			{					
-				var onscreen:Boolean = CollisionDetection.isColliding(getChildAt(i), cover, this, false, 0);								
+				removeComponent(DisplayObject(event.target));
 				
-				if (!onscreen)
-				{					
-					removeComponent(getChildAt(i));
-					
-					if (this.numChildren-1 < amountToShow)
-						addNextComponent();
-				}
-				
-			}
+				if (this.numChildren-1 < amountToShow)
+					addNextComponent();
+			}				
 		}
 			
 
@@ -172,6 +169,7 @@ package com.gestureworks.cml.components
 			newComponent = queue.getIndex(0);
 			queue.remove(0);
 			
+			trace(queue.length);
 			if (newComponent)
 			{
 				newComponent.x = -500;
@@ -206,12 +204,12 @@ package com.gestureworks.cml.components
 			cover = null;			
 			tweens = null;
 			
-			if (boundsTimer)
-			{
-				boundsTimer.stop();
-				boundsTimer.removeEventListener(TimerEvent.TIMER,onBoundsTimer);
-				boundsTimer = null;
-			}
+			//if (boundsTimer)
+			//{
+				//boundsTimer.stop();
+				//boundsTimer.removeEventListener(TimerEvent.TIMER,onBoundsTimer);
+				//boundsTimer = null;
+			//}
 			
 			if (childList)
 			{
