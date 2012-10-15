@@ -93,11 +93,18 @@ package com.gestureworks.cml.element
 			init();			
 		}
 		
-		
 		/**
-		 * Initialisation method
+		 * Initialization method
 		 */
 		public function init():void
+		{
+			updateGraphic();
+		}		
+		
+		/**
+		 * Update frame graphics
+		 */
+		public override function updateGraphic():void
 		{
 			graphics.clear();		
 			
@@ -107,10 +114,9 @@ package com.gestureworks.cml.element
 				graphics.lineStyle(2, _frameColor,_frameAlpha+0.5);
 				graphics.drawRoundRect( -2 * _frameThickness, -2 * _frameThickness, width + 4 * _frameThickness, height + 4 * _frameThickness, 2 * _frameThickness, 2 * _frameThickness);
 				graphics.lineStyle(4, _frameColor,0.8);
-				graphics.drawRect(-2, -2, width + 4, height + 4);
-			}
+				graphics.drawRect( -2, -2, width + 4, height + 4);
+			}	
 		}
-
  
 		/**
 		 * Dispose method

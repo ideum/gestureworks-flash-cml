@@ -242,8 +242,6 @@ package com.gestureworks.cml.components
 					textFields[i].autoSize = "left";
 					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
 					
-					trace(textFields[i].width, textFields[i].paddingLeft);
-					
 					if (i == 0)
 						textFields[i].y = textFields[i].paddingTop;
 					else
