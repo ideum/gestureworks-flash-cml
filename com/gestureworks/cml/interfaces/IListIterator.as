@@ -3,11 +3,9 @@ package com.gestureworks.cml.interfaces
 	import com.gestureworks.cml.interfaces.IIterator
 	
 	/**
-	 * IListIterator
-	 * Implement 2-way iterator on list classes
-	 * @author Charles Veasey
+	 * Implements a 2-way iterator on Lists.
+	 * @author Ideum
 	 */
-	
 	public interface IListIterator extends IIterator
 	{
 		/**

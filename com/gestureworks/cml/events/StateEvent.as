@@ -3,8 +3,11 @@ package com.gestureworks.cml.events
 	import flash.events.Event;
 	
 	/**
-	 * This class contains the types and other definitions of state event dispatched by the application.
-	 * @author..
+	 * The StateEvent is the primary message event for CML elements and compoenents.
+	 * It passes the dispatcher's id, the property name that has been changed, and the new property value.
+	 * 
+	 * @author Ideum
+	 * @see FileEvent
 	 */
 	public class StateEvent extends Event 
 	{	

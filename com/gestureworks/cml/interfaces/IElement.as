@@ -1,17 +1,30 @@
 package com.gestureworks.cml.interfaces
 {
 	/**
-	 * IElement
-	 * Implement classes that are display elements
-	 * @authors Charles Veasey
+	 * Implements CML Elements.
+	 * @author Ideum
 	 */	
-	
 	public interface IElement extends IObject
 	{
-		 function get width():Number;
-		 function set width(value:Number):void;
-		 function get height():Number;
-		 function set height(value:Number):void;		 
+		/**
+		 * Returns the width of the display object.
+		 */
+		function get width():Number;
+		
+		/**
+		 * Sets the width of the display object.
+		 */
+		function set width(value:Number):void;
+		
+		/**
+		 * Returns the height of the display object.
+		 */
+		function get height():Number;
+		
+		/**
+		 * Sets the height of the display object.
+		 */		
+		function set height(value:Number):void;		 
 	}
 	
 	

@@ -13,14 +13,12 @@ package com.gestureworks.cml.element
 	import flash.geom.Matrix;
 	
 	/**
-	 * The MaskContainer is a class that takes in one or multiple images and applies a mask designated in CML to all images in its child list.
-	 * If there are multiple images, the class automatically cycles through them using double-tap. Gesture responsiveness may be turned off in CML.
+	 * The MaskContainer element takes in one or multiple images and applies a mask designated in CML to all images in its child list.
+	 * If there are multiple images, the class automatically cycles through them using double-tap. The gesture may be turned off in CML.
 	 * This element is touch-enabled already, and does not need to be wrapped in a touchContainer.
 	 * 
-	 * MaskContainer has the following parameters: maskShape, maskRadius, maskWidth, maskHeight, maskBorderStroke, maskBorderAlpha, maskBorderColor
-	 * ...
-	 * * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 *
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 
 	   var maskContainer:MaskContainer = new MaskContainer();
 		maskContainer.maskShape = "rectangle";
 		maskContainer.maskWidth = 100;
@@ -32,9 +30,11 @@ package com.gestureworks.cml.element
 		maskContainer.addChild(img);
 		maskContainer.childToList("image", img);
 		maskContainer.init();
-	 *
+	 
 	 * </codeblock>
+	 * 
 	 * @author josh
+	 * @see TouchContainer
 	 */
 		
 	public class MaskContainer extends TouchContainer
@@ -46,21 +46,21 @@ package com.gestureworks.cml.element
 		
 		protected var graphicArray:List;
 		
-		protected var overallMask:GraphicElement;
-		protected var hitShape:GraphicElement
-		protected var borderShape:GraphicElement;	
-		protected var wShape:GraphicElement;
+		protected var overallMask:Graphic;
+		protected var hitShape:Graphic
+		protected var borderShape:Graphic;	
+		protected var wShape:Graphic;
 		
 		private var counter:Number = 0;
 		
 		private var _x:Number;
 		private var _y:Number;
 		
-		protected var _mShape:GraphicElement;
-		public function get mShape():GraphicElement { return _mShape; }
+		protected var _mShape:Graphic;
+		public function get mShape():Graphic { return _mShape; }
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function MaskContainer() 
 		{
@@ -118,7 +118,7 @@ package com.gestureworks.cml.element
 		private var _maskBorderColor:uint = 0x000000;
 		/**
 		 * Mask border color, if a border is desired around the mask element.
-		 * @default: 0x000000;
+		 * @default 0x000000;
 		 */
 		public function get maskBorderColor():uint { return _maskBorderColor; }
 		public function set maskBorderColor(value:uint):void {
@@ -129,7 +129,7 @@ package com.gestureworks.cml.element
 		private var _maskBorderStroke:Number = 0;
 		/**
 		 * The thickness of the border in pixels.
-		 * @default: 0;
+		 * @default 0;
 		 */
 		public function get maskBorderStroke():Number { return maskBorderStroke; }
 		public function set maskBorderStroke(value:Number):void {
@@ -140,7 +140,7 @@ package com.gestureworks.cml.element
 		private var _maskBorderAlpha:Number = 0;
 		/**
 		 * Alpha for the border of the mask if desired. Must be set between 0 and 1 to be visible.
-		 * @default: 0;
+		 * @default 0;
 		 */
 		public function get maskBorderAlpha():Number { return _maskBorderAlpha; }
 		public function set maskBorderAlpha(value:Number):void {
@@ -150,12 +150,11 @@ package com.gestureworks.cml.element
 		private var _dragAngle:Number = 0;
 		public function get dragAngle():Number { return _dragAngle; }
 		public function set dragAngle(value:Number):void {
-			//trace("drag angle being set");
 			_dragAngle = value;
 		}
 		
 		/**
-		 * CML call back initialisation
+		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -163,7 +162,6 @@ package com.gestureworks.cml.element
 			graphicArray.array = childList.getValueArray();
 			
 			for (var i:Number = graphicArray.length - 1; i > -1; i--) {
-				trace("Removing item: " + graphicArray.array[i] + " at " + i);
 				removeChild(graphicArray.array[i]);
 			}
 			
@@ -171,7 +169,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		override public function init():void
 		{
@@ -179,12 +177,12 @@ package com.gestureworks.cml.element
 		}
 		
 		private function createMasks():void {
-			overallMask = new GraphicElement();
+			overallMask = new Graphic();
 			
-			_mShape = new GraphicElement();
-			borderShape = new GraphicElement();
-			wShape = new GraphicElement();
-			hitShape = new GraphicElement();
+			_mShape = new Graphic();
+			borderShape = new Graphic();
+			wShape = new Graphic();
+			hitShape = new Graphic();
 			
 			switch(_maskShape) {
 				case "rectangle":
@@ -262,7 +260,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function gestureHandler(e:*):void {
-			//trace("Gesture handling");
 			_x = e.localX;
 			_y = e.localY;
 		}
@@ -319,9 +316,6 @@ package com.gestureworks.cml.element
 		
 		private function rotateHandler(e:GWGestureEvent):void 
 		{
-			//trace("mask rotation");
-			//trace(_x, _y);
-			
 			//Calculate rotation transformations for all the pieces of the mask.
 			var m:Matrix = hitShape.transform.matrix;
 			m.tx -= _x;
@@ -331,9 +325,7 @@ package com.gestureworks.cml.element
 			m.tx += _x;
 			m.ty += _y;
 			hitShape.transform.matrix = m;
-			
-			//trace(hitShape.x, hitShape.y);
-			
+						
 			_mShape.x = hitShape.x;
 			borderShape.x = hitShape.x;
 			wShape.x = hitShape.x;
@@ -349,7 +341,6 @@ package com.gestureworks.cml.element
 		
 		private function scaleHandler(e:GWGestureEvent):void 
 		{
-			//trace("mask scale");
 			_mShape.scaleX += e.value.scale_dsx;
 			_mShape.scaleY += e.value.scale_dsy;
 			
@@ -367,7 +358,6 @@ package com.gestureworks.cml.element
 		 * @param	e
 		 */
 		public function cycleMasks(e:GWGestureEvent):void {
-			//trace("cycle masks");
 			removeChild(graphicArray.array[counter]);
 			counter++;
 			
@@ -380,7 +370,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify listeners
+		 * Dispose method to nullify listeners
 		 */
 		override public function dispose():void {
 			super.dispose();

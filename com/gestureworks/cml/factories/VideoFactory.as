@@ -14,10 +14,15 @@ package com.gestureworks.cml.factories
 	import flash.utils.Timer;
 	import com.gestureworks.cml.events.StateEvent;
 
-	/**
-	 * The Video Factory 
-	 * @author Charles Veasey 
-	 */	
+	/** 
+	 * The VideoFactory is the base class for all Videos.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.factories.Text
+	 * @see com.gestureworks.cml.factories.TLF
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 */	 
 	public class VideoFactory extends ElementFactory
 	{
 		private var netConnection:NetConnection;
@@ -28,7 +33,7 @@ package com.gestureworks.cml.factories
 		private var sizeLoaded:Boolean = false;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function VideoFactory() {}
 
@@ -281,7 +286,7 @@ package com.gestureworks.cml.factories
 					connectNetStream();
 					break;
 				case "NetStream.Play.StreamNotFound":
-					if (debug) print("Unable to locate video: " + src);
+					if (debug) trace("Unable to locate video: " + src);
 					break;
 				case "NetStream.Play.Stop":
 					end();
@@ -289,7 +294,7 @@ package com.gestureworks.cml.factories
 			}	
 			
 			if (debug)
-				print(event.info.code);
+				trace(event.info.code);
 		}
 		
 		private function connectNetStream():void
@@ -332,8 +337,8 @@ package com.gestureworks.cml.factories
 				
 				if (debug)
 				{
-					print("video file: " + src);					
-					print("video duration: " + meta.duration);
+					trace("video file: " + src);					
+					trace("video duration: " + meta.duration);
 				}	
 			}
 			
@@ -353,8 +358,8 @@ package com.gestureworks.cml.factories
 											
 				if (debug)
 				{
-					print("video width: " + meta.width);
-					print("video height: " + meta.height);				
+					trace("video width: " + meta.width);
+					trace("video height: " + meta.height);				
 				}
 				
 				sizeLoaded = true;
@@ -366,17 +371,17 @@ package com.gestureworks.cml.factories
 		
 		private function onSecurityError(event:SecurityErrorEvent):void
 		{
-			print("security error: " + event.text);
+			trace("security error: " + event.text);
 		}
 		
 		private function onAsyncError(event:AsyncErrorEvent):void
 		{
-			print("async error: " + event.text);
+			trace("async error: " + event.text);
 		}
 		
 		private function onIOError(event:IOErrorEvent):void
 		{
-			print("io error: " + event.text);
+			trace("io error: " + event.text);
 		}		
 		
 		private function onProgress(event:TimerEvent):void
@@ -393,7 +398,7 @@ package com.gestureworks.cml.factories
 			else
 			{
 				if (debug)
-					print(src + " percent loaded: " + percentLoaded);
+					trace(src + " percent loaded: " + percentLoaded);
 			}	
 		}
 		
@@ -402,7 +407,7 @@ package com.gestureworks.cml.factories
 			_position++;
 			
 			if (debug)
-				print(_position);
+				trace(_position);
 		}
 		
 		private function end():void
@@ -414,7 +419,7 @@ package com.gestureworks.cml.factories
 		}	
 		
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void 
 		{

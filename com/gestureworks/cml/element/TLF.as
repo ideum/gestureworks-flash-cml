@@ -18,9 +18,20 @@ package com.gestureworks.cml.element
 	import flashx.textLayout.formats.*;
 
 	/**
-	 * This is a wrapper for AS3's TLF system. The input is in the form of XML,
-	 * and prefixed with AS3's namespace
-	 * @author Charles Veasey 
+	 * The TLF element provides access to AS3's TLF system within CML. The input is in the form of XML,
+	 * and prefixed with AS3's namespace. Use the native flashx.textLayout.elements.TextFlow and 
+	 * flashx.textLayout.formats.TextLayoutFormat classes when developing in AS3.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * <TextFlow xmlns='http://ns.adobe.com/textLayout/2008'>
+	 *		<p>Paragraph1</p>
+	 *		<p>Paragraph2</p>
+	 *		<p>Paragraph3</p>
+	 *	</TextFlow>
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see flashx.textLayout.elements.TextFlow;
 	 */	
 	
 	public class TLF extends ElementFactory
@@ -32,20 +43,19 @@ package com.gestureworks.cml.element
 		private var initialized:Boolean=false;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function TLF()
 		{
 			super();		
 			textFormat = new TextLayoutFormat;
-			
 			configuration = new Configuration;
 			configuration.textFlowInitialFormat = textFormat;
 			textFlow = new TextFlow;
 		}	
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -99,7 +109,7 @@ package com.gestureworks.cml.element
 			if (initialized) updateContainer();
 		}	
 		
-		private var _font:String = "MyriadProRegularTLF";
+		private var _font:String = "OpenSansRegular";
 		/**
 		* font name, use CFF embeded fonts 
 		*/	
@@ -134,13 +144,14 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * input, must be prefixed with AS3's namespace:
+		 * Input must be prefixed with AS3's namespace:
+		 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 		 * <TextFlow xmlns='http://ns.adobe.com/textLayout/2008' color='0xFF2233'>
 		 *		<p>Paragraph1</p>
 		 *		<p>Paragraph2</p>
 		 *		<p>Paragraph3</p>
 		 *	</TextFlow>
-		 * 
+		 * </codeblock>
 		 * @param input string
 		 */
 		public function input(value:String):void
@@ -169,7 +180,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{

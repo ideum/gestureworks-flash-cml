@@ -8,15 +8,79 @@ package com.gestureworks.cml.layouts
 	import flash.sampler.NewObjectSample;
 	
 	/**	 
-	 * List Layout
-	 * @author Charles Veasey
+	 * The ListLayout positions the display objects in a list.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+		//horizontal list layout 
+		var h_list:Container = getImageContainer();
+		h_list.x = 475;
+		h_list.y = 25;
+		addChild(h_list);
+					
+		var horiztonalLayout:ListLayout = new ListLayout();
+		horiztonalLayout.spacingX = 200;
+		horiztonalLayout.tween = true;
+		horiztonalLayout.tweenTime = 1500;
+		h_list.applyLayout(horiztonalLayout);
+		
+		//vertical list layout
+		var v_list:Container = getImageContainer();
+		v_list.x = 750;
+		v_list.y = 200;
+		addChild(v_list);
+					
+		var verticalLayout:ListLayout = new ListLayout();
+		verticalLayout.type = "vertical";
+		verticalLayout.useMargins = true;
+		verticalLayout.marginY = 5;
+		verticalLayout.tween = true;
+		verticalLayout.tweenTime = 1500;
+		v_list.applyLayout(verticalLayout);		
+
+		
+		function getImageContainer():Container
+		{
+			var container:Container = new Container();
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));			
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));			
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));			
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));			
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));			
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));						
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));						
+			container.addChild(getImageElement("../../../../assets/images/plane.jpg"));						
+			return container;
+		}
+		
+		
+		function getImageElement(source:String):Image
+		{
+			var img:Image = new Image();
+			img.open(source);
+			img.width = 250;
+			img.height = 150;
+			img.resample = true;
+			return img;
+		}
+		
+	 * </codeblock>
+	 * 
+	 * @author Shaun
+	 * @see GridLayout
+	 * @see FanLayout
+	 * @see PileLayout
+	 * @see PointLayout
+	 * @see RandomLayout
+	 * @see com.gestureworks.cml.factories.LayoutFactory
+	 * @see com.gestureworks.cml.element.Container
 	 */
 	public class ListLayout extends LayoutFactory
 	{
 		private var n:int;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ListLayout() 
 		{

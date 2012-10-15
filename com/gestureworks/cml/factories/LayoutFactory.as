@@ -8,10 +8,16 @@ package com.gestureworks.cml.factories
 	import org.libspark.betweenas3.easing.Exponential;
 	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
-	/**
-	 * Base layout class
-	 * @author Charles Veasey and Shaun
-	 */
+	/** 
+	 * The LayoutFactory is the base class for all Graphics.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Charles and Shaun
+	 * @see com.gestureworks.cml.factories.Container
+	 * @see com.gestureworks.cml.factories.TouchContainer
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 */	
 	public class LayoutFactory extends ObjectFactory implements ILayout
 	{
 		protected var childTransformations:Array;

@@ -1,92 +1,17 @@
 package com.gestureworks.cml.element
-{
-	import com.gestureworks.cml.factories.ElementFactory;
-	import com.gestureworks.cml.managers.FileManager;
-	import flash.display.DisplayObject;
-	import flash.geom.ColorTransform;
-	import flash.utils.getDefinitionByName;
+{	
+	import com.gestureworks.cml.element.SWF;
 	
 	/**
-	 * SWFElement displays an external class from a SWF library file that has been loaded through a LibraryKit.
-	 * It has following parameters:src, color and classRef.
-	 *
-	 * @author..
+	 * Deprecated: Please Use com.gestureworks.cml.element.SWF
+	 * @see com.gestureworks.cml.element.SWF
 	 */
-	public class SWFElement extends ElementFactory
+	[Deprecated(replacement = "com.gestureworks.cml.element.SWF")]	
+	public class SWFElement extends SWF
 	{
-		private var asset:*;
-		private var _class:Class;
-		
-		/**
-		 * constructor
-		 */
 		public function SWFElement()
 		{
 			super();
-		}
-		
-		/**
-		 * initialisation method
-		 */
-		public function init():void
-		{
-			
-		}
-		
-		private var _src:String = "";
-		/**
-		 * src loads a swf movie file
-		 */
-		public function get src():String {return _src;}
-		public function set src(value:String):void 
-		{
-			_src = value;
-			
-			if (FileManager.instance.fileList.selectKey(_src).loader)
-				addChild(FileManager.instance.fileList.selectKey(_src).loader);
-			else
-				throw new Error("swf " + _src +  " failed to load");
-		}
-		
-		private var _classRef:String;
-		/**
-		 * classRef loads a swf library class
-		 * must be pre-loaded through the library kit
-		 */
-		public function get classRef():String { return _classRef; }
-		public function set classRef(value:String):void 
-		{ 
-			_classRef = value; 			
-			_class = getDefinitionByName(_classRef) as Class;
-			asset = new _class
-			addChild(asset);
-			//color = _color;
-		}
-		
-		private var _color:Number;
-		/**
-		 * Sets element's color in hex
-		 */
-		public function get color():Number { return _color; }
-		public function set color(value:Number):void 
-		{ 
-			_color = value;
-			var colorTransform:ColorTransform = new ColorTransform();
-			colorTransform.color = _color;
-			if (asset)
-				asset.transform.colorTransform = colorTransform;
-			colorTransform = null;
-		}
-		
-		/**
-		 * dispose method
-		 */
-		override public function dispose():void
-		{
-			super.dispose();
-			asset = null;
-            _class = null;
-		}
-		
+		}			
 	}
 }

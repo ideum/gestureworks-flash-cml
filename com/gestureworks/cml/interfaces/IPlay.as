@@ -1,17 +1,36 @@
 package com.gestureworks.cml.interfaces 
 {
 	/**
-	 * IPlayable
-	 * Implement play control buttons and classes that can play
-	 * @author Charles Veasey
+	 * Implement media control methods
+	 * @author Ideum
 	 */
 	
 	public interface IPlay 
 	{
+		/**
+		 * Plays the media from the beginning.
+		 */
 		function play():void;
-		function pause():void;		
+		
+		/**
+		 * Pauses the media.
+		 */
+		function pause():void;	
+		
+		/**
+		 * Resumes the media from paused position.
+		 */
 		function resume():void;
+		
+		/**
+		 * Stops the media.
+		 */
 		function stop():void;
-		function seek():void;
+		
+		/**
+		 * Seeks media to pos in milliseconds.
+		 * @param	pos
+		 */
+		function seek(pos:Number):void;
 	}
 }

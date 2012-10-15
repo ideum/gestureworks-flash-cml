@@ -1,40 +1,28 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.*;
 	import com.gestureworks.core.*;
-	import com.gestureworks.cml.element.ModestMapMarker;
-	import com.modestmaps.extras.MapControls;
-	import com.modestmaps.extras.ZoomSlider;
+	import com.gestureworks.events.*;
+	import com.gestureworks.events.GWGestureEvent;
 	import com.modestmaps.geo.Location;
-	import com.modestmaps.Map;
-	import com.modestmaps.TweenMap;
+	import com.modestmaps.mapproviders.*;
 	import com.modestmaps.mapproviders.microsoft.*;
 	import com.modestmaps.mapproviders.yahoo.*;
-	import com.modestmaps.events.MapEvent;
-	import com.modestmaps.events.MarkerEvent;
+	import com.modestmaps.TweenMap;
 	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.geom.Point;
-	
 	import flash.events.MouseEvent;
-	import flash.utils.Dictionary;
-	//import com.modestmaps.mapproviders.google.*;
-	import com.modestmaps.mapproviders.*;
 	import org.tuio.*;
+	
+	
 	/**
-	 * ModestMapsElement uses the ModestMaps API to generate an interactive map that can be touched and zoomed. Optionally ModestMapMarkers can be included with it to
+	 * The ModestMap element uses the ModestMaps API to generate an interactive map that can be touched and zoomed. Optionally ModestMapMarkers can be included with it to
 	 * give points of interest. A ModestMapMarker is primarily a container for graphic objects that attaches itself to a map point, so it is invisible until display
 	 * objects are added to its display list.
 	 * 
-	 * When declaring a map, the important parts are latitude, longitude, zoom, and the mapprovider, which is the style of map that will be seen.
+	 * <p>When declaring a map, the important parts are latitude, longitude, zoom, and the mapprovider, which is the style of map that will be seen.</p>
 	 * 
-	 * When declaring latitude, negative values are west of the Prime Meridian, and for longitude, negative values are south of the equator.
+	 * <p>When declaring latitude, negative values are west of the Prime Meridian, and for longitude, negative values are south of the equator.</p>
 	 * 
-	 * ModestMapElement has the following parameters: mapProvider, latitude, longitude, draggable.
-	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 		var map1:ModestMapElement = new ModestMapElement;
@@ -46,9 +34,8 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class ModestMapElement extends Container
+	public class ModestMap extends Container
 	{
-		//private var map:Map;
 		private var map:TweenMap;
 		
 		private var p1:IMapProvider = new BlueMarbleMapProvider;
@@ -70,9 +57,9 @@ package com.gestureworks.cml.element
 		private var mapMarkers:Array;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function ModestMapElement() 
+		public function ModestMap() 
 		{
 			super();
 			mapMarkers = new Array();
@@ -152,7 +139,7 @@ package com.gestureworks.cml.element
 		public function get loaded():String { return _loaded; }
 		
 		/**
-		 * CML callbcak initialisation
+		 * CML callbcak Initialisation
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -172,7 +159,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -222,7 +209,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Event called to cycle through map providers
+		 * Sets the current index value
 		 * @param	e
 		 */
 		public function switchMapProvider(e:*):void {
@@ -233,16 +220,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * update frame
+		 * Updates the frame of Modest Map
 		 */
 		public function updateFrame():void {
-			//trace("Updating frame from ModestMapElement");
 			width = map.width;
 			height = map.height;
 		}
 		
 		/**
-		 * dispose method to nullify children
+		 * Dispose method
 		 */
 		override public function dispose():void {
 			super.dispose();

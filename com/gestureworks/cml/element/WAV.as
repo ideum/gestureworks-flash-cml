@@ -24,29 +24,26 @@ package com.gestureworks.cml.element
 	import flash.net.URLLoaderDataFormat;
 	
 	/**
-	 * The WavElement is an AIR required element that loads in a .WAV file and plays it, with the options to pause, stop, and resume play. The WavElement will automatically load any XMP data
-	 * if it is present. The WavElement also provides the option of a graphical waveform by setting the display property to "waveform", otherwise "none". The waveform's color can be set.
+	 * The WAV element is an AIR required element that loads in a .WAV file and plays it, with the options to pause, stop, and resume play. The WAV element will automatically load any XMP data
+	 * if it is present. The WAV element also provides the option of a graphical waveform by setting the display property to "waveform", otherwise "none". The waveform's color can be set.
 	 * 
-	 * To use the WavElement, it absolutely MUST be compiled in an AIR project.
+	 * <p>To use the WavElement, it absolutely MUST be compiled in an AIR project.</p>
 	 * 
-	 * WavElement has the following parameters: cueStart, bufferSize, backgroundColor, backgroundAlpha, waveColor, preload, autoplay, loop, src, volume, pan, display
-	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 	   var wavElement:WavElement = new WavElement();
-		wavElement.src = "library/assets/FDR-Infamy.wav";
+		wavElement.open("FDR-Infamy.wav");
 		wavElement.autoplay = true;
 		wavElement.display = "waveform";
 		wavElement.volume = 0.5;
+		addChild(wavElement);	
+		wavElement.init();		
 		
-		addChild(wavElement);
-		
-		wavElement.init();
 	 *
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class WavElement extends ElementFactory
+	public class WAV extends ElementFactory
 	{
 		private var urlLoader:URLLoader;
 		private var sound:Sound;
@@ -75,9 +72,9 @@ package com.gestureworks.cml.element
 		private var _cueStreamStart:Number;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function WavElement() 
+		public function WAV() 
 		{
 			super();
 			//propertyDefaults();
@@ -436,7 +433,7 @@ package com.gestureworks.cml.element
 		// PUBLIC METHODS //
 		
 		/**
-		 * CML callback initialisation
+		 * CML callback Initialisation
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -446,7 +443,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -874,7 +871,7 @@ package com.gestureworks.cml.element
 		
 		
 		/**
-		 * dispose method to remove listeners and nullify attributes
+		 * Dispose methods and nullify attributes
 		 */
 		override public function dispose():void {
 			super.dispose();

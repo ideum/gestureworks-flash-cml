@@ -7,63 +7,19 @@ package com.gestureworks.cml.loaders
 	import flash.utils.Dictionary;
 	
 	/**
-	 * XmlLoader
-	 * Loads and stores a global reference to an XML file
-	 * @author Charles Veasey
+	 * The XMLLoader class loads and stores a global reference to an external XML file.
+	 * 
+	 * @author Charles
+	 * @see com.gestureworks.core.CMLLoader
 	 */
-	
 	public class XMLLoader extends EventDispatcher
-	{
-		/**
-		 * stores initial state
-		 */
-		static public const INIT:String = "init";		
-		static private var instances:Dictionary = new Dictionary;
-		
+	{				
 		private var urlLoader:URLLoader;
 		
 		/**
-		 * data the xml file manages
+		 * Holds class instances of the multiton
 		 */
-		public var data:XML = new XML;
-
-		private var _isLoaded:Boolean;		
-		/**
-		 * returns the loaded value
-		 */
-		public function get isLoaded():Boolean { return _isLoaded; }		
-		
-		/**
-		 * constructor will allow single instance for this XMLLoader class
-		 * @param	enforcer
-		 */	 
-		public function XMLLoader(enforcer:SingletonEnforcer)
-		{
-			_isLoaded = false;
-		}	
-		
-		/**
-		 * loads the xml file
-		 * @param	url
-		 */
-		public function loadXML(url:String):void
-		{
-			var urlRequest:URLRequest = new URLRequest(url);
-			urlLoader = new URLLoader;
-			urlLoader.addEventListener(Event.COMPLETE, onXMLDataLoaded);
-			urlLoader.load(urlRequest);
-		}
-		
-		/**
-		 * dispatches an event on loaded file
-		 * @param	e
-		 */
-		public function onXMLDataLoaded(e:Event):void
-		{
-			data = XML(urlLoader.data);
-			_isLoaded = true;
-			dispatchEvent(new Event(XML_.INIT, true, true));
-		}
+		static private var instances:Dictionary = new Dictionary;
 		
 		/**
 		 * returns the XML loader key value
@@ -76,10 +32,56 @@ package com.gestureworks.cml.loaders
 				XMLLoader.instances[key] = new XMLLoader(new SingletonEnforcer());
 			return XMLLoader.instances[key];
 		}
+		
+		/**
+		 * The INIT string is dispatch when file load is complete
+		 */
+		static public const INIT:String = "init";		
+		
+		/**
+		 * Contains the loaded xml file data
+		 */
+		public var data:XML = new XML;
+
+		private var _isLoaded:Boolean;		
+		/**
+		 * Returns a boolean determining whether the file has been loaded
+		 */
+		public function get isLoaded():Boolean { return _isLoaded; }		
+		
+		/**
+		 * Constructor
+		 * @param	enforcer
+		 */	 
+		public function XMLLoader(enforcer:SingletonEnforcer)
+		{
+			_isLoaded = false;
+		}	
+		
+		/**
+		 * Loads the XML filepath
+		 * @param	url
+		 */
+		public function loadXML(url:String):void
+		{
+			var urlRequest:URLRequest = new URLRequest(url);
+			urlLoader = new URLLoader;
+			urlLoader.addEventListener(Event.COMPLETE, onXMLDataLoaded);
+			urlLoader.load(urlRequest);
+		}
+		
+		/**
+		 * XML load complete handler
+		 * @param	e
+		 */
+		public function onXMLDataLoaded(e:Event):void
+		{
+			data = XML(urlLoader.data);
+			_isLoaded = true;
+			dispatchEvent(new Event(XMLLoader.INIT, true, true));
+		}
+				
 	}
 }
 
-/**
- * class can only be access by the XMLLoader class only. 
- */
 class SingletonEnforcer{}

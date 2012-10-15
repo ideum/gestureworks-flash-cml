@@ -11,18 +11,36 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.GestureWorks;	
 	
 	/**
-	 * The VideoViewer is a component that is meant to play video files on the front and metadata on the back.
-	 * It is composed of the following elements: video, front, back, menu, and frame. The video and front may be the same thing. 
-	 * The video is required. The width and height of the component is automatically set to the dimensions of the video element unless it is 
-	 * previously specifed by the component.
+	 * The VideoViewer component is primarily meant to display a Video element and its associated meta-data.
 	 * 
-	 * @author ...
-	 */
-	
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>video</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 *  
+	 * <p>The width and height of the component are automatically set to the dimensions of the Video element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see Component 
+	 * @see com.gestureworks.cml.element.Video
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */			
 	public class VideoViewer extends Component 
 	{		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function VideoViewer() 
 		{
@@ -67,12 +85,12 @@ package com.gestureworks.cml.components
 				front = searchChildren(".image_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!video)
-				video = searchChildren(VideoElement);
+				video = searchChildren(Video);
 			
 			super.init();
 		}
@@ -108,7 +126,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose methods
+		 * Dispose methods
 		 */
 		override public function dispose():void 
 		{

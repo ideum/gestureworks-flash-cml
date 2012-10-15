@@ -1,14 +1,19 @@
 package com.gestureworks.cml.interfaces
 {
 	/**
-	 * ICSS
-	 * Implement classes that are hooked into the css display engine
-	 * @author Charles Veasey
+	 * Implements CSS compatibility.
+	 * @author Ideum
 	 */
-	
 	public interface ICSS
 	{
+		/**
+		 * Returns the css class name.
+		 */
 		function get class_():String;
+		
+		/**
+		 * Sets the css class name.
+		 */
 		function set class_(value:String):void;			
 	}
 }

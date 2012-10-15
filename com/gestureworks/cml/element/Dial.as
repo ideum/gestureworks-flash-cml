@@ -16,22 +16,132 @@ package com.gestureworks.cml.element
 	import flash.text.*;
 	
 	/**
-	 * Dial provides a list of text elements.The text can be moved from top to bottom or bottom to top through the drag event.Dial has two different modes - Continous and Non-Continous. 
-	 * In continous dial the text elements move continously without stopping at the end or beginning through the drag event.In non-continous dial the motion stops when the first element or the last element reaches the center line.
-	 * The text element closest to the center snaps to the center line and also changes its color.<br/>
-	 * It allows the user to set the dial mode from continous to non-continous or non-continous to continous by setting the continous flag to true or false.<br/>
-	 * The number of elements on dial can be increased or decreased by setting the maxItemsOnScreen attribute.
-	 * It has the following parameters: gradientType, gradientColors, gradientAlphas, gradientRatios, gradientWidth, gradientHeight, gradientX, gradientY, gradientRotation, backgroundLineStoke, backgroundAlpha, leftTriangleColor, rightTriangleColor, centerLineLineStoke, centerLineOutlineColor, centerLineOutlineAlpha, centerLineColor, centerLineAlpha, text, maxItemsOnScreen, textColor, selectedTextColor, continuous .
+	 * The Dial element provides a list of text elements in rotary selection tool. 
+	 * 
+	 * <p>The text can be moved from top to bottom or bottom to top through the drag event. 
+	 * The Dial has two different modes - Continous and Non-Continous. In continous dial mode 
+	 * the text elements move continously without stopping at the end or beginning through 
+	 * the drag event.In non-continous dial the motion stops when the first element or the 
+	 * last element reaches the center line. The text element closest to the center snaps to 
+	 * the center line and also changes its color.</p>
+	 * 
+	 * <p>It allows the user to set the dial mode from continous to non-continous or non-continous 
+	 * to continous by setting the continous flag to true or false. The number of elements on 
+	 * dial can be increased or decreased by setting the maxItemsOnScreen attribute. </p>
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
-	   var dial:Dial = new Dial();
-			addChild(dial);
-			dial.x = 100;
-			dial.y = 100;
+			// continuous dial
+			var dial1:Dial = new Dial();
+			
+			// can add any text, increase or decrease the max items to the dial, can change the text color and selected color
+			dial1.text = "Collection 1,Collection 2,Collection 3,Collection 4,Collection 5,Collection 6,Collection 7,Collection 8,Collection 9,Collection 10";
+			dial1.maxItemsOnScreen = 5;
+			dial1.continuous = true;
+			dial1.textColor = 0xDDDDDD;
+			dial1.selectedTextColor = 0x000000;
+			dial1.x = 500;
+			dial1.y = 250;
+			
+			// gradient matrix graphics 
+			dial1.gradientType = "linear";
+			dial1.gradientColors = "0x111111,0xDDDDDD,0x111111";
+			dial1.gradientAlphas = "1,1,1";
+			dial1.gradientRatios = "0,127.5,255";
+			dial1.gradientWidth = 300;
+			dial1.gradientHeight = 200;
+			dial1.gradientX = 25;
+			dial1.gradientY = 0;
+			dial1.gradientRotation = 1.57;
+			
+			// background graphics
+			dial1.backgroundLineStoke = 3;
+			dial1.backgroundAlpha = 5;
+			
+			// triangles graphics
+			dial1.leftTriangleColor = 0x303030;
+			dial1.rightTriangleColor = 0x303030;
+			
+			// center line graphics
+			dial1.centerLineLineStoke = 1;
+			dial1.centerLineOutlineColor = 0xAAAAAAA;
+			dial1.centerLineOutlineAlpha = 0.4;
+			dial1.centerLineColor = 0x666666;
+			dial1.centerLineAlpha = 0.2;
+			
+			// text
+			var text:Text = new Text();
+			text.x = 590;
+			text.y = 200;
+			text.text = "Dial-Continous";
+			text.width = 3000;
+			text.color = 0xCC0099;
+			text.selectable = false;
+			text.font = "OpenSansBold";
+			addChild(text);
+			
+			// initialise method for dial
+			dial1.init();			
+			addChild(dial1);
+		
+			
+			// non-continuous dial
+			var dial2:Dial = new Dial();
+			
+			//can add any text, increase or decrease the max items to the dial, can change the text color and selected color
+			dial2.text = "Collection 1,Collection 2,Collection 3,Collection 4,Collection 5,Collection 6,Collection 7,Collection 8,Collection 9,Collection 10";
+			dial2.maxItemsOnScreen = 5;
+			dial2.continuous = false;
+			dial2.textColor = 0xDDDDDD;
+			dial2.selectedTextColor = 0x000000;
+			dial2.x = 900;
+			dial2.y = 250;
+			
+			//gradient matrix graphics 
+			dial2.gradientType = "linear";
+			dial2.gradientColors = "0x111111,0xDDDDDD,0x111111";
+			dial2.gradientAlphas = "1,1,1";
+			dial2.gradientRatios = "0,127.5,255";
+			dial2.gradientWidth = 300;
+			dial2.gradientHeight = 200;
+			dial2.gradientX = 25;
+			dial2.gradientY = 0;
+			dial2.gradientRotation = 1.57;
+			
+			//background graphics
+			dial2.backgroundLineStoke = 3;
+			dial2.backgroundAlpha = 5;
+			
+			//triangles graphics
+			dial2.leftTriangleColor = 0x303030;
+			dial2.rightTriangleColor = 0x303030;
+			
+			//center line graphics
+			dial2.centerLineLineStoke = 1;
+			dial2.centerLineOutlineColor = 0xAAAAAAA;
+			dial2.centerLineOutlineAlpha = 0.4;
+			dial2.centerLineColor = 0x666666;
+			dial2.centerLineAlpha = 0.2;
+			
+			var text1:Text = new Text();
+			text1.x = 980;
+			text1.y = 200;
+			text1.text = "Dial-NonContinous";
+			text1.width = 3000;
+			text1.color = 0xCC0099;
+			text1.font = "OpenSansBold";
+			text1.selectable = false;
+			addChild(text1);
+			
+			dial2.init();
+			addChild(dial2);
 	 *
 	 * </codeblock>
+	 * 
 	 * @author Uma
+	 * @see Menu
+	 * @see DropDownMenu
+	 * @see OrbMenu
 	 */
 	   
 	public class Dial extends ElementFactory
@@ -44,12 +154,11 @@ package com.gestureworks.cml.element
 		private var centerPos:Number;
 		
 		/**
-		 * Dial constructor.
+		 * Contructor
 		 */
 		public function Dial():void
 		{
 			super();
-		//	init();
 		}
 		
 		/**
@@ -562,7 +671,7 @@ package com.gestureworks.cml.element
 				if (continuous && i == maxItemsOnScreen)
 					break;	
 				
-				var txt:TextElement = new TextElement();
+				var txt:Text = new Text();
 				txt.x = 20;
 				txt.y = 50;
 				txt.fontSize = 20;
@@ -593,7 +702,7 @@ package com.gestureworks.cml.element
 		 */
 		private function gestureDragHandler(event:GWGestureEvent):void
 		{
-			var tf:TextElement;
+			var tf:Text;
 			
 			// re-map drag data
 			var dy:Number = map(event.value.drag_dy, -20, 20, -10, 10, false, true, true);			
@@ -705,7 +814,7 @@ package com.gestureworks.cml.element
 			// update to closest difference from center
 			diff = centerPos - (textFieldArray[closestIndex].y + textFieldArray[closestIndex].height / 2);			
 			
-			var tf:TextElement;
+			var tf:Text;
 			
 			// apply difference to all textfields
 			for (var j:int=0; j < textFieldArray.length; j++)
@@ -779,7 +888,7 @@ package com.gestureworks.cml.element
 		}		
 	
 		/**
-		 * dispose method nullify attributes and remove listener
+		 * Dispose method nullify attributes and remove listener
 		 */
 		override public function dispose(): void
 		{

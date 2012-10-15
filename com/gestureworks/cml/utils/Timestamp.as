@@ -1,15 +1,24 @@
 package com.gestureworks.cml.utils
 {	
 	/**
-	 * Timestamp class is a wrapper class,it contains time,date and months.
-	 * @author..
-	 */
+	 * The Timestamp utility returns the time and date in a variety of formats.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		var t:TimeStamp = new TimeStamp();
+		trace(t.getDateTime());
+		trace(t.getHrsMinSec());
+	 
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 */	
 	public class Timestamp
 	{
 		private var date:Date;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function Timestamp()
 		{
@@ -17,7 +26,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * Gets current full date
+		 * Returns the current full date
 		 * @return full date
 		 */		
 		public function getDateTime():String
@@ -27,7 +36,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * Gets current time in hrs:min:sec 
+		 * Returns the current time in hrs:min:sec 
 		 * @return time
 		 */		
 		public function getHrsMinSec():String
@@ -49,7 +58,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * returns the month
+		 * Returns the month abbreviation for a given month index
 		 * @param	num
 		 * @return
 		 */
@@ -77,7 +86,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * returns the number suffix
+		 * Returns the number suffix (st, nd, rd, stc) for a given number
 		 * @param	num
 		 * @return
 		 */

@@ -1,69 +1,44 @@
-﻿////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2010-2011 Ideum
-//  All Rights Reserved.
-//
-//  GestureWorks
-//
-//  File:     MaskImageDisplay.as
-//
-//  Author:  Paul Lacey (paul(at)ideum(dot)com)		 
-//
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-
-////////////////////////////////////////////////////////////////////////////////
-
-package com.gestureworks.cml.components
+﻿package com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.element.Container;
-	import com.gestureworks.cml.element.FrameElement;
-	import com.gestureworks.cml.element.GraphicElement;
-	import flash.events.Event;
-	import adobe.utils.CustomActions;
-	import com.gestureworks.cml.factories.TouchContainerFactory;
-	import flash.display.Sprite;
-	import flash.display.Shape;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
+	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.events.*;
 	import flash.utils.*;
-	
-	import com.gestureworks.events.DisplayEvent;
-	import com.gestureworks.cml.kits.ComponentKit;
-	import com.gestureworks.cml.element.TouchContainer
-	import com.gestureworks.cml.element.ImageElement;
-	import com.gestureworks.cml.element.Container;	
-	import com.gestureworks.cml.kits.ComponentKit;	
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.kits.*;
-	import com.gestureworks.events.GWEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.core.DisplayList;
-	import com.gestureworks.core.GestureWorks;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks	
 
-	 /**
-	 * <p>The MaskImageDisplay component is the main component for the MaskImageViewer module.  It contains all the neccessary display objects for the module.</p>
-	 *
-	 * <p>
-     * The MaskImageViewer is a module that uses the Flash Drawing API to create a window based interactive dynamic image mask.  
-	 * Multiple touch object windows can independently display individual masked images pairs with different sizes and orientations.  
-	 * The maskimage windows can be interactively moved around stage, scaled and rotated using multitouch gestures additionaly the 
-	 * mask can be panned, zoomed and rotated using multitouch gestures inside the masked image window. Multitouch frame gestures 
-	 * can be activated and deactivated using the module XML settings.</p>
-	 *
-	**/
-	 
+	/**
+	 * The MaskImageViewer component is primarily meant to display a MaskContainer element and its associated meta-data.
+	 * 
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>maskCon</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 * 
+	 * <p>The width and height of the component are automatically set to the dimensions of the MaskContainer element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Josh
+	 * @see Component
+	 * @see com.gestureworks.cml.element.MaskContainer
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */	 
 	public class MaskImageViewer extends Component//ComponentKit
 	{	
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function MaskImageViewer()
 		{
@@ -106,8 +81,8 @@ package com.gestureworks.cml.components
 				front = searchChildren(".mask_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!maskCon){
@@ -152,7 +127,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void
 		{

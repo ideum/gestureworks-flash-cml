@@ -1,47 +1,45 @@
 package com.gestureworks.cml.loaders
 {
-	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.net.URLRequest;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.*;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;	
 	
 	/**
-	 * SwfLoader
-	 * Loads a SWF file
-	 * @authors Charles Veasey
-	 */	
-	
+	 * The SWFLoader class loads and stores a global reference to an exteranl SWF file.
+	 * 
+	 * @author Charles
+	 * @see com.gestureworks.element.SWF
+	 */
 	public class SWFLoader extends EventDispatcher
 	{ 
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function SWFLoader() {}		
 		
 		/**
-		 * stores the file loaded information
+		 * The FILE_LOADED string is dispatch when file load is complete
 		 */
 		public static const FILE_LOADED:String = "FILE_LOADED";				
 		
 		/**
-		 * hold information of loaded swf file
+		 * Hold information of loaded swf file
 		 */
 		public var loader:Loader;
 		
-		private var _loaded:Boolean = false;
+		private var _isLoaded:Boolean = false;
 		/**
-		 * returns loaded to true or false
+		 * Returns loaded to true or false
 		 */
-		public function get loaded():Boolean { return _loaded; }	
+		public function get isLoaded():Boolean { return _isLoaded; }	
 		
 		private var _src:String = "";		
 		/**
-		 * sets the file source path
+		 * Sets the file source path
 		 */
 		public function get src():String {return _src;}
 		public function set src(value:String):void 
@@ -49,12 +47,12 @@ package com.gestureworks.cml.loaders
 			if (src == "")
 			_src = value;
 			
-			if (!loaded)
+			if (!_isLoaded)
 				load(src);
 		}
 
 		/**
-		 * loads external file
+		 * Loads an external bitmap file
 		 * @param	url
 		 */
 		public function load(url:String):void
@@ -69,10 +67,14 @@ package com.gestureworks.cml.loaders
 			loaderContext.applicationDomain = ApplicationDomain.currentDomain;
 			loader.load(new URLRequest(url), loaderContext);			
 		}		
-		
+
+		/**
+		 * SWF load complete hander
+		 * @param	event
+		 */		
 		private function loaderCompleteHandler(event:Event):void
 		{			
-			_loaded = true;
+			_isLoaded = true;
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, loaderCompleteHandler);			
 			dispatchEvent(new Event(SWFLoader.FILE_LOADED, true, true));			
 		}		

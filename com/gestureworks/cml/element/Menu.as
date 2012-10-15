@@ -1,17 +1,20 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.element.Button;
+	import com.gestureworks.cml.element.Container
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.events.*;
 	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.cml.interfaces.IButton;
 	
 	/**
-	 * Menu constructs a custom menu using nested ButtonElement(s).
-	 * It has following attributes: autoHide, position and autoHideTime.
+	 * The Menu element constructs a custom menu using nested Buttons(s).
+	 * It features auto-hiding and auto-positioning.
 	 * 
-	 * @author..
+	 * @author Ideum
+	 * @see Button
+	 * @see OrbMenu
+	 * @see DropDownMenu
 	 */
 	public class Menu extends Container 
 	{
@@ -19,7 +22,7 @@ package com.gestureworks.cml.element
 		private var buttonArray:Array = [];
  
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function Menu() 
 		{
@@ -27,7 +30,7 @@ package com.gestureworks.cml.element
 		}
 
 		/**
-		 * dispose method to nullify children
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{
@@ -85,7 +88,7 @@ package com.gestureworks.cml.element
 		}		
 		
 		/**
-		 * CML initialisation call back
+		 * CML Initialisation call back
 		 */
 		override public function displayComplete():void {
 			//updateLayout(this.width, this.height)
@@ -93,7 +96,7 @@ package com.gestureworks.cml.element
 			}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void {
 			updateLayout(this.width, this.height);	
@@ -150,7 +153,7 @@ package com.gestureworks.cml.element
 			
 			for (var j:int = 0; j < childList.length; j++) 
 			{
-				if (childList.getIndex(j) is ButtonElement) {
+				if (childList.getIndex(j) is Button) {
 					buttonArray.push(childList.getIndex(j));
 				}	
 			}

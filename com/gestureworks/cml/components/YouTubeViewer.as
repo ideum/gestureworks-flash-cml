@@ -4,26 +4,38 @@ package  com.gestureworks.cml.components
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;	
-	
 	
 	/**
-	 * The YouTubeViewer is a component that is primarily meant to play audio and video files on the front side and meta-data on the back side.
-	 * It is composed of the following elements: video, front, back, backBackground, hideFrontOnFlip, menu, and frame. The wav and front may be the same thing. 
-	 * The wav is required. The width and height of the component is automatically set to the dimensions of the wav element unless it is 
-	 * previously specifed by the component.
+	 * The YouTubeViewer component is primarily meant to display a YouTube element and its associated meta-data.
 	 * 
-	 *@author ...josh
-	 */
-	
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>video</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 *  
+	 * <p>The width and height of the component are automatically set to the dimensions of the YouTube element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see Component
+	 * @see com.gestureworks.cml.element.YouTube
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */		
 	public class YouTubeViewer extends Component
 	{
 		/**
-		 * youtube constructor
+		 * youtube Constructor
 		 */
 		public function YouTubeViewer() 
 		{
@@ -63,12 +75,12 @@ package  com.gestureworks.cml.components
 				front = searchChildren(".video_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!video)
-				video = searchChildren(YouTubeElement);
+				video = searchChildren(YouTube);
 		
 			super.init();
 		}
@@ -105,7 +117,7 @@ package  com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

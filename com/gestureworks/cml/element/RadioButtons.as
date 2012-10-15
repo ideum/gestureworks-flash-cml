@@ -8,7 +8,7 @@
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
 	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.cml.element.TextElement;
+	import com.gestureworks.cml.element.Text;
 	
 	/**
 	 * The RadioButtons element represents a group of radio buttons generated from a user defined list of labels. Other configurable
@@ -17,32 +17,27 @@
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 * 			
-		override protected function gestureworksInit():void
- 		{
-			radioButtonsTest();
-		}
-	 
-		private function radioButtonsTest()
-		{
-			var rButtons:RadioButtons = new RadioButtons("A,B,C,D,E");
-			rButtons.x = 200;
-			rButtons.y = 200;
-		    rButtons.labels = "Abracadabra,B,C,D,E,f,g,h,i,k";			
-			rButtons.fontColor = 0xFF0216;			
-			rButtons.verticalOffset = 70;
-			rButtons.update();
-			rButtons.addEventListener(StateEvent.CHANGE, testRBSelect);
-			addChild(rButtons);
-		}
+		var rButtons:RadioButtons = new RadioButtons("A,B,C,D,E");
+		rButtons.x = 200;
+		rButtons.y = 200;
+		rButtons.labels = "Abracadabra,B,C,D,E,f,g,h,i,k";			
+		rButtons.fontColor = 0xFF0216;			
+		rButtons.verticalOffset = 70;
+		rButtons.update();
+		rButtons.addEventListener(StateEvent.CHANGE, testRBSelect);
+		addChild(rButtons);
 		
-		private function testRBSelect(event:StateEvent):void
+		
+		function testRBSelect(event:StateEvent):void
 		{
 			trace(event.value);
-		}
-	 * 
-	 * 
+		}	
+
 	 * </codeblock>
+	 * 
 	 * @author Shaun
+	 * @see Button
+	 * @see DropDownMenu
 	 */
 	public class RadioButtons extends ElementFactory 	 
 	{		
@@ -50,7 +45,7 @@
 		private var radius:Number;
 		
 		/**
-		 * RadioButton constructor. Allows users to define a group of radio buttons by passing a comma delimited string containing
+		 * RadioButton Constructor. Allows users to define a group of radio buttons by passing a comma delimited string containing
 		 * label names. 
 		 * @param	labels  the comma delimited list of labels 
 		 */
@@ -129,7 +124,7 @@
 		 */
 		private function drawButton(label:String):void
 		{	
-			var caption:TextElement = new TextElement();			
+			var caption:Text = new Text();			
 			if (_fontSize)
 				caption.fontSize = _fontSize;
 			if (_fontStyle)
@@ -167,7 +162,7 @@
 		 */
 		private function setButtonPosition(button:Sprite):void
 		{
-			var lastLabel:TextElement = getLastChild(TextElement);
+			var lastLabel:Text = getLastChild(Text);
 			if (lastLabel)
 			{			
 				//set a minimum distance to prevent overlap
@@ -328,7 +323,7 @@
 		}	
 		
 		/**
-		 * dispose method to nullify attributes and remove listeners
+		 * Dispose methods and remove listeners
 		 */
 		override public function dispose():void
 		{

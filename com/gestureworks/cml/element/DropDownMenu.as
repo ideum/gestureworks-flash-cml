@@ -1,7 +1,7 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.ElementFactory;
-	import com.gestureworks.cml.element.TextElement;
+	import com.gestureworks.cml.element.Text;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.display.Sprite;
@@ -10,28 +10,54 @@ package com.gestureworks.cml.element
 	import flash.events.*;
 	import com.gestureworks.cml.events.StateEvent;
 	import org.tuio.*;
+	import com.gestureworks.cml.element.Graphic;
 	
 	/**
 	 * Drop down menu is used to create a simple menu from a text string of items.
-	 * It has the following parameters: menuTitle, font, fontsize, color, fill, menuMarker and menuItems, which will be a comma separated list of items to populate the menu.
+	 * The menuItems are a comma separated list of items to populate the menu.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 *
+		var ddMenu:DropDownMenu = new DropDownMenu();
+		ddMenu.x = 500;
+		ddMenu.y = 150;
+		ddMenu.fill = 0xf2d4c2;
+		ddMenu.color = 0xA66874;
+		ddMenu.fontSize = 36;
+		ddMenu.menuTitle = "Images";
+		ddMenu.menuItems = "Image1,Image2,Image3,Image4,Image5";
+		addChild(ddMenu);
+		ddMenu.init();
+				
+					
+		// This is the event listener for when a menu item has been selected.
+		ddMenu.addEventListener(StateEvent.CHANGE, onItemSelected);
+		
+		
+		function onItemSelected(e:StateEvent):void {
+			trace("OnItemSelected", e.value);
+		}
+
+	 * </codeblock>
 	 * 
 	 * @author josh
+	 * @see Menu
+	 * @see OrbMenu
 	 */
-	
 	public class DropDownMenu extends ElementFactory
 	{
 		private var _open:Boolean = false;
 		private var _currentSelection:String;
 		private var _itemBackgrounds:Array;
-		private var _menuTitle:TextElement;
+		private var _menuTitle:Text;
 		private var _menuItemsArray:Array;
 		private var _hit:Sprite;
 		private var _width:Number;
 		private var _height:Number;
-		private var triangle:GraphicElement;
+		private var triangle:Graphic;
 		
 		/**
-		 * dropdown menu constructor
+		 * dropdown menu Constructor
 		 */
 		public function DropDownMenu():void {
 			super();
@@ -61,17 +87,17 @@ package com.gestureworks.cml.element
 		private var _fill:uint = 0x777777;
 		/**
 		 * Background color for the menu, default grey
-		 * @default: 0x777777
+		 * @default 0x777777
 		 */
 		public function get fill():uint { return _fill; }
 		public function set fill(value:uint):void {
 			_fill = value;
 		}
 		
-		private var _font:String = "ArialFont"
+		private var _font:String = "OpenSansRegular"
 		/**
 		 * Font style of the menu
-		 * @default: ArialFont
+		 * @default OpenSansRegular
 		 */
 		public function get font():String { return _font; }
 		public function set font(value:String):void {
@@ -81,7 +107,7 @@ package com.gestureworks.cml.element
 		private var _color:uint = 0x0000ff;
 		/**
 		 * The text color
-		 * @default: blue
+		 * @default blue
 		 */
 		public function get color():uint { return _color; }
 		public function set color(value:uint):void {
@@ -91,7 +117,7 @@ package com.gestureworks.cml.element
 		private var _fontSize:Number = 15;
 		/**
 		 * defines the font size
-		 * @default=15;
+		 * @default 15;
 		 */
 		public function get fontSize():Number { return _fontSize; }
 		public function set fontSize(value:Number):void {
@@ -101,7 +127,7 @@ package com.gestureworks.cml.element
 		private var _menuMarker:Boolean = true;
 		/**
 		 * Sets whether or not to display a triangle to help indicate this is a drop down menu.
-		 * @default: true
+		 * @default true
 		 */
 		public function get menuMarker():Boolean { return _menuMarker; }
 		private function set menuMarker(value:Boolean):void {
@@ -129,7 +155,7 @@ package com.gestureworks.cml.element
 		
 		private function createMenu():void {
 			if (_menuMarker){
-				triangle = new GraphicElement();
+				triangle = new Graphic();
 				triangle.shape = "triangle";
 				triangle.width = _fontSize / 2;
 				triangle.height = _fontSize / 2;
@@ -139,7 +165,7 @@ package com.gestureworks.cml.element
 			}
 			
 			//Find longest string
-			var widthField:TextElement = new TextElement();
+			var widthField:Text = new Text();
 			widthField.text = _title;
 			widthField.autoSize = "left";
 			widthField.font = _font;
@@ -154,7 +180,7 @@ package com.gestureworks.cml.element
 			removeChild(widthField);
 			
 			for each (var i:String in menuItemsArray) {
-				var iField:TextElement = new TextElement();
+				var iField:Text = new Text();
 				iField.text = i;
 				iField.autoSize = "left";
 				iField.font = _font;
@@ -176,7 +202,7 @@ package com.gestureworks.cml.element
 			
 			createHit();
 			
-			//Create TextElement specifically for the menu.
+			//Create Text specifically for the menu.
 			_menuTitle = createMenuItem(_title, "menu");
 			addChild(_menuTitle);
 			trace("Menu: ", _menuTitle.x, _menuTitle.y);
@@ -188,7 +214,7 @@ package com.gestureworks.cml.element
 			else
 				_menuTitle.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 			
-			//Create TextElement for each menu item.
+			//Create Text for each menu item.
 			for (var j:int = 0; j < menuItemsArray.length; j++) {
 				trace(menuItemsArray);
 				trace(_menuItemsArray);
@@ -230,8 +256,8 @@ package com.gestureworks.cml.element
 			//AddEventListeners.
 		}
 		
-		private function createMenuItem(s:String, idIn:String=""):TextElement {
-			var menuElement:TextElement = new TextElement();
+		private function createMenuItem(s:String, idIn:String=""):Text {
+			var menuElement:Text = new Text();
 			menuElement.width = _width;
 			menuElement.height = _height;
 			menuElement.text = s;
@@ -289,7 +315,7 @@ package com.gestureworks.cml.element
 			
 			if (_menuMarker)	triangle.color = _fill;
 			
-			for each (var i:TextElement in _menuItemsArray) {
+			for each (var i:Text in _menuItemsArray) {
 				i.backgroundColor = _color;
 				i.color = _fill;
 				addChild(i);
@@ -312,7 +338,7 @@ package com.gestureworks.cml.element
 			
 			if (_menuMarker)	triangle.color = _color;
 			
-			for each (var i:TextElement in _menuItemsArray) {
+			for each (var i:Text in _menuItemsArray) {
 				removeChild(i);
 			}
 			
@@ -325,7 +351,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attributes and remove listeners
+		 * Dispose methods and remove listeners
 		 */
 		override public function dispose():void {
 			super.dispose();

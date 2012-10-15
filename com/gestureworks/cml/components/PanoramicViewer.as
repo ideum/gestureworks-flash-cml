@@ -1,29 +1,43 @@
 ﻿package com.gestureworks.cml.components
 {
-	//----------------adobe--------------//
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
-	import com.gestureworks.core.GestureWorks;
 	import flash.display.DisplayObject;
 	import flash.events.*;
-	import flash.events.MouseEvent;
 	import flash.geom.*;
-	import org.tuio.TuioTouchEvent;
-	//---------- gestureworks ------------//
-	/**
-	 * PanoramicViewer provides interaction with a panorama, allowing the entire element to be viewed and scaled while maintaining the same touch, pinch, and zoom interaction as the standalone element does.
-	 * It is composed of the following elements: panoramic, front, back, menu,hideFrontOnFlip, autoTextLayout and frame. The video and front may be the same thing. 
-	 * The width and height of the component is automatically set to the dimensions of the video element unless it is 
-	 * previously specifed by the component.
-	 * 
-	 * @author ...josh
-	 */ 
 	
+	/**
+	 * The PanoramicViewer component is primarily meant to display a Panoramic element and its associated meta-data.
+	 * 
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>panoramic</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 *  
+	 * <p>The width and height of the component are automatically set to the dimensions of the Panoramic element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Josh
+	 * @see Component
+	 * @see com.gestureworks.cml.element.Panoramic
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */		 
 	public class PanoramicViewer extends Component
 	{	
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function PanoramicViewer()
 		{
@@ -63,12 +77,12 @@
 				front = searchChildren(".image_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!panoramic)
-				panoramic = searchChildren(PanoramicElement);
+				panoramic = searchChildren(Panoramic);
 		
 			super.init();
 		}
@@ -93,7 +107,7 @@
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void {
 			super.dispose();

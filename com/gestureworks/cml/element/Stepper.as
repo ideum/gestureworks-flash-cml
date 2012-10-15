@@ -15,31 +15,96 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 
 	/**
-	 * The Stepper element provides increment and decrement of Numbers.
-	 * It has the following parameters: backgroundLinecolor, backgroundLineStroke, backgroundColor, topTriangleColor, topTriangleAlpha, bottomTriangleAlpha, bottomTriangleColor, textColor, data, float .
-	 *
+	 * The Stepper element provides a graphical user interface tool to increment and decrement numbers.
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
-	   var st:Stepper = new Stepper();
-	   st.x = 50;
-	   st.y = 50;
-	   st.init();
-	   addChild(st);
+		// float stepper
+		var st:Stepper = new Stepper();
+		
+		// change the stepper from float to integer, text color, text value
+		st.textColor = 0x0000FF;
+		st.text = 0.1;
+		st.float = true;
+		st.x = 600;
+		st.y = 300;
+				
+		// background graphics
+		st.backgroundLineColor = 0x000000;
+		st.backgroundLineStroke = 2;
+		st.backgroundColor = 0xCCCCCC;
+		
+		// triangles graphics
+		st.topTriangleColor = 0x000000;
+		st.topTriangleAlpha = 2;
+		st.bottomTriangleColor = 0x000000;
+		st.bottomTriangleAlpha = 2;
+		
+		// text
+		var text:Text = new Text();
+		text.x = 600;
+		text.y = 260;
+		text.text = "Stepper-Float";
+		text.width = 2000;
+		text.color = 0x00FF00;
+		text.selectable = false;
+		text.font = "OpenSansBold";
+		addChild(text);
+		
+		st.init();
+		addChild(st);
+		
+		
+		// integer stepper
+		var st1:Stepper = new Stepper();
+		
+		// change the stepper from integer to float, text color, text value
+		st1.textColor = 0x0000FF;
+		st1.text = 1;
+		st1.float = false;
+		st1.x = 1000;
+		st1.y = 300;
+		
+		// background graphics
+		st1.backgroundLineColor = 0x000000;
+		st1.backgroundLineStroke = 2;
+		st1.backgroundColor = 0xCCCCCC;
+		
+		// triangles graphics
+		st1.topTriangleColor = 0x000000;
+		st1.topTriangleAlpha = 2;
+		st1.bottomTriangleColor = 0x000000;
+		st1.bottomTriangleAlpha = 2;
+
+		// text
+		var text1:Text = new Text();
+		text1.x = 1000;
+		text1.y = 260;
+		text1.text = "Stepper-Integer";
+		text1.multiline = true;
+		text1.wordWrap = true;
+		text1.width = 2000;
+		text1.color = 0x00FF00;
+		text1.selectable = false;
+		text1.font = "OpenSansBold";
+		addChild(text1);
+		
+		st1.init();
+		addChild(st1);	 
 	
 	 *
 	 * </codeblock>
+	 * 
 	 * @author Uma
+	 * @see Slider
 	 */
 	public class Stepper extends ElementFactory
 	{
-		
 		/**
-		 * Stepper constructor.
+		 * Constructor
 		 */
 		public function Stepper()
 		{
 			super();
-		//	init();
 		}
 		
 		/**
@@ -79,12 +144,12 @@ package com.gestureworks.cml.element
 		/**
 		 * Defines the text Field
 		 */
-		public var txt:TextElement = new TextElement();
+		public var txt:Text = new Text();
 		
 		/**
 		 * Defines the input text Field
 		 */
-		public var inputTxt:TextElement = new TextElement();
+		public var inputTxt:Text = new Text();
 		
 		private var _text:Number = 0.1;
 		
@@ -289,13 +354,9 @@ package com.gestureworks.cml.element
 			bottomSquare.gestureList = {"n-tap": true};
 
 			ts.addEventListener(GWGestureEvent.DRAG, onDrag);
-		//	ts.addEventListener(TouchEvent.TOUCH_TAP, onTap);
 			ts.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			topSquare.addEventListener(GWGestureEvent.TAP, upArrow);
 			bottomSquare.addEventListener(GWGestureEvent.TAP, downArrow);
-							
-		//	topSquare.addEventListener(MouseEvent.MOUSE_UP, incrementText);
-	    //	bottomSquare.addEventListener(MouseEvent.MOUSE_DOWN, decrementText);
 				
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TAP, onTap);
@@ -398,16 +459,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			text = Number(inputTxt.text);
-			text = NumberUtils.roundNumber(text , 10);
-			text++;
-		    inputTxt.text = text.toString();
+				text = Number(inputTxt.text);
+				text = NumberUtils.roundNumber(text , 10);
+				text++;
+				inputTxt.text = text.toString();
 			}
 			else
 			{
-			text = int(inputTxt.text);
-			text++;
-			inputTxt.text = text.toString();
+				text = int(inputTxt.text);
+				text++;
+				inputTxt.text = text.toString();
 			}
 		}
 		
@@ -419,16 +480,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			text = Number(inputTxt.text);
-			text = NumberUtils.roundNumber(text , 10);
-			text--;
-			inputTxt.text = text.toString();
+				text = Number(inputTxt.text);
+				text = NumberUtils.roundNumber(text , 10);
+				text--;
+				inputTxt.text = text.toString();
 			}
 			else
 			{
-			text = int(inputTxt.text);
-			text--;
-			inputTxt.text = text.toString();
+				text = int(inputTxt.text);
+				text--;
+				inputTxt.text = text.toString();
 			}
 		}
 		
@@ -440,16 +501,16 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			text = Number(inputTxt.text);
-			text = NumberUtils.roundNumber(text , 10);
-			text++;
-			inputTxt.text = text.toString();
+				text = Number(inputTxt.text);
+				text = NumberUtils.roundNumber(text , 10);
+				text++;
+				inputTxt.text = text.toString();
 			}
 			else
 			{
-			text = int(inputTxt.text);
-			text++;
-			inputTxt.text = text.toString();
+				text = int(inputTxt.text);
+				text++;
+				inputTxt.text = text.toString();
 			}
 		}
 		
@@ -461,21 +522,21 @@ package com.gestureworks.cml.element
 		{
 			if (float)
 			{
-			text = Number(inputTxt.text);
-			text = NumberUtils.roundNumber(text , 10);
-			text--;
-			inputTxt.text = text.toString();
+				text = Number(inputTxt.text);
+				text = NumberUtils.roundNumber(text , 10);
+				text--;
+				inputTxt.text = text.toString();
 			}
 			else
 			{
-			text = int(inputTxt.text);
-			text--;
-			inputTxt.text = text.toString();	
+				text = int(inputTxt.text);
+				text--;
+				inputTxt.text = text.toString();	
 			}
 		}
 		
 		/**
-		 * dispose method to nullify attributes
+		 * Dispose methods
 		 */
 		override public function dispose(): void
 		{

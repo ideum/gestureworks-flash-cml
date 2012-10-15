@@ -7,52 +7,46 @@ package com.gestureworks.cml.element
 	import flash.sampler.NewObjectSample;
 	
 	/**
-	 * This container allows switching between a group of containers by selecting their associated tabs. 
+	 * The TabbedContainer element is a container that allows switching between a group of containers by selecting their associated tabs. 
 	 * 
  	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 * 	
-	 * override protected function gestureworksInit():void
- 		{
-			trace("gestureWorksInit()");
-			tabbedContainerTestAS();
-		}
+		var tabC:TabbedContainer = new TabbedContainer();	
+		tabC.x = 100;
+		tabC.y = 100;
+		tabC.init();
+		addChild(tabC);
 		
-		private function tabbedContainerTestAS():void
-		{
-			var tabC:TabbedContainer = new TabbedContainer();	
-			tabC.x = 100;
-			tabC.y = 100;
-			tabC.init();
-			addChild(tabC);
-			
-			var tab:TabElement = new TabElement();
-			tab.title = "tab1";
-			tab.init();
-			tabC.addTab(tab);		
-			
-			var tab1:TabElement = new TabElement();
-			tab1.title = "tab2";
-			tab1.init();
-			tabC.addTab(tab1);	
-			
-			var circle:GraphicElement = new GraphicElement();
-			circle.color = 0xFF0000;
-			circle.shape = "circle";
-			circle.radius = 100;
-			circle.y = 100;
-			tab.addChild(circle);
-			
-			var square:GraphicElement = new GraphicElement();
-			square.color = 0x00FF00;
-			square.shape = "rectangle";
-			square.width = 200;
-			square.height = 200;
-			square.y = 100;
-			tab1.addChild(square);
-		}
+		var tab:Tab = new Tab();
+		tab.title = "tab1";
+		tab.init();
+		tabC.addTab(tab);		
+		
+		var tab1:Tab = new Tab();
+		tab1.title = "tab2";
+		tab1.init();
+		tabC.addTab(tab1);	
+		
+		var circle:Graphic = new Graphic();
+		circle.color = 0xFF0000;
+		circle.shape = "circle";
+		circle.radius = 100;
+		circle.y = 100;
+		tab.addChild(circle);
+		
+		var square:Graphic = new Graphic();
+		square.color = 0x00FF00;
+		square.shape = "rectangle";
+		square.width = 200;
+		square.height = 200;
+		square.y = 100;
+		tab1.addChild(square);
 	 * 
 	 * </codeblock>
+	 * 
 	 * @author Shaun 
+	 * @see Tab
+	 * @see Container
 	 */
 	public class TabbedContainer extends Container
 	{
@@ -60,7 +54,7 @@ package com.gestureworks.cml.element
 		private var _backgroundColor:uint = 0x424141;
 		private var _spacing:Number = 5;
 		
-		private var background:GraphicElement;
+		private var background:Graphic;
 		private var tabs:Array;	
 		
 		/**
@@ -75,7 +69,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * initialization call
+		 * Initialization call
 		 */
 		public function init():void
 		{					
@@ -151,7 +145,7 @@ package com.gestureworks.cml.element
 		 */
 		private function setupUI():void
 		{
-			background = new GraphicElement();
+			background = new Graphic();
 			background.lineStroke = 0;
 			background.color = backgroundColor;
 			background.shape = "rectangle";
@@ -162,7 +156,7 @@ package com.gestureworks.cml.element
 			for (var i:int = this.numChildren - 1; i >= 0; i--)
 			{
 				var child:* = getChildAt(i);
-				if (child is TabElement)
+				if (child is Tab)
 				{
 					child.init();
 					addTab(child);
@@ -176,16 +170,16 @@ package com.gestureworks.cml.element
 		 */
 		private function selectTab(e:TouchEvent):void
 		{
-			addTab(TabElement(e.target));
+			addTab(Tab(e.target));
 		}	
 		
 		/**
 		 * Adds a new tab to the container and/or gives focus to the selected tab.
 		 * @param	tab
 		 */
-		private function addTab(tab:TabElement):void
+		private function addTab(tab:Tab):void
 		{
-			var previousTab:TabElement = tabs.length > 0 ? tabs[selectedIndex] : null;
+			var previousTab:Tab = tabs.length > 0 ? tabs[selectedIndex] : null;
 				
 			//if tab is new, set dimensions and location relative to container, listen
 			//for tab selection and add to tab array
@@ -219,7 +213,7 @@ package com.gestureworks.cml.element
 		 */
 		private function nextTabX():Number
 		{
-			var lastTab:TabElement = lastTab();
+			var lastTab:Tab = lastTab();
 			if (lastTab)
 				return lastTab.tabX + lastTab.tabWidth + spacing;
 			return spacing;
@@ -230,9 +224,9 @@ package com.gestureworks.cml.element
 		 * @param	tab1  the tab to search for
 		 * @return  true if the tab exists, false otherwise
 		 */
-		private function hasTab(tab1:TabElement):Boolean
+		private function hasTab(tab1:Tab):Boolean
 		{
-			for each(var tab2:TabElement in tabs)
+			for each(var tab2:Tab in tabs)
 				if (tab1 == tab2) return true;
 			return false;
 		}
@@ -241,7 +235,7 @@ package com.gestureworks.cml.element
 		 * Returns the most recently added tab
 		 * @return  the furthest tab to the right
 		 */
-		private function lastTab():TabElement
+		private function lastTab():Tab
 		{
 			if (tabs.length > 0)
 				return tabs[tabs.length - 1];

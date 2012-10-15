@@ -13,15 +13,31 @@
 	import org.openzoom.flash.viewport.constraints.VisibilityConstraint;
 	import org.openzoom.flash.viewport.constraints.ZoomConstraint;
 	import org.openzoom.flash.viewport.controllers.TouchController;
-	import org.openzoom.flash.viewport.transformers.TweenerTransformer;	
+	import org.openzoom.flash.viewport.transformers.TweenerTransformer;
 	 
 	/**
-	 * GigapixelElement load in a gigapixel image. Gigapixel images are massive images made by tiling smaller images in a seamless, pyramid structured fashion. 
-	 * It has following parameters:minScaleConstraint, src, loaded, image,smoothPanning.
+	 * The Gigapixel element loads a gigapixel image. Gigapixel images are 
+	 * extremely high resolution images that can be navigated made by tiling smaller 
+	 * images in a seamless, pyramid structured fashion. It has following 
+	 * parameters:minScaleConstraint, src, loaded, image,smoothPanning. 
 	 * 
-	 * @author..
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+		var gpElement:Gigapixel = new Gigapixel();
+		gpElement.src = "space.xml";
+		gpElement.x = 500;
+		gpElement.width = 600;
+		gpElement.height = 600;
+		gpElement.mouseChildren = true;
+		addChild(gpElement);
+		gpElement.init();
+		
+	 * </codeblock>
+	 * 
+	 * @author Josh
+	 * @see Panoramic
 	 */
-	public class GigapixelElement extends ElementFactory
+	public class Gigapixel extends ElementFactory
 	{
 		private var _clickZoomInFactor:Number = 1.7
 		private var _scaleZoomFactor:Number = 1.4
@@ -31,9 +47,9 @@
     	private var scaleConstraint:ScaleConstraint;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function GigapixelElement()
+		public function Gigapixel()
 		{
 			super();
 		}
@@ -66,7 +82,6 @@
 		private var _src:String = "";
 		/**
 		 * Sets the src xml file
-		 * @default 
 		 */		
 		public function get src():String{return _srcXML;}
 		public function set src(value:String):void
@@ -76,13 +91,13 @@
 
 		private var _loaded:Boolean;
 		/**
-		 * loaded
+		 * Indicated whether the gigaPixel image is loaded
 		 */
 		public function get loaded():Boolean { return _loaded; }
 		
 		
 		/**
-		 * CML call back initialisation
+		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void
 		{			
@@ -131,7 +146,7 @@
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{ 
@@ -147,7 +162,7 @@
 		}
 		
 		/**
-		 * dispose method to nullify children and remove listener
+		 * Dispose method and remove listener
 		 */
 		override public function dispose():void
 		{

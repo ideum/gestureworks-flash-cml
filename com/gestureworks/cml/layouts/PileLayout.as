@@ -7,9 +7,67 @@ package com.gestureworks.cml.layouts
 	import flash.geom.Point;
 	
 	/**
-	 * Positions the centers of the container's objects in the same location and rotates them individually
-	 * around the center. 
+	 * The PileLayout positions the centers of the container's objects in the same 
+	 * location and rotates them individually around the center.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+			
+		var randomRotationPile:Container = getImageContainer();
+		randomRotationPile.x = 700;
+		randomRotationPile.y = 200;
+		randomRotationPile.applyLayout(getPileLayout());
+		addChild(randomRotationPile);
+					
+		var fixedRotationPile:Container = getImageContainer();
+		fixedRotationPile.x = 1000;
+		fixedRotationPile.y = 500;
+		fixedRotationPile.applyLayout(getPileLayout(20));
+		addChild(fixedRotationPile);
+		
+		
+		function getImageContainer():Container
+		{
+			var container:Container = new Container();
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));						
+			return container;
+		}
+		
+		
+		function getPileLayout(angle:Number = 0):PileLayout
+		{
+			var pileLayout:PileLayout = new PileLayout();
+			pileLayout.angle = angle;
+			pileLayout.tween = true;
+			pileLayout.tweenTime = 1500;
+			return pileLayout;
+		}
+		
+		
+		function getImageElement(source:String):Image
+		{
+			var img:Image = new Image();
+			img.open(source);
+			img.width = 250;
+			img.height = 150;
+			img.resample = true;
+			return img;
+		}	
+		
+	 * </codeblock>
+	 * 
 	 * @author Shaun
+	 * @see GridLayout
+	 * @see FanLayout  
+	 * @see ListLayout
+	 * @see PointLayout
+	 * @see RandomLayout
+	 * @see com.gestureworks.cml.factories.LayoutFactory
+	 * @see com.gestureworks.cml.element.Container
 	 */
 	public class PileLayout extends LayoutFactory
 	{

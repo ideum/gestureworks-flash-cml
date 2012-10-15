@@ -3,52 +3,52 @@ package com.gestureworks.cml.element
 	
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.ElementFactory;
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
-	import flash.events.MouseEvent;
-	import com.gestureworks.core.GestureWorks;
 	
 	/**
-	 * The Switch is a UIelement that acts as a Switch button.
-	 * It has the following parameters: backgroundColor, backgroundoutlineColor, backgroundlineStroke, backgroundX, backgroundY, backgroundWidth, backgroundHeight, backgroundEllipseWidth,backgroundEllipseHeight, buttonColor, buttonoutlineColor, buttonlineStroke, buttonX, buttonY, buttonWidth, buttonHeight, buttonEllipseWidth, buttonEllipseHeight.
-	 *
-	 * <code>
-	 *
-	 * var switch1:Switch = new Switch();
-	
-	   switch1.backgroundColor = 0x333333;
-	   switch1.backgroundoutlineColor = 0xFF0000;
-	   switch1.backgroundlineStroke = 3;
-	   switch1.buttonColor = 0x000000;
-	   switch1.buttonoutlineColor = 0x000000;
-	   switch1.buttonlineStroke = 1;
-	   switch1.backgroundX = 0;
-	   switch1.backgroundY = 0;
-	   switch1.backgroundWidth = 100;
-	   switch1.backgroundHeight = 50;
-	   switch1.backgroundEllipseWidth = 25;
-	   switch1.backgroundEllipseHeight = 25;
-	   switch1.buttonX = 0;
-	   switch1.buttonY = 0;
-	   switch1.buttonWidth = 50;
-	   switch1.buttonHeight = 50;
-	   switch1.buttonEllipseWidth = 25;
-	   switch1.buttonEllipseHeight = 25;
-	   switch1.x = 20;
-	   switch1.y = 20;
-	
-	   addChild(switch1);
-	 *
-	 *
-	 * </code>
+	 * The Switch element is acts as a switch button.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	   
+		var switch:Switch = new Switch();
+		switch.backgroundColor = 0x333333;
+		switch.backgroundoutlineColor = 0xFF0000;
+		switch.backgroundlineStroke = 3;
+		switch.buttonColor = 0x000000;
+		switch.buttonoutlineColor = 0x000000;
+		switch.buttonlineStroke = 1;
+		switch.backgroundX = 0;
+		switch.backgroundY = 0;
+		switch.backgroundWidth = 100;
+		switch.backgroundHeight = 50;
+		switch.backgroundEllipseWidth = 25;
+		switch.backgroundEllipseHeight = 25;
+		switch.buttonX = 0;
+		switch.buttonY = 0;
+		switch.buttonWidth = 50;
+		switch.buttonHeight = 50;
+		switch.buttonEllipseWidth = 25;
+		switch.buttonEllipseHeight = 25;
+		switch.x = 20;
+		switch.y = 20;
+	    addChild(switch);
+
+	 * </codeblock>
+	 * 
+	 * @author Uma
+	 * @see Toggle
+	 * @see Button
 	 */
 	public class Switch extends ElementFactory
 	{
 		/**
-		 * Switch constructor.Allow user to define switch button with drag and tap functionality.
+		 * Switch Constructor.Allow user to define switch button with drag and tap functionality.
 		 */
 		public function Switch()
 		{
@@ -387,7 +387,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private var touchSprite:TouchSprite = new TouchSprite();
-		private var text:TextElement = new TextElement();
+		private var text:Text = new Text();
 		
 		/**
 		 * Initializes the configuration and display of the Switch
@@ -517,7 +517,7 @@ package com.gestureworks.cml.element
 	    }
 	
 		/**
-		 * dispose method to nullify attributes and remove listeners
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{

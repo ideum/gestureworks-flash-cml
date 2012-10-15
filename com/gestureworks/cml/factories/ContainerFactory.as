@@ -1,22 +1,22 @@
 package com.gestureworks.cml.factories
 {
-	import com.gestureworks.cml.utils.LinkedMap;
-	import com.gestureworks.core.DisplayList;
 	import com.gestureworks.cml.factories.ElementFactory;
+	import com.gestureworks.cml.utils.LinkedMap;
 	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.utils.Dictionary;
-	import com.gestureworks.events.DisplayEvent;
 	
-	/**
-	 * ContainerFactory create display hierarchies. It keeps track of children through the childlist property.
-	 * base class for container 
-	 */
+	/** 
+	 * The ContainerFactory class is the base class for all Containers.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.factories.Container
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 */	
 	public class ContainerFactory extends ElementFactory
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ContainerFactory()
 		{
@@ -24,7 +24,7 @@ package com.gestureworks.cml.factories
 		}	
 		
 		/**
-		 * dispose method to nullify child
+		 * Dispose method to nullify child
 		 */
 		override public function dispose():void
 		{

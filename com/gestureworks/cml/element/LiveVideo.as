@@ -9,14 +9,13 @@ package com.gestureworks.cml.element
 	import flash.net.NetStream;
 	
 	/**
-	 * The LiveVideoElement captures and displays live video input from a user’s camera and also captures audio from microphone.
-	 * It has the following parameters: width, height. 
+	 * The LiveVideo element captures and displays live video input from a user’s camera and also captures audio from a microphone.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
-	    var livevideo:LiveVideoElement = new LiveVideoElement;
-		livevideo.camera = new CameraElement();
-		livevideo.mic = new MicrophoneElement();
+	    var livevideo:LiveVideo = new LiveVideo;
+		livevideo.camera = new Camera();
+		livevideo.mic = new Microphone();
 		addChild(livevideo);
 	    livevideo.init();
 	
@@ -25,15 +24,15 @@ package com.gestureworks.cml.element
 	 * @author Uma and shaun
 	 */
 	
-	public class LiveVideoElement extends Container
+	public class LiveVideo extends Container
 	{
 	
 	/**
 	 * LiveVideoElement Constructor.
 	 */	
-		public function LiveVideoElement() 
+		public function LiveVideo() 
 		{
-			video = new Video();
+			video = new flash.media.Video();
 			addChild(video);
 			load();
 		}
@@ -51,22 +50,22 @@ package com.gestureworks.cml.element
 		/**
 		* defines the video element
 		*/
-		public var video:Video;
+		public var video:flash.media.Video;
 		
 		/**
 		* defines camera element.
 		*/
-		public var _camera:CameraElement;
-		
+		public var _camera:com.gestureworks.cml.element.Camera;
 		/**
 		* defines the mic object.
 		*/
-		public var _mic:MicrophoneElement;
+		public var _mic:com.gestureworks.cml.element.Microphone;
 		
 		/**
 		* defines the cam object.
 		*/
-		public var cam:Camera;
+		public var cam:flash.media.Camera;
+		
 	
     	/**
 		* sets the camera element.
@@ -79,7 +78,7 @@ package com.gestureworks.cml.element
 		{
 			if (!value) return;
 			
-			if (value is CameraElement)
+			if (value is com.gestureworks.cml.element.Camera)
 				_camera = value;
 			else 
 				_camera = searchChildren(value);
@@ -96,13 +95,13 @@ package com.gestureworks.cml.element
 		{
 			if (!value) return;
 			
-			if (value is MicrophoneElement)
+			if (value is com.gestureworks.cml.element.Microphone)
 				_mic = value;
 			else 
 				_mic = searchChildren(value);
 		}
 		
-		private var micro:Microphone;
+		private var micro:flash.media.Microphone;
 		
 		/**
 		 * CML display initialization callback
@@ -214,7 +213,7 @@ package com.gestureworks.cml.element
 		}
 
 	/**
-	 * dispose method to remove listener
+	 * Dispose method
 	 */	
 	override public function dispose():void
 	{

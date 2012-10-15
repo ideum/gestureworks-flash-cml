@@ -1,24 +1,24 @@
 package com.gestureworks.cml.element 
 {
 	/**
-	 * Include element allows to nest external files.
+	 * The Include element allows one to nest CML files. 
+	 * It is not intended to be used outside of CML.
 	 * 
-	 * @author ...
+	 * @author Ideum
 	 */
 	public class Include 
 	{
 		/**
-		 * include constructor
+		 * Constructor
 		 */
-		public function Include() 
-		{
-			
-		}
+		public function Include() {}
+		
 		
 		private var _cml:String;
 		/**
-		 * 
+		 * Sets the source cml file
 		 */
+		[Deprecated(replacement = "src")]					
 		public function get cml():String {return _cml;}
 		public function set cml(value:String):void 
 		{
@@ -32,8 +32,7 @@ package com.gestureworks.cml.element
 		
 		private var _src:String;
 		/**
-		 * Sets the src xml file
-		 *  @default 
+		 * Sets the source cml file
 		 */
 		public function get src():String {return _src;}
 		public function set src(value:String):void 

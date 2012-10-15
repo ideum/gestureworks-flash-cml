@@ -1,35 +1,30 @@
 package com.gestureworks.cml.core 
 {
 	/** 
-	 * This class is the registry file for AIR-exclusive classes that are cml-compatible.
+	 * The CML_AIR class is the registry file for AIR-exclusive classes that are capable of
+	 * being load by the CML Parser.
 	 * 
-	 * <p>You can register you own AIR class for cml loading by placing your class file
-	 * in one of the following packages: </p>
+	 * <p>You can register your own AIR class for CML loading by placing your class file
+	 * in either no package, or one of the following packages:</p>
 	 * 
-	 * <p> com.gestureworks.components </p>
-	 * <p> com.gestureworks.element </p>
-	 * <p> com.gestureworks.kits </p>
-	 * <p> com.gestureworks.layouts </p>
+	 * <ul>
+	 *	<li>com.gestureworks.buttons</li>
+	 *	<li>com.gestureworks.components</li>
+	 *	<li>com.gestureworks.element</li>
+	 *	<li>com.gestureworks.kits</li>
+	 *	<li>com.gestureworks.layouts</li>
+	 *	<li>com.gestureworks.menus</li>
+	 * </ul>
 	 * 
-	 * <p>Then use the following import syntax to register your class:</p>
-	 * 
-	 * <p>com.gestureworks.cml.element.CustomClass; CustomClass;</p>
+	 * <p>You can then use the following import syntax to register your class:</p>
+	 * <code>com.gestureworks.cml.element.CustomClass; CustomClass;</code>
 	 *
-	 * @includeExample ImageElementExample.as -noswf
 	 *
-	 *
-	 * @author Charles Veasey
-	 * @langversion 3.0
-	 * @playerversion Flash 10.1
-	 * @playerversion AIR 2.5
-	 * 
+	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CML_CORE
 	 */	 
-	public class CML_AIR {}
-	//import com.gestureworks.cml.kits.WindowKit; WindowKit;
-	//import com.gestureworks.cml.managers.WindowManager; WindowManager;
-	
-	import com.gestureworks.cml.components.WavPlayer; WavPlayer;
-	
-	import com.gestureworks.cml.element.WavElement; WavElement;
+	public class CML_AIR { }
+
+	import com.gestureworks.cml.element.WAV; WAV;
+	import com.gestureworks.cml.components.WAVPlayer; WAVPlayer;
 }

@@ -6,16 +6,49 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.core.CMLParser;
 	
 	/**
-	 * TouchContainer can be used to create display hierarchies. It keeps track of children through the childlist property.
+	 * TouchContainer can be used to create interative display containers.
+	 * It is the CML version of TouchSprite. It keeps track of children through the childlist property.
 	 * 
-	 * @author..
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		var tc:TouchContainer = new TouchContainer();
+		
+		tc.x = 700;
+		tc.y = 300;
+		tc.alpha = .25;
+		tc.scale = 1;
+		
+		//touch interactions
+		tc.gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
+		
+		//loading an image through image element
+		var img:Image = new Image();
+		img.open("orchid.jpg");
+		img.x = 0;
+		img.y = 0;
+		img.width = 200;
+		img.rotation = -20;
+		img.id = "img1";
+		img.scale = 2;
+		tc.addChild(img);
+		
+		//initialise touch container
+		tc.init();
+		addChild(tc);
+		
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see Container
+	 * @see Gesture
+	 * @see GestureList
 	 */
 	public class TouchContainer extends TouchContainerFactory
 	{	
 		public var layoutList:Dictionary = new Dictionary(true);
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function TouchContainer()
 		{
@@ -26,7 +59,7 @@ package com.gestureworks.cml.element
 		}
 
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -322,7 +355,7 @@ package com.gestureworks.cml.element
 		}			
 		
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void 
 		{

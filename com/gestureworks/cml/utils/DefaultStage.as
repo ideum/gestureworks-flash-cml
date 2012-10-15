@@ -1,29 +1,29 @@
-package com.gestureworks.cml.core
+package com.gestureworks.cml.utils
 {
 	import flash.display.Stage;
 	
 	/**
-	 * DefaultStage, Singleton
-	 * Provides global access to the default stage, used by the window manager and display manager
-	 * @author Charles Veasey
+	 * The DefaultStage class provides global access to the default stage.
+	 * 
+	 * @author Ideum
 	 */	
 	
 	public class DefaultStage
 	{	
 		/**
-		 * stage variable
+		 * Provides acces to the stage
 		 */
 		public var stage:Stage;	
 		
 		/**
-		 * constructor
+		 * Constructor
 		 * @param	enforcer
 		 */
 		public function DefaultStage(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:DefaultStage;
 		/**
-		 * singleton
+		 * Returns an instance of DefaultState class
 		 */
 		public static function get instance():DefaultStage
 		{

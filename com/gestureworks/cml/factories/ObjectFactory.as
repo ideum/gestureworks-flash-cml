@@ -2,19 +2,21 @@ package com.gestureworks.cml.factories
 {
 	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.interfaces.IObject;
-	import flash.display.Sprite;	
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
-	/**
-	 * ObjectFactory
-	 * base class for display objects
-	 * @authors Charles Veasey 
-	 */
+	/** 
+	 * The ObjectFactory is the base class for all CML Objects.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.GraphicFactory
+	 */	 
 	public class ObjectFactory extends EventDispatcher implements IObject
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ObjectFactory() 
 		{
@@ -24,7 +26,7 @@ package com.gestureworks.cml.factories
 		}	
 		
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		public function dispose():void 
 		{ 			

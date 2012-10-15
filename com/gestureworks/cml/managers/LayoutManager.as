@@ -1,31 +1,26 @@
 ﻿package com.gestureworks.cml.managers 
 {
-	import com.gestureworks.cml.element.Container;
 	import com.gestureworks.cml.interfaces.IContainer;
-	import com.gestureworks.cml.core.CMLParser;
-	import com.gestureworks.cml.utils.LinkedMap;
-	import com.gestureworks.cml.interfaces.ILayout;	
-
+	import com.gestureworks.cml.interfaces.ILayout;
 	import flash.utils.Dictionary;
-
 	
 	/**
-	 * LayoutManager, Singleton
-	 * Manages layout routines
+	 * The LayoutManager manages global layout definitions.
 	 * 
-	 * @authors Charles Veasey and Paul Lacey
+	 * @author Ideum
+	 * @see com.gestureworks.cml.element.Container
 	 */	
 	public class LayoutManager
 	{			
 		/**
-		 * allows single instance for this LayoutManager class
+		 * Constructor
 		 * @param	enforcer
 		 */
 		public function LayoutManager(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:LayoutManager;
 		/**
-		 * singleton
+		 * Returns an instance of the LayoutManager class
 		 */
 		public static function get instance():LayoutManager 
 		{ 
@@ -34,10 +29,9 @@
 			return _instance; 
 		}		
 		
-		
 		private var _layoutList:Dictionary = new Dictionary(false);
 		/**
-		 * list of layout that layout manager process
+		 * Returns a dictionary of layouts
 		 */
 		public function get layoutList():Dictionary{return _layoutList;}
 		public function set layoutList(value:Dictionary):void 
@@ -46,19 +40,17 @@
 		}
 		
         /**
-         * add the layout to the layout list
-         * @param	id layouts id
-         * @param	layout
+         * Adds the layout to the layout list
+         * @param	id layout's id
+         * @param	layout must implement ILayout
          */
 		public function addLayout(id:String, layout:ILayout):void
 		{
 			_layoutList[id] = layout;
 		}		
-		
-		
-		
+				
 		/**
-		 * adds the layout
+		 * Adds the layout to the layoutList
 		 * @param	type
 		 * @param	container
 		 */
@@ -67,11 +59,7 @@
 			_layoutList[id].layout(container);
 		}				
 
-
 	}
 }
 
-/**
- * class can only be access by the LayoutManager class only. 
- */
 class SingletonEnforcer{}

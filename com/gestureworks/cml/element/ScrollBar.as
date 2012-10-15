@@ -14,31 +14,79 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * This tag scrolls the content and allows the user to set the location of scrollbar from vertical to horizontal or horizontal to vertical.
+	 * The Scrollbar element scrolls contained content and allows the user to set the location of scrollbar from vertical to horizontal or horizontal to vertical.
 	 * The change of scrollbar position can be accomplished by setting the horizontal flag to true or false.
-	 * It has the following parameters: backgroundLinecolor, backgroundLineStroke, backgroundColor,background_VLineStroke, background_VLineColor, background_VColor, topTriangle_VColor, bottomTriangle_VColor, leftTriangleColor,rightTriangleColor,square1LineStroke, square1LineColor, square1Color, square2LineStroke, square2LineColor, square2Color, topSquare_VLineStroke, topSquare_VLineColor,topSquare_VColor, bottomSquare_VLineStroke, bottomSquare_VLineColor,bottomSqaureColor, horizontal.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 *
-	   var sb:ScrollBar = new ScrollBar();
-	   sb.x = 100;
-	   sb.y = 100;
-	   addChild(sb);
-	   
-	 *
+	 
+		var sb:ScrollBar = new ScrollBar();
+		
+		//set the scrollbar location by setting horizontal flag to true or false
+		sb.horizontal = true;
+		sb.x = 500;
+		sb.y = 350;
+		
+		//background graphics
+		sb.backgroundLineColor = 0x383838;
+		sb.backgroundLineStroke = 1;
+		sb.backgroundColor = 0x383838;
+		
+		//vertical background graphics
+		sb.background_VLineStroke = 1;
+		sb.background_VLineColor = 0x383838;
+		sb.background_VColor = 0x383838;
+		
+		//vertical scrollbar graphics
+		sb.scrollbar_VLineColor = 0x7F00FF;
+		sb.scrollbar_VLineStroke = 0;
+		sb.scrollbar_VColor = 0x7F00FF;
+		
+		//scrollbar graphics
+		sb.scrollbarLineStroke = 0;
+		sb.scrollbarLineColor = 0x7F00FF;
+		sb.scrollbarColor = 0x7F00FF;
+		
+		//vertical triangles graphics
+		sb.topTriangle_VColor = 0x000000;
+		sb.bottomTriangle_VColor = 0x000000;
+		
+		//horizontal triangles graphics
+		sb.leftTriangleColor = 0x000000;
+		sb.rightTriangleColor = 0x000000;
+		
+		//horizontal square graphics
+		sb.square1LineStroke = 1;
+		sb.square1LineColor = 0xA0A0A0;
+		sb.square1Color = 0xA0A0A0;
+		sb.square2LineStroke = 1;
+		sb.square2LineColor = 0xA0A0A0;
+		sb.square2Color = 0xA0A0A0; 
+		
+		//vertical sqaure graphics
+		sb.topSquare_VLineStroke = 1;
+		sb.topSquare_VLineColor = 0xA0A0A0;
+		sb.topSquare_VColor = 0xA0A0A0;
+		sb.bottomSquare_VLineStroke = 1;
+		sb.bottomSquare_VLineColor = 0xA0A0A0;
+		sb.bottomSquare_VColor = 0xA0A0A0;
+		
+		sb.init();
+		addChild(sb);
+	 
 	 * </codeblock>
+	 * 
 	 * @author Uma
+	 * @see ScrollPane
 	 */
 	
 	public class ScrollBar extends Container
 	{
 		/**
-		 * ScrollBar constructor
+		 * ScrollBar Constructor
 		 */
 		public function ScrollBar():void
 		{
 			super();
-			init();
 		}
 		
 		/**
@@ -47,7 +95,6 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{
 			super.displayComplete();
-		//	init();
 		}
 		
 		/**
@@ -869,7 +916,7 @@ package com.gestureworks.cml.element
 	    }
 		
 		/**
-		 * dispose method to remove listeners and nullify attributes
+		 * Dispose methods and nullify attributes
 		 */
 		override public function dispose():void
 		{

@@ -4,25 +4,38 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;	
-	
+		
 	/**
-	 * The MP3Player is a component that is primarily meant to play MP3 audio files. It displays a waveform representation on the front side and meta-data on the back side.
-	 * It is composed of the following elements: mp3, front, back, menu, and frame. The mp3 and front may be the same thing. 
-	 * The mp3 is required. The width and height of the component is automatically set to the dimensions of the mp3 element unless it is 
-	 * previously specifed by the component.
+	 * The MP3Player component is primarily meant to display an MP3 element and its associated meta-data.
 	 * 
-	 *  @author ...
-	 */
-	
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>mp3</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 * 
+	 * <p>The width and height of the component are automatically set to the dimensions of the MP3 element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see Component
+	 * @see com.gestureworks.cml.element.MP3
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */	 	
 	public class MP3Player extends Component 
 	{		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function MP3Player() 
 		{
@@ -67,12 +80,12 @@ package com.gestureworks.cml.components
 				front = searchChildren(".image_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!mp3)
-				mp3 = searchChildren(MP3Element);
+				mp3 = searchChildren(MP3);
 				
 			super.init();
 		}
@@ -108,7 +121,7 @@ package com.gestureworks.cml.components
 		}	
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

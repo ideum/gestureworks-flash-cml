@@ -1,24 +1,76 @@
 package com.gestureworks.cml.layouts 
 {
-	//import away3d.core.math.MatrixAway3D;
-	import flash.display.DisplayObject;
-	import flash.geom.Matrix;
-    import flash.geom.Point;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.interfaces.*;
-	import flash.display.DisplayObjectContainer
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.geom.Matrix;
    
-    /**
-     * A layout utility for laying out display objects in a grid
-     *
-     * @author 
-     * @version
+	/**	 
+	 * The GridLayout positions the display objects in a grid.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+		var grid:Container = getImageContainer();
+		grid.applyLayout(getGridLayout());
+		addChild(grid);
+		
+		
+		function getImageContainer():Container
+		{
+			var container:Container = new Container();
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));						
+			container.addChild(getImageElement("plane.jpg));						
+			container.addChild(getImageElement("plane.jpg));						
+			return container;
+		}
+		
+		
+		function getGridLayout():GridLayout
+		{
+			var gridLayout:GridLayout = new GridLayout();
+			gridLayout.rows = 3;
+			gridLayout.columns = 3;
+			gridLayout.useMargins = true;
+			gridLayout.marginX = 4;
+			gridLayout.marginY = 4;			
+			gridLayout.tween = true;
+			gridLayout.tweenTime = 1500;
+			return gridLayout;
+		}
+		
+		
+		function getImageElement(source:String):Image
+		{
+			var img:Image = new Image();
+			img.open(source);
+			img.width = 250;
+			img.height = 150;
+			img.resample = true;
+			return img;
+		}
+		
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see FanLayout
+	 * @see ListLayout
+	 * @see PileLayout
+	 * @see PointLayout
+	 * @see RandomLayout
+	 * @see com.gestureworks.cml.factories.LayoutFactory
+	 * @see com.gestureworks.cml.element.Container
      */
     public class GridLayout extends LayoutFactory 
     {      
 		/**
-		 * constructor
+		 * Constructor
 		 */ 
         public function GridLayout():void 
 		{ 

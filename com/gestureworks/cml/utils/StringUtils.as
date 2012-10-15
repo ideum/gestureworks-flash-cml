@@ -1,13 +1,21 @@
 package com.gestureworks.cml.utils 
 {
 	/**
-	 * StringUtils class is a collection of static methods for working with string objects
-	 * @author 
-	 */
+	 * The StringUtils utility is a collection of static methods for working with strings.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		trace(StringUtils.printf("\n%4s%s", "", "No file found..."));
+	 
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see LinkedMap
+	 */	 
 	public class StringUtils 
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function StringUtils():void{}		
 		

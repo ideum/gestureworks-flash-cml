@@ -2,22 +2,69 @@ package com.gestureworks.cml.layouts
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
 	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;;
-	import flash.display.Sprite;
+	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.easing.Exponential;
-	import org.libspark.betweenas3.tweens.ITween;
-	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
-	 * Positions the corners of the container's objects in the same location and rotates them individually
-	 * around the corner. 
+	 * The FanLayout positions the corners of the container's objects in the same location and rotates them individually
+	 * around the corner.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		var topLeftFan:Container = getImageContainer();
+		topLeftFan.applyLayout(getFanLayout());
+		addChild(topLeftFan);	 
+		
+		
+		function getImageContainer():Container
+		{
+			var container:Container = new Container();
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));			
+			container.addChild(getImageElement("plane.jpg));						
+			container.addChild(getImageElement("plane.jpg));						
+			container.addChild(getImageElement("plane.jpg));					
+			return container;
+		}
+
+		
+		function getFanLayout(angle:Number = 10, type:String = "topLeftOrigin"):FanLayout
+		{
+			var fanLayout:FanLayout = new FanLayout();
+			fanLayout.angle = angle;
+			fanLayout.type = type;
+			fanLayout.tween = true;
+			fanLayout.tweenTime = 1500;
+			return fanLayout;
+		}
+		
+		
+		function getImageElement(source:String):Image
+		{
+			var img:Image = new Image();
+			img.open(source);
+			img.width = 250;
+			img.height = 150;
+			img.resample = true;
+			return img;
+		}			
+		
+	 * </codeblock>
+	 * 
 	 * @author Shaun
+	 * @see GridLayout
+	 * @see ListLayout
+	 * @see PileLayout
+	 * @see PointLayout
+	 * @see RandomLayout
+	 * @see com.gestureworks.cml.factories.LayoutFactory
+	 * @see com.gestureworks.cml.element.Container
 	 */
 	public class FanLayout extends LayoutFactory
 	{
-		
 		/**
 		 * Constructor
 		 */

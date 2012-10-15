@@ -1,14 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2011-2012 Ideum
-//  All Rights Reserved.
-//             
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.gestureworks.cml.core 
 {
 	import com.gestureworks.cml.core.*;
@@ -30,14 +19,11 @@ package com.gestureworks.cml.core
 	/** 
 	 * The CMLParser class parses cml files for run-time object construction 
 	 * and modification. It is called by the GestureWorks class when a cml file 
-	 * path is specified in the constructor.
+	 * path is specified in the Constructor.
 	 *
-	 * @author Matthew Valverde and Charles Veasey
-	 * @langversion 3.0
-	 * @playerversion Flash 10.1
-	 * @playerversion AIR 2.5
-	 * 
+	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CMLObjectList
+	 * @see com.gestureworks.cml.core.CMLDisplay
 	 */		
 
 	public class CMLParser extends CML_CORE
@@ -60,7 +46,6 @@ package com.gestureworks.cml.core
 		public static var relativePaths:Boolean = false;
 		public static var extensions:RegExp;			
 		public static var rootDirectory:String = "";		
-		
 		
         private static var _dispatcher:EventDispatcher = new EventDispatcher();
  
@@ -89,26 +74,35 @@ package com.gestureworks.cml.core
 		 */
 		public static function init(cml:XML, parent:*, properties:*=null):void
 		{
-			extensions = /^.*\.(cml|gml|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|png|gif|jpg|mp3|swf|swc)$/i;			
+			//need these settings for TLF System
+			XML.ignoreWhitespace = true;
+			XML.prettyPrinting = false;
+			
+			extensions = /^.*\.(cml|gml|xml|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|png|gif|jpg|mp3|swf|swc)$/i;			
 			
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
+			if (cml.@rootDirectory != undefined)
+				rootDirectory = cml.@rootDirectory;
 				
 			// get css file
-			var cssStr:String = cml.@css;			
 			
-			if (relativePaths)
-				cssStr = relToAbsPath(rootDirectory+cssStr);
-							
-							
+			var cssStr:String = ""
+			
+			if (cml.@css != undefined)
+				cssStr = cml.@css;			
+			
+			if (cssStr.length > 0){
+				if (relativePaths)
+					cssStr = relToAbsPath(rootDirectory.concat(cssStr));
+				else if (rootDirectory.length > 0)
+					cssStr = rootDirectory.concat(cssStr);
+			}
+			
 			CMLParser.instance.cssFile = cssStr;	
 							
 			if (debug)
-				trace("\n\n========================== CML parser initialized ===============================");
-			
-			//need these settings for TLF System
-			XML.ignoreWhitespace = true;
-			XML.prettyPrinting = false;						
+				trace("\n\n========================== CML parser initialized ===============================");						
 		
 			
 			if (debug)
@@ -175,7 +169,7 @@ package com.gestureworks.cml.core
 			
 			
 			
-			
+			/*
 			if (debug)
 				trace(StringUtils.printf("\n%5s%s %s", "", "3c)", "Search for WindowKit"));
 			
@@ -194,7 +188,7 @@ package com.gestureworks.cml.core
 					
 				//DefaultStage.instance.stage.addChildAt(defaultContainer, 0);
 			}			
-			
+			*/
 			
 			
 			
@@ -487,16 +481,17 @@ package com.gestureworks.cml.core
 
 						if ((attrName == "cml" || attrName == "src") && attrValue.toString().length > 0)
 						{
-							// rootDirectory allows you to change root path	
-							if (relativePaths && rootDirectory 
-								&& rootDirectory.length > 1){	
-								if (attrValue.search(extensions) >= 0){
-									attrValue = rootDirectory + attrValue;
+						
+							if (attrValue.search(extensions) >= 0){
+								// rootDirectory allows you to change root path	
+								if (relativePaths && rootDirectory.length > 0){	
+									attrValue = rootDirectory.concat(attrValue);
 									attrValue = relToAbsPath(attrValue);	
 								}
-							}	
-							
-														
+								else if (rootDirectory.length > 0) {
+									attrValue = rootDirectory.concat(attrValue);
+								}
+							}							
 							includeParentIndex.push(parent);
 							FileManager.instance.addToQueue(attrValue, "cml");			
 						}
@@ -661,9 +656,7 @@ package com.gestureworks.cml.core
 			{
 				//begin search in core class list
 				obj = searchPackages(className, CML_CORE.CML_CORE_PACKAGES);
-				
-				trace(obj);
-				
+								
 				//if search failed, try the external list
 				//if (!obj)
 					//obj = searchPackages(className, CML_EXTERNAL_PACKAGES);
@@ -715,8 +708,20 @@ package com.gestureworks.cml.core
 		 */
 		public static function parseCML(obj:*, cml:XMLList):XMLList
 		{
-			var attrName:String;
 			var returnNode:XMLList = new XMLList;
+			
+			attrLoop(obj, cml);
+			
+			if (cml.*.length() > 0)
+				returnNode = cml.*;
+			
+			return returnNode;
+		}		
+		
+		
+		public static function attrLoop(obj:*, cml:XMLList):void
+		{
+			var attrName:String;
 			
 			for each (var attrValue:* in cml.@*)
 			{
@@ -726,28 +731,26 @@ package com.gestureworks.cml.core
 				if (attrName == "class")
 					attrName = "class_";				
 				
-				
-				// rootDirectory allows you to change root path	
-				if (relativePaths && rootDirectory && rootDirectory.length > 1)	
-				{	
-					if (attrValue.search(extensions) >= 0)
-					{
-						attrValue = rootDirectory + attrValue;
+				if (attrValue.search(extensions) >= 0)
+				{
+					// rootDirectory allows you to change root path	
+					if (relativePaths && rootDirectory.length > 1)	
+					{	
+						attrValue = rootDirectory.concat(attrValue);
 						attrValue = relToAbsPath(attrValue);	
 					}
+					else if (rootDirectory.length > 0)	
+					{	
+						attrValue = rootDirectory.concat(attrValue);
+					}					
 				}
 				
 				obj.propertyStates[0][attrName] = attrValue;				
 			}
 			
-			attrName = null;	
+			attrName = null;
 			
-			if (cml.*.length() > 0)
-				returnNode = cml.*;
-			
-			return returnNode;
-		}		
-		
+		}
 		
 		public static function relToAbsPath(string:String):String
 		{			
@@ -940,8 +943,7 @@ package com.gestureworks.cml.core
 				
 				for (var i:int = 0; i < obj.childList.length; i++) 
 				{
-			
-					
+		
 					cmlIndex = -1;
 					id = "";
 					class_ = "";

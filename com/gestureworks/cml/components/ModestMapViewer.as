@@ -3,27 +3,40 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWGestureEvent;
+	import flash.display.DisplayObject;
 	
 	/**
-	 * The ModestMapViewer is a component that is meant to display a map generated from ModestMaps on the front side and meta-data on the back side.
-	 * It is composed of the following elements: map, front, back, menu, and frame. The image and front may be the same thing. 
-	 * The map is required. The width and height of the component is automatically set to the dimensions of the map unless it is 
-	 * previously specifed by the component.
+	 * The ModestMapViewer component is primarily meant to display a ModestMap element and its associated meta-data.
 	 * 
-	 *  @author ...
-	 */
-	
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>map</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 *  
+	 * <p>The width and height of the component are automatically set to the dimensions of the ModestMap element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Uma and Shaun
+	 * @see Component
+	 * @see com.gestureworks.cml.element.ModestMap
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */	 	
 	public class ModestMapViewer extends Component 
 	{			
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ModestMapViewer() 
 		{
@@ -70,12 +83,12 @@ package com.gestureworks.cml.components
 				front = searchChildren(".map_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");
+			if (!background)
+				background = searchChildren(".info_bg");
 			
 			// automatically try to find elements based on AS3 class
 			if (!map){
-				map = searchChildren(ModestMapElement);
+				map = searchChildren(ModestMap);
 				map.addEventListener(StateEvent.CHANGE, onStateEvent);
 				map.addEventListener(GWGestureEvent.DOUBLE_TAP, onDouble);
 			}	
@@ -116,7 +129,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

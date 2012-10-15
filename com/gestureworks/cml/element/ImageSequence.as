@@ -5,9 +5,13 @@ package com.gestureworks.cml.element
 	import flash.utils.Timer;
 	
 	/**
-	 * Image Sequence
-	 * List of images with sequencer
-	 * @author Charles Veasey 
+	 * The ImageSequence element creates a list of images and contains a build-in
+	 * sequencer.
+	 * 
+	 * @author Ideum
+	 * @see Slideshow
+	 * @see ImageList
+	 * @see ImageSlideshow
 	 */	
 	
 	public class ImageSequence extends ImageList
@@ -17,7 +21,7 @@ package com.gestureworks.cml.element
 		
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ImageSequence()
 		{
@@ -141,7 +145,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attributes and remove listener
+		 * Dispose methods and remove listener
 		 */
 		override public function dispose():void
 		{

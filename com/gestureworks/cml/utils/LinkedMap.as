@@ -1,91 +1,35 @@
 package com.gestureworks.cml.utils
 {	
-	import flash.utils.*;
+	import flash.utils.Dictionary;
 	
 	/**
-	 * linked map maintains the order of entries
+	 * The LinkedMap utility is a data structure that creates an ordered
+	 * Dictionary, has a built-in two-way iterator, and contains many 
+	 * options for storing and retrieving values.
+	 * 
+	 * <p>The structure is comprised of:
+	 * <ul>
+	 * 	<li>index - the index number (must be an integer)</li>
+	 * 	<li>key - the reference key (ussually a string, but can be anything)</li>
+	 * 	<li>value - the stored value (can be anything)</li>
+	 * </ul></p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+		var lm:LinkedMap = new LinkedMap();
+		lm.append("s1", new Sprite());
+		lm.append("s2", new TouchSprite());
+		
+		lm.reset();
+		trace(lm.next());
+	 
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see List
 	 */
 	public class LinkedMap
 	{
-		private var dictionary:Dictionary;
-		private var list:List;
-		private var listValue:List;
-		
-		/**
-		 * constructor
-		 * @param	weakKeys
-		 */
-		public function LinkedMap(weakKeys:Boolean=false)
-		{
-			dictionary = new Dictionary(weakKeys);
-			list = new List;
-			listValue = new List;
-		}
-		
-		private var _currentIndex:int = 0;
-		/**
-		 * sets the current index of the element
-		 */
-		public function get currentIndex():int { return list.currentIndex }
-		public function set currentIndex(value:int):void { list.currentIndex = value; }
-		
-		private var _currentKey:int = 0;
-		/**
-		 * returns the current key value
-		 */
-		public function get currentKey():* { return list.selectIndex(currentIndex) };
-		
-		private var _currentValue:*;
-		/**
-		 * returns the current value of entries
-		 */
-		public function get currentValue():* { return listValue.getIndex(currentIndex); }	
-		
-		private var _length:int = 0;
-		/**
-		 * returns the list length
-		 */
-		public function get length():int { return list.length }
-
-		
-		/**
-		 * returns the index of the list
-		 * @param	index
-		 * @return
-		 */
-		public function getIndex(index:int):*
-		{			
-			return listValue.getIndex(index);
-		}
-		
-		/**
-		 * returns the object key
-		 * @param	key
-		 * @return
-		 */
-		public function getKey(key:*):*
-		{			
-			return dictionary[key];
-		}
-		
-		/**
-		 * returns the list
-		 * @return
-		 */
-		public function getKeyArray():Array
-		{			
-			return list.array;
-		}		
-		
-		/**
-		 * returns the list value
-		 * @return
-		 */
-		public function getValueArray():Array
-		{			
-			return listValue.array;
-		}		
-		
 		
 		/**
 		 * Returns a LinkedMap of objects that are of the 
@@ -141,8 +85,100 @@ package com.gestureworks.cml.utils
 				return tmp;				
 		}		
 		
+		private var dictionary:Dictionary;
+		private var list:List;
+		private var listValue:List;
+		
 		/**
-		 * returns the index
+		 * Constructor
+		 * @param	weakKeys
+		 */
+		public function LinkedMap(weakKeys:Boolean=false)
+		{
+			dictionary = new Dictionary(weakKeys);
+			list = new List;
+			listValue = new List;
+		}
+		
+		private var _currentIndex:int = 0;
+		/**
+		 * Returns and sets the current index
+		 */
+		public function get currentIndex():int { return list.currentIndex }
+		public function set currentIndex(value:int):void { list.currentIndex = value; }
+
+		
+		private var _uniqueKey:Boolean = false;
+		/**
+		 * Determines whether the structure enforces unique keys. If 
+		 * set to true, a duplicate key value will replace the old one.
+		 * @default false
+		 */
+		public function get uniqueKey():Boolean { return _uniqueKey }
+		public function set uniqueKey(value:Boolean):void { _uniqueKey = value }		
+		
+		
+		private var _currentKey:int = 0;
+		/**
+		 * Returns the current key
+		 */
+		public function get currentKey():* { return list.selectIndex(currentIndex) };
+		
+		private var _currentValue:*;
+		/**
+		 * Returns the current value
+		 */
+		public function get currentValue():* { return listValue.getIndex(currentIndex); }	
+		
+		private var _length:int = 0;
+		/**
+		 * Returns the list length
+		 */
+		public function get length():int { return list.length }
+
+		
+		/**
+		 * Returns the value by index
+		 * @param	index
+		 * @return
+		 */
+		public function getIndex(index:int):*
+		{			
+			return listValue.getIndex(index);
+		}
+		
+		/**
+		 * Returns the value by key
+		 * @param	key
+		 * @return
+		 */
+		public function getKey(key:*):*
+		{			
+			return dictionary[key];
+		}
+		
+		/**
+		 * Returns an array of keys
+		 * @return
+		 */
+		public function getKeyArray():Array
+		{			
+			return list.array;
+		}		
+		
+		/**
+		 * Returns an array of values
+		 * @return
+		 */
+		public function getValueArray():Array
+		{			
+			return listValue.array;
+		}		
+				
+		
+		/**
+		 * Returns a value by index and increments the current index 
+		 * to the provided index parameter
 		 * @param	index
 		 * @return
 		 */
@@ -153,7 +189,8 @@ package com.gestureworks.cml.utils
 		}		
 				
 		/**
-		 * returns the current key of the object
+		 * Returns a value by key and increments the current index 
+		 * to the provided index parameter
 		 * @param	key
 		 * @return
 		 */
@@ -164,7 +201,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * searches and returns the result of object
+		 * Searches by value and returns that last matched key
 		 * @param	value
 		 * @return
 		 */
@@ -173,38 +210,45 @@ package com.gestureworks.cml.utils
 			var result:*=null;
 			for each (var k:* in dictionary)
 			{
-				if (k == value)
+				if (k == value) {
 					result = k;
+				}
 			}
 			return result;			
 		}
 		
 		/**
-		 * appends value to the list
+		 * Appends a value to the list
 		 * @param	key
 		 * @param	value
 		 */
 		public function append(key:*, value:*):void 
 		{
-			//if (dictionary[key] != null)
-				//list.remove(list.search(key));
+			if (uniqueKey){
+				if (dictionary[key] != null){
+					list.remove(list.search(key));
+					listValue.remove(list.search(key));
+				}
+			}
+			
 			list.append(key);
 			listValue.append(value);			
 			dictionary[key] = value;		
 		}
 		
 		/**
-		 * prpends the key and the value
+		 * Prepends a key and value
 		 * @param	key
 		 * @param	value
 		 */
 		public function prepend(key:*, value:*):void 
 		{
-			//if (dictionary[key] != null)
-		//	{
-			//	list.remove(list.search(key));
-				//listValue.remove(list.search(key));			
-			//}	
+			if (uniqueKey){
+				if (dictionary[key] != null){
+					list.remove(list.search(key));
+					listValue.remove(list.search(key));
+				}
+			}	
 			
 			list.prepend(key);
 			listValue.prepend(value);
@@ -215,7 +259,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * replaces value with the key
+		 * Replaces a value by key
 		 * @param	key
 		 * @param	value
 		 */
@@ -225,18 +269,19 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * inserts key and value to the list
+		 * Inserts a new key and value by index
 		 * @param	index
 		 * @param	key
 		 * @param	value
 		 */
 		public function insert(index:int, key:*, value:*):void 
 		{
-			//if (dictionary[key] != null)
-			//{
-			//	list.remove(list.search(key));
-			//	listValue.remove(list.search(key));
-			//}	
+			if (uniqueKey){
+				if (dictionary[key] != null){
+					list.remove(list.search(key));
+					listValue.remove(list.search(key));
+				}
+			}	
 			
 			list.insert(index, key);				
 			listValue.insert(index, key);				
@@ -247,7 +292,7 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * removes the object key and the list index
+		 * Removes a value by index
 		 * @param	index
 		 */
 		public function removeIndex(index:int):void
@@ -264,7 +309,7 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * removes the keys
+		 * Removes a value by key
 		 * @param	key
 		 */
 		public function removeKey(key:*):void
@@ -280,9 +325,26 @@ package com.gestureworks.cml.utils
 				currentIndex++;			
 		}
 
-		// iterator methods //
 		/**
-		 * restes the current index
+		 * Returns true if a value exists for the key
+		 * @param	value
+		 * @return
+		 */
+		public function hasKey(key:String):Boolean
+		{
+			if (dictionary[key] == null)
+				return false;
+			else
+				return true;
+		}		
+			
+	
+		
+		// iterator methods //
+		
+		
+		/**
+		 * Resets the current index to zero
 		 */
 		public function reset():void
 		{
@@ -290,7 +352,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * returns the index
+		 * Returns true if the iteration can return one more than the current index
 		 * @return
 		 */
 		public function hasNext():Boolean
@@ -299,7 +361,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * compares the current index and returns true or false
+		 * Returns true if the iteration can return one less than the current index
 		 * @return
 		 */
 		public function hasPrev():Boolean
@@ -311,7 +373,7 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * returns the next index
+		 * Returns the next value
 		 * @return
 		 */
 		public function next():*
@@ -321,26 +383,13 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * returns the previous index
+		 * Returns the previous index
 		 * @return
 		 */
 		public function prev():*
 		{
 			currentIndex--;
 			return listValue.getIndex(currentIndex);
-		}
-		
-		/**
-		 * checks the value of object and returns true or false
-		 * @param	value
-		 * @return
-		 */
-		public function hasKey(value:String):Boolean
-		{
-			if (dictionary[value] == null)
-				return false;
-			else
-				return true;
 		}
 		
 	}

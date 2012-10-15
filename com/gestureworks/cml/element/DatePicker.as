@@ -17,32 +17,24 @@ package com.gestureworks.cml.element
 	 * date. Previous and future months can be navigated via the "left" and "right" arrows. 
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 * 			
-			override protected function gestureworksInit():void
-			{
-				trace("gestureWorksInit()");
-				datePickerTestAS();
-			}				
-			
-			private function datePickerTestAS():void
-			{
-				var dp:DatePicker = new DatePicker();
-				dp.x = 300;
-				dp.y = 200;
-				dp.scaleX = dp.scaleX + 2;
-				dp.scaleY = dp.scaleY + 2;
-				dp.addEventListener(StateEvent.CHANGE, selectedDate);
-				addChild(dp);
-			}
-			
-			private function selectedDate(event:StateEvent):void
-			{
-				trace(event.value);
-			}
-	 * 
+	 * 	
+		var dp:DatePicker = new DatePicker();
+		dp.x = 300;
+		dp.y = 200;
+		dp.scaleX = dp.scaleX + 2;
+		dp.scaleY = dp.scaleY + 2;
+		dp.addEventListener(StateEvent.CHANGE, selectedDate);
+		addChild(dp);
+				
+		function selectedDate(event:StateEvent):void
+		{
+			trace(event.value);
+		}	
 	 * 
 	 * </codeblock>
+	 * 
 	 * @author Shaun
+	 * @see ColorPicker
 	 */
 	public class DatePicker extends ElementFactory{ 
 	
@@ -71,7 +63,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method nullify attributes
+		 * Dispose method nullify attributes
 		 */
 	override public function dispose():void
 		{

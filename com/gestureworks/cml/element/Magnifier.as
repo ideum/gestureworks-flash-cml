@@ -14,19 +14,16 @@ package com.gestureworks.cml.element
 	import org.tuio.*;
 	
 	/**
+	 * The Magnifier element provides a touch enabled element with an optional graphical lens that will increase the magnification when placed over any display object on the stage.
 	 * 
-	 * MagnifierElement provides a touch enabled element with an optional graphical lens that will increase the magnification when placed over any display object on the stage.
+	 * <p>Note that if the stage does not have a background image or display object of some sort, the MagnifierElement will simply retain visual data from the last object it was
+	 * held over until brought to another display object.</p>
 	 * 
-	 * Note that if the stage does not have a background image or display object of some sort, the MagnifierElement will simply retain visual data from the last object it was
-	 * held over until brought to another display object.
+	 * <p>The MagnifierElement has an optional fish-eye effect that can be altered using distortionRadius. The magnifier has two optional graphics, or can be left on its own with
+	 * "default", "notch", or "none".</p>
 	 * 
-	 * The MagnifierElement has an optional fish-eye effect that can be altered using distortionRadius. The magnifier has two optional graphics, or can be left on its own with
-	 * "default", "notch", or "none".
+	 * <p>Rotation gestures on the magnifier will zoom it in.</p>
 	 * 
-	 * Rotation gestures on the magnifier will zoom it in.
-	 * 
-	 * The MagnifierElement has the following parameters: cubeFace, projectionType, fovMax, fovMin, src
-	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 	    var magnifier:MagnifierElement = new MagnifierElement();
@@ -44,20 +41,20 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class MagnifierElement extends TouchContainer
+	public class Magnifier extends TouchContainer
 	{
 		private const PItoRAD:Number = Math.PI / 180;
 		
 		[Embed(source = "../../../../../lib/shaders/magnify.pbj", mimeType = "application/octet-stream")]
 		private var MagnifierShader:Class;
 		
-		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
+		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
 		private var DefaultGraphic:Class;
 		
-		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.mDefaultMagnifier")]
+		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.mDefaultMagnifier")]
 		private var mDefaultGraphic:Class;
 		
-		[Embed(source = "../../../../../bin/library/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.NotchMagnifier")]
+		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.NotchMagnifier")]
 		private var NotchGraphic:Class;
 		
 		private var _border:Sprite;
@@ -77,9 +74,9 @@ package com.gestureworks.cml.element
 		private var timer:Timer;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function MagnifierElement() 
+		public function Magnifier() 
 		{
 			super();
 		}
@@ -140,7 +137,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify the children
+		 * Dispose method to nullify the children
 		 */
 		override public function dispose():void {
 			super.dispose();
@@ -170,7 +167,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML call back initialisation
+		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -317,7 +314,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function scaleHandler(e:GWGestureEvent):void {
-			//trace("Handling scale");
 			_radius += (e.value.scale_dsx + e.value.scale_dsy) * 20;
 			width = _radius * 2;
 			height = _radius * 2;
@@ -362,7 +358,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function rotateFilter(e:GWGestureEvent):void {
-			//trace("Magnifying");
 			magnification += e.value.rotate_dtheta * 0.1;
 			if (_graphic == "notch") {
 				_border.rotation += e.value.rotate_dtheta;
@@ -383,7 +378,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function dragHandler(e:GWGestureEvent):void {
-			//trace("Drag");
 			x += e.value.drag_dx;
 			y += e.value.drag_dy;
 		}

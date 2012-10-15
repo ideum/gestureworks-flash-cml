@@ -9,16 +9,13 @@ package  com.gestureworks.cml.element
 	import flash.system.Security;
 	import com.adobe.webapis.flickr.*;
 	import com.adobe.webapis.flickr.events.*;
-	import com.adobe.webapis.flickr.events.FlickrResultEvent;
 	/**
-	 * FlickrElement provides access to images stored on Flickr through the Flickr API. To access the image, one must have the image's ID from the flickr server, and a Flickr API Key.
+	 * The Flick element provides access to images stored on Flickr through the Flickr API. To access the image, one must have the image's ID from the flickr server, and a Flickr API Key.
 	 * Flickr API keys start out at free and have some subscription plans depending on the amount of use they receive. They are available at: http://www.flickr/com/service/api
 	 * 
-	 * FlickrElement has the following parameters: apikey, src
-	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
-	   var flickrImg:FlickrElement = new FlickrElement();
+	   var flickrImg:Flickr = new Flickr();
 		flickrImg.apikey = "ENTER YOUR FLICKR API KEY";
 		flickrImg.src = "5703998760";
 		addChild(flickrImg);
@@ -27,18 +24,20 @@ package  com.gestureworks.cml.element
 		flickrImg.init();
 	 *
 	 * </codeblock>
+	 * 
 	 * @author josh
+	 * @see YouTube
 	 */
-	public class FlickrElement extends ElementFactory
+	public class Flickr extends ElementFactory
 	{
 		private var displayPic:Bitmap = null;
 		private var loader:Loader;
 		private var service:FlickrService;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function FlickrElement() 
+		public function Flickr() 
 		{
 			super();
 			
@@ -77,7 +76,7 @@ package  com.gestureworks.cml.element
 		
 		
 		/**
-		 * CML display callback initialisation
+		 * CML display callback Initialisation
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -89,7 +88,7 @@ package  com.gestureworks.cml.element
 		
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -141,7 +140,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify the children and remove listener
+		 * Dispose method to nullify the children and remove listener
 		 */
 		override public function dispose():void {
 			super.dispose();

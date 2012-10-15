@@ -13,11 +13,9 @@ package com.gestureworks.cml.element
 	import flash.events.Event;
 	
 	/**
-	 * Slideshow takes a set of display objects to its childList and plays through them with a crossfade set through tis rate and fade duration.
-	 * The slideshow can be set to autoplay and loop, and has play(), pause(), and resume() functions accessible by other classes or AS3 code.
-	 * Slideshow can take anything that is a display object.
-	 * 
-	 * Slideshow has the following parameters: fadeDuration, loop, autoPlay, rate
+	 * The Slideshow element takes a set of display objects to its childList and plays through them with a crossfade set through tis rate and fade duration.
+	 * The Slideshow element can be set to autoplay and loop, and has play(), pause(), and resume() functions accessible by other classes or AS3 code.
+	 * Slideshow element can take anything that is a display object.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -38,7 +36,9 @@ package com.gestureworks.cml.element
 		slideShow.init();
 	 *
 	 * </codeblock>
+	 * 
 	 * @author josh
+	 * @see Container
 	 */
 	public class Slideshow extends Container
 	{
@@ -48,7 +48,7 @@ package com.gestureworks.cml.element
 		protected var timer:Timer;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function Slideshow() {
 			super();
@@ -109,7 +109,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML callback initialisation
+		 * CML callback Initialisation
 		 */
 		override public function displayComplete():void 
 		{
@@ -127,7 +127,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -283,7 +283,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to remove children
+		 * Dispose method to remove children
 		 */
 		override public function dispose():void {
 			super.dispose();

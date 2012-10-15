@@ -1,27 +1,52 @@
 package com.gestureworks.cml.managers 
 {
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.loaders.*;
+	import com.gestureworks.cml.utils.*;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import com.gestureworks.cml.loaders.*
-	import com.gestureworks.cml.events.*
-	import com.gestureworks.cml.utils.*;	
 	
 	/**
-	 * FileManager, Singleton
-	 * Manages the loading of external files
-	 * @author Charles Veasey
+	 * The FileManager handles the loading of all external files with 
+	 * exception of CSS files. 
+	 * 
+	 * <p>The FileManager is used by the CMLParser to preload 
+	 * external files. It supports the following file types:
+	 * <ul>
+	 * 	<li>png</li>
+	 * 	<li>gif</li>
+	 * 	<li>jpg</li>
+	 * 	<li>mpeg-4</li>
+	 * 	<li>mp4</li>
+	 * 	<li>m4v</li>
+	 * 	<li>3gpp</li>
+	 * 	<li>mov</li>
+	 * 	<li>flv</li>
+	 * 	<li>swf</li>
+	 * 	<li>cml</li>
+	 * </ul></p> 
+	 * 
+	 * @author Charles
+	 * @see com.gestureworks.cml.loaders.CSSManager
 	 */
 	public class FileManager extends EventDispatcher
 	{
+		// supported file types
+		private var imageTypes:RegExp = /^.*\.(png|gif|jpg)$/i;  
+		private var	videoTypes:RegExp = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
+		private var	swfType:RegExp = /^.*\.(swf)$/i;
+		private var	cmlType:RegExp = /^.*\.(cml)$/i;
+		
+		private var rendererDataCount:int;		
 		/**
-		 * constructor allow single instance for this Filemanger class
+		 * Constructor
 		 * @param	enforcer
 		 */
 		public function FileManager(enforcer:SingletonEnforcer) {}
 		
 		private static var _instance:FileManager;
-		/*
-		 * Returns singleton instance
+		/**
+		 * Returns an instance of the FileManager class
 		 */
 		public static function get instance():FileManager 
 		{ 
@@ -31,46 +56,40 @@ package com.gestureworks.cml.managers
 		}	
 		
 		/**
-		 * turns on the debug information
+		 * Turns on the debug information
 		 */
 		public var debug:Boolean = true;
 		
 		/**
-		 * number of files in file list
+		 * The number of files in file list
 		 */
 		public var fileCount:int = 0;
 		private var fileQueue:LinkedMap = new LinkedMap;
 		/**
-		 * list of files that file manager process
+		 * The list of files that FileManager processes
 		 */
 		public var fileList:LinkedMap = new LinkedMap;
 		
 		/**
-		 * number of cml's in cml queue
+		 * The number of CML files in the cml file queue
 		 */
 		public var cmlCount:int = 0;
 		
 		/**
-		 * list of cml in the queue
+		 * The list of CML files in the queue
 		 */
 		public var cmlQueue:LinkedMap = new LinkedMap;
 		private var cmlLoaded:Boolean = false;
 		
 		/**
-		 * turns off stopped
+		 * Indicates whther the file queue has stopped
 		 */
 		public var stopped:Boolean = false;
 		
-		// supported file types
-		private var imageTypes:RegExp = /^.*\.(png|gif|jpg)$/i;  
-		private var	videoTypes:RegExp = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
-		private var	swfType:RegExp = /^.*\.(swf)$/i;
-		private var	cmlType:RegExp = /^.*\.(cml)$/i;
-		
-		private var rendererDataCount:int;
+
 		
 		/**
-		 * searches the type of file and append to the cml queue
+		 * Validates the file type and appends to file queue
 		 * @param	file - file name
 		 * @param	type - type of file
 		 */
@@ -113,7 +132,7 @@ package com.gestureworks.cml.managers
 		
 		
 		/**
-		 * process the cml file
+		 * Starts processing of the CML file queue
 		 */
 		public function startCMLQueue():void
 		{					
@@ -123,7 +142,7 @@ package com.gestureworks.cml.managers
 		}
 	
 		/**
-		 * resumes the process
+		 * Resumes processing of the CML file queue
 		 */
 		public function resumeCMLQueue():void
 		{
@@ -135,7 +154,7 @@ package com.gestureworks.cml.managers
 		
 		
 		/**
-		 * start processing the cml files
+		 * Resumes processing of the non-CML file queue
 		 */
 		public function startFileQueue():void
 		{
@@ -144,7 +163,7 @@ package com.gestureworks.cml.managers
 		}		
 		
 		/**
-		 * stops processing
+		 * Stops processing of all file queues
 		 */
 		public function stopQueue():void
 		{
@@ -152,9 +171,9 @@ package com.gestureworks.cml.managers
 		}
 		
 		/**
-		 * process the cml files in the queue depending on stopped information
+		 * Processes the CML files in the queue depending on stopped information
 		 */
-		public function processCMLQueue():void
+		private function processCMLQueue():void
 		{						
 			if (!stopped)
 			{
@@ -195,7 +214,9 @@ package com.gestureworks.cml.managers
 			
 		}
 		
-		
+		/**
+		 * Processes the non-CML files in the queue depending on stopped information
+		 */		
 		private function processFileQueue():void
 		{			
 			if (!stopped)
@@ -233,9 +254,11 @@ package com.gestureworks.cml.managers
 		
 		
 		// TODO: IMPLEMENT UNLOADERS
-	
 		
-		
+		/**
+		 * CML load complete handler
+		 * @param	event
+		 */	
 		private function onCMLLoaded(event:Event):void
 		{			
 			var file:String = cmlQueue.currentKey;				
@@ -250,11 +273,10 @@ package com.gestureworks.cml.managers
 			dispatchEvent(new FileEvent(FileEvent.CML_LOADED, type, file, true, true));			
 		}		
 		
-		
-		
-
-		
-		
+		/**
+		 * Non-CML file load complete handler
+		 * @param	event
+		 */			
 		private function onFileLoaded(event:Event):void
 		{
 			var file:String = fileQueue.currentKey;	
@@ -273,16 +295,7 @@ package com.gestureworks.cml.managers
 			
 		}
 		
-		
-		
-		
-		
-		
 	}
-	
 }
 
-/**
- * class can only be access by the FileManager class only. 
- */
 class SingletonEnforcer{}

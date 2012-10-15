@@ -2,22 +2,25 @@ package com.gestureworks.cml.factories
 {	
 	import flash.display.CapsStyle;
 	import flash.display.GradientType;
-	import flash.display.Graphics;
 	import flash.display.InterpolationMethod;
+	import flash.display.JointStyle;
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
-	import flash.display.JointStyle;
 	import flash.geom.Matrix;
 
-	/**
-	 * This class creates various graphics objects
-	 * Base class for graphics
-	 * @author..
-	 */
+	/** 
+	 * The GraphicFactory is the base class for all Graphics.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.factories.Graphic
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 */	
 	public class GraphicFactory extends ElementFactory
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function GraphicFactory() 
 		{ 
@@ -25,7 +28,7 @@ package com.gestureworks.cml.factories
 		}
 		
 		/**
-		 * dispose method to nullify attribute
+		 * Dispose method
 		 */
 		override public function dispose():void 
 		{
@@ -55,7 +58,7 @@ package com.gestureworks.cml.factories
 		override public function set width(value:Number):void
 		{
 			_width = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -68,7 +71,7 @@ package com.gestureworks.cml.factories
 		override public function set height(value:Number):void
 		{
 			_height = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
        		
@@ -86,7 +89,7 @@ package com.gestureworks.cml.factories
 		public function set line(value:String):void 
 		{ 
 			_line = value;
-			layoutUI();			
+			updateGraphic();			
 		}		
 		
 		
@@ -99,7 +102,7 @@ package com.gestureworks.cml.factories
 		public function set lineStroke(value:Number):void
 		{
 			_lineStroke = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -116,7 +119,7 @@ package com.gestureworks.cml.factories
 		public function set linePixelHinting(value:Boolean):void 
 		{ 
 			_linePixelHinting = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 		
@@ -150,7 +153,7 @@ package com.gestureworks.cml.factories
 				case "vertical": _lineScaleMode = LineScaleMode.VERTICAL;
 				default: _lineScaleMode = LineScaleMode.NORMAL; 
 			}
-			layoutUI();				
+			updateGraphic();				
 		}
 		
 		
@@ -179,7 +182,7 @@ package com.gestureworks.cml.factories
 				case "square": _lineCaps = CapsStyle.SQUARE;
 				default: _lineCaps = CapsStyle.NONE; 
 			}
-			layoutUI();						
+			updateGraphic();						
 		}
 		
 		
@@ -207,7 +210,7 @@ package com.gestureworks.cml.factories
 				case "bevel": _lineJoints = JointStyle.BEVEL;
 				default: _lineJoints = JointStyle.MITER; 
 			}
-			layoutUI();						
+			updateGraphic();						
 		}		
 		
 		
@@ -220,7 +223,7 @@ package com.gestureworks.cml.factories
 		public function set lineMiterLimit(value:Number):void 
 		{ 
 			_lineMiterLimit = value; 
-			layoutUI();									
+			updateGraphic();									
 		}
 		
 		
@@ -239,7 +242,7 @@ package com.gestureworks.cml.factories
 		public function set lineColor(value:uint):void
 		{
 			_lineColor = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -252,7 +255,7 @@ package com.gestureworks.cml.factories
 		public function set lineAlpha(value:Number):void
 		{
 			_lineAlpha = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -278,7 +281,7 @@ package com.gestureworks.cml.factories
 				_lineGradientType = GradientType.RADIAL;
 			else
 				_lineGradientType = GradientType.LINEAR;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -294,7 +297,7 @@ package com.gestureworks.cml.factories
 		{ 
 			_lineGradientColors = value;
 			lineGradientColorArray = _lineGradientColors.split(",")
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -311,7 +314,7 @@ package com.gestureworks.cml.factories
 		{ 
 			_lineGradientAlphas = value;
 			lineGradientAlphaArray = _lineGradientAlphas.split(",")			
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -334,7 +337,7 @@ package com.gestureworks.cml.factories
 		{ 
 			_lineGradientRatios = value;
 			lineGradientRatioArray = _lineGradientRatios.split(",")						
-			layoutUI();
+			updateGraphic();
 		}
 		
 
@@ -348,7 +351,7 @@ package com.gestureworks.cml.factories
 		public function set lineGradientWidth(value:Number):void 
 		{ 
 			_lineGradientWidth = value; 
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -362,7 +365,7 @@ package com.gestureworks.cml.factories
 		public function set lineGradientHeight(value:Number):void 
 		{ 
 			_lineGradientHeight = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -379,7 +382,7 @@ package com.gestureworks.cml.factories
 		public function set lineGradientRotation(value:Number):void 
 		{ 			
 			_lineGradientRotation = value*Math.PI/180; //convert degrees to radians
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -393,7 +396,7 @@ package com.gestureworks.cml.factories
 		public function set lineGradientX(value:Number):void 
 		{ 
 			_lineGradientX = value; 
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -407,7 +410,7 @@ package com.gestureworks.cml.factories
 		public function set lineGradientY(value:Number):void 
 		{ 
 			_lineGradientY = value; 
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -435,7 +438,7 @@ package com.gestureworks.cml.factories
 				_lineGradientSpread = SpreadMethod.REPEAT;
 			else 
 				_lineGradientSpread = SpreadMethod.PAD;
-			layoutUI();		
+			updateGraphic();		
 		}
 		
 		
@@ -457,7 +460,7 @@ package com.gestureworks.cml.factories
 				_lineGradientInterpolation = InterpolationMethod.LINEAR_RGB;
 			else 
 				_lineGradientInterpolation = InterpolationMethod.RGB;
-			layoutUI();				
+			updateGraphic();				
 		}
 		
 		
@@ -474,7 +477,7 @@ package com.gestureworks.cml.factories
 		public function set lineGradientFocalPointRatio(value:Number):void 
 		{ 
 			_lineGradientFocalPointRatio = value; 
-			layoutUI();
+			updateGraphic();
 		}		
 		
 		
@@ -493,7 +496,7 @@ package com.gestureworks.cml.factories
 		public function set fill(value:String):void 
 		{ 
 			_fill = value;
-			layoutUI();
+			updateGraphic();
 			
 		}
 		
@@ -512,7 +515,7 @@ package com.gestureworks.cml.factories
 		public function set color(value:uint):void
 		{
 			_color = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 	
@@ -525,7 +528,7 @@ package com.gestureworks.cml.factories
 		public function set fillAlpha(value:Number):void
 		{
 			_fillAlpha = value;
-			layoutUI();
+			updateGraphic();
 		}		
 		
 						
@@ -552,7 +555,7 @@ package com.gestureworks.cml.factories
 				_gradientType = GradientType.RADIAL;
 			else
 				_gradientType = GradientType.LINEAR;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -568,7 +571,7 @@ package com.gestureworks.cml.factories
 		{ 
 			_gradientColors = value;
 			gradientColorArray = _gradientColors.split(",")
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -585,7 +588,7 @@ package com.gestureworks.cml.factories
 		{ 
 			_gradientAlphas = value;
 			gradientAlphaArray = _gradientAlphas.split(",")			
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -608,7 +611,7 @@ package com.gestureworks.cml.factories
 		{ 
 			_gradientRatios = value;
 			gradientRatioArray = _gradientRatios.split(",")						
-			layoutUI();
+			updateGraphic();
 		}
 		
 		private var _gradientWidth:Number = 100;		
@@ -621,7 +624,7 @@ package com.gestureworks.cml.factories
 		public function set gradientWidth(value:Number):void 
 		{ 
 			_gradientWidth = value; 
-			layoutUI();
+			updateGraphic();
 		}
 		
 		private var _gradientHeight:Number = 100;
@@ -634,7 +637,7 @@ package com.gestureworks.cml.factories
 		public function set gradientHeight(value:Number):void 
 		{ 
 			_gradientHeight = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		protected var _gradientRotation:Number = 0; //holds value in radians
@@ -650,7 +653,7 @@ package com.gestureworks.cml.factories
 		public function set gradientRotation(value:Number):void 
 		{ 			
 			_gradientRotation = value*Math.PI/180; //convert degrees to radians
-			layoutUI();
+			updateGraphic();
 		}
 		
 		private var _gradientX:Number = 0;
@@ -663,7 +666,7 @@ package com.gestureworks.cml.factories
 		public function set gradientX(value:Number):void 
 		{ 
 			_gradientX = value; 
-			layoutUI();
+			updateGraphic();
 		}
 
 		private var _gradientY:Number = 0;
@@ -676,7 +679,7 @@ package com.gestureworks.cml.factories
 		public function set gradientY(value:Number):void 
 		{ 
 			_gradientY = value; 
-			layoutUI();
+			updateGraphic();
 		}
 				
 		protected var _gradientSpread:String = SpreadMethod.PAD;
@@ -703,7 +706,7 @@ package com.gestureworks.cml.factories
 				_gradientSpread = SpreadMethod.REPEAT;
 			else 
 				_gradientSpread = SpreadMethod.PAD;
-			layoutUI();		
+			updateGraphic();		
 		}
 	
 		protected var _gradientInterpolation:String = InterpolationMethod.RGB;
@@ -724,7 +727,7 @@ package com.gestureworks.cml.factories
 				_gradientInterpolation = InterpolationMethod.LINEAR_RGB;
 			else 
 				_gradientInterpolation = InterpolationMethod.RGB;
-			layoutUI();				
+			updateGraphic();				
 		}
 		
 		private var _gradientFocalPointRatio:Number = 0.0;
@@ -740,7 +743,7 @@ package com.gestureworks.cml.factories
 		public function set gradientFocalPointRatio(value:Number):void 
 		{ 
 			_gradientFocalPointRatio = value; 
-			layoutUI();
+			updateGraphic();
 		}
 		
 			
@@ -759,7 +762,7 @@ package com.gestureworks.cml.factories
 		public function set shape(value:String):void 
 		{
 			_shape = value;
-			layoutUI();
+			updateGraphic();
 		}	
 		
 	
@@ -782,7 +785,7 @@ package com.gestureworks.cml.factories
 				_radius = value;
 				width = radius * 2;
 				height = radius * 2;
-				layoutUI();
+				updateGraphic();
 			}
 		}
 	
@@ -810,7 +813,7 @@ package com.gestureworks.cml.factories
 				for (var i:int = 0; i < array.length; i++)
 				   pathCommandsVector.push(array[i]);
 			}
-			layoutUI();
+			updateGraphic();
 			
 		}
 		
@@ -832,7 +835,7 @@ package com.gestureworks.cml.factories
 				for (var j:int = 0; j < array.length; j++)
 					pathCoordinatesVector.push(array[j]);
 			}
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -849,7 +852,7 @@ package com.gestureworks.cml.factories
 		public function set controlX(value:Number):void 
 		{ 
 			_controlX = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 			private var _controlY:Number = 10;
@@ -861,7 +864,7 @@ package com.gestureworks.cml.factories
 		public function set controlY(value:Number):void 
 		{ 
 			_controlY = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 		private var _anchorX:Number = 10;
@@ -873,7 +876,7 @@ package com.gestureworks.cml.factories
 		public function set anchorX(value:Number):void 
 		{ 
 			_anchorX = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 		private var _anchorY:Number = 10;
@@ -885,7 +888,7 @@ package com.gestureworks.cml.factories
 		public function set anchorY(value:Number):void 
 		{ 
 			_anchorY = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 		private var _startX:Number=0;
@@ -897,7 +900,7 @@ package com.gestureworks.cml.factories
 		 public function set startX(value:Number):void
 		{
 			_startX = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		
@@ -910,7 +913,7 @@ package com.gestureworks.cml.factories
 		 public function set startY(value:Number):void
 		{
 			_startY = value;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		/////////////////////////////////
@@ -928,7 +931,7 @@ package com.gestureworks.cml.factories
 		public function set cornerWidth(value:Number):void 
 		{ 
 			_cornerWidth = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 		private var _cornerHeight:Number = 10;
@@ -941,55 +944,55 @@ package com.gestureworks.cml.factories
 		public function set cornerHeight(value:Number):void 
 		{ 
 			_cornerHeight = value;
-			layoutUI();			
+			updateGraphic();			
 		}
 		
 		private var _topLeftRadius:Number = 0;
 		/**
 		 * sets the top left radius of the graphic object
-		 * @default=0;
+		 * @default 0;
 		 */
 		public function get topLeftRadius():Number { return _topLeftRadius; }
 		public function set topLeftRadius(r:Number):void
 		{
 			_topLeftRadius = r;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		private var _topRightRadius:Number = 0;
 		/**
 		 * sets the top right radius of the grpahic object
-		 * @default=0;
+		 * @default 0;
 		 */
 		public function get topRightRadius():Number { return _topRightRadius; }
 		public function set topRightRadius(r:Number):void
 		{
 			_topRightRadius = r;
-			layoutUI();
+			updateGraphic();
 		}
 
 		private var _bottomLeftRadius:Number = 0;
 		/**
 		 * sets the bottom left radius of the graphic object
-		 * @default=0;
+		 * @default 0;
 		 */
 		public function get bottomLeftRadius():Number { return _bottomLeftRadius; }
 		public function set bottomLeftRadius(r:Number):void
 		{
 			_bottomLeftRadius = r;
-			layoutUI();
+			updateGraphic();
 		}	
 		
 		private var _bottomRightRadius:Number = 0;
 		/**
 		 * sets the bottom right radius of the graphic object
-		 * @default=0;
+		 * @default 0;
 		 */
 		public function get bottomRightRadius():Number { return _bottomRightRadius; }
 		public function set bottomRightRadius(r:Number):void
 		{
 			_bottomRightRadius = r;
-			layoutUI();
+			updateGraphic();
 		}
 		
 		////////////////////
@@ -1015,6 +1018,11 @@ package com.gestureworks.cml.factories
 		{
 			graphics.copyFrom(source.graphics);
 		}
+		
+		/**
+		 * Abstract drawing method, meant to be overriden.
+		 */				
+		public function updateGraphic():void {}
 		
 	}
 }

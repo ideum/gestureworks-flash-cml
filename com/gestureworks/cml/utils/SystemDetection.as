@@ -3,9 +3,17 @@ package com.gestureworks.cml.utils
 	import flash.system.Capabilities
 		
 	/**
-	 * SystemDetection class detects the operating system, version,version number, player and browser
-	 * @author..
-	 */
+	 * The StringUtils utility is a collection of static methods for working with strings.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		if (SystemDetection.AIR)
+			trace("You are running AIR!");
+	 
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 */	
 	public class SystemDetection
 	{
 		/**

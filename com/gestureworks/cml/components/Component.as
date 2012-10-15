@@ -1,9 +1,9 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.FrameElement;
-	import com.gestureworks.cml.element.GraphicElement;
+	import com.gestureworks.cml.element.Frame;
+	import com.gestureworks.cml.element.Graphic;
 	import com.gestureworks.cml.element.Menu;
-	import com.gestureworks.cml.element.TextElement;
+	import com.gestureworks.cml.element.Text;
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.GestureWorks;
@@ -13,15 +13,32 @@ package com.gestureworks.cml.components
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * Component is basic display container
-	 * @author ...
-	 */
+	 * The Component manages a group of elements to create a high-level interactive touch container.
+	 * 
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 *  
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */	
 	public class Component extends TouchContainer 
 	{	
 		private var textFields:Array;	
 		
 		/**
-		 * component constructor
+		 * component Constructor
 		 */
 		public function Component() 
 		{
@@ -29,7 +46,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		override public function init():void
 		{	
@@ -38,18 +55,18 @@ package com.gestureworks.cml.components
 			if (!menu)
 				menu = searchChildren(Menu);
 			if (!frame)
-				frame = searchChildren(FrameElement);
-			if (!backBackground && back && back.hasOwnProperty("searchChildren"))
-				backBackground = back.searchChildren(GraphicElement);	
+				frame = searchChildren(Frame);
+			if (!background && back && back.hasOwnProperty("searchChildren"))
+				background = back.searchChildren(Graphic);	
 			
 			if (autoTextLayout)
-				textFields = searchChildren(TextElement, Array);
-				
+				textFields = searchChildren(Text, Array);
+			
 			updateLayout();				
 		}
 		
 		/**
-		 * CML initialisation callback
+		 * CML Initialisation callback
 		 */
 		override public function displayComplete():void
 		{
@@ -92,21 +109,21 @@ package com.gestureworks.cml.components
 		}		
 		
 		
-		private var _backBackground:*;
+		private var _background:*;
 		/**
 		 * Sets the back background element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
 		 * Regardless of how this set, a corresponding display object is always returned.
 		 */		
-		public function get backBackground():* {return _backBackground}
-		public function set backBackground(value:*):void 
+		public function get background():* {return _background}
+		public function set background(value:*):void 
 		{	
 			if (!value) return;
 			
 			if (value is DisplayObject)
-				_backBackground = value;
+				_background = value;
 			else
-				_backBackground = searchChildren(value);				
+				_background = searchChildren(value);				
 		}
 		
 		
@@ -183,10 +200,10 @@ package com.gestureworks.cml.components
 				back.height = height;				
 			}
 			
-			if (backBackground)
+			if (background)
 			{
-				backBackground.width = width;
-				backBackground.height = height;
+				background.width = width;
+				background.height = height;
 			}
 				
 			if (frame)
@@ -224,7 +241,9 @@ package com.gestureworks.cml.components
 					
 					textFields[i].autoSize = "left";
 					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
-										
+					
+					trace(textFields[i].width, textFields[i].paddingLeft);
+					
 					if (i == 0)
 						textFields[i].y = textFields[i].paddingTop;
 					else
@@ -292,7 +311,7 @@ package com.gestureworks.cml.components
 			textFields = null;
 			front = null;
 			back = null;
-			backBackground = null;
+			background = null;
 			menu = null;
 			frame = null;
 			

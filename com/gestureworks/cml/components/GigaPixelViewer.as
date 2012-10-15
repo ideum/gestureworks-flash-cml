@@ -1,6 +1,5 @@
 ﻿package com.gestureworks.cml.components
 {
-	//----------------adobe--------------//
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
@@ -10,43 +9,40 @@
 	import org.openzoom.flash.components.*;
 	import org.openzoom.flash.viewport.constraints.*;
 	import org.tuio.*;
-	//---------- gestureworks ------------//
-	//---------------open zoom-------------//
 	
-	 /**
-	 * <p>The GigaPixelDisplay component is the main component for the GigaPixelViewer module.  It contains all the neccessary display objects for the module.</p>
-	 *
-	 * <p>
-	 * The GigaPixelViewer is a module that uses the GigapixelElement to create interactive high resolution zoomable image windows.  
-	 * Multiple windows can independently display individual images with different sizes and orientations. The Gigapixel Elements are already touch enabled and should not be placed in touchContainers.  
-	 * The image windows can be interactively moved around stage, scaled and rotated using multitouch gestures additionaly the image can be panned and zoomed using multitouch gesture inside the image window.
-	 * Multitouch frame gestures can be activated and deactivated using the module XML settings.</p>
-	 *
-	 * <strong>Import Components :</strong>
-	 * <pre>
-	 * GigaPixelParser
-	 * </pre>
-	 *
-	 * <listing version="3.0">
-	 * var gpDisplay:GigaPixelDisplay = new GigaPixelDisplay();
-	 *
-	 * 		gpDisplay.id = Number;
-	 *
-	 * addChild(gpDisplay);</listing>
-	 *
-	 * @see id.module.GigaPixelViewer
+	/**
+	 * The GigapixelViewer component is primarily meant to display a Gigapixel element and its associated meta-data.
 	 * 
-	 * @includeExample GigaPixelDisplay.as
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>gigapixel</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
 	 * 
-	 * @langversion 3.0
-	 * @playerversion AIR 2
-	 * @playerversion Flash 10.1
-	 * @playerversion Flash Lite 4
-	 * @productversion GestureWorks 2.0
+	 * <p>The width and height of the component are automatically set to the dimensions of the Gigapixel element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <p>Multiple windows can independently display individual images with different sizes and orientations. The Gigapixel elements are 
+	 * already touch enabled and should not be placed in touchContainers. The image windows can be interactively moved around stage, scaled 
+	 * and rotated using multitouch gestures additionaly the image can be panned and zoomed using multitouch gesture inside the image 
+	 * window.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Josh
+	 * @see Component
+	 * @see com.gestureworks.cml.element.Gigapixel
+	 * @see com.gestureworks.cml.element.TouchContainer
 	 */
-	
-	 
-	public class GigaPixelViewer extends Component
+	public class GigapixelViewer extends Component
 	{
 		private var info:*;
 
@@ -58,9 +54,9 @@
     	private var scaleConstraint:ScaleConstraint;
 	
 		/**
-		 * gigaPixelViewer constructor
+		 * gigaPixelViewer Constructor
 		 */
-	  	public function GigaPixelViewer()
+	  	public function GigapixelViewer()
 		{
 			super();
 		}
@@ -107,12 +103,12 @@
 				front = searchChildren(".gigapixel_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!gigapixel)
-				gigapixel = searchChildren(GigapixelElement);
+				gigapixel = searchChildren(Gigapixel);
 				gigapixel.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			super.init();
@@ -162,7 +158,7 @@
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void
 		{

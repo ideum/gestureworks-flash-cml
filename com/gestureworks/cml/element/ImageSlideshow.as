@@ -7,16 +7,20 @@ package com.gestureworks.cml.element
 	import flash.events.Event;
 
 	/**
-	 * ImageSlideshow
-	 * Image sequencer with cross-fade transitions
-	 * @author Charles Veasey 
+	 * The ImageSlideshow element creates a list of images and contains a build-in
+	 * sequencer with fade transitions.
+	 * 
+	 * @author Ideum
+	 * @see Slideshow
+	 * @see ImageList
+	 * @see ImageSlideshow
 	 */	
 	public class ImageSlideshow extends ImageSequence
 	{	
 		private var tween:ITween;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ImageSlideshow()
 		{
@@ -24,7 +28,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attribute
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{
@@ -44,7 +48,7 @@ package com.gestureworks.cml.element
 		}	
 			
 		/**
-		 * loads image
+		 * Loads image
 		 * @param	index
 		 */
 		public function loadDefault(index:int):void
@@ -54,7 +58,7 @@ package com.gestureworks.cml.element
 		}
 
 		/**
-		 * image load callback
+		 * Image load callback
 		 */
 		override public function loadComplete():void 
 		{

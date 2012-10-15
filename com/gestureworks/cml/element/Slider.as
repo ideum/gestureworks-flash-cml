@@ -11,12 +11,12 @@ package com.gestureworks.cml.element
 	import org.tuio.*;
 	
 	/**
-	 * Slider can be used through touch and mouse input devices. It also allows for the input value to be fed through a function call, allowing the slider to updated by another process.
-	 * The slider can be orientated horizontally or vertically. It can act as a continuous slider or one that snaps to x-number of discrete steps.
-	 * 
-	 * It has following parametrs:hit, rail, knob, orientation, discrete, steps, min, max and gestureReleaseInertia.
-	 * 
-	 * @author Ideum (Charles Veasey)
+	 * The Slider element creates s horizontal or vertical slider that reponds touch and mouse input. It also allows for the input 
+	 * value to be fed through a function call, allowing the slider to updated by another process. The slider can be orientated 
+	 * horizontally or vertically. It can act as a continuous slider or one that snaps to x-number of discrete steps.
+	 *  
+	 * @author Ideum
+	 * @see ScrollBar
 	 */
 	
 	public class Slider extends Container 
@@ -29,7 +29,7 @@ package com.gestureworks.cml.element
 		private var maxPos:Number;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function Slider() 
 		{
@@ -439,7 +439,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attributes and remove listeners
+		 * Dispose methods and remove listeners
 		 */
 		override public function dispose():void
 		{

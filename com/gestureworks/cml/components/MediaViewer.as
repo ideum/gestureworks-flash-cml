@@ -3,26 +3,39 @@
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;		
+	import flash.display.DisplayObject;	
 	
 	/**
-	 * The MediaViewer is a component that is meant to load various types of media files on the front and metadata on the back.
-	 * It is composed of the following elements: media, front, back, menu, and frame. The media and front may be the same thing. 
-	 * The media is required. The width and height of the component is automatically set to the dimensions of the media element unless it is 
-	 * previously specifed by the component.
+	 * The MediaViewer component is primarily meant to display a Media element and its associated meta-data.
 	 * 
-	 *  @author ...
-	 */
-	
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>media</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 *  
+	 * <p>The width and height of the component are automatically set to the dimensions of the Media element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see Component
+	 * @see com.gestureworks.cml.element.Media
+	 * @see com.gestureworks.cml.element.TouchContainer
+	 */	 
 	public class MediaViewer extends Component 
 	{		
 		/**
-		 * media viewer constructor
+		 * media viewer Constructor
 		 */
 		public function MediaViewer() 
 		{
@@ -62,12 +75,12 @@
 				front = searchChildren(".image_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!media)
-				media = searchChildren(MediaElement);
+				media = searchChildren(Media);
 
 			super.init();
 		}		
@@ -102,7 +115,7 @@
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

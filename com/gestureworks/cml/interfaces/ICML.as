@@ -1,14 +1,17 @@
 package com.gestureworks.cml.interfaces 
 {
 	/**
-	 * ICML
-	 * Implements classes that able to be parsed by cml parser
-	 * @author Charles Veasey
+	 * Implements CML compatibility.
+	 * @author Ideum
 	 */
-	
 	public interface ICML 
-	{		
-		function parseCML(cml:XMLList):XMLList;
+	{
+		/**
+		 * Internal CML parse method. This can be overridden to create custom parse routines.
+		 * @param	cml
+		 * @return
+		 */	
+		function parseCML(cml:XMLList):XMLList;	
 	}
 	
 }

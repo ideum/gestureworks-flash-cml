@@ -9,8 +9,7 @@ package com.gestureworks.cml.element
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * The Toggle is a element that acts as a toggle button. It adds crossline inside square when toggled.
-	 * It has the following parameters: fillColor, backgroundLineColor, backgroundLineStoke, toggleColor and toggleLineStoke.
+	 * The Toggle element acts as a toggle button. It adds a crossline graphic inside of square when toggled.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -33,14 +32,13 @@ package com.gestureworks.cml.element
 	
 	   function onToggle(event:StateEvent):void
 	   {
-	   trace("toggle text", event.value);
-	
-	   if (event.value == "true")
-	   txt.visible = true;
-	   else
-	   txt.visible = false;
+		  trace("toggle text", event.value);
+
+		  if (event.value == "true")
+			  txt.visible = true;
+		  else
+			  txt.visible = false;
 	   }
-	 *
 	 *
 	 * </codeblock>
 	 */
@@ -48,7 +46,7 @@ package com.gestureworks.cml.element
 	{
 		
 		/**
-		 * Toggle constructor. Allows user to define toggle button.
+		 * Constructor
 		 */
 		public function Toggle()
 		{
@@ -169,7 +167,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * draws the background and x graphic in background 
+		 * Draws the background and x graphic in background 
 		 */
 		
 		public function draw():void
@@ -202,7 +200,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * visibility of x graphic in background 
+		 * Visibility of x graphic in background 
 		 */
 		
 		private function onTouchBegin(event:TouchEvent):void
@@ -212,7 +210,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to remove listeners and nullify attributes
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{

@@ -8,16 +8,14 @@ package  com.gestureworks.cml.element
 	import flash.net.URLRequest;
 	
 	/**
-	 * The YoutubeElement is an object that retrieves and streams a Youtube video using the Youtube API. The source of the file will be the Youtube video's ID.
+	 * The YouTube element retrieves and streams a Youtube video using the Youtube API. The source of the file will be the Youtube video's ID.
 	 * The video must be set to allow embedding and accessible without a user sign in.
 	 * 
-	 * The Video ID is the 10-digit ID associated with the video link. For example, a direct URL to the video used in this example is:
+	 * <p>The Video ID is the 10-digit ID associated with the video link. For example, a direct URL to the video used in this example is:
 	 * http://www.youtube.com/watch?v=h0MZX-D8xzA. Notice the "h0MZX-D8xzA" is the video's id. A video must be set to allow embedding from its owner
 	 * to be used by the YouTube API. If you receive "Error 100" or "Error 101", or "150", the video either no longer exists, or its embedding has 
-	 * been disabled.
+	 * been disabled.</p>
 	 * 
-	 * YoutubeElement has the following parameters: src, chrome, autoplay
-	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 	   var ytElement:YouTubeElement = new YouTubeElement();
@@ -25,13 +23,12 @@ package  com.gestureworks.cml.element
 		ytElement.autoplay = true;
 		ytElement.chrome = true;
 		addChild(ytElement);
-		
 		ytElement.init();
 	 *
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class YouTubeElement extends ElementFactory
+	public class YouTube extends ElementFactory
 	{
 		private const YTDOMAIN:String = "http://www.youtube.com";
 		private const YTAPI:String = "http://www.youtube.com/apiplayer?version=3";
@@ -44,9 +41,9 @@ package  com.gestureworks.cml.element
 		public function get loaded():Boolean { return _loaded; }
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function YouTubeElement() 
+		public function YouTube() 
 		{
 			super();
 			
@@ -106,7 +103,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML callback initialisation
+		 * CML callback Initialisation
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -116,7 +113,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		public function init():void
 		{
@@ -212,7 +209,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to remove children
+		 * Dispose
 		 */
 		override public function dispose():void {
 			super.dispose();

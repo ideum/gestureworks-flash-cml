@@ -1,62 +1,73 @@
 package com.gestureworks.cml.utils 
 {
-	import com.gestureworks.cml.element.TextElement;
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
 	/**
-	 * TODo
-	 * @author 
+	 * The CloneUtils utility creates and returns a copy of an object.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * 
+		var g1:Graphic = new Graphic();
+		g1.x = 0;
+		g1.shape = "circle";
+		g1.radius = "100:
+		
+		var g2:Graphic = CloneUtils.clone(g1) as Graphic;
+		g2.x = 200:
+		
+		addChild(g1);
+		addChild(g2);
+		
+	 * </codeblock>
+	 * 
+	 * @author Ideum
 	 */
 	public class CloneUtils 
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function CloneUtils():void
-		{						
-			
-		}
+		public function CloneUtils():void {}
 		
 		/**
-		 * TODO
+		 * Returns a clone from the source parameter
 		 * @param	source
-		 * @return
+		 * @return 
 		 */
 		public static function clone(source:*):* 
-		{
+		{			
+			var cloneObj:*;
+			if (source) {
+				cloneObj = newInstance(source);
 				
-				var cloneObj:*;
-				if (source) {
-					cloneObj = newInstance(source);
-					
-					if (cloneObj)
-					{
-						copyData(source, cloneObj);
-					}
+				if (cloneObj)
+				{
+					copyData(source, cloneObj);
 				}
-				
-				if (source is DisplayObjectContainer) {
-					if (DisplayObjectContainer(source).numChildren > 0){
-						for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
-							var childClone:* = clone(DisplayObjectContainer(source).getChildAt(i));
-							
-							if (childClone.hasOwnProperty("displayComplete")) {
-								childClone["displayComplete"]();
-							}
-							
-							DisplayObjectContainer(cloneObj).addChild(childClone);
+			}
+			
+			if (source is DisplayObjectContainer) {
+				if (DisplayObjectContainer(source).numChildren > 0){
+					for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
+						var childClone:* = clone(DisplayObjectContainer(source).getChildAt(i));
+						
+						if (childClone.hasOwnProperty("displayComplete")) {
+							childClone["displayComplete"]();
 						}
+						
+						DisplayObjectContainer(cloneObj).addChild(childClone);
 					}
 				}
-				
-				return cloneObj;
+			}
+			
+			return cloneObj;
 		}
 		
 		/**
-		 * TODO
+		 * Returns a new object from the source paramter
 		 * @param	source
 		 * @return
 		 */
@@ -77,7 +88,8 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * TODO
+		 * Copies source object data to destination object using the 
+		 * AS3 describeType method
 		 * @param	source
 		 * @param	destination
 		 */

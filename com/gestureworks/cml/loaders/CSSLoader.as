@@ -1,38 +1,53 @@
 package com.gestureworks.cml.loaders
 {
+	import com.gestureworks.cml.events.FileEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.utils.Dictionary;
 	import flash.text.StyleSheet;
-	import com.gestureworks.cml.events.FileEvent;
+	import flash.utils.Dictionary;
 	
 	/**
-	 * CSSLoader, Multiton Class
-	 * Loads and stores a global reference to a CSS Stylesheet 
-	 * @authors Charles Veasey
+	 * The CSSManager class loads and stores a global reference to an external CSS file.
+	 * 
+	 * @author Charles
+	 * @see com.gestureworks.managers.CSSManager
 	 */
-	
 	public class CSSLoader extends EventDispatcher
 	{
+		private var urlLoader:URLLoader;
+				
+		/**
+		 * Holds class instances of the multiton.
+		 */		
 		static private var instances:Dictionary = new Dictionary;
 		
-		private var urlLoader:URLLoader;
-		
 		/**
-		 * hold the data that css loader manages
+		 * Returns an instance of the CMLLoader class
+		 * @param	key
+		 * @return
 		 */
-		public var data:StyleSheet = new StyleSheet;
+		public static function getInstance(key:*):CSSLoader
+		{
+			if (instances[key] == null)
+				CSSLoader.instances[key] = new CSSLoader(new SingletonEnforcer());
+			return CSSLoader.instances[key];
+		}		
 
 		private var _isLoaded:Boolean;		
 		/**
-		 * returns the is loaded value
+		 * Returns a boolean determining whether the file has been loaded
 		 */
-		public function get isLoaded():Boolean { return _isLoaded; }		
+		public function get isLoaded():Boolean { return _isLoaded; }
 		
 		/**
-		 * constructor -  this will allow single instance for this CSSLoader class
+		 * Contains the loaded CSS data
+		 */
+		public var data:StyleSheet = new StyleSheet;
+		
+		/**
+		 * Constructor
 		 * @param	enforcer
 		 */
 		public function CSSLoader(enforcer:SingletonEnforcer)
@@ -41,7 +56,7 @@ package com.gestureworks.cml.loaders
 		}	
 		
 		/**
-		 * loads the CSS style sheet file
+		 * Loads the CSS style sheet file
 		 * @param	url
 		 */
 		public function loadStyle(url:String):void
@@ -53,32 +68,16 @@ package com.gestureworks.cml.loaders
 		}
 		
 		/**
-		 * dispataches event
+		 * CSS load complete handler
 		 * @param	e
 		 */
-		public function onCSSDataLoaded(e:Event):void
+		private function onCSSDataLoaded(e:Event):void
 		{
 			data.parseCSS(urlLoader.data);
 			_isLoaded = true;
 			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED));
 		}
-		
-		/**
-		 * returns the CSSLoader key 
-		 * @param	key
-		 * @return
-		 */
-		public static function getInstance(key:*):CSSLoader
-		{
-			if (instances[key] == null)
-				CSSLoader.instances[key] = new CSSLoader(new SingletonEnforcer());
-			return CSSLoader.instances[key];
-		}
-	
 	}
 }
 
-/**
- * class can only be access by the CSSLoader class only. 
- */
 class SingletonEnforcer{}

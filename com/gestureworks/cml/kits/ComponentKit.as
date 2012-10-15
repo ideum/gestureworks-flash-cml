@@ -3,12 +3,21 @@ package com.gestureworks.cml.kits
 	import com.gestureworks.cml.element.Container;
 	
 	/**
-	 * ComponentKit creates and manges the component
+	 * The ComponentKit creates and manges components. It contains
+	 * a special property called the rendererList, which allows for the 
+	 * creation of multiple objects through a CML template system called 
+	 * the RenderKit
+	 * 
+	 * <p>This class is meant to be used within CML and is not compatible 
+	 * with AS3.</p>
+	 * 
+	 * @author Ideum
+	 * @see RenderKit
 	 */
 	public class ComponentKit extends Container
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */	
 		public function ComponentKit() 
 		{
@@ -18,7 +27,7 @@ package com.gestureworks.cml.kits
 		
 		private var _classRef:String;
 		/**
-		 * specifies the class reference of object
+		 * Specifies the class reference to the object
 		 */
 		public function get classRef():String{return _classRef;}
 		public function set classRef(value:String):void
@@ -30,7 +39,7 @@ package com.gestureworks.cml.kits
 		
 		private var _className:String;
 		/**
-		 * specifies the class name of object
+		 * Specifies the class name of object
 		 */
 		override public function get className():String { return _className ; }
 		override public function set className(value:String):void
@@ -42,7 +51,7 @@ package com.gestureworks.cml.kits
 		
 		private var _rendererList:String;
 		/**
-		 * renders the list
+		 * Specifies a RenderKit renderer
 		 */
 		public function get rendererList():String{return _rendererList;}
 		public function set rendererList(value:String):void
@@ -54,7 +63,7 @@ package com.gestureworks.cml.kits
 		}	
 
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void 
 		{

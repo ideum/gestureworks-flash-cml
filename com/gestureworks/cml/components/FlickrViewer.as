@@ -4,24 +4,38 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;
 	
 	/**
-	 * The FlickrViewer is a component that is primarily meant to display an image pulled from Flickr on the front side and meta-data on the back side.
-	 * It is composed of the following elements: image, front, back, menu, and frame. The image and front may be the same thing. 
-	 * The image is required. The width and height of the component is automatically set to the dimensions of the image unless it is 
-	 * previously specifed by the component.
+	 * The FlickrViewer component is primarily meant to display a Flickr element and its associated meta-data.
 	 * 
-	 * @author..
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>flickr</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 * 
+	 * <p>The width and height of the component are automatically set to the dimensions of the Flickr element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Josh
+	 * @see Component
+	 * @see com.gestureworks.cml.element.Flickr 
+	 * @see com.gestureworks.cml.element.TouchContainer
 	 */
 	public class FlickrViewer extends Component 
 	{			
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function FlickrViewer() 
 		{
@@ -49,7 +63,7 @@ package com.gestureworks.cml.components
 		}	
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		override public function init():void 
 		{			
@@ -64,12 +78,12 @@ package com.gestureworks.cml.components
 				front = searchChildren(".flickr_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!image)
-				image = searchChildren(FlickrElement);
+				image = searchChildren(Flickr);
 			image.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			super.init();
@@ -106,7 +120,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

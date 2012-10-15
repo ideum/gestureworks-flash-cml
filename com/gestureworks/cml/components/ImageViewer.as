@@ -4,22 +4,38 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;
 	
 	/**
-	 * The ImageViewer is a component that is primarily meant to display an image on the front side and meta-data on the back side.
-	 * It is composed of the following elements: image, front, back, menu, and frame. The image and front may be the same thing. 
-	 * The image is required. The width and height of the component is automatically set to the dimensions of the image unless it is 
-	 * previously specifed by the component.
+	 * The ImageViewer component is primarily meant to display an Image element and its associated meta-data.
+	 * 
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>image</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 * 
+	 * <p>The width and height of the component are automatically set to the dimensions of the Image element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see Component
+	 * @see com.gestureworks.cml.element.Image
+	 * @see com.gestureworks.cml.element.TouchContainer
 	 */
 	public class ImageViewer extends Component 
 	{		
 		/**
-		 * image viewer constructor
+		 * image viewer Constructor
 		 */
 		public function ImageViewer() 
 		{
@@ -63,12 +79,12 @@ package com.gestureworks.cml.components
 				front = searchChildren(".image_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 			
 			// automatically try to find elements based on AS3 class
 			if (!image)
-				image = searchChildren(ImageElement);
+				image = searchChildren(Image);
 			
 			super.init();
 		}
@@ -93,7 +109,7 @@ package com.gestureworks.cml.components
 		}	
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

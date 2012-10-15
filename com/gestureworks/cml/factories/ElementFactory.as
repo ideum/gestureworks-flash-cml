@@ -1,34 +1,23 @@
 package com.gestureworks.cml.factories 
 {
-	import com.gestureworks.cml.interfaces.ICML;
-	import com.gestureworks.cml.interfaces.IElement;
-	import com.gestureworks.cml.interfaces.ICSS;
-	import com.gestureworks.cml.interfaces.IClone;
-	import com.gestureworks.cml.core.CMLObjectList;
-	//import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.cml.core.*;
-	import flash.utils.Dictionary;	
+	import com.gestureworks.cml.interfaces.ICSS;
+	import com.gestureworks.cml.interfaces.IElement;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.net.registerClassAlias;
-	import flash.utils.ByteArray;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
+	import flash.utils.Dictionary;
 	
-	
-	/**
-	 * ElementFactory
-	 * Base class for display elements
-	 * It has following parameters:id, cmlIndex, className, width, height,scaleX, scaleY, minScale, maxScale, scale, widthPercent,heightPercent, horizontalCenter,
-	 *                             verticalCenter,top, left, bottom, right, index, debugStyle, fixedScale, displayEvents, and class.
-	 * 
-	 * @authors Charles Veasey
-	 */	
-	
-	public class ElementFactory extends Sprite implements IElement, ICSS, IClone
+	/** 
+	 * The ElementFactory is the base class for all Elements.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.factories.GraphicFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 */		
+	public class ElementFactory extends Sprite implements IElement, ICSS
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ElementFactory() 
 		{
@@ -49,7 +38,7 @@ package com.gestureworks.cml.factories
 		
 		
 		/**
-		 * Calls the dispose method for each child possessing a dispose method then removes all children. 
+		 * Calls the Dispose method for each child possessing a Dispose method then removes all children. 
 		 * This is the root destructor intended to be called by overriding dispose functions. 
 		 */
 		public function dispose():void 
@@ -144,7 +133,6 @@ package com.gestureworks.cml.factories
 		override public function set width(value:Number):void
 		{
 			_width = value;
-			layoutUI();
 		}
 		
 		
@@ -157,7 +145,6 @@ package com.gestureworks.cml.factories
 		override public function set height(value:Number):void
 		{
 			_height = value;
-			layoutUI();
 		}		
 		
 		
@@ -282,7 +269,6 @@ package com.gestureworks.cml.factories
 		override public function set alpha(value:Number):void
 		{
 			super.alpha = value;
-			layoutUI();
 		}
 		
 		
@@ -426,23 +412,7 @@ package com.gestureworks.cml.factories
 		 * Returns clone of self
 		 */
 		public function clone():Object {return new Object};	
-				
+
 		
-		/**
-		 * Prints to console
-		 * @param anything
-		 */		
-		public function print(value:*):void
-		{
-			trace(value);
-			
-			//TODO: create console class and throw in hook here
-		}
-		
-		protected function createUI():void{}
-		protected function commitUI():void{}
-		protected function layoutUI():void{}
-		//public function updateUI():void{}
-		protected function updateUI():void{}
 	}
 }

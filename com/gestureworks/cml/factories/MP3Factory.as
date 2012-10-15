@@ -23,9 +23,15 @@ package com.gestureworks.cml.factories
 	import flash.net.*;
 	import flash.utils.*;
 	
-	/**
-	 * This is the base class for the MP3Element
-	 */		
+	/** 
+	 * The MP3Factory is the base class for all MP3s.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Charles
+	 * @see com.gestureworks.cml.factories.Graphic
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 */	
 	public class MP3Factory extends ElementFactory
 	{
 		//audio	
@@ -58,7 +64,7 @@ package com.gestureworks.cml.factories
 		public var timer:Timer;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function MP3Factory()
 		{
@@ -186,18 +192,11 @@ package com.gestureworks.cml.factories
 		{
 			super.dispose();
 			channel = null;
-			playing = null;
-			cue = null;
+			playing = false;
 			g = null;
 			timer = null;
 			id3 = null;
 			useId3 = null;
-			id3Title = null;
-	        id3Author = null;
-	        id3Album = null;
-	        id3Year = null;
-	        id3Copyright = null;
-	        id3Comment = null;
 			bgGraphic = null;			
 			
 			if (timer) {
@@ -469,7 +468,6 @@ package com.gestureworks.cml.factories
 		private function soundLoaded(event:Event):void 
 		{    
 			sound.removeEventListener(Event.COMPLETE, soundLoaded);
-			super.layoutUI();
 		}
 		
 		private function soundComplete(event:Event):void

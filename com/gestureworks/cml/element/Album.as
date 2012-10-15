@@ -13,10 +13,36 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.tweens.ITween;
 	
 	/**
-	 * Provides a list of display objects that can be scrolled horizontally or vertically.
+	 * The Album element provides a list of display objects that can be 
+	 * scrolled horizontally or vertically using a drag gesture. It 
+	 * supports tweening and item snapping.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * 
+		// horizontal album
+		var h_album:AlbumElement = new AlbumElement();
+		h_album.addChild(getImageElement("assets/wb3.jpg"));
+		h_album.addChild(getImageElement("assets/USS_Macon_over_Manhattan.png"));
+		h_album.addChild(getImageElement("assets/wb3.jpg"));
+		h_album.init();
+
+		// vertical album
+		var v_album:AlbumElement = new AlbumElement();
+		v_album.horizontal = false;			
+		v_album.addChild(getImageElement("assets/wb3.jpg"));
+		v_album.addChild(getImageElement("assets/USS_Macon_over_Manhattan.png"));						
+		v_album.addChild(getImageElement("assets/wb3.jpg"));			
+		v_album.init();
+	
+	// the supporting method getImageElement("src"), returns a Image display
+	// object.
+			
+	 * </codeblock>
+	 * 
 	 * @author Shaun
+	 * @see TouchContainer
 	 */
-	public class AlbumElement extends TouchContainer
+	public class Album extends TouchContainer
 	{	
 		private var _applyMask:Boolean = true;
 		private var _horizontal:Boolean = true;
@@ -25,7 +51,7 @@ package com.gestureworks.cml.element
 		
 		private var belt:TouchContainer;
 		private var snapPoints:Array;
-		private var albumMask:GraphicElement;
+		private var albumMask:Graphic;
 		private var snapTween:ITween;
 		private var boundary1:Number;
 		private var boundary2:Number;
@@ -34,10 +60,10 @@ package com.gestureworks.cml.element
 		/**
 		 * Constructor
 		 */
-		public function AlbumElement() 
+		public function Album() 
 		{
 			mouseChildren = true;
-			albumMask = new GraphicElement();
+			albumMask = new Graphic();
 			albumMask.shape = "rectangle";
 		}
 				

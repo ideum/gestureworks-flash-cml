@@ -2,7 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.element.Container;
-	import com.gestureworks.cml.element.KeyElement;
+	import com.gestureworks.cml.element.Key;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
@@ -11,38 +11,30 @@ package com.gestureworks.cml.element
 	import flash.utils.Dictionary;
 	
 	/**
-	 * The <code>TouchKeyboard</code> is a virtual keyboard providing an interface for a collection of <code>KeyElement</code> objects
+	 * The <code>TouchKeyboard</code> is a virtual keyboard providing an interface for a collection of <code>Key</code> objects
 	 * and output management for key events. Default configurations are in place for convenience but the keyboard's style, layout, and key
 	 * actions are customizable. 
 	 * 
-	 * 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	
+		var tk:TouchKeyboard = new TouchKeyboard();
+		tk.init();
+		addChild(tk);
 		
-		override protected function gestureworksInit():void
- 		{
-			trace("gestureWorksInit()");
-			touchKeyboardTestAS();
-		}
-		
-		private function touchKeyboardTestAS():void
-		{
-			var tk:TouchKeyboard = new TouchKeyboard();
-			tk.init();
-			addChild(tk);
-			
-			var txt1:TextElement = new TextElement();
-			txt1.width = 400;
-			txt1.height = 400;
-			txt1.x = 1000;
-			txt1.border = true;
-			txt1.multiline = true;
-			txt1.type = "input";
-			addChild(txt1);	
-		}
+		var txt1:Text = new Text();
+		txt1.width = 400;
+		txt1.height = 400;
+		txt1.x = 1000;
+		txt1.border = true;
+		txt1.multiline = true;
+		txt1.type = "input";
+		addChild(txt1);	
 	 * 
 	 * 
 	 * </codeblock>
 	 * 
 	 * @author Shaun
+	 * @see Key
 	 */
 	public class TouchKeyboard extends Container
 	{	
@@ -136,7 +128,7 @@ package com.gestureworks.cml.element
 		 */
 		private function generateKeys():void
 		{
-			if (searchChildren(KeyElement))  
+			if (searchChildren(Key))  
 				generateCMLKeys();
 			else
 				generateDefKeys();
@@ -183,7 +175,7 @@ package com.gestureworks.cml.element
 				rowWidth = bkgPadding;
 				maxKeyHeight = 0;
 				
-				for each(var key:KeyElement in row)
+				for each(var key:Key in row)
 				{				
 					key.y = bkgHeight;
 					key.x = rowWidth;										
@@ -233,7 +225,7 @@ package com.gestureworks.cml.element
 				for (var j:int = 0; j < container.childList.length; j++)
 				{
 					var key:* = container.childList.getIndex(j);
-					if (!(key is KeyElement)) continue;
+					if (!(key is Key)) continue;
 					key.init();
 					rowArray.push(key);
 				}
@@ -249,9 +241,9 @@ package com.gestureworks.cml.element
 		 * @param	specs
 		 * @return
 		 */
-		private function getKeyElement(specs:String):KeyElement
+		private function getKeyElement(specs:String):Key
 		{
-			var key:KeyElement = new KeyElement();
+			var key:Key = new Key();
 			var wsRegEx:RegExp = / /gi;
 			var specsArray:Array = specs.split(wsRegEx);
 			
@@ -360,7 +352,7 @@ package com.gestureworks.cml.element
 		 */
 		private function keyHandler(event:KeyboardEvent):void
 		{	
-			//key event was not dispatched from KeyElement 
+			//key event was not dispatched from Key 
 			if (event.keyLocation != 10) return;								
 			
 			//operations don't require a text field
@@ -374,7 +366,7 @@ package com.gestureworks.cml.element
 			if (!output)
 			{
 				var focusedObj:* = stage.focus;
-				if ((focusedObj is TextField) && !(focusedObj.parent is KeyElement))
+				if ((focusedObj is TextField) && !(focusedObj.parent is Key))
 					currentTF = focusedObj;
 			}
 			else
@@ -495,7 +487,7 @@ package com.gestureworks.cml.element
 				
 			for each(var row:Array in keys)
 			{
-				for each(var key:KeyElement in row)
+				for each(var key:Key in row)
 					key.capsOn = !key.capsOn;
 			}
 		}
@@ -511,7 +503,7 @@ package com.gestureworks.cml.element
 				shift = true;
 				for each(var row:Array in keys)
 				{
-					for each(var keyEl:KeyElement in row)
+					for each(var keyEl:Key in row)
 						keyEl.shiftOn = shift;
 				}
 			}
@@ -520,13 +512,13 @@ package com.gestureworks.cml.element
 				shift = false;
 				for each(var rw:Array in keys)
 				{
-					for each(var ke:KeyElement in rw)
+					for each(var ke:Key in rw)
 						ke.shiftOn = shift;
 				}
 			}
 		}
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{

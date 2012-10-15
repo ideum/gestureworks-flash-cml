@@ -1,23 +1,26 @@
 package com.gestureworks.cml.factories
 {
+	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.utils.*;
-	import com.gestureworks.cml.core.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.display.DisplayObject;
 	import flash.events.*;
 	import flash.utils.*;
 	
-	/**
-	 * Touch container creates display hierarchies. It keeps track of children through the childlist property.
-	 * base class for touch container
-	 */
-	
+	/** 
+	 * The TouchContainerFactory is the base class for all TouchContainers.
+	 * It is an abstract class that is not meant to be called directly.
+	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.factories.ElementFactory
+	 * @see com.gestureworks.cml.factories.GraphicFactory
+	 */	 
 	public class TouchContainerFactory extends TouchSprite implements IContainer, ICSS
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */		
 		public function TouchContainerFactory()
 		{
@@ -41,7 +44,7 @@ package com.gestureworks.cml.factories
 				
 		
 		/**
-		 * Calls the dispose method for each child possessing a dispose method then removes all children. 
+		 * Calls the Dispose method for each child possessing a Dispose method then removes all children. 
 		 * This is the root destructor intended to be called by overriding dispose functions. 
 		 */
 		public function dispose():void 		
@@ -165,7 +168,7 @@ package com.gestureworks.cml.factories
 		}			
 		
 		/**
-		 * CML callback initialisation
+		 * CML callback Initialisation
 		 */
 		public function displayComplete():void{}
 		
@@ -336,7 +339,7 @@ package com.gestureworks.cml.factories
 		private var _outlineOn:String = "false";
 		/**
 		 * specifies the outline of container to true or false
-		 * @default=false;
+		 * @default false;
 		 */
 		public function get outlineOn():String{return _outlineOn;}
 		public function set outlineOn(value:String):void
@@ -346,7 +349,7 @@ package com.gestureworks.cml.factories
 		private var _outline_stroke:int = 20;
 		/**
 		 * sets the line stroke of outline
-		 * @default=20;
+		 * @default 20;
 		 */
 		public function get outline_stroke():int{return _outline_stroke;}
 		public function set outline_stroke(value:int):void

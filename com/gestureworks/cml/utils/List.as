@@ -4,45 +4,71 @@ package com.gestureworks.cml.utils
 	import com.gestureworks.cml.interfaces.IListIterator;
 	
 	/**
-	 * List class stores more than one item at the same time
+	 * The List utility is a data structure that creates an ordered
+	 * list, has a built-in two-way iterator, and contains many 
+	 * options for storing and retreiving values.
+	 * 
+	 * <p>The structure is comprised of:
+	 * <ul>
+	 * 	<li>index - the index number (must be an integer)</li>
+	 * 	<li>value - the stored value (can be anything)</li>
+	 * </ul></p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		var l:List = new List();
+		l.append(new Sprite());
+		l.append(new TouchSprite());
+		
+		lm.reset();
+		trace(lm.next());	 
+	 
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see LinkedMap
 	 */
 	public class List implements IList, IListIterator 
 	{
 		/**
-		 * stores number of itmes in the array
+		 * Stores the array of items
 		 */
 		public var array:Array;		
 		
+		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function List()
 		{
 			array = new Array;
 		}
-				
+		
+		
 		private var _currentIndex:int = 0;
 		/**
-		 * sets the current index of the item
-		 * @default=0;
+		 * Returns and sets the current index
 		 */
 		public function get currentIndex():int { return _currentIndex }
 		public function set currentIndex(value:int):void { _currentIndex = value; }
 		
+		
 		private var _currentValue:*;
 		/**
-		 * returns the current index of array
+		 * Returns the current value
 		 */
 		public function get currentValue():* { return array[currentIndex]; }		
 		
+		
 		private var _length:int = 0;
 		/**
-		 * returns the length of array
+		 * Returns the length of list
 		 */
 		public function get length():int { return array.length }
 
+		
 		/**
-		 * returns the array index
+		 * Returns the value by index
 		 * @param	index
 		 * @return
 		 */
@@ -51,8 +77,10 @@ package com.gestureworks.cml.utils
 			return array[index];
 		}		
 		
+		
 		/**
-		 * stores the index value in the current index and returns the array index
+		 * Returns a value by index and increments the current index 
+		 * to the provided index parameter
 		 * @param	index
 		 * @return
 		 */
@@ -62,8 +90,9 @@ package com.gestureworks.cml.utils
 			return array[index];
 		}
 		
+		
 		/**
-		 * finds the value and returns the index position of item
+		 * Searches by value and returns the index that matches the value
 		 * @param	value
 		 * @return
 		 */
@@ -72,8 +101,9 @@ package com.gestureworks.cml.utils
 			return array.indexOf(value);
 		}
 		
+		
 		/**
-		 * Adds one or more elements to the end of an array 
+		 * Appends a value to the list
 		 * @param	value
 		 */
 		public function append(value:*):void
@@ -81,8 +111,9 @@ package com.gestureworks.cml.utils
 			array.push(value);			
 		}
 		
+		
 		/**
-		 * Adds one or more elements to the beginning of an array and returns the new length of the array.
+		 * Prepends a value to the list
 		 * @param	value
 		 */
 		public function prepend(value:*):void
@@ -92,11 +123,9 @@ package com.gestureworks.cml.utils
 				_currentIndex++;			
 		}
 		
+		
 		/**
-		 * checks the condition and throws the error
-		 * returns a new array that consists of a range of elements from the original array, without modifying the original array.
-		 * adds elements and removes element from array
-		 * inserts the index and the value of the element
+		 * Inserts a new value by index
 		 * @param	index
 		 * @param	value
 		 */
@@ -114,8 +143,9 @@ package com.gestureworks.cml.utils
 				_currentIndex++;				
 		}
 		
+		
 		/**
-		 * removes the index
+		 * Removes a value by index
 		 * @param	index
 		 */
 		public function remove(index:int):void
@@ -130,8 +160,8 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * checks for the index
-		 * @param	index
+		 * Returns true if a value exists for the index
+		 * @param	value
 		 * @return
 		 */
 		public function hasIndex(index:int):Boolean
@@ -142,9 +172,12 @@ package com.gestureworks.cml.utils
 				return false;
 		}		
 		
+		
+		
 		// iterator methods //
+		
 		/**
-		 * reset the current index value
+		 * Resets the current index to zero
 		 */
 		public function reset():void
 		{
@@ -152,7 +185,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * returns next element
+		 * Returns true if the iteration can return one more than the current index
 		 * @return
 		 */
 		public function hasNext():Boolean
@@ -161,7 +194,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * compares the current index value and returns tru or false
+		 * Returns true if the iteration can return one less than the current index
 		 * @return
 		 */
 		public function hasPrev():Boolean
@@ -173,7 +206,7 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * returns the next current index
+		 * Returns the next value
 		 * @return
 		 */
 		public function next():*
@@ -183,7 +216,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * returns the previous current index
+		 * Returns the previous index
 		 * @return
 		 */
 		public function prev():*

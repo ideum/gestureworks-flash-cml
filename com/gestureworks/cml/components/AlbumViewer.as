@@ -5,17 +5,33 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;
 	
-
 	/**
-	 * The AlbumViewer is a component that is primarily meant to display an <code>AlbumElement</code> on the front side and meta-data on the back side.
-	 * It is composed of the following elements: album, front, back, menu, and frame. The width and height of the component is automatically set to the 
-	 * dimensions of the album unless it is previously specifed by the component.
+	 * The AlbumViewer component is primarily meant to display an Album element and its associated meta-data.
+	 * 
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>album</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
+	 * 
+	 * <p>The width and height of the component are automatically set to the dimensions of the Album element unless it is 
+	 * previously specifed by the component.</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Shaun
+	 * @see Component 
+	 * @see com.gestureworks.cml.element.Album 
+	 * @see com.gestureworks.cml.element.TouchContainer
 	 */
 	public class AlbumViewer extends Component 
 	{		
@@ -37,7 +53,7 @@ package com.gestureworks.cml.components
 		{					
 			// automatically try to find elements based on AS3 class
 			if (!album)
-				album = searchChildren(AlbumElement);
+				album = searchChildren(Album);
 			
 			super.init();
 		}
@@ -131,7 +147,7 @@ package com.gestureworks.cml.components
 		}		
 		
 		/**
-		 * Destructor
+		 * Dispose method
 		 */
 		override public function dispose():void 
 		{

@@ -1,14 +1,48 @@
 package com.gestureworks.cml.utils
 {
-	import flash.display.*;
-	import flash.geom.*;
+	import flash.display.BitmapData;
+	import flash.display.BitmapDataChannel;
+	import flash.display.BlendMode;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
-    /**
-	 * Use isColliding to test for a collision between two sprites.
+    /** 
+	 * The CollisionDetection utility tests for a collision between two sprites.
+	 * 
+	 * <p>Use the isColliding method to test for a collision. The class provides 
+	 * an optional pixel perfect test, which requires more resources</p>
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		
+	   var g1:Graphic = new Graphic();
+	   g1.x = 0;
+	   g1.shape = "circle";
+	   g1.radius = "100:
+	
+	   var g2:Graphic = new Graphic();
+	   g2.x = 50;
+	   g2.shape = "circle";
+	   g2.radius = "100:
+	
+	   addChild(g1);
+	   addChild(g2)
+	   
+	   trace(CollisionDetection.isColliding(g1, g2));
+		
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @author Troy Gilbert
+     * @author Alexander Schearer
      */
 	public class CollisionDetection
 	{
-		/** Get the collision rectangle between two display objects. **/
+		/** 
+		 * Returns the collision rectangle between two display objects. 
+		 **/
 		public static function getCollisionRect(target1:DisplayObject, target2:DisplayObject, commonParent:DisplayObjectContainer, pixelPrecise:Boolean = false, tolerance:Number = 0):Rectangle
 		{
 			// get bounding boxes in common parent's coordinate space
@@ -58,7 +92,9 @@ package com.gestureworks.cml.utils
 			}
 		}
 
-		/** Gets the alpha map of the display object and places it in the specified channel. **/
+		/** 
+		 * Returns the alpha map of the display object and places it in the specified channel. 
+		 **/
 		private static function getAlphaMap(target:DisplayObject, rect:Rectangle, channel:uint, commonParent:DisplayObjectContainer):BitmapData
 		{
 			// calculate the transform for the display object relative to the common parent
@@ -76,7 +112,9 @@ package com.gestureworks.cml.utils
 			return alphaChannel;
 		}
 
-		/** Get the center of the collision's bounding box. **/
+		/** 
+		 * Get the center of the collision's bounding box. 
+		 **/
 		public static function getCollisionPoint(target1:DisplayObject, target2:DisplayObject, commonParent:DisplayObjectContainer, pixelPrecise:Boolean = false, tolerance:Number = 0):Point
 		{
 			var collisionRect:Rectangle = getCollisionRect(target1, target2, commonParent, pixelPrecise, tolerance);
@@ -89,7 +127,9 @@ package com.gestureworks.cml.utils
 			return null;
 		}
 
-		/** Are the two display objects colliding (overlapping)? **/
+		/** 
+		 * Returns whether the two display objects are colliding or overlapping
+		 **/
 		public static function isColliding(target1:DisplayObject,
                 target2:DisplayObject,
                 commonParent:DisplayObjectContainer,

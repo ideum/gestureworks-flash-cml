@@ -1,37 +1,36 @@
 package com.gestureworks.cml.managers
 {
-	import com.gestureworks.cml.loaders.CSSLoader;
 	import com.gestureworks.cml.core.CMLObjectList;
+	import com.gestureworks.cml.events.FileEvent;
+	import com.gestureworks.cml.loaders.CSSLoader;
 	import com.gestureworks.cml.utils.*;
-	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.text.StyleSheet;
-	import com.gestureworks.cml.events.FileEvent;
-	import com.gestureworks.cml.loaders.CSSLoader;
 	
 	/**
-	 * Singleton 
-	 * manages the css file
+	 * The CSSManager processes external CSS files. It utilizes the
+	 * CMLObjectList to apply the loaded style definitions.
 	 * 
-	 * @authors Charles Veasey
+	 * @author Charles
+	 * @see com.gestureworks.cml.loaders.CMLObjectList
+	 * @see com.gestureworks.cml.loaders.CSSLoader
 	 */
-	
 	public class CSSManager extends EventDispatcher
 	{
 		/**
-		 * file name that css manger process
+		 * Sets the file name that css manger process
 		 */
 		public var file:String;
 		
 		/**
-		 * turns off the debug information
+		 * Turns on the debug information
 		 */
 		public var debug:Boolean = false;
 
 		private static var _instance:CSSManager;
 		/**
-		 * this method returns CSSManager
+		 * Returns an instance of the CSSManager class
 		 */
 		public static function get instance():CSSManager 
 		{ 
@@ -41,23 +40,26 @@ package com.gestureworks.cml.managers
 		}
 		
 		/**
-		 * constructor - this will allow single instance for this CSSManager class
+		 * Constructor
 		 * @param	enforcer
 		 */
 		public function CSSManager(enforcer:SingletonEnforcer){}
 				
 		/**
-		 * loads the file
+		 * Loads a CSS file
 		 * @param	filePath
 		 */
 		public function loadCSS(filePath:String):void
 		{
-			trace("Filepath: ", filePath);
 			file = filePath;
 			CSSLoader.getInstance(file).loadStyle(file);
 			CSSLoader.getInstance(file).addEventListener(FileEvent.CSS_LOADED, onCSSLoad);			
 		}
 		
+		/**
+		 * CSS load complete handler
+		 * @param	event
+		 */		
 		private function onCSSLoad(event:Event):void
 		{			
 			event.target.removeEventListener(FileEvent.CSS_LOADED, onCSSLoad);
@@ -65,7 +67,7 @@ package com.gestureworks.cml.managers
 		}
 		
 		/**
-		 * parses the class selectors and the id selectors
+		 * Parses the currently loaded CSS file using the CMLObjectList
 		 */
 		public function parseCSS():void
 		{
@@ -166,13 +168,9 @@ package com.gestureworks.cml.managers
 					}
 				}	
 			}
-			
-			
 		}
 	}
 }
 
-/**
- * class can only be access by the CSSManager class only. 
- */
+
 class SingletonEnforcer{}

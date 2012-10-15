@@ -5,12 +5,14 @@ package com.gestureworks.cml.element
 	/**
 	 * A ModestMapMarker is primarily a container for graphic objects that gives the latitude and longitude of map.
 	 * It has following parameters: longitude and longitude.
+	 * 
 	 * @author josh
+	 * @see ModestMap
 	 */
 	public class ModestMapMarker extends Container
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ModestMapMarker() 
 		{
@@ -19,7 +21,7 @@ package com.gestureworks.cml.element
 		
 		private var _longitude:Number;
 		/**
-		 * specifies the longitude of map
+		 * Specifies the longitude of map
 		 */
 		public function get longitude():Number { return _longitude; }
 		public function set longitude(value:Number):void {
@@ -28,7 +30,7 @@ package com.gestureworks.cml.element
 		
 		private var _latitude:Number;
 		/**
-		 * specifies the latitude of map
+		 * Specifies the latitude of map
 		 */
 		public function get latitude():Number { return _latitude; }
 		public function set latitude(value:Number):void {
@@ -36,22 +38,19 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void {
 			super.dispose();
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
-		public function init():void
-		{
-			trace("modest map marker---------------------------------------------------",this.id);
-		}
+		public function init():void {}
 		
 		/**
-		 * CML callback initialisation
+		 * CML callback Initialisation
 		 */
 		override public function displayComplete():void
 		{			

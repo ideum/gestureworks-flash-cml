@@ -1,13 +1,23 @@
 package com.gestureworks.cml.utils 
 {
 	/**
-	 * NumberUtils class is a collection of static methods for working with number objects
-	 * @author Ideum (Charles Veasey)
-	 */
+	 * The NumberUtils utility is a collection of static methods for working with numbers.
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		trace(NumberUtils.map(20, 0, 100, 220, 550)); 
+		trace(NumberUtils.roundNumber(100.3245, 1)); 
+		trace(NumberUtils.randomNumber(300, 500)); 
+	 
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see LinkedMap
+	 */	 
 	public class NumberUtils 
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function NumberUtils():void{}
 		
@@ -35,7 +45,7 @@ package com.gestureworks.cml.utils
 		}
 
 		/**
-		 * Rounding the number to decimal places
+		 * Rounds a number to decimal places
 		 * @param	num
 		 * @param	decimal
 		 * @return
@@ -46,7 +56,7 @@ package com.gestureworks.cml.utils
         }
 		
 		/**
-		 * gets the random number within a specified range.
+		 * Returns a random number within a specified range
 		 * @param	minNum
 		 * @param	maxNum
 		 * @return

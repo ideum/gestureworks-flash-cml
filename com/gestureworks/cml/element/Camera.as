@@ -1,6 +1,3 @@
-//
-// C:\Program Files (x86)\FlashDevelop\Tools\flexsdk\frameworks\libs\player\10.1\playerglobal.swc\flash\media\Camera
-//
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.ElementFactory;
@@ -21,7 +18,7 @@ package com.gestureworks.cml.element
 	[Event(name="activity", type="flash.events.ActivityEvent")] 
 
 	/**
-	 * Use the Camera class to capture video from the client system's camera. 
+	 * The Camera element captures video from the client system's camera. 
 	 * Use the Video class to monitor the video locally.  
 	 * Use the NetConnection and NetStream classes to transmit the video to Flash Media Server.
 	 * Flash Media Server can send the video stream to other servers and broadcast it to other clients running Flash Player.
@@ -90,19 +87,18 @@ package com.gestureworks.cml.element
 	 * }
 	 * }
 	 * </codeblock>
-	 * @langversion	3.0
-	 * @playerversion	Flash 9
+	 * @author Ideum
 	 */
-	public final class CameraElement extends ObjectFactory
+	public final class Camera extends ObjectFactory
 	{
-		private var cam:Camera;
+		private var cam:flash.media.Camera;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function CameraElement ()
+		public function Camera()
 		{
-			cam = new Camera();
+			cam = new flash.media.Camera;
 		}
 		
 		/**
@@ -385,7 +381,7 @@ package com.gestureworks.cml.element
 		 */
 		public  function getCamera (name:String = null) : flash.media.Camera
 		{
-			return Camera.getCamera(name);
+			return flash.media.Camera.getCamera(name);
 		}
 
 		public function setCursor (value:Boolean) : void
@@ -559,7 +555,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify the attribute
+		 * Dispose method to nullify the attribute
 		 */
 		override public function dispose():void
 		{

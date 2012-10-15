@@ -1,24 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  IDEUM
-//  Copyright 2011-2012 Ideum
-//  All Rights Reserved.
-//             
-//  NOTICE: Ideum permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package com.gestureworks.cml.core 
 {
 	import com.gestureworks.cml.utils.LinkedMap;
 	
 	/**
-	 * The CmlObjectList is the master list for all objects created through cml.
+	 * The CMLObjectList class is the master list for all objects created through CML.
 	 * 
-	 * <p>It is populated by the CMLParser class.</p> 
-	 * <p>It is a singleton class that can be accessed through the instance method.</p>
-	 * <p>The class has an iterator and several other cml object selection functions:</p>
+	 * <p>It is populated by the CMLParser class. It is a singleton class that can 
+	 * be accessed through the instance method. The class has an iterator and 
+	 * several other cml object selection functions:</p>
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 * 
@@ -33,17 +22,15 @@ package com.gestureworks.cml.core
 	 * 
 	 * </codeblock>
 	 * 
-	 * @author Charles Veasey
-	 * @playerversion Flash 10.1
-	 * @playerversion AIR 2.5
-	 * @langversion 3.0
-	 *
+	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CMLParser
+	 * @see com.gestureworks.cml.core.CMLDisplay
 	 */
 	public class CMLObjectList extends LinkedMap
 	{	
 		/**
-		 * constructor allows single instance
+		 * Constructor allows single instance
+		 * @inheritDoc
 		 * @param	enforcer
 		 */
 		public function CMLObjectList(enforcer:SingletonEnforcer) {}

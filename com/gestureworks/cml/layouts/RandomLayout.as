@@ -6,18 +6,67 @@ package com.gestureworks.cml.layouts
 	import flash.geom.Matrix;
 	
 	/**
-	 * Positions a display container's children randomly about the x and y axes
+	 * The RandomLayout positions display objects randomly about the x- and y-axes
 	 * and applies a specified amount of random rotation. 
 	 * 
 	 * <p>Allowable types are: randomX, randomY, randomXY, randomXYRotation</p>
 	 * <p>Default type is: RandomXY.</p>
 	 * 
-	 * @author Charles Veasey
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+			
+		var randomContainer:TouchContainer = getImageContainer();
+		randomContainer.x = 500;
+		randomContainer.y = 20;
+		addChild(randomContainer);
+		
+		var randomLayout:RandomLayout = new RandomLayout();
+		randomLayout.maxX = 400;
+		randomLayout.maxY = 500;
+		randomLayout.minRot = -30;
+		randomLayout.maxRot = 30;
+		randomLayout.type = "randomXYRotation";
+		randomLayout.tween = true;
+		randomLayout.tweenTime = 1500;
+		randomContainer.applyLayout(randomLayout);
+						
+		
+		function getImageContainer():TouchContainer
+		{
+			var container:TouchContainer = new TouchContainer();
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));			
+			container.addChild(getImageElement("plane.jpg"));						
+			return container;
+		}
+		
+		
+		function getImageElement(source:String):Image
+		{
+			var img:Image = new Image();
+			img.open(source);
+			img.width = 250;
+			img.height = 150;
+			img.resample = true;
+			return img;
+		}
+		
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 * @see FanLayout 
+	 * @see GridLayout
+	 * @see ListLayout
+	 * @see PileLayout
+	 * @see RandomLayout
+	 * @see LayoutFactory
 	 */
 	public class RandomLayout extends LayoutFactory
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function RandomLayout() 
 		{

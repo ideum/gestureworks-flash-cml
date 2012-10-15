@@ -4,30 +4,38 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.media.Video;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;	
 	
 	/**
-	 * The LiveVideoViewer is a component that is meant to play video files on the front and metadata on the back.
-	 * It is composed of the following elements: liveVideo, front, back, menu, and frame. The video and front may be the same thing. 
-	 * The video is required. The width and height of the component is automatically set to the dimensions of the video element unless it is 
-	 * previously specifed by the component.
+	 * The LiveVideoViewer component is primarily meant to display a LiveVideo element and its associated meta-data.
 	 * 
+	 * <p>It is composed of the following: 
+	 * <ul>
+	 * 	<li>liveVideo</li>
+	 * 	<li>front</li>
+	 * 	<li>back</li>
+	 * 	<li>menu</li>
+	 * 	<li>frame</li>
+	 * 	<li>background</li>
+	 * </ul></p>
 	 * 
-	 * var livevideoviewer:LiveVideoViewer = new LiveVideoViewer();
-	 * addChild(livevideoviewer);
+	 * <p>The width and height of the component are automatically set to the dimensions of the LiveVideo element unless it is 
+	 * previously specifed by the component.</p>
 	 * 
-	 * @author Uma and shaun
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	  
+
+			
+	 * </codeblock>
+	 * 
+	 * @author Uma and Shaun
+	 * @see Component
+	 * @see com.gestureworks.cml.element.LiveVideo
+	 * @see com.gestureworks.cml.element.TouchContainer
 	 */
-	
 	public class LiveVideoViewer extends Component 
 	{						
 		/**
-		 * live video viewer constructor
+		 * live video viewer Constructor
 		 */
 		public function LiveVideoViewer() 
 		{
@@ -67,12 +75,12 @@ package com.gestureworks.cml.components
 				front = searchChildren(".video_container");
 			if (!back)
 				back = searchChildren(".info_container");				
-			if (!backBackground)
-				backBackground = searchChildren(".info_bg");	
+			if (!background)
+				background = searchChildren(".info_bg");	
 
 			// automatically try to find elements based on AS3 class
 			if (!liveVideo)
-				liveVideo = searchChildren(LiveVideoElement);
+				liveVideo = searchChildren(LiveVideo);
 				
 			super.init();
 		}
@@ -104,7 +112,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void 
 		{

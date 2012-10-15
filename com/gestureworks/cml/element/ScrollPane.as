@@ -18,10 +18,9 @@ package com.gestureworks.cml.element
 	import flash.net.URLRequest;
     
 	/**
-	 * ScrollPane scrolls the text or image and allows the user to change the scrollbar location and set the path of image through the imageUrl attribute.
-	 * By default has vertical and horizontal scrollbar and these locations can be changed by setting the horizontal or vertical flag to true or false.
+	 * The ScrollPane element scrolls the text or image and allows the user to change the scrollbar location and set the path of image through the imageUrl attribute.
+	 * By default it has vertical and horizontal scrollbar and these locations can be changed by setting the horizontal or vertical flag to true or false.
 	 * The text or image scrolls horizontally or vertically through the touch events.
-	 * It has the following parameters:squareLineStroke , squareOutlineColor, squareColor,bgOutLineColor, bgColor, bgLineStroke, verticalBgOutLineColor, bgWidth, vBgHeight, verticalBgColor, verticalBgLineStroke ,scrollBarColor, scrollBarOutLineColor , scrollBarLineStroke , verticalScrollBarColor , verticalScrollBarOutLineColor, verticalScrollbarLineStroke,squareWidth, squareHeight, bgX, bgY, bgHeight, bgEllipseHeight, bgEllipseWidth, vBgX, vBgY, vBgwidth, vBgEllipseWidth, vBgEllipseHeight ,scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight, scrollbarEllipseHeight, scrollbarEllipseWidth, vScrollbarX, vScrollbarY, vScrollbarWidth, vScrollbarHeight, vScrollbarEllipseWidth, vScrollbarEllipseHeight, horizontal .
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -31,13 +30,15 @@ package com.gestureworks.cml.element
 	   sp.y = 100;
 	 *
 	 * </codeblock>
+	 * 
 	 * @author Uma
+	 * @see ScrollBar
 	 */			
 		
 public class ScrollPane extends Container
 {
 	/**
-	* ScrollPane constructor
+	* ScrollPane Constructor
 	*/
 	public function ScrollPane():void
 		{
@@ -914,7 +915,7 @@ public class ScrollPane extends Container
 	}
 
 	/**
-	 * dispose method to nullify attributes and remove listeners
+	 * Dispose methods and remove listeners
 	 */
 	override public function dispose(): void
 	{

@@ -1,52 +1,17 @@
-package com.gestureworks.cml.element 
-{
-	import com.gestureworks.cml.factories.*;
-	import flash.events.*;
+package com.gestureworks.cml.element
+{	
+	import com.gestureworks.cml.element.Image;
 	
-	/** 
-	 * The Image class loads and displays an external bitmap file.
-	 * 
-	 * @includeExample ImageElementExample.as -noswf
-	 *
-	 * @author Charles Veasey
-	 * @langversion 3.0
-	 * @playerversion Flash 10.1
-	 * @playerversion AIR 2.5
-	 * 
-	 * @see com.gestureworks.cml.factories.BitmapFactory
-	 * @see com.gestureworks.cml.factories.ElementFactory
-	 * @see com.gestureworks.cml.factories.ObjectFactory
-	 */	 	
-	public class ImageElement extends BitmapFactory
-	{	
-		
-		/**
-		 * constructor
-		 */
-		public function ImageElement() 
-		{						
+	/**
+	 * Deprecated: Please Use com.gestureworks.cml.element.Image
+	 * @see com.gestureworks.cml.element.Image
+	 */
+	[Deprecated(replacement = "com.gestureworks.cml.element.Image")]	
+	public class ImageElement extends Image
+	{
+		public function ImageElement()
+		{
 			super();
-		}
-		
-		/**
-		 * initialisation method
-		 */
-		public function init():void
-		{
-			
-		}
-		
-		override protected function bitmapComplete():void 
-		{						
-			dispatchEvent(new Event(Event.COMPLETE, true, true));
-		}
-		
-		/**
-		 * dispose method
-		 */
-		override public function dispose():void
-		{
-			super.dispose();
-		}
+		}			
 	}
 }

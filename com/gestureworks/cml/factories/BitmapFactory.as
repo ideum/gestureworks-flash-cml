@@ -7,14 +7,12 @@ package com.gestureworks.cml.factories
 	import flash.geom.*;
 	
 	/** 
-	 * The BitmapFactory class load and stores bitmap data, usually in the form an external image file
-	 * 
-	 * It has following parameters: width, height, src, bitmapDataCache, resample, normalize, avatar and sizeArray. 
-	 * 
-	 * @playerversion Flash 10.1
-	 * @playerversion AIR 2.5
-	 * @langversion 3.0
+	 * The BitmapFactory is the base class for all Bitmaps.
+	 * It loads and stores bitmap data, usually in the form an external image file. 
+	 * It is an abstract class that is not meant to be called directly.
 	 *
+	 * @author Ideum
+	 * @see com.gestureworks.cml.element.Image
 	 * @see com.gestureworks.cml.factories.ElementFactory
 	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	 	
@@ -27,7 +25,7 @@ package com.gestureworks.cml.factories
 		private var fileData:*;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function BitmapFactory() 
 		{
@@ -36,7 +34,7 @@ package com.gestureworks.cml.factories
 		}
 			
 		/**
-		 * dispose method to nullify attributes and remove listener
+		 * Dispose methods and remove listener
 		 */
 	    override public function dispose():void
 		{
@@ -408,7 +406,6 @@ package com.gestureworks.cml.factories
 	
 		protected function bitmapComplete():void 
 		{
-			// listen like this: imageElement.addEventListener(Event.COMPLETE, onComplete);		
 			dispatchEvent(new Event(Event.COMPLETE, true, true));
 		}
 	

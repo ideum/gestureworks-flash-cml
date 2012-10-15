@@ -1,18 +1,15 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.interfaces.IButton;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.GestureWorks;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
 	
 	/**
-	 * Stack is a container that gathers its children into a stack, and allows the user to move through the list using a specified user input.
-	 * Stack can hold any display object.
+	 * The Stack element is a container that gathers its children into a stack, and allows the user to move through the list using a specified user input.
+	 * The Stack can hold any display object.
 	 * 
-	 * It has the following parameters: toggle, loop
-	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
 	   var stack:Stack = new Stack();
@@ -30,6 +27,7 @@ package com.gestureworks.cml.element
 		stack.childToList("text2", text2);
 		
 		stack.init();
+		addChild(stack);
 	 *
 	 * </codeblock>
 	 * @author ...
@@ -38,7 +36,7 @@ package com.gestureworks.cml.element
 	{
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function Stack() 
 		{
@@ -159,7 +157,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to remove listeners
+		 * Dispose methods
 		 */
 		override public function dispose():void
 		{

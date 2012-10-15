@@ -1,24 +1,27 @@
 package com.gestureworks.cml.kits 
 {	
-	import com.gestureworks.cml.interfaces.ICML;	
-	import com.gestureworks.cml.interfaces.ILayout;
 	import com.gestureworks.cml.core.CMLParser;
+	import com.gestureworks.cml.interfaces.ICML;
 	import com.gestureworks.cml.managers.LayoutManager;
 	
-	
 	/**
-	 * LayoutKit, Singleton
-	 * The LayoutKit contains classes that create and manage layouts
-	 * @author Charles Veasey
+	 * The LayoutKit stores global layouts that can be accessed throughout
+	 * the CML file.
+	 * 
+	 * <p>This class is meant to be used within CML and is not compatible 
+	 * with AS3.</p>
+	 * 
+	 * @author Charles
+	 * @see Container
+	 * @see LayoutFactory
 	 */
-	
 	public class LayoutKit implements ICML
 	{
 		public function LayoutKit(enforcer:SingletonEnforcer) {}		
 		
 		private static var _instance:LayoutKit;
 		/**
-		 * singleton
+		 * Singleton accesor method
 		 */
 		public static function get instance():LayoutKit 
 		{ 
@@ -28,7 +31,7 @@ package com.gestureworks.cml.kits
 		}		
 		
 		/**
-		 * parses cml file
+		 * Parses cml
 		 * @param	cml
 		 * @return
 		 */

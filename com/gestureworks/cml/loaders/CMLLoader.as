@@ -7,33 +7,50 @@ package com.gestureworks.cml.loaders
 	import flash.utils.Dictionary;
 	
 	/**
-	 * Loads and stores a global reference to a CML file
-	 * Multiton Class
-	 * @authors Charles Veasey
+	 * The CMLLoader class loads and stores a global reference to an external CML file.
+	 * 
+	 * @author Charles
+	 * @see com.gestureworks.core.CMLParser
 	 */
-	
 	public class CMLLoader extends EventDispatcher
 	{
+		private var urlLoader:URLLoader;
+		
 		/**
-		 * stores the init 
+		 * Holds class instances of the multiton
 		 */
-		static public const INIT:String = "init";		
 		static private var instances:Dictionary = new Dictionary;
 		
-		private var urlLoader:URLLoader;
 		/**
-		 * holds the data
+		 * Returns an instance of the CMLLoader class
+		 * @param	key
+		 * @return
+		 */
+		public static function getInstance(key:*):CMLLoader
+		{
+			if (instances[key] == null)
+				CMLLoader.instances[key] = new CMLLoader(new SingletonEnforcer());
+			return CMLLoader.instances[key];
+		}
+		
+		/**
+		 * The INIT string is dispatch when file load is complete
+		 */
+		static public const INIT:String = "init";
+		
+		/**
+		 * Contains the loaded CML (XML) file data
 		 */
 		public var data:XML = new XML;
 
 		private var _isLoaded:Boolean;		
 		/**
-		 * returns the isloaded value
+		 * Returns a boolean determining whether the file has been loaded
 		 */
 		public function get isLoaded():Boolean { return _isLoaded; }		
 		
 		/**
-		 * constructor - this will allow single instance for this CMLLoader class
+		 * Constructor
 		 * @param	enforcer
 		 */
 		public function CMLLoader(enforcer:SingletonEnforcer)
@@ -42,7 +59,7 @@ package com.gestureworks.cml.loaders
 		}	
 		
 		/**
-		 * loads the cml file
+		 * Loads the CML filepath
 		 * @param	url
 		 */
 		public function loadCML(url:String):void
@@ -54,32 +71,16 @@ package com.gestureworks.cml.loaders
 		}
 		
 		/**
-		 * dispatches an event
+		 * CML load complete handler
 		 * @param	e
 		 */
-		public function onCMLDataLoaded(e:Event):void
+		private function onCMLDataLoaded(e:Event):void
 		{
 			data = XML(urlLoader.data);			
 			_isLoaded = true;
 			dispatchEvent(new Event(CMLLoader.INIT, true, true));
 		}
-		
-		/**
-		 * returns the CMLLoader key
-		 * @param	key
-		 * @return
-		 */
-		public static function getInstance(key:*):CMLLoader
-		{
-			if (instances[key] == null)
-				CMLLoader.instances[key] = new CMLLoader(new SingletonEnforcer());
-			return CMLLoader.instances[key];
-		}
-	
 	}
 }
 
-/**
- * class can only be access by the CMLLoader class only. 
- */
 class SingletonEnforcer{}

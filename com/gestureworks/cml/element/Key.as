@@ -1,7 +1,7 @@
 package  com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.element.ButtonElement;
-	import com.gestureworks.cml.element.GraphicElement;
+	import com.gestureworks.cml.element.Button;
+	import com.gestureworks.cml.element.Graphic;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
 	import flash.events.KeyboardEvent;
@@ -9,30 +9,25 @@ package  com.gestureworks.cml.element
 	import flash.ui.Keyboard;
 
 	/**
-	 * The key element simulates a key on a keyboard by dispatching a keyboard event, containing the assigned character and key unicode values, when
-	 * touched.
+	 * The key element simulates a key on a keyboard by dispatching a keyboard event, 
+	 * containing the assigned character and key unicode values, when touched.
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 		
-		override protected function gestureworksInit():void
- 		{
-			trace("gestureWorksInit()");
-			keyElementTestAS();
-		}
-		
-		private function keyElementTestAS():void
-		{
-			var ke:KeyElement = new KeyElement();
-			ke.text = "a";
-			ke.init();
-			addChild(ke);
-		}
+		var ke:Key = new Key();
+		ke.text = "a";
+		ke.init();
+		addChild(ke);
 	 *  
 	 * </codeblock>
+	 *
 	 * 
 	 * @author Shaun
-	 */
-	public class KeyElement extends ButtonElement
+	 * 
+	 * @see TouchKeyboard
+	 * @see Button
+ 	 */
+	public class Key extends Button
 	{
 		private var _capsOn:Boolean = false;
 		private var _shiftOn:Boolean = false;
@@ -51,7 +46,7 @@ package  com.gestureworks.cml.element
 		private var _outTextColor:uint;
 		
 		private var background:*;
-		private var keyText:TextElement;
+		private var keyText:Text;
 		private var dropShadow:DropShadowFilter = new DropShadowFilter();
 		private var charCodeRef:uint;
 		
@@ -59,7 +54,7 @@ package  com.gestureworks.cml.element
 		/**
 		 * Constructor
 		 */
-		public function KeyElement() 
+		public function Key() 
 		{
 			super();
 		}
@@ -174,8 +169,8 @@ package  com.gestureworks.cml.element
 		public function get text():* { return _text; }
 		public function set text(t:*):void
 		{
-			if (t is TextElement)
-				_text = TextElement(t);
+			if (t is Text)
+				_text = Text(t);
 			else if(t)
 				_text = t.toString();
 			else
@@ -248,13 +243,13 @@ package  com.gestureworks.cml.element
 		{
 			if (initial)
 			{
-				background = childList.getKey(initial);
+				background = initial;
 				width = background.width;
 				height = background.height;				
 			}
 			else 
 			{
-				background = new GraphicElement();											
+				background = new Graphic();											
 				background.shape = "roundRectangle";
 				background.cornerWidth = 12;
 				background.width = width && width > 0? width : 45;
@@ -308,17 +303,17 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Set the text element displayed on the key. Allows the specification of a text or <code>TextElement</code> id through CML. If the 
-		 * text value references a <code>TextElement</code>, the object is retrieved and displayed on the key. If it does not, a default 
-		 * <code>TextElement</code> is generated and the text value becomes the text of the new element and the element is displayed on the key
-		 * Character codes will override the text displayed on the TextElement. 
+		 * Set the text element displayed on the key. Allows the specification of a text or <code>Text</code> id through CML. If the 
+		 * text value references a <code>Text</code>, the object is retrieved and displayed on the key. If it does not, a default 
+		 * <code>Text</code> is generated and the text value becomes the text of the new element and the element is displayed on the key
+		 * Character codes will override the text displayed on the Text. 
 		 */
 		private function setText():void
 		{
 			if (!text)
 				text = "";
 			
-			if (text && text is TextElement) 
+			if (text && text is Text) 
 			{				
 				keyText = text;
 				keyText.textColor = initTextColor ? initTextColor: keyText.textColor;
@@ -328,7 +323,7 @@ package  com.gestureworks.cml.element
 			}
 			else if (childList.hasKey(text))
 			{
-				keyText = childList.getKey(text) as TextElement;
+				keyText = childList.getKey(text) as Text;
 				keyText.textColor = initTextColor ? initTextColor : keyText.textColor;
 				keyText.text = charCode ? String.fromCharCode(charCode) : keyText.text;
 				text = keyText.text;
@@ -336,7 +331,7 @@ package  com.gestureworks.cml.element
 			}
 			else
 			{
-				keyText = new TextElement();
+				keyText = new Text();
 				keyText.text = charCode ? String.fromCharCode(charCode) : text;
 				keyText.height = background.height;
 				keyText.width = background.width;
@@ -344,7 +339,7 @@ package  com.gestureworks.cml.element
 				keyText.verticalAlign = true;
 				keyText.selectable = false;
 				keyText.fontSize = 16;
-				keyText.font = "HelveticaFont";
+				keyText.font = "OpenSansRegular";
 				keyText.textColor = initTextColor ? initTextColor : 0xFFFFFF;						
 				addChild(keyText);
 			}
@@ -454,7 +449,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attributes
+		 * Dispose methods
 		 */
 		override public function dispose():void
 		{

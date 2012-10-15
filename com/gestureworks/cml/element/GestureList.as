@@ -3,12 +3,24 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.factories.ElementFactory;
 	
 	/**
-	 * TODO
+	 * The GestureList class allows you to create a group of 
+	 * gestures in CML.
+	 * 
+	 * <p>It is not intended to be used outside of CML. Use native 
+	 * methods of the TouchSprite or TouchContainer to assign 
+	 * gestures in AS3.</p>
+	 * 
+	 * <p>When using this class as a CML tag, a child 
+	 * <code>Gesture</code> tag is required.</p>
+	 * 
+	 * @author Ideum
+	 * @see Gesture
+	 * @see TouchContainer
 	 */
 	public class GestureList extends ElementFactory
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function GestureList() 
 		{
@@ -50,7 +62,7 @@ package com.gestureworks.cml.element
 		}	
 		
 		/**
-		 * dispose method
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{

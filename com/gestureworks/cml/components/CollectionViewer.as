@@ -10,17 +10,24 @@ package com.gestureworks.cml.components
 	import flash.utils.*;
 	import org.libspark.betweenas3.*;
 	import org.libspark.betweenas3.easing.*;
-	import org.tuio.*;	
+	import org.tuio.*;
 	
 	/**
-	 * CollectionViewer is a template that uses a collection of Components to load various types of media and display the content on stage in the form of interactive windows. 
-	 * This version loads an instance of the ImageViewer, VideoViewer, and MP3Player and randomly places and orients them on the stage.
+	 * The CollectionViewer component manages the display of components and elements. 
 	 * 
+	 * <p>It can load more objects than will display at any one time. The objects not displayed are put 
+	 * into queue and the CollectionViwer cycles through the queue whenever a user closes an object or 
+	 * moves it offscreen.</p>
+	 *  
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 
+
+			
+	 * </codeblock>
 	 * 
 	 * @author Ideum
-	 */
-	
+	 * @see Component
+	 */	
 	public class CollectionViewer extends Component
 	{
 		public var amountToShow:int = -1;
@@ -32,7 +39,7 @@ package com.gestureworks.cml.components
 		//private var boundsTimer:Timer;
 		
 		/**
-		 * collection viewer constructor
+		 * collection viewer Constructor
 		 */
 		public function CollectionViewer() 
 		{
@@ -41,7 +48,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * initialisation method
+		 * Initialisation method
 		 */
 		override public function init():void 
 		{
@@ -52,11 +59,7 @@ package com.gestureworks.cml.components
 			cover.graphics.endFill();
 			cover.cacheAsBitmap = true;
 			cover.visible = false;
-			this.addChildAt(cover, 0);
-						
-			//boundsTimer = new Timer(500);
-			//boundsTimer.addEventListener(TimerEvent.TIMER, onBoundsTimer);
-			//boundsTimer.start();			
+			this.addChildAt(cover, 0);		
 			
 			if (amountToShow >= childList.length || amountToShow == -1)
 				amountToShow = childList.length;
@@ -156,7 +159,6 @@ package com.gestureworks.cml.components
 		
 		private function removeComponent(component:*):void
 		{
-			trace("remove");
 			queue.append(component);
 			if (contains(component as DisplayObject))
 				removeChild(component as DisplayObject);
@@ -164,12 +166,10 @@ package com.gestureworks.cml.components
 		
 		private function addNextComponent():void
 		{
-			trace("add");
 			var newComponent:*;							
 			newComponent = queue.getIndex(0);
 			queue.remove(0);
 			
-			trace(queue.length);
 			if (newComponent)
 			{
 				newComponent.x = -500;
@@ -194,7 +194,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method
 		 */
 		override public function dispose():void 
 		{
@@ -203,13 +203,6 @@ package com.gestureworks.cml.components
 			currentTween = null;			
 			cover = null;			
 			tweens = null;
-			
-			//if (boundsTimer)
-			//{
-				//boundsTimer.stop();
-				//boundsTimer.removeEventListener(TimerEvent.TIMER,onBoundsTimer);
-				//boundsTimer = null;
-			//}
 			
 			if (childList)
 			{

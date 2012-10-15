@@ -108,10 +108,11 @@ package com.gestureworks.cml.element
 	 * }
 	 * }
 	 * </codeblock>
-	 * @langversion	3.0
-	 * @playerversion	Flash 9
+	 * 
+	 * @see Camera
+	 * @see LiveVideo
 	 */
-	public final class MicrophoneElement extends ObjectFactory
+	public final class Microphone extends ObjectFactory
 	{
 		/**
 		 * The amount of sound the microphone is detecting. Values range from 
@@ -238,7 +239,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get isSupported () : Boolean
 		{
-	      return Microphone.isSupported;
+	      return flash.media.Microphone.isSupported;
 		}
 
 		/**
@@ -280,7 +281,7 @@ package com.gestureworks.cml.element
 		 */
 		public  function get names () : Array
 		{
-			return Microphone.names;
+			return flash.media.Microphone.names;
 		}
 
 		/**
@@ -417,17 +418,17 @@ package com.gestureworks.cml.element
 		 */
 		public function getMicrophone (index:int = -1) : flash.media.Microphone
 		{
-			return Microphone.getMicrophone(index);
+			return flash.media.Microphone.getMicrophone(index);
 		}
 
-		private var mp:Microphone;
+		private var mp:flash.media.Microphone;
 		
 		/**
-		 * constructor
+		 * Constructor
 		 */
-		public function MicrophoneElement ()
+		public function Microphone()
 		{
-			mp = new Microphone();
+			mp = new flash.media.Microphone;
 		}
 
 		/**
@@ -496,7 +497,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attribute
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{

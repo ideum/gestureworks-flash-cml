@@ -21,35 +21,27 @@ package com.gestureworks.cml.element
 	
 	/**
 	 * The ColorPicker element provides color selection capability by moving graphical indicators or adjusting color 
-	 * properties to select hue and color variants. 
+	 * properties to select hue and color variants. This class supports the drag gesture. 
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 * 			
-		override protected function gestureworksInit():void
- 		{
-			trace("gestureWorksInit()");
-			colorPickerTestAS();
-		}				
+		var cp:ColorPicker = new ColorPicker();
+		cp.x = 100;
+		cp.y = 100;
+		cp.scaleX = cp.scaleX + 1;
+		cp.scaleY = cp.scaleY + 1;
+		cp.addEventListener(StateEvent.CHANGE, colorSelected);
+		addChild(cp);
 		
-		private function colorPickerTestAS():void
-		{
-			var cp:ColorPicker = new ColorPicker();
-			cp.x = 100;
-			cp.y = 100;
-			cp.scaleX = cp.scaleX + 1;
-			cp.scaleY = cp.scaleY + 1;
-			cp.addEventListener(StateEvent.CHANGE, colorSelected);
-			addChild(cp);
-		}	
-		
-		private function colorSelected(event:StateEvent):void
+
+		function colorSelected(event:StateEvent):void
 		{
 			trace(event.value);
-		}
-	 * 
-	 * 
+		}		
 	 * </codeblock>
+	 * 
 	 * @author Shaun
+	 * @see DatePicker
 	 */
 	public class ColorPicker extends ElementFactory
 	{
@@ -143,31 +135,31 @@ package com.gestureworks.cml.element
 		/**
 		 * Displays the hexidecimal representation of the selectedColor
 		 */
-		private var hexText:TextElement;
+		private var hexText:Text;
 		/**
 		 * Displays the value of the base gradient in the hueBar
 		 */
-		private var hText:TextElement;
+		private var hText:Text;
 		/**
 		 * Displays the selected color's saturation value
 		 */
-		private var sText:TextElement;
+		private var sText:Text;
 		/**
 		 * Displays the selected color's brightness value
 		 */
-		private var brText:TextElement;
+		private var brText:Text;
 		/**
 		 * Displays the selected color's red value
 		 */
-		private var rText:TextElement;
+		private var rText:Text;
 		/**
 		 * Displays the selected color's green value
 		 */
-		private var gText:TextElement;
+		private var gText:Text;
 		/**
 		 * Displays the selected color's blue value
 		 */
-		private var bText:TextElement;
+		private var bText:Text;
 		
 		/**
 		 * The selected base gradient in the hueBar
@@ -216,7 +208,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify the attributes and remove listener
+		 * Dispose method to nullify the attributes and remove listener
 		 */
 		override public function dispose():void
 		{
@@ -480,9 +472,9 @@ package com.gestureworks.cml.element
 		 * @param	_maxChar  the character limit of the text field
 		 * @return  the resulting text element
 		 */
-		protected function createTextField(lab:String, _width:Number, _x:Number, _y:Number, _text:String = null, _maxChar:Number = 6):TextElement
+		protected function createTextField(lab:String, _width:Number, _x:Number, _y:Number, _text:String = null, _maxChar:Number = 6):Text
 		{
-			var label:TextElement = new TextElement();
+			var label:Text = new Text();
 			label.autoSize = "center";
 			label.color = labelColor;
 			label.text = lab;
@@ -490,7 +482,7 @@ package com.gestureworks.cml.element
 			label.x = _x;
 			label.y = _y;
 			
-			var te:TextElement = new TextElement();
+			var te:Text = new Text();
 			te.id = lab;
 			te.width = _width;
 			te.height = label.height;
@@ -631,7 +623,7 @@ package com.gestureworks.cml.element
 			if (event.keyCode != 13)
 				return;
 				
-			var txt:TextElement = TextElement(event.target);
+			var txt:Text = Text(event.target);
 			var tgtId:String = txt.id;
 			var hsb:Array;
 			switch(tgtId)
@@ -672,7 +664,6 @@ package com.gestureworks.cml.element
 					blue = blue > 255 ? 255 : (blue < 0) ? 0 : blue;
 					updateSelectedColor(uint(calculateHexFromRGB()));
 					break;
-				default:
 			}
 			
 			hueY = hue * (colorRecHeight / 359.99);

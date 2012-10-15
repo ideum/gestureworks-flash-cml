@@ -5,12 +5,18 @@ package com.gestureworks.cml.kits
 	import flash.events.Event;
 
 	/**
-	 * StageKit creates and manages the stage
+	 * The StageKit provides access to the stage from CML.
+	 * 
+	 * <p>This class is meant to be used within CML and is not compatible 
+	 * with AS3.</p>
+	 * 
+	 * @author Charles
+	 * @see flash.display.stage
 	 */
 	public class StageKit extends ElementFactory
 	{
 		/**
-		 * CONSTRUCTOR
+		 * Constructor
 		 */
 		public function StageKit() 
 		{
@@ -60,10 +66,9 @@ package com.gestureworks.cml.kits
 		
 		
 
-		public var _width:Number = 1024;
+		public var _width:Number = 1280;
 		/**
 		 * Specifies the width of the screen
-		 *
 		 * @default 1024 
 		 */		
 		override public function get width():Number {return _width;}
@@ -77,10 +82,9 @@ package com.gestureworks.cml.kits
 		
 		
 		
-		public var _height:Number = 768;
+		public var _height:Number = 720;
 		/**
 		 * Specifies the width of the screen
-		 *
 		 * @default 768 
 		 */		
 		override public function get height():Number {return _height;}

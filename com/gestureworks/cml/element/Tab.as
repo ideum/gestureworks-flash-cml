@@ -7,37 +7,30 @@ package com.gestureworks.cml.element
 	import flash.events.TouchEvent;
 	
 	/**
-	 * A container with a tab extension. The container's contents will be visible when the selected state is true and hidden othewise.
+	 * The Tab element is a container with a tab extension. The container's contents will be visible when the selected state is true and hidden othewise.
 	 * Intended to be grouped and toggled between other tab elements in a <code>TabbedContainer</code>. 
 	 * 
-	 *<codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 * 	
-	    override protected function gestureworksInit():void
-		{
-			trace("gestureWorksInit()");
-			tabElementTestAS();
-		}
+		var tab:Tab = new Tab();
+		tab.title = "tab1";
+		tab.init();
+		addChild(tab);
 		
-		private function tabElementTestAS():void
-		{
-			var tab:TabElement = new TabElement();
-			tab.title = "tab1";
-			tab.init();
-			addChild(tab);
-			
-			var square:GraphicElement = new GraphicElement();
-			square.color = 0x00FF00;
-			square.shape = "rectangle";
-			square.width = 200;
-			square.height = 200;
-			square.y = 100;
-			tab.addChild(square);			
-		}
+		var square:Graphic = new Graphic();
+		square.color = 0x00FF00;
+		square.shape = "rectangle";
+		square.width = 200;
+		square.height = 200;
+		square.y = 100;
+		tab.addChild(square);
 	 * 
-	 * </codeblock>
+	 * </codeblock>	
+	 * 
 	 * @author Shaun
+	 * @see TabbedContainer
 	 */
-	public class TabElement extends Container
+	public class Tab extends Container
 	{
 		private var _title:String = "";
 		private var _displayColor:uint = 0x000000;
@@ -56,27 +49,27 @@ package com.gestureworks.cml.element
 		private var _displayRightRadius:Number
 		
 		private var contentContainer:Container;
-		private var displayBkg:GraphicElement;
-		private var tabGE:GraphicElement;	
-		private var text:TextElement;
-		private var contentMask:GraphicElement;
+		private var displayBkg:Graphic;
+		private var tabGE:Graphic;	
+		private var text:Text;
+		private var contentMask:Graphic;
 		
 		
 		/**
 		 * Constructor
 		 */
-		public function TabElement() 
+		public function Tab() 
 		{
 			super();
 			width = 462;
 			height = 423;
 			mouseChildren = false;
 			
-			text = new TextElement();
-			tabGE = new GraphicElement();
+			text = new Text();
+			tabGE = new Graphic();
 			contentContainer = new Container();
-			displayBkg = new GraphicElement();
-			contentMask = new GraphicElement();
+			displayBkg = new Graphic();
+			contentMask = new Graphic();
 		}
 		
 		/**

@@ -1,40 +1,38 @@
 package com.gestureworks.cml.loaders 
 {
-	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.net.URLRequest;
-	import flash.system.LoaderContext;
 	import flash.utils.*;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;	
 	
 	/**
-	 * loads the image file
-	 * @author Charles Veasey
+	 * The IMGLoader class loads and stores a global reference to an external bitmap image file.
+	 * 
+	 * @author Charles
+	 * @see com.gestureworks.element.Image
 	 */
-	
 	public class IMGLoader extends EventDispatcher
 	{
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function IMGLoader() {}
 		
 		/**
-		 * holds the information of image files
+		 * Contains the loaded bitmap data
 		 */
 		public var loader:Loader
 		
-		private var _loaded:Boolean = false;
+		private var _isLoaded:Boolean = false;
 		/**
-		 * returns the loaded value
+		 * Returns the loaded value
 		 */
-		public function get loaded():Boolean { return _loaded; }	
+		public function get isLoaded():Boolean { return _isLoaded; }	
 		
 		private var _src:String = "";		
 		/**
-		 * sets the file source path
+		 * Sets the file source path
 		 */
 		public function get src():String {return _src;}
 		public function set src(value:String):void 
@@ -42,12 +40,12 @@ package com.gestureworks.cml.loaders
 			if (src == "")
 			_src = value;
 			
-			if (!loaded)
+			if (!_isLoaded)
 				load(src);
 		}
 
 		/**
-		 * loads the image file
+		 * Loads an external bitmap file
 		 * @param	url
 		 */
 		public function load(url:String):void
@@ -60,13 +58,15 @@ package com.gestureworks.cml.loaders
 			loader.load(new URLRequest(url));			
 		}		
 		
+		/**
+		 * Bitmap load complete hander
+		 * @param	event
+		 */
 		private function loaderCompleteHandler(event:Event):void
 		{
-			_loaded = true;
+			_isLoaded = true;
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, loaderCompleteHandler);			
 			dispatchEvent(new Event(Event.COMPLETE, true, true));			
 		}			
-		
 	}
-
 }

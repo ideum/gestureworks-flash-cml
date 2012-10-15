@@ -1,20 +1,23 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.element.ImageElement;
+	import com.gestureworks.cml.element.Image;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.utils.List;
 	import flash.events.Event;
 	import com.gestureworks.cml.managers.FileManager;
 	
 	/**
-	 * ImageList
-	 * Set of images, array with iterator and toggle
+	 * The ImageList element create a set of images through
+	 * and orderered list.
+	 * 
 	 * @author Charles Veasey
+	 * @see Container
+	 * @see Slideshow
 	 */	
 	
 	public class ImageList extends ElementFactory
 	{
-		private var image:ImageElement;		
+		private var image:Image;		
 		private var list:List;
 		private var imageCount:int = 0;
 		private var imagesLoaded:int = 0;
@@ -25,7 +28,7 @@ package com.gestureworks.cml.element
 		public var preload:Boolean = true;
 			
 		/**
-		 * constructor
+		 * Constructor
 		 */
 		public function ImageList() 
 		{
@@ -33,7 +36,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * dispose method to nullify attributes.
+		 * Dispose methods.
 		 */
 		override public function dispose():void
 		{
@@ -59,7 +62,7 @@ package com.gestureworks.cml.element
 				
 					for (var i:int = 0; i < arr.length; i++) 
 					{			
-						var img:ImageElement = new ImageElement;
+						var img:Image = new Image;
 						//img.addEventListener(Event.COMPLETE, onImgComplete);
 						imageCount++;
 						img.preloadFile(arr[i]);
@@ -158,7 +161,7 @@ package com.gestureworks.cml.element
 		 */
 		public function append(file:String):void 
 		{	
-			var img:ImageElement = new ImageElement;
+			var img:Image = new Image;
 			img.addEventListener(Event.COMPLETE, onImgComplete);
 			imageCount++;
 			img.open(file);
@@ -173,7 +176,7 @@ package com.gestureworks.cml.element
 		 */
 		public function prepend(file:String):void 
 		{
-			var img:ImageElement = new ImageElement;
+			var img:Image = new Image;
 			img.addEventListener(Event.COMPLETE, onImgComplete);
 			imageCount++;			
 			img.open(file);
@@ -189,7 +192,7 @@ package com.gestureworks.cml.element
 		 */
 		public function insert(index:int, file:String):void 
 		{
-			var img:ImageElement = new ImageElement;
+			var img:Image = new Image;
 			img.addEventListener(Event.COMPLETE, onImgComplete);
 			imageCount++;			
 			img.open(file);

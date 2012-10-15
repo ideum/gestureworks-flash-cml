@@ -1,38 +1,207 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.loaders.*;
-	import com.gestureworks.cml.utils.CircleText;
-	import com.gestureworks.cml.utils.NumberUtils;
+	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
-	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.*;
-	import flash.display.GradientType;
 	import flash.events.*;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.filters.DropShadowFilter;
+	import flash.filters.*;
 	import flash.geom.*;
-	import flash.utils.Timer;
-	import org.libspark.betweenas3.BetweenAS3;
+	import flash.utils.*;
+	import org.libspark.betweenas3.*;
 	import org.libspark.betweenas3.easing.*;
 	import org.libspark.betweenas3.tweens.*;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.cml.events.StateEvent;
+	import org.tuio.*;
 
-	
 	/**
-	 * The OrbMenu contains a list of Menus.
-	 * It has the following parameters: orbRadius ,gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, gradientHeight, gradientWidth, gradientRotation, gradientX, gradientY, shape1LineStoke, shape1OutlineColor, shape2LineStoke, shape2OutlineColor, backgroundColor, backgroundOutlineColor, backgroundLineStoke, repeatTime, attractMode.
+	 * The OrbMenu element creates a free-floating menu that optionally randomly floats around
+	 * the stage in a screen-saver mode.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
-	   var ob:OrbMenu = new OrbMenu();
-	   ob.x = 100;
-	   ob.y = 100;
-	   ob.init();
-	   addChild(ob);
+		var orb:OrbMenu = new OrbMenu();
+		
+		 // listen to orb menu's state event for button presses
+		addEventListener(StateEvent.CHANGE, changeBkg);
+		
+		bkg = new Graphic();
+		bkg.shape = "rectangle"; 
+		bkg.width = stage.width;
+		bkg.height = stage.height;
+		bkg.color = 0x000000;
+		addChild(bkg);			 
+		 
+		 //can set the timer and attract mode of orbmenu
+		 orb.repeatTimer = 1;
+		 orb.attractMode = true;
+		 
+		 //curve text location of orbmenu
+		 orb.textX = 90;
+		 orb.textY = 80;
+		 orb.textRadius = 100;
+		 orb.curveText = "MENU";
+		 orb.coverage = 0.4;
+		 orb.startAngle = 100;
+		 orb.stopAngle = 100;
+		 
+		 //circle radius
+		 orb.orbRadius = 100;
+		 
+		 //gradient matrix graphics
+		 orb.gradientType = "linear";
+		 orb.gradientColors = "0x404040, 0x404040";
+		 orb.gradientAlphas = "1,1";
+		 orb.gradientRatios = "0,255";
+		 orb.gradientHeight = 100;
+		 orb.gradientWidth = 50;
+		 orb.gradientRotation = 0;
+		 orb.gradientX = 25;
+		 orb.gradientY = 0;
+		 
+		 //outer circle graphics
+		 orb.shape1LineStoke = 3;
+		 orb.shape1OutlineColor = 0x000000;
+		 
+		 //inner circle graphics
+		 orb.shape2LineStoke = 3;
+		 orb.shape2OutlineColor = 0x000000;
+		 
+		 //background(rectangle) graphics
+		 orb.backgroundColor = 0x808080;
+		 orb.backgroundOutlineColor = 0x000000;
+		 orb.backgroundLineStoke = 3;
+	
+		 //background(rectangle) graphics				
+		 background = new Graphic();
+		 background.visible = false;
+		 orb.addChild(background);
+	
+	
+		 var numberOfButtons:int = 3;
+		 var width:Number = 100;
+		 var height:Number = 135;
+		 var orbRadius:Number = 100;
+					
+		 buttons = new Array(numberOfButtons);
+		
+		// position of buttons,lines,background
+		 <!-- for (var i:int = 0; i < numberOfButtons; i++) -->
+		  {
+			var line:Sprite = new Sprite();
+			line.graphics.lineStyle(0, 0x000000, 1);
+			line.graphics.moveTo((width * i + orbRadius), 0);
+			line.graphics.lineTo((width * i + orbRadius), height);
+			
+			buttons[i] = new Button();
+							
+			if (i==0)
+				buttons[i] = createButton(buttons[i], "btn0", "grey");
+			else if (i == 1)
+				buttons[i] = createButton(buttons[i], "btn1","purple");
+			else if (i == 2)
+				buttons[i] = createButton(buttons[i], "btn2", "pink");
+			
+			buttons[i].x = 100 + width * i;
+			buttons[i].y = 0;
+			
+			background.addChild(buttons[i]);
+			buttons[i].init();
+										
+			background.addChild(line);
+		  }
+		  
+		if (numberOfButtons > 1)
+		{
+			background.graphics.beginFill(0x808080);
+			background.graphics.drawRoundRect(0- width , 0, (orbRadius + width) + (width * numberOfButtons), 135, 25, 25);
+		}
+		else
+		{
+			background.graphics.drawRoundRect(0, 0, (orbRadius + width), 135, 25, 25);
+		}
+		
+		 orb.buttons = buttons;
+		 orb.init();
+		 addChild(orb);		
+
+		 
+		function createButton(b:Button, type:String, value:String):Button
+		{
+			var btnUp:Container = new Container();
+			btnUp.id = type + "-up";
+						
+	        var text:Text = new Text();
+			text.text = value;
+			text.x = 17;
+			text.y = 45;
+			text.selectable = false;
+			text.color = 0x151B54;
+			text.fontSize = 20;
+			text.visible = true;
+			text.multiline = true;
+			text.font = "OpenSansRegular";
+			btnUp.addChild(text);
+						
+			var btnDown:Container = new Container();
+			btnDown.id = "btn-down";
+					
+			var btnHit:Container = new Container();
+			btnHit.id = type + "-hit";
+			
+			var hitBg:Graphic = new Graphic();
+			hitBg.shape = "rectangle";
+			hitBg.id = type + "HitBg";
+			hitBg.alpha = 0;
+			hitBg.width = 100;
+			hitBg.height = 100;
+			hitBg.lineStroke = 1.5;
+			hitBg.color = 0xCCCCCC;
+			
+			btnHit.addChild(hitBg);
+			btnHit.childToList(type + "HitBg", hitBg);
+			
+			b.addChild(btnUp);
+			b.childToList(type + "-up", btnUp);
+			
+			b.addChild(btnDown);
+			b.childToList(type + "-down", btnDown);
+			
+			b.addChild(btnHit);
+			b.childToList(type + "-hit", btnHit);
+			
+			b.initial = type + "-up";
+						
+			b.up = type + "-up";
+			b.out = type + "-up";
+			b.down = type + "-down";
+			b.hit = type + "-hit";
+			
+			b.dispatch = "down:" + type;
+						
+			return b;
+		}
+		
+		
+		//background color changes on state event.
+		function changeBkg(event:StateEvent):void
+		{
+			if (event.value == "btn0")
+			{
+				bkg.visible = true;
+				bkg.color = 0x817679;
+			}
+			else if (event.value == "btn1")
+			{
+				bkg.visible = true;	
+				bkg.color = 0x5E5A80;
+			}
+	        else if (event.value == "btn2")
+			{
+				bkg.visible = true;
+				bkg.color = 0xC48189;
+			}
+		}
 	
 	 *
 	 * </codeblock>
@@ -43,7 +212,7 @@ package com.gestureworks.cml.element
 	{
 		
 		/**
-		* OrbMenu constructor.
+		* OrbMenu Constructor.
 		*/
 		public function OrbMenu()
 		{

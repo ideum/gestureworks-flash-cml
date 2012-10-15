@@ -1,54 +1,62 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  OPEN EXHIBITS
-//  Copyright 2010-2011 OPEN EXHIBITS
-//  All Rights Reserved.
-//
-//  WaveFilePlayer
-//
-//  FILE: Waveform.as
-//  AUTHOR: Charles Veasey (charlesv(at)ideum(dot)com)
-//	DOC: 6/20/2011	
-//  NOTICE: OPEN EXHIBITS permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
-
-
-package com.gestureworks.cml.utils {
-	
+package com.gestureworks.cml.utils 
+{	
 	import flash.display.Graphics;
-	import flash.display.Shape;
 	import flash.display.Sprite;
 	
-	
 	/**
-	 * <p>
-	 * Waveform draws a graphical representation of audio data
-	 * </p> 
+	 * The Waveform utility creates a graphical waveform, 
+	 * often used for visual representations of sound.
 	 * 
-	 * <strong>Imported Components:</strong>
-	 * <pre>
-	 * Graphics
-	 * Shape
-	 * Sprite
-	 * </pre>
-	 *
-	 * <listing version="3.0">
-	 * var waveform = new Waveform;
-	 * </listing>
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
+
+		var w:Waveform = new Waveform;
+		w.draw();
+		addChild(w);
+	 
+	 * </codeblock>
 	 * 
-	 * @includeExample Waveform.as
-	 * 
-	 * @see org.openexhibits.audio.Waveform;
-	 * 
-	 * @langversion 3.0
-	 * @playerversion AIR 2
-	 * @productversion GestureWorks 2.0
+	 * @author Ideum
 	 */	
-	public class Waveform extends Sprite {
+	public class Waveform extends Sprite 
+	{
+		/**
+		 * Waveform origin
+		 * @default 150
+		 */				
+		private var _origin:Number;
+
+		/**
+		 * Graphics object
+		 * @default null
+		 */	
+		private var _g:Graphics;
 		
-		//PUBLIC PROPERTIES (READ/WRITE)		
+		/**
+		 * Sprite object
+		 * @default null
+		 */	
+		private var _sp:Sprite;
+		
+		
+		/**
+		 * Creates a Waveform object, sets property defaults,
+		 * add the waveform object to the stage
+		 * 
+		 * @param none
+		 * @return none 
+		 */				
+		public function Waveform() {
+			
+			super();
+			propertyDefaults();
+			_sp = new Sprite;
+			_averageGain = new Array;
+			_g = _sp.graphics;
+			addChild(_sp);
+
+		}
+		
+		
 		/**
 		 * Waveform width
 		 * @default 500
@@ -86,48 +94,7 @@ package com.gestureworks.cml.utils {
 		public function get averageGain():Array { return _averageGain; }
 		public function set averageGain(val:Array):void { _averageGain = val; }
 		
-		
-		//PRIVATE PROPERTIES
-		/**
-		 * Waveform origin
-		 * @default 150
-		 */				
-		private var _origin:Number;
-
-		/**
-		 * Graphics object
-		 * @default null
-		 */	
-		private var _g:Graphics;
-		
-		/**
-		 * Sprite object
-		 * @default null
-		 */	
-		private var _sp:Sprite;
-		
-
-		//CONSTRUCTOR
-		/**
-		 * Creates a Waveform object, sets property defaults,
-		 * add the waveform object to the stage
-		 * 
-		 * @param none
-		 * @return none 
-		 */				
-		public function Waveform() {
-			
-			super();
-			propertyDefaults();
-			_sp = new Sprite;
-			_averageGain = new Array;
-			_g = _sp.graphics;
-			addChild(_sp);
-
-		}
-		
-		
-		//PUBLIC METHODS
+				
 		/**
 		 * Frees object memory
 		 * @param none
