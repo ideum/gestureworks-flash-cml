@@ -159,9 +159,7 @@ package com.gestureworks.cml.element
    		
 	
 		public function init():void {
-		
 		}
-		
 		
 		/// PUBLIC METHODS ///
 		
@@ -228,9 +226,10 @@ package com.gestureworks.cml.element
 		 */		
 		public function play():void
 		{
-			positionTimer = new Timer(1);
+			positionTimer = new Timer(20);
 			netStream.seek(0);				
 			netStream.resume();
+			//netStream.play();
 			positionTimer.reset();
 			positionTimer.start();
 			_position = 0;
@@ -296,6 +295,7 @@ package com.gestureworks.cml.element
 			switch (event.info.code) 
 			{
 				case "NetConnection.Connect.Success":
+					trace("Netconnection Success");
 					 connectNetStream();
 					 break;
 				case "NetStream.Play.StreamNotFound":
@@ -340,6 +340,7 @@ package com.gestureworks.cml.element
 		private function connectNetStream():void
 		{
 			progressTimer = new Timer(1000);
+			positionTimer = new Timer(20);
 		//	progressTimer.addEventListener(TimerEvent.TIMER, onProgress); 
 		//	progressTimer.start(); not able to stop
 			
@@ -366,6 +367,7 @@ package com.gestureworks.cml.element
 			netStream.play(src);
 			netStream.pause();
 			netStream.seek(0);
+			//trace("Autoplay:", autoplay);
 			if (autoplay) play();	
 			
 		}
@@ -406,6 +408,8 @@ package com.gestureworks.cml.element
 				sizeLoaded = true;
 				
 				// file and all metadata loaded
+				trace("Metadata set");
+				if (autoplay) resume();
 				this.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}

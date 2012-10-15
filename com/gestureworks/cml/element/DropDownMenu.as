@@ -205,7 +205,7 @@ package com.gestureworks.cml.element
 			//Create Text specifically for the menu.
 			_menuTitle = createMenuItem(_title, "menu");
 			addChild(_menuTitle);
-			trace("Menu: ", _menuTitle.x, _menuTitle.y);
+			
 			//Add event listener for mouseDown/touchDown
 			if (GestureWorks.supportsTouch)
 				_menuTitle.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
@@ -216,12 +216,10 @@ package com.gestureworks.cml.element
 			
 			//Create Text for each menu item.
 			for (var j:int = 0; j < menuItemsArray.length; j++) {
-				trace(menuItemsArray);
-				trace(_menuItemsArray);
-				trace("j = " + j);
+				
 				_menuItemsArray[j] = createMenuItem(menuItemsArray[j]);
 				_menuItemsArray[j].y = _menuTitle.y + (_height * (j + 1));
-				trace("Item: ", _menuItemsArray[j].y);
+				
 				if (GestureWorks.supportsTouch){
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OVER, onOver);
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OUT, onItemOut);
