@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import flash.display.DisplayObject;
 	import flash.events.ActivityEvent;
 	import flash.events.StatusEvent;
 	import flash.media.Camera;
@@ -59,13 +60,11 @@ package com.gestureworks.cml.element
 		/**
 		* defines the mic object.
 		*/
-		public var _mic:com.gestureworks.cml.element.Microphone;
+		public var _microphone:com.gestureworks.cml.element.Microphone;
 		
-		/**
-		* defines the cam object.
-		*/
 		public var cam:flash.media.Camera;
 		
+		public var mic:flash.media.Microphone;
 	
     	/**
 		* sets the camera element.
@@ -87,21 +86,19 @@ package com.gestureworks.cml.element
 		/**
 		* sets the microphone element.
 		*/
-		public function get mic():*
+		public function get microphone():*
 		{
-			return _mic;
+			return _microphone;
 		}
-		public function set mic(value:*):void
+		public function set microphone(value:*):void
 		{
 			if (!value) return;
 			
 			if (value is com.gestureworks.cml.element.Microphone)
-				_mic = value;
+				_microphone = value;
 			else 
-				_mic = searchChildren(value);
+				_microphone = searchChildren(value);
 		}
-		
-		private var micro:flash.media.Microphone;
 		
 		/**
 		 * CML display initialization callback
@@ -117,9 +114,9 @@ package com.gestureworks.cml.element
 		public function init():void
 		{ 
 		  //Get the default camera for the system	
-		  cam = camera.getCamera();
+		   cam = camera.getCamera();
 		  
-		  if (camera == null)
+		  if (cam == null)
 			trace("unable to locate camera");
 		  else
 		   {
@@ -129,15 +126,22 @@ package com.gestureworks.cml.element
            video.attachCamera(cam);
 		   //netstream.attachCamera(cam);
 		   }
-
-		   if (mic)
+   
+		   //Get the default microphone for the system	
+		  
+		   
+		   if (mic == null)
 		   {
-		   micro = mic.getMicrophone();
-		   micro.setLoopBack(true);
-		   micro.setUseEchoSuppression(true);
-		   netstream.attachAudio(micro);
+			trace("unable to locate mic");   
+		   }
+		   else
+		   {
+			    mic = microphone.getMicrophone();  
+		   mic.setLoopBack(true);
+		   mic.setUseEchoSuppression(true);
+		   netstream.attachAudio(mic);
 		  //video.attachNetStream(netstream);
-		   micro.addEventListener(ActivityEvent.ACTIVITY , testMic);
+		   mic.addEventListener(ActivityEvent.ACTIVITY, testMic);
 		  }
 		}
 		
@@ -224,7 +228,7 @@ package com.gestureworks.cml.element
 		camera = null;
 		video = null;
 		cam.removeEventListener(StatusEvent.STATUS, statusHandler);
-		micro.removeEventListener(ActivityEvent.ACTIVITY , testMic);
+		mic.removeEventListener(ActivityEvent.ACTIVITY , testMic);
 	}
 }
 }
