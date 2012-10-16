@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
+	import flash.events.GestureEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
@@ -23,14 +24,10 @@ package com.gestureworks.cml.element
 		switch.buttonColor = 0x000000;
 		switch.buttonoutlineColor = 0x000000;
 		switch.buttonlineStroke = 1;
-		switch.backgroundX = 0;
-		switch.backgroundY = 0;
 		switch.backgroundWidth = 100;
 		switch.backgroundHeight = 50;
 		switch.backgroundEllipseWidth = 25;
 		switch.backgroundEllipseHeight = 25;
-		switch.buttonX = 0;
-		switch.buttonY = 0;
 		switch.buttonWidth = 50;
 		switch.buttonHeight = 50;
 		switch.buttonEllipseWidth = 25;
@@ -48,12 +45,11 @@ package com.gestureworks.cml.element
 	public class Switch extends ElementFactory
 	{
 		/**
-		 * Switch Constructor.Allow user to define switch button with drag and tap functionality.
+		 * Switch Constructor.
 		 */
 		public function Switch()
 		{
 			super();
-		//	init();
 		}
 		
 		/**
@@ -387,8 +383,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private var touchSprite:TouchSprite = new TouchSprite();
-		private var text:Text = new Text();
-		
+					
 		/**
 		 * Initializes the configuration and display of the Switch
 		 */
@@ -448,16 +443,7 @@ package com.gestureworks.cml.element
 			touchSpriteBg.disableAffineTransform = false;
 			touchSpriteBg.gestureList = {"n-tap": true};
 			touchSpriteBg.addEventListener(GWGestureEvent.TAP, onTap);
-	
-			text.text = "TRUE";
-			text.x = 30;
-			text.y = -70;
-			text.visible = false;
-			text.color = 0x0000FF;
-			text.fontSize = 25;
-			touchSpriteBg.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			addChild(text);
-			
+					
 			touchSpriteBg.addChild(background);
 			addChild(touchSpriteBg);
 			
@@ -489,6 +475,8 @@ package com.gestureworks.cml.element
 				button.x += event.value.drag_dx;
 			}
 			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", state));
+			
 			if (event.value.localY < background.y || event.value.localY > background.height)
 				onEnd();
 		}
@@ -496,9 +484,16 @@ package com.gestureworks.cml.element
 		private function onTap(event:GWGestureEvent):void
 		{
 			if (button.x < button.width)
+			{
 				button.x = maxButtonPos; 
+				state = true;
+			}
 			else
+			{
 				button.x = minButtonPos;
+				state = false;
+			}
+		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", state));
 		}
 		
 		private function onEnd(event:* = null):void
@@ -510,11 +505,6 @@ package com.gestureworks.cml.element
 				button.x = minButtonPos;
 		}
 		
-	    private function onTouchBegin(event:TouchEvent):void
-	    {
-		    text.visible = !text.visible;
-		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "visible", text.visible));
-	    }
 	
 		/**
 		 * Dispose method
