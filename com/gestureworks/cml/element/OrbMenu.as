@@ -222,12 +222,12 @@ package com.gestureworks.cml.element
 		/**
 		* Defines the OuterCircle which is a rectangle
 		*/
-		public var shape1:TouchSprite = new TouchSprite();
+		public var shape1:Sprite = new Sprite();
 		
 		/**
 		* Defines the InnerCircle which is a rectangle
 		*/
-		public var shape2:TouchSprite = new TouchSprite();
+		public var shape2:Sprite = new Sprite();
 		
 		/**
 		* Defines background in rectangle shape of orbMenu.
@@ -677,32 +677,48 @@ package com.gestureworks.cml.element
 						
 			var c1:CircleText = new CircleText(textX, textY, textRadius, curveText, coverage, startAngle, stopAngle);
 			//  var c1:CircleText = new CircleText(-10, 10, 100, "MENU", 0.4, 0, 0);
-			
-			shape1.gestureEvents = true;
-			shape1.gestureList = {"n-drag": true, "n-tap": true};
-			shape1.addEventListener(GWGestureEvent.DRAG, onDrag);
-			shape1.addEventListener(GWGestureEvent.TAP, onTap);
+		
 				
 			addChild(background);
 			addChild(shape1);
 			shape1.addChild(shape2);
 			addChild(c1);
-		
+			
+			
+			var hitShape:TouchSprite = new TouchSprite;
+			hitShape.graphics.lineStyle(shape1LineStoke, shape1OutlineColor);
+			hitShape.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
+			hitShape.graphics.drawCircle(0, 0, orbRadius);
+			hitShape.graphics.endFill();
+			hitShape.x = 100;
+			hitShape.y = 70;
+			hitShape.alpha = 0;
+			
+			
+			hitShape.gestureEvents = true;
+			hitShape.disableNativeTransform = true;			
+			hitShape.gestureList = {"n-drag-inertia": true, "n-tap": true};
+			hitShape.addEventListener(GWGestureEvent.DRAG, onDrag);
+			hitShape.addEventListener(GWGestureEvent.TAP, onTap);
+			hitShape.gestureReleaseInertia = true;			
+			addChild(hitShape);
 		}
+		
 		
 		/**
 		 * Floating stops when event happens.
 		 * @param	event
 		 */
 		private function onDrag(event:GWGestureEvent):void
-		{
-			background.visible = true;
-			
+		{			
 			if (attractMode && timer)
 			{
 				timer.reset();
-				tweener.stop();
-				tweener.onComplete = null;
+				
+				if (tweener) {
+					tweener.stop();
+					tweener.onComplete = null;
+				}
 				this.x += event.value.drag_dx;
 				this.y += event.value.drag_dy;
 			}
@@ -714,13 +730,15 @@ package com.gestureworks.cml.element
 		 */
 		private function onTap(event:GWGestureEvent):void
 		{
-			background.visible = false;
-			
+			background.visible = !background.visible;
+						
 			if (attractMode && timer)
 			{
 				timer.reset();
-				tweener.stop();
-				tweener.onComplete = null;
+				if (tweener){
+					tweener.stop();
+					tweener.onComplete = null;
+				}
 			}
     	}
 		
