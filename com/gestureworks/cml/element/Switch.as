@@ -7,7 +7,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
-	import flash.events.GestureEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
@@ -418,23 +417,8 @@ package com.gestureworks.cml.element
 			touchSprite.disableAffineTransform = false;
 			touchSprite.gestureList = {"n-drag": true, "n-tap": true};
 			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-			//touchSprite.addEventListener(TouchEvent.TOUCH_END, onEnd);
-			//touchSprite.addEventListener(TouchEvent.TOUCH_OUT, onEnd);
-			
-			if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_UP, onEnd);
-			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_END, onEnd);
-			else
-				this.addEventListener(MouseEvent.MOUSE_UP, onEnd);
-			
-			if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_OUT, onEnd);
-			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_OUT, onEnd);
-			else
-				this.addEventListener(MouseEvent.MOUSE_OUT, onEnd);
-			
+			touchSprite.addEventListener(GWGestureEvent.RELEASE, onEnd);
+				
 			var touchSpriteBg:TouchSprite = new TouchSprite();
 			touchSpriteBg.gestureReleaseInertia = false;
 			touchSpriteBg.gestureEvents = true;
@@ -456,10 +440,9 @@ package com.gestureworks.cml.element
 		
 		private var minButtonPos:Number;
 		private var maxButtonPos:Number;
-		
+
 		private function gestureDragHandler(event:GWGestureEvent):void
 		{
-			
 			if ((event.value.drag_dx + button.x) > maxButtonPos)
 			{
 				button.x = maxButtonPos;
@@ -474,11 +457,6 @@ package com.gestureworks.cml.element
 			{
 				button.x += event.value.drag_dx;
 			}
-			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", state));
-			
-			if (event.value.localY < background.y || event.value.localY > background.height)
-				onEnd();
 		}
 		
 		private function onTap(event:GWGestureEvent):void
@@ -498,11 +476,16 @@ package com.gestureworks.cml.element
 		
 		private function onEnd(event:* = null):void
 		{
-			
-			if (button.x + button.width/2 >= (background.width/2))
+			if (button.x + button.width/2 >= (background.width/2)){
 				button.x = maxButtonPos;
-			else
+				state = true;
+			}	
+			else {
 				button.x = minButtonPos;
+				state = false;
+			}
+				
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", state));				
 		}
 		
 	
