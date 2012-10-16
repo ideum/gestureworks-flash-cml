@@ -681,15 +681,8 @@ package com.gestureworks.cml.element
 			shape1.gestureEvents = true;
 			shape1.gestureList = {"n-drag": true, "n-tap": true};
 			shape1.addEventListener(GWGestureEvent.DRAG, onDrag);
-			//shape1.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
-			
-			if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TAP, onBegin);
-			else if (GestureWorks.supportsTouch)
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
-			else
-				this.addEventListener(MouseEvent.CLICK, onBegin);
-			
+			shape1.addEventListener(GWGestureEvent.TAP, onTap);
+				
 			addChild(background);
 			addChild(shape1);
 			shape1.addChild(shape2);
@@ -719,9 +712,9 @@ package com.gestureworks.cml.element
 		 * Floating stops when event happens.
 		 * @param	event
 		 */
-		private function onBegin(event:TouchEvent):void
+		private function onTap(event:GWGestureEvent):void
 		{
-			//background.visible = false;
+			background.visible = false;
 			
 			if (attractMode && timer)
 			{
@@ -822,7 +815,7 @@ package com.gestureworks.cml.element
 			shape2 = null;
 			shape1 = null;
 			shape1.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			shape1.removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			shape1.removeEventListener(GWGestureEvent.TAP, onTap);
 			timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
 		}
 	}
