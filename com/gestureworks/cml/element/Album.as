@@ -1,12 +1,9 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.components.AlbumViewer;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.LayoutFactory;
 	import com.gestureworks.cml.layouts.ListLayout;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
 	import flash.events.TouchEvent;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.Exponential;
@@ -55,7 +52,8 @@ package com.gestureworks.cml.element
 		private var snapTween:ITween;
 		private var boundary1:Number;
 		private var boundary2:Number;
-		private var isLoaded:Boolean = false;
+		private var isLoaded:Boolean = false;		
+		private var released:Boolean = false;
 		
 		/**
 		 * Constructor
@@ -200,9 +198,11 @@ package com.gestureworks.cml.element
 			belt.gestureList = { "n-drag-inertia":true };
 			belt.disableAffineTransform = true;
 			
-			var scrollAlbum:Function = horizontal ? scrollH : scrollV;
-			belt.addEventListener(GWGestureEvent.DRAG, scrollAlbum);
+			var scrollType:Function = horizontal ? scrollH : scrollV;
+			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
+			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
 			belt.addEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 			
 			//transfer children to belt
 			for (var i:int = numChildren-1; i >= 0; i--)
@@ -291,8 +291,10 @@ package com.gestureworks.cml.element
 		 * Animates a snaping action to the snap point closest to the current belt location.
 		 * @param	e  the drag complete event
 		 */
-		private function snap(e:*):void
+		private function snap(e:*=null):void
 		{	
+			if (snapTween && snapTween.isPlaying)
+				return;
 			if(horizontal)
 				snapTween = BetweenAS3.tween(belt, { x:getClosestSnapPoint(belt.x) }, null, .4, Exponential.easeOut);
 			else
@@ -331,32 +333,65 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Drag the belt horizontally within the boundaries
+		 * Reactivates the drag handler, enables release inertia, and resets the released
+		 * flag to indicate the belt is being touched. 
+		 * @param	e  the touch event
+		 */
+		private function resetDrag(e:TouchEvent):void
+		{
+			var scrollType:Function = horizontal ? scrollH : scrollV;
+			belt.addEventListener(GWGestureEvent.DRAG, scrollType);	
+			belt.gestureReleaseInertia = true;
+			released = false;
+		}
+		
+		/**
+		 * Turns the released flag on to indicate the belt is not being touched
+		 * @param	e the release event
+		 */
+		private function onRelease(e:GWGestureEvent):void
+		{
+			released = true;
+		}		
+		
+		/**
+		 * Drag the belt horizontally within the boundaries. If boundaries are exceeded and the
+		 * belt is not being touched, the drag is disabled and the snaps into place.
 		 * @param	e the drag event
 		 */
 		private function scrollH(e:GWGestureEvent):void
-		{
-			if (belt.x < boundary1 && belt.x > boundary2)
+		{							
+			var COS:Number = Math.cos(dragAngle);
+			var SIN:Number = Math.sin(dragAngle);
+			var dx:Number = e.value.drag_dy * SIN + e.value.drag_dx * COS;			
+			
+			if (belt.x + dx < boundary1 && belt.x + dx > boundary2)			
+				belt.x += dx;				
+			else if(released)
 			{
-				var COS:Number = Math.cos(dragAngle);
-				var SIN:Number = Math.sin(dragAngle);
-				var dx:Number = e.value.drag_dy * SIN + e.value.drag_dx * COS;
-				belt.x += dx;
+				belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
+				belt.gestureReleaseInertia = false;
+				snap();				
 			}
 		}
-		
+				
 		/**
 		 * Drag the belt vertically within the boundaries
 		 * @param	e the drag event
 		 */
 		private function scrollV(e:GWGestureEvent):void
 		{
-			if (belt.y < boundary1 && belt.y > boundary2)
-			{
-				var COS:Number = Math.cos(dragAngle);
-				var SIN:Number = Math.sin(dragAngle);
-				var dy:Number = e.value.drag_dy * COS - e.value.drag_dx * SIN;
+			var COS:Number = Math.cos(dragAngle);
+			var SIN:Number = Math.sin(dragAngle);
+			var dy:Number = e.value.drag_dy * COS - e.value.drag_dx * SIN;			
+			
+			if (belt.y+dy < boundary1 && belt.y+dy > boundary2)
 				belt.y += dy;
+			else if(released)
+			{
+				belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
+				belt.gestureReleaseInertia = false;
+				snap();				
 			}
 		}		
 		
@@ -367,8 +402,11 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			
-			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
-			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.addEventListener(GWGestureEvent.DRAG, scrollH);
+			belt.addEventListener(GWGestureEvent.DRAG, scrollV);
+			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
+			belt.addEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 			
 			belt = null;
 			snapPoints = null;
