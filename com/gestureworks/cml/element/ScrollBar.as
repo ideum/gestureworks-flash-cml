@@ -82,7 +82,7 @@ package com.gestureworks.cml.element
 	public class ScrollBar extends Container
 	{
 		/**
-		 * ScrollBar Constructor
+		 * Constructor
 		 */
 		public function ScrollBar():void
 		{
@@ -95,6 +95,7 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void
 		{
 			super.displayComplete();
+			init();
 		}
 		
 		/**
@@ -623,7 +624,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initializes the configuration and display of scrollbar
 		 */
-	   public function init():void
+	    public function init():void
 		{
 			displayScroll();
 		}
