@@ -212,7 +212,7 @@ package com.gestureworks.cml.element
 	{
 		
 		/**
-		* OrbMenu Constructor.
+		* Constructor.
 		*/
 		public function OrbMenu()
 		{
@@ -630,7 +630,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void
 		{
-			//displayOrb();
+		//	displayOrb();
 			displayComplete();
 		}
 		
@@ -663,7 +663,7 @@ package com.gestureworks.cml.element
 			
 			shape2.filters = filtersArray;
 			
-			width = 100;
+			//width = 100;
 			
 			background.graphics.lineStyle(backgroundLineStoke, backgroundOutlineColor);
 			background.graphics.beginFill(0x808080);
@@ -745,11 +745,8 @@ package com.gestureworks.cml.element
 			//init();
 			 displayOrb();
 			
-			if (!buttons)
-			{
 			buttons = childList.getValueArray();
-			}
-			
+					
 			height = 135;
 			width = 100;
 			
