@@ -114,7 +114,7 @@ package com.gestureworks.cml.element
 		public function init():void
 		{ 
 		  //Get the default camera for the system	
-		   cam = camera.getCamera();
+		   cam = camera ? camera.getCamera() : null;
 		  
 		  if (cam == null)
 			trace("unable to locate camera");
@@ -129,6 +129,7 @@ package com.gestureworks.cml.element
    
 		   //Get the default microphone for the system	
 		  
+		   mic = microphone ? microphone.getMicrophone() : null;
 		   
 		   if (mic == null)
 		   {
@@ -136,12 +137,11 @@ package com.gestureworks.cml.element
 		   }
 		   else
 		   {
-			    mic = microphone.getMicrophone();  
-		   mic.setLoopBack(true);
-		   mic.setUseEchoSuppression(true);
-		   netstream.attachAudio(mic);
-		  //video.attachNetStream(netstream);
-		   mic.addEventListener(ActivityEvent.ACTIVITY, testMic);
+			   mic.setLoopBack(true);
+			   mic.setUseEchoSuppression(true);
+			   netstream.attachAudio(mic);
+			  //video.attachNetStream(netstream);
+			   mic.addEventListener(ActivityEvent.ACTIVITY, testMic);
 		  }
 		}
 		
