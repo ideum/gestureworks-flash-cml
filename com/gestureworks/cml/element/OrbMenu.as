@@ -237,7 +237,7 @@ package com.gestureworks.cml.element
 		/**
 		* Defines array of buttons.
 		*/
-		public var buttons:Array = [];
+		public var buttons:Array;
 		
 		/**
 		* Defines intersection lines of background.
@@ -676,9 +676,7 @@ package com.gestureworks.cml.element
 			background.visible = false;
 						
 			var c1:CircleText = new CircleText(textX, textY, textRadius, curveText, coverage, startAngle, stopAngle);
-			//  var c1:CircleText = new CircleText(-10, 10, 100, "MENU", 0.4, 0, 0);
-		
-				
+							
 			addChild(background);
 			addChild(shape1);
 			shape1.addChild(shape2);
@@ -756,7 +754,11 @@ package com.gestureworks.cml.element
 			//init();
 			 displayOrb();
 			
-			buttons = childList.getValueArray();
+			 if (!buttons)
+			 {
+			 buttons = childList.getValueArray();
+			 }
+			
 					
 			height = 135;
 			width = 100;
