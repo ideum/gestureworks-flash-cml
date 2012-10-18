@@ -104,7 +104,7 @@ package com.gestureworks.cml.element
 			//hide all but initial state
 			for each(var state:* in buttonStates)
 			{
-				if (state != initial)
+				if (state && state != initial)
 					state.visible = false;	
 			}				
 
@@ -568,7 +568,7 @@ package com.gestureworks.cml.element
 			listenMouseDown(false);																				
 			for each(var state:* in buttonStates)
 			{
-				if (state != mouseDown)
+				if (state && state != mouseDown)
 					state.visible = false;
 			}
 			
@@ -605,7 +605,7 @@ package com.gestureworks.cml.element
 			listenMouseUp(false);								
 			for each(var state:* in buttonStates)
 			{
-				if (state != mouseUp)
+				if (state && state != mouseUp)
 					state.visible = false;	
 			}
 			
@@ -642,7 +642,7 @@ package com.gestureworks.cml.element
 			listenMouseOver(false);
 			for each(var state:* in buttonStates)
 			{
-				if (state != mouseOver)
+				if (state && state != mouseOver)
 					state.visible = false;	
 			}				
 	
@@ -676,7 +676,7 @@ package com.gestureworks.cml.element
 			listenMouseOut(false);											
 			for each(var state:* in buttonStates)
 			{
-				if (state != mouseOut)
+				if (state && state != mouseOut)
 					state.visible = false;	
 			}
 			
@@ -750,7 +750,7 @@ package com.gestureworks.cml.element
 			listenTouchDown(false);																				
 			for each(var state:* in buttonStates)
 			{
-				if (state != touchDown)
+				if (state && state != touchDown)
 					state.visible = false;
 			}
 			
@@ -787,7 +787,7 @@ package com.gestureworks.cml.element
 			listenTouchOver(false);
 			for each(var state:* in buttonStates)
 			{
-				if (state != touchOver)
+				if (state && state != touchOver)
 					state.visible = false;	
 			}				
 	
@@ -821,7 +821,7 @@ package com.gestureworks.cml.element
 			listenTouchUp(false);								
 			for each(var state:* in buttonStates)
 			{
-				if (state != touchUp)
+				if (state && state != touchUp)
 					state.visible = false;	
 			}
 			
@@ -858,7 +858,7 @@ package com.gestureworks.cml.element
 			listenTouchOut(false);											
 			for each(var state:* in buttonStates)
 			{
-				if (state != touchOut)
+				if (state && state != touchOut)
 					state.visible = false;	
 			}
 			
@@ -943,7 +943,7 @@ package com.gestureworks.cml.element
 			listenDown(false);																				
 			for each(var state:* in buttonStates)
 			{
-				if (state != down)
+				if (state && state != down)
 					state.visible = false;
 			}
 			
@@ -980,7 +980,7 @@ package com.gestureworks.cml.element
 			listenOver(false);
 			for each(var state:* in buttonStates)
 			{
-				if (state != over)
+				if (state && state != over)
 					state.visible = false;	
 			}				
 	
@@ -1014,7 +1014,7 @@ package com.gestureworks.cml.element
 			listenUp(false);								
 			for each(var state:* in buttonStates)
 			{
-				if (state != up)
+				if (state && state != up)
 					state.visible = false;	
 			}
 			
@@ -1051,7 +1051,7 @@ package com.gestureworks.cml.element
 			listenOut(false);											
 			for each(var state:* in buttonStates)
 			{
-				if (state != out)
+				if (state && state != out)
 					state.visible = false;	
 			}
 			
@@ -1152,10 +1152,10 @@ package com.gestureworks.cml.element
 				childList.currentValue.visible = true;			
 			}							
 			
-			if (dispatchDict["toggle"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", dispatchDict["toggle"], true, true));	
-			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", "toggle", true, true));			
+			//if (dispatchDict["toggle"])
+			//	dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", dispatchDict["toggle"], true, true));	
+			//else if (dispatchDefault)
+			//	dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", "toggle", true, true));			
 		}
 		
 		/**
