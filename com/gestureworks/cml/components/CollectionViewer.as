@@ -45,6 +45,7 @@ package com.gestureworks.cml.components
 		{
 			super();
 			queue = new List;
+			this.mouseChildren = true;
 		}
 		
 		/**
