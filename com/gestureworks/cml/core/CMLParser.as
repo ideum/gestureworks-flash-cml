@@ -82,8 +82,11 @@ package com.gestureworks.cml.core
 			
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
-			if (cml.@rootDirectory != undefined)
+			
+			if (cml.@rootDirectory != undefined && !relativePaths)
 				rootDirectory = cml.@rootDirectory;
+			else if (cml.@rootDirectory != undefined && relativePaths)
+				rootDirectory = relToAbsPath(rootDirectory.concat(cml.@rootDirectory));	
 				
 			// get css file
 			
@@ -96,7 +99,7 @@ package com.gestureworks.cml.core
 				if (relativePaths)
 					cssStr = relToAbsPath(rootDirectory.concat(cssStr));
 				else if (rootDirectory.length > 0)
-					cssStr = rootDirectory.concat(cssStr);
+					cssStr = rootDirectory.concat(cssStr);					
 			}
 			
 			CMLParser.instance.cssFile = cssStr;	
@@ -486,7 +489,7 @@ package com.gestureworks.cml.core
 								// rootDirectory allows you to change root path	
 								if (relativePaths && rootDirectory.length > 0){	
 									attrValue = rootDirectory.concat(attrValue);
-									attrValue = relToAbsPath(attrValue);	
+									attrValue = relToAbsPath(attrValue);
 								}
 								else if (rootDirectory.length > 0) {
 									attrValue = rootDirectory.concat(attrValue);

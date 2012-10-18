@@ -1,15 +1,9 @@
 package com.gestureworks.cml.element 
 {
-	import away3d.events.MouseEvent3D;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.List;
-	import com.gestureworks.core.TouchSprite;
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.GestureEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
-	import com.gestureworks.cml.events.StateEvent;
-	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	
 	/**
@@ -357,7 +351,7 @@ package com.gestureworks.cml.element
 		 * cycles through multiple images
 		 * @param	e
 		 */
-		public function cycleMasks(e:GWGestureEvent):void {
+		public function cycleMasks(e:GWGestureEvent):void {			
 			removeChild(graphicArray.array[counter]);
 			counter++;
 			

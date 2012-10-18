@@ -4,7 +4,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.*;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.*;
@@ -78,7 +77,6 @@ package com.gestureworks.cml.element
 	 * @author Uma
 	 * @see ScrollPane
 	 */
-	
 	public class ScrollBar extends Container
 	{
 		/**
