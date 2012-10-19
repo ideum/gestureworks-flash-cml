@@ -150,7 +150,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * The the x location of the tab
+		 * The the x location of the tab relative to the tab container
 		 */
 		public function get tabX():Number { return _tabX; }
 		public function set tabX(tx:Number):void
@@ -223,7 +223,7 @@ package com.gestureworks.cml.element
 		 * The radius of the upper left corner of the tab in pixels
 		 */
 		public function get tabLeftRadius():Number { return _tabLeftRadius; }
-		public function set tabRightRadius(r:Number):void
+		public function set tabLeftRadius(r:Number):void
 		{
 			_tabLeftRadius = r;
 		}
@@ -232,7 +232,7 @@ package com.gestureworks.cml.element
 		 * The radius of the upper right corner of the tab in pixels
 		 */
 		public function get tabRightRadius():Number { return _tabRightRadius; }
-		public function set tabRighRadius(r:Number):void
+		public function set tabRightRadius(r:Number):void
 		{
 			_tabRightRadius = r;
 		}

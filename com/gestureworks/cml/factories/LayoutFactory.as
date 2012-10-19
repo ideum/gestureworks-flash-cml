@@ -9,7 +9,7 @@ package com.gestureworks.cml.factories
 	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/** 
-	 * The LayoutFactory is the base class for all Graphics.
+	 * The LayoutFactory is the base class for all Layouts.
 	 * It is an abstract class that is not meant to be called directly.
 	 *
 	 * @author Charles and Shaun
