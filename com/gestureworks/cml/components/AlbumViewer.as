@@ -134,6 +134,20 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
+		 * Process AlbumViewer state events
+		 * @param	event
+		 */
+		override protected function onStateEvent(event:StateEvent):void 
+		{
+			super.onStateEvent(event);
+			
+			if (event.value == "forward")
+				album.next();
+			else if (event.value == "back")
+				album.previous();			
+		}
+		
+		/**
 		 * Updates the viewer when the album element is loaded
 		 * @param	e
 		 */

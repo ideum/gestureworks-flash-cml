@@ -54,6 +54,7 @@ package com.gestureworks.cml.element
 		private var boundary2:Number;
 		private var isLoaded:Boolean = false;		
 		private var released:Boolean = false;
+		private var index:int = 0;
 		
 		/**
 		 * Constructor
@@ -288,17 +289,19 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Animates a snaping action to the snap point closest to the current belt location.
+		 * Animates a snaping action to the point provided or the closest snap point to the current belt location. 
 		 * @param	e  the drag complete event
 		 */
-		private function snap(e:*=null):void
+		private function snap(e:*=null, point:Number=NaN):void
 		{	
 			if (snapTween && snapTween.isPlaying)
 				return;
-			if(horizontal)
-				snapTween = BetweenAS3.tween(belt, { x:getClosestSnapPoint(belt.x) }, null, .4, Exponential.easeOut);
-			else
-				snapTween = BetweenAS3.tween(belt, { y:getClosestSnapPoint(belt.y) }, null, .4, Exponential.easeOut);
+					
+			if (isNaN(point))
+				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);
+				
+			var destination:Object = horizontal ? { x:point } : { y:point };			
+			snapTween = BetweenAS3.tween(belt, destination, null, .4, Exponential.easeOut);
 			snapTween.play();
 		}
 		
@@ -329,8 +332,30 @@ package com.gestureworks.cml.element
 					}
 				}
 			}	
+						
+			index = snapPoints.indexOf(point);
 			return point;
 		}
+		
+		/**
+		 * Snap to the next point on the belt
+		 */
+		public function next():void
+		{
+			if (index < snapPoints.length - 1) 
+				index++;			
+			snap(null, snapPoints[index]);
+		}
+		
+		/**
+		 * Snap to the previous point on the belt
+		 */
+		public function previous():void
+		{
+			if (index > 0)
+				index--;
+			snap(null, snapPoints[index]);
+		}		
 		
 		/**
 		 * Reactivates the drag handler, enables release inertia, and resets the released
