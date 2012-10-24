@@ -3,7 +3,10 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.interfaces.ICSS;
 	import com.gestureworks.cml.interfaces.IElement;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.BlendMode;
+	import flash.display.DisplayObject;
 	import flash.text.*;
 	import flash.text.TextFieldType;
 	import flash.utils.Dictionary;
@@ -20,6 +23,9 @@ package com.gestureworks.cml.factories
 	 */	 
 	public class TextFactory extends TextField implements IElement, ICSS
 	{
+		private var bmd:BitmapData;
+		private var b:Bitmap;
+		
 		/**
 		 * creates textformat variable
 		 */
@@ -446,8 +452,28 @@ package com.gestureworks.cml.factories
 		
 		
 			
+		private var _textBitmap:Boolean = false;
+		/**
+		 * Sets whether the text is left to scale as vector or gets locked as a bitmap.
+		 */
+		public function get textBitmap():Boolean { return _textBitmap; }
+		public function set textBitmap(value:Boolean):void {
+			_textBitmap = value;
+			updateTextFormat();
+		}
 		
 		
+		public function textToBitmap(tTb:DisplayObject):void {
+			//addChild(tTb);
+			if(bmd)
+				bmd.dispose();
+			
+			bmd = new BitmapData(this.width, this.height, true, 0xffffff);
+			bmd.draw(DisplayObject(tTb));
+			b = new Bitmap(bmd);
+			b.smoothing = true;
+			//return b;
+		}
 		
 		
 		// protected methods
@@ -456,6 +482,19 @@ package com.gestureworks.cml.factories
 		protected function updateTextFormat():void 
 		{
 			defaultTextFormat = textFormat;
+			
+			if (textBitmap) {
+				textToBitmap(this);
+				if (this.parent) {
+					if (parent.contains(b))
+						parent.removeChild(b);
+					this.visible = false;
+					b.x = this.x;
+					b.y = this.y;
+					parent.addChild(b);
+				}
+			}
+			
 			super.text = this.text;
 		}
 		
