@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.Container;
 	import com.gestureworks.cml.utils.List;
+	import com.gestureworks.cml.events.StateEvent;
 	import flash.display.DisplayObject;
 	import flash.utils.Timer;
 	
@@ -44,6 +45,9 @@ package com.gestureworks.cml.element
 	{
 		private var slideshowItems:List;
 		private var tween:ITween;
+		private var moveForward:Boolean = true;
+		private var maxWidth:Number = 0;
+		private var maxHeight:Number = 0;
 		
 		protected var timer:Timer;
 		
@@ -88,14 +92,16 @@ package com.gestureworks.cml.element
 			timer.delay = _rate;
 		}
 		
-		private var _autoplay:Boolean = true;
+		private var _autoplay:Boolean = false;
 		/**
 		 * Sets autoplay variable.
 		 */
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void {
+			trace("AUTOPLAY VALUE:", value);
 			_autoplay = value;
-			if (_autoplay)
+			trace("AUTOPLAY:", _autoplay);
+			if (_autoplay == true)
 				this.addEventListener(Event.COMPLETE, onComplete);
 		}
 		
@@ -119,10 +125,20 @@ package com.gestureworks.cml.element
 			
 			for (var i:Number = slideshowItems.length; i > 0; i--) {
 				//trace("Removing item: " + slideshowItems.array[i] + ", " + i);
+				if (getChildAt(slideshowItems.array[i]).width > maxWidth) {
+					maxWidth = getChildAt(slideshowItems.array[i]).width;
+					this.width = maxWidth;
+				}
+				if (getChildAt(slideshowItems.array[i]).height > maxHeight) {
+					maxHeight = getChildAt(slideshowItems.array[i]).height;
+					this.height = maxHeight;
+				}
 				removeChildAt(slideshowItems.array[i]);
 			}
 			
-			play();
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded", true));
+			
+			showNext();
 			//init();
 		}
 		
@@ -138,7 +154,8 @@ package com.gestureworks.cml.element
 		 * plays the slideshow
 		 */
 		public function play():void {
-			reset();
+			//reset();
+			autoplay = true;
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 			timer.start();
 		}
@@ -154,9 +171,17 @@ package com.gestureworks.cml.element
 		/**
 		 * resume method
 		 */
-		public function resume():void {
-			timer.addEventListener(TimerEvent.TIMER, onTimer);
-			timer.start();
+		public function forward():void {
+			moveForward = true;
+			if (_autoplay){
+				if (!timer.hasEventListener(TimerEvent.TIMER)) {
+					timer.addEventListener(TimerEvent.TIMER, onTimer);
+					timer.start();
+				}
+			}
+			else if (!_autoplay) {
+				showNext();
+			}
 		}
 		
 		/**
@@ -168,12 +193,31 @@ package com.gestureworks.cml.element
 			reset();
 		}
 		
+		public function reverse():void {
+			moveForward = false;
+			if (_autoplay){
+				if (!timer.hasEventListener(TimerEvent.TIMER)) {
+					timer.addEventListener(TimerEvent.TIMER, onTimer);
+					timer.start();
+				}
+			}
+			else if (!_autoplay) {
+				showPrev();
+			}
+		}
+		
 		/**
 		 * timer event
 		 * @param	event
 		 */
 		public function onTimer(event:TimerEvent):void {
-			showNext();
+			if(autoplay){
+				if (moveForward){
+					showNext();
+				} else if (!moveForward) {
+					showPrev();
+				}
+			}
 		}
 		
 		/**

@@ -748,6 +748,12 @@ package com.gestureworks.cml.core
 					}					
 				}
 				
+				if (attrValue == "true") {
+					attrValue = true;
+				} else if (attrValue == "false") {
+					attrValue = false;
+				}
+				
 				obj.propertyStates[0][attrName] = attrValue;				
 			}
 			

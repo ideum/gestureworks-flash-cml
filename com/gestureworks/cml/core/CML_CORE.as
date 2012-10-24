@@ -55,6 +55,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
 	import com.gestureworks.cml.components.GigapixelViewer; GigapixelViewer;
 	import com.gestureworks.cml.components.LiveVideoViewer; LiveVideoViewer;
+	import com.gestureworks.cml.components.SlideshowViewer; SlideshowViewer;
 	
 	
 	
@@ -109,6 +110,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.OrbMenu; OrbMenu;	
 	import com.gestureworks.cml.element.Button; Button;
 	import com.gestureworks.cml.element.RadioButtons; RadioButtons;	
+	import com.gestureworks.cml.element.Model; Model;
 	
 	
 	// deprecated
