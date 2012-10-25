@@ -98,6 +98,16 @@ package com.gestureworks.cml.factories
 			_type = t;
 		}
 		
+		private var _alpha:Number
+		/**
+		 * Specifies the alpha value of the display objects in the layout
+		 */
+		public function get alpha():Number { return _alpha; }
+		public function set alpha(a:Number):void
+		{
+			_alpha = a > 1 ? 1 : a < 0 ? 0 : a;
+		}
+		
 		private var _tween:Boolean = false;
 		/**
 		 * Flag indicating the display objects will animate to their layout positions. If false,
@@ -156,7 +166,7 @@ package com.gestureworks.cml.factories
 					if (!child is DisplayObject) return;
 					
 					if(i < childTransformations.length)
-						childTweens.push(BetweenAS3.tween(child, getMatrixObj(childTransformations[i]), null, tweenTime/1000, Exponential.easeOut));
+						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(childTransformations[i]), alpha:alpha}, null, tweenTime/1000, Exponential.easeOut));
 				}
 				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
 				if (onComplete != null) layoutTween.onComplete = onComplete;
@@ -169,6 +179,7 @@ package com.gestureworks.cml.factories
 				{
 					child = container.getChildAt(j);
 					child.transform.matrix = childTransformations[j];
+					child.alpha = alpha;
 				}
 				if (onComplete != null) onComplete.call();
 				if (onUpdate != null) onUpdate.call();
@@ -234,7 +245,7 @@ package com.gestureworks.cml.factories
 		 */
 		protected static function getMatrixObj(mtx:Matrix):Object
         {
-            return {transform:{matrix:{a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty}}}
+            return { matrix: { a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty }};
         }
 		
 		/**
