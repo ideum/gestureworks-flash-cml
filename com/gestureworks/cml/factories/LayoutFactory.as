@@ -98,9 +98,10 @@ package com.gestureworks.cml.factories
 			_type = t;
 		}
 		
-		private var _alpha:Number
+		private var _alpha:Number = 1
 		/**
 		 * Specifies the alpha value of the display objects in the layout
+		 * @default 1
 		 */
 		public function get alpha():Number { return _alpha; }
 		public function set alpha(a:Number):void
