@@ -167,7 +167,6 @@ package com.gestureworks.cml.element
 		 * @default 0
 		 */		
 		public function get knobPosition():Number {return _knobPosition;}
-
 			
 		private var _value:Number = 0;
 		/**
@@ -177,7 +176,6 @@ package com.gestureworks.cml.element
 		 */		
 		public function get value():Number { return _value; }
 		
-		
 		// public methods//
 		
 		/**
@@ -185,6 +183,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void
 		{
+			this.width = rail.width;
+			
 			if (!rail)
 				throw new Error("rail must be set");
 			if (!hit)
@@ -192,7 +192,7 @@ package com.gestureworks.cml.element
 			if (!knob)
 				throw new Error("knob must be set");	
 			
-				
+			
 			if (mouseEnabled) {
 
 				if (GestureWorks.activeTUIO)
@@ -276,7 +276,8 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-			displayComplete();			
+			displayComplete();	
+		
 		}
 		
 		/**

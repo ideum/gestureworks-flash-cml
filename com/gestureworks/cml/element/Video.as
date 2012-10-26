@@ -38,8 +38,11 @@ package com.gestureworks.cml.element
 		/**
 		 * Constructor
 		 */
-		public function Video() {}
-
+		public function Video()
+		{
+		  positionTimer = new Timer(20);
+		}
+		
 		private var _debug:Boolean=false;
 		/**
 		 * Prints status message to console
@@ -226,7 +229,7 @@ package com.gestureworks.cml.element
 		 */		
 		public function play():void
 		{
-			positionTimer = new Timer(20);
+		
 			netStream.seek(0);				
 			netStream.resume();
 			//netStream.play();
@@ -244,7 +247,7 @@ package com.gestureworks.cml.element
 		{
 			netStream.resume();
 			positionTimer.start();
-		}
+	   	}
 		
 		/**
 		 * Pauses video
@@ -313,7 +316,6 @@ package com.gestureworks.cml.element
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;	
 				case "NetStream.Play.Stop":
-
 					 trace("video stopped");
 					 end();
 				     _isPlaying = false;
@@ -327,7 +329,6 @@ package com.gestureworks.cml.element
 				case "NetStream.Seek.Notify":
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
 					 break;
-
 					
 					end();
 					break;
@@ -374,14 +375,14 @@ package com.gestureworks.cml.element
 		
 		private function onMetaData(meta:Object):void
 		{
-			if (meta.duration != null && _duration > 0)
+			if (meta.duration != null )
 			{
-				_duration = meta.duration;
+				_duration = meta.duration * 1000;
 				
 				if (debug)
 				{
 					trace("video file: " + src);					
-					trace("video duration: " + meta.duration);
+					trace("video duration: " + duration);
 				}	
 			}
 			
@@ -455,9 +456,8 @@ package com.gestureworks.cml.element
 				trace(_position); 
 		
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
-
 		}
-	
+		
 		private function end():void
 		{
 			if (loop) play();
@@ -484,6 +484,6 @@ package com.gestureworks.cml.element
 			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
 		}
-			
+
 	}
 }

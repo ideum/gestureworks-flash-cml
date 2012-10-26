@@ -9,6 +9,9 @@ package com.gestureworks.cml.components
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
 	import com.gestureworks.core.GestureWorks;	
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	import com.gestureworks.cml.utils.NumberUtils;
 	
 	/**
 	 * The VideoViewer component is primarily meant to display a Video element and its associated meta-data.
@@ -44,7 +47,7 @@ package com.gestureworks.cml.components
 		 */
 		public function VideoViewer() 
 		{
-			super();			
+			super();		
 		}
 		
 		
@@ -66,9 +69,26 @@ package com.gestureworks.cml.components
 			if (value is DisplayObject)
 				_video = value;
 			else 
-				_video = searchChildren(value);					
-		}			
-		
+				_video = searchChildren(value);		
+		}
+				
+		private var _slider:*;
+		/**
+		 * Sets the slider element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned. 
+		 */		
+		public function get slider():* {return _slider}
+		public function set slider(value:*):void 
+		{
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_slider = value;
+			else 
+				_slider = searchChildren(value);		
+		}
+
 		/**
 		 * Initialization function
 		 */
@@ -91,9 +111,22 @@ package com.gestureworks.cml.components
 			// automatically try to find elements based on AS3 class
 			if (!video)
 				video = searchChildren(Video);
+			    video.addEventListener(StateEvent.CHANGE, onTimer);
+			   	video.play();	
 			
+			// automatically try to find elements based on AS3 class
+			if (!slider)
+				slider = searchChildren(Slider);
+									
 			super.init();
 		}
+
+		private function onTimer(event:StateEvent):void
+		{
+			var sliderPos:Number = NumberUtils.map(video.position, 0, video.duration, 0, slider.width, false, true, true);	
+		   	slider.input(sliderPos);
+	    }
+		
 		
 		/**
 		 * CML initialization
@@ -124,6 +157,8 @@ package com.gestureworks.cml.components
 			else if (event.value == "pause" && video)
 				video.pause();				
 		}
+		
+			
 		
 		/**
 		 * Dispose methods
