@@ -11,6 +11,8 @@ package com.gestureworks.cml.components
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import org.tuio.TuioTouchEvent;
+	import flash.utils.Dictionary;
+	
 	
 	/**
 	 * The Component manages a group of elements to create a high-level interactive touch container.
@@ -26,7 +28,6 @@ package com.gestureworks.cml.components
 	 *  
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 
-
 			
 	 * </codeblock>
 	 * 
@@ -36,7 +37,8 @@ package com.gestureworks.cml.components
 	public class Component extends TouchContainer 
 	{	
 		private var textFields:Array;	
-		
+		private var fontArray:Array = new Array();
+					
 		/**
 		 * component Constructor
 		 */
@@ -58,10 +60,15 @@ package com.gestureworks.cml.components
 				frame = searchChildren(Frame);
 			if (!background && back && back.hasOwnProperty("searchChildren"))
 				background = back.searchChildren(Graphic);	
-			
-			if (autoTextLayout)
+			//if(autoTextLayout)
 				textFields = searchChildren(Text, Array);
 			
+			// font size of the text
+			for (var i:int = 0; i < textFields.length; i++)
+			{
+			   fontArray.push(textFields[i].fontSize);
+			}
+						
 			updateLayout();				
 		}
 		
@@ -73,6 +80,17 @@ package com.gestureworks.cml.components
 			init();
 		}
 		
+		private var _fontIncrement:Number = 2;
+		/**
+		 * font increment
+		 * @default 2;
+		 */	
+		public function get fontIncrement():Number {return _fontIncrement}
+		public function set fontIncrement(value:Number):void 
+		{	
+			_fontIncrement = value;			
+		}
+				
 		private var _front:*;
 		/**
 		 * Sets the front element.
@@ -272,10 +290,42 @@ package com.gestureworks.cml.components
 		{
 			if (menu)
 				menu.mouseChildren = true;
-		}				
+		}	
+		
+		private var textCount:Number = 0;
+				
+		private function textSize():void
+		{
+			if (textFields)
+			{
+				if (textCount >= 3)
+				{
+				for (var j:int = 0; j < textFields.length; j++)
+				{
+				    textFields[j].fontSize = fontArray[j];		
+			    }
+			    textCount = 0;
+				}
+				else
+				{
+				for (var i:int = 0; i < textFields.length; i++)
+				{
+					textFields[i].fontSize += fontIncrement;
+				}
+			}
+            }
+		}
 		
 		protected function onStateEvent(event:StateEvent):void
 		{
+			
+			if (event.value == "fontSize")
+			{
+				textSize();
+				textCount++;
+			}
+			
+			
 			if (event.value == "info") 
 			{
 				if (back)
