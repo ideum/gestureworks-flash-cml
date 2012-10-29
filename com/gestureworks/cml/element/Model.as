@@ -1,8 +1,11 @@
 ﻿package com.gestureworks.cml.element
 {
 	import away3d.cameras.*;
+	import away3d.cameras.lenses.OrthographicLens;
 	import away3d.containers.*;
 	import away3d.controllers.*;
+	import away3d.core.base.SubMesh;
+	import away3d.core.partition.LightNode;
 	import away3d.debug.*;
 	import away3d.entities.Mesh;
 	import away3d.events.*;
@@ -14,6 +17,7 @@
 	import away3d.materials.lightpickers.*;
 	import away3d.materials.methods.*;
 	import away3d.utils.*;
+	import flash.net.URLRequest;
 	
 	import flash.display.*;
 	import flash.events.*;
@@ -45,23 +49,12 @@
 	 * @author Josh
 	 * @see Panoramic
 	 */
-	public class Model extends ElementFactory
+	public class Model extends Container
 	{	
-		//Infinite, 3D head model
-		[Embed(source="../../../../../bin/library/assets/3d/monkey.obj", mimeType="application/octet-stream")]
-		private var HeadModel:Class;
+		//Touch container
+		private var modelTouch:TouchContainer;
 		
-		//Diffuse map texture
-		[Embed(source="../../../../../bin/library/assets/3d/head_diffuse.jpg")]
-		private var Diffuse:Class;
-		
-		//Specular map texture
-		[Embed(source="../../../../../bin/library/assets/3d/head_specular.jpg")]
-		private var Specular:Class;
-		
-		//Normal map texture
-		[Embed(source="../../../../../bin/library/assets/3d/head_normals.jpg")]
-		private var Normal:Class;
+		private var myContainer:ObjectContainer3D;
 		
 		//engine variables
 		private var scene:Scene3D;
@@ -69,25 +62,20 @@
 		private var view:View3D;
 		private var cameraController:HoverController;
 		
-		//material objects
-		private var headMaterial:TextureMaterial;
-		private var subsurfaceMethod:SubsurfaceScatteringDiffuseMethod;
-		private var fresnelMethod:FresnelSpecularMethod;
-		private var diffuseMethod:BasicDiffuseMethod;
-		private var specularMethod:BasicSpecularMethod;
-		
 		//scene objects
-		private var light:PointLight;
+		private var light:DirectionalLight; // TODO: Allow for loading in custom lighting settings.
 		private var lightPicker:StaticLightPicker;
-		private var headModel:Mesh;
-		private var advancedMethod:Boolean = true;
+		private var model:Mesh;
 		
-		//navigation variables
-		private var move:Boolean = false;
-		private var lastPanAngle:Number;
-		private var lastTiltAngle:Number;
-		private var lastMouseX:Number;
-		private var lastMouseY:Number;
+		private var colorMaterial:ColorMaterial;
+		private var textureMaterial:TextureMaterial; // TODO: Incorporate custom textures.
+		
+		private var modelYaw:Number = 0;
+		private var modelPitch:Number = 0;
+		private var modelRoll:Number = 0;
+		
+		private var model_X:Number = 0;
+		private var model_Y:Number = 0;
 		
 		/**
 		 * Constructor
@@ -95,7 +83,41 @@
 		public function Model()
 		{
 			//init();
+			super();
+			
+			modelTouch = new TouchContainer();
 		}
+		
+		private var _src:String;
+		public function get src():String { return _src; }
+		public function set src(value:String):void {
+			_src = value;
+		}
+		
+		private var _color:uint = 0xffffff;
+		public function get color():uint { return _color; }
+		public function set color(value:uint):void {
+			_color = value;
+		}
+		
+		private var _specularity:Number = 0;
+		/**
+		 * How shiny the model is.
+		 */
+		public function get specularity():Number { return _specularity; }
+		public function set specularity(value:Number):void {
+			_specularity = value;
+		}
+		
+		private var _material:String;
+		public function get material():String { return _material; }
+		public function set material(value:String):void {
+			_material = value;
+		}
+		
+		private var bitmapMaterial:TextureMaterial;
+		private var loader:Loader;
+		private var counter:Number = 0;
 		
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -107,6 +129,16 @@
 		 */
 		private function init():void
 		{
+			while (this.numChildren > 0) {
+				
+				if (this.getChildAt(0) is TouchContainer) {
+					trace("TouchContainer found", modelTouch);
+					modelTouch = TouchContainer(this.getChildAt(0));
+				}
+				
+				this.removeChildAt(0);
+			}
+			
 			initEngine();
 			initLights();
 			//initMaterials();
@@ -119,12 +151,16 @@
 		 */
 		private function initEngine():void
 		{
+			addChild(modelTouch);
+			
+			
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.LEFT;
 			
 			scene = new Scene3D();
 			
 			camera = new Camera3D();
+			camera.lens = new OrthographicLens();
 			
 			view = new View3D();
 			view.antiAlias = 4;
@@ -132,10 +168,13 @@
 			view.camera = camera;
 			
 			//setup controller to be used on the camera
-			cameraController = new HoverController(camera, null, 45, 10, 800);
+			cameraController = new HoverController(camera, null, 0, 0, 1000);
 			
 			view.addSourceURL("srcview/index.html");
-			addChild(view);
+			modelTouch.addChild(view);
+			
+			myContainer = new ObjectContainer3D();
+			view.scene.addChild(myContainer);
 		}
 		
 		/**
@@ -143,9 +182,8 @@
 		 */
 		private function initLights():void
 		{
-			light = new PointLight();
-			light.x = 15000;
-			light.z = 15000;
+			light = new DirectionalLight();
+			light.z = -1;
 			light.color = 0xffddbb;
 			light.ambient = 1;
 			lightPicker = new StaticLightPicker([light]);
@@ -156,34 +194,34 @@
 		/**
 		 * Initialise the materials
 		 */
-		private function initMaterials():void
+		private function initMaterials(mod:Mesh):void
 		{
-			//setup custom bitmap material
-			headMaterial = new TextureMaterial(Cast.bitmapTexture(Diffuse));
-			headMaterial.normalMap = Cast.bitmapTexture(Normal);
-			headMaterial.specularMap = Cast.bitmapTexture(Specular);
-			headMaterial.lightPicker = lightPicker;
-			headMaterial.gloss = 10;
-			headMaterial.specular = 3;
-			headMaterial.ambientColor = 0x303040;
-			headMaterial.ambient = 1;
+			trace("Loading materials");
+			if (_material) {
+				
+				loader = new Loader();
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onMaterial);
+				loader.load(new URLRequest(_material));
+				
+				function onMaterial(e:Event):void {
+					var bitmap:Bitmap = Bitmap(loader.content);
+					var bitmapData:BitmapData = bitmap.bitmapData;
+					bitmapMaterial = new TextureMaterial(Cast.bitmapTexture(bitmapData));
+					mod.material = bitmapMaterial;
+				}
+				
+			}
+			else {
+				colorMaterial = new ColorMaterial(_color);
+				colorMaterial.shadowMethod = new FilteredShadowMapMethod(light);
+				colorMaterial.lightPicker = lightPicker;
+				colorMaterial.specular = 0.5;
+				
+				for each (var m:SubMesh in mod.subMeshes){
+					m.material = colorMaterial;
+				}
+			}
 			
-			//create subscattering diffuse method
-			subsurfaceMethod = new SubsurfaceScatteringDiffuseMethod(2048, 2);
-			subsurfaceMethod.scatterColor = 0xff7733;
-			subsurfaceMethod.scattering = .05;
-			subsurfaceMethod.translucency = 4;
-			headMaterial.diffuseMethod = subsurfaceMethod;
-			
-			//create fresnel specular method
-			fresnelMethod = new FresnelSpecularMethod(true);
-			headMaterial.specularMethod = fresnelMethod;
-			
-			//add default diffuse method
-			diffuseMethod = new BasicDiffuseMethod();
-			
-			//add default specular method
-			specularMethod = new BasicSpecularMethod();
 		}
 		
 		/**
@@ -194,8 +232,11 @@
 			//default available parsers to all
 			Parsers.enableAllBundled();
 			
+			var urlRequest:URLRequest = new URLRequest(_src);
+			
 			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
-			AssetLibrary.loadData(new HeadModel());
+			//AssetLibrary.loadData(new model());
+			AssetLibrary.load(urlRequest);
 		}
 		
 		/**
@@ -203,10 +244,13 @@
 		 */
 		private function initListeners():void
 		{
-			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
+			//TODO: add scale and drag.
+			
+			modelTouch.addEventListener(GWGestureEvent.DRAG, dragHandler);
+			modelTouch.addEventListener(GWGestureEvent.TILT, tiltHandler);
+			modelTouch.addEventListener(GWGestureEvent.ROTATE, rotateHandler);
+			
 			stage.addEventListener(Event.RESIZE, onResize);
 			onResize();
 		}
@@ -214,16 +258,17 @@
 		/**
 		 * Navigation and render loop
 		 */
-		private function onEnterFrame(event:Event):void
+		private function onEnterFrame(event:GWEvent):void
 		{
-			if (move) {
-				cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
-				cameraController.tiltAngle = 0.3*(stage.mouseY - lastMouseY) + lastTiltAngle;
+			if(model){
+				
+				myContainer.x = model_X;
+				myContainer.y = model_Y;
+				
+				myContainer.rotationY = modelYaw;
+				myContainer.rotationX = modelPitch;
+				myContainer.rotationZ = modelRoll;
 			}
-			
-			light.x = Math.sin(getTimer()/10000)*150000;
-			light.y = 1000;
-			light.z = Math.cos(getTimer()/10000)*150000;
 			
 			view.render();
 		}
@@ -233,59 +278,38 @@
 		 */
 		private function onAssetComplete(event:AssetEvent):void
 		{
+			
+			trace("Asset complete");
 			if (event.asset.assetType == AssetType.MESH) {
-				headModel = event.asset as Mesh;
-				headModel.geometry.scale(100); //TODO scale cannot be performed on mesh when using sub-surface diffuse method
-				headModel.y = -50;
-				headModel.rotationY = 180;
-				//headModel.material = headMaterial;
 				
-				scene.addChild(headModel);
+				model = event.asset as Mesh;
+				model.geometry.scale(scale);
+				
+				model.name = "Model " + counter;
+				counter++;
+				
+				initMaterials(model);
+				
+				myContainer.addChild(model);
+				trace(model.name);
 			}
 		}
 		
 		/**
-		 * Mouse down listener for navigation
+		 * Tilt listener for touch
 		 */
-		private function onMouseDown(event:MouseEvent):void
-		{
-			lastPanAngle = cameraController.panAngle;
-			lastTiltAngle = cameraController.tiltAngle;
-			lastMouseX = stage.mouseX;
-			lastMouseY = stage.mouseY;
-			move = true;
-			stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+		private function tiltHandler(e:GWGestureEvent):void {
+			modelYaw += e.value.tilt_dx * 50;
+			modelPitch += e.value.tilt_dy * 50;
 		}
 		
-		/**
-		 * Mouse up listener for navigation
-		 */
-		private function onMouseUp(event:MouseEvent):void
-		{
-			move = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+		private function rotateHandler(e:GWGestureEvent):void {
+			modelRoll += e.value.rotate_dtheta;
 		}
 		
-		/**
-		 * Key up listener for swapping between standard diffuse & specular shading, and sub-surface diffuse shading with fresnel specular shading
-		 */
-		private function onKeyUp(event:KeyboardEvent):void
-		{
-			//advancedMethod = !advancedMethod;
-			//
-			//headMaterial.gloss = (advancedMethod)? 10 : 50;
-			//headMaterial.specular = (advancedMethod)? 3 : 1;
-			//headMaterial.diffuseMethod = (advancedMethod)? subsurfaceMethod : diffuseMethod;
-			//headMaterial.specularMethod = (advancedMethod)? fresnelMethod : specularMethod;
-		}
-		
-		/**
-		 * Mouse stage leave listener for navigation
-		 */
-		private function onStageMouseLeave(event:Event):void
-		{
-			move = false;
-			stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+		private function dragHandler(e:GWGestureEvent):void {
+			model_X -= e.value.drag_dx;
+			model_Y -= e.value.drag_dy;
 		}
 		
 		/**
