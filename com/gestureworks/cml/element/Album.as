@@ -8,6 +8,7 @@ package com.gestureworks.cml.element
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.Exponential;
 	import org.libspark.betweenas3.tweens.ITween;
+	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
 	 * The Album element provides a list of display objects that can be 
@@ -45,16 +46,22 @@ package com.gestureworks.cml.element
 		private var _horizontal:Boolean = true;
 		private var _margin:Number = 1;
 		private var _dragAngle:Number = 0;
+		private var _loop:Boolean = false;
+		
+		private var _dimension:String;
+		private var _axis:String;		
 		
 		private var belt:TouchContainer;
 		private var snapPoints:Array;
 		private var albumMask:Graphic;
 		private var snapTween:ITween;
+		private var loopSnapTween:ITweenGroup;
 		private var boundary1:Number;
 		private var boundary2:Number;
 		private var isLoaded:Boolean = false;		
 		private var released:Boolean = false;
 		private var index:int = 0;
+		private var loopQueue:Array;
 		
 		/**
 		 * Constructor
@@ -78,7 +85,8 @@ package com.gestureworks.cml.element
 		 * Initialization function
 		 */
 		override public function init():void
-		{	
+		{			
+			if (loop && numChildren < 2) loop = false;
 			sizeAlbumToContent();
 			initBelt();
 			checkMask();
@@ -125,7 +133,19 @@ package com.gestureworks.cml.element
 		public function set dragAngle(a:Number):void
 		{
 			_dragAngle = Math.PI * a / 180;
-		}			
+		}	
+		
+		/**
+		 * A flag instructing the album to continuously cycle through the objects opposed
+		 * to stopping at the beginning or end. The album must have more than one child to
+		 * set this flag.
+		 */
+		public function get loop():Boolean { return _loop; }
+		public function set loop(l:Boolean):void
+		{
+			_loop = l;
+			if (!loopQueue) loopQueue = new Array();
+		}
 		
 		/**
 		 * Sets the width of the container and associated mask
@@ -184,7 +204,23 @@ package com.gestureworks.cml.element
 		{
 			dragAngle = value;
 			super.rotationY = value;
-		}		
+		}	
+		
+		/**
+		 * Returns the "width" if horiztonal and "height" if vertical
+		 */
+		private function get dimension():String
+		{
+			return horizontal ? "width" : "height";
+		}
+		
+		/**
+		 * Returns the "x" if horiztonal and "y" if vertical
+		 */		
+		private function get axis():String
+		{
+			return horizontal ? "x" : "y";
+		}
 			
 		/**
 		 * Initializes the the belt container which is the nested container of the album that handles
@@ -200,14 +236,18 @@ package com.gestureworks.cml.element
 			belt.disableAffineTransform = true;
 			
 			var scrollType:Function = horizontal ? scrollH : scrollV;
+			var snapType:Function = loop ? loopSnap : snap;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
 			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			belt.addEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
 			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
-			
+						
 			//transfer children to belt
-			for (var i:int = numChildren-1; i >= 0; i--)
+			for (var i:int = numChildren - 1; i >= 0; i--)	
+			{
+				if (loop) loopQueue.push(getChildAt(i));
 				belt.addChild(getChildAt(i));
+			}
 		
 			//set belt layout
 			belt.layout = new ListLayout();
@@ -216,6 +256,11 @@ package com.gestureworks.cml.element
 			belt.layout.marginY = margin;
 			belt.layout.type = horizontal ? "horizontal" : "vertical";
 			belt.applyLayout();
+			
+			//set belt dimensions
+			var lastChild:* = belt.getChildAt(belt.numChildren - 1);
+			belt.width = lastChild.x + lastChild.width;
+			belt.height = lastChild.y + lastChild.height;
 		
 			addChild(belt);
 			
@@ -255,9 +300,7 @@ package com.gestureworks.cml.element
 		 */
 		private function storeSnapPoints():void
 		{
-			snapPoints = new Array;
-			var axis:String = horizontal ? "x" : "y";
-			
+			snapPoints = new Array;			
 			for (var i:int = 0; i < belt.numChildren; i++)
 				snapPoints.push( -belt.getChildAt(i)[axis]);						
 		}
@@ -268,9 +311,14 @@ package com.gestureworks.cml.element
 		 */
 		private function setBoundaries():void
 		{
-			var frame:Number = horizontal ? width: height;
-			if (snapPoints.length > 0)
+			var frame:Number = horizontal ? width: height;				
+			if (loop)
 			{
+				boundary1 = 0;				
+				boundary2 = horizontal ? belt.width : belt.height;
+			}
+			else if (snapPoints.length > 0)
+			{			
 				boundary1 = snapPoints[0] + frame / 2;
 				boundary2 = snapPoints[snapPoints.length - 1] - frame / 2;
 			}
@@ -290,7 +338,8 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Animates a snaping action to the point provided or the closest snap point to the current belt location. 
-		 * @param	e  the drag complete event
+		 * @param  e  the drag complete event
+		 * @param  point  the point to snap to
 		 */
 		private function snap(e:*=null, point:Number=NaN):void
 		{	
@@ -303,6 +352,43 @@ package com.gestureworks.cml.element
 			var destination:Object = horizontal ? { x:point } : { y:point };			
 			snapTween = BetweenAS3.tween(belt, destination, null, .4, Exponential.easeOut);
 			snapTween.play();
+		}
+		
+		/**
+		 * Determines which child is closest to the album origin and moves each child the direction and distance
+		 * necessary to align the closest child with the origin
+		 * @param	e  the drag complete event
+		 */
+		private function loopSnap(e:*= null, distance:Number=0):void
+		{
+			if (loopSnapTween && loopSnapTween.isPlaying) return;			
+			var childTweens:Array = new Array();
+			var minDiff:Number = Number.MAX_VALUE;
+			
+			//get direction and distance to X origin by inverting 
+			//the x coordinate of the closest child
+			if (!distance)
+			{
+				for each(var child:* in loopQueue)
+				{
+					if (Math.abs(child[axis]) < minDiff)
+					{
+						minDiff = Math.abs(child[axis]);
+						distance = -child[axis];
+					}				
+				}
+			}
+						
+			//generate a tween for each child
+			for each(child in loopQueue)
+			{
+				var destination:Object = horizontal ? { x:child.x + distance } : { y:child.y + distance };				
+				childTweens.push(BetweenAS3.tween(child, destination, null, .4, Exponential.easeOut));
+			}
+							
+			loopSnapTween = BetweenAS3.parallel.apply(null, childTweens);
+			loopSnapTween.onComplete = processLoop;
+			loopSnapTween.play();
 		}
 		
 		/**
@@ -342,19 +428,35 @@ package com.gestureworks.cml.element
 		 */
 		public function next():void
 		{
-			if (index < snapPoints.length - 1) 
-				index++;			
-			snap(null, snapPoints[index]);
+			if (loop)
+			{
+				var distance:Number = horizontal ? -(width+2*margin) : -(height+2*margin);
+				loopSnap(null, distance);
+			}
+			else
+			{
+				if (index < snapPoints.length - 1) 
+					index++;			
+				snap(null, snapPoints[index]);
+			}
 		}
 		
 		/**
 		 * Snap to the previous point on the belt
 		 */
 		public function previous():void
-		{
-			if (index > 0)
-				index--;
-			snap(null, snapPoints[index]);
+		{			
+			if (loop)
+			{		
+				moveToHead(loopQueue[loopQueue.length - 1]);
+				loopSnap(null, loopQueue[loopQueue.length - 1][dimension]+(2*margin))
+			}
+			else
+			{
+				if (index > 0)
+					index--;
+				snap(null, snapPoints[index]);
+			}
 		}		
 		
 		/**
@@ -390,7 +492,9 @@ package com.gestureworks.cml.element
 			var SIN:Number = Math.sin(dragAngle);
 			var dx:Number = e.value.drag_dy * SIN + e.value.drag_dx * COS;			
 			
-			if (belt.x + dx < boundary1 && belt.x + dx > boundary2)			
+			if (loop)
+				processLoop(dx);				
+			else if (belt.x + dx < boundary1 && belt.x + dx > boundary2)			
 				belt.x += dx;				
 			else if(released)
 			{
@@ -410,7 +514,9 @@ package com.gestureworks.cml.element
 			var SIN:Number = Math.sin(dragAngle);
 			var dy:Number = e.value.drag_dy * COS - e.value.drag_dx * SIN;			
 			
-			if (belt.y+dy < boundary1 && belt.y+dy > boundary2)
+			if (loop)
+				processLoop(dy);
+			else if (belt.y+dy < boundary1 && belt.y+dy > boundary2)
 				belt.y += dy;
 			else if(released)
 			{
@@ -418,8 +524,55 @@ package com.gestureworks.cml.element
 				belt.gestureReleaseInertia = false;
 				snap();				
 			}
-		}		
+		}	
 		
+		/**
+		 * Drags the belt children instead of the belt to allow the repositioning of individual children when they exceed the designated 
+		 * boundaries. If a child crosses boundary 1 it is placed at boundary 2 and vice versa. 
+		 * @param	dx  the horizontal drag delta
+		 */
+		private function processLoop(delta:Number=NaN):void
+		{			
+			for each(var child:* in loopQueue)
+			{
+				if(!isNaN(delta))
+					child[axis] += delta;
+				
+				//move to boundary1 if exceeds boundary 2
+				if (child[axis] + child[dimension]> boundary2)
+					moveToHead(child);
+				//move to boundary2 if exceeds boundary1
+				if (child[axis] + child[dimension] < boundary1)
+					moveToTail(child);
+			}
+		}
+		
+		/**
+		 * Repositions the child to the head (horizontal:left/vertical:top) of the belt and reorders the child's place in 
+		 * the queue to reflect its new position in the belt.
+		 * @param	child
+		 */
+		private function moveToHead(child:*):void
+		{		
+			if (loopSnapTween && loopSnapTween.isPlaying) return;			
+			child[axis] = loopQueue[0][axis] - child[dimension] - (2 * margin);
+			loopQueue.pop();
+			loopQueue.unshift(child);
+		}
+		
+		/**
+		 * Repositions the child to the tail (horizontal:right/vertical:bottom) of the belt and reorders the child's place in 
+		 * the queue to reflect its new position in the belt.
+		 * @param	child
+		 */		
+		private function moveToTail(child:*):void
+		{			
+			if (loopSnapTween && loopSnapTween.isPlaying) return;			
+			child[axis] = loopQueue[loopQueue.length - 1][axis] + loopQueue[loopQueue.length - 1][dimension] + (2 * margin);
+			loopQueue.shift();
+			loopQueue.push(child);
+		}
+
 		/**
 		 * Destructor
 		 */
@@ -427,11 +580,11 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			
-			belt.addEventListener(GWGestureEvent.DRAG, scrollH);
-			belt.addEventListener(GWGestureEvent.DRAG, scrollV);
-			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			belt.addEventListener(GWGestureEvent.COMPLETE, snap);
-			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
+			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
+			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
+			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
+			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.removeEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 			
 			belt = null;
 			snapPoints = null;
