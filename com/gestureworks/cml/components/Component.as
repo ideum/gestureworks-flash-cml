@@ -60,14 +60,10 @@ package com.gestureworks.cml.components
 				frame = searchChildren(Frame);
 			if (!background && back && back.hasOwnProperty("searchChildren"))
 				background = back.searchChildren(Graphic);	
-			//if(autoTextLayout)
-				textFields = searchChildren(Text, Array);
-			
-			// font size of the text
+				
+			textFields = searchChildren(Text, Array);
 			for (var i:int = 0; i < textFields.length; i++)
-			{
-			   fontArray.push(textFields[i].fontSize);
-			}
+				fontArray.push(textFields[i].fontSize);
 						
 			updateLayout();				
 		}
@@ -204,6 +200,13 @@ package com.gestureworks.cml.components
 			_autoTextLayout = value;			
 		}
 		
+		private var _side:String = "front";
+		/**
+		 * Specifies the currently displayed side
+		 * @default "front"
+		 */
+		protected function get side():String { return _side; }
+		
 		protected function updateLayout(event:*=null):void
 		{
 			if (front)
@@ -325,13 +328,14 @@ package com.gestureworks.cml.components
 				textCount++;
 			}
 			
-			
+
 			if (event.value == "info") 
 			{
 				if (back)
 				{
 					if (!back.visible) { 
 						back.visible = true;
+						_side = "back";
 					}
 					else { 
 						back.visible = false;
@@ -341,6 +345,7 @@ package com.gestureworks.cml.components
 				{
 					if (!front.visible) { 
 						front.visible = true;
+						_side = "front";
 					}
 					else { 
 						front.visible = false;

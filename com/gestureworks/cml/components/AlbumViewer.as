@@ -50,11 +50,18 @@ package com.gestureworks.cml.components
 		 * Initialization function
 		 */
 		override public function init():void 
-		{					
-			// automatically try to find elements based on AS3 class
-			if (!album)
-				album = searchChildren(Album);
+		{	
+			// automatically try to find elements based on AS3 class			
+			var albums:Array = searchChildren(Album, Array);
 			
+			if (!album && albums[0])
+				album = albums[0];
+			if (!front && album)
+				front = album;
+			if (!back && albums[1])
+				back = albums[1];
+									
+			synchAlbums();
 			super.init();
 		}
 		
@@ -81,7 +88,18 @@ package com.gestureworks.cml.components
 				_album = value;
 			else 
 				_album = searchChildren(value);					
-		}			
+		}
+		
+		private var _linkAlbums:Boolean = false;		
+		/**
+		 * When the back is also an album, this flag indicates the actions applied to one album will be
+		 * applied to the other album. Both albums must have the same number of objects. 
+		 */
+		public function get linkAlbums():Boolean { return _linkAlbums; }
+		public function set linkAlbums(l:Boolean):void
+		{
+			_linkAlbums = l;
+		}
 		
 		/**
 		 * Updates the angle of the album element
@@ -146,6 +164,38 @@ package com.gestureworks.cml.components
 			else if (event.value == "back")
 				album.previous();			
 		}
+
+		/**
+		 * If front and back albums can be linked, synchronize the back album properties with the front and
+		 * listen for state changes from each album. 
+		 */
+		private function synchAlbums():void
+		{
+			linkAlbums = linkAlbums ? (back is Album) : false;
+			if (linkAlbums)
+			{				
+				if (album.numChildren != back.numChildren)
+					throw new Error("Cannot link albums with different number of objects");
+				
+				back.horizontal = album.horizontal;
+				back.loop = album.loop;				
+				addEventListener(StateEvent.CHANGE, updateAlbums);								
+			}			
+		}
+		
+		/**
+		 * Each album reports its state changes (horizontal or vertical movement) to the viewer and the viewer updates the alternate album
+		 * with the changes. 
+		 * @param	e
+		 */
+		private function updateAlbums(e:StateEvent):void
+		{
+			if (e.property == "albumState" && e.value)
+			{
+				var link:Album = e.target == front ? back : front;
+				link.updateState(e.value);
+			}
+		}
 		
 		/**
 		 * Updates the viewer when the album element is loaded
@@ -167,6 +217,10 @@ package com.gestureworks.cml.components
 		{
 			super.dispose();
 			album = null;	
+			
+			removeEventListener(StateEvent.CHANGE, albumComplete);
+			removeEventListener(GWGestureEvent.ROTATE, updateAngle);
+			removeEventListener(StateEvent.CHANGE, updateAlbums);				
 		}
 		
 	}
