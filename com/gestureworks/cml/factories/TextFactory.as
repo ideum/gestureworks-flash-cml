@@ -42,8 +42,8 @@ package com.gestureworks.cml.factories
 			propertyStates[0] = new Dictionary(false);
 
 			textFormat.font = "OpenSansRegular";
-			textFormat.color = textFormatColor;
-			textFormat.size = textSize;
+			textFormat.color = color;
+			textFormat.size = fontSize;
 			antiAliasType = AntiAliasType.ADVANCED;
 			blendMode = BlendMode.LAYER;
 			embedFonts = true;			
@@ -236,29 +236,45 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		private var _color:int;
+		private var _color:uint = 0x000000;
 		/**
 		 * sets the color of the text in a text field
+		 * @default = 0x000000;
 		 */
-		public function get color():int { return _color; }
-		public function set color(value:int):void 
+		public function get color():uint { return _color; }
+		public function set color(value:uint):void 
 		{ 
-			_textFormatColor = value;
-			textFormat.color = textFormatColor;
-			updateTextFormat();			
+			_color = value;
+			textFormat.color = value;
+			updateTextFormat();				
 		}	
 		
+		
+		private var _textColor:uint = 0x000000;
+		[Deprecated(replacement = "color")] 		
+		/**
+		 * sets the color of the text in a text field
+		 * @default = 0x000000;
+		 */
+		override public function get textColor():uint { return _textColor; }
+		override public function set textColor(value:uint):void 
+		{
+			_textColor = value;
+			color = value;			
+		}			
+		
+		
 		private var _textFormatColor:uint = 0x000000;
+		[Deprecated(replacement = "color")] 		
 		/**
 		 * sets the text format color
 		 * @default = 0x000000;
 		 */
-		public function get textFormatColor():uint{return _textFormatColor;}
+		public function get textFormatColor():uint { return _textFormatColor; }
 		public function set textFormatColor(value:uint):void
 		{
 			_textFormatColor = value;
-			textFormat.color = textFormatColor;
-			updateTextFormat();			
+			color = value;
 		}
 		
 	
