@@ -263,7 +263,7 @@ package com.gestureworks.cml.element
 			
 			menuElement.background = true;
 			menuElement.backgroundColor = _fill;
-			menuElement.textFormatColor = _color;
+			menuElement.color = _color;
 			
 			menuElement.font = _font;
 			menuElement.fontSize = _fontSize;
