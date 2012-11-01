@@ -86,7 +86,30 @@ package com.gestureworks.cml.factories
 			_useMargins = um;
 		}
 		
+		private var _centerColumn:Boolean = false;
+		/**
+		 * Flag indicating the alignment of the objects' centers with the center of the column. Column width is determined by greatest width
+		 * of the display objects.
+		 * @default false
+		 */
+		public function get centerColumn():Boolean { return _centerColumn; }
+		public function set centerColumn(x:Boolean):void
+		{
+			_centerColumn = x;
+		}
 		
+		private var _centerRow:Boolean = false;
+		/**
+		 * Flag indicating the alignment of the objects' centers with the center of the row. Row height is determined by greatest height
+		 * of the display objects.
+		 * @default false
+		 */
+		public function get centerRow():Boolean { return _centerRow; }
+		public function set centerRow(x:Boolean):void
+		{
+			_centerRow = x;
+		}		
+				
 		private var _type:String;		
 		/**
 		 * Specifies a layout subtype
@@ -248,6 +271,32 @@ package com.gestureworks.cml.factories
         {
             return { matrix: { a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty }};
         }
+		
+		/**
+		 * Returns the max width of the container's children
+		 * @param	c the container
+		 * @return  the max width
+		 */
+		protected static function getMaxWidth(c:DisplayObjectContainer):Number
+		{
+			var maxWidth:Number = 0;
+			for (var i:int = 0; i < c.numChildren; i++)
+				maxWidth = c.getChildAt(i).width > maxWidth ? c.getChildAt(i).width : maxWidth;
+			return maxWidth;
+		}				
+		
+		/**
+		 * Returns the max height of the container's children
+		 * @param	c the container
+		 * @return  the max height
+		 */
+		protected static function getMaxHeight(c:DisplayObjectContainer):Number
+		{
+			var maxHeight:Number = 0;
+			for (var i:int = 0; i < c.numChildren; i++)
+				maxHeight = c.getChildAt(i).height > maxHeight ? c.getChildAt(i).height : maxHeight;
+			return maxHeight;
+		}	
 		
 		/**
 		 * Destructor
