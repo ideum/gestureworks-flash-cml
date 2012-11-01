@@ -3,6 +3,7 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.interfaces.ICSS;
 	import com.gestureworks.cml.interfaces.IElement;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
@@ -71,7 +72,7 @@ package com.gestureworks.cml.factories
 		
 		private var _id:String
 		/**
-		 * sets the id
+		 * Sets the id
 		 */
 		public function get id():String {return _id};
 		public function set id(value:String):void
@@ -81,7 +82,7 @@ package com.gestureworks.cml.factories
 		
 		private var _cmlIndex:int;
 		/**
-		 * sets the cml index
+		 * Sets the cml index
 		 */
 		public function get cmlIndex():int {return _cmlIndex};
 		public function set cmlIndex(value:int):void
@@ -238,7 +239,7 @@ package com.gestureworks.cml.factories
 		
 		private var _color:uint = 0x000000;
 		/**
-		 * sets the color of the text in a text field
+		 * Sets the color of the text in a text field
 		 * @default = 0x000000;
 		 */
 		public function get color():uint { return _color; }
@@ -249,11 +250,9 @@ package com.gestureworks.cml.factories
 			updateTextFormat();				
 		}	
 		
-		
 		private var _textColor:uint = 0x000000;
-		[Deprecated(replacement = "color")] 		
 		/**
-		 * sets the color of the text in a text field
+		 * Sets the color of the text in a text field
 		 * @default = 0x000000;
 		 */
 		override public function get textColor():uint { return _textColor; }
@@ -263,11 +262,10 @@ package com.gestureworks.cml.factories
 			color = value;			
 		}			
 		
-		
 		private var _textFormatColor:uint = 0x000000;
 		[Deprecated(replacement = "color")] 		
 		/**
-		 * sets the text format color
+		 * Sets the text format color
 		 * @default = 0x000000;
 		 */
 		public function get textFormatColor():uint { return _textFormatColor; }
@@ -277,35 +275,35 @@ package com.gestureworks.cml.factories
 			color = value;
 		}
 		
-	
-		
 		private var _fontSize:Number = 15;
 		/**
-		 * sets the fontsize of the text
+		 * Sets the font size of the text
 		 * @default 15;
 		 */
-		public function get fontSize():Number {return textSize;}
+		public function get fontSize():Number {return _fontSize;}
 		public function set fontSize(value:Number):void
 		{
-			textSize = value;
+			_fontSize = value;
+			textFormat.size = value;
+			updateTextFormat();		
 		}		
 		
 		private var _textSize:Number = 15;
 		/**
-		 * sets the text size of the text
+		 * Sets the text size of the text
 		 * @default 15;
 		 */
 		public function get textSize():Number {return _textSize;}
 		public function set textSize(value:Number):void
 		{
 			_textSize = value;
-			textFormat.size = value;
-			updateTextFormat();			
+			fontSize = value;
+	
 		}
 		
 		private var _font:String = "OpenSansRegular";
 		/**
-		 * sets the font of the text
+		 * Sets the font of the text
 		 * @default "OpenSansRegular";
 		 */
 		public function get font():String{return _font;}
@@ -318,7 +316,7 @@ package com.gestureworks.cml.factories
 		
 		private var _leading:Number = 0;
 		/**
-		 * sets the line spacing of text
+		 * Sets the line spacing of text
 		 */
 		public function get leading():Number{return _leading;}
 		public function set leading(value:Number):void
@@ -330,7 +328,7 @@ package com.gestureworks.cml.factories
 		
 		private var _letterSpacing:Number = 0;
 		/**
-		 * sets the number of additional pixels to appear between each character.
+		 * Sets the number of additional pixels to appear between each character.
 		 * @default 0;
 		 */
 		public function get letterSpacing():Number{return _letterSpacing;}
@@ -355,7 +353,7 @@ package com.gestureworks.cml.factories
 		
 		private var _kerning:Boolean;
 		/**
-		 * sets the gap between certain character pairs 
+		 * Sets the gap between certain character pairs 
 		 */
 		public function get kerning():Boolean{return _kerning;}
 		public function set kerning(value:Boolean):void
@@ -375,7 +373,7 @@ package com.gestureworks.cml.factories
 		private var setY:Number = 0;
 		private var _y:Number = 0;
 		/**
-		 * sets y position of text
+		 * Sets y position of text
 		 */
 		override public function get y():Number { return super.y; }
 		override public function set y(value:Number):void
@@ -388,7 +386,7 @@ package com.gestureworks.cml.factories
 		
 		private var _textAlign:String;
 		/**
-		 * sets the allignment of text in text field
+		 * Sets the allignment of text in text field
 		 */
         public function get textAlign():String {return _textAlign}                
         public function set textAlign(value:String):void 
@@ -415,8 +413,8 @@ package com.gestureworks.cml.factories
 		
 		private var _verticalAlign:Boolean = false;
 		/**
-		 * sets the vertical allignment of text field
-		 * @default =false;
+		 * Sets the vertical allignment of text field
+		 * @default false;
 		 */
 		public function get verticalAlign():Boolean{return _verticalAlign;}
 		public function set verticalAlign(value:Boolean):void 
@@ -436,7 +434,7 @@ package com.gestureworks.cml.factories
 		
 		
 		/**
-		 * sets height of text text
+		 * Sets height of text text
 		 */
 		override public function set height(value:Number):void 
 		{			
@@ -446,7 +444,7 @@ package com.gestureworks.cml.factories
 		
 		private var _horizontalCenter:Number = 0;
 		/**
-		 * sets the horizontal center
+		 * Sets the horizontal center
 		 */
 		public function get horizontalCenter():Number{return _horizontalCenter;}
 		public function set horizontalCenter(value:Number):void
@@ -457,7 +455,7 @@ package com.gestureworks.cml.factories
 		
 		private var _verticalCenter:Number = 0;
 		/**
-		 * sets the vertical center
+		 * Sets the vertical center
 		 */
 		public function get verticalCenter():Number{return _verticalCenter;}
 		public function set verticalCenter(value:Number):void
@@ -479,28 +477,18 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		public function textToBitmap(tTb:DisplayObject):void {
-			//addChild(tTb);
-			if(bmd)
-				bmd.dispose();
-			
-			bmd = new BitmapData(this.width, this.height, true, 0xffffff);
-			bmd.draw(DisplayObject(tTb));
-			b = new Bitmap(bmd);
-			b.smoothing = true;
-			//return b;
-		}
-		
-		
-		// protected methods
-		
-	
+		// protected methods	
 		protected function updateTextFormat():void 
 		{
 			defaultTextFormat = textFormat;
 			
 			if (textBitmap) {
-				textToBitmap(this);
+				
+				if(b && b.bitmapData)
+					b.bitmapData.dispose();
+							
+				b = DisplayUtils.toBitmap(this);
+				
 				if (this.parent) {
 					if (parent.contains(b))
 						parent.removeChild(b);
