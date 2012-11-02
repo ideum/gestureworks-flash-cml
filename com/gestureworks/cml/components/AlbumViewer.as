@@ -107,7 +107,8 @@ package com.gestureworks.cml.components
 		override public function set rotation(value:Number):void 
 		{
 			super.rotation = value;
-			if(album) album.dragAngle = value;
+			if (album) album.dragAngle = value;
+			if (linkAlbums && back) back.dragAngle = value;
 		}
 
 		/**
@@ -116,7 +117,8 @@ package com.gestureworks.cml.components
 		override public function set rotationX(value:Number):void 
 		{
 			super.rotationX = value;
-			if(album) album.dragAngle = value;
+			if (album) album.dragAngle = value;
+			if (linkAlbums && back) back.dragAngle = value;			
 		}
 		
 		/**
@@ -125,7 +127,8 @@ package com.gestureworks.cml.components
 		override public function set rotationY(value:Number):void 
 		{
 			super.rotationX = value;
-			if(album) album.dragAngle = value;
+			if (album) album.dragAngle = value;
+			if (linkAlbums && back) back.dragAngle = value;			
 		}	
 		
 	   /**
@@ -133,8 +136,8 @@ package com.gestureworks.cml.components
 		*/
 		private function updateAngle(e:GWGestureEvent):void
 		{
-			if (album)
-				album.dragAngle = rotation;
+			if (album) album.dragAngle = rotation;
+			if (linkAlbums && back) back.dragAngle = rotation;							
 		}
 		
 		/**
@@ -206,7 +209,7 @@ package com.gestureworks.cml.components
 			if (e.property == "isLoaded" && e.value)
 			{
 				updateLayout();
-				album.dragAngle = rotation;
+				e.target.dragAngle = rotation;
 			}
 		}		
 		

@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.factories.LayoutFactory;
 	import com.gestureworks.cml.layouts.ListLayout;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
@@ -49,6 +50,7 @@ package com.gestureworks.cml.element
 		private var _loop:Boolean = false;
 		private var _loopQueue:Array;
 		private var _belt:TouchContainer;
+		private var _backgroundColor:uint = 0x000000;
 		
 		private var _dimension:String;
 		private var _axis:String;		
@@ -175,6 +177,12 @@ package com.gestureworks.cml.element
 			if (albumMask) albumMask.height = value;
 		}
 		
+		public function get backgroundColor():uint { return _backgroundColor; }
+		public function set backgroundColor(c:uint):void
+		{
+			_backgroundColor = c;
+		}
+		
 		/**
 		 * The album element is intended for a ListLayout only. The layout axis can be
 		 * set by the "horizontal" attribute and the spacing can be adjusted through the
@@ -240,40 +248,31 @@ package com.gestureworks.cml.element
 		private function initBelt():void
 		{
 			_belt = new TouchContainer();
-			_belt.gestureReleaseInertia = true;
-			_belt.disableNativeTransform = true;
-			_belt.gestureList = { "n-drag-inertia":true };
-			_belt.disableAffineTransform = true;
+			belt.gestureReleaseInertia = true;
+			belt.disableNativeTransform = true;
+			belt.gestureList = { "n-drag-inertia":true };
+			belt.disableAffineTransform = true;
 			
+			//add gesture events
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			var snapType:Function = loop ? loopSnap : snap;
-			_belt.addEventListener(GWGestureEvent.DRAG, scrollType);
-			_belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			_belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
-			_belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
+			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
+			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
+			belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
+			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 						
 			//transfer children to belt
 			for (var i:int = numChildren - 1; i >= 0; i--)	
 			{
 				if (loop) _loopQueue.push(getChildAt(i));
-				_belt.addChild(getChildAt(i));
+				belt.addChild(getChildAt(i));					
 			}
-		
-			//set belt layout
-			_belt.layout = new ListLayout();
-			_belt.layout.useMargins = true;
-		    _belt.layout.marginX = margin;
-			_belt.layout.marginY = margin;
-			_belt.layout.type = horizontal ? "horizontal" : "vertical";
-			_belt.applyLayout();
 			
-			//set belt dimensions
-			var lastChild:* = _belt.getChildAt(_belt.numChildren - 1);
-			_belt.width = lastChild.x + lastChild.width;
-			_belt.height = lastChild.y + lastChild.height;
-		
-			addChild(_belt);
+			addChild(belt);
 			
+			setBeltLayout();
+			setBeltDimensions();
+			setBeltBackground();
 			storeSnapPoints();
 			setBoundaries();
 		}
@@ -305,14 +304,14 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Stores the additive inverse of the x or y coordinates of the children based on the horizontal
+		 * Stores the additive inverse of the x or y coordinates of each frame on the belt based on the horizontal
 		 * flag. These points will drive the snap tweeining. 
 		 */
 		private function storeSnapPoints():void
 		{
 			snapPoints = new Array;			
-			for (var i:int = 0; i < _belt.numChildren; i++)
-				snapPoints.push( -_belt.getChildAt(i)[axis]);						
+			for (var i:int = 0; i < belt[dimension]; i = i + this[dimension] + 2*margin)
+				snapPoints.push( -i);
 		}
 		
 		/**
@@ -325,13 +324,63 @@ package com.gestureworks.cml.element
 			if (loop)
 			{
 				boundary1 = 0;				
-				boundary2 = horizontal ? _belt.width : _belt.height;
+				boundary2 = belt[dimension];
 			}
 			else if (snapPoints.length > 0)
 			{			
 				boundary1 = snapPoints[0] + frame / 2;
 				boundary2 = snapPoints[snapPoints.length - 1] - frame / 2;
 			}
+		}
+		
+		/**
+		 * Generates a horiztonal/vertical list layout and applies it to the belt
+		 */
+		private function setBeltLayout():void
+		{
+			belt.layout = new ListLayout();
+			belt.layout.useMargins = true;
+		    belt.layout.marginX = margin;
+			belt.layout.marginY = margin;
+			belt.layout.type = horizontal ? "horizontal" : "vertical";
+			belt.layout.centerColumn = true;			
+			belt.layout.centerRow = true;			
+			belt.applyLayout();				
+		}
+		
+		/**
+		 * Sets the dimensions of the belt based on the children dimensions
+		 */
+		private function setBeltDimensions():void
+		{
+			for (var i:int = 0; i < belt.numChildren; i++ )
+			{
+				var child:* = belt.getChildAt(i);
+				if (horizontal)
+				{
+					belt.width = child.x + child.width;  //last child in the list
+					belt.height = child.height > belt.height ? child.height : belt.height;  //greatest height
+				}
+				else
+				{
+					belt.width = child.width > belt.width ? child.width : belt.width;  //last child in the list
+					belt.height = child.y + child.height; //greatest width
+				}				
+			}			
+		}
+		
+		/**
+		 * Generates a background for the belt with the belt's dimensions and applies it to the belt
+		 */
+		private function setBeltBackground():void
+		{
+			var background:Graphic = new Graphic();
+			background.shape = "rectangle";
+			background.width = belt.width;
+			background.height = belt.height;
+			background.color = backgroundColor;
+			background.lineStroke = 0;
+			belt.addChildAt(background, 0);			
 		}
 		
 		/**
@@ -365,7 +414,7 @@ package com.gestureworks.cml.element
 			
 			if (loop)
 			{
-				for (var i:int = 0; i < _belt.numChildren; i++)
+				for (var i:int = 0; i < belt.numChildren; i++)
 				{					
 					belt.getChildAt(i)[axis] = belt2.getChildAt(i)[axis];
 					loopQueue[loopQueue2.indexOf(belt2.getChildAt(i))] = belt.getChildAt(i);					
@@ -386,10 +435,10 @@ package com.gestureworks.cml.element
 				return;
 					
 			if (isNaN(point))
-				point = horizontal ? getClosestSnapPoint(_belt.x) : getClosestSnapPoint(_belt.y);
+				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);
 				
 			var destination:Object = horizontal ? { x:point } : { y:point };			
-			snapTween = BetweenAS3.tween(_belt, destination, null, .4, Exponential.easeOut);
+			snapTween = BetweenAS3.tween(belt, destination, null, .4, Exponential.easeOut);
 			snapTween.onUpdate = publishState;
 			snapTween.play();
 		}
@@ -398,6 +447,7 @@ package com.gestureworks.cml.element
 		 * Determines which child is closest to the album origin and moves each child the direction and distance
 		 * necessary to align the closest child with the origin
 		 * @param	e  the drag complete event
+		 * @param   distance  the distance to move the belt
 		 */
 		private function loopSnap(e:*= null, distance:Number=0):void
 		{
@@ -508,8 +558,8 @@ package com.gestureworks.cml.element
 		private function resetDrag(e:TouchEvent):void
 		{
 			var scrollType:Function = horizontal ? scrollH : scrollV;
-			_belt.addEventListener(GWGestureEvent.DRAG, scrollType);	
-			_belt.gestureReleaseInertia = true;
+			belt.addEventListener(GWGestureEvent.DRAG, scrollType);	
+			belt.gestureReleaseInertia = true;
 			released = false;
 		}
 		
@@ -535,12 +585,12 @@ package com.gestureworks.cml.element
 			
 			if (loop)
 				processLoop(dx);				
-			else if (_belt.x + dx < boundary1 && _belt.x + dx > boundary2)			
-				_belt.x += dx;				
+			else if (belt.x + dx < boundary1 && belt.x + dx > boundary2)			
+				belt.x += dx;				
 			else if(released)
 			{
-				_belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
-				_belt.gestureReleaseInertia = false;
+				belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
+				belt.gestureReleaseInertia = false;
 				snap();				
 			}
 			
@@ -559,12 +609,12 @@ package com.gestureworks.cml.element
 			
 			if (loop)
 				processLoop(dy);
-			else if (_belt.y+dy < boundary1 && _belt.y+dy > boundary2)
-				_belt.y += dy;
+			else if (belt.y+dy < boundary1 && belt.y+dy > boundary2)
+				belt.y += dy;
 			else if(released)
 			{
-				_belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
-				_belt.gestureReleaseInertia = false;
+				belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
+				belt.gestureReleaseInertia = false;
 				snap();				
 			}
 			
@@ -625,12 +675,12 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			
-			_belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
-			_belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
-			_belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
-			_belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
-			_belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
-			_belt.removeEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
+			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
+			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
+			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
+			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
+			belt.removeEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
 			
 			_belt = null;
 			_loopQueue = null;
