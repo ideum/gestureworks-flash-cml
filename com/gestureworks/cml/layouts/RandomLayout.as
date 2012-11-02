@@ -251,8 +251,8 @@ package com.gestureworks.cml.layouts
 				if (!child is DisplayObject) return;
 				
 				matrix = child.transform.matrix;
-				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));
 				matrix.rotate(degreesToRadians(randomMinMax(minRot, maxRot)));
+				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));
 				childTransformations.push(matrix);	
 			}			
 		}	
