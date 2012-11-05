@@ -59,32 +59,33 @@ package  com.gestureworks.cml.components
 				_slideshow = searchChildren(value);
 		}
 		
+		private var _linkSlideshows:Boolean = false;		
+		/**
+		 * When the back is also an album, this flag indicates the actions applied to one album will be
+		 * applied to the other album. Both albums must have the same number of objects. 
+		 */
+		public function get linkSlideshows():Boolean { return _linkSlideshows; }
+		public function set linkSlideshows(l:Boolean):void
+		{
+			_linkSlideshows = l;
+		}
+		
 		/**
 		 * Initialization function
 		 */
 		override public function init():void 
 		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!slideshow) {
-				slideshow = searchChildren(".slideshow_element");
-				//slideshow.addEventListener(StateEvent.CHANGE, onStateEvent);
-			}
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".slideshow_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");	
+			// automatically try to find elements based on AS3 class			
+			var slideshows:Array = searchChildren(Slideshow, Array);
 			
-			// automatically try to find elements based on AS3 class
-			if (!slideshow){
-				slideshow = searchChildren(Slideshow);
-				//slideshow.addEventListener(StateEvent.CHANGE, onStateEvent);
-			}
+			if (!slideshow && slideshows[0])
+				slideshow = slideshows[0];
+			if (!front && slideshow)
+				front = slideshow;
+			if (!back && slideshows[1])
+				back = slideshows[1];
+				
+			synchSlideshows();
 			
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
@@ -99,13 +100,49 @@ package  com.gestureworks.cml.components
 			init();
 		}
 		
+		/**
+		 * If front and back slideshows can be linked, synchronize the back slideshow properties with the front and
+		 * listen for state changes from each album. 
+		 */
+		private function synchSlideshows():void
+		{
+			trace("///////////// \n// Linking slideshows \n//////////////");
+			linkSlideshows = linkSlideshows ? (back is Slideshow) : false;
+			if (linkSlideshows)
+			{				
+				if (slideshow.numChildren != back.numChildren)
+					throw new Error("Cannot link slideshows with different number of objects");
+				
+				back.rate = slideshow.rate;
+				trace("back rate:", back.rate);
+				back.fadeDuration = slideshow.fadeDuration;
+				trace("back fade dur:", back.fadeDuration);
+				back.currentIndex = slideshow.currentIndex;
+				trace("currentIndex", back.currentIndex);
+				back.autoplay = slideshow.autoplay;
+				trace("back.autoplay", back.autoplay);
+				back.loop = slideshow.loop;				
+				trace("back loop:", back.loop);
+				
+				//addEventListener(StateEvent.CHANGE, updateSlideshows);								
+			}			
+		}
+		
 		override protected function updateLayout(event:*=null):void 
 		{
 			// update width and height to the size of the slideshow, if not already specified
-			if (!width && slideshow)
+			if (!width && slideshow) {
 				width = slideshow.width;
-			if (!height && slideshow)
+				if (linkSlideshows) {
+					back.width = slideshow.width;
+				}
+			}
+			if (!height && slideshow) {
 				height = slideshow.height;
+				if (linkSlideshows) {
+					back.height = slideshow.height;
+				}
+			}
 				
 			super.updateLayout();
 		}
@@ -116,16 +153,31 @@ package  com.gestureworks.cml.components
 			
 			trace("EVENT", event.value);
 			
-			if (event.value == "close" && slideshow)
+			if (event.value == "close" && slideshow){
 				slideshow.stop();
-			else if (event.value == "forward" && slideshow)
+				if (linkSlideshows)
+					back.stop();
+			}
+			else if (event.value == "forward" && slideshow) {
 				slideshow.forward();
-			else if (event.value == "play" && slideshow)
+				if (linkSlideshows)
+					back.forward();
+			}
+			else if (event.value == "play" && slideshow) {
 				slideshow.play();
-			else if (event.value == "pause" && slideshow)
+				if (linkSlideshows)
+					back.play();
+			}
+			else if (event.value == "pause" && slideshow) {
 				slideshow.pause();		
-			else if (event.value == "back" && slideshow)
+				if (linkSlideshows)
+					back.pause();
+			}
+			else if (event.value == "back" && slideshow) {
 				slideshow.reverse();
+				if (linkSlideshows)
+					back.reverse();
+			}
 			else if (event.value == "loaded" && slideshow)
 				updateLayout();
 		}
@@ -137,6 +189,7 @@ package  com.gestureworks.cml.components
 		{
 			super.dispose();
 			slideshow = null;
+			//slideshows = null;
 		}
 	}
 
