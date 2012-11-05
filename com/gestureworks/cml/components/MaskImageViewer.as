@@ -88,6 +88,7 @@
 			if (!maskCon){
 				_maskCon = searchChildren(MaskContainer);
 				addEventListener(GWGestureEvent.ROTATE, onRotate);
+				addEventListener(GWGestureEvent.MANIPULATE, onRotate);
 			}							
 			maskCon.addEventListener(StateEvent.CHANGE, onStateEvent);
 			super.init();
@@ -133,6 +134,9 @@
 		{
 			super.dispose();
 			maskCon = null;
+			
+			removeEventListener(GWGestureEvent.ROTATE, onRotate);
+			removeEventListener(GWGestureEvent.MANIPULATE, onRotate);
 		}
 	}
 }
