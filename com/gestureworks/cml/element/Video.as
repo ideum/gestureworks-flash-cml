@@ -360,8 +360,12 @@ package com.gestureworks.cml.element
 			//the meta data callback seems unrealiable, so give the option to specify video diemensions here as well
 			if (width > 0)
 				video.width = _width;
+			else if (!width)
+				width = video.width;
 			if (height > 0)
 				video.height = _height;
+			else if (!height)
+				height = video.height;
 				
 			addChild(video);			
 			
@@ -462,6 +466,8 @@ package com.gestureworks.cml.element
 		{
 			if (loop) play();
 			else stop();
+			
+			// Dispatch event for playlist here.
 		}		
 		
 		/**
