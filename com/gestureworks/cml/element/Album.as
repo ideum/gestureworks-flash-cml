@@ -1,7 +1,6 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.LayoutFactory;
 	import com.gestureworks.cml.layouts.ListLayout;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
@@ -125,6 +124,11 @@ package com.gestureworks.cml.element
 		{
 			_margin = m;
 		}	
+		
+		/**
+		 * Returns the space between two items based on the margin
+		 */
+		private function get space():Number { return 2 * margin;}
 		
 		/**
 		 * Intended to account for the rotation of the parent object to apply to
@@ -261,32 +265,47 @@ package com.gestureworks.cml.element
 			belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
 			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 						
-			//transfer children to belt
-			for (var i:int = numChildren - 1; i >= 0; i--)	
-			{
-				if (loop) _loopQueue.push(getChildAt(i));
-				belt.addChild(getChildAt(i));					
-			}
-			
-			addChild(belt);
-			
+			//configure belt
+			transferChildren();			
 			setBeltLayout();
 			setBeltDimensions();
 			setBeltBackground();
 			storeSnapPoints();
 			setBoundaries();
+			addChild(belt);			
 		}
 		
 		/**
-		 * Generates a default list layout when one is not provided
-		 * @return  horizontal list layout
+		 * Transfers the children from the album to the album's belt. In loop mode, adds individual backgrounds
+		 * for each item and centers the items on their associated background. The backgrounds provide a uniform
+		 * reference to better evaluate boundary thresholds and tweening snap points.
 		 */
-		private function defaultLayout():ListLayout
+		private function transferChildren():void
 		{
-			var lLayout:ListLayout = new ListLayout();
-			lLayout.useMargins = true;
-			lLayout.marginX = 1;
-			return lLayout;
+			var count:Number = numChildren-1;
+			for (var i:int = count; i >= 0; i--)	
+			{
+				var child:* = getChildAt(i);
+				if (loop) 
+				{
+					var slide:Graphic = new Graphic();
+					slide.shape = "rectangle";
+					slide.color = backgroundColor;
+					slide.lineStroke = 0;
+					slide.width = width;
+					slide.height = height;
+					slide.visible = i == count ? true : false;   //initially hide all but head of list
+					
+					child.x = slide.width / 2 - child.width / 2;
+					child.y = slide.height / 2 - child.height / 2;
+					slide.addChild(child);
+					
+					loopQueue.push(slide);					
+					belt.addChild(slide);
+				}
+				else
+					belt.addChild(child);					
+			}			
 		}
 		
 		/**
@@ -310,7 +329,7 @@ package com.gestureworks.cml.element
 		private function storeSnapPoints():void
 		{
 			snapPoints = new Array;			
-			for (var i:int = 0; i < belt[dimension]; i = i + this[dimension] + 2*margin)
+			for (var i:int = 0; i < belt[dimension]; i = i + this[dimension] + space)
 				snapPoints.push( -i);
 		}
 		
@@ -320,27 +339,28 @@ package com.gestureworks.cml.element
 		 */
 		private function setBoundaries():void
 		{
-			var frame:Number = horizontal ? width: height;				
 			if (loop)
 			{
 				boundary1 = 0;				
-				boundary2 = belt[dimension];
+				boundary2 = this[dimension];
 			}
 			else if (snapPoints.length > 0)
 			{			
-				boundary1 = snapPoints[0] + frame / 2;
-				boundary2 = snapPoints[snapPoints.length - 1] - frame / 2;
+				boundary1 = snapPoints[0] + this[dimension] / 2;
+				boundary2 = snapPoints[snapPoints.length - 1] - this[dimension] / 2;
 			}
 		}
 		
 		/**
-		 * Generates a horiztonal/vertical list layout and applies it to the belt
+		 * If not in loop mode, generates a horiztonal/vertical list layout and applies it to the belt. 
 		 */
 		private function setBeltLayout():void
 		{
+			if (loop) return;
+			
 			belt.layout = new ListLayout();
 			belt.layout.useMargins = true;
-		    belt.layout.marginX = margin;
+			belt.layout.marginX = margin;
 			belt.layout.marginY = margin;
 			belt.layout.type = horizontal ? "horizontal" : "vertical";
 			belt.layout.centerColumn = true;			
@@ -349,24 +369,14 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets the dimensions of the belt based on the children dimensions
+		 * Sets the dimensions of the belt based on the last child's location and dimensions
 		 */
 		private function setBeltDimensions():void
 		{
-			for (var i:int = 0; i < belt.numChildren; i++ )
-			{
-				var child:* = belt.getChildAt(i);
-				if (horizontal)
-				{
-					belt.width = child.x + child.width;  //last child in the list
-					belt.height = child.height > belt.height ? child.height : belt.height;  //greatest height
-				}
-				else
-				{
-					belt.width = child.width > belt.width ? child.width : belt.width;  //last child in the list
-					belt.height = child.y + child.height; //greatest width
-				}				
-			}			
+			var last:* = belt.getChildAt(belt.numChildren - 1);
+			var edge:Number = (last[axis] + last[dimension] / 2) + this[dimension] / 2;
+			belt.width = horizontal ? edge : width;
+			belt.height = horizontal ? height : edge;
 		}
 		
 		/**
@@ -414,9 +424,10 @@ package com.gestureworks.cml.element
 			
 			if (loop)
 			{
-				for (var i:int = 0; i < belt.numChildren; i++)
-				{					
-					belt.getChildAt(i)[axis] = belt2.getChildAt(i)[axis];
+				for (var i:int = 1; i < belt.numChildren; i++)  //skip the background
+				{	
+					belt.getChildAt(i)[axis] = belt2.getChildAt(i)[axis];					
+					belt.getChildAt(i).visible = belt2.getChildAt(i).visible;					
 					loopQueue[loopQueue2.indexOf(belt2.getChildAt(i))] = belt.getChildAt(i);					
 				}
 			}
@@ -455,12 +466,14 @@ package com.gestureworks.cml.element
 			var childTweens:Array = new Array();
 			var minDiff:Number = Number.MAX_VALUE;
 			
-			//get direction and distance to X origin by inverting 
-			//the x coordinate of the closest child
+			//get direction and distance to origin by inverting 
+			//the axis coordinate of the closest child
 			if (!distance)
 			{
-				for each(var child:* in _loopQueue)
+				for each(var child:* in loopQueue)
 				{
+					if (!child.visible) continue;
+					
 					if (Math.abs(child[axis]) < minDiff)
 					{
 						minDiff = Math.abs(child[axis]);
@@ -470,7 +483,7 @@ package com.gestureworks.cml.element
 			}
 						
 			//generate a tween for each child
-			for each(child in _loopQueue)
+			for each(child in loopQueue)
 			{
 				var destination:Object = horizontal ? { x:child.x + distance } : { y:child.y + distance };				
 				childTweens.push(BetweenAS3.tween(child, destination, null, .4, Exponential.easeOut));
@@ -515,14 +528,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Snap to the next point on the belt
+		 * Snap to the next item on the belt
 		 */
 		public function next():void
 		{
 			if (loop)
 			{
-				var distance:Number = horizontal ? -(width+2*margin) : -(height+2*margin);
-				loopSnap(null, distance);
+				loopQueue[0][axis] = -1;
+				processLoop();
+				loopSnap(null, -(this[dimension] + space - 1));				
 			}
 			else
 			{
@@ -533,14 +547,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Snap to the previous point on the belt
+		 * Snap to the previous item on the belt
 		 */
 		public function previous():void
 		{			
 			if (loop)
 			{		
-				moveToHead(_loopQueue[_loopQueue.length - 1]);
-				loopSnap(null, _loopQueue[_loopQueue.length - 1][dimension]+(2*margin))
+				loopQueue[0][axis] = 1;
+				processLoop();
+				loopSnap(null, this[dimension] + space - 1)
 			}
 			else
 			{
@@ -622,50 +637,69 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Drags the belt children instead of the belt to allow the repositioning of individual children when they exceed the designated 
-		 * boundaries. If a child crosses boundary 1 it is placed at boundary 2 and vice versa. 
-		 * @param	dx  the horizontal drag delta
+		 * Drags the belt children instead of the belt to allow the repositioning of individual children when they exceed the defined 
+		 * boundaries.   
+		 * @param	delta the drag delta
 		 */
 		private function processLoop(delta:Number=NaN):void
 		{			
-			for each(var child:* in _loopQueue)
+			for each(var child:* in loopQueue)
 			{
-				if(!isNaN(delta))
+				if(!isNaN(delta) && child.visible)
 					child[axis] += delta;
-				
-				//move to boundary1 if exceeds boundary 2
-				if (child[axis] + child[dimension]> boundary2)
-					moveToHead(child);
-				//move to boundary2 if exceeds boundary1
-				if (child[axis] + child[dimension] < boundary1)
-					moveToTail(child);
+			}
+			
+			var head:* = loopQueue[0];
+			var edge1:Number = head[axis];
+			var edge2:Number = head[axis] + head[dimension];
+			
+			if (edge2 > boundary2)						
+				tailToHead();	
+			else if (edge2 < boundary1)
+				headToTail();
+			else if (edge1 < boundary1)
+			{
+				if (!loopQueue[1].visible)
+				{
+					loopQueue[1].visible = true;
+					loopQueue[1][axis] = head[axis] + head[dimension] + space;
+				}
 			}
 		}
-		
+	
 		/**
-		 * Repositions the child to the head (horizontal:left/vertical:top) of the belt and reorders the child's place in 
-		 * the queue to reflect its new position in the belt.
-		 * @param	child
+		 * Repositions the child at the tail of the list to the head and reorders the child's place in the queue to 
+		 * reflect its new position in the belt.
 		 */
-		private function moveToHead(child:*):void
+		private function tailToHead():void
 		{		
-			if (loopSnapTween && loopSnapTween.isPlaying) return;			
-			child[axis] = _loopQueue[0][axis] - child[dimension] - (2 * margin);
-			_loopQueue.pop();
-			_loopQueue.unshift(child);
+			if (loopSnapTween && loopSnapTween.isPlaying) return;
+			
+			loopQueue[1].visible = false;
+			loopQueue[1][axis] = 0;		
+			
+			var tail:* = loopQueue[loopQueue.length - 1];
+			tail.visible = true;
+			tail[axis] = loopQueue[0][axis] - tail[dimension] - space;
+			
+			loopQueue.pop();
+			loopQueue.unshift(tail);
 		}
 		
 		/**
-		 * Repositions the child to the tail (horizontal:right/vertical:bottom) of the belt and reorders the child's place in 
-		 * the queue to reflect its new position in the belt.
-		 * @param	child
-		 */		
-		private function moveToTail(child:*):void
+		 * Repositions the child at the head of the list to the tail and reorders the child's place in the queue to 
+		 * reflect its new position in the belt.
+		 */
+		private function headToTail():void
 		{			
-			if (loopSnapTween && loopSnapTween.isPlaying) return;			
-			child[axis] = _loopQueue[_loopQueue.length - 1][axis] + _loopQueue[_loopQueue.length - 1][dimension] + (2 * margin);
-			_loopQueue.shift();
-			_loopQueue.push(child);
+			if (loopSnapTween && loopSnapTween.isPlaying) return;								
+			
+			var head:* = loopQueue[0];
+			head.visible = false;
+			head[axis] = 0;
+			
+			loopQueue.shift();
+			loopQueue.push(head);
 		}
 
 		/**

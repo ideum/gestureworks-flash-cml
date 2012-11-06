@@ -181,7 +181,8 @@ package com.gestureworks.cml.components
 					throw new Error("Cannot link albums with different number of objects");
 				
 				back.horizontal = album.horizontal;
-				back.loop = album.loop;				
+				back.loop = album.loop;	
+				back.margin = album.margin;
 				addEventListener(StateEvent.CHANGE, updateAlbums);								
 			}			
 		}
