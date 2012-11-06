@@ -127,7 +127,7 @@ package com.gestureworks.cml.layouts
 				
 				var matrix:Matrix = child.transform.matrix;
 				matrix.translate(originX - child.width / 2, originY - child.height / 2);
-				nextAngle = angle ? nextAngle += angle : randomMinMax(0, 360); 				
+				nextAngle = !isNaN(angle) ? nextAngle += angle : randomMinMax(0, 360); 				
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);				
 			}
