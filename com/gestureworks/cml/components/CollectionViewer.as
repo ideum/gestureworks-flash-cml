@@ -7,6 +7,8 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.*;
 	import flash.display.*;
 	import flash.events.*;
+	import flash.net.NetConnection;
+	import flash.net.Responder;
 	import flash.utils.*;
 	import org.libspark.betweenas3.*;
 	import org.libspark.betweenas3.easing.*;
@@ -35,6 +37,11 @@ package com.gestureworks.cml.components
 		
 		private var queue:List;
 		private var currentTween:*;
+		
+		private var _gateway:String;
+		private var connection:NetConnection;
+		private var responder:Responder;
+		private var entry:Text;
 		
 		//private var boundsTimer:Timer;
 		
@@ -94,6 +101,8 @@ package com.gestureworks.cml.components
 					queue.append(childList.getIndex(i));
 				}	
 			}
+			
+				dbInit();
 		}
 		
 		/**
@@ -102,7 +111,7 @@ package com.gestureworks.cml.components
 		override public function displayComplete():void
 		{
 			init();
-		}			
+		}	
 		
 		private var cover:Sprite;
 		
@@ -192,6 +201,130 @@ package com.gestureworks.cml.components
 				tweens[newComponent] = null;
 			}
 						
+		}
+		
+		
+		public function get gateway():String { return _gateway; }
+		public function set gateway(g:String):void
+		{
+			_gateway = g;
+		}
+		
+		private function dbInit():void
+		{
+			if (!gateway) return;
+			hideAll();
+			connect();
+			
+			entry = new Text();
+			entry.width = 200;
+			entry.height = 25;
+			entry.type = "input";
+			entry.visible = true;
+			entry.background = true;
+			entry.addEventListener(KeyboardEvent.KEY_DOWN, query);
+			addChild(entry);
+		}
+		
+		private function query(e:KeyboardEvent):void
+		{
+			if (e.keyCode == 13)
+			{
+				hideAll();				
+				connection.call("./SetTest.set_search", responder, entry.text);
+			}
+		}
+		
+		private function connect():void
+		{
+			connection = new NetConnection;
+			connection.connect(gateway);				
+			responder = new Responder(onResult, onFault);	
+		}
+		
+		private function onResult(result:Object):void
+		{		
+			var index:int = 1;
+			for each(var i:* in result)
+			{
+				for (var type:* in i)
+				{
+					if (type == "set_meta_data")
+					{
+						for (var metaDataItems:* in i[type])
+							trace(metaDataItems);
+					}
+					else if (type == "set_items")
+					{
+						for (var setItem:* in i[type])
+						{
+							for (var collectionItem:* in i[type][setItem])
+							{
+								if (!(getChildAt(index) is ImageViewer)) return;
+								
+								var iv:ImageViewer = ImageViewer(getChildAt(index));
+								if (collectionItem is Number)
+								{
+									for (var objectData:* in i[type][setItem][collectionItem])
+									{
+										var val:* = i[type][setItem][collectionItem][objectData];
+										//trace(objectData, i[type][setItem][collectionItem][objectData]);
+										switch(objectData)
+										{
+											case "name":
+												var back:TouchContainer = TouchContainer(iv.back);
+												var title:Text = Text(back.getChildByName("title"));
+												title.text = val;
+												break;
+											case "work_description":
+												var back:TouchContainer = TouchContainer(iv.back);
+												var description:Text = Text(back.getChildByName("description"));
+												description.text = val;												
+												break;
+											case "image":
+												var tc:TouchContainer = TouchContainer(iv.image.parent);
+												tc.removeChild(iv.image);					
+												
+												var img:Image = new Image();												
+												img.open(val);
+												img.init();
+												//img.resample = true;												
+												tc.addChild(img);
+												
+												iv.width = 0;
+												iv.height = 0;
+												iv.image = img;
+												iv.init();
+												iv.visible = true;
+												break;
+											default:
+												break;
+										}
+									}
+								}
+								else
+									trace(collectionItem, i[type][setItem][collectionItem]);
+									
+								index++;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		private function onFault(fault:Object):void
+		{
+			trace(fault.description);
+		}
+		
+		private function hideAll():void
+		{
+			for (var i:int = 0; i < numChildren; i++)
+			{
+				if(getChildAt(i) is ImageViewer)
+					getChildAt(i).visible = false;
+			}
 		}
 		
 		/**
