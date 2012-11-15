@@ -1,953 +1,405 @@
-package com.gestureworks.cml.element
+package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.core.*;
-	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.utils.*;
-	import com.gestureworks.core.TouchSprite;
+	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.events.GWGestureEvent;
+	import flash.events.*;
 	import flash.display.*;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.geom.*;
-	import org.tuio.TuioTouchEvent;
-	
+
 	/**
-	 * The Scrollbar element scrolls contained content and allows the user to set the location of scrollbar from vertical to horizontal or horizontal to vertical.
-	 * The change of scrollbar position can be accomplished by setting the horizontal flag to true or false.
-	 *
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 
-		var sb:ScrollBar = new ScrollBar();
-		
-		//set the scrollbar location by setting horizontal flag to true or false
-		sb.horizontal = true;
-		sb.x = 500;
-		sb.y = 350;
-		
-		//background graphics
-		sb.backgroundLineColor = 0x383838;
-		sb.backgroundLineStroke = 1;
-		sb.backgroundColor = 0x383838;
-		
-		//vertical background graphics
-		sb.background_VLineStroke = 1;
-		sb.background_VLineColor = 0x383838;
-		sb.background_VColor = 0x383838;
-		
-		//vertical scrollbar graphics
-		sb.scrollbar_VLineColor = 0x7F00FF;
-		sb.scrollbar_VLineStroke = 0;
-		sb.scrollbar_VColor = 0x7F00FF;
-		
-		//scrollbar graphics
-		sb.scrollbarLineStroke = 0;
-		sb.scrollbarLineColor = 0x7F00FF;
-		sb.scrollbarColor = 0x7F00FF;
-		
-		//vertical triangles graphics
-		sb.topTriangle_VColor = 0x000000;
-		sb.bottomTriangle_VColor = 0x000000;
-		
-		//horizontal triangles graphics
-		sb.leftTriangleColor = 0x000000;
-		sb.rightTriangleColor = 0x000000;
-		
-		//horizontal square graphics
-		sb.square1LineStroke = 1;
-		sb.square1LineColor = 0xA0A0A0;
-		sb.square1Color = 0xA0A0A0;
-		sb.square2LineStroke = 1;
-		sb.square2LineColor = 0xA0A0A0;
-		sb.square2Color = 0xA0A0A0; 
-		
-		//vertical sqaure graphics
-		sb.topSquare_VLineStroke = 1;
-		sb.topSquare_VLineColor = 0xA0A0A0;
-		sb.topSquare_VColor = 0xA0A0A0;
-		sb.bottomSquare_VLineStroke = 1;
-		sb.bottomSquare_VLineColor = 0xA0A0A0;
-		sb.bottomSquare_VColor = 0xA0A0A0;
-		
-		sb.init();
-		addChild(sb);
-	 
-	 * </codeblock>
 	 * 
-	 * @author Uma
-	 * @see ScrollPane
+	 * 
+	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock "> 
+		
+	 *	</codeblock> 
+	 * 
+	 * @author Ideum
 	 */
-	public class ScrollBar extends Container
+	public class ScrollBar extends ElementFactory
 	{
+		private var railGraphic:Graphic;
+		private var railTouch:TouchContainer;
+		
+		private var scrollBtn1:Graphic;
+		private var touchBtn1:TouchContainer;
+		
+		private var scrollBtn2:Graphic;
+		private var touchBtn2:TouchContainer;
+		
+		private var thumb:Graphic;
+		private var thumbTouch:TouchContainer;
+		
+		private var movementRail:Number;
+		
 		/**
 		 * Constructor
 		 */
-		public function ScrollBar():void
-		{
+		public function ScrollBar() 
+		{			
 			super();
+			
+			railTouch = new TouchContainer();
+			railTouch.gestureEvents = true;
+			addChild(railTouch);
+			
+			touchBtn1 = new TouchContainer();
+			touchBtn1.gestureEvents = true;
+			touchBtn1.gestureList = { "n-tap":true };
+			addChild(touchBtn1);
+			
+			touchBtn2 = new TouchContainer();
+			touchBtn2.gestureEvents = true;
+			touchBtn2.gestureList = { "n-tap":true };
+			addChild(touchBtn2);
+			
+			thumbTouch = new TouchContainer();
+			thumbTouch.gestureEvents = true;
+			thumbTouch.gestureList = { "n-drag":true };
+			thumbTouch.disableNativeTransform = true;
+			addChild(thumbTouch);
+			
+			this.mouseChildren = true;
+		}		
+		
+		private var _scrollPosition:Number;
+		/**
+		 * The position of the scroll thumb on the rail. This is to dispatch events to the 
+		 * ScrollPane class to set the position of the content, it should not be accessed
+		 * externally.
+		 */
+		public function get scrollPosition():Number { return _scrollPosition; }
+		public function set scrollPosition(value:Number):void {
+			_scrollPosition = value;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _scrollPosition, true));
 		}
 		
 		/**
-		 * CML display initialization callback
+		 * This sets the thumbPosition, this is not to be accessed externally in CML or used in Actionscript,
+		 * it is solely here for the ScrollPane class to reach when content is dragged.
+		 */
+		public function set thumbPosition(value:Number):void {
+			if (orientation == "vertical") thumb.y = movementRail * value + scrollBtn1.height;
+			else if (orientation == "horizontal") thumb.x = movementRail * value + scrollBtn1.width;
+			clampThumb();
+		}
+		
+		private var _loaded:Boolean = false;
+		/**
+		 * Checks to see if the element is loaded.
+		 */
+		public function get loaded():Boolean { return _loaded; }
+		
+		private var _orientation:String = "vertical";
+		/**
+		 * Designates the orientation of the scrollbar, "horizontal" or "vertical"
+		 * @default vertical
+		 */
+		public function get orientation():String { return _orientation; }
+		public function set orientation(value:String):void {
+			_orientation = value;
+		}
+		
+		// Colors and stuff.
+		private var _fill:uint = 0x111111;
+		/**
+		 * The scrollbar fill (background color).
+		 */
+		public function get fill():uint { return _fill; }
+		public function set fill(value:uint):void {
+			_fill = value;
+		}
+		
+		private var _buttonFill:uint = 0x555555;
+		/**
+		 * The color of the button's background.
+		 */
+		public function get buttonFill():uint { return _buttonFill; }
+		public function set buttonFill(value:uint):void {
+			_buttonFill = value;
+		}
+		
+		// TO DO: Button stroke, button triangle
+		
+		private var _thumbFill:uint;
+		/**
+		 * The color of the central thumb that slides up and down the scrollbar.
+		 * If no color is set, it will default to match the button styles.
+		 */
+		public function get thumbFill():uint { return _thumbFill; }
+		public function set thumbFill(value:uint):void {
+			_thumbFill = value;
+		}
+		
+		// TO DO: Thumb stroke, thumb gradient,
+		
+		// Shape, corner radius
+		private var _shape:String = "roundRectangle";
+		/**
+		 * Sets the shape of the thumb, either "rectangle", or "roundRectangle".
+		 * @default roundRectangle
+		 */
+		public function get shape():String { return _shape; }
+		public function set shape(value:String):void {
+			_shape = value;
+		}
+		
+		private var _cornerHeight:Number = 10;
+		/**
+		 * Sets part of the corner radius for the ellipse used to round the rectangle of the thumb. Shape must be "roundRectangle" for this to be used.
+		 * @default 10
+		 */
+		public function get cornerHeight():Number { return _cornerHeight; }
+		public function set cornerHeight(value:Number):void {
+			_cornerHeight = value;
+		}
+		
+		private var _cornerWidth:Number = 10;
+		/**
+		 * Sets part of the corner radius for the ellipse used to round the rectangle of the thumb. Shape must be "roundRectangle" for this to be used.
+		 * @default 10
+		 */
+		public function get cornerWidth():Number { return _cornerWidth; }
+		public function set cornerWidth(value:Number):void {
+			_cornerWidth = value;
+		}
+		
+		// Size of the item the scollbar's container is holding.
+		private var _contentHeight:Number;
+		/**
+		 * The height of the content that needs to be scrolled.
+		 */
+		public function get contentHeight():Number { return _contentHeight; }
+		public function set contentHeight(value:Number):void {
+			_contentHeight = value;
+		}
+		
+		private var _contentWidth:Number;
+		/**
+		 * The width of the content that needs to be scrolled;
+		 */
+		public function get contentWidth():Number { return _contentWidth; }
+		public function set contentWidth(value:Number):void {
+			_contentWidth = value;
+		}
+		
+		/**
+		 * CML display callback Initialisation
 		 */
 		override public function displayComplete():void
-		{
-			super.displayComplete();
+		{			
 			init();
 		}
 		
 		/**
-		 * Defines the horizontal background which is a rectangle
+		 * Initialisation method
 		 */
-		public var background:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the scrollbar of horizontal background
-		 */
-		public var scrollbar:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the left triangle of horizontal background
-		 */
-		public var leftTriangle:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the left triangle of horizontal background
-		 */
-		public var rightTriangle:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the right square of horizontal background
-		 */
-		public var square2:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the left square of horizontal background
-		 */
-		private var square1:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the vertical background
-		 */
-		public var background_V:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the scrollbar of vertical background
-		 */
-		public var scrollbar_V:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the top triangle of vertical background
-		 */
-		public var topTriangle_V:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the bottom triangle of vertical background
-		 */
-		public var bottomTriangle_V:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the top square of vertical background
-		 */
-		public var topSquare_V:TouchSprite = new TouchSprite();
-		
-		/**
-		 * Defines the bottom square of vertical background
-		 */
-		public var bottomSquare_V:TouchSprite = new TouchSprite();
-		
-		private var _horizontal:Boolean = true;
-		
-		/**
-		 * Defines the flag for vertical or horizontal  background
-		 */
-		public function get horizontal():Boolean
-		{
-			return _horizontal;
-		}
-		
-		public function set horizontal(value:Boolean):void
-		{
-			_horizontal = value;
-		}
-		
-		private var _backgroundLineStroke:Number = 0;
-		
-		/**
-		 * Sets the line stroke of horizontal background
-		 * @default 1
-		 */
-		public function get backgroundLineStroke():Number
-		{
-			return _backgroundLineStroke;
-		}
-		
-		public function set backgroundLineStroke(value:Number):void
-		{
-			_backgroundLineStroke = value;
-		}
-		
-		private var _backgroundLineColor:uint = 0x383838;
-		
-		/**
-		 * Sets the horizontal background line color
-		 * @default 0x383838
-		 */
-		public function get backgroundLineColor():uint
-		{
-			return _backgroundLineColor;
-		}
-		
-		public function set backgroundLineColor(value:uint):void
-		{
-			_backgroundLineColor = value;
-		}
-		
-		private var _backgroundColor:uint = 0x383838;
-		
-		/**
-		 * Sets the color of horizontal background
-		 * @default 0x383838
-		 */
-		public function get backgroundColor():uint
-		{
-			return _backgroundColor;
-		}
-		
-		public function set backgroundColor(value:uint):void
-		{
-			_backgroundColor = value;
-		}
-		
-		private var _background_VLineStroke:Number = 0;
-		
-		/**
-		 * Sets the line stroke of vertical background
-		 * @default 1
-		 */
-		public function get background_VLineStroke():Number
-		{
-			return _background_VLineStroke;
-		}
-		
-		public function set background_VLineStroke(value:Number):void
-		{
-			_background_VLineStroke = value;
-		}
-		
-		private var _background_VLineColor:uint = 0x383838;
-		
-		/**
-		 * Sets the vertical background line color
-		 * @default 0x383838
-		 */
-		public function get background_VLineColor():uint
-		{
-			return _background_VLineColor;
-		}
-		
-		public function set background_VLineColor(value:uint):void
-		{
-			_background_VLineColor = value;
-		}
-		
-		private var _background_VColor:uint = 0x383838;
-		
-		/**
-		 * Sets the color of vertical background
-		 * @default 0x383838
-		 */
-		public function get background_VColor():uint
-		{
-			return _background_VColor;
-		}
-		
-		public function set background_VColor(value:uint):void
-		{
-			_background_VColor = value;
-		}
-		
-		private var _scrollbar_VColor:uint = 0x000000;
-		
-		/**
-		 * Sets the scroll bar color of vertical background
-		 * @default 0x000000
-		 */
-		public function get scrollbar_VColor():uint
-		{
-			return _scrollbar_VColor;
-		}
-		
-		public function set scrollbar_VColor(value:uint):void
-		{
-			_scrollbar_VColor = value;
-		}
-		
-		private var _scrollbar_VLineStroke:uint = 0;
-		
-		/**
-		 * Sets the scroll bar line stroke of vertical background
-		 * @default 3
-		 */
-		public function get scrollbar_VLineStroke():uint
-		{
-			return _scrollbar_VLineStroke;
-		}
-		
-		public function set scrollbar_VLineStroke(value:uint):void
-		{
-			_scrollbar_VLineStroke = value;
-		}
-		
-		private var _scrollbar_VLineColor:uint = 0x000000;
-		
-		/**
-		 * Sets the scroll bar line color of vertical background
-		 * @default 3
-		 */
-		public function get scrollbar_VLineColor():uint
-		{
-			return _scrollbar_VLineColor;
-		}
-		
-		public function set scrollbar_VLineColor(value:uint):void
-		{
-			_scrollbar_VLineColor = value;
-		}
-		
-		private var _scrollbarColor:uint = 0x000000;
-		
-		/**
-		 * Sets the scroll bar color of vertical background
-		 * @default 0x000000
-		 */
-		public function get scrollbarColor():uint
-		{
-			return _scrollbarColor;
-		}
-		
-		public function set scrollbarColor(value:uint):void
-		{
-			_scrollbarColor = value;
-		}
-		
-		private var _scrollbarLineStroke:uint = 0;
-		
-		/**
-		 * Sets the scroll bar line stroke of horizontal background
-		 * @default 3
-		 */
-		public function get scrollbarLineStroke():uint
-		{
-			return _scrollbarLineStroke;
-		}
-		
-		public function set scrollbarLineStroke(value:uint):void
-		{
-			_scrollbarLineStroke = value;
-		}
-		
-		private var _scrollbarLineColor:uint = 0x000000;
-		
-		/**
-		 * Sets the scroll bar color of horizontal background
-		 * @default 3
-		 */
-		public function get scrollbarLineColor():uint
-		{
-			return _scrollbarLineColor;
-		}
-		
-		public function set scrollbarLineColor(value:uint):void
-		{
-			_scrollbarLineColor = value;
-		}
-		
-		private var _square1Color:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the square color of horizontal background
-		 * @default 0xA0A0A0
-		 */
-		public function get square1Color():uint
-		{
-			return _square1Color;
-		}
-		
-		public function set square1Color(value:uint):void
-		{
-			_square1Color = value;
-		}
-		
-		private var _square1LineStroke:uint = 0;
-		
-		/**
-		 * Sets the square line stroke of horizontal background
-		 * @default 3
-		 */
-		public function get square1LineStroke():uint
-		{
-			return _square1LineStroke;
-		}
-		
-		public function set square1LineStroke(value:uint):void
-		{
-			_square1LineStroke = value;
-		}
-		
-		private var _square1LineColor:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the square line color of horizontal background
-		 * @default 3
-		 */
-		public function get square1LineColor():uint
-		{
-			return _square1LineColor;
-		}
-		
-		public function set square1LineColor(value:uint):void
-		{
-			_square1LineColor = value;
-		}
-		
-		private var _square2Color:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the right square color of horizontal background
-		 * @default 0xA0A0A0
-		 */
-		public function get square2Color():uint
-		{
-			return _square2Color;
-		}
-		
-		public function set square2Color(value:uint):void
-		{
-			_square2Color = value;
-		}
-		
-		private var _square2LineStroke:uint = 0;
-		
-		/**
-		 * Sets the right square line stroke of horizontal background
-		 * @default 3
-		 */
-		public function get square2LineStroke():uint
-		{
-			return _square2LineStroke;
-		}
-		
-		public function set square2LineStroke(value:uint):void
-		{
-			_square2LineStroke = value;
-		}
-		
-		private var _square2LineColor:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the right square line color of horizontal background
-		 * @default 3
-		 */
-		public function get square2LineColor():uint
-		{
-			return _square2LineColor;
-		}
-		
-		public function set square2LineColor(value:uint):void
-		{
-			_square2LineColor = value;
-		}
-		
-		private var _bottomSquare_VColor:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the right square color of vertical background
-		 * @default 0xA0A0A0
-		 */
-		public function get bottomSquare_VColor():uint
-		{
-			return _bottomSquare_VColor;
-		}
-		
-		public function set bottomSquare_VColor(value:uint):void
-		{
-			_bottomSquare_VColor = value;
-		}
-		
-		private var _bottomSquare_VLineStroke:uint = 0;
-		
-		/**
-		 * Sets the right square line stroke of vertical background
-		 * @default 3
-		 */
-		public function get bottomSquare_VLineStroke():uint
-		{
-			return _bottomSquare_VLineStroke;
-		}
-		
-		public function set bottomSquare_VLineStroke(value:uint):void
-		{
-			_bottomSquare_VLineStroke = value;
-		}
-		
-		private var _bottomSquare_VLineColor:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the right square line color of vertical background
-		 * @default 3
-		 */
-		public function get bottomSquare_VLineColor():uint
-		{
-			return _bottomSquare_VLineColor;
-		}
-		
-		public function set bottomSquare_VLineColor(value:uint):void
-		{
-			_bottomSquare_VLineColor = value;
-		}
-		
-		private var _topSquare_VColor:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the right square color of vertical background
-		 * @default 0xA0A0A0
-		 */
-		public function get topSquare_VColor():uint
-		{
-			return _topSquare_VColor;
-		}
-		
-		public function set topSquare_VColor(value:uint):void
-		{
-			_topSquare_VColor = value;
-		}
-		
-		private var _topSquare_VLineStroke:uint = 0;
-		
-		/**
-		 * Sets the right square line stroke of vertical background
-		 * @default 3
-		 */
-		public function get topSquare_VLineStroke():uint
-		{
-			return _topSquare_VLineStroke;
-		}
-		
-		public function set topSquare_VLineStroke(value:uint):void
-		{
-			_topSquare_VLineStroke = value;
-		}
-		
-		private var _topSquare_VLineColor:uint = 0xA0A0A0;
-		
-		/**
-		 * Sets the right square line color of vertical background
-		 * @default 3
-		 */
-		public function get topSquare_VLineColor():uint
-		{
-			return _topSquare_VLineColor;
-		}
-		
-		public function set topSquare_VLineColor(value:uint):void
-		{
-			_topSquare_VLineColor = value;
-		}
-		
-		private var _topTriangle_VColor:uint = 0x000000;
-		
-		/**
-		 * Sets the top triangle color of vertical background
-		 * @default 0xA0A0A0
-		 */
-		public function get topTriangle_VColor():uint
-		{
-			return _topTriangle_VColor;
-		}
-		
-		public function set topTriangle_VColor(value:uint):void
-		{
-			_topTriangle_VColor = value;
-		}
-		
-		private var _bottomTriangle_VColor:uint = 0x000000;
-		
-		/**
-		 * Sets the top triangle color of vertical background
-		 * @default 0xA0A0A0
-		 */
-		public function get bottomTriangle_VColor():uint
-		{
-			return _bottomTriangle_VColor;
-		}
-		
-		public function set bottomTriangle_VColor(value:uint):void
-		{
-			_bottomTriangle_VColor = value;
-		}
-		
-		private var _leftTriangleColor:uint = 0x000000;
-		
-		/**
-		 * Sets the top triangle color of horizontal background
-		 * @default 0xA0A0A0
-		 */
-		public function get leftTriangleColor():uint
-		{
-			return _leftTriangleColor;
-		}
-		
-		public function set leftTriangleColor(value:uint):void
-		{
-			_leftTriangleColor = value;
-		}
-		
-		private var _rightTriangleColor:uint = 0x000000;
-		
-		/**
-		 * Sets the top triangle color of horizontal background
-		 * @default 0xA0A0A0
-		 */
-		public function get rightTriangleColor():uint
-		{
-			return _rightTriangleColor;
-		}
-		
-		public function set rightTriangleColor(value:uint):void
-		{
-			_rightTriangleColor = value;
-		}
-		
-		/**
-		 * Initializes the configuration and display of scrollbar
-		 */
-	    public function init():void
-		{
-			displayScroll();
-		}
-		
-		/**
-		 * creates vertical or horizontal scrollbar
-		 */
-		private function displayScroll():void
-		{
-			background.graphics.lineStyle(backgroundLineStroke, backgroundLineColor);
-			background.graphics.beginFill(backgroundColor);
-			background.graphics.drawRect(0, 0, 700, 30);
-			background.graphics.endFill();
-						
-			scrollbar.graphics.lineStyle(scrollbarLineStroke, scrollbarLineColor);
-			scrollbar.graphics.beginFill(scrollbarColor);
-			scrollbar.graphics.drawRect(31, 0, 200, 30);
-			scrollbar.graphics.endFill();
-					
-			square1.graphics.lineStyle(square1LineStroke, square1LineColor);
-			square1.graphics.beginFill(square1Color);
-			square1.graphics.drawRect(0, 0, 30, 30);
-			square1.graphics.endFill();
+		public function init():void
+		{ 
+			// Create the rail.
+			railGraphic = new Graphic();
+			railGraphic.color = _fill;
+			railGraphic.height = this.height;
+			railGraphic.width = this.width;
+			railGraphic.lineStroke = 0;
+			railGraphic.shape = "rectangle";
 			
-		    square2.graphics.lineStyle(square2LineStroke, square2LineColor);
-			square2.graphics.beginFill(square2Color);
-			square2.graphics.drawRect(670, 0, 30, 30);
-			square2.graphics.endFill();
-			
-			leftTriangle.graphics.beginFill(leftTriangleColor);
-			leftTriangle.graphics.moveTo(22, 5);
-			leftTriangle.graphics.lineTo(5, 15);
-			leftTriangle.graphics.lineTo(22, 25);
+			// Create and position buttons based upon either orientation.
+			if (_orientation == "vertical") {
+				scrollBtn1 = new Graphic();
+				scrollBtn1.color = _buttonFill;
+				scrollBtn1.width = this.width;
+				scrollBtn1.height = this.width;
+				scrollBtn1.shape = "rectangle";
+				scrollBtn1.lineStroke = 0;
 				
-			rightTriangle.graphics.beginFill(rightTriangleColor);
-			rightTriangle.graphics.moveTo(678, 5);
-			rightTriangle.graphics.lineTo(695, 15);
-			rightTriangle.graphics.lineTo(678, 25);
-
-			background_V.graphics.lineStyle(background_VLineStroke, background_VLineColor);
-			background_V.graphics.beginFill(background_VColor);
-			background_V.graphics.drawRect(0, 0, 30, 700);
-			background_V.graphics.endFill();
-			
-			scrollbar_V.graphics.lineStyle(scrollbar_VLineStroke, scrollbar_VLineColor);
-			scrollbar_V.graphics.beginFill(scrollbar_VColor);
-			scrollbar_V.graphics.drawRect(0, 0, 30, 200);
-			scrollbar_V.graphics.endFill();
-			
-			scrollbar_V.y = 31;
-			
-			topSquare_V.graphics.lineStyle(topSquare_VLineStroke, topSquare_VLineColor);
-			topSquare_V.graphics.beginFill(topSquare_VColor);
-			topSquare_V.graphics.drawRect(0, 0, 30, 30);
-			topSquare_V.graphics.endFill();
-			
-			bottomSquare_V.graphics.lineStyle(bottomSquare_VLineStroke, bottomSquare_VLineColor);
-			bottomSquare_V.graphics.beginFill(bottomSquare_VColor);
-			bottomSquare_V.graphics.drawRect(0, 670, 30, 30);
-			bottomSquare_V.graphics.endFill();
-					
-		    topTriangle_V.graphics.beginFill(topTriangle_VColor);
-			topTriangle_V.graphics.moveTo(4, 24);
-			topTriangle_V.graphics.lineTo(25, 24);
-			topTriangle_V.graphics.lineTo(15, 4);
-			
-			bottomTriangle_V.graphics.beginFill(bottomTriangle_VColor);
-			bottomTriangle_V.graphics.moveTo(4, 678);
-			bottomTriangle_V.graphics.lineTo(25, 678);
-			bottomTriangle_V.graphics.lineTo(15, 696);
+				scrollBtn2 = new Graphic();
+				scrollBtn2.color = _buttonFill;
+				scrollBtn2.width = this.width;
+				scrollBtn2.height = this.width;
+				scrollBtn2.shape = "rectangle";
+				scrollBtn2.y = this.height - scrollBtn2.height;
+				scrollBtn2.lineStroke = 0;
 				
-			if (horizontal)
-			{
-				scrollbar.gestureList = {"n-drag": true};
-				scrollbar.addEventListener(GWGestureEvent.DRAG, onDrag);
-				square1.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-				square2.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-				background.addEventListener(TouchEvent.TOUCH_BEGIN, hBegin);
+				railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
+				railGraphic.y = scrollBtn1.height;
+			}
+			else if (_orientation == "horizontal") {
+				scrollBtn1 = new Graphic();
+				scrollBtn1.shape = "rectangle";
+				scrollBtn1.color = _buttonFill;
+				scrollBtn1.fill = "color";
+				scrollBtn1.width = this.height;
+				scrollBtn1.height = this.height;
+				scrollBtn1.lineStroke = 0;
+				scrollBtn1.y = railGraphic.y;
 				
-				//if (GestureWorks.activeTUIO)
-					//square2.addEventListener(TuioTouchEvent.TAP, leftArrow);
-				//else if (GestureWorks.supportsTouch)
-					//square2.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-				//else
-					//square2.addEventListener(MouseEvent.CLICK, leftArrow);
-				//
-				//if (GestureWorks.activeTUIO)
-					//background.addEventListener(TuioTouchEvent.TAP, rightArrow);
-				//else if (GestureWorks.supportsTouch)
-					//background.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-				//else
-					//background.addEventListener(MouseEvent.CLICK, rightArrow);
-			}
-			else
-			{
-				scrollbar_V.gestureList = {"n-drag": true};
-				scrollbar_V.addEventListener(GWGestureEvent.DRAG, onDrag);
-				topSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , leftArrow);
-				bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN , rightArrow);
-				background_V.addEventListener(TouchEvent.TOUCH_BEGIN, vBegin);
+				scrollBtn2 = new Graphic();
+				scrollBtn2.shape = "rectangle";
+				scrollBtn2.color = _buttonFill;
+				scrollBtn2.width = this.height;
+				scrollBtn2.height = this.height;
+				scrollBtn2.x = this.width - scrollBtn2.width;
+				scrollBtn2.lineStroke = 0;
+				scrollBtn2.y = railGraphic.y;
 				
-				//if (GestureWorks.activeTUIO)
-					//bottomSquare_V.addEventListener(TuioTouchEvent.TAP, leftArrow);
-				//else if (GestureWorks.supportsTouch)
-					//bottomSquare_V.addEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-				//else
-					//bottomSquare_V.addEventListener(MouseEvent.CLICK, leftArrow);
-				//
-				//if (GestureWorks.activeTUIO)
-					//background_V.addEventListener(TuioTouchEvent.TAP, rightArrow);
-				//else if (GestureWorks.supportsTouch)
-					//background_V.addEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-				//else
-					//background_V.addEventListener(MouseEvent.CLICK, rightArrow);
+				railGraphic.width = this.width - scrollBtn1.width - scrollBtn2.width;
+				railGraphic.x = scrollBtn1.width;
 			}
 			
-			if (horizontal)
-			{
-				square1.addEventListener(MouseEvent.MOUSE_UP, lArrow);
-				square2.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+			railTouch.addChild(railGraphic);
+			touchBtn1.addChild(scrollBtn1);
+			touchBtn2.addChild(scrollBtn2);
+			
+			// Create the thumb. 
+				// Create the rectangle.
+				// Round corners if necessary.
+				// Etc.
+			
+			thumb = new Graphic();
+			thumb.shape = _shape;
+			thumb.lineStroke = 0;
+			
+			if (_orientation == "vertical"){
+				thumb.width = this.width;
+				thumb.height = (this.height / contentHeight) * railGraphic.height;
+				movementRail = railGraphic.height - thumb.height;
+				thumb.y = railGraphic.y;
 			}
-			else
-			{
-				topSquare_V.addEventListener(MouseEvent.MOUSE_UP, lArrow);
-				bottomSquare_V.addEventListener(MouseEvent.MOUSE_DOWN, rArrow);
+			else if (_orientation == "horizontal") {
+				thumb.height = this.height;
+				thumb.width = (this.width / contentWidth) * railGraphic.width;
+				movementRail = railGraphic.width - thumb.width;
+				thumb.x = railGraphic.x;
 			}
 			
-			if (horizontal)
-			{
-				addChild(background);
-				addChild(scrollbar);
-				addChild(square1);
-				addChild(square2);
-				square1.addChild(leftTriangle);
-				square2.addChild(rightTriangle);
-			}
-			else
-			{
-				addChild(background_V);
-				addChild(scrollbar_V);
-				addChild(topSquare_V);
-				addChild(bottomSquare_V);
-				topSquare_V.addChild(topTriangle_V);
-				bottomSquare_V.addChild(bottomTriangle_V);
+			if (_shape == "roundRectangle") {
+				thumb.cornerHeight = _cornerHeight;
+				thumb.cornerWidth = _cornerWidth;
 			}
 			
-			scrollbarminPos = square1.x;
-			scrollbarmaxPos = background.width - square2.width - scrollbar.width - square1.width;
+			//Set thumb colors.
+			if (!_thumbFill)
+				_thumbFill = _buttonFill;
 			
-			scrollbar_VminPos = topSquare_V.y + topSquare_V.height;
-			scrollbar_VmaxPos = background_V.height - scrollbar.height - scrollbar.width;
-		
+			thumb.color = _thumbFill;
+			thumbTouch.addChild(thumb);
+			
+			_loaded = true;
+			
+			createEvents();
 		}
-		private var scrollbarminPos:Number;
-		private var scrollbarmaxPos:Number;
-		private var scrollbar_VminPos:Number;
-		private var scrollbar_VmaxPos:Number;
+		
+		private function createEvents():void {
+			touchBtn1.addEventListener(GWGestureEvent.TAP, onTap1);
+			touchBtn2.addEventListener(GWGestureEvent.TAP, onTap2);
+			
+			thumbTouch.addEventListener(GWGestureEvent.DRAG, onDrag);
+		}
+		
+		private function onTap1(e:GWGestureEvent):void {
+			switch(_orientation) {
+				case "vertical":
+					thumb.y -= movementRail * 0.1;
+					clampThumb();
+					// Dispatch position event.
+					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+					break;
+				case "horizontal":
+					thumb.x -= movementRail * 0.1;
+					clampThumb();
+					// Dispatch position event.
+					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+					break;
+			}
+		}
+		
+		private function onTap2(e:GWGestureEvent):void {
+			
+			// Check the orientation, and add a set amount of movement in that direction.
+			switch(_orientation) {
+				case "vertical":
+					thumb.y += movementRail * 0.1;
+					clampThumb();
+					// Dispatch position event.
+					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+					break;
+				case "horizontal":
+					thumb.x += movementRail * 0.1;
+					//thumb.y = thumbTouch.y;
+					clampThumb();
+					// Dispatch position event.
+					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+					break;
+			}
+		}
+		
+		private function onDrag(e:GWGestureEvent):void {
+			trace("Scroll bar drag");
+			if(_orientation == "vertical") {
+				//thumbTouch.y += e.value.drag_dy;
+				thumb.y += e.value.drag_dy;
+				clampThumb();
+				// Dispatch the scroll position.
+				scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+				trace("Scrollposition:", (thumb.y - scrollBtn1.height) / movementRail, thumb.height);
+			}
+			else if (_orientation == "horizontal") {
+				//thumbTouch.x += e.value.drag_dx;
+				thumb.x += e.value.drag_dx;
+				clampThumb();
+				// Dispatch the scroll position.
+				scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+			}
+		}
+		
+		private function clampThumb():void {
+			
+			// Check the orientation, and make sure the thumb hasn't slid off the rail.
+			
+			if (_orientation == "vertical"){
+				if (thumb.y < railGraphic.y) {
+					thumb.y = railGraphic.y;
+					//trace("Clamping rail min.");
+				}
+				if (thumb.y > (railGraphic.y + movementRail)) {
+					thumb.y = railGraphic.y + movementRail;
+					//trace("Clamping rail max");
+				}
+			}
+			if (_orientation == "horizontal") {
+				if (thumb.x < railGraphic.x) thumb.x = railGraphic.x;
+				if (thumb.x > railGraphic.x + movementRail) thumb.x = railGraphic.x + movementRail;
+			}
+		}
 		
 		/**
-		 * defines boundary for horizontal scrollbar.
-		 * @param	event
+		 * Used by the ScrollPane class to resize the scrollbar when scrollable content is scaled larger or smaller.
+		 * @param	newDimension
 		 */
-		private function onDrag(event:GWGestureEvent):void
-		{
-			if (horizontal)
-			{
-				if ((event.value.drag_dx + event.target.x) > scrollbarmaxPos)
-					event.target.x = scrollbarmaxPos;
-				else if ((event.value.drag_dx + event.target.x) < scrollbarminPos)
-					event.target.x = scrollbarminPos;
-				else
-					event.target.x += event.value.drag_dx;
-			}
-			else
-			{
-				if ((event.value.drag_dy + event.target.y) > scrollbar_VmaxPos)
-					event.target.y = scrollbar_VmaxPos;
-				else if ((event.value.drag_dy + event.target.y) < scrollbar_VminPos)
-					event.target.y = scrollbar_VminPos;
-				else
-					event.target.y += event.value.drag_dy;
+		public function resize(newDimension:Number):void {
+			if (_orientation == "vertical") {
+				contentHeight = newDimension;
+				thumb.width = this.width;
+				thumb.height = (this.height / contentHeight) * railGraphic.height;
+				movementRail = railGraphic.height - thumb.height;
+				//thumb.y = railGraphic.y;
+			} else if (_orientation == "horizontal") {
+				contentWidth = newDimension;
+				thumb.height = this.height;
+				thumb.width = (this.width / contentWidth) * railGraphic.width;
+				movementRail = railGraphic.width - thumb.width;
+				//thumb.x = railGraphic.x;
 			}
 		}
-		
-		/** handles touch event when left arrow pressed horizontally or vertically
-		 *  @param	event
-		 */
-		private function leftArrow(event:TouchEvent):void
-		{
-			var offset:Number = 25;
-			
-			if (horizontal)
-			{
-				if (scrollbar.x > (background.x - square1.height/2 + square1.width/2))
-					scrollbar.x = scrollbar.x - offset;
-			}
-			else
-			{
-				if (scrollbar_V.y > (background_V.y - topSquare_V.height/2 + scrollbar_V.height/2 - topSquare_V.height))
-					scrollbar_V.y = scrollbar_V.y - offset;
-			}
-		}
-		
-		/** handles touch event when right arrow pressed horizontally or vertically
-		 *  @param	event
-		 */
-		private function rightArrow(event:TouchEvent):void
-		{
-			var center:Number = scrollbar.x - scrollbar.width/2;
-			var offset:Number = -25;
-			
-			if (horizontal)
-			{
-				if (scrollbar.x < (background.width - scrollbar.width + square2.width - scrollbar.width/2))
-					scrollbar.x = scrollbar.x - offset;
-			}
-			else
-			{
-				if (scrollbar_V.y < (background_V.height - bottomSquare_V.height - scrollbar_V.height))
-					scrollbar_V.y = scrollbar_V.y - offset;
-			}
-		}
-		
-		/** handles mouse event when left arrow pressed horizontally or vertically
-		 *  @param	event
-		 */
-		private function lArrow(event:MouseEvent):void
-		{
-			var center:Number = scrollbar.x - scrollbar.width/ 2;
-			var offset:Number = 25;
-			
-			if (horizontal)
-			{
-				if (scrollbar.x > (background.x - square1.height/2 + square1.width/2))
-					scrollbar.x = scrollbar.x - offset;
-			}
-			else
-			{
-			    if (scrollbar_V.y > (background_V.y - topSquare_V.height/2 + scrollbar_V.height/2 - topSquare_V.height))
-					scrollbar_V.y = scrollbar_V.y - offset;
-			}
-		}
-		
-		/** handles mouse event when right arrow pressed horizontally or vertically
-		 *  @param	event
-		 */
-		private function rArrow(event:MouseEvent):void
-		{
-			var offset:Number = -25;
-			
-			if (horizontal)
-			{
-				if (scrollbar.x < (background.width - scrollbar.width + square2.width - scrollbar.width/2))
-					scrollbar.x = scrollbar.x - offset;
-			}
-			else
-			{
-				if (scrollbar_V.y < (background_V.height - bottomSquare_V.height - scrollbar_V.height))
-					scrollbar_V.y = scrollbar_V.y - offset;
-			}
-		}
-		
-	    private function hBegin(event:TouchEvent):void
-        {
-		  var touchX:Number = event.localX;
-		  var scrollBarCenter:Number = scrollbar.width/2;
-		  var rightBoundary:Number = background.width - scrollbar.width;
-		  var leftBoundary:Number = scrollBarCenter;  
-
-		  if (touchX > rightBoundary)
-    	    scrollbar.x = rightBoundary - square2.width - square2.height;
-		  else if (touchX < leftBoundary)
-		   scrollbar.x = background.x;
-		  else			 
-		   scrollbar.x = touchX - scrollBarCenter;	
-	    }
-	
-		private function vBegin(event:TouchEvent):void
-        {
-		  var touchY:Number = event.localY;
-		  var topBoundary:Number = scrollbar_V.height/2;
-		  var bottomBoundary:Number = background_V.height - scrollbar_V.height; 
-
-		  if (touchY < topBoundary)
-		   scrollbar_V.y = topBoundary - scrollbar_V.height/2 + topSquare_V.height;
-		  else if (touchY > bottomBoundary)
-		   scrollbar_V.y = bottomBoundary - bottomSquare_V.height;
-		  else
-		   scrollbar_V.y = touchY - scrollbar_V.height/2;
-	    }
 		
 		/**
-		 * Dispose methods and nullify attributes
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{
 			super.dispose();
-			background = null;
-			scrollbar = null;
-			leftTriangle = null;
-			rightTriangle = null;
-			square2 = null;
-			square1 = null;
-			background_V = null;
-			scrollbar_V = null;
-			topTriangle_V = null;
-			bottomTriangle_V = null;
-			topSquare_V = null;
-			bottomSquare_V = null;
-			scrollbar.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			square1.removeEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-			square2.removeEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-			scrollbar_V.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			topSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-			bottomSquare_V.removeEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-			square1.removeEventListener(MouseEvent.MOUSE_UP, lArrow);
-			square2.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-			topSquare_V.removeEventListener(MouseEvent.MOUSE_UP, lArrow);
-			bottomSquare_V.removeEventListener(MouseEvent.MOUSE_DOWN, rArrow);
-			this.removeEventListener(TuioTouchEvent.TAP, leftArrow);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, leftArrow);
-			this.removeEventListener(MouseEvent.CLICK, leftArrow);
-			this.removeEventListener(TuioTouchEvent.TAP, rightArrow);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, rightArrow);
-			this.removeEventListener(MouseEvent.CLICK, rightArrow);
 		}
+		
+
 	}
 }
