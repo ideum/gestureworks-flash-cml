@@ -60,7 +60,6 @@ package com.gestureworks.cml.element
 		private var loopSnapTween:ITweenGroup;
 		private var boundary1:Number;
 		private var boundary2:Number;
-		private var isLoaded:Boolean = false;		
 		private var released:Boolean = false;
 		private var index:int = 0;
 		
@@ -72,6 +71,7 @@ package com.gestureworks.cml.element
 			mouseChildren = true;
 			albumMask = new Graphic();
 			albumMask.shape = "rectangle";
+			_belt = new TouchContainer();
 		}
 				
 		/**
@@ -87,12 +87,10 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void
 		{			
-			if (loop && numChildren < 2) loop = false;
-			sizeAlbumToContent();
+			if (loop && belt.numChildren < 2) loop = false;
 			initBelt();
 			checkMask();
-			isLoaded = true;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isLoaded", isLoaded, true));	
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isLoaded", true, true));	
 		}
 		
 		/**
@@ -243,15 +241,27 @@ package com.gestureworks.cml.element
 		{
 			return horizontal ? "x" : "y";
 		}
+		
+		/**
+		 * Removes belt children and resets initial album states
+		 */
+		public function clear():void
+		{
+			while (belt.numChildren)
+				belt.removeChildAt(belt.numChildren - 1);
+			
+			width = 0;
+			height = 0;
+			belt.x = 0;
+			belt.y = 0;
+		}
 			
 		/**
 		 * Initializes the the belt container which is the nested container of the album that handles
-		 * the scrolling of the child objects. All children are transferred from the album container
-		 * to the belt. 
+		 * the scrolling of the child objects. 
 		 */
 		private function initBelt():void
 		{
-			_belt = new TouchContainer();
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
 			belt.gestureList = { "n-drag-inertia":true };
@@ -265,61 +275,48 @@ package com.gestureworks.cml.element
 			belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
 			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 						
-			//configure belt
-			transferChildren();			
+			//configure belt		
 			setBeltLayout();
 			setBeltDimensions();
 			setBeltBackground();
 			storeSnapPoints();
 			setBoundaries();
-			addChild(belt);			
+			addUIComponent(belt);			
 		}
 		
 		/**
-		 * Transfers the children from the album to the album's belt. In loop mode, adds individual backgrounds
-		 * for each item and centers the items on their associated background. The backgrounds provide a uniform
-		 * reference to better evaluate boundary thresholds and tweening snap points.
-		 */
-		private function transferChildren():void
+		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
+		 * based on the greatest width and height of the child dimensions. 
+		 */		
+		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{
-			var count:Number = numChildren-1;
-			for (var i:int = count; i >= 0; i--)	
-			{
-				var child:* = getChildAt(i);
-				if (loop) 
-				{
-					var slide:Graphic = new Graphic();
-					slide.shape = "rectangle";
-					slide.color = backgroundColor;
-					slide.lineStroke = 0;
-					slide.width = width;
-					slide.height = height;
-					slide.visible = i == count ? true : false;   //initially hide all but head of list
-					
-					child.x = slide.width / 2 - child.width / 2;
-					child.y = slide.height / 2 - child.height / 2;
-					slide.addChild(child);
-					
-					loopQueue.push(slide);					
-					belt.addChild(slide);
-				}
-				else
-					belt.addChild(child);					
-			}			
+			width = child.width > width ? child.width : width;
+			height = child.height > height ? child.height: height;			
+			belt.addChild(child);
+				
+			return child;
 		}
 		
 		/**
-		 * Sets the dimesions of the container based on the greatest width and height of
-		 * the child dimensions.
-		 */
-		private function sizeAlbumToContent():void
+		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
+		 * based on the greatest width and height of the child dimensions. 
+		 */				
+		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{
-			for (var i:int = 0; i < numChildren; i++)
-			{
-				var child:DisplayObject = getChildAt(i);
-				width = width < child.width ? child.width : width;								
-				height = height < child.height ? child.height : height;				
-			}
+			width = child.width > width ? child.width : width;
+			height = child.height > height ? child.height: height;			
+			belt.addChildAt(child, index);
+			
+			return child;
+		}
+		
+		/**
+		 * Adds a child directly to the album object
+		 * @param	child
+		 */
+		private function addUIComponent(child:DisplayObject):void
+		{
+			super.addChild(child);
 		}
 		
 		/**
@@ -352,20 +349,50 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * If not in loop mode, generates a horiztonal/vertical list layout and applies it to the belt. 
+		 * In loop mode, adds individual backgrounds for each item and centers the items on their associated background. The backgrounds
+		 * provide a uniform reference to better evaluate boundary thresholds and tweening snap points. If not in loop mode, generates a 
+		 * horiztonal/vertical list layout and applies it to the belt. 
 		 */
 		private function setBeltLayout():void
 		{
-			if (loop) return;
-			
-			belt.layout = new ListLayout();
-			belt.layout.useMargins = true;
-			belt.layout.marginX = margin;
-			belt.layout.marginY = margin;
-			belt.layout.type = horizontal ? "horizontal" : "vertical";
-			belt.layout.centerColumn = true;			
-			belt.layout.centerRow = true;			
-			belt.applyLayout();				
+			if (loop)
+			{
+				var holder:Array = new Array();
+				while (belt.numChildren)
+				{
+					holder.push(belt.getChildAt(belt.numChildren - 1));
+					belt.removeChildAt(belt.numChildren - 1);
+				}
+				
+				for (var i:int = 0; i < holder.length; i++)
+				{
+					var slide:Graphic = new Graphic();
+					slide.shape = "rectangle";
+					slide.color = backgroundColor;
+					slide.lineStroke = 0;
+					slide.width = width;
+					slide.height = height;
+					slide.visible = i == 0 ? true : false;   //initially hide all but head of list
+					
+					holder[i].x = slide.width / 2 - holder[i].width / 2;
+					holder[i].y = slide.height / 2 - holder[i].height / 2;
+					slide.addChild(holder[i]);
+					
+					loopQueue.push(slide);					
+					belt.addChild(slide);					
+				}
+			}
+			else
+			{
+				belt.layout = new ListLayout();
+				belt.layout.useMargins = true;
+				belt.layout.marginX = margin;
+				belt.layout.marginY = margin;
+				belt.layout.type = horizontal ? "horizontal" : "vertical";
+				belt.layout.centerColumn = true;			
+				belt.layout.centerRow = true;			
+				belt.applyLayout();				
+			}
 		}
 		
 		/**
@@ -400,7 +427,7 @@ package com.gestureworks.cml.element
 		{
 			if (applyMask)
 			{
-				addChild(albumMask);
+				addUIComponent(albumMask);
 				mask = albumMask;
 			}
 		}
@@ -645,7 +672,7 @@ package com.gestureworks.cml.element
 		{			
 			for each(var child:* in loopQueue)
 			{
-				if(!isNaN(delta) && child.visible)
+				if (!isNaN(delta) && child.visible)
 					child[axis] += delta;
 			}
 			

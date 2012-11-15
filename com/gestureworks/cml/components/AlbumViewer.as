@@ -212,7 +212,13 @@ package com.gestureworks.cml.components
 				updateLayout();
 				e.target.dragAngle = rotation;
 			}
-		}		
+		}
+		
+		public function clear():void
+		{
+			width = 0;
+			height = 0;
+		}
 		
 		/**
 		 * Dispose method

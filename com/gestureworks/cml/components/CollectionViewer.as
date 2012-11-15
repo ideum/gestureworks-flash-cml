@@ -42,6 +42,8 @@ package com.gestureworks.cml.components
 		private var connection:NetConnection;
 		private var responder:Responder;
 		private var entry:Text;
+		private var data:Object;
+		private var index:int = 0;
 		
 		//private var boundsTimer:Timer;
 		
@@ -146,15 +148,16 @@ package com.gestureworks.cml.components
 				tweens[target.parent] = null;
 				delete tweens[target.parent];
 			}
-						
 			
-			if (target.parent is TouchContainer){
-				if (contains(target.parent))
-				{	
-					removeChild(target.parent);
-					addChild(target.parent);
-				}
-			}
+			moveToTop(target);
+		}
+		
+		private function moveToTop(obj:*):void
+		{
+			if (obj.parent && obj.parent != this )
+				moveToTop(obj.parent);
+			else
+				addChild(obj);
 		}
 
 		override protected function onStateEvent(event:StateEvent):void
@@ -222,6 +225,7 @@ package com.gestureworks.cml.components
 			entry.type = "input";
 			entry.visible = true;
 			entry.background = true;
+			entry.border = true;
 			entry.addEventListener(KeyboardEvent.KEY_DOWN, query);
 			addChild(entry);
 		}
@@ -230,7 +234,8 @@ package com.gestureworks.cml.components
 		{
 			if (e.keyCode == 13)
 			{
-				hideAll();				
+				hideAll();	
+				//connection.call("./AMFTest.getalldata", responder, entry.text);
 				connection.call("./SetTest.set_search", responder, entry.text);
 			}
 		}
@@ -242,75 +247,149 @@ package com.gestureworks.cml.components
 			responder = new Responder(onResult, onFault);	
 		}
 		
-		private function onResult(result:Object):void
-		{		
-			var index:int = 1;
-			for each(var i:* in result)
+		private function getNextComponent(c:*):*
+		{
+			var components:Array = searchChildren(c, Array);
+			var component:*;
+			var found:Boolean = false;
+			
+			for each(var comp:* in components)
 			{
-				for (var type:* in i)
+				if (!comp.visible)
 				{
-					if (type == "set_meta_data")
+					component = comp;
+					found = true;
+				}
+			}
+			
+			if (!found && components.length > 0)
+				component = components[0];
+				
+			//clear album
+			if (component is AlbumViewer)
+			{
+				var album:Album = component.album;
+				var back:Album = component.back;
+				
+				for (var i:int = album.belt.numChildren; i > 0; i--)
+					album.belt.removeChildAt(0);				
+			}
+				
+							
+			return component;
+		}
+				
+		
+		private function onResult(result:Object):void
+		{								
+			updateSets(result);
+		}
+		
+		private function updateObjects(result:Object):void
+		{
+			var objs:Array = searchChildren(ImageViewer, Array);
+			var index:int = 0;
+			
+			for each(var obj:* in result)
+			{
+				if (!(objs[index] is ImageViewer)) return;
+				var iv:ImageViewer = ImageViewer(objs[index]);
+				iv.visible = true;
+				
+				for (var type:* in obj)
+				{
+					var val:* = obj[type];						
+					switch(type)
 					{
-						for (var metaDataItems:* in i[type])
-							trace(metaDataItems);
-					}
-					else if (type == "set_items")
+						case "name":
+							var back:TouchContainer = TouchContainer(iv.back);
+							var title:Text = Text(back.getChildByName("title"));
+							title.text = val;
+							break;
+						case "work_description":
+							var back:TouchContainer = TouchContainer(iv.back);
+							var description:Text = Text(back.getChildByName("description"));
+							description.text = val;												
+							break;
+						case "image_content":
+							var tc:TouchContainer = TouchContainer(iv.image.parent);
+							tc.removeChild(iv.image);					
+							
+							var img:Image = new Image();												
+							img.open(val);
+							img.init();
+							
+							img.width = 700;
+							img.height = 700;
+							img.resample = true;												
+							tc.addChild(img);
+							
+							iv.width = 0;
+							iv.height = 0;
+							iv.image = img;
+							iv.init();
+							break;
+						default:
+							break;
+					}					
+				}
+				
+				index++;
+			}
+		}
+		
+		private function updateSets(result:Object):void
+		{
+			for each(var setObject:* in result)
+			{
+				for (var setProperty:* in setObject)
+				{
+					if (setProperty == "set_items")
 					{
-						for (var setItem:* in i[type])
+						for (var collection:* in setObject[setProperty])
 						{
-							for (var collectionItem:* in i[type][setItem])
+							var collectionType:* = setObject[setProperty][collection]["collection_display"];
+							var component:* = collectionType == "slideshow" ? getNextComponent(AlbumViewer): getNextComponent(AlbumViewer);														
+							var front:* = component.front;
+							var back:* = component.back;
+							
+							component.clear();
+							front.clear();
+							back.clear();
+							
+							for (var object:* in setObject[setProperty][collection])
 							{
-								if (!(getChildAt(index) is ImageViewer)) return;
-								
-								var iv:ImageViewer = ImageViewer(getChildAt(index));
-								if (collectionItem is Number)
+								for (var property:* in setObject[setProperty][collection][object])
 								{
-									for (var objectData:* in i[type][setItem][collectionItem])
+									var val:* = setObject[setProperty][collection][object][property];
+									switch(property)
 									{
-										var val:* = i[type][setItem][collectionItem][objectData];
-										//trace(objectData, i[type][setItem][collectionItem][objectData]);
-										switch(objectData)
-										{
-											case "name":
-												var back:TouchContainer = TouchContainer(iv.back);
-												var title:Text = Text(back.getChildByName("title"));
-												title.text = val;
-												break;
-											case "work_description":
-												var back:TouchContainer = TouchContainer(iv.back);
-												var description:Text = Text(back.getChildByName("description"));
-												description.text = val;												
-												break;
-											case "image":
-												var tc:TouchContainer = TouchContainer(iv.image.parent);
-												tc.removeChild(iv.image);					
-												
-												var img:Image = new Image();												
-												img.open(val);
-												img.init();
-												//img.resample = true;												
-												tc.addChild(img);
-												
-												iv.width = 0;
-												iv.height = 0;
-												iv.image = img;
-												iv.init();
-												iv.visible = true;
-												break;
-											default:
-												break;
-										}
+										case "name":											
+											break;
+										case "work_description":
+											break;
+										case "image":
+											var img:Image = new Image();
+											img.open(val);
+											img.width = 400;
+											img.height = 400;
+											img.resample = true;
+											
+											front.addChild(img);											
+											break;
+										default:
+											break;
 									}
 								}
-								else
-									trace(collectionItem, i[type][setItem][collectionItem]);
-									
-								index++;
 							}
+							
+							front.init();
+							component.init();
+							component.visible = true;
 						}
 					}
 				}
-			}
+			}			
 		}
 		
 		private function onFault(fault:Object):void
@@ -322,7 +401,7 @@ package com.gestureworks.cml.components
 		{
 			for (var i:int = 0; i < numChildren; i++)
 			{
-				if(getChildAt(i) is ImageViewer)
+				if(getChildAt(i) is TouchContainer)
 					getChildAt(i).visible = false;
 			}
 		}
