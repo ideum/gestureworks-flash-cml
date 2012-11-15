@@ -34,13 +34,6 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void {}
 		
-		/**
-		 * Bitmap load complete callback. Dispatches Event.COMPLETE
-		 */		
-		override protected function bitmapComplete():void 
-		{						
-			//dispatchEvent(new Event(Event.COMPLETE, true, true));
-		}
 		
 		/**
 		 * Dispose method

@@ -410,7 +410,7 @@ package com.gestureworks.cml.factories
 	
 		protected function bitmapComplete():void 
 		{
-			dispatchEvent(new Event(Event.COMPLETE, true, true));
+			dispatchEvent(new Event(Event.COMPLETE, false, false));
 		}
 	
 		
