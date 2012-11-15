@@ -519,6 +519,7 @@ package com.gestureworks.cml.core
 				
 				
 				obj = createObject(className);	
+
 					
 					
 				// assign id and class values
@@ -734,7 +735,7 @@ package com.gestureworks.cml.core
 				if (attrName == "class")
 					attrName = "class_";				
 				
-				if (attrValue.search(extensions) >= 0)
+				if (attrValue.search(extensions) >= 0 && String(attrValue.charAt(0) != "{") )
 				{
 					// rootDirectory allows you to change root path	
 					if (relativePaths && rootDirectory.length > 1)	
@@ -747,18 +748,11 @@ package com.gestureworks.cml.core
 						attrValue = rootDirectory.concat(attrValue);
 					}					
 				}
-				
-				if (attrValue == "true") {
-					attrValue = true;
-				} else if (attrValue == "false") {
-					attrValue = false;
-				}
-				
-				obj.propertyStates[0][attrName] = attrValue;				
+					
+				obj.propertyStates[0][attrName] = attrValue;
 			}
-			
-			attrName = null;
-			
+					
+			attrName = null;			
 		}
 		
 		public static function relToAbsPath(string:String):String
@@ -798,11 +792,22 @@ package com.gestureworks.cml.core
 			var propertyValue:String;
 			var objType:String;
 			
+			var newValue:*;
+			
 			for (var propertyName:String in obj.propertyStates[state])
-			{		
-				obj[propertyName] = 
-					filterProperty(propertyName, propertyValue, obj.propertyStates, state);	
+			{				
+				
+				newValue = obj.propertyStates[state][propertyName];
 					
+				if (newValue == "true")
+					newValue = true;
+				else if (newValue == "false")
+					newValue = false
+					
+				if (obj[propertyName] != newValue && String(newValue).charAt(0) != "{") {
+					obj[propertyName] = newValue;
+				}
+				
 				if (debug)
 				{
 					objType = obj.toString()
@@ -828,12 +833,12 @@ package com.gestureworks.cml.core
 		 * @return
 		 */
 		public static function filterProperty(propertyName:String, propertyValue:*, propertyStates:*, state:*):*
-		{			
-			propertyValue = propertyStates[state][propertyName].toString();
+		{				
+			propertyValue = propertyStates[state][propertyName].toString();			
 			
 			// filter value for expression delimiter "{}"
 			if (propertyValue.charAt(0) == "{")
-			{
+			{				
 				if ((propertyValue.charAt(propertyValue.length - 1) == "}"))
 				{
 					// remove whitepsace and {} characters
@@ -882,14 +887,7 @@ package com.gestureworks.cml.core
 				
 				else 
 					throw new Error("Malformed expression attribute. The delimiter character: {  must be followed by the: }  character");
-			}
-			
-			// check for boolean
-			else if (propertyValue == "true")
-				propertyStates[state][propertyName] = true;
-			else if (propertyValue == "false")
-				propertyStates[state][propertyName] = false;			
-			
+			}			
 							
 			return propertyStates[state][propertyName];			
 		}

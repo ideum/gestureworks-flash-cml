@@ -259,7 +259,7 @@ package com.gestureworks.cml.factories
 		 */		
 		override public function postparseCML(cml:XMLList):void 
 		{
-			if (this.propertyStates[0]["src"])
+			if (this.propertyStates[0]["src"] && String(this.propertyStates[0]["src"]).charAt(0) != "{")
 				preloadFile(this.propertyStates[0]["src"]);
 		}
 		
@@ -268,7 +268,7 @@ package com.gestureworks.cml.factories
 		 * This is called when the image is loaded. Do not override this method.
 		 */		
 		public function loadComplete(event:Event=null):void
-		{
+		{	
 			if (img)
 			{
 				fileData = img.loader;
@@ -276,11 +276,15 @@ package com.gestureworks.cml.factories
 			else
 			{
 				var imageSrc:String;
-				if (src.length < 3)
+				
+				if (src)
 					imageSrc = propertyStates[0]["src"];
 				else
-					imageSrc = src;				
-					trace(imageSrc);
+					imageSrc = src;	
+				
+				if (!FileManager.instance.fileList.hasKey(imageSrc))
+					return;
+					
 				fileData = FileManager.instance.fileList.getKey(imageSrc).loader;				
 			}
 
