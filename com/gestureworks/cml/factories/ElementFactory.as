@@ -5,7 +5,6 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.interfaces.IElement;
 	import flash.display.Sprite;
 	import flash.utils.Dictionary;
-	import com.gestureworks.cml.utils.StateUtils;
 	
 	/** 
 	 * The ElementFactory is the base class for all Elements.
