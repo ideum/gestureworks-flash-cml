@@ -1022,7 +1022,8 @@ package com.gestureworks.cml.factories
 		/**
 		 * Abstract drawing method, meant to be overriden.
 		 */				
-		public function updateGraphic():void {}
+		public function updateGraphic():void { }
+				
 		
 	}
 }

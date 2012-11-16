@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.factories.TouchContainerFactory;
@@ -369,7 +370,7 @@ package com.gestureworks.cml.element
 			"touchObjectID", "_touchObjectID", "_pointArray" ];
 			
 			var clone:TouchContainer = CloneUtils.clone(this, this.parent, v);
-			
+			clone.graphics.copyFrom(this.graphics);
 			clone.displayComplete();
 			
 			v.length = 0;

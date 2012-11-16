@@ -510,7 +510,8 @@ package com.gestureworks.cml.factories
 		/**
 		 * Returns clone of self
 		 */
-		public function clone():* {return new Object};			
+		public function clone():* { return new Object };
+				
 		
 	}
 }

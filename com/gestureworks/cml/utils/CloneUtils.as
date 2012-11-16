@@ -68,7 +68,7 @@ package com.gestureworks.cml.utils
 					for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
 						
 						if (DisplayObjectContainer(source).getChildAt(i).hasOwnProperty("clone"))
-							childClone = DisplayObjectContainer(source).getChildAt(i)["clone"]();
+							childClone = DisplayObject(DisplayObjectContainer(source).getChildAt(i)["clone"]());
 						else
 							childClone = clone(DisplayObjectContainer(source).getChildAt(i));
 					

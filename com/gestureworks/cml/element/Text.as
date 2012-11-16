@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.factories.TextFactory;
+	import com.gestureworks.cml.utils.CloneUtils;
 
 	/**
 	 * The Text element displays a text fields. It has most of the functionality
@@ -44,6 +45,16 @@ package com.gestureworks.cml.element
 			super.dispose();
 		}
 		
+		
+		/**
+		 * Returns clone of self
+		 */
+		override public function clone():* 
+		{ 
+			var clone:Text = CloneUtils.clone(this, this.parent);
+			clone.updateTextFormat();
+			return clone;
+		}
 		
 		
 		public var paddingLeft:Number = 0;
