@@ -98,9 +98,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void {
-			trace("AUTOPLAY VALUE:", value);
 			_autoplay = value;
-			trace("AUTOPLAY:", _autoplay);
 			if (_autoplay == true)
 				this.addEventListener(Event.COMPLETE, onComplete);
 		}
@@ -346,6 +344,22 @@ package com.gestureworks.cml.element
 			}
 			
 			slideshowItems = null;
+		}
+		
+		/**
+		 * Method to clear children and reset the childlist so the slideshow can be repopulated by running
+		 * init without simply appending or duplicating itself or the ChildList.
+		 */
+		public function clear():void {
+			timer.stop();
+			
+			for each (var item:DisplayObject in slideshowItems.array) {
+				if (contains(item))
+					removeChild(item);
+			}
+			while (childList.length > 0) {
+				childList.removeIndex(0);
+			}
 		}
 	}
 	
