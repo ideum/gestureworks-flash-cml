@@ -26,7 +26,6 @@ package com.gestureworks.cml.element
 	public class ScrollPane extends Container
 	{				
 		private var _itemList:List;
-		private var  _container:*;
 		private var _verticalScroll:ScrollBar;
 		private var _horizontalScroll:ScrollBar;
 		private var _vertical:Boolean = false;
@@ -110,6 +109,30 @@ package com.gestureworks.cml.element
 			_scrollThickness = value;
 		}
 		
+		override public function dispose():void {
+			super.dispose();
+			
+			if (_hit) {
+				_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
+				_hit.removeEventListener(GWGestureEvent.SCALE, onScale);
+			}
+			
+			if (_verticalScroll)
+				_verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
+			
+			if (_horizontalScroll)
+				_horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
+			
+			while (this.numChildren > 0) {
+				this.removeChildAt(0);
+			}
+			
+			_hit = null;
+			_mask = null;
+			_verticalScroll = null;
+			_horizontalScroll = null;
+		}
+		
 		override public function displayComplete():void {
 			init();
 		}
@@ -142,9 +165,16 @@ package com.gestureworks.cml.element
 							break;
 					}
 				}
-				if (_itemList.array[i] is TouchContainer) {
-					_hit = _itemList.array[i];
-					removeChild(_itemList.array[i]);
+				if (_itemList.array[i] is GestureList) {
+					trace("Adding gesture list");
+					_hit = new TouchContainer();
+					_hit.gestureEvents = true;
+					_hit.addChild(_itemList.array[i]);
+					_hit.childToList("gestureList", _itemList.array[i]);
+					_hit.gestureList = GestureList(_hit.getChildAt(0)).gestureList;
+					_hit.activateTouch();
+					_hit.disableNativeTransform = true;
+					//removeChild(_itemList.array[i]);
 					_itemList.array.splice(i, 1);
 					i--;
 				}
@@ -226,7 +256,9 @@ package com.gestureworks.cml.element
 			if (_hit) {
 				_hit.width = paneWidth;
 				_hit.height = paneHeight;
+				_hit.init();
 				addChild(_hit);
+				trace("Creating hit");
 				
 				// Use a graphic to give the touch container some "context", otherwise
 				// it's just empty space. This also works to form the pane's border.
@@ -261,7 +293,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onDrag(e:GWGestureEvent):void {
-			
+			trace("Drag");
 			var newPos:Number;
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
