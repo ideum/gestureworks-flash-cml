@@ -3,6 +3,8 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.interfaces.ICSS;
 	import com.gestureworks.cml.interfaces.IElement;
+	import com.gestureworks.cml.utils.CloneUtils;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.utils.Dictionary;
 	
@@ -410,8 +412,7 @@ package com.gestureworks.cml.factories
 		/**
 		 * Returns clone of self
 		 */
-		public function clone():* {return new Object};	
-
+		public function clone():* {return CloneUtils.clone(this, this.parent);};	
 		
 	}
 }
