@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.factories.GraphicFactory;
+	import com.gestureworks.cml.utils.CloneUtils;
 	
 
 	/**
@@ -124,6 +125,17 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
+		}
+		
+		/**
+		 * Returns a clone of self
+		 * @return
+		 */
+		override public function clone():* 
+		{
+			var clone:Frame = CloneUtils.clone(this, this.parent);
+			clone.updateGraphic();
+			return clone;			
 		}
 		
 	}
