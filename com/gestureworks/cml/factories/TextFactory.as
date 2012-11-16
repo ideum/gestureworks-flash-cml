@@ -168,9 +168,9 @@ package com.gestureworks.cml.factories
 		// TEXT 
 		////////////////////////////////		
 		
-		private var _htmlText:String;
+		private var _htmlText:String = null;
 		/**
-		 * contains htnl representation of text field contents
+		 * contains html representation of text field contents
 		 */
 		override public function get htmlText():String { return super.htmlText; }
 		override public function set htmlText(value:String):void
@@ -501,6 +501,16 @@ package com.gestureworks.cml.factories
 			
 			super.text = this.text;
 		}
+		
+		
+		//////////////
+		//  IClone  
+		//////////////		
+		
+		/**
+		 * Returns clone of self
+		 */
+		public function clone():* {return new Object};			
 		
 	}
 }

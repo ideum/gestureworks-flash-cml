@@ -1,5 +1,8 @@
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.utils.CloneUtils;
+	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.factories.TouchContainerFactory;
 	import com.gestureworks.cml.interfaces.ILayout;
@@ -354,6 +357,28 @@ package com.gestureworks.cml.element
 			}
 		}			
 		
+		
+		/**
+		 * Clone method
+		 */
+		public function clone():* 
+		{
+			var v:Vector.<String> = new <String>
+			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
+			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
+			"touchObjectID", "_touchObjectID", "_pointArray" ];
+			
+			var clone:TouchContainer = CloneUtils.clone(this, this.parent, v);
+			
+			clone.displayComplete();
+			
+			v.length = 0;
+			v = null;
+			
+			return clone;
+		}			
+		
+		
 		/**
 		 * Dispose method
 		 */
@@ -361,7 +386,9 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			layoutList = null;			
-		}		
+		}
+		
+
 		
 	}
 }

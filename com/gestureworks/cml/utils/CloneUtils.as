@@ -1,9 +1,14 @@
 package com.gestureworks.cml.utils 
 {
+	import com.gestureworks.cml.element.GestureList;
+	import com.gestureworks.cml.element.TouchContainer;
+	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.describeType;
+	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
+	import flash.events.Event;
 	
 	/**
 	 * The CloneUtils utility creates and returns a copy of an object.
@@ -30,41 +35,55 @@ package com.gestureworks.cml.utils
 		/**
 		 * Constructor
 		 */
-		public function CloneUtils():void {}
+		public function CloneUtils():void { }
+		
 		
 		/**
 		 * Returns a clone from the source parameter
 		 * @param	source
 		 * @return 
 		 */
-		public static function clone(source:*):* 
-		{			
+		public static function clone(source:*, parent:DisplayObjectContainer=null, pExclusions:Vector.<String>=null):* 
+		{
+			
 			var cloneObj:*;
+			var childClone:DisplayObject;
+							
+			
 			if (source) {
 				cloneObj = newInstance(source);
 				
 				if (cloneObj)
 				{
-					copyData(source, cloneObj);
+					copyData(source, cloneObj, pExclusions);
 				}
 			}
 			
+			if (parent)
+				parent.addChild(cloneObj);
+			
+				
 			if (source is DisplayObjectContainer) {
 				if (DisplayObjectContainer(source).numChildren > 0){
 					for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
-						var childClone:* = clone(DisplayObjectContainer(source).getChildAt(i));
 						
-						if (childClone.hasOwnProperty("displayComplete")) {
-							childClone["displayComplete"]();
-						}
-						
+						if (DisplayObjectContainer(source).getChildAt(i).hasOwnProperty("clone"))
+							childClone = DisplayObjectContainer(source).getChildAt(i)["clone"]();
+						else
+							childClone = clone(DisplayObjectContainer(source).getChildAt(i));
+					
 						DisplayObjectContainer(cloneObj).addChild(childClone);
+											
 					}
 				}
 			}
 			
+			
 			return cloneObj;
 		}
+		
+		
+
 		
 		/**
 		 * Returns a new object from the source paramter
@@ -87,34 +106,61 @@ package com.gestureworks.cml.utils
 			return null;
 		}
 		
+		
+		
 		/**
 		 * Copies source object data to destination object using the 
 		 * AS3 describeType method
 		 * @param	source
 		 * @param	destination
 		 */
-		public static function copyData(source:*, destination:*):void {
-			
-			if (source && destination)
-			{
+		public static function copyData(source:*, destination:*, pExclusions:Vector.<String>=null):void 
+		{	
+			if (source && destination) {
+				
 				try {
 					var sourceInfo:XML = describeType(source);
 					var prop:XML;
+					var pName:String;
 					
-					for each(prop in sourceInfo.variable)
-						destination[prop.@name] = source[prop.@name];							
 					
-					for each(prop in sourceInfo.accessor)
-					{
-						if (prop.@access == "readwrite")							
-							destination[prop.@name] = source[prop.@name];
+					for each(prop in sourceInfo.variable) {
+						
+						pName = String(prop.@name);
+						
+						if (source is TouchContainer && pExclusions)
+							trace(source, pName, (pExclusions.indexOf(pName) == -1));
+						else if (source is TouchContainer)
+							trace(source, pName);
+											
+						if (!pExclusions || (pExclusions && (pExclusions.indexOf(pName) == -1))) {
+							
+							if (destination[pName] != source[pName])
+								destination[pName] = source[pName];
+						}
 					}
-				
+						
+					for each(prop in sourceInfo.accessor) {
+						
+						pName = String(prop.@name);
+						
+						if (source is TouchContainer && pExclusions)
+							trace(source, pName, (pExclusions.indexOf(pName) == -1));
+						else if (source is TouchContainer)
+							trace(source, pName);
+						
+						
+						if (prop.@access == "readwrite") {
+							if (!pExclusions || (pExclusions && (pExclusions.indexOf(pName) == -1))) {
+								if (destination[pName] != source[pName])
+									destination[pName] = source[pName];
+							}
+						}
+					}
 				}
+				
 				catch (err:*) { throw new Error(err); }
 			}
-		}
-		
+		}	
 	}
-
 }

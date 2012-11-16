@@ -84,6 +84,13 @@ package com.gestureworks.cml.factories
 		}	
 	
 				
+		//////////////
+		//  IClone  
+		//////////////		
 		
+		/**
+		 * Returns clone of self
+		 */
+		public function clone():* {return new Object};			
 	}
 }

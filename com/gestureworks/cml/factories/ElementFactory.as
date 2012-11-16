@@ -5,6 +5,7 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.cml.interfaces.IElement;
 	import flash.display.Sprite;
 	import flash.utils.Dictionary;
+	import com.gestureworks.cml.utils.StateUtils;
 	
 	/** 
 	 * The ElementFactory is the base class for all Elements.
@@ -21,13 +22,15 @@ package com.gestureworks.cml.factories
 		 */
 		public function ElementFactory() 
 		{
-			mouseChildren = true;
 			super();
+			
 			propertyStates = [];
 			propertyStates[0] = new Dictionary(false);
-			
+				
 			super.scaleX = 1;
 			super.scaleY = 1;
+			
+			mouseChildren = true;
 		}			
 		
 		
@@ -196,9 +199,6 @@ package com.gestureworks.cml.factories
 		{
 			_maxScale = value;
 		}		
-		
-		
-		
 		
 		
 		private var originalScale:int = 1;
@@ -411,7 +411,7 @@ package com.gestureworks.cml.factories
 		/**
 		 * Returns clone of self
 		 */
-		public function clone():Object {return new Object};	
+		public function clone():* {return new Object};	
 
 		
 	}
