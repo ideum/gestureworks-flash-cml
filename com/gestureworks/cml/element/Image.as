@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.events.*;
 	
 	/** 
@@ -42,5 +43,20 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 		}
+		
+		/**
+		 * Returns a clone of this Image
+		 * @return
+		 */
+		override public function clone():* 
+		{
+			var clone:Image = CloneUtils.clone(this, this.parent);
+			clone.width = 0;
+			clone.height = 0;
+			clone.loadComplete();
+
+			return clone;			
+		}
+		
 	}
 }
