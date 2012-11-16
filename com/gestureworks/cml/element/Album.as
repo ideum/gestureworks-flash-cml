@@ -250,10 +250,15 @@ package com.gestureworks.cml.element
 			while (belt.numChildren)
 				belt.removeChildAt(belt.numChildren - 1);
 			
+			if (loop)
+				_loopQueue = new Array();
+			else
+			{
+				belt.x = 0;
+				belt.y = 0;
+			}
 			width = 0;
 			height = 0;
-			belt.x = 0;
-			belt.y = 0;
 		}
 			
 		/**
@@ -400,6 +405,7 @@ package com.gestureworks.cml.element
 		 */
 		private function setBeltDimensions():void
 		{
+			if (!belt.numChildren) return;
 			var last:* = belt.getChildAt(belt.numChildren - 1);
 			var edge:Number = (last[axis] + last[dimension] / 2) + this[dimension] / 2;
 			belt.width = horizontal ? edge : width;
