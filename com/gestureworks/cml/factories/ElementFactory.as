@@ -412,7 +412,12 @@ package com.gestureworks.cml.factories
 		/**
 		 * Returns clone of self
 		 */
-		public function clone():* {return CloneUtils.clone(this, this.parent);};	
+		public function clone():* 
+		{
+			var clone:ElementFactory = CloneUtils.clone(this, this.parent);
+			clone.displayComplete();
+			return clone;
+		}
 		
 	}
 }
