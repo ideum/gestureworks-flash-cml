@@ -334,17 +334,13 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onDrag(e:GWGestureEvent):void {
-			trace("Scroll bar drag");
 			if(_orientation == "vertical") {
-				//thumbTouch.y += e.value.drag_dy;
 				thumb.y += e.value.drag_dy;
 				clampThumb();
 				// Dispatch the scroll position.
 				scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
-				trace("Scrollposition:", (thumb.y - scrollBtn1.height) / movementRail, thumb.height);
 			}
 			else if (_orientation == "horizontal") {
-				//thumbTouch.x += e.value.drag_dx;
 				thumb.x += e.value.drag_dx;
 				clampThumb();
 				// Dispatch the scroll position.
