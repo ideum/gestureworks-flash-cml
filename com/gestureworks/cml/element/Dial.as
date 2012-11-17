@@ -617,6 +617,7 @@ package com.gestureworks.cml.element
 		{
 			matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
 			
+			background.graphics.clear();
 			background.graphics.lineStyle(backgroundLineStoke, backgroundAlpha);
 			background.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
 			background.graphics.drawRect(0, 0, 300, 200);
@@ -630,27 +631,33 @@ package com.gestureworks.cml.element
 			dropShadow.alpha = 1;
 			dropShadow.distance = 0.4;
 			
-			background.filters = filtersArray;
+			if(background.filters.length < 1)
+				background.filters = filtersArray;
 			
+			leftTriangle.graphics.clear();
 			leftTriangle.graphics.beginFill(leftTriangleColor, leftTriangleAlpha);
 			leftTriangle.graphics.moveTo(2, 80);
 			leftTriangle.graphics.lineTo(20, 100);
 			leftTriangle.graphics.lineTo(2, 120);
 			leftTriangle.graphics.endFill();
 			
+			rightTriangle.graphics.clear();
 			rightTriangle.graphics.beginFill(rightTriangleColor, rightTriangleAlpha);
 			rightTriangle.graphics.moveTo(300, 80);
 			rightTriangle.graphics.lineTo(280, 100);
 			rightTriangle.graphics.lineTo(300, 120);
 			rightTriangle.graphics.endFill();
 			
+			centerLine.graphics.clear();
 			centerLine.graphics.lineStyle(centerLineLineStoke, centerLineOutlineColor, centerLineOutlineAlpha);
 			centerLine.graphics.beginFill(centerLineColor, centerLineAlpha);
 			centerLine.graphics.drawRect(15, 96, 270, 8);
 			centerLine.graphics.endFill();
 			
+			mymask.graphics.clear();
 			mymask.graphics.beginFill(0xFF0000);
 			mymask.graphics.drawRect(0, 0, background.width - 3, background.height - 3);
+			mymask.graphics.endFill();
 			
 			touchSprite = new TouchSprite();
 			touchSprite.gestureList = {"n-drag-inertia": true};
@@ -660,11 +667,16 @@ package com.gestureworks.cml.element
 			//touchSprite.addEventListener(TouchEvent.TOUCH_END, onEnd);
 			//touchSprite.addEventListener(MouseEvent.MOUSE_UP, onEnd);
 				
-			touchSprite.addChild(background);
-			touchSprite.addChild(centerLine);
-			touchSprite.addChild(leftTriangle);
-			touchSprite.addChild(rightTriangle);
-			touchSprite.addChild(mymask);
+			if(!(touchSprite.contains(background)))
+				touchSprite.addChild(background);
+			if (!(touchSprite.contains(centerLine)));
+				touchSprite.addChild(centerLine);
+			if (!(touchSprite.contains(leftTriangle)));
+				touchSprite.addChild(leftTriangle);
+			if (!(touchSprite.contains(rightTriangle)));
+				touchSprite.addChild(rightTriangle);
+			if (!(touchSprite.contains(mymask)));
+				touchSprite.addChild(mymask);
 				
 			for (var i:int = 0; i < textArray.length; i++)
 			{	
@@ -687,15 +699,19 @@ package com.gestureworks.cml.element
 				txt.color = textColor;
 				textFieldArray.push(txt);				
 			}
-
-			textContainer.mask = mymask;
 			
-			touchSprite.addChild(textContainer);
-			addChild(touchSprite);
+			textContainer.mask = mymask;
+			if(!(touchSprite.contains(textContainer)))
+				touchSprite.addChild(textContainer);
+			
+			if(!(contains(touchSprite)))
+				addChild(touchSprite);
 			
 			maxPos = background.height;
 			minPos = background.y;
 			centerPos = background.height / 2;
+			
+			onEnd(null);
 		}
 	    /**
 		 * defines drag functionality for dial boundary and defines the dial mode. 
@@ -904,6 +920,13 @@ package com.gestureworks.cml.element
 			touchSprite = null;
 		 	touchSprite.removeEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 			touchSprite.removeEventListener(GWGestureEvent.COMPLETE, onEnd);
+		}
+		
+		public function clear():void {
+			while (textContainer.numChildren > 0) {
+				trace(textContainer.getChildAt(0));
+				textContainer.removeChildAt(0);
+			}
 		}
 	}
 	
