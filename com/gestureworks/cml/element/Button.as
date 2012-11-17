@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {	
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.element.Container;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.GestureWorks;
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
@@ -139,7 +140,7 @@ package com.gestureworks.cml.element
 		 * @return
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
-		{
+		{			
 			if (!childList.search(child))
 				childToList("button_" + buttonId++, child);
 			
@@ -1239,6 +1240,26 @@ package com.gestureworks.cml.element
 					break;
 			}			
 		}
+
+		
+		/**
+		 * Returns clone of self
+		 */
+		override public function clone():* 
+		{
+			var v:Vector.<String> = new <String>["childList", "initial", "hit", "up", "down", "out"];						
+			var clone:Button = CloneUtils.clone(this, this.parent, v);
+			
+			clone.hit = String(hit.id);
+			clone.initial = String(initial.id);
+			clone.up = String(up.id);
+			clone.down = String(down.id);
+			clone.out = String(out.id);
+			
+			clone.displayComplete();
+			return clone;
+		}			
+		
 		
 		/**
 		 * Destructor

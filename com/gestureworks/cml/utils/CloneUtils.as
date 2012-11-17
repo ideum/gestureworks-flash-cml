@@ -1,9 +1,11 @@
 package com.gestureworks.cml.utils 
 {
+	import com.gestureworks.cml.element.Button;
 	import com.gestureworks.cml.element.GestureList;
 	import com.gestureworks.cml.element.TouchContainer;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
@@ -128,13 +130,13 @@ package com.gestureworks.cml.utils
 						
 						pName = String(prop.@name);
 						
-						if (source is TouchContainer && pExclusions)
+						if (source is Button && pExclusions)
 							trace(source, pName, (pExclusions.indexOf(pName) == -1));
-						else if (source is TouchContainer)
+						else if (source is Button)
 							trace(source, pName);
 											
 						if (!pExclusions || (pExclusions && (pExclusions.indexOf(pName) == -1))) {
-							
+														
 							if (destination[pName] != source[pName])
 								destination[pName] = source[pName];
 						}
@@ -144,9 +146,9 @@ package com.gestureworks.cml.utils
 						
 						pName = String(prop.@name);
 						
-						if (source is TouchContainer && pExclusions)
+						if (source is Button && pExclusions)
 							trace(source, pName, (pExclusions.indexOf(pName) == -1));
-						else if (source is TouchContainer)
+						else if (source is Button)
 							trace(source, pName);
 						
 						
@@ -161,6 +163,16 @@ package com.gestureworks.cml.utils
 				
 				catch (err:*) { throw new Error(err); }
 			}
-		}	
+		}
+		
+		
+		public static function deepCopyObject(source:Object):Object
+		{			
+			var myBA:ByteArray = new ByteArray(); 
+			myBA.writeObject(source); 
+			myBA.position = 0; 
+			return(myBA.readObject()); 	
+		}
+		
 	}
 }
