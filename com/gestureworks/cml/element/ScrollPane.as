@@ -219,7 +219,8 @@ package com.gestureworks.cml.element
 			if (_itemList.array[0].height > paneHeight) {
 				addChild(_verticalScroll);
 				this.width = paneWidth + _verticalScroll.width;
-			}
+				_vertical = true;
+			} else { _vertical = false; }
 			
 			_horizontalMovement = _itemList.array[0].width - paneWidth;
 			_horizontal = true;
@@ -238,7 +239,7 @@ package com.gestureworks.cml.element
 			if (_itemList.array[0].width > paneWidth) {
 				addChild(_horizontalScroll);
 				this.height = _horizontalScroll.width + paneHeight;
-			}
+			} else { _horizontal = false; }
 			
 			// create mask and hitTouch.
 			
@@ -292,6 +293,7 @@ package com.gestureworks.cml.element
 			var newPos:Number;
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
+				trace("Vertical dragging");
 				newPos = _itemList.array[0].y + e.value.drag_dy;
 				newPos = clampPos(newPos, "vertical");
 				// Apply the new position.
@@ -300,6 +302,7 @@ package com.gestureworks.cml.element
 			}
 			
 			if (_horizontal) {
+				trace("Horizontal dragging");
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newPos = _itemList.array[0].x + e.value.drag_dx;
 				newPos = clampPos(newPos, "horizontal");
