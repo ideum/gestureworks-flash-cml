@@ -1,8 +1,10 @@
 package com.gestureworks.cml.utils 
 {
+	import com.gestureworks.cml.components.ImageViewer;
 	import com.gestureworks.cml.element.Button;
 	import com.gestureworks.cml.element.GestureList;
 	import com.gestureworks.cml.element.TouchContainer;
+	import com.gestureworks.cml.interfaces.IContainer;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.ByteArray;
@@ -48,6 +50,8 @@ package com.gestureworks.cml.utils
 		public static function clone(source:*, parent:DisplayObjectContainer=null, pExclusions:Vector.<String>=null):* 
 		{
 			
+			trace(pExclusions);
+			
 			var cloneObj:*;
 			var childClone:DisplayObject;
 							
@@ -61,8 +65,10 @@ package com.gestureworks.cml.utils
 				}
 			}
 			
-			if (parent)
-				parent.addChild(cloneObj);
+			
+			// add to clone's parent if cloning nested objects
+			if (!cloneObj.parent && parent)
+				parent.addChild(cloneObj);				
 			
 				
 			if (source is DisplayObjectContainer) {
@@ -85,7 +91,27 @@ package com.gestureworks.cml.utils
 		}
 		
 		
-
+		/**
+		 * Copies childlist from input source to destination.
+		 * Works from destination's display list, so children must be added to display to copy.
+		 * @param	source
+		 * @param	destination
+		 */
+		public static function copyChildList(source:*, destination:*):void 
+		{
+			
+			var arr:Array = source.childList.getKeyArray();
+			
+			for (var i:int = 0; i < arr.length; i++) 
+			{	
+				for (var j:int = 0; j < destination.numChildren; j++) 
+				{
+					if (destination.getChildAt(j)["id"] == arr[i])
+						destination.childList.replaceKey(String(arr[i]), destination.getChildAt(j));
+				}				
+			}			
+		}
+		
 		
 		/**
 		 * Returns a new object from the source paramter
@@ -130,9 +156,9 @@ package com.gestureworks.cml.utils
 						
 						pName = String(prop.@name);
 						
-						if (source is Button && pExclusions)
+						if (source is ImageViewer && pExclusions)
 							trace(source, pName, (pExclusions.indexOf(pName) == -1));
-						else if (source is Button)
+						else if (source is ImageViewer)
 							trace(source, pName);
 											
 						if (!pExclusions || (pExclusions && (pExclusions.indexOf(pName) == -1))) {
@@ -146,9 +172,9 @@ package com.gestureworks.cml.utils
 						
 						pName = String(prop.@name);
 						
-						if (source is Button && pExclusions)
+						if (source is ImageViewer && pExclusions)
 							trace(source, pName, (pExclusions.indexOf(pName) == -1));
-						else if (source is Button)
+						else if (source is ImageViewer)
 							trace(source, pName);
 						
 						

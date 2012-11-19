@@ -1,5 +1,7 @@
 package com.gestureworks.cml.utils
 {	
+	import com.gestureworks.cml.element.Container;
+	import com.gestureworks.cml.interfaces.IContainer;
 	import flash.utils.Dictionary;
 	
 	/**
@@ -337,8 +339,7 @@ package com.gestureworks.cml.utils
 			else
 				return true;
 		}		
-			
-	
+		
 		
 		// iterator methods //
 		
@@ -392,18 +393,6 @@ package com.gestureworks.cml.utils
 			return listValue.getIndex(currentIndex);
 		}
 		
-		/**
-		 * Copies content from another LinkedMap
-		 */
-		public function copyFrom(source:LinkedMap):void 
-		{				
-			var arr:Array = source.getKeyArray();
-			
-			for (var i:int = 0; i < arr.length; i++) 
-			{	
-				append(String(arr[i]), source.getIndex(i));
-			}
-		}		
 		
 	}
 }

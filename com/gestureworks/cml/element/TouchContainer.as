@@ -67,10 +67,7 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-			_cloneExclusions = new <String>
-			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
-			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint",  ];
+
 		}
 		
 		override public function displayComplete():void 
@@ -147,7 +144,10 @@ package com.gestureworks.cml.element
 			_layoutUpdate = f;
 		}	
 		
-		private var _cloneExclusions:Vector.<String>
+		private var _cloneExclusions:Vector.<String> = new <String>
+			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
+			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
+			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint"];
 		/**
 		 * Returns a list of properties to exclude when cloning this object
 		 */

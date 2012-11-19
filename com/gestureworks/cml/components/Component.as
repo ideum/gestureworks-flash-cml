@@ -37,8 +37,8 @@ package com.gestureworks.cml.components
 	 */	
 	public class Component extends TouchContainer 
 	{	
-		private var textFields:Array;	
-		private var fontArray:Array = new Array();
+		public var textFields:Array;	
+		public var fontArray:Array = new Array();
 					
 		/**
 		 * component Constructor
@@ -210,7 +210,7 @@ package com.gestureworks.cml.components
 		protected function get side():String { return _side; }
 		
 		protected function updateLayout(event:*=null):void
-		{
+		{	
 			if (front)
 			{
 				front.width = width;
@@ -259,7 +259,7 @@ package com.gestureworks.cml.components
 			if (textFields && autoTextLayout)
 			{
 				for (var i:int = 0; i < textFields.length; i++) 
-				{
+				{					
 					textFields[i].x = textFields[i].x + textFields[i].paddingLeft;
 					
 					textFields[i].autoSize = "left";
@@ -285,6 +285,8 @@ package com.gestureworks.cml.components
 				menu.visible = true;
 				menu.startTimer();
 			}
+			trace(textFields[1].x);
+			
 		}			
 
 		/**
@@ -365,30 +367,10 @@ package com.gestureworks.cml.components
 		 * Returns clone of self
 		 */
 		override public function clone():* 
-		{
+		{	
+			var clone:Component = CloneUtils.clone(this, null, cloneExclusions);
 			
-			var v:Vector.<String> = new <String>
-			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
-			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint" ];
-			
-			var clone:Component = CloneUtils.clone(this, null, v);
-			
-			if (clone.parent)
-				clone.parent.addChild(clone);
-			else
-				this.parent.addChild(clone);
-			
-			var arr:Array = childList.getKeyArray();
-			
-			for (var i:int = 0; i < arr.length; i++) 
-			{	
-				for (var j:int = 0; j < numChildren; j++) 
-				{
-					if (getChildAt(j)["id"] == arr[i])
-						clone.childList.replaceKey(String(arr[i]), clone.getChildAt(j));
-				}				
-			}
+			CloneUtils.copyChildList(this, clone);			
 			
 			if (front)
 				clone.front = String(front.id);
@@ -404,9 +386,10 @@ package com.gestureworks.cml.components
 			
 			if (frame)
 				clone.frame = String(frame.id);	
-				
-			
+						
 			clone.displayComplete();
+			
+
 			return clone;
 		}		
 		

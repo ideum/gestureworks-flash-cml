@@ -119,35 +119,13 @@ package com.gestureworks.cml.components
 		}
 		
 		
-		/**
-		 * Returns clone of self
-		 */
 		override public function clone():* 
-		{		
-			var v:Vector.<String> = new <String>
-			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
-			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint" ];
-			
-			var clone:Component = CloneUtils.clone(this, null, v);
-			
-			if (clone.parent)
-				clone.parent.addChild(clone);
-			else
-				this.parent.addChild(clone);
+		{	
+			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);
 		
 				
-			var arr:Array = childList.getKeyArray();
+			CloneUtils.copyChildList(this, clone);		
 			
-			for (var i:int = 0; i < arr.length; i++) 
-			{	
-				for (var j:int = 0; j < numChildren; j++) 
-				{
-					if (getChildAt(j)["id"] == arr[i])
-						clone.childList.replaceKey(String(arr[i]), clone.getChildAt(j));
-				}				
-			}
-
 			if (front)
 				clone.front = String(front.id);
 			
@@ -161,11 +139,20 @@ package com.gestureworks.cml.components
 				clone.menu = String(menu.id);
 			
 			if (frame)
-				clone.frame = String(frame.id);			
-			
+				clone.frame = String(frame.id);				
+				
+				
 			clone.displayComplete();
+			
+			
+			for (var i:int = 0; i < textFields.length; i++) 
+			{					
+				clone.textFields[i].x = textFields[i].x;
+				clone.textFields[i].y = textFields[i].y;
+			}				
+
 			return clone;
-		}		
+		}			
 		
 	}
 	
