@@ -131,6 +131,8 @@ package com.gestureworks.cml.element
 			_mask = null;
 			_verticalScroll = null;
 			_horizontalScroll = null;
+			
+			_itemList = null;
 		}
 		
 		override public function displayComplete():void {
@@ -146,7 +148,6 @@ package com.gestureworks.cml.element
 			
 			// Check if there's any scroll bars already set.
 			for (var i:Number = 0; i < _itemList.length; i++) {
-				trace("Item list #", i, _itemList.array[i]);
 				if (_itemList.array[i] is ScrollBar) {
 					switch(_itemList.array[i].orientation) {
 						case "vertical":
@@ -165,16 +166,11 @@ package com.gestureworks.cml.element
 							break;
 					}
 				}
-				if (_itemList.array[i] is GestureList) {
-					trace("Adding gesture list");
-					_hit = new TouchContainer();
-					_hit.gestureEvents = true;
-					_hit.addChild(_itemList.array[i]);
-					_hit.childToList("gestureList", _itemList.array[i]);
-					_hit.gestureList = GestureList(_hit.getChildAt(0)).gestureList;
-					_hit.activateTouch();
+				if (_itemList.array[i] is TouchContainer) {
+					_hit = _itemList.array[i];
+					addChild(_hit);
 					_hit.disableNativeTransform = true;
-					//removeChild(_itemList.array[i]);
+					removeChild(_itemList.array[i]);
 					_itemList.array.splice(i, 1);
 					i--;
 				}
@@ -258,7 +254,6 @@ package com.gestureworks.cml.element
 				_hit.height = paneHeight;
 				_hit.init();
 				addChild(_hit);
-				trace("Creating hit");
 				
 				// Use a graphic to give the touch container some "context", otherwise
 				// it's just empty space. This also works to form the pane's border.
@@ -293,7 +288,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onDrag(e:GWGestureEvent):void {
-			trace("Drag");
+			
 			var newPos:Number;
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
