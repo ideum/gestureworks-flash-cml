@@ -95,31 +95,6 @@ package com.gestureworks.cml.element
 			_waveColor = value;
 		}
 		
-		
-		private var _width:Number = 500;
-		/**
-		 * Sets the width in pixels
-		 * @default 500
-		 */			
-		override public function get width():Number{ return _width;}
-		override public function set width(value:Number):void
-		{
-			_width = value;
-		}
-		
-	
-		private var _height:Number = 300;
-		/**
-		 * Sets the height in pixels
-		 * @default 300
-		 */			
-		override public function get height():Number{ return _height;}
-		override public function set height(value:Number):void
-		{
-			_height = value;
-		}					
-		
-		
 		/**
 		 * Indicates whether the mp3 file is autoloaded 
 		 * @default true
@@ -209,7 +184,7 @@ package com.gestureworks.cml.element
 		
 		private var _display:String = "waveform";
 		/**
-		 * Visualization display type, choose waveform or none
+		 * Visualization display type, can be set to "waveform", "none", or an image URL.
 		 * @default waveform
 		 */			
 		public function get display():String {return _display;}				
@@ -466,16 +441,39 @@ package com.gestureworks.cml.element
 			{
 				bgGraphic = new Sprite;
 				bgGraphic.graphics.beginFill(backgroundColor, backgroundAlpha);
-				bgGraphic.graphics.drawRect(0, 0, _width, _height);
+				bgGraphic.graphics.drawRect(0, 0, width, height);
 				bgGraphic.graphics.endFill();
 				addChild(bgGraphic);
 				
 				waveForm = new Waveform();
 				waveForm.waveColor = _waveColor;
-				waveForm.waveWidth = _width;
-				waveForm.waveHeight = _height;
+				waveForm.waveWidth = width;
+				waveForm.waveHeight = height;
 				addChild(waveForm);
 				bytes = new ByteArray();
+			}
+			else if (display && display != "none") {
+				var image:Image = new Image();
+				image.src = display;
+				if(width){
+					image.width = this.width;
+				}
+				if (height){
+					image.height = this.height
+				}
+				image.addEventListener(Event.COMPLETE, imageComplete);
+				image.open(image.src);
+				
+				function imageComplete(e:Event):void {
+					image.removeEventListener(Event.COMPLETE, imageComplete);
+					addChild(image);
+					if (!width) {
+						width = image.width;
+					}
+					if (!height) {
+						height = image.height;
+					}
+				}
 			}
 			
 			//ID3 metadata
@@ -519,7 +517,7 @@ package com.gestureworks.cml.element
 		//graphic
 		private function draw():void 
 		{
-			var origin:Number = _height * .5;
+			var origin:Number = height * .5;
 			sound.extract(bytes, 2048, (channel.position*44.1));
 			bytes.position = 0;
 			
