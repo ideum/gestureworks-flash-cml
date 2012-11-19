@@ -1243,7 +1243,12 @@ package com.gestureworks.cml.element
 		override public function clone():* 
 		{
 			var v:Vector.<String> = new <String>["childList", "initial", "hit", "up", "down", "out"];						
-			var clone:Button = CloneUtils.clone(this, this.parent, v);
+			var clone:Button = CloneUtils.clone(this, null, v);
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
 			
 			clone.hit = String(hit.id);
 			clone.initial = String(initial.id);

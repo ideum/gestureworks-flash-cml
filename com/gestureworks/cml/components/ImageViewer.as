@@ -129,8 +129,14 @@ package com.gestureworks.cml.components
 			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
 			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint" ];
 			
-			var clone:Component = CloneUtils.clone(this, this.parent, v);
+			var clone:Component = CloneUtils.clone(this, null, v);
 			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
+		
+				
 			var arr:Array = childList.getKeyArray();
 			
 			for (var i:int = 0; i < arr.length; i++) 

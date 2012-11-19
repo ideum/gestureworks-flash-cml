@@ -151,7 +151,12 @@ package com.gestureworks.cml.element
 		override public function clone():* 
 		{
 			var v:Vector.<String> = new <String>[];						
-			var clone:Menu = CloneUtils.clone(this, this.parent, v);
+			var clone:Menu = CloneUtils.clone(this, null, v);
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);			
 			
 			var arr:Array = childList.getKeyArray();
 			
