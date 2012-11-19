@@ -127,6 +127,8 @@ package com.gestureworks.cml.element
 			if (mouseDown) listenMouseDown();
 			if (mouseOver) listenMouseOver();
 						
+			if (side) setSide();
+			
 			updateLayout();
 		}
 
@@ -541,6 +543,17 @@ package com.gestureworks.cml.element
 			}			
 		}
 		
+		
+		private var _side:String;
+		/**
+		 * Attaches an event string to a button to listen for to toggle visibility when that event is dispatched.
+		 * For example, setting side="info" and visible="false" will mean that the button will only be visible when
+		 * the info button is toggled, as the visible state will simply be reversed from whatever it is.
+		 */
+		public function get side():String { return _side; }
+		public function set side(value:String):void {
+			_side = value;
+		}
 		
 		
 		////////////////////////////////////////////////////
@@ -1236,6 +1249,15 @@ package com.gestureworks.cml.element
 			}			
 		}
 
+		private function setSide():void {
+			GestureWorks.application.addEventListener(StateEvent.CHANGE, onFlip);
+		}
+		
+		private function onFlip(e:StateEvent):void {
+			if (e.value == side) {
+				visible = !visible;
+			}
+		}
 		
 		/**
 		 * Returns clone of self
@@ -1297,6 +1319,9 @@ package com.gestureworks.cml.element
 				listenOver(false);
 				listenOut(false);				
 				hit = null;
+			}
+			if (side) {
+				GestureWorks.application.removeEventListener(StateEvent.CHANGE, onFlip);
 			}
 			
 			listenToggle(false);
