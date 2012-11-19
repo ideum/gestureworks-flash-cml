@@ -67,7 +67,15 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-			
+			_cloneExclusions = new <String>
+			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
+			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
+			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint",  ];
+		}
+		
+		override public function displayComplete():void 
+		{
+			init();
 		}
 		
 		/**
@@ -137,7 +145,14 @@ package com.gestureworks.cml.element
 		public function set layoutUpdate(f:Function):void
 		{
 			_layoutUpdate = f;
-		}					
+		}	
+		
+		private var _cloneExclusions:Vector.<String>
+		/**
+		 * Returns a list of properties to exclude when cloning this object
+		 */
+		public function get cloneExclusions():Vector.<String> { return _cloneExclusions; }
+				
 		
 		/**
 		 * This method does a depth first search of childLists. Search parameter can a simple CSS selector 
@@ -381,18 +396,10 @@ package com.gestureworks.cml.element
 		 * Clone method
 		 */
 		public function clone():* 
-		{
-			var v:Vector.<String> = new <String>
-			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
-			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint",  ];
-			
-			var clone:TouchContainer = CloneUtils.clone(this, this.parent, v);
+		{		
+			var clone:TouchContainer = CloneUtils.clone(this, this.parent, cloneExclusions);
 			clone.graphics.copyFrom(this.graphics);
-			clone.displayComplete();
-			
-			v.length = 0;
-			v = null;
+			clone.displayComplete();			
 			
 			return clone;
 		}			
