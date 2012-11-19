@@ -2,6 +2,8 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.Button;
 	import com.gestureworks.cml.element.Container
+	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.events.*;
@@ -93,14 +95,14 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void {
 			//updateLayout(this.width, this.height)
 			//init();
-			}
+		}
 		
 		/**
 		 * Initialisation method
 		 */
 		public function init():void {
 			updateLayout(this.width, this.height);	
-			}
+		}
 		
 		private function onClick(event:*):void
 		{
@@ -141,6 +143,32 @@ package com.gestureworks.cml.element
 				}
 			}
 		}
+
+		
+		/**
+		 * Returns clone of self
+		 */
+		override public function clone():* 
+		{
+			var v:Vector.<String> = new <String>[];						
+			var clone:Menu = CloneUtils.clone(this, this.parent, v);
+			
+			var arr:Array = childList.getKeyArray();
+			
+			for (var i:int = 0; i < arr.length; i++) 
+			{				
+				for (var j:int = 0; j < numChildren; j++) 
+				{
+					if (getChildAt(j)["id"] == arr[i])
+						clone.childList.replaceKey(arr[i], clone.getChildAt(j));
+				}				
+			}
+
+			clone.displayComplete();
+
+			return clone;
+		}		
+		
 		
 		/**
 		 * sets the layout depending on the position

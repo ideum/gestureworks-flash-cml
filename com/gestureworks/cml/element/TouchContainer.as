@@ -358,6 +358,24 @@ package com.gestureworks.cml.element
 			}
 		}			
 		
+		/**
+		 * Adds child to display list and, if not already added, the child list
+		 * TODO: This mechanism should be abstracted to better syncrhonize child and display lists  
+		 * @param	child
+		 * @return
+		 */
+		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
+		{			
+			if (!childList.search(child)) {
+				
+				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
+					childToList(child["id"], child);
+				else
+					childToList(child.name, child);
+			}
+			
+			return super.addChild(child);
+		}
 		
 		/**
 		 * Clone method
@@ -367,7 +385,7 @@ package com.gestureworks.cml.element
 			var v:Vector.<String> = new <String>
 			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
 			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray" ];
+			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint",  ];
 			
 			var clone:TouchContainer = CloneUtils.clone(this, this.parent, v);
 			clone.graphics.copyFrom(this.graphics);

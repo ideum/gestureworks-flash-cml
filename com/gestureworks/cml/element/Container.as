@@ -6,6 +6,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
+	import flash.display.DisplayObject;
 	import flash.utils.Dictionary;
 		
 	/**
@@ -227,6 +228,27 @@ package com.gestureworks.cml.element
 				}
 			}
 		}		
+		
+		
+		/**
+		 * Adds child to display list and, if not already added, the child list
+		 * TODO: This mechanism should be abstracted to better syncrhonize child and display lists  
+		 * @param	child
+		 * @return
+		 */
+		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
+		{
+			if (!childList.search(child)) {
+				
+				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
+					childToList(child["id"], child);
+				else
+					childToList(child.name, child);
+			}
+			
+			return super.addChild(child);
+		}
+		
 		
 		/**
 		 * shows the childlist index 

@@ -113,6 +113,8 @@ package com.gestureworks.cml.element
 			if (hit)
 				addChildAt(hit, numChildren - 1);
 				
+			trace("down", down);
+				
 			//initialize auto listeners 
 			if (down) listenDown();
 			if (over) listenOver();
@@ -133,19 +135,6 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
-		/**
-		 * Adds child to display list and, if not already added, the child list
-		 * TODO: This mechanism should be abstracted to better syncrhonize child and display lists  
-		 * @param	child
-		 * @return
-		 */
-		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
-		{			
-			if (!childList.search(child))
-				childToList("button_" + buttonId++, child);
-			
-			return super.addChild(child);
-		}
 		
 		/**
 		 * Adds or removes a listener based on the value of the <code>add</code> flag
@@ -481,6 +470,8 @@ package com.gestureworks.cml.element
 			}
 			else
 			{
+				trace("________________", childList.getKey(value), value);
+				
 				value = value.toString();
 				_down = childList.getKey(value);
 				buttonStates.push(_down);						
@@ -937,7 +928,9 @@ package com.gestureworks.cml.element
 		 * @param	event  the down event
 		 */				
 		protected function onDown(event:*):void
-		{	
+		{
+			trace("down", this.id);
+			
 			if (debug)
 				trace("down");
 				
@@ -1078,6 +1071,8 @@ package com.gestureworks.cml.element
 		 */			
 		private function listenDown(listen:Boolean = true):void
 		{
+			trace("listenDown");
+			
 			if (GestureWorks.activeTUIO)
 				addListener(TuioTouchEvent.TOUCH_DOWN, onDown, listen, hit);
 			else if (GestureWorks.supportsTouch)

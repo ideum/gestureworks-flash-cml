@@ -3,6 +3,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
 	
 	/**
@@ -116,6 +117,49 @@ package com.gestureworks.cml.components
 			super.dispose();
 			image = null;
 		}
+		
+		
+		/**
+		 * Returns clone of self
+		 */
+		override public function clone():* 
+		{		
+			var v:Vector.<String> = new <String>
+			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
+			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
+			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint" ];
+			
+			var clone:Component = CloneUtils.clone(this, this.parent, v);
+			
+			var arr:Array = childList.getKeyArray();
+			
+			for (var i:int = 0; i < arr.length; i++) 
+			{	
+				for (var j:int = 0; j < numChildren; j++) 
+				{
+					if (getChildAt(j)["id"] == arr[i])
+						clone.childList.replaceKey(String(arr[i]), clone.getChildAt(j));
+				}				
+			}
+
+			if (front)
+				clone.front = String(front.id);
+			
+			if (back)
+				clone.back = String(back.id);
+			
+			if (background)
+				clone.background = String(background.id);
+			
+			if (menu)	
+				clone.menu = String(menu.id);
+			
+			if (frame)
+				clone.frame = String(frame.id);			
+			
+			clone.displayComplete();
+			return clone;
+		}		
 		
 	}
 	

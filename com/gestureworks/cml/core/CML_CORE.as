@@ -115,8 +115,6 @@ package com.gestureworks.cml.core
 	
 	
 	// deprecated
-	
-	
 	import com.gestureworks.cml.element.ButtonElement; ButtonElement;			
 	import com.gestureworks.cml.element.TextElement; TextElement;
 	import com.gestureworks.cml.element.SWCElement; SWCElement;		
@@ -127,7 +125,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ImageElement; ImageElement;
 	import com.gestureworks.cml.element.MediaElement; MediaElement;
 	import com.gestureworks.cml.element.MP3Element; MP3Element;	
-	
 	
 	/////////////////////
 	//  KITS  
