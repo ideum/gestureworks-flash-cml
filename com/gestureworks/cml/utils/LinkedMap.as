@@ -392,5 +392,18 @@ package com.gestureworks.cml.utils
 			return listValue.getIndex(currentIndex);
 		}
 		
+		/**
+		 * Copies content from another LinkedMap
+		 */
+		public function copyFrom(source:LinkedMap):void 
+		{				
+			var arr:Array = source.getKeyArray();
+			
+			for (var i:int = 0; i < arr.length; i++) 
+			{	
+				append(String(arr[i]), source.getIndex(i));
+			}
+		}		
+		
 	}
 }
