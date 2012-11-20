@@ -378,7 +378,7 @@ package com.gestureworks.cml.element
 			if (!_isPlaying) 
 			{				
 				timer.start();
-				channel = sound.play(position, 0, soundTrans);
+				channel = sound.play(Position, 0, soundTrans);
 				channel.addEventListener(Event.SOUND_COMPLETE, soundComplete);
 				_isPlaying = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying));
@@ -417,10 +417,12 @@ package com.gestureworks.cml.element
 		 */
 		public function seek(pos:Number):void
 		{
-			stop();
-			Position = pos;
-			play();
-		    if (!timer.running)
+			//stop();
+			pause();
+			Position = (pos / 100) * sound.length;
+			trace("position:", pos, Position, "/", sound.length);
+			//play();
+		    //if (!timer.running)
 		//	Position = pos;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , Position));
 		}
@@ -554,6 +556,10 @@ package com.gestureworks.cml.element
 		{
 			var string:String=formatTime(channel.position);
 			sendUpdate(string);
+			
+			var timePos:Number = channel.position / 1000;
+			timePos = timePos / (sound.length / 1000);
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", timePos));
 			
 			if (display == "waveform") 		
 				draw();
