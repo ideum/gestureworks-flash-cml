@@ -117,17 +117,14 @@ package com.gestureworks.cml.components
 		
 		private var cover:Sprite;
 		
-		private function onBoundsTimer(event:GWGestureEvent):void
-		{				
+		private function onBoundsTimer(event:GWGestureEvent=null):void
+		{
 			var onscreen:Boolean = CollisionDetection.isColliding(DisplayObject(event.target), cover, this, true, 0);								
-			trace(onscreen);
 			if (!onscreen)
-			{					
-				removeComponent(DisplayObject(event.target));
+				removeComponent(DisplayObject(event.target));			
 				
-				if (this.numChildren-1 < amountToShow)
-					addNextComponent();
-			}				
+			if (this.numChildren-1 < amountToShow)
+				addNextComponent();			
 		}
 			
 
@@ -161,7 +158,9 @@ package com.gestureworks.cml.components
 		}
 
 		override protected function onStateEvent(event:StateEvent):void
-		{			
+		{
+			trace("hi");
+			
 			if (event.value == "close") 
 			{				
 				removeComponent(event.currentTarget);				
@@ -182,6 +181,8 @@ package com.gestureworks.cml.components
 			var newComponent:*;							
 			newComponent = queue.getIndex(0);
 			queue.remove(0);
+			
+			trace(queue);
 			
 			if (newComponent)
 			{
@@ -215,10 +216,12 @@ package com.gestureworks.cml.components
 		
 		private function dbInit():void
 		{
+			// TODO: cache original cml objects and expression attributes			
+			
 			if (!gateway) return;
 			hideAll();
 			connect();
-			
+						
 			entry = new Text();
 			entry.width = 200;
 			entry.height = 25;
@@ -235,8 +238,8 @@ package com.gestureworks.cml.components
 			if (e.keyCode == 13)
 			{
 				hideAll();	
-				//connection.call("./AMFTest.getalldata", responder, entry.text);
-				connection.call("./SetTest.set_search", responder, entry.text);
+				connection.call("./AMFTest.getalldata", responder, entry.text);
+				//connection.call("./SetTest.set_search", responder, entry.text);
 			}
 		}
 		
@@ -282,60 +285,73 @@ package com.gestureworks.cml.components
 		
 		private function onResult(result:Object):void
 		{								
-			updateSets(result);
+			updateObjects(result);
 		}
 		
 		private function updateObjects(result:Object):void
 		{
+			// get current objects available
 			var objs:Array = searchChildren(ImageViewer, Array);
+			
+			
+			var dict:Dictionary = new Dictionary(true);
+			dict["ImageViewer"] = [];
+			
+			
+					
+			
+			
+			//dict[ImageViewer][0] = [0, 1, "src"];
+			//dict[ImageViewer][1] = [1, 2, "text"];
+			//dict[ImageViewer][2] = [1, 3, "text"];
+			
+			
+
+			
+			var cnt:int = 2;
+			
+			
+			// TODO: get number of required objects from results (custom tag name, specifying display object)
+			for each(var obj:* in result)
+			{
+				//cnt++;		
+			}
+			
+			
+			
+		
+			//objs[0].visible = true;
+			objs[1] = objs[0].clone();
+			objs[1].image.close();
+			objs[1].image.width = 0;
+			objs[1].image.height = 0;
+			objs[1].image.open("http://www.sifxtreme.com/collectiveaccess-providence-1.2/media/my_first_collectiveaccess_system/images/0/11883_ca_object_representations_media_30_original.png");
+			objs[1].image.addEventListener(Event.COMPLETE, function(e:Event):void { objs[1].init(); } );	
+			objs[1].visible = true;
+			
 			var index:int = 0;
 			
+			/*
 			for each(var obj:* in result)
 			{
 				if (!(objs[index] is ImageViewer)) return;
 				var iv:ImageViewer = ImageViewer(objs[index]);
 				iv.visible = true;
+				var metaTag:String = iv.image.propertyStates[0]["src"];	
 				
-				for (var type:* in obj)
-				{
-					var val:* = obj[type];						
-					switch(type)
-					{
-						case "name":
-							var back:TouchContainer = TouchContainer(iv.back);
-							var title:Text = Text(back.getChildByName("title"));
-							title.text = val;
-							break;
-						case "work_description":
-							var back:TouchContainer = TouchContainer(iv.back);
-							var description:Text = Text(back.getChildByName("description"));
-							description.text = val;												
-							break;
-						case "image_content":
-							var tc:TouchContainer = TouchContainer(iv.image.parent);
-							tc.removeChild(iv.image);					
-							
-							var img:Image = new Image();												
-							img.open(val);
-							img.init();
-							
-							img.width = 700;
-							img.height = 700;
-							img.resample = true;												
-							tc.addChild(img);
-							
-							iv.width = 0;
-							iv.height = 0;
-							iv.image = img;
-							iv.init();
-							break;
-						default:
-							break;
-					}					
-				}
+				iv.image.close();
+				iv.image.open("http://www.sifxtreme.com/collectiveaccess-providence-1.2/media/my_first_collectiveaccess_system/images/0/11883_ca_object_representations_media_30_original.png");
+			
 				
+				trace(obj[metaTag.substring(1, metaTag.length - 1)]);
+				
+				//iv.image.addEventListener(Event.COMPLETE, function(e:Event):void { iv.init(); } );
 				index++;
+				
+				if (index == 3) break;
 			}
+			*/
+
 		}
 		
 		private function updateSets(result:Object):void

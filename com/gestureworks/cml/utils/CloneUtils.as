@@ -155,11 +155,6 @@ package com.gestureworks.cml.utils
 					for each(prop in sourceInfo.variable) {
 						
 						pName = String(prop.@name);
-						
-						if (source is ImageViewer && pExclusions)
-							trace(source, pName, (pExclusions.indexOf(pName) == -1));
-						else if (source is ImageViewer)
-							trace(source, pName);
 											
 						if (!pExclusions || (pExclusions && (pExclusions.indexOf(pName) == -1))) {
 														
@@ -171,12 +166,6 @@ package com.gestureworks.cml.utils
 					for each(prop in sourceInfo.accessor) {
 						
 						pName = String(prop.@name);
-						
-						if (source is ImageViewer && pExclusions)
-							trace(source, pName, (pExclusions.indexOf(pName) == -1));
-						else if (source is ImageViewer)
-							trace(source, pName);
-						
 						
 						if (prop.@access == "readwrite") {
 							if (!pExclusions || (pExclusions && (pExclusions.indexOf(pName) == -1))) {

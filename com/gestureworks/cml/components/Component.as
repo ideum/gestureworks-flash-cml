@@ -285,8 +285,8 @@ package com.gestureworks.cml.components
 				menu.visible = true;
 				menu.startTimer();
 			}
-			trace(textFields[1].x);
 			
+			trace(id);
 		}			
 
 		/**
@@ -368,7 +368,7 @@ package com.gestureworks.cml.components
 		 */
 		override public function clone():* 
 		{	
-			var clone:Component = CloneUtils.clone(this, null, cloneExclusions);
+			var clone:Component = CloneUtils.clone(this, this.parent, cloneExclusions);
 			
 			CloneUtils.copyChildList(this, clone);			
 			

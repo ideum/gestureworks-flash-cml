@@ -21,7 +21,7 @@ package com.gestureworks.cml.element
 	public class Menu extends Container 
 	{
 		private var frameCount:int = 0;
-		private var buttonArray:Array = [];
+		public var buttonArray:Array = [];
  
 		/**
 		 * Constructor
@@ -181,7 +181,7 @@ package com.gestureworks.cml.element
 		 * @param	containerHeight
 		 */
 		public function updateLayout(containerWidth:Number, containerHeight:Number):void
-		{
+		{	
 			buttonArray = [];
 			
 			for (var j:int = 0; j < childList.length; j++) 
@@ -217,8 +217,7 @@ package com.gestureworks.cml.element
 						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;				
 					
 					else if (position == "top")
-						buttonArray[i].y = paddingTop;					
-				
+						buttonArray[i].y = paddingTop;				
 				}
 				
 				// position last button, if more than one

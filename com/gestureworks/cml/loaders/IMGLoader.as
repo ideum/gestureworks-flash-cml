@@ -1,8 +1,7 @@
 package com.gestureworks.cml.loaders 
 {
 	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
+	import flash.events.*;
 	import flash.net.URLRequest;
 	import flash.utils.*;
 	
@@ -54,19 +53,37 @@ package com.gestureworks.cml.loaders
 				_src = url;
 			
 			loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loaderCompleteHandler);
-			loader.load(new URLRequest(url));			
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
+			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
+			loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);			
+			loader.load(new URLRequest(url));
 		}		
 		
 		/**
-		 * Bitmap load complete hander
+		 * Bitmap load complete handler
 		 * @param	event
 		 */
-		private function loaderCompleteHandler(event:Event):void
+		private function onComplete(event:Event):void
 		{
+			trace(event);
 			_isLoaded = true;
-			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, loaderCompleteHandler);			
-			dispatchEvent(new Event(Event.COMPLETE, true, true));			
-		}			
+			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);	
+			loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);	
+			loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onProgress);				
+			dispatchEvent(new Event(Event.COMPLETE, false, false));			
+		}
+		
+		private function onError(event:IOErrorEvent):void
+		{
+			trace(event);		
+		}		
+
+		private function onProgress(event:ProgressEvent):void
+		{
+			
+			trace(event);		
+		}	
+		
+		
 	}
 }

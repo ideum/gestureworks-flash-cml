@@ -104,10 +104,12 @@ package com.gestureworks.cml.components
 			if (!width && image)
 				width = image.width;
 			if (!height && image)
-				height = image.height;
+				height = image.height;	
 				
 			super.updateLayout();
 		}	
+		
+		
 		
 		/**
 		 * Dispose method to nullify the attributes and remove listener
@@ -121,10 +123,12 @@ package com.gestureworks.cml.components
 		
 		override public function clone():* 
 		{	
-			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);
-		
+			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);		
 				
 			CloneUtils.copyChildList(this, clone);		
+
+			if (image)
+				clone.image = String(image.id);				
 			
 			if (front)
 				clone.front = String(front.id);
@@ -145,10 +149,13 @@ package com.gestureworks.cml.components
 			clone.displayComplete();
 			
 			
-			for (var i:int = 0; i < textFields.length; i++) 
+			for (var i:int = 0; i < clone.textFields.length; i++) 
 			{					
 				clone.textFields[i].x = textFields[i].x;
 				clone.textFields[i].y = textFields[i].y;
+				
+				trace("textX", clone.textFields[i].x);
+				trace("textY", clone.textFields[i].y);
 			}				
 
 			return clone;

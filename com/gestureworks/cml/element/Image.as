@@ -50,11 +50,19 @@ package com.gestureworks.cml.element
 		 */
 		override public function clone():* 
 		{
-			var clone:Image = CloneUtils.clone(this, this.parent);
+			var clone:Image = CloneUtils.clone(this, null);
+			var src:String = clone.src;
+			clone.close();
+			
 			clone.width = 0;
 			clone.height = 0;
-			clone.loadComplete();
-
+			
+			trace("width", clone.width);
+			
+			if (src)
+				clone.open(src);
+			
+			//clone.loadComplete();
 			return clone;			
 		}
 		

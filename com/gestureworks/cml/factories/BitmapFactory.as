@@ -211,12 +211,14 @@ package com.gestureworks.cml.factories
 		 * Opens an external image file
 		 * @param	file
 		 */
-		public function open(file:String):void
+		public function open(file:String=null):void
 		{
-			src = file;
+			if (file) src = file;
 			img = new IMGLoader;
-			img.load(file);
+			img.load(src);
 			img.addEventListener(Event.COMPLETE, loadComplete);
+			
+			trace("++++++++++++++++++++++", this.parent.parent["id"])
 		}	
 		
 		/**
@@ -331,7 +333,7 @@ package com.gestureworks.cml.factories
 				resizeMatrix = null;
 			}			
 			else
-			{
+			{	
 				_bitmapData = new BitmapData(fileData.width, fileData.height, true, 0x000000);
 				_bitmapData.draw(fileData.content);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
