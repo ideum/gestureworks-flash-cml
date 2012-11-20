@@ -436,7 +436,7 @@ package com.gestureworks.cml.element
 				trace("value:", _value)				
 			}
 
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value, true));			
 		}
 		
 		/**
@@ -456,6 +456,13 @@ package com.gestureworks.cml.element
 			hit.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 			hit.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 			hit.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
+		}
+		
+		public function updateLayout():void {
+			if (orientation == "horizontal"){
+				this.width = rail.width;
+				this.height = rail.height;
+			}
 		}
 		
 	}
