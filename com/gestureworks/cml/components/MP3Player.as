@@ -3,6 +3,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 		
 	/**
@@ -86,7 +87,10 @@ package com.gestureworks.cml.components
 			// automatically try to find elements based on AS3 class
 			if (!mp3)
 				mp3 = searchChildren(MP3);
-				
+			
+			if (mp3) {
+				mp3.addEventListener(StateEvent.CHANGE, onStateEvent);
+			}
 			super.init();
 		}
 		
@@ -117,8 +121,28 @@ package com.gestureworks.cml.components
 			else if (event.value == "play" && mp3)
 				mp3.resume();
 			else if (event.value == "pause" && mp3)
-				mp3.pause();				
+				mp3.pause();
+			else if (event.property == "position" && mp3) {
+				//trace("Getting the position event from the MP3.");
+				if (menu) {
+					if (menu.slider) {
+						//trace("Menu has slider setting value");
+						Slider(menu.slider).input(event.value * 100);
+					}
+				}
+			}
+			else if (menu.slider && event.target is Slider) {
+				//trace("Target", event.target);
+				mp3.pause();
+				mp3.seek(event.value);
+				addEventListener(GWTouchEvent.TOUCH_END, onRelease);
+			}
 		}	
+		
+		private function onRelease(e:*):void {
+			removeEventListener(GWTouchEvent.TOUCH_END, onRelease);
+			mp3.resume();
+		}
 		
 		/**
 		 * Dispose method to nullify the attributes and remove listener
