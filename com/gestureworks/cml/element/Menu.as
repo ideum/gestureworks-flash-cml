@@ -6,6 +6,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
+	import flash.display.DisplayObject;
 	import flash.events.*;
 	import org.tuio.TuioTouchEvent;
 	
@@ -22,6 +23,7 @@ package com.gestureworks.cml.element
 	{
 		private var frameCount:int = 0;
 		public var buttonArray:Array = [];
+		public var slider:Slider;
  
 		/**
 		 * Constructor
@@ -183,23 +185,34 @@ package com.gestureworks.cml.element
 		public function updateLayout(containerWidth:Number, containerHeight:Number):void
 		{	
 			buttonArray = [];
+			var margin:Number = paddingLeft + paddingRight;
 			
 			for (var j:int = 0; j < childList.length; j++) 
 			{
-				if (childList.getIndex(j) is Button) {
+				if (childList.getIndex(j) is DisplayObject) {
 					buttonArray.push(childList.getIndex(j));
-				}	
+					if (buttonArray[j] is Slider) {
+						slider = buttonArray[j];
+					}
+				}
 			}
+			
 			
 			var i:int;
 		
 			for (i = 0; i < buttonArray.length; i++)
 			{
 				buttonArray[i].updateLayout();
+				margin += buttonArray[i].width;
 			}
+			
+			margin = containerWidth - margin;
+			margin /= buttonArray.length - 1;
 			
 			if (position == "bottom" || position == "top")	
 			{						
+				// Find the margin.
+				
 				// position all but last buttons			
 				for (i = 0; i < buttonArray.length-1; i++) 
 				{
@@ -209,15 +222,13 @@ package com.gestureworks.cml.element
 						
 					// position middle buttons
 					else
-						buttonArray[i].x = (containerWidth - paddingLeft - paddingRight) / (buttonArray.length - 1) * i;
-
+						buttonArray[i].x = buttonArray[i - 1].x + buttonArray[i - 1].width + margin;
 						
 					// position y
 					if (position == "bottom")
-						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;				
-					
+						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;		
 					else if (position == "top")
-						buttonArray[i].y = paddingTop;				
+						buttonArray[i].y = paddingTop;
 				}
 				
 				// position last button, if more than one
