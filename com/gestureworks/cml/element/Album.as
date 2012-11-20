@@ -43,6 +43,8 @@ package com.gestureworks.cml.element
 	public class Album extends TouchContainer
 	{	
 		private var _applyMask:Boolean = true;
+		private var _maskWidth:Number;		
+		private var _maskHeight:Number;		
 		private var _horizontal:Boolean = true;
 		private var _margin:Number = 1;
 		private var _dragAngle:Number = 0;
@@ -50,6 +52,7 @@ package com.gestureworks.cml.element
 		private var _loopQueue:Array;
 		private var _belt:TouchContainer;
 		private var _backgroundColor:uint = 0x000000;
+		private var _snapping:Boolean = true;		
 		
 		private var _dimension:String;
 		private var _axis:String;		
@@ -152,6 +155,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * A flag indicating the snap animation of the objects into place
+		 */
+		public function get snapping():Boolean { return _snapping; }
+		public function set snapping(e:Boolean):void
+		{
+			_snapping = e;
+		}
+		
+		/**
 		 * The queue storing the order of children in the loop from head to tail
 		 */
 		public function get loopQueue():Array { return _loopQueue; }
@@ -167,7 +179,7 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void 
 		{
 			super.width = value;	
-			if (albumMask) albumMask.width = value;
+			if (albumMask && !maskWidth) albumMask.width = value;
 		}
 		
 		/**
@@ -176,9 +188,32 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void 
 		{
 			super.height = value;
-			if (albumMask) albumMask.height = value;
+			if (albumMask && !maskHeight) albumMask.height = value;
 		}
 		
+		/**
+		 * Sets the mask width independently from the album width
+		 */
+		public function get maskWidth():Number { return _maskWidth; }
+		public function set maskWidth(w:Number):void
+		{
+			_maskWidth = w;
+			if (albumMask) albumMask.width = w;
+		}
+		
+		/**
+		 * Sets the mask height independently from the album height
+		 */
+		public function get maskHeight():Number { return _maskHeight; }
+		public function set maskHeight(h:Number):void
+		{
+			_maskHeight = h;
+			if (albumMask) albumMask.height = h;
+		}		
+		
+		/**
+		 * The color of the album's background
+		 */
 		public function get backgroundColor():uint { return _backgroundColor; }
 		public function set backgroundColor(c:uint):void
 		{
@@ -274,11 +309,14 @@ package com.gestureworks.cml.element
 			
 			//add gesture events
 			var scrollType:Function = horizontal ? scrollH : scrollV;
-			var snapType:Function = loop ? loopSnap : snap;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
 			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
-			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
+			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
+			if (snapping)
+			{
+				var snapType:Function = loop ? loopSnap : snap;				
+				belt.addEventListener(GWGestureEvent.COMPLETE, snapType);
+			}
 						
 			//configure belt		
 			setBeltLayout();

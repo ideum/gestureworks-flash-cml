@@ -183,6 +183,7 @@ package com.gestureworks.cml.components
 				back.horizontal = album.horizontal;
 				back.loop = album.loop;	
 				back.margin = album.margin;
+				back.snapping = album.snapping;
 				addEventListener(StateEvent.CHANGE, updateAlbums);								
 			}			
 		}
