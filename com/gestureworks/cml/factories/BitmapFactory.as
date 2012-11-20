@@ -217,8 +217,6 @@ package com.gestureworks.cml.factories
 			img = new IMGLoader;
 			img.load(src);
 			img.addEventListener(Event.COMPLETE, loadComplete);
-			
-			trace("++++++++++++++++++++++", this.parent.parent["id"])
 		}	
 		
 		/**

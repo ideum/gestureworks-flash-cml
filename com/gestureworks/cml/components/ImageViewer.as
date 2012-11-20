@@ -5,6 +5,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	
 	/**
 	 * The ImageViewer component is primarily meant to display an Image element and its associated meta-data.
@@ -107,6 +108,13 @@ package com.gestureworks.cml.components
 				height = image.height;	
 				
 			super.updateLayout();
+			
+			
+			for (var i:int = 0; i < textFields.length; i++) 
+			{					
+				trace("clone texts");
+				trace(textFields[i].x, textFields[i].y);
+			}				
 		}	
 		
 		
@@ -143,20 +151,23 @@ package com.gestureworks.cml.components
 				clone.menu = String(menu.id);
 			
 			if (frame)
-				clone.frame = String(frame.id);				
+				clone.frame = String(frame.id);
+			
 				
-				
-			clone.displayComplete();
+			if (clone.image) {
+				clone.image.addEventListener(Event.COMPLETE, function(e:Event):void {	
+					clone.displayComplete();
+					
+					for (var i:int = 0; i < clone.textFields.length; i++) 
+					{					
+						clone.textFields[i].x = textFields[i].x;
+						clone.textFields[i].y = textFields[i].y;
+					}					
+				});
+			}
 			
 			
-			for (var i:int = 0; i < clone.textFields.length; i++) 
-			{					
-				clone.textFields[i].x = textFields[i].x;
-				clone.textFields[i].y = textFields[i].y;
-				
-				trace("textX", clone.textFields[i].x);
-				trace("textY", clone.textFields[i].y);
-			}				
+			
 
 			return clone;
 		}			

@@ -57,12 +57,9 @@ package com.gestureworks.cml.element
 			clone.width = 0;
 			clone.height = 0;
 			
-			trace("width", clone.width);
-			
 			if (src)
 				clone.open(src);
 			
-			//clone.loadComplete();
 			return clone;			
 		}
 		
