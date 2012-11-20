@@ -203,20 +203,13 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * Searches by value and returns that last matched key
+		 * Searches by value and returns the index of the match
 		 * @param	value
 		 * @return
 		 */
 		public function search(value:*):*
 		{	
-			var result:*=null;
-			for each (var k:* in dictionary)
-			{
-				if (k == value) {
-					result = k;
-				}
-			}
-			return result;			
+			return listValue.search(value);
 		}
 		
 		/**

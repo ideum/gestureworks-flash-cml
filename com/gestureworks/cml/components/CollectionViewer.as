@@ -268,16 +268,6 @@ package com.gestureworks.cml.components
 			if (!found && components.length > 0)
 				component = components[0];
 				
-			//clear album
-			if (component is AlbumViewer)
-			{
-				var album:Album = component.album;
-				var back:Album = component.back;
-				
-				for (var i:int = album.belt.numChildren; i > 0; i--)
-					album.belt.removeChildAt(0);				
-			}
-				
 							
 			return component;
 		}
