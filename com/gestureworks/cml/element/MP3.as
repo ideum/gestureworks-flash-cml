@@ -420,7 +420,6 @@ package com.gestureworks.cml.element
 			//stop();
 			pause();
 			Position = (pos / 100) * sound.length;
-			trace("position:", pos, Position, "/", sound.length);
 			//play();
 		    //if (!timer.running)
 		//	Position = pos;
