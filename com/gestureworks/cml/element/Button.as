@@ -236,6 +236,8 @@ package com.gestureworks.cml.element
 		public function get hit():* {return _hit;}
 		public function set hit(value:*):void 
 		{
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_hit = value;
@@ -256,6 +258,8 @@ package com.gestureworks.cml.element
 		public function get initial():* {return _initial;}
 		public function set initial(value:*):void 
 		{
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_initial = value;
@@ -282,6 +286,8 @@ package com.gestureworks.cml.element
 		public function get mouseDown():* {return _mouseDown;}
 		public function set mouseDown(value:*):void 
 		{
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_mouseDown = value;
@@ -304,6 +310,8 @@ package com.gestureworks.cml.element
 		public function get mouseUp():* {return _mouseUp;}
 		public function set mouseUp(value:*):void 
 		{
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_mouseUp = value;
@@ -324,7 +332,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get mouseOver():* {return _mouseOver;}
 		public function set mouseOver(value:*):void 
-		{			
+		{		
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_mouseOver = value;
@@ -345,7 +355,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get mouseOut():* {return _mouseOut;}
 		public function set mouseOut(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_mouseOut = value;
@@ -372,7 +384,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get touchDown():* {return _touchDown;}
 		public function set touchDown(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_touchDown = value;				
@@ -394,7 +408,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get touchUp():* {return _touchUp;}
 		public function set touchUp(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_touchUp = value;				
@@ -415,7 +431,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get touchOver():* {return _touchOver;}
 		public function set touchOver(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_touchOver = value;				
@@ -436,7 +454,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get touchOut():* {return _touchOut;}
 		public function set touchOut(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_touchOut = value;				
@@ -463,7 +483,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get down():* {return _down;}
 		public function set down(value:*):void 
-		{			
+		{		
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_down = value;				
@@ -486,7 +508,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get up():* {return _up;}
 		public function set up(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_up = value;
@@ -507,7 +531,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get over():* {return _over;}
 		public function set over(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_over = value;
@@ -528,7 +554,9 @@ package com.gestureworks.cml.element
 		 */		
 		public function get out():* {return _out;}
 		public function set out(value:*):void 
-		{			
+		{	
+			if (!value) return;
+			
 			if (value is DisplayObject)
 			{
 				_out = value;
@@ -1264,7 +1292,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function clone():* 
 		{
-			var v:Vector.<String> = new <String>["childList", "initial", "hit", "up", "down", "out"];						
+			var v:Vector.<String> = new < String > ["childList", "initial", "hit", "up", "down", "over", "out",
+			"mouseUp", "mouseDown", "mouseOver", "mouseOut", "touchUp", "touchDown", "touchOver", "touchOut"];						
 			var clone:Button = CloneUtils.clone(this, null, v);
 			
 			if (clone.parent)
@@ -1272,11 +1301,21 @@ package com.gestureworks.cml.element
 			else
 				this.parent.addChild(clone);
 			
-			clone.hit = String(hit.id);
-			clone.initial = String(initial.id);
-			clone.up = String(up.id);
-			clone.down = String(down.id);
-			clone.out = String(out.id);
+			clone.hit = hit ? String(hit.id) : hit;
+			clone.initial = initial ? String(initial.id) : initial;
+			clone.up = up ? String(up.id) : up;
+			clone.down = down ? String(down.id) : down;
+			clone.over = over ? String(over.id) : over;
+			clone.out = out ? String(out.id) : out;
+			clone.mouseUp = mouseUp ? String(mouseUp.id) : mouseUp;
+			clone.mouseDown = mouseDown ? String(mouseDown.id) : mouseDown;
+			clone.mouseOver = mouseOver ? String(mouseOver.id) : mouseOver;
+			clone.mouseOut = mouseOut ? String(mouseOut.id) : mouseOut;
+			clone.touchUp = touchUp ? String(touchUp.id) : touchUp;
+			clone.touchDown = touchDown ? String(touchDown.id) : touchDown;
+			clone.touchOver = touchOver ? String(touchOver.id) : touchOver;
+			clone.touchOut = touchOut ? String(touchOut.id) : touchOut;
+			
 			
 			clone.displayComplete();
 			return clone;
