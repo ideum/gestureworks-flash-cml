@@ -331,7 +331,9 @@ package com.gestureworks.cml.factories
 				resizeMatrix = null;
 			}			
 			else
-			{	
+			{
+				trace(fileData);
+				
 				_bitmapData = new BitmapData(fileData.width, fileData.height, true, 0x000000);
 				_bitmapData.draw(fileData.content);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);

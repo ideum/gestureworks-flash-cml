@@ -1,12 +1,12 @@
 package com.gestureworks.cml.utils 
 {	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.geom.Point;
-	import flash.display.BitmapData;
 
 	
 	/**
@@ -17,7 +17,7 @@ package com.gestureworks.cml.utils
 	{
 		
 		public function DisplayUtils() {}
-		
+			
 
 		/**
 		 * Converts display object to bitmap data and return bitmap

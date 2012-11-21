@@ -288,15 +288,9 @@ package com.gestureworks.cml.components
 			dict["ImageViewer"] = [];
 			
 			
-					
-			
-			
 			//dict[ImageViewer][0] = [0, 1, "src"];
 			//dict[ImageViewer][1] = [1, 2, "text"];
 			//dict[ImageViewer][2] = [1, 3, "text"];
-			
-			
-
 			
 			var cnt:int = 2;
 			
@@ -306,8 +300,6 @@ package com.gestureworks.cml.components
 			{
 				//cnt++;		
 			}
-			
-			
 			
 		
 			//objs[0].visible = true;

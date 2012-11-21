@@ -155,21 +155,7 @@ package com.gestureworks.cml.element
 			var v:Vector.<String> = new <String>[];						
 			var clone:Menu = CloneUtils.clone(this, null, v);
 			
-			if (clone.parent)
-				clone.parent.addChild(clone);
-			else
-				this.parent.addChild(clone);			
-			
-			var arr:Array = childList.getKeyArray();
-			
-			for (var i:int = 0; i < arr.length; i++) 
-			{				
-				for (var j:int = 0; j < numChildren; j++) 
-				{
-					if (getChildAt(j)["id"] == arr[i])
-						clone.childList.replaceKey(arr[i], clone.getChildAt(j));
-				}				
-			}
+			CloneUtils.copyChildList(this, clone);
 
 			clone.displayComplete();
 
