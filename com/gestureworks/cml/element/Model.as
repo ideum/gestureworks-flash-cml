@@ -160,7 +160,8 @@
 			scene = new Scene3D();
 			
 			camera = new Camera3D();
-			camera.lens = new OrthographicLens();
+			
+			camera.lens = new OrthographicLens(); // TODO: Add lens property, also custom class for creating a view.
 			
 			view = new View3D();
 			view.antiAlias = 4;
