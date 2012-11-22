@@ -2,10 +2,8 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.GestureEvent;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.Exponential;
-	import org.libspark.betweenas3.tweens.ITween;
 	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
@@ -21,6 +19,8 @@ package com.gestureworks.cml.element
 		private var _labelColor:uint = 0xFFFFFF;
 		private var _labelFontSize:Number = 30;
 		private var _handle:TouchContainer;
+		private var _leftHandle:TouchContainer;
+		private var _rightHandle:TouchContainer;
 		private var _background:*;
 		private var _applyMask:Boolean = true;
 		private var _initializeOpen:Boolean = false;
@@ -29,11 +29,17 @@ package com.gestureworks.cml.element
 		private var _handleColor:uint = 0x2E2D2D;		
 		private var _bkgColor:uint = 0x424141;
 		
-		private var _leftCornerRadius:Number = 15;
-		private var _rightCornerRadius:Number = 15;
+		private var _leftCornerRadius:Number = 20;
+		private var _rightCornerRadius:Number = 20;
 		private var _handleWidth:Number = 500;
 		private var _handleHeight:Number = 60;
+		private var _handleLineStroke:Number = 0;
+		private var _handleLineColor:uint = 0xFFFFFF;
+		private var _useSideHandles:Boolean = false;
+		private var _useLeftHandle:Boolean = false;
+		private var _useRightHandle:Boolean = false;
 		
+		private var isOpen:Boolean = false;		
 		private var contentHolder:Container;
 		private var contentMask:Graphic;
 		private var upTween:ITweenGroup;
@@ -64,7 +70,7 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-			addHandle();
+			addHandles();
 			addContentHolder();
 			generateTweens();
 			initialState();
@@ -93,7 +99,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * The <code>TouchContainer</code> used to close/open the drawer when tapped. The handle must contain a <code>DisplayObject</code> 
+		 * The top mounted <code>TouchContainer</code> used to close/open the drawer when tapped. The handle must contain a <code>DisplayObject</code> 
 		 * to target.
 		 */
 		public function get handle():* { return _handle; }
@@ -103,7 +109,71 @@ package com.gestureworks.cml.element
 				_handle = h;
 			else if(childList.hasKey(h.toString()))
 				_handle = childList.getKey(h.toString());
+				
+			addUIComponent(_handle);				
 		}			
+		
+		/**
+		 * The left mounted <code>TouchContainer</code> used to close the drawer when tapped. The handle must contain a <code>DisplayObject</code> 
+		 * to target.
+		 */
+		public function get leftHandle():* { return _leftHandle; }
+		public function set leftHandle(h:*):void
+		{
+			if (h is TouchContainer)
+				_leftHandle = h;
+			else if(childList.hasKey(h.toString()))
+				_leftHandle = childList.getKey(h.toString());
+				
+			addUIComponent(_leftHandle);			
+		}
+		
+		/**
+		 * The right mounted <code>TouchContainer</code> used to close the drawer when tapped. The handle must contain a <code>DisplayObject</code> 
+		 * to target.
+		 */
+		public function get rightHandle():* { return _rightHandle; }
+		public function set rightHandle(h:*):void
+		{
+			if (h is TouchContainer)
+				_rightHandle = h;
+			else if(childList.hasKey(h.toString()))
+				_rightHandle = childList.getKey(h.toString());							
+				
+			addUIComponent(_rightHandle);			
+		}
+		
+		/**
+		 * A flag indicating the hiding of the top mounted handle when the drawer is in the open state and transferring the
+		 * close operation to the side handles. 
+		 */
+		public function get useSideHandles():Boolean { return _useSideHandles; }
+		public function set useSideHandles(s:Boolean):void
+		{
+			_useSideHandles = s;
+			useLeftHandle = s;
+			useRightHandle = s;
+		}
+		
+		/**
+		 * A flag indicating the hiding of the top mounted handle when the drawer is in the open state and transferring the
+		 * close operation to the left handle. 
+		 */
+		public function get useLeftHandle():Boolean { return _useLeftHandle; }
+		public function set useLeftHandle(l:Boolean):void
+		{
+			_useLeftHandle = l;
+		}				
+		
+		/**
+		 * A flag indicating the hiding of the top mounted handle when the drawer is in the open state and transferring the
+		 * close operation to the right handle. 
+		 */
+		public function get useRightHandle():Boolean { return _useRightHandle; }
+		public function set useRightHandle(l:Boolean):void
+		{
+			_useRightHandle = l;
+		}						
 		
 		/**
 		 * The <code>DisplayObject</code> representing the drawer's content area
@@ -134,7 +204,25 @@ package com.gestureworks.cml.element
 		public function set handleColor(c:uint):void
 		{
 			_handleColor = c;
-		}									
+		}
+		
+		/**
+		 * The width of the handle's border in pixels
+		 */
+		public function get handleLineStroke():Number { return _handleLineStroke; }
+		public function set handleLineStroke(l:Number):void
+		{
+			_handleLineStroke = l;
+		}
+		
+		/**
+		 * The color the handle's border 
+		 */
+		public function get handleLineColor():uint { return _handleLineColor; }
+		public function set handleLineColor(c:uint):void
+		{
+			_handleLineColor = c;
+		}		
 		
 		/**
 		 * The color of the drawer's content area
@@ -184,7 +272,7 @@ package com.gestureworks.cml.element
 		public function set handleHeight(h:Number):void
 		{
 			_handleHeight = h;
-		}
+		}		
 		
 		/**
 		 * Flag indicating the application of a mask to the drawer to prevent
@@ -244,7 +332,9 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void 
 		{
 			super.width = value;
-			contentHolder.width = value;
+			if (contentMask) contentMask.width = value;
+			contentHolder.width = leftHandle ? contentHolder.width - leftHandle.width : width;
+			contentHolder.width = rightHandle ? contentHolder.width - rightHandle.width : width;
 			handleWidth = value;
 		}
 
@@ -255,6 +345,7 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void 
 		{
 			super.height = value;
+			if (contentMask) contentMask.height = handle ? value - handle.height : value;
 			contentHolder.height = handle ? value - handle.height : value;
 		}
 		
@@ -265,6 +356,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{
+			if (contains(child))
+				return child;
 			return contentHolder.addChild(child);
 		}
 		
@@ -288,31 +381,64 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Configures the handle component and adds it the drawer. If the handle is not provided, a
-		 * default is generated. 
+		 * Configures the handle components and adds them to the drawer. If the handles are not provided,
+		 * defaults are generated. 
 		 */
-		private function addHandle():void
+		private function addHandles():void
 		{
 			if (!handle)
+				handle = getDefaultHandle();
+			if (useLeftHandle && ! leftHandle)
+				leftHandle = getDefaultHandle("left");
+			if (useRightHandle && ! rightHandle)			
+				rightHandle = getDefaultHandle("right");
+				
+			handle.gestureList = { "n-tap":true };
+			handle.width = handleWidth;
+			handle.height = handleHeight			
+			
+			if (leftHandle) leftHandle.gestureList = { "n-tap":true };
+			if (rightHandle) rightHandle.gestureList = { "n-tap":true };
+					
+			addLabel();
+		}
+		
+		/**
+		 * Generates default drawer handles 
+		 * @param	type "left" or "right", top handle by default
+		 * @return default handle
+		 */
+		private function getDefaultHandle(type:String = null):TouchContainer
+		{
+			var h:TouchContainer = new TouchContainer();
+			var bkg:Graphic = new Graphic();
+			bkg.shape = "roundRectangleComplex";
+			bkg.color = handleColor;
+			bkg.lineStroke = handleLineStroke;
+			bkg.lineColor = handleLineColor;
+			h.addChild(bkg);
+			
+			switch(type)
 			{
-				handle = new TouchContainer();				
-				var handleBkg:Graphic = new Graphic();
-				handleBkg.shape = "roundRectangleComplex";
-				handleBkg.topRightRadius = rightCornerRadius;
-				handleBkg.topLeftRadius = leftCornerRadius;
-				handleBkg.color = handleColor;
-				handleBkg.lineStroke = 0;
-				handleBkg.width = handleWidth;
-				handleBkg.height = handleHeight;
-				handle.addChild(handleBkg);
+				case "left":
+					bkg.topLeftRadius = leftCornerRadius;
+					bkg.width = h.width= handleHeight;
+					bkg.height = h.height = height - handleHeight;
+					break;
+				case "right":
+					bkg.topRightRadius = rightCornerRadius;
+					bkg.width = h.width = handleHeight;
+					bkg.height = h.height = height - handleHeight;
+					break;
+				default:
+					bkg.topRightRadius = rightCornerRadius;
+					bkg.topLeftRadius = leftCornerRadius;
+					bkg.width = h.width = handleWidth;
+					bkg.height = h.height = handleHeight;
+					break;
 			}
 			
-			handle.width = handleWidth;
-			handle.height = handleHeight;
-			handle.gestureList = { "n-tap":true };			
-			
-			addUIComponent(handle);
-			addLabel();
+			return h;
 		}
 		
 		/**
@@ -345,9 +471,10 @@ package com.gestureworks.cml.element
 		 */
 		private function addContentHolder():void
 		{
-			contentHolder.width = width;
-			contentHolder.height = height - handle.height;
+			width = width;
+			height = height;
 			contentHolder.y = handle.height;
+			contentHolder.x = leftHandle ? leftHandle.width : 0;
 			
 			if(!background)
 			{
@@ -372,11 +499,19 @@ package com.gestureworks.cml.element
 			var upTweens:Array = new Array();
 			upTweens.push(BetweenAS3.tween(handle, { y:0 }, null, .3, Exponential.easeOut));
 			upTweens.push(BetweenAS3.tween(contentHolder, { y:handle.height }, null, .3, Exponential.easeOut));
+			if (leftHandle)
+				upTweens.push(BetweenAS3.tween(leftHandle, { y:handle.height }, null, .3, Exponential.easeOut));
+			if (rightHandle)
+				upTweens.push(BetweenAS3.tween(rightHandle, { y:handle.height }, null, .3, Exponential.easeOut));				
 			upTween = BetweenAS3.parallel.apply(null, upTweens);
 			
 			var downTweens:Array = new Array();
 			downTweens.push(BetweenAS3.tween(handle, { y:contentHolder.height +1}, null, .3, Exponential.easeOut));
-			downTweens.push(BetweenAS3.tween(contentHolder, { y:contentHolder.height + handle.height +1}, null, .3, Exponential.easeOut));
+			downTweens.push(BetweenAS3.tween(contentHolder, { y:contentHolder.height + handle.height +1 }, null, .3, Exponential.easeOut));
+			if (leftHandle)
+				downTweens.push(BetweenAS3.tween(leftHandle, { y:contentHolder.height + handle.height + 1 }, null, .3, Exponential.easeOut));
+			if (rightHandle)
+				downTweens.push(BetweenAS3.tween(rightHandle, { y:contentHolder.height + handle.height + 1 }, null, .3, Exponential.easeOut));				
 			downTween = BetweenAS3.parallel.apply(null, downTweens);
 		}
 		
@@ -384,15 +519,35 @@ package com.gestureworks.cml.element
 		 * Positions the components and registers the appropriate listener based on the drawer's initial state.
 		 */
 		private function initialState():void
-		{
+		{		
 			if (!initializeOpen)
 			{
+				isOpen = false;				
 				handle.y = contentHolder.height + 1;
 				contentHolder.y = contentHolder.height + handle.height + 1;
 				handle.addEventListener(GWGestureEvent.TAP, open); 
 			}
 			else
+			{
+				isOpen = true;
 				handle.addEventListener(GWGestureEvent.TAP, close); 
+			}
+			
+			if (leftHandle)
+			{
+				leftHandle.y = contentHolder.y;
+				leftHandle.addEventListener(GWGestureEvent.TAP, close);
+			}
+			if (rightHandle)
+			{
+				rightHandle.y = contentHolder.y;
+				rightHandle.x = contentHolder.x + contentHolder.width;
+				rightHandle.addEventListener(GWGestureEvent.TAP, close);
+			}			
+			
+			handle.visible = !isOpen;
+			if (leftHandle) leftHandle.visible = isOpen;
+			if (rightHandle) rightHandle.visible = isOpen;
 		}
 		
 		/**
@@ -400,11 +555,13 @@ package com.gestureworks.cml.element
 		 * @param	e  the tap event
 		 */
 		private function open(e:GWGestureEvent):void
-		{
+		{		
+			trace("open");
+			handleTransition();
 			downTween.stop();
 			upTween.play();
 			handle.removeEventListener(GWGestureEvent.TAP, open);
-			handle.addEventListener(GWGestureEvent.TAP, close);			
+			handle.addEventListener(GWGestureEvent.TAP, close);	
 		}
 
 		/**
@@ -413,11 +570,27 @@ package com.gestureworks.cml.element
 		 */		
 		private function close(e:GWGestureEvent):void
 		{
+			trace("close");
+			handleTransition();
 			upTween.stop();
 			downTween.play();
 			handle.removeEventListener(GWGestureEvent.TAP, close);
-			handle.addEventListener(GWGestureEvent.TAP, open);			
-		}	
+			handle.addEventListener(GWGestureEvent.TAP, open);	
+		}
+		
+		/**
+		 * Sets the open state of the drawer and updates the visibility of the handles
+		 */
+		private function handleTransition():void
+		{
+			isOpen = !isOpen;
+			if (useLeftHandle || useRightHandle)
+				handle.visible = !isOpen;
+			if (leftHandle)
+				leftHandle.visible = isOpen;
+			if (rightHandle)
+				rightHandle.visible = isOpen;
+		}
 		
 		/**
 		 * Destructor
