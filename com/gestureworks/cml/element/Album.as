@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.ListLayout;
+	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.events.TouchEvent;
@@ -52,7 +53,8 @@ package com.gestureworks.cml.element
 		private var _loopQueue:Array;
 		private var _belt:TouchContainer;
 		private var _backgroundColor:uint = 0x000000;
-		private var _snapping:Boolean = true;		
+		private var _snapping:Boolean = true;	
+		private var _menuMode:Boolean = false;
 		
 		private var _dimension:String;
 		private var _axis:String;		
@@ -161,6 +163,16 @@ package com.gestureworks.cml.element
 		public function set snapping(e:Boolean):void
 		{
 			_snapping = e;
+		}
+		
+		/**
+		 * A flag indicating the album content is selectable. The selected item can be accessed
+		 * through the associated state event (property = "selectedItem").
+		 */
+		public function get menuMode():Boolean { return _menuMode; }
+		public function set menuMode(m:Boolean):void
+		{
+			_menuMode = m;
 		}
 		
 		/**
@@ -302,6 +314,12 @@ package com.gestureworks.cml.element
 		 */
 		private function initBelt():void
 		{
+			if (menuMode)
+			{
+				belt.clusterBubbling = true;
+				belt.mouseChildren = true;
+			}
+			
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
 			belt.gestureList = { "n-drag-inertia":true };
@@ -329,26 +347,54 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
-		 * based on the greatest width and height of the child dimensions. 
+		 * based on the greatest width and height of the child dimensions. If in menu mode, the children are wrapped in a
+		 * TouchSprite to enable interactivity.
 		 */		
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
-		{
+		{			
 			width = child.width > width ? child.width : width;
-			height = child.height > height ? child.height: height;			
-			belt.addChild(child);
+			height = child.height > height ? child.height: height;
+
+			if (menuMode) //wrap child in a TouchSprite and register tap event
+			{
+				if (child is TouchSprite)
+					belt.addChild(child);
+				else
+				{
+					var ts:TouchSprite = new TouchSprite();
+					ts.addChild(child);
+					ts.width = child.width;
+					ts.height = child.height;
+					belt.addChild(ts);
+				}
+				
+				ts.gestureList = { "n-tap":true };
+				ts.addEventListener(GWGestureEvent.TAP, selection);	
+			}
+			else
+				belt.addChild(child);
+							
 				
 			return child;
 		}
 		
 		/**
-		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
-		 * based on the greatest width and height of the child dimensions. 
+		 * Reroutes the addition of children from the album to the album's belt. If in menu mode, the children are wrapped in a
+		 * TouchSprite to enable interactivity.
 		 */				
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
-		{
-			width = child.width > width ? child.width : width;
-			height = child.height > height ? child.height: height;			
-			belt.addChildAt(child, index);
+		{				
+			//wrap child in a TouchSprite
+			if (menuMode && !(child is TouchSprite))
+			{
+				var ts:TouchSprite = new TouchSprite();
+				ts.addChild(child);
+				ts.width = child.width;
+				ts.height = child.height;
+				belt.addChildAt(ts, index);
+			}
+			else
+				belt.addChildAt(child, index);
 			
 			return child;
 		}
@@ -360,6 +406,15 @@ package com.gestureworks.cml.element
 		private function addUIComponent(child:DisplayObject):void
 		{
 			super.addChild(child);
+		}
+		
+		/**
+		 * Dispatch a state event with the selected album item
+		 * @param	e the tap gesture event
+		 */
+		private function selection(e:GWGestureEvent):void
+		{
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", e.target, true));
 		}
 		
 		/**
@@ -422,7 +477,7 @@ package com.gestureworks.cml.element
 					slide.addChild(holder[i]);
 					
 					loopQueue.push(slide);					
-					belt.addChild(slide);					
+					addChild(slide);					
 				}
 			}
 			else
@@ -461,7 +516,7 @@ package com.gestureworks.cml.element
 			background.height = belt.height;
 			background.color = backgroundColor;
 			background.lineStroke = 0;
-			belt.addChildAt(background, 0);			
+			addChildAt(background, 0);			
 		}
 		
 		/**
