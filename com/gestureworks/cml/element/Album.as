@@ -357,19 +357,20 @@ package com.gestureworks.cml.element
 
 			if (menuMode) //wrap child in a TouchSprite and register tap event
 			{
+				var ts:TouchSprite;
 				if (child is TouchSprite)
-					belt.addChild(child);
+					ts = TouchSprite(child);
 				else
 				{
-					var ts:TouchSprite = new TouchSprite();
+					ts = new TouchSprite();
 					ts.addChild(child);
 					ts.width = child.width;
 					ts.height = child.height;
-					belt.addChild(ts);
 				}
 				
+				belt.addChild(ts);
 				ts.gestureList = { "n-tap":true };
-				ts.addEventListener(GWGestureEvent.TAP, selection);	
+				ts.addEventListener(GWGestureEvent.TAP, selection);										
 			}
 			else
 				belt.addChild(child);

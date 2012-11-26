@@ -333,6 +333,7 @@ package com.gestureworks.cml.element
 		{
 			super.width = value;
 			if (contentMask) contentMask.width = value;
+			contentHolder.width = value;
 			contentHolder.width = leftHandle ? contentHolder.width - leftHandle.width : width;
 			contentHolder.width = rightHandle ? contentHolder.width - rightHandle.width : width;
 			handleWidth = value;
@@ -556,7 +557,6 @@ package com.gestureworks.cml.element
 		 */
 		private function open(e:GWGestureEvent):void
 		{		
-			trace("open");
 			handleTransition();
 			downTween.stop();
 			upTween.play();
@@ -570,7 +570,6 @@ package com.gestureworks.cml.element
 		 */		
 		private function close(e:GWGestureEvent):void
 		{
-			trace("close");
 			handleTransition();
 			upTween.stop();
 			downTween.play();
