@@ -3,6 +3,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -111,8 +112,8 @@ package com.gestureworks.cml.components
 			// automatically try to find elements based on AS3 class
 			if (!video)
 				video = searchChildren(Video);
-			    video.addEventListener(StateEvent.CHANGE, onTimer);
-			   	video.play();	
+			video.addEventListener(StateEvent.CHANGE, onStateEvent);
+			   //	video.play();	
 			
 			// automatically try to find elements based on AS3 class
 			if (!slider)
@@ -120,13 +121,6 @@ package com.gestureworks.cml.components
 									
 			super.init();
 		}
-
-		private function onTimer(event:StateEvent):void
-		{
-			var sliderPos:Number = NumberUtils.map(video.position, 0, video.duration, 0, slider.width, false, true, true);	
-		   	slider.input(sliderPos);
-	    }
-		
 		
 		/**
 		 * CML initialization
@@ -156,8 +150,24 @@ package com.gestureworks.cml.components
 				video.resume();
 			else if (event.value == "pause" && video)
 				video.pause();				
+			else if (event.property == "position" && video) {
+				if (menu) {
+					if (menu.slider && Video(video).isPlaying) {
+						Slider(menu.slider).input(event.value * 100);
+					}
+				}
+			}
+			else if (menu.slider && event.target is Slider) {
+				video.pause();
+				video.seek(event.value);
+				addEventListener(GWTouchEvent.TOUCH_END, onRelease);
+			}
 		}
 		
+		private function onRelease(e:*):void {
+			removeEventListener(GWTouchEvent.TOUCH_END, onRelease);
+			video.resume();
+		}
 			
 		
 		/**
