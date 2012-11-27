@@ -175,7 +175,7 @@ package  com.gestureworks.cml.element
 		 */
 		public function seek(value:Number, seekAhead:Boolean):void {
 			var goTo:Number = Math.floor((value / 100) * player.getDuration());
-			trace("GoTo:", goTo);
+			//trace("GoTo:", goTo);
 			player.seekTo(value, seekAhead);
 		}
 		
@@ -250,6 +250,11 @@ package  com.gestureworks.cml.element
 			loader = null;
 			
 			_loaded = false;
+			
+			timer.stop();
+			timer.reset();
+			timer.removeEventListener(TimerEvent.TIMER, onTimer);
+			timer = null;
 		}
 	}
 
