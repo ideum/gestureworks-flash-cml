@@ -1,11 +1,14 @@
 package  com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.system.Security;
 	import flash.net.URLRequest;
+	import flash.utils.Timer;
 	
 	/**
 	 * The YouTube element retrieves and streams a Youtube video using the Youtube API. The source of the file will be the Youtube video's ID.
@@ -35,9 +38,10 @@ package  com.gestureworks.cml.element
 		
 		private var player:Object;
 		private var loader:Loader;
-		private var playing:Boolean = false;
 		
 		private var _loaded:Boolean = false;
+		private var timer:Timer;
+		
 		public function get loaded():Boolean { return _loaded; }
 		
 		/**
@@ -102,6 +106,10 @@ package  com.gestureworks.cml.element
 			_autoplay = value;
 		}
 		
+		private var _isPlaying:Boolean = false;
+		public function get isPlaying():Boolean { return _isPlaying; }
+		
+		
 		/**
 		 * CML callback Initialisation
 		 */
@@ -124,8 +132,10 @@ package  com.gestureworks.cml.element
 		 * Start playing from the beginning.
 		 */
 		public function play():void {
+			timer.stop();
+			timer.reset();
 			player.seekTo(0, true);
-			if (!playing){
+			if (!_isPlaying){
 				resume();
 			}
 		}
@@ -135,7 +145,8 @@ package  com.gestureworks.cml.element
 		 */
 		public function resume():void {
 			player.playVideo();
-			playing = true;
+			_isPlaying = true;
+			timer.start();
 		}
 		
 		/**
@@ -143,7 +154,8 @@ package  com.gestureworks.cml.element
 		 */
 		public function pause():void {
 			player.pauseVideo();
-			playing = false;
+			_isPlaying = false;
+			timer.stop();
 		}
 		
 		/**
@@ -152,15 +164,19 @@ package  com.gestureworks.cml.element
 		public function stop():void {
 			player.pauseVideo();
 			player.seekTo(0, true);
-			playing = false;
+			_isPlaying = false;
+			timer.stop();
+			timer.reset();
 		}
 		
 		/**
 		 * seek 
 		 * @param	value
 		 */
-		public function seek(value:Number):void {
-			player.seekTo(value, true);
+		public function seek(value:Number, seekAhead:Boolean):void {
+			var goTo:Number = Math.floor((value / 100) * player.getDuration());
+			trace("GoTo:", goTo);
+			player.seekTo(value, seekAhead);
 		}
 		
 		/**
@@ -196,16 +212,24 @@ package  com.gestureworks.cml.element
 			player.setSize(_width, _height);
 			if (_autoplay){
 				player.loadVideoById(_VIDEO_ID);
-				playing = true;
+				_isPlaying = true;
 			}
 			else if (!_autoplay) {
 				player.cueVideoById(_VIDEO_ID);
 			}
 			_loaded = true;
+			
+			timer = new Timer(500);
+			timer.addEventListener(TimerEvent.TIMER, onTimer);
 		}
 		
 		private function onPlayerError(e:Event):void {
 			trace("Player error: ", Object(e).data);
+		}
+		
+		private function onTimer(e:TimerEvent):void {
+			var position:Number = player.getCurrentTime() / player.getDuration();
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
 		}
 		
 		/**
