@@ -383,7 +383,7 @@ package com.gestureworks.cml.element
 		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
 		 * based on the greatest width and height of the child dimensions. If in menu mode, the children are wrapped in a
 		 * TouchSprite to enable interactivity.
-		 */					
+		 */		
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{	
 			index = index == 0 ? 1 : index;
@@ -403,13 +403,14 @@ package com.gestureworks.cml.element
 					ts.height = child.height;
 				}
 				
-				belt.addChild(ts);
+				belt.addChildAt(ts,index);
 				ts.gestureList = { "n-tap":true };
 				ts.addEventListener(GWGestureEvent.TAP, selection);										
 			}
 			else
-				belt.addChild(child);
-											
+				belt.addChildAt(child, index);
+							
+				
 			return child;
 		}
 		
@@ -523,7 +524,7 @@ package com.gestureworks.cml.element
 		 * Generates a background for the belt with the belt's dimensions and applies it to the belt
 		 */
 		private function setBeltBackground():void
-		{
+		{		
 			var g:Graphic = new Graphic();
 			g.shape = "rectangle";
 			g.width = belt.width;
@@ -532,9 +533,9 @@ package com.gestureworks.cml.element
 			g.lineStroke = 0;
 			
 			var background:TouchSprite = new TouchSprite();
-			background.width = belt.width;
-			background.height = belt.height;
 			background.addChild(g);
+			background.width = g.width;
+			background.height = g.height;
 			
 			belt.addChildAt(background, 0);			
 		}
