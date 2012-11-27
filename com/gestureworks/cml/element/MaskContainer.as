@@ -5,6 +5,8 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.geom.Matrix;
+	import org.libspark.betweenas3.BetweenAS3;
+	import org.libspark.betweenas3.tweens.ITween;
 	
 	/**
 	 * The MaskContainer element takes in one or multiple images and applies a mask designated in CML to all images in its child list.
@@ -389,6 +391,18 @@ package com.gestureworks.cml.element
 			addChild(graphicArray.array[counter]);
 			graphicArray.array[counter].mask = mShape;
 			graphicArray.array[counter].visible = true;
+		}
+		
+		public function reset():void {
+			//trace("Resetting a maskContainer's position.");
+			var mTween:ITween = BetweenAS3.tween(_mShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
+			mTween.play();
+			var borderTween:ITween = BetweenAS3.tween(borderShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
+			borderTween.play();
+			var hitTween:ITween = BetweenAS3.tween(hitShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
+			hitTween.play();
+			var wTween:ITween = BetweenAS3.tween(wShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
+			wTween.play();
 		}
 		
 		/**
