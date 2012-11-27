@@ -3,6 +3,7 @@ package  com.gestureworks.cml.components
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	
 	/**
@@ -34,6 +35,7 @@ package  com.gestureworks.cml.components
 	 */		
 	public class YouTubeViewer extends Component
 	{
+		private var seekTo:Number = 0;
 		/**
 		 * youtube Constructor
 		 */
@@ -81,7 +83,10 @@ package  com.gestureworks.cml.components
 			// automatically try to find elements based on AS3 class
 			if (!video)
 				video = searchChildren(YouTube);
-		
+			
+			if (video)
+				video.addEventListener(StateEvent.CHANGE, onStateEvent);
+			
 			super.init();
 		}
 		
@@ -113,7 +118,28 @@ package  com.gestureworks.cml.components
 			else if (event.value == "play" && video)
 				video.resume();
 			else if (event.value == "pause" && video)
-				video.pause();				
+				video.pause();		
+			else if (event.property == "position" && video) {
+				//trace("Position event.");
+				if (menu) {
+					if (menu.slider && YouTube(video).isPlaying) {
+						Slider(menu.slider).input(event.value * 100);
+					}
+				}
+			}
+			else if (menu.slider && event.target is Slider) {
+				video.pause();
+				seekTo = event.value;
+				//video.seek(seekTo, false);
+				//trace("Seekto:", seekTo);
+				addEventListener(GWTouchEvent.TOUCH_END, onRelease);
+			}
+		}
+		
+		private function onRelease(e:*):void {
+			removeEventListener(GWTouchEvent.TOUCH_END, onRelease);
+			video.seek(seekTo, true);
+			video.resume();
 		}
 		
 		/**
