@@ -380,23 +380,36 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Reroutes the addition of children from the album to the album's belt. If in menu mode, the children are wrapped in a
+		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
+		 * based on the greatest width and height of the child dimensions. If in menu mode, the children are wrapped in a
 		 * TouchSprite to enable interactivity.
-		 */				
+		 */					
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
-		{				
-			//wrap child in a TouchSprite
-			if (menuMode && !(child is TouchSprite))
+		{	
+			index = index == 0 ? 1 : index;
+			width = child.width > width ? child.width : width;
+			height = child.height > height ? child.height: height;
+
+			if (menuMode) //wrap child in a TouchSprite and register tap event
 			{
-				var ts:TouchSprite = new TouchSprite();
-				ts.addChild(child);
-				ts.width = child.width;
-				ts.height = child.height;
-				belt.addChildAt(ts, index);
+				var ts:TouchSprite;
+				if (child is TouchSprite)
+					ts = TouchSprite(child);
+				else
+				{
+					ts = new TouchSprite();
+					ts.addChild(child);
+					ts.width = child.width;
+					ts.height = child.height;
+				}
+				
+				belt.addChild(ts);
+				ts.gestureList = { "n-tap":true };
+				ts.addEventListener(GWGestureEvent.TAP, selection);										
 			}
 			else
-				belt.addChildAt(child, index);
-			
+				belt.addChild(child);
+											
 			return child;
 		}
 		
@@ -511,13 +524,19 @@ package com.gestureworks.cml.element
 		 */
 		private function setBeltBackground():void
 		{
-			var background:Graphic = new Graphic();
-			background.shape = "rectangle";
+			var g:Graphic = new Graphic();
+			g.shape = "rectangle";
+			g.width = belt.width;
+			g.height = belt.height;
+			g.color = backgroundColor;
+			g.lineStroke = 0;
+			
+			var background:TouchSprite = new TouchSprite();
 			background.width = belt.width;
 			background.height = belt.height;
-			background.color = backgroundColor;
-			background.lineStroke = 0;
-			addChildAt(background, 0);			
+			background.addChild(g);
+			
+			belt.addChildAt(background, 0);			
 		}
 		
 		/**
