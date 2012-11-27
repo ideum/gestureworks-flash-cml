@@ -114,8 +114,6 @@ package com.gestureworks.cml.element
 			if (src == value) return;					
 			_src = value;
 			if (autoLoad) load();
-			
-			trace("DELICIOUS VIDEO SAUCE:", _src);
 		}		
 		
 		private var _deblocking:int;
@@ -281,7 +279,6 @@ package com.gestureworks.cml.element
 		public function seek(offset:Number):void
 		{
 			var goTo:Number = Math.floor((offset / 100) * duration);
-			trace("Going to:", offset, duration, offset / 100, goTo);
 			
 			_position = goTo;
 			netStream.seek(goTo);
