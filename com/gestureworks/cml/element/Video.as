@@ -92,7 +92,9 @@ package com.gestureworks.cml.element
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 
 		{	
+			trace("Autoplay set to:", value);
 			_autoplay = value;
+			
 		}
 					
 		private var _loop:Boolean = false;
@@ -106,12 +108,14 @@ package com.gestureworks.cml.element
 		/**
 		 * Sets the video file path
 		 */	
-		public function get src():String{ return _src;}
+		public function get src():String { return _src; trace("Returning vid source"); }
 		public function set src(value:String):void
 		{
 			if (src == value) return;					
 			_src = value;
 			if (autoLoad) load();
+			
+			trace("DELICIOUS VIDEO SAUCE:", _src);
 		}		
 		
 		private var _deblocking:int;
@@ -232,7 +236,7 @@ package com.gestureworks.cml.element
 		
 			netStream.seek(0);				
 			netStream.resume();
-			//netStream.play();
+			netStream.play(src);
 			positionTimer.reset();
 			positionTimer.start();
 			_position = 0;
@@ -276,11 +280,16 @@ package com.gestureworks.cml.element
 		 */
 		public function seek(offset:Number):void
 		{
-			netStream.seek(offset);
+			var goTo:Number = Math.floor((offset / 100) * duration);
+			trace("Going to:", offset, duration, offset / 100, goTo);
+			
+			_position = goTo;
+			netStream.seek(goTo);
+			/*netStream.seek(offset);
 			
 			if (position < 0)
 				position == 0;
-			_position += offset;
+			_position += offset;*/
 		
 		}
 
@@ -369,7 +378,7 @@ package com.gestureworks.cml.element
 				
 			addChild(video);			
 			
-			netStream.play(src);
+			//netStream.play(src);
 			netStream.pause();
 			netStream.seek(0);
 			//trace("Autoplay:", autoplay);
@@ -381,7 +390,7 @@ package com.gestureworks.cml.element
 		{
 			if (meta.duration != null )
 			{
-				_duration = meta.duration * 1000;
+				_duration = meta.duration;
 				
 				if (debug)
 				{
@@ -454,7 +463,9 @@ package com.gestureworks.cml.element
 		
 		private function onPosition(event:TimerEvent):void
 		{			
-			_position++;
+			//_position++;
+			//trace("Video position: ", _position, netStream.time, _duration);
+			_position = netStream.time / _duration;
 	
 			if (debug)
 				trace(_position); 
