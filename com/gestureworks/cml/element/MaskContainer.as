@@ -125,7 +125,7 @@ package com.gestureworks.cml.element
 		 * The thickness of the border in pixels.
 		 * @default 0;
 		 */
-		public function get maskBorderStroke():Number { return maskBorderStroke; }
+		public function get maskBorderStroke():Number { return _maskBorderStroke; }
 		public function set maskBorderStroke(value:Number):void {
 			_maskBorderStroke = value;
 		}
@@ -141,6 +141,24 @@ package com.gestureworks.cml.element
 			_maskBorderAlpha = value;
 		}
 		
+		private var _maskX:Number = 0;
+		/**
+		 * Set the mask's starting X position.
+		 */
+		public function get maskX():Number { return _maskX; }
+		public function set maskX(value:Number):void {
+			_maskX = value;
+		}
+		
+		private var _maskY:Number = 0;
+		/**
+		 * Set the mask's starting Y position.
+		 */
+		public function get maskY():Number { return _maskY; }
+		public function set maskY(value:Number):void {
+			_maskY = value;
+		}
+		
 		private var _dragAngle:Number = 0;
 		public function get dragAngle():Number { return _dragAngle; }
 		public function set dragAngle(value:Number):void {
@@ -151,7 +169,7 @@ package com.gestureworks.cml.element
 		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void {
-			super.displayComplete();
+			//super.displayComplete();
 			
 			graphicArray.array = childList.getValueArray();
 			
@@ -234,6 +252,16 @@ package com.gestureworks.cml.element
 			this.height = graphicArray.array[counter].height;
 			
 			addChild(hitShape);
+			
+			_mShape.x = _maskX;
+			borderShape.x = _maskX;
+			hitShape.x = _maskX;
+			wShape.x = _maskX;
+			
+			_mShape.y = _maskY;
+			borderShape.y = _maskY;
+			hitShape.y = _maskY;
+			wShape.y = _maskY;
 			
 			overallMask.graphics.beginFill(0x000000, 0);
 			overallMask.graphics.lineStyle(0, 0, 0);
