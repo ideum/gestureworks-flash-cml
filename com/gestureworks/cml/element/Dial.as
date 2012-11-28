@@ -261,7 +261,17 @@ package com.gestureworks.cml.element
 		{
 			_text = value;
 			textArray = _text.split(",");
-		}  
+		}
+		
+		private var _fontSize:Number = 20;
+		/**
+		 * Sets the font size.
+		 * @default 20
+		 */
+		public function get fontSize():Number { return _fontSize; }
+		public function set fontSize(value:Number):void {
+			_fontSize = value;
+		}
 		
 		private var _gradientType:String = GradientType.LINEAR;
 		/**
@@ -334,35 +344,27 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _gradientWidth:Number = 300;
+		[Deprecated(replacement="width")]
 		/**
-		 * the width (in pixels) to which the gradient will spread
-		 * @default 300
+		 * the width (in pixels) of the dial
 		 */
-		
-		public function get gradientWidth():Number
-		{
-			return _gradientWidth;
-		}
-		
+		public function get gradientWidth():Number { return _gradientWidth; }
 		public function set gradientWidth(value:Number):void
 		{
 			_gradientWidth = value;
+			width = value;
 		}
 		
 		private var _gradientHeight:Number = 200;
+		[Deprectated(replacement="height")]
 		/**
-		 * the height (in pixels) to which the gradient will spread
-		 * @default 200
+		 * the height (in pixels) of the dial
 		 */
-		
-		public function get gradientHeight():Number
-		{
-			return _gradientHeight;
-		}
-		
+		public function get gradientHeight():Number { return _gradientHeight; }
 		public function set gradientHeight(value:Number):void
 		{
 			_gradientHeight = value;
+			height = value;
 		}
 		
 		private var _gradientX:Number = 25;
@@ -615,12 +617,12 @@ package com.gestureworks.cml.element
 		 */
 		private function displayDial():void
 		{
-			matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
+			matrix.createGradientBox(width, height, gradientRotation, gradientX, gradientY);
 			
 			background.graphics.clear();
 			background.graphics.lineStyle(backgroundLineStoke, backgroundAlpha);
 			background.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
-			background.graphics.drawRect(0, 0, 300, 200);
+			background.graphics.drawRect(0, 0, width, height);
 			
 			var dropShadow:DropShadowFilter = new DropShadowFilter();
 			var filtersArray:Array = new Array(dropShadow);
@@ -636,22 +638,22 @@ package com.gestureworks.cml.element
 			
 			leftTriangle.graphics.clear();
 			leftTriangle.graphics.beginFill(leftTriangleColor, leftTriangleAlpha);
-			leftTriangle.graphics.moveTo(2, 80);
-			leftTriangle.graphics.lineTo(20, 100);
-			leftTriangle.graphics.lineTo(2, 120);
+			leftTriangle.graphics.moveTo(2, (height / 2) - (height * 0.05));
+			leftTriangle.graphics.lineTo(20, height / 2);
+			leftTriangle.graphics.lineTo(2, (height / 2) + (height * 0.05));
 			leftTriangle.graphics.endFill();
 			
 			rightTriangle.graphics.clear();
 			rightTriangle.graphics.beginFill(rightTriangleColor, rightTriangleAlpha);
-			rightTriangle.graphics.moveTo(300, 80);
-			rightTriangle.graphics.lineTo(280, 100);
-			rightTriangle.graphics.lineTo(300, 120);
+			rightTriangle.graphics.moveTo(width, (height / 2) - (height * 0.05));
+			rightTriangle.graphics.lineTo(width - 20, height / 2);
+			rightTriangle.graphics.lineTo(width, (height / 2) + (height * 0.05));
 			rightTriangle.graphics.endFill();
 			
 			centerLine.graphics.clear();
 			centerLine.graphics.lineStyle(centerLineLineStoke, centerLineOutlineColor, centerLineOutlineAlpha);
 			centerLine.graphics.beginFill(centerLineColor, centerLineAlpha);
-			centerLine.graphics.drawRect(15, 96, 270, 8);
+			centerLine.graphics.drawRect(width * 0.01, (this.height / 2) - 4, this.width * 0.98, 8);
 			centerLine.graphics.endFill();
 			
 			mymask.graphics.clear();
@@ -686,7 +688,7 @@ package com.gestureworks.cml.element
 				var txt:Text = new Text();
 				txt.x = 20;
 				txt.y = 50;
-				txt.fontSize = 20;
+				txt.fontSize = _fontSize;
 				txt.wordWrap = true;
 				txt.text = textArray[i];
 				txt.font = "OpenSansBold";
