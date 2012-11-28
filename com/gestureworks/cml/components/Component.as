@@ -10,10 +10,13 @@ package com.gestureworks.cml.components
 	import com.gestureworks.core.GestureWorks;
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
+	import flash.utils.Timer;
+	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
 	import flash.utils.Dictionary;
-	
+	import org.libspark.betweenas3.BetweenAS3;
 	
 	/**
 	 * The Component manages a group of elements to create a high-level interactive touch container.
@@ -39,7 +42,9 @@ package com.gestureworks.cml.components
 	{	
 		public var textFields:Array;	
 		public var fontArray:Array = new Array();
-					
+		private var timer:Timer;
+		private var tween:ITween;
+		
 		/**
 		 * component Constructor
 		 */
@@ -202,6 +207,25 @@ package com.gestureworks.cml.components
 			_autoTextLayout = value;			
 		}
 		
+		private var _timeout:Number = 0;
+		/**
+		 * Set the timeout value for when the elements were automatically close.
+		 */
+		public function get timeout():Number { return _timeout; }
+		public function set timeout(value:Number):void {
+			_timeout = value;
+			//updateLayout();
+		}
+		
+		private var _fadeoutDuration:Number = 0;
+		/**
+		 * Set the fadeout time for an object that's timed out.
+		 */
+		public function get fadeoutDuration():Number { return _fadeoutDuration; }
+		public function set fadeoutDuration(value:Number):void {
+			_fadeoutDuration = value;
+		}
+		
 		private var _side:String = "front";
 		/**
 		 * Specifies the currently displayed side
@@ -271,6 +295,20 @@ package com.gestureworks.cml.components
 						textFields[i].y = textFields[i].paddingTop + textFields[i-1].paddingBottom + textFields[i-1].height;
 				}
 			}			
+			
+			if (timeout > 0) {
+				timer = new Timer(timeout * 1000);
+				timer.addEventListener(TimerEvent.TIMER, onTimer);
+				
+				if (GestureWorks.activeTUIO)
+					this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+				else if	(GestureWorks.supportsTouch)
+					this.addEventListener(TouchEvent.TOUCH_END, onUp);
+				else	
+					this.addEventListener(MouseEvent.MOUSE_UP, onUp);
+					
+				timer.start();
+			}
 		}
 		
 		/**
@@ -286,6 +324,18 @@ package com.gestureworks.cml.components
 				menu.startTimer();
 			}
 			
+			if(tween){
+				if (tween.isPlaying) {
+					tween.stop();
+					this.alpha = 1;
+				}
+			}
+			if (timer) {
+				timer.stop();
+				timer.reset();
+				timer.start();
+			}
+			
 			trace(id);
 		}			
 
@@ -297,6 +347,12 @@ package com.gestureworks.cml.components
 		{
 			if (menu)
 				menu.mouseChildren = true;
+			
+			if (timer) {
+				timer.stop();
+				timer.reset();
+				timer.start();
+			}
 		}	
 		
 		private var textCount:Number = 0;
@@ -361,6 +417,23 @@ package com.gestureworks.cml.components
 				this.visible = false;
 			}	
 		}
+		
+		protected function onTimer(e:TimerEvent):void {
+			
+			if (fadeoutDuration > 0) {
+				//trace("Starting fade out");
+				tween = BetweenAS3.tween(this, { alpha:0 }, null, fadeoutDuration);
+				tween.onComplete = fadeout();
+				tween.play();
+			}
+			else { this.visible = false; }
+			
+			function fadeout():void {
+				//trace(" Faded out entirely. ");
+				this.visible = false;
+				this.alpha = 1;
+			}
+		}
 	
 		
 		/**
@@ -403,6 +476,12 @@ package com.gestureworks.cml.components
 			background = null;
 			menu = null;
 			frame = null;
+			
+			tween = null;
+			if (timer){
+				timer.stop();
+				timer = null;
+			}
 			
 			this.removeEventListener(StateEvent.CHANGE, onStateEvent);					
 			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);			
