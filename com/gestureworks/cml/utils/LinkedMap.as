@@ -23,7 +23,7 @@ package com.gestureworks.cml.utils
 		lm.append("s2", new TouchSprite());
 		
 		lm.reset();
-		trace(lm.next());
+		//trace(lm.next());
 	 
 	 * </codeblock>
 	 * 

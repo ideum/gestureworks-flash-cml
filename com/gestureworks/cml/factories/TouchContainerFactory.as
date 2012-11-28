@@ -213,7 +213,7 @@ package com.gestureworks.cml.factories
 		public function set dimensionsTo(value:String):void
 		{
 			_dimensionsTo = value;
-			//trace("TOUCH CONTAINER - DIMENTIONS TO: ", dimensionsTo);
+			////trace("TOUCH CONTAINER - DIMENTIONS TO: ", dimensionsTo);
 		}		
 		
 		private var _autoShuffle:Boolean = false;
@@ -270,10 +270,10 @@ package com.gestureworks.cml.factories
 					this.width = childList.getIndex(i).width;
 					this.height = childList.getIndex(i).height;
 					
-					//trace(width, height);
+					////trace(width, height);
 				}
 				
-				//trace("TOUCH CONTAINER - DIMENSIONS TO: ", dimensionsTo);
+				////trace("TOUCH CONTAINER - DIMENSIONS TO: ", dimensionsTo);
 				
 			}
 			
@@ -288,7 +288,7 @@ package com.gestureworks.cml.factories
 		}
 		override public function set mouseChildren(value:Boolean):void 
 		{
-			//trace("mouseChildren in touch container:", value)
+			////trace("mouseChildren in touch container:", value)
 			super.mouseChildren = value;
 		}
 
@@ -326,7 +326,7 @@ package com.gestureworks.cml.factories
 			this.gestureList = cmlGestureList;
 			
 			for (var j:String in gestureList) {
-				//trace("gesture:",this.id, j+":"+gestureList[j]);
+				////trace("gesture:",this.id, j+":"+gestureList[j]);
 			}
 		}
 				

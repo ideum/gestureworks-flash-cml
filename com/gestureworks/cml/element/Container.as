@@ -315,7 +315,7 @@ package com.gestureworks.cml.element
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):*
 		{		
-			trace(value is Class);
+			//trace(value is Class);
 			var returnVal:* = null;
 			var searchType:String = null;
 			
