@@ -48,6 +48,7 @@ package com.gestureworks.cml.components
 		}
 		
 		
+		
 		private var _image:*;
 		/**
 		 * Sets the image element.
@@ -91,6 +92,16 @@ package com.gestureworks.cml.components
 			super.init();
 		}
 		
+		
+		private function onLoadComplete(e:StateEvent):void
+		{
+			image.removeEventListener(Event.COMPLETE, onLoadComplete);
+			isLoaded = true;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+		}
+		
+		public var isLoaded:Boolean = true;
+		
 		/**
 		 * CML initialization
 		 */
@@ -101,20 +112,14 @@ package com.gestureworks.cml.components
 					
 		override protected function updateLayout(event:*=null):void 
 		{
-			// update width and height to the size of the image, if not already specified
-			if (!width && image)
-				width = image.width;
-			if (!height && image)
-				height = image.height;	
-				
-			super.updateLayout();
-			
-			
-			for (var i:int = 0; i < textFields.length; i++) 
-			{					
-				trace("clone texts");
-				trace(textFields[i].x, textFields[i].y);
-			}				
+			if (image) {
+				// update width and height to the size of the image, if not already specified
+				//if (!width && image)
+					width = image.width;
+				//if (!height && image)
+					height = image.height;	
+			}	
+			super.updateLayout();				
 		}	
 		
 		
@@ -134,9 +139,11 @@ package com.gestureworks.cml.components
 			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);		
 				
 			CloneUtils.copyChildList(this, clone);		
-
-			if (image)
-				clone.image = String(image.id);				
+			
+			if (image) {
+				clone.image = String(image.id);
+				clone.isLoaded = false;			
+			}
 			
 			if (front)
 				clone.front = String(front.id);
@@ -152,23 +159,20 @@ package com.gestureworks.cml.components
 			
 			if (frame)
 				clone.frame = String(frame.id);
-			
 				
 			if (clone.image) {
-				clone.image.addEventListener(Event.COMPLETE, function(e:Event):void {	
-					clone.displayComplete();
-					
-					for (var i:int = 0; i < clone.textFields.length; i++) 
-					{					
-						clone.textFields[i].x = textFields[i].x;
-						clone.textFields[i].y = textFields[i].y;
-					}					
-				});
+				clone.image.addEventListener(Event.COMPLETE, onComplete);
+			}	
+			
+			function onComplete(event:Event):void {
+				clone.displayComplete();				
+				for (var i:int = 0; i < clone.textFields.length; i++) {					
+					clone.textFields[i].x = textFields[i].x;
+					clone.textFields[i].y = textFields[i].y;
+				}
+				clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 			}
 			
-			
-			
-
 			return clone;
 		}			
 		

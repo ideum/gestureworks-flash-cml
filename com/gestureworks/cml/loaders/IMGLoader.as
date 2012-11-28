@@ -1,5 +1,6 @@
 package com.gestureworks.cml.loaders 
 {
+	import com.gestureworks.cml.events.StateEvent;
 	import flash.display.Loader;
 	import flash.events.*;
 	import flash.net.URLRequest;
@@ -28,6 +29,7 @@ package com.gestureworks.cml.loaders
 		 * Returns the loaded value
 		 */
 		public function get isLoaded():Boolean { return _isLoaded; }	
+		
 		
 		private var _src:String = "";		
 		/**
@@ -65,7 +67,7 @@ package com.gestureworks.cml.loaders
 		 */
 		private function onComplete(event:Event):void
 		{
-			trace(event);
+			//trace(event);
 			_isLoaded = true;
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);	
 			loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);	
@@ -75,13 +77,16 @@ package com.gestureworks.cml.loaders
 		
 		private function onError(event:IOErrorEvent):void
 		{
-			trace(event);		
+			//trace(event);		
 		}		
 
+		
+		public var percentLoaded:Number;
 		private function onProgress(event:ProgressEvent):void
 		{
-			
-			trace(event);		
+			percentLoaded = event.bytesLoaded / event.bytesTotal;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, null, "percentLoaded", percentLoaded));
+			//trace("Percent downloaded", event.bytesLoaded / event.bytesTotal); 
 		}	
 		
 		

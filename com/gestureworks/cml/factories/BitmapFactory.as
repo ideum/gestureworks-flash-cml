@@ -1,5 +1,6 @@
 package com.gestureworks.cml.factories 
 {	
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
 	import flash.display.*;
@@ -217,7 +218,19 @@ package com.gestureworks.cml.factories
 			img = new IMGLoader;
 			img.load(src);
 			img.addEventListener(Event.COMPLETE, loadComplete);
+			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
 		}	
+		
+		
+		public var percentLoaded:Number;
+		private function onPercentLoad(event:StateEvent):void
+		{
+			if (event.property == "percentLoaded") {
+				percentLoaded = event.value;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", percentLoaded, true, true));
+			}
+		}
+		
 		
 		/**
 		 * loads external image file
@@ -234,7 +247,7 @@ package com.gestureworks.cml.factories
 		 */
 		public function close():void
 		{
-			_src = null;
+			//_src = null;
 			_aspectRatio = 0;
 			_landscape = false;
 			_portrait = false;
@@ -272,6 +285,8 @@ package com.gestureworks.cml.factories
 			if (img)
 			{
 				fileData = img.loader;
+				img.removeEventListener(Event.COMPLETE, loadComplete);
+				img.removeEventListener(StateEvent.CHANGE, onPercentLoad);
 			}
 			else
 			{
@@ -331,9 +346,7 @@ package com.gestureworks.cml.factories
 				resizeMatrix = null;
 			}			
 			else
-			{
-				trace(fileData);
-				
+			{	
 				_bitmapData = new BitmapData(fileData.width, fileData.height, true, 0x000000);
 				_bitmapData.draw(fileData.content);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
@@ -396,7 +409,9 @@ package com.gestureworks.cml.factories
 				createBitmapDataArray(); // may need to call once resample is complete // may need to send out complete when done
 			}
 			
-			bitmapComplete();			
+			bitmapComplete();	
+			
+			
 		}		
 		
 		/**
@@ -413,8 +428,10 @@ package com.gestureworks.cml.factories
 		protected function bitmapComplete():void 
 		{
 			dispatchEvent(new Event(Event.COMPLETE, false, false));
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 		}
 	
+		public var isLoaded:Boolean = true;
 		
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -445,7 +462,7 @@ package com.gestureworks.cml.factories
 			// loop thru standard sizeArray
 			for (var i:int=0; i<avatarNum; i++)
 			{	
-				//trace("sizeArray:",i,_sizeArray[i])
+				////trace("sizeArray:",i,_sizeArray[i])
 				
 				if((width)&&(height)){
 			

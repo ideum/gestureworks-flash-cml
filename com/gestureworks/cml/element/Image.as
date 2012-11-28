@@ -44,6 +44,8 @@ package com.gestureworks.cml.element
 			super.dispose();
 		}
 		
+				
+		
 		/**
 		 * Returns a clone of this Image
 		 * @return
@@ -54,12 +56,11 @@ package com.gestureworks.cml.element
 			var src:String = clone.src;
 			clone.close();
 			
-			clone.width = 0;
-			clone.height = 0;
+			clone.isLoaded = false;
 			
 			if (src)
 				clone.open(src);
-			
+				
 			return clone;			
 		}
 		

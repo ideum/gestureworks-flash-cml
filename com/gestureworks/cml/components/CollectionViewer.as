@@ -54,7 +54,7 @@ package com.gestureworks.cml.components
 		{
 			super();
 			queue = new List;
-			this.mouseChildren = true;
+			mouseChildren = true;
 		}
 		
 		/**
@@ -63,6 +63,7 @@ package com.gestureworks.cml.components
 		override public function init():void 
 		{
 			cover = new Sprite;
+			cover.name = "hitbg";
 		
 			cover.graphics.beginFill(0x000000, 1);
 			cover.graphics.drawRect(30, 30, stage.stageWidth - 60, stage.stageHeight - 60);
@@ -71,8 +72,8 @@ package com.gestureworks.cml.components
 			cover.visible = false;
 			this.addChildAt(cover, 0);		
 			
-			if (amountToShow >= childList.length || amountToShow == -1)
-				amountToShow = childList.length;
+			//if (amountToShow >= childList.length || amountToShow == -1)
+			//	amountToShow = childList.length;
 					
 				
 			var i:int = 0;	
@@ -158,9 +159,7 @@ package com.gestureworks.cml.components
 		}
 
 		override protected function onStateEvent(event:StateEvent):void
-		{
-			trace("hi");
-			
+		{	
 			if (event.value == "close") 
 			{				
 				removeComponent(event.currentTarget);				
@@ -181,8 +180,6 @@ package com.gestureworks.cml.components
 			var newComponent:*;							
 			newComponent = queue.getIndex(0);
 			queue.remove(0);
-			
-			trace(queue);
 			
 			if (newComponent)
 			{
@@ -214,14 +211,50 @@ package com.gestureworks.cml.components
 			_gateway = g;
 		}
 		
+		
+		
+		
+		
+		
+		private var templates:Array = [];
+		
+		
+		
+	
+		
+		private var loadText:Text;
+		
 		private function dbInit():void
-		{
-			// TODO: cache original cml objects and expression attributes			
-			
+		{		
 			if (!gateway) return;
+			
+			
+		
+			// store templates
+			for (var i:int = 0; i < numChildren; i++) 
+			{
+				if (getChildAt(i).name != "hitbg")
+					templates.push(getChildAt(i));
+			}
+			
+			
+			
 			hideAll();
 			connect();
-						
+			
+			
+			
+			// tmp load status
+			loadText = new Text;
+			loadText.color = 0xFFFFFF;
+			loadText.width = 500;
+			loadText.height = 500;
+			loadText.text = "load status";
+			loadText.y = 50;
+			addChild(loadText);
+			
+			
+			// test text box
 			entry = new Text();
 			entry.width = 200;
 			entry.height = 25;
@@ -233,15 +266,27 @@ package com.gestureworks.cml.components
 			addChild(entry);
 		}
 		
+		
+		
 		private function query(e:KeyboardEvent):void
 		{
-			if (e.keyCode == 13)
-			{
-				hideAll();	
-				connection.call("./AMFTest.getalldata", responder, entry.text);
+			//entry.text
+			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
+			//var searchString:String = "ca_object_labels.name:Yellow Flower";
+			//var searchString:String = "ca_objects.work_description:This is a AND ca_object_labels.name:Yellow";
+			var searchString:String = "ca_objects.work_description:This is a";
+			var returnFields:Array = ["work_description", "copyrightdate"];
+			
+			if (e.keyCode == 13) {
+				hideAll();
+				connection.call("./AMFTest.search_choose_return", responder, searchString, null, null, returnFields);
+				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
+				//connection.call("./AMFTest.getalldata", responder, entry.text);
 				//connection.call("./SetTest.set_search", responder, entry.text);
 			}
 		}
+		
+		
 		
 		private function connect():void
 		{
@@ -249,6 +294,7 @@ package com.gestureworks.cml.components
 			connection.connect(gateway);				
 			responder = new Responder(onResult, onFault);	
 		}
+		
 		
 		private function getNextComponent(c:*):*
 		{
@@ -273,69 +319,155 @@ package com.gestureworks.cml.components
 		}
 				
 		
-		private function onResult(result:Object):void
-		{								
-			updateObjects(result);
+		private function onResult(res:Object):void
+		{	
+			result = res;								
+			updateObjects();
 		}
 		
-		private function updateObjects(result:Object):void
+		
+		private var clones:Array = [];
+		private var loadCnt:int = 0;
+		private var resultCnt:int = 0;
+		private var maxLoad:int = 2;
+		private var result:Object;
+		
+		
+		private function updateObjects():void
+		{	
+			for (var n:* in result) {
+				resultCnt++;	
+			}
+			trace("resultCnt", resultCnt);
+			//printResult(result);
+			
+			if (amountToShow > resultCnt)
+				amountToShow = resultCnt;
+				
+			loadClone();
+		}
+		
+		
+		private function loadClone():void
 		{
-			// get current objects available
-			var objs:Array = searchChildren(ImageViewer, Array);
+			var num:int=0;
 			
+			num = maxLoad + loadCnt;
 			
-			var dict:Dictionary = new Dictionary(true);
-			dict["ImageViewer"] = [];
-			
-			
-			//dict[ImageViewer][0] = [0, 1, "src"];
-			//dict[ImageViewer][1] = [1, 2, "text"];
-			//dict[ImageViewer][2] = [1, 3, "text"];
-			
-			var cnt:int = 2;
-			
-			
-			// TODO: get number of required objects from results (custom tag name, specifying display object)
-			for each(var obj:* in result)
-			{
-				//cnt++;		
-			}
-			
-		
-			//objs[0].visible = true;
-			objs[1] = objs[0].clone();
-			objs[1].image.close();
-			objs[1].image.width = 0;
-			objs[1].image.height = 0;
-			objs[1].image.open("http://www.sifxtreme.com/collectiveaccess-providence-1.2/media/my_first_collectiveaccess_system/images/0/11883_ca_object_representations_media_30_original.png");
-			objs[1].image.addEventListener(Event.COMPLETE, function(e:Event):void { objs[1].init(); } );	
-			objs[1].visible = true;
-			
-			var index:int = 0;
-			
-			/*
-			for each(var obj:* in result)
-			{
-				if (!(objs[index] is ImageViewer)) return;
-				var iv:ImageViewer = ImageViewer(objs[index]);
-				iv.visible = true;
-				var metaTag:String = iv.image.propertyStates[0]["src"];	
+			if (num >= resultCnt)
+				num = resultCnt;
 				
-				iv.image.close();
-				iv.image.open("http://www.sifxtreme.com/collectiveaccess-providence-1.2/media/my_first_collectiveaccess_system/images/0/11883_ca_object_representations_media_30_original.png");
-			
+			for (var i:int = loadCnt; i < num; i++) {
 				
-				trace(obj[metaTag.substring(1, metaTag.length - 1)]);
-				
-				//iv.image.addEventListener(Event.COMPLETE, function(e:Event):void { iv.init(); } );
-				index++;
-				
-				if (index == 3) break;
-			}
-			*/
-
+				trace("i", i);
+				for (var j:* in result[i]) {
+					searchExp(templates[0], String(j), result[i][j]);			
+				}
+				createClone(clones[i]);			
+			}					
 		}
 		
+		
+		private function printResult(result:Object):void
+		{
+			i = 0;
+			
+			for (var i:* in result) {
+				trace("---result---", i);
+				for (var j:* in result[i]) {
+					trace(j, result[i][j]);
+				}
+				i++;
+			}
+		}
+		
+		private function searchExp(obj:*, prop:String=null, val:*=null):void
+		{	
+			if (!obj.propertyStates) return;
+			
+			for (var p:String in obj.propertyStates[0]) {
+				if ((String(obj.propertyStates[0][p]).indexOf("{") != -1)) {					
+					var str:String = String(obj.propertyStates[0][p]).substring(1, String(obj.propertyStates[0][p]).length -1);
+					
+					if (str == prop) {
+						obj[p] = val;
+					}
+				}
+			}
+			
+			// recursion
+			if (obj is DisplayObjectContainer) {
+				for (var i:int = 0; i < obj.numChildren; i++) {
+					searchExp(obj.getChildAt(i), prop, val);		
+				}					
+			}
+		}			
+		
+		
+		private function createClone(clone:*):void
+		{
+			clone = templates[0].clone();
+			
+			if (clone.isLoaded) {
+				onLoadComplete();
+			}
+			else {
+				clone.addEventListener(StateEvent.CHANGE, onLoadComplete);
+				clone.addEventListener(StateEvent.CHANGE, onPercentLoad);
+			}
+			clones.push(clone);
+		}		
+
+		
+		
+		private function onPercentLoad(event:StateEvent):void 
+		{			
+			if (event.property == "percentLoaded") {
+				loadText.text = "loading " + loadCnt + " of " + resultCnt + ": " + event.value;
+			}
+		}		
+		
+		
+		private function onLoadComplete(event:StateEvent=null):void 
+		{			
+			if (event.property == "isLoaded") {
+				event.target.removeEventListener(StateEvent.CHANGE, onLoadComplete);
+				event.target.removeEventListener(StateEvent.CHANGE, onPercentLoad);				
+				loadCnt++;
+				if (loadCnt == amountToShow) {
+					showClones();
+				}
+				else if (loadCnt == resultCnt) {
+					loadCnt = 0;
+				}
+				
+				else if ( (loadCnt % maxLoad) == 0 ) {
+					loadClone();
+				}
+				else {
+					trace((loadCnt % maxLoad))
+				}				
+			}	
+		}
+		
+		private function showClones():void
+		{	
+			for (var i:int = 0; i < amountToShow; i++) {
+				clones[i].visible = true;
+				
+				if (autoShuffle) {
+					if (GestureWorks.activeTUIO)
+						clones[i].addEventListener(TuioTouchEvent.TOUCH_DOWN, updateLayout);
+					else if (GestureWorks.supportsTouch)
+						clones[i].addEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
+					else 
+						clones[i].addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);	
+				}					
+			}					
+		}		
+		
+		
+
 		private function updateSets(result:Object):void
 		{
 			for each(var setObject:* in result)
@@ -392,7 +524,7 @@ package com.gestureworks.cml.components
 		
 		private function onFault(fault:Object):void
 		{
-			trace(fault.description);
+			////trace(fault.description);
 		}
 		
 		private function hideAll():void
