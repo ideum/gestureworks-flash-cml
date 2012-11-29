@@ -1,5 +1,6 @@
 package com.gestureworks.cml.components 
 {
+	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.*;
@@ -217,7 +218,7 @@ package com.gestureworks.cml.components
 		
 		
 		private var templates:Array = [];
-		
+		private var docks:Dictionary;
 		
 		
 	
@@ -227,43 +228,46 @@ package com.gestureworks.cml.components
 		private function dbInit():void
 		{		
 			if (!gateway) return;
-			
-			
-		
-			// store templates
+					
+			// store templates and docks
 			for (var i:int = 0; i < numChildren; i++) 
-			{
-				if (getChildAt(i).name != "hitbg")
+			{		
+				if (getChildAt(i).hasOwnProperty("class_") && getChildAt(i)["class_"] == "search")
+				{
+					if (!docks) docks = new Dictionary();
+					docks[getChildAt(i)] = new Array();
+				}
+				else if (getChildAt(i).name != "hitbg")
 					templates.push(getChildAt(i));
 			}
-			
-			
+						
 			
 			hideAll();
 			connect();
-			
-			
-			
-			// tmp load status
-			loadText = new Text;
-			loadText.color = 0xFFFFFF;
-			loadText.width = 500;
-			loadText.height = 500;
-			loadText.text = "load status";
-			loadText.y = 50;
-			addChild(loadText);
-			
+						
 			
 			// test text box
-			entry = new Text();
-			entry.width = 200;
-			entry.height = 25;
-			entry.type = "input";
-			entry.visible = true;
-			entry.background = true;
-			entry.border = true;
-			entry.addEventListener(KeyboardEvent.KEY_DOWN, query);
-			addChild(entry);
+			if(1)//if (!docks)
+			{				
+				// tmp load status
+				loadText = new Text;
+				loadText.color = 0xFFFFFF;
+				loadText.width = 500;
+				loadText.height = 500;
+				loadText.text = "load status";
+				loadText.y = 50;
+				addChild(loadText);
+			
+				entry = new Text();
+				entry.width = 200;
+				entry.height = 25;
+				entry.type = "input";
+				entry.visible = true;
+				entry.background = true;
+				entry.border = true;
+				entry.addEventListener(KeyboardEvent.KEY_DOWN, query);
+				addChild(entry);
+			}
 		}
 		
 		
@@ -435,7 +439,8 @@ package com.gestureworks.cml.components
 				event.target.removeEventListener(StateEvent.CHANGE, onPercentLoad);				
 				loadCnt++;
 				if (loadCnt == amountToShow) {
-					showClones();
+					//showClones();
+					displayResults();
 				}
 				else if (loadCnt == resultCnt) {
 					loadCnt = 0;
@@ -464,10 +469,31 @@ package com.gestureworks.cml.components
 						clones[i].addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);	
 				}					
 			}					
-		}		
+		}
 		
+		private function displayResults():void
+		{			
+			var album:Album = CMLObjectList.instance.getId("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
+			album.clear();
+			for each(var clone:* in clones)
+				album.addChild(getAlbumRepresentation(clone));
+			album.init();
+		}
 		
-
+		private function getAlbumRepresentation(obj:ImageViewer):TouchContainer
+		{
+			var ar:TouchContainer = new TouchContainer();
+			var img:Image = obj.image.clone();
+			img.width = 300;
+			img.height = 300;
+			img.resample = true;
+			ar.addChild(img);
+			ar.width = img.width;
+			ar.height = img.height;
+			
+			return ar;
+		}
+				
 		private function updateSets(result:Object):void
 		{
 			for each(var setObject:* in result)
@@ -528,7 +554,7 @@ package com.gestureworks.cml.components
 		}
 		
 		private function hideAll():void
-		{
+		{			
 			for (var i:int = 0; i < numChildren; i++)
 			{
 				if(getChildAt(i) is TouchContainer)
