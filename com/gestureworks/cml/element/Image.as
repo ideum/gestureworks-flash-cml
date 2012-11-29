@@ -61,6 +61,14 @@ package com.gestureworks.cml.element
 			if (src)
 				clone.open(src);
 				
+				
+			//if (src)
+			//{
+				//clone.bitmapData = new BitmapData(width, height, false, 0xFFFFFF);			
+				//clone.bitmapData = bitmapData.clone();
+				//clone.bitmap = new Bitmap(clone.bitmapData, PixelSnapping.NEVER, true);				
+				//clone.loadComplete();
+			//}				
 			return clone;			
 		}
 		

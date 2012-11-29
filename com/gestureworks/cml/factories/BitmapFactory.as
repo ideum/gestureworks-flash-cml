@@ -92,6 +92,10 @@ package com.gestureworks.cml.factories
 		 * @default null
 		 */			
 		public function get bitmap():Bitmap { return _bitmap; }
+		public function set bitmap(b:Bitmap):void 
+		{ 
+			_bitmap = b; 
+		}
 		
 	
 		private var _bitmapData:BitmapData;
@@ -100,6 +104,10 @@ package com.gestureworks.cml.factories
 		 * @default null
 		 */				
 		public function get bitmapData():BitmapData { return _bitmapData; }
+		public function set bitmapData(b:BitmapData):void 
+		{ 
+			_bitmapData = b;
+		}
 		
 	
 		private var _bitmapDataCache:Boolean = false;
