@@ -305,7 +305,6 @@ package com.gestureworks.cml.element
 			displayBkg.width = contentContainer.width;
 			displayBkg.height = contentContainer.height;
 			displayBkg.y = tabGE.height - 1;
-			trace(contentContainer.numChildren);
 			contentContainer.addChildAt(displayBkg,0);			
 			
 			//create mask and apply it to the content container

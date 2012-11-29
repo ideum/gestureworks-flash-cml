@@ -113,8 +113,6 @@ package com.gestureworks.cml.element
 			if (hit)
 				addChildAt(hit, numChildren - 1);
 				
-			trace("down", down);
-				
 			//initialize auto listeners 
 			if (down) listenDown();
 			if (over) listenOver();
@@ -493,9 +491,7 @@ package com.gestureworks.cml.element
 				buttonStates.push(_down);
 			}
 			else
-			{
-				trace("________________", childList.getKey(value), value);
-				
+			{			
 				value = value.toString();
 				_down = childList.getKey(value);
 				buttonStates.push(_down);						
@@ -969,9 +965,7 @@ package com.gestureworks.cml.element
 		 * @param	event  the down event
 		 */				
 		protected function onDown(event:*):void
-		{
-			trace("down", this.id);
-			
+		{		
 			if (debug)
 				trace("down");
 				
@@ -1111,9 +1105,7 @@ package com.gestureworks.cml.element
 		 * @param	listen  adds touch/mouse listener if true, removes if false
 		 */			
 		private function listenDown(listen:Boolean = true):void
-		{
-			trace("listenDown");
-			
+		{			
 			if (GestureWorks.activeTUIO)
 				addListener(TuioTouchEvent.TOUCH_DOWN, onDown, listen, hit);
 			else if (GestureWorks.supportsTouch)
