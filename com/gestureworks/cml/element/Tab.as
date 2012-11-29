@@ -78,7 +78,6 @@ package com.gestureworks.cml.element
 		public function init():void
 		{
 			setupUI();
-			addAllChildren();
 		}
 		
 		/**
@@ -306,7 +305,8 @@ package com.gestureworks.cml.element
 			displayBkg.width = contentContainer.width;
 			displayBkg.height = contentContainer.height;
 			displayBkg.y = tabGE.height - 1;
-			contentContainer.addChild(displayBkg);			
+			trace(contentContainer.numChildren);
+			contentContainer.addChildAt(displayBkg,0);			
 			
 			//create mask and apply it to the content container
 			if (applyMask)
@@ -330,7 +330,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Adds children to the content container
+		 * Reroutes children addition to the content container
 		 * @param	child  object to add
 		 * @return  the object added
 		 */
@@ -340,17 +340,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Adds all children after initialization to ensure content is in front of background
+		 * Reroutes children addition at a specified index to the content container
+		 * @param	child  object to add
+		 * @param	index  the content container's index
+		 * @return  the object added
 		 */
-		override public function addAllChildren():void 
+		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{
-			if (childList.length > 0)
-				super.addAllChildren();
-			else
-			{
-				for (var i:int = contentContainer.numChildren-1; i >= 0; i--)
-					contentContainer.addChild(contentContainer.getChildAt(i));
-			}
+			index = index == 0 ? 1 : index;  //index 0 is reserved for background
+			return contentContainer.addChildAt(child, index);
 		}
 		
 		/**
