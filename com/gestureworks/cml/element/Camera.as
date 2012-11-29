@@ -77,12 +77,12 @@ package com.gestureworks.cml.element
 	 * video.attachCamera(camera);
 	 * addChild(video);
 	 * } else {
-	 * trace("You need a camera.");
+	 * //trace("You need a camera.");
 	 * }
 	 * }
 	 * 
 	 *   private function activityHandler(event:ActivityEvent):void {
-	 * trace("activityHandler: " + event);
+	 * //trace("activityHandler: " + event);
 	 * }
 	 * }
 	 * }

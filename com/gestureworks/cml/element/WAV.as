@@ -636,7 +636,7 @@ package com.gestureworks.cml.element
 			//if end of audio data reached, reset buffer size and stop playback
 			if (_audioStreamAvailable == 0) {
 				_varBufferSize = _bufferSize;
-				trace("Stopping.");
+				//trace("Stopping.");
 				stop();
 			}		
 		}
@@ -688,7 +688,7 @@ package com.gestureworks.cml.element
 			_stream.endian = Endian.BIG_ENDIAN;
 			var chunkId:String = _stream.readUTFBytes(4);
 			if (_printData)
-				trace ('Chunk Id = ' + chunkId);
+				//trace ('Chunk Id = ' + chunkId);
 			if (chunkId != 'RIFF')
 				throw _invalidError;
 			
@@ -698,13 +698,13 @@ package com.gestureworks.cml.element
 			for (i=0; i<4; i++)
 				chunkSize += _stream.readUnsignedByte() * int(Math.pow(256,i));
 			if (_printData)
-				trace ('Chunk Size = ' + chunkSize + ' bytes');
+				//trace ('Chunk Size = ' + chunkSize + ' bytes');
 			
 			//read format (4 bytes - big endian)
 			_stream.endian = Endian.BIG_ENDIAN;
 			var format:String = _stream.readUTFBytes(4)
 			if (_printData)
-				trace ('Format = ' + format);
+				//trace ('Format = ' + format);
 			if (format != 'WAVE')
 				throw _invalidError;
 			
@@ -712,7 +712,7 @@ package com.gestureworks.cml.element
 			//read subchunk1 id (4 bytes - big endian)
 			var subchunk1Id:String = _stream.readUTFBytes(4)
 			if (_printData)
-				trace ('Subchunk1 Id = ' + subchunk1Id);
+				//trace ('Subchunk1 Id = ' + subchunk1Id);
 			if (subchunk1Id != 'fmt ')
 				throw _invalidError;
 			
@@ -722,7 +722,7 @@ package com.gestureworks.cml.element
 			for (i=0; i<4; i++)
 				fmtChunkSize += _stream.readUnsignedByte() * int(Math.pow(256,i));
 			if (_printData)
-				trace ('Subchunk1 Size = ' + fmtChunkSize + ' bytes');
+				//trace ('Subchunk1 Size = ' + fmtChunkSize + ' bytes');
 			
 			//record start position of fmt chunk data
 			var fmtChunkStart:uint = _stream.position;
@@ -731,7 +731,7 @@ package com.gestureworks.cml.element
 			var audioFormat:uint = _stream.readUnsignedByte();			
 			_stream.readUnsignedByte();
 			if (_printData)	
-				trace('Audio Format = uncompressed PCM');
+				//trace('Audio Format = uncompressed PCM');
 			if (audioFormat != 1)
 				throw _invalidError;
 			
@@ -739,7 +739,7 @@ package com.gestureworks.cml.element
 			_channels = _stream.readUnsignedByte();
 			_stream.readUnsignedByte();
 			if (_printData)
-				trace('Channels = ' + channels);
+				//trace('Channels = ' + channels);
 			if (channels > 2)
 				throw new Error("More than two channels are not supported");
 			
@@ -747,7 +747,7 @@ package com.gestureworks.cml.element
 			for (i=0; i<4; i++) 
 				_sampleRate += _stream.readUnsignedByte() * int(Math.pow(256,i));
 			if (_printData)	
-				trace("Sample Rate = " + sampleRate);
+				//trace("Sample Rate = " + sampleRate);
 			if (_sampleRate != 44100)
 				throw new Error("Sample rate not supported; 44100 Hz required");
 			
@@ -756,19 +756,19 @@ package com.gestureworks.cml.element
 				_byteRate += _stream.readUnsignedByte() * int(Math.pow(256,i));
 			_msByteRate = _byteRate / 1000;
 			if (_printData)
-				trace("Byte Rate = " + byteRate);		
+				//trace("Byte Rate = " + byteRate);		
 			
 			//read block align (2 bytes - little endian)
 			for (i=0; i<2; i++) 
 				_blockAlign += _stream.readUnsignedByte() * int(Math.pow(256,i));
 			if (_printData)
-				trace("Block Align = " + _blockAlign);
+				//trace("Block Align = " + _blockAlign);
 			
 			//read bits per sample (2 bytes - little endian)
 			_bitDepth = _stream.readUnsignedByte();
 			_stream.readUnsignedByte();
 			if (_printData)
-				trace("Bit Depth = " + bitDepth);
+				//trace("Bit Depth = " + bitDepth);
 			if (bitDepth != 16)
 				throw new Error("Bit depth is not supported; Must be 16 bits"); 
 			
@@ -791,7 +791,7 @@ package com.gestureworks.cml.element
 				_stream.endian = Endian.BIG_ENDIAN;
 				var subChunkId:String = _stream.readUTFBytes(4);
 				if (_printData)
-					trace ('Subchunk Id = ' + subChunkId);
+					//trace ('Subchunk Id = ' + subChunkId);
 				
 				//read subchunk size (4 bytes - little endian)
 				_stream.endian = Endian.LITTLE_ENDIAN;
@@ -799,7 +799,7 @@ package com.gestureworks.cml.element
 				for (i=0; i<4; i++)
 					subChunkSize += _stream.readUnsignedByte() * int(Math.pow(256,i));
 				if (_printData)
-					trace ('Subchunk Size = ' + subChunkSize)	
+					//trace ('Subchunk Size = ' + subChunkSize)	
 				
 				//read xmp metadata
 				if (subChunkId == '_PMX') {
@@ -826,7 +826,7 @@ package com.gestureworks.cml.element
 						_comment= xmp.xmpDM::comment;
 					
 					if (_printData)
-						trace('XMP = ' + str);
+						//trace('XMP = ' + str);
 											
 					//free memory
 					str = null;
@@ -855,9 +855,9 @@ package com.gestureworks.cml.element
 		}
 		
 		private function fileTraversalComplete():void {
-			trace("FileTraversalComplete");
+			//trace("FileTraversalComplete");
 			if (_printData)
-				trace('File traversal complete');
+				//trace('File traversal complete');
 
 			_loaded = true;
 			_varBufferSize = bufferSize;

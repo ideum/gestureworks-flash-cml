@@ -253,7 +253,7 @@ package com.gestureworks.cml.utils
 							var sign:int = SIGN_UNDEF;
 							switch(type) {
 								case "s":
-									valueStr = value.toString();
+									valueStr = String(value);
 									if(precision != -1) { valueStr = valueStr.substr(0, precision); }
 									break;
 								case "c":

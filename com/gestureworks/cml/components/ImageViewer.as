@@ -70,7 +70,7 @@ package com.gestureworks.cml.components
 		 * Initialization function
 		 */
 		override public function init():void 
-		{			
+		{	
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
 			if (!image)
 				image = searchChildren(".image_element");
@@ -89,15 +89,20 @@ package com.gestureworks.cml.components
 			if (!image)
 				image = searchChildren(Image);
 			
-			super.init();
+			if (image)
+				image.addEventListener(StateEvent.CHANGE, onLoadComplete);
+			
+			super.init();	
 		}
 		
 		
 		private function onLoadComplete(e:StateEvent):void
 		{
-			image.removeEventListener(Event.COMPLETE, onLoadComplete);
-			isLoaded = true;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+			if (e.property == "isLoaded") {
+				image.removeEventListener(StateEvent.CHANGE, onLoadComplete);
+				isLoaded = true;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+			}
 		}
 		
 		public var isLoaded:Boolean = true;
@@ -140,10 +145,8 @@ package com.gestureworks.cml.components
 				
 			CloneUtils.copyChildList(this, clone);		
 			
-			if (image) {
+			if (image)
 				clone.image = String(image.id);
-				clone.isLoaded = false;			
-			}
 			
 			if (front)
 				clone.front = String(front.id);
@@ -160,19 +163,13 @@ package com.gestureworks.cml.components
 			if (frame)
 				clone.frame = String(frame.id);
 				
-			if (clone.image) {
-				clone.image.addEventListener(Event.COMPLETE, onComplete);
-			}	
+			clone.displayComplete();				
 			
-			function onComplete(event:Event):void {
-				clone.displayComplete();				
-				for (var i:int = 0; i < clone.textFields.length; i++) {					
-					clone.textFields[i].x = textFields[i].x;
-					clone.textFields[i].y = textFields[i].y;
-				}
-				clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+			for (var i:int = 0; i < clone.textFields.length; i++) {					
+				clone.textFields[i].x = textFields[i].x;
+				clone.textFields[i].y = textFields[i].y;
 			}
-			
+
 			return clone;
 		}			
 		

@@ -99,11 +99,11 @@ package com.gestureworks.cml.element
 	 * }
 	 * 
 	 *   private function activityHandler(event:ActivityEvent):void {
-	 * trace("activityHandler: " + event);
+	 * //trace("activityHandler: " + event);
 	 * }
 	 * 
 	 *   private function statusHandler(event:StatusEvent):void {
-	 * trace("statusHandler: " + event);
+	 * //trace("statusHandler: " + event);
 	 * }
 	 * }
 	 * }

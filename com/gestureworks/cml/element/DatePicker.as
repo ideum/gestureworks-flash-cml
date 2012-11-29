@@ -28,7 +28,7 @@ package com.gestureworks.cml.element
 				
 		function selectedDate(event:StateEvent):void
 		{
-			trace(event.value);
+			//trace(event.value);
 		}	
 	 * 
 	 * </codeblock>
@@ -124,7 +124,7 @@ package com.gestureworks.cml.element
 		{
 			for (var i:int = m.split(",").length; i < 12; i++)
 				m = m + ",";
-			trace(m);	
+			//trace(m);	
 			_months = m;
 		}
 		

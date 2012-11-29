@@ -123,16 +123,16 @@ package com.gestureworks.cml.components
 			else if (event.value == "pause" && mp3)
 				mp3.pause();
 			else if (event.property == "position" && mp3) {
-				//trace("Getting the position event from the MP3.");
+				////trace("Getting the position event from the MP3.");
 				if (menu) {
 					if (menu.slider) {
-						//trace("Menu has slider setting value");
+						////trace("Menu has slider setting value");
 						Slider(menu.slider).input(event.value * 100);
 					}
 				}
 			}
 			else if (menu.slider && event.target is Slider) {
-				//trace("Target", event.target);
+				////trace("Target", event.target);
 				mp3.pause();
 				mp3.seek(event.value);
 				addEventListener(GWTouchEvent.TOUCH_END, onRelease);

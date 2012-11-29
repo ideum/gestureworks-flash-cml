@@ -106,7 +106,7 @@ package  com.gestureworks.cml.components
 		 */
 		private function synchSlideshows():void
 		{
-			trace("///////////// \n// Linking slideshows \n//////////////");
+			//trace("///////////// \n// Linking slideshows \n//////////////");
 			linkSlideshows = linkSlideshows ? (back is Slideshow) : false;
 			if (linkSlideshows)
 			{				
@@ -114,15 +114,15 @@ package  com.gestureworks.cml.components
 					throw new Error("Cannot link slideshows with different number of objects");
 				
 				back.rate = slideshow.rate;
-				trace("back rate:", back.rate);
+				//trace("back rate:", back.rate);
 				back.fadeDuration = slideshow.fadeDuration;
-				trace("back fade dur:", back.fadeDuration);
+				//trace("back fade dur:", back.fadeDuration);
 				back.currentIndex = slideshow.currentIndex;
-				trace("currentIndex", back.currentIndex);
+				//trace("currentIndex", back.currentIndex);
 				back.autoplay = slideshow.autoplay;
-				trace("back.autoplay", back.autoplay);
+				//trace("back.autoplay", back.autoplay);
 				back.loop = slideshow.loop;				
-				trace("back loop:", back.loop);
+				//trace("back loop:", back.loop);
 				
 				//addEventListener(StateEvent.CHANGE, updateSlideshows);								
 			}			
@@ -151,7 +151,7 @@ package  com.gestureworks.cml.components
 		{	
 			super.onStateEvent(event);
 			
-			trace("EVENT", event.value);
+			//trace("EVENT", event.value);
 			
 			if (event.value == "close" && slideshow){
 				slideshow.stop();

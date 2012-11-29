@@ -279,10 +279,20 @@ package com.gestureworks.cml.components
 			//var searchString:String = "ca_object_labels.name:Yellow Flower";
 			//var searchString:String = "ca_objects.work_description:This is a AND ca_object_labels.name:Yellow";
 			var searchString:String = "ca_objects.work_description:This is a";
+			
+			//var searchFields:Array = ["work_description:This is a", "copyrightdate:August"];
+			var searchFields:Array = [];
 			var returnFields:Array = ["work_description", "copyrightdate"];
+			
+			// original
+			// mediumlarge
+			// medium
+			// small
+			// etc -- see collective access
 			
 			if (e.keyCode == 13) {
 				hideAll();
+				//connection.call("./ObjectSearchTest.search_choose_return", responder, searchFields, returnFields, "mediumlarge");				
 				connection.call("./AMFTest.search_choose_return", responder, searchString, null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
 				//connection.call("./AMFTest.getalldata", responder, entry.text);
@@ -325,7 +335,13 @@ package com.gestureworks.cml.components
 		
 		private function onResult(res:Object):void
 		{	
-			result = res;								
+			result = res;
+			resultCnt = 0;
+			for (var n:* in result) {
+				resultCnt++;	
+			}
+			trace("resultCnt", resultCnt);
+			printResult(result);
 			updateObjects();
 		}
 		
@@ -339,12 +355,6 @@ package com.gestureworks.cml.components
 		
 		private function updateObjects():void
 		{	
-			for (var n:* in result) {
-				resultCnt++;	
-			}
-			trace("resultCnt", resultCnt);
-			//printResult(result);
-			
 			if (amountToShow > resultCnt)
 				amountToShow = resultCnt;
 				
@@ -355,15 +365,13 @@ package com.gestureworks.cml.components
 		private function loadClone():void
 		{
 			var num:int=0;
-			
+						
 			num = maxLoad + loadCnt;
 			
 			if (num >= resultCnt)
 				num = resultCnt;
 				
-			for (var i:int = loadCnt; i < num; i++) {
-				
-				trace("i", i);
+			for (var i:int = loadCnt; i < num; i++) {				
 				for (var j:* in result[i]) {
 					searchExp(templates[0], String(j), result[i][j]);			
 				}
@@ -410,16 +418,19 @@ package com.gestureworks.cml.components
 		
 		private function createClone(clone:*):void
 		{
-			clone = templates[0].clone();
+			trace("create clone");
 			
-			if (clone.isLoaded) {
-				onLoadComplete();
-			}
-			else {
-				clone.addEventListener(StateEvent.CHANGE, onLoadComplete);
-				clone.addEventListener(StateEvent.CHANGE, onPercentLoad);
-			}
+			clone = templates[0].clone(); // TODO: remove hardcoded template item 
+			
+			var src:String = clone.image.src;			
+			clone.image.close();
+			
 			clones.push(clone);
+			
+			clone.addEventListener(StateEvent.CHANGE, onLoadComplete);
+			clone.addEventListener(StateEvent.CHANGE, onPercentLoad);
+			
+			clone.image.open(src);
 		}		
 
 		
@@ -427,22 +438,25 @@ package com.gestureworks.cml.components
 		private function onPercentLoad(event:StateEvent):void 
 		{			
 			if (event.property == "percentLoaded") {
-				loadText.text = "loading " + loadCnt + " of " + resultCnt + ": " + event.value;
+				loadText.text = "loading " + (String)(loadCnt+1) + " of " + resultCnt + ": " + event.value;
 			}
 		}		
 		
 		
+		
 		private function onLoadComplete(event:StateEvent=null):void 
-		{			
+		{
 			if (event.property == "isLoaded") {
 				event.target.removeEventListener(StateEvent.CHANGE, onLoadComplete);
-				event.target.removeEventListener(StateEvent.CHANGE, onPercentLoad);				
+				event.target.removeEventListener(StateEvent.CHANGE, onPercentLoad);
+				event.target.init();
 				loadCnt++;
+				
 				if (loadCnt == amountToShow) {
-					//showClones();
-					displayResults();
+					showClones();
 				}
 				else if (loadCnt == resultCnt) {
+					displayResults();
 					loadCnt = 0;
 				}
 				
@@ -484,9 +498,12 @@ package com.gestureworks.cml.components
 		{
 			var ar:TouchContainer = new TouchContainer();
 			var img:Image = obj.image.clone();
+			
 			img.width = 300;
-			img.height = 300;
+			img.height = 0;
 			img.resample = true;
+			img.resize();
+			
 			ar.addChild(img);
 			ar.width = img.width;
 			ar.height = img.height;

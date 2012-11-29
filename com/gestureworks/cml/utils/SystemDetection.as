@@ -8,7 +8,7 @@ package com.gestureworks.cml.utils
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 
 		if (SystemDetection.AIR)
-			trace("You are running AIR!");
+			//trace("You are running AIR!");
 	 
 	 * </codeblock>
 	 * 

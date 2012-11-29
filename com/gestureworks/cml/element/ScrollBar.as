@@ -355,11 +355,11 @@ package com.gestureworks.cml.element
 			if (_orientation == "vertical"){
 				if (thumb.y < railGraphic.y) {
 					thumb.y = railGraphic.y;
-					//trace("Clamping rail min.");
+					////trace("Clamping rail min.");
 				}
 				if (thumb.y > (railGraphic.y + movementRail)) {
 					thumb.y = railGraphic.y + movementRail;
-					//trace("Clamping rail max");
+					////trace("Clamping rail max");
 				}
 			}
 			if (_orientation == "horizontal") {

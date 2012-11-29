@@ -30,7 +30,7 @@ package com.gestureworks.cml.utils
 	   addChild(g1);
 	   addChild(g2)
 	   
-	   trace(CollisionDetection.isColliding(g1, g2));
+	   //trace(CollisionDetection.isColliding(g1, g2));
 		
 	 * </codeblock>
 	 * 

@@ -204,6 +204,8 @@ package com.gestureworks.cml.core
 	
 			
 			
+			
+			
 			if (debug)	
 			FileManager.instance.debug = true;				
 			
@@ -484,7 +486,6 @@ package com.gestureworks.cml.core
 
 						if ((attrName == "cml" || attrName == "src") && attrValue.toString().length > 0)
 						{
-						
 							if (attrValue.search(extensions) >= 0){
 								// rootDirectory allows you to change root path	
 								if (relativePaths && rootDirectory.length > 0){	
@@ -494,7 +495,8 @@ package com.gestureworks.cml.core
 								else if (rootDirectory.length > 0) {
 									attrValue = rootDirectory.concat(attrValue);
 								}
-							}							
+							}	
+							
 							includeParentIndex.push(parent);
 							FileManager.instance.addToQueue(attrValue, "cml");			
 						}

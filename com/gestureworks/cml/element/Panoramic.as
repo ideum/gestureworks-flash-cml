@@ -293,7 +293,7 @@
 		 */
 		public function update(e:GWEvent):void
 		{	
-			//trace("updating render");
+			////trace("updating render");
 			if(_skyBox){
 				camController.tiltAngle = _pitch;
 				camController.panAngle = _yaw;
@@ -312,7 +312,7 @@
 		// yaw and pitch control
 		private function gestureDragHandler(e:GWGestureEvent):void 
 		{
-			//trace("drag", e.value.drag_dx, e.value.drag_dy);
+			////trace("drag", e.value.drag_dx, e.value.drag_dy);
 			_yaw += e.value.drag_dx * DRAG_LIMITER;
 			_pitch += e.value.drag_dy * DRAG_LIMITER;
 		}
@@ -320,7 +320,7 @@
 		// scale control
 		private function gestureScaleHandler(event:GWGestureEvent):void 
 		{
-			//trace("fov", _fov)
+			////trace("fov", _fov)
 			if (_fovMin < _fov < _fovMax) _fov -= event.value.scale_dsx * SCALE_MULTIPLIER;
 			if (_fov > _fovMax) _fov = _fovMax;
 			if (_fov < _fovMin) _fov = _fovMin;

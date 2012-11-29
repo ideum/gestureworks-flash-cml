@@ -113,7 +113,7 @@ package com.gestureworks.cml.components
 			super.onStateEvent(event);
 			if (event.value == "loaded") {
 				image.removeEventListener(StateEvent.CHANGE, onStateEvent);
-				trace("Traced flickrElement load.");
+				//trace("Traced flickrElement load.");
 				image.updateFrame();
 				updateLayout();
 			}

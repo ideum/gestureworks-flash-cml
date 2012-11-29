@@ -132,7 +132,7 @@
 			while (this.numChildren > 0) {
 				
 				if (this.getChildAt(0) is TouchContainer) {
-					trace("TouchContainer found", modelTouch);
+					//trace("TouchContainer found", modelTouch);
 					modelTouch = TouchContainer(this.getChildAt(0));
 				}
 				
@@ -197,7 +197,7 @@
 		 */
 		private function initMaterials(mod:Mesh):void
 		{
-			trace("Loading materials");
+			//trace("Loading materials");
 			if (_material) {
 				
 				loader = new Loader();
@@ -280,7 +280,7 @@
 		private function onAssetComplete(event:AssetEvent):void
 		{
 			
-			trace("Asset complete");
+			//trace("Asset complete");
 			if (event.asset.assetType == AssetType.MESH) {
 				
 				model = event.asset as Mesh;
@@ -292,7 +292,7 @@
 				initMaterials(model);
 				
 				myContainer.addChild(model);
-				trace(model.name);
+				//trace(model.name);
 			}
 		}
 		

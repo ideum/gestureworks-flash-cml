@@ -58,7 +58,7 @@ package com.gestureworks.cml.components
 				_liveVideo = value;
 			else 
 				_liveVideo = searchChildren(value);	
-					trace("liveVideo:" +_liveVideo);
+					//trace("liveVideo:" +_liveVideo);
 		}			
 		
 		/**

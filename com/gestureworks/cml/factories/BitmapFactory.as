@@ -422,6 +422,68 @@ package com.gestureworks.cml.factories
 			
 		}		
 		
+		
+		public function resize():void
+		{
+			// scale percentages needed to achieve desired diemensions
+			var percentX:Number = 1; 
+			var percentY:Number = 1;
+					
+			
+			var newBitmap:Bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);			
+			var newBitmapData:BitmapData = new BitmapData(_bitmapData.width * percentX, _bitmapData.height * percentY, true, 0x000000);
+			
+			
+			if (width && height)
+			{
+				if ((width != bitmap.width) && (height != bitmap.height))
+				{
+					percentX = width / bitmap.width;
+					percentY = height / bitmap.height;
+				}
+			}
+			
+			else if (width)
+			{
+				if (width != bitmapData.width)
+				{
+					percentX = width / bitmap.width;
+					percentY = percentX;
+				}
+			}
+			
+			else if (height)
+			{
+				if (height != bitmap.height)
+				{
+					percentY = height / bitmap.height; 										
+					percentX = percentY;
+				}
+			}	
+			
+			if (resample && (percentX != 1) && (percentY != 1))
+			{
+				var resizeMatrix:Matrix = new Matrix();		
+				resizeMatrix.scale(percentX, percentY);				
+				newBitmapData = new BitmapData(bitmap.width * percentX, bitmap.height * percentY, true, 0x000000);
+				newBitmapData.draw(bitmap, resizeMatrix);
+				newBitmap = new Bitmap(newBitmapData, PixelSnapping.NEVER, true);
+				resizeMatrix = null;
+			}			
+		
+			
+			// very important to set width and height!
+			width = newBitmap.width * scaleX;
+			height = newBitmap.height * scaleY;
+			
+			
+			_bitmapData.dispose();
+			_bitmapData = newBitmapData;
+			_bitmap = newBitmap;
+		}
+		
+		
+		
 		/**
 		 * This is called by the CML parser. Do not override this method.
 		 */
@@ -436,7 +498,7 @@ package com.gestureworks.cml.factories
 		protected function bitmapComplete():void 
 		{
 			dispatchEvent(new Event(Event.COMPLETE, false, false));
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 		}
 	
 		public var isLoaded:Boolean = true;

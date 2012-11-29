@@ -124,7 +124,7 @@ package com.gestureworks.cml.utils
 			var lgth:int = _averageGain.length;
 					
 			for (var i:uint = 0; i < lgth; i += 8) {
-				//trace("Drawing", _averageGain[i]);
+				////trace("Drawing", _averageGain[i]);
 				_g.lineTo(i * (_waveWidth / lgth), _averageGain[i] * _waveHeight * .4 + _origin);
 				_g.lineTo(i * (_waveWidth / lgth), _origin);	
 			

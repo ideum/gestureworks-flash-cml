@@ -30,7 +30,7 @@
 		
 		function testRBSelect(event:StateEvent):void
 		{
-			trace(event.value);
+			//trace(event.value);
 		}	
 
 	 * </codeblock>

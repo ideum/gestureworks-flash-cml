@@ -5,9 +5,9 @@ package com.gestureworks.cml.utils
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 
-		trace(NumberUtils.map(20, 0, 100, 220, 550)); 
-		trace(NumberUtils.roundNumber(100.3245, 1)); 
-		trace(NumberUtils.randomNumber(300, 500)); 
+		//trace(NumberUtils.map(20, 0, 100, 220, 550)); 
+		//trace(NumberUtils.roundNumber(100.3245, 1)); 
+		//trace(NumberUtils.randomNumber(300, 500)); 
 	 
 	 * </codeblock>
 	 * 

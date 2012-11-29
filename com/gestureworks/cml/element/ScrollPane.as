@@ -293,7 +293,7 @@ package com.gestureworks.cml.element
 			var newPos:Number;
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
-				trace("Vertical dragging");
+				//trace("Vertical dragging");
 				newPos = _itemList.array[0].y + e.value.drag_dy;
 				newPos = clampPos(newPos, "vertical");
 				// Apply the new position.
@@ -302,7 +302,7 @@ package com.gestureworks.cml.element
 			}
 			
 			if (_horizontal) {
-				trace("Horizontal dragging");
+				//trace("Horizontal dragging");
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newPos = _itemList.array[0].x + e.value.drag_dx;
 				newPos = clampPos(newPos, "horizontal");

@@ -120,7 +120,7 @@ package com.gestureworks.cml.element
 			trace("unable to locate camera");
 		  else
 		   {
-		   trace("Found camera: " + cam.name);
+		   //trace("Found camera: " + cam.name);
 		   cam.addEventListener(StatusEvent.STATUS, statusHandler);
 		   //attaches camera to video.
            video.attachCamera(cam);
@@ -133,7 +133,7 @@ package com.gestureworks.cml.element
 		   
 		   if (mic == null)
 		   {
-			trace("unable to locate mic");   
+			//trace("unable to locate mic");   
 		   }
 		   else
 		   {
@@ -179,7 +179,7 @@ package com.gestureworks.cml.element
 		 */
 		public function testMic(event:ActivityEvent):void
 		{
-		 trace("mic");
+		 //trace("mic");
 		}
 		
 		/**
@@ -187,7 +187,7 @@ package com.gestureworks.cml.element
 		 */
 		public function stop():void
 		{
-		 trace("livevideostop");
+		 //trace("livevideostop");
 		}
 		
 		/**
@@ -198,7 +198,7 @@ package com.gestureworks.cml.element
 		{
 			
 		if (cam.muted)
-		trace("Unable to connect to active camera.");
+			trace("Unable to connect to active camera.");
 		
 		else
 		{

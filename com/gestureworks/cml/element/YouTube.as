@@ -224,7 +224,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		private function onPlayerError(e:Event):void {
-			trace("Player error: ", Object(e).data);
+			//trace("Player error: ", Object(e).data);
 		}
 		
 		private function onTimer(e:TimerEvent):void {

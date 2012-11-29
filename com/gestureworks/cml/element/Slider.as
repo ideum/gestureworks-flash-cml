@@ -334,7 +334,7 @@ package com.gestureworks.cml.element
 		private function onDrag(event:GWGestureEvent):void
 		{
 			if (debug)			
-				trace("drag");			
+				//trace("drag");			
 				
 			var newValue:Number = 0;	
 				
@@ -369,7 +369,7 @@ package com.gestureworks.cml.element
 		private function onComplete(event:*):void
 		{
 			if (debug)
-				trace("release");			
+				//trace("release");			
 			
 			
 			if (discrete)	
@@ -431,9 +431,9 @@ package com.gestureworks.cml.element
 			
 			if (debug)
 			{
-				trace("id:", this.id);
-				trace("knobPosition:", _knobPosition);
-				trace("value:", _value)				
+				//trace("id:", this.id);
+				//trace("knobPosition:", _knobPosition);
+				//trace("value:", _value)				
 			}
 
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value, true));			

@@ -148,12 +148,12 @@ package com.gestureworks.cml.element
 				if (this.getChildAt(this.numChildren - 1) is DisplayObject) {
 					mapMarkers.push(this.getChildAt(this.numChildren - 1));
 				}
-				//trace(this.getChildAt(this.numChildren - 1));
+				////trace(this.getChildAt(this.numChildren - 1));
 				removeChildAt(this.numChildren - 1);
 			}
 			
-			//trace("MAP MARKERS: ");
-			//trace(mapMarkers);
+			////trace("MAP MARKERS: ");
+			////trace(mapMarkers);
 			createMap();
 			
 		}
@@ -188,7 +188,7 @@ package com.gestureworks.cml.element
 			_loaded = "loaded";
 			
 			if (this.parent) {
-				//trace("Modest Map Element dispatching");
+				////trace("Modest Map Element dispatching");
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
 			}
 		}
@@ -204,7 +204,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onZoom(e:StateEvent):void {
-			//trace("Zooming in ModestMapElement", e.value);
+			////trace("Zooming in ModestMapElement", e.value);
 			map.zoomByAbout(e.value);
 		}
 		
@@ -213,7 +213,7 @@ package com.gestureworks.cml.element
 		 * @param	e
 		 */
 		public function switchMapProvider(e:*):void {
-			//trace("Switching map provider.");
+			////trace("Switching map provider.");
 			currentIndex++;
 			if (currentIndex >= providers.length) currentIndex = 0;
 			map.setMapProvider(providers[currentIndex]);

@@ -2,6 +2,9 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.CloneUtils;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
 	import flash.events.*;
 	
 	/** 
@@ -44,7 +47,6 @@ package com.gestureworks.cml.element
 			super.dispose();
 		}
 		
-				
 		
 		/**
 		 * Returns a clone of this Image
@@ -53,22 +55,13 @@ package com.gestureworks.cml.element
 		override public function clone():* 
 		{
 			var clone:Image = CloneUtils.clone(this, null);
-			var src:String = clone.src;
-			clone.close();
 			
-			clone.isLoaded = false;
+			if (bitmapData) {
+				clone.bitmapData = new BitmapData(width, height, false, 0xFFFFFF);			
+				clone.bitmapData = bitmapData.clone();
+				clone.bitmap = new Bitmap(clone.bitmapData, PixelSnapping.NEVER, true);				
+			}	
 			
-			if (src)
-				clone.open(src);
-				
-				
-			//if (src)
-			//{
-				//clone.bitmapData = new BitmapData(width, height, false, 0xFFFFFF);			
-				//clone.bitmapData = bitmapData.clone();
-				//clone.bitmap = new Bitmap(clone.bitmapData, PixelSnapping.NEVER, true);				
-				//clone.loadComplete();
-			//}				
 			return clone;			
 		}
 		

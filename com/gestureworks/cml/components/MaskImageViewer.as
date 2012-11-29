@@ -43,7 +43,7 @@
 		public function MaskImageViewer()
 		{
 			super();
-			//trace("mask viewer");
+			////trace("mask viewer");
 		}
 		
 		private var _maskCon:*;

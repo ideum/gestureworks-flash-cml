@@ -50,7 +50,7 @@ package com.gestureworks.cml.utils
 		public static function clone(source:*, parent:DisplayObjectContainer=null, pExclusions:Vector.<String>=null):* 
 		{
 			
-			trace(pExclusions);
+			//trace(pExclusions);
 			
 			var cloneObj:*;
 			var childClone:DisplayObject;

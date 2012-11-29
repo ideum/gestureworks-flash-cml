@@ -245,10 +245,18 @@ package com.gestureworks.cml.element
 				else
 					childToList(child.name, child);
 			}
+
+			if (this == child) {
+				
+				trace(this.id, this);
+				trace(child["id"], this);
+				
+				trace("fjlds");
+			}	
 			
 			return super.addChild(child);
 		}
-		
+				
 		
 		/**
 		 * shows the childlist index 
