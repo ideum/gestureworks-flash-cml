@@ -120,7 +120,7 @@ package com.gestureworks.cml.layouts
 			var c:DisplayObjectContainer = container;
 			var nextAngle:Number = 0;
 		
-			for (var i:int = 0; i < c.numChildren; i++) 
+			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{		
 				var child:DisplayObject = c.getChildAt(i);
 				if (!child is DisplayObject) return;

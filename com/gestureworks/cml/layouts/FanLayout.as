@@ -131,7 +131,7 @@ package com.gestureworks.cml.layouts
 		private function topLeftPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.numChildren; i++) 
+			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
 				if (!child is DisplayObject) return;
@@ -152,7 +152,7 @@ package com.gestureworks.cml.layouts
 		private function topRightPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.numChildren; i++) 
+			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
 				if (!child is DisplayObject) return;
@@ -173,7 +173,7 @@ package com.gestureworks.cml.layouts
 		private function bottomLeftPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.numChildren; i++) 
+			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
 				if (!child is DisplayObject) return;
@@ -194,7 +194,7 @@ package com.gestureworks.cml.layouts
 		private function bottomRightPivot(c:DisplayObjectContainer):void
 		{
 			var nextAngle:Number = 0;
-			for (var i:int = 0; i < c.numChildren; i++) 
+			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
 				if (!child is DisplayObject) return;

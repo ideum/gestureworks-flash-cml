@@ -134,7 +134,7 @@ package com.gestureworks.cml.layouts
 			var rowHeight:Number = getMaxHeight(container);
 			var sumx:Number = centerColumn ? columnWidth/2 : 0;
 			
-			for (var i:int = 0; i < n; i++) 
+			for (var i:int = childTransformations.length; i < n; i++) 
 			{		
 				var child:* = container.getChildAt(i);
 				if (!child is DisplayObject) return;
@@ -166,7 +166,7 @@ package com.gestureworks.cml.layouts
 			var rowHeight:Number = getMaxHeight(container);
 			var sumy:Number = centerRow ? rowHeight/2 : 0;			
 			
-			for (var i:int = 0; i < n; i++) 
+			for (var i:int = childTransformations.length; i < n; i++) 
 			{				
 				var child :* = container.getChildAt(i);
 				if (!child is DisplayObject) return;

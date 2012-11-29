@@ -4,8 +4,11 @@ package com.gestureworks.cml.factories
 	import flash.display.DisplayObject;
 	import flash.geom.Matrix;
 	import flash.display.DisplayObjectContainer;
+	import flash.utils.Dictionary;
 	import org.libspark.betweenas3.BetweenAS3;
+	import org.libspark.betweenas3.core.tweens.ObjectTween;
 	import org.libspark.betweenas3.easing.Exponential;
+	import org.libspark.betweenas3.tweens.ITween;
 	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/** 
@@ -21,6 +24,8 @@ package com.gestureworks.cml.factories
 	public class LayoutFactory extends ObjectFactory implements ILayout
 	{
 		protected var childTransformations:Array;
+		private var layoutTween:ITweenGroup;
+		private var tweenedObjects:Array;
 		
 		/**
 		 * Constructor
@@ -178,19 +183,26 @@ package com.gestureworks.cml.factories
 		 */
 		public function layout(container:DisplayObjectContainer):void 
 		{
-			var layoutTween:ITweenGroup;
 			var childTweens:Array;
 			
 			if (tween)
 			{
+				if (layoutTween && layoutTween.isPlaying)
+					return;
+				
 				childTweens = new Array();
+				tweenedObjects = new Array();
+				
 				for (var i:int = 0; i < container.numChildren; i++) 
 				{				
 					var child:* = container.getChildAt(i);
 					if (!child is DisplayObject) return;
 					
-					if(i < childTransformations.length)
-						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(childTransformations[i]), alpha:alpha}, null, tweenTime/1000, Exponential.easeOut));
+					if (i < childTransformations.length)
+					{
+						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(childTransformations[i]), alpha:alpha }, null, tweenTime / 1000, Exponential.easeOut));
+						tweenedObjects.push(child);
+					}
 				}
 				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
 				if (onComplete != null) layoutTween.onComplete = onComplete;
@@ -207,6 +219,24 @@ package com.gestureworks.cml.factories
 				}
 				if (onComplete != null) onComplete.call();
 				if (onUpdate != null) onUpdate.call();
+			}
+		}
+		
+		/**
+		 * Stops the tweening of the provided child if corresponding tween is playing. If a child
+		 * is not provided, the group tween is stopped.
+		 * @param	child  the object to stop 
+		 */
+		public function stopTween(child:*=null):void
+		{
+			if (layoutTween && layoutTween.isPlaying)
+			{
+				if(!child)
+					layoutTween.stop();
+				else
+				{ //TODO: need to investigate BetweenAS3 to figure out how to stop an indidual tween from a group tween
+					layoutTween.getTweenAt(tweenedObjects.indexOf(child)).stop();
+				}
 			}
 		}
 		

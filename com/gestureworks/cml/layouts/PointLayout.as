@@ -90,7 +90,7 @@ package com.gestureworks.cml.layouts
 			var pts:Array = points.split(",");
 			if (pts.length % 2 != 0) pts.push("0");
 			
-			for (var i:int = 0; i < pts.length; i+=2) 
+			for (var i:int = childTransformations.length*2; i < pts.length; i+=2) 
 			{		
 				var child:* = container.getChildAt(i/2);
 				if (!child || !child is DisplayObject) return;

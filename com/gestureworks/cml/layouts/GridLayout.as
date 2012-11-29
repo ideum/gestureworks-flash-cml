@@ -130,7 +130,7 @@ package com.gestureworks.cml.layouts
 			var yVal:Number;
 			var matrix:Matrix;
 						
-			for (var i:int = 0; i < container.numChildren; i++) 
+			for (var i:int = childTransformations.length; i < container.numChildren; i++) 
 			{		
 				child = container.getChildAt(i);				
 				if (!child is DisplayObject) return;
