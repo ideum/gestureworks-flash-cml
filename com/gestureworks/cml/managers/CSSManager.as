@@ -71,8 +71,7 @@ package com.gestureworks.cml.managers
 		 */
 		public function parseCSS():void
 		{
-			if (debug)
-			{
+			if (debug) {
 				trace(StringUtils.printf("\n%4sBegin CSS parsing\n", ""));
 				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "cmlIndex", "target", "property", "value"));						
 				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "--------", "------", "--------", "-----"));						

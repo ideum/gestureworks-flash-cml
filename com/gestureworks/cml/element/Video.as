@@ -304,11 +304,10 @@ package com.gestureworks.cml.element
 			switch (event.info.code) 
 			{
 				case "NetConnection.Connect.Success":
-					//trace("Netconnection Success");
 					 connectNetStream();
 					 break;
 				case "NetStream.Play.StreamNotFound":
-					 if (debug) //trace("Unable to locate video: " + src);
+					 if (debug) trace("Unable to locate video: " + src);
 					 break;
 				case "NetStream.Buffer.Full":
 					 if (progressTimer){
@@ -317,18 +316,15 @@ package com.gestureworks.cml.element
 					 }
 					 break;	
 				case "NetStream.Play.Start":
-					 //trace("video started");
 					 _isPlaying = true;
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;	
 				case "NetStream.Play.Stop":
-					 //trace("video stopped");
 					 end();
 				     _isPlaying = false;
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;
 				case "NetStream.Pause.Notify":
-                     //trace("video paused");
 					 _isPlaying = false;
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;
@@ -348,8 +344,6 @@ package com.gestureworks.cml.element
 		{
 			progressTimer = new Timer(1000);
 			positionTimer = new Timer(20);
-		//	progressTimer.addEventListener(TimerEvent.TIMER, onProgress); 
-		//	progressTimer.start(); not able to stop
 			
 			netStream = new NetStream(netConnection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
@@ -375,10 +369,8 @@ package com.gestureworks.cml.element
 				
 			addChild(video);			
 			
-			//netStream.play(src);
 			netStream.pause();
 			netStream.seek(0);
-			////trace("Autoplay:", autoplay);
 			if (autoplay) play();	
 			
 		}
@@ -389,10 +381,9 @@ package com.gestureworks.cml.element
 			{
 				_duration = meta.duration;
 				
-				if (debug)
-				{
-					//trace("video file: " + src);					
-					//trace("video duration: " + duration);
+				if (debug) {
+					trace("video file: " + src);					
+					trace("video duration: " + duration);
 				}	
 			}
 			
@@ -410,16 +401,14 @@ package com.gestureworks.cml.element
 				else
 					video.height = meta.height;
 											
-				if (debug)
-				{
-					//trace("video width: " + meta.width);
-					//trace("video height: " + meta.height);				
+				if (debug) {
+					trace("video width: " + meta.width);
+					trace("video height: " + meta.height);				
 				}
 				
 				sizeLoaded = true;
 				
 				// file and all metadata loaded
-				//trace("Metadata set");
 				if (autoplay) resume();
 				this.dispatchEvent(new Event(Event.COMPLETE));
 			}
@@ -427,17 +416,17 @@ package com.gestureworks.cml.element
 		
 		private function onSecurityError(event:SecurityErrorEvent):void
 		{
-			//trace("security error: " + event.text);
+			trace("security error: " + event.text);
 		}
 		
 		private function onAsyncError(event:AsyncErrorEvent):void
 		{
-			//trace("async error: " + event.text);
+			trace("async error: " + event.text);
 		}
 		
 		private function onIOError(event:IOErrorEvent):void
 		{
-			//trace("io error: " + event.text);
+			trace("io error: " + event.text);
 		}		
 		
 		private function onProgress(event:TimerEvent):void
@@ -460,12 +449,10 @@ package com.gestureworks.cml.element
 		
 		private function onPosition(event:TimerEvent):void
 		{			
-			//_position++;
-			//trace("Video position: ", _position, netStream.time, _duration);
 			_position = netStream.time / _duration;
 	
 			if (debug)
-				//trace(_position); 
+				trace(_position); 
 		
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}

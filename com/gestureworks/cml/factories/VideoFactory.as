@@ -286,7 +286,7 @@ package com.gestureworks.cml.factories
 					connectNetStream();
 					break;
 				case "NetStream.Play.StreamNotFound":
-					if (debug) //trace("Unable to locate video: " + src);
+					if (debug) trace("Unable to locate video: " + src);
 					break;
 				case "NetStream.Play.Stop":
 					end();
@@ -294,7 +294,7 @@ package com.gestureworks.cml.factories
 			}	
 			
 			if (debug)
-				//trace(event.info.code);
+				trace(event.info.code);
 		}
 		
 		private function connectNetStream():void
@@ -356,10 +356,9 @@ package com.gestureworks.cml.factories
 				else
 					video.height = meta.height;
 											
-				if (debug)
-				{
-					//trace("video width: " + meta.width);
-					//trace("video height: " + meta.height);				
+				if (debug){
+					trace("video width: " + meta.width);
+					trace("video height: " + meta.height);				
 				}
 				
 				sizeLoaded = true;
@@ -371,17 +370,17 @@ package com.gestureworks.cml.factories
 		
 		private function onSecurityError(event:SecurityErrorEvent):void
 		{
-			//trace("security error: " + event.text);
+			trace("security error: " + event.text);
 		}
 		
 		private function onAsyncError(event:AsyncErrorEvent):void
 		{
-			//trace("async error: " + event.text);
+			trace("async error: " + event.text);
 		}
 		
 		private function onIOError(event:IOErrorEvent):void
 		{
-			//trace("io error: " + event.text);
+			trace("io error: " + event.text);
 		}		
 		
 		private function onProgress(event:TimerEvent):void
@@ -398,7 +397,7 @@ package com.gestureworks.cml.factories
 			else
 			{
 				if (debug)
-					//trace(src + " percent loaded: " + percentLoaded);
+					trace(src + " percent loaded: " + percentLoaded);
 			}	
 		}
 		
@@ -407,7 +406,7 @@ package com.gestureworks.cml.factories
 			_position++;
 			
 			if (debug)
-				//trace(_position);
+				trace(_position);
 		}
 		
 		private function end():void

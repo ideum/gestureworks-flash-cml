@@ -527,9 +527,7 @@ package com.gestureworks.cml.factories
 			
 			// loop thru standard sizeArray
 			for (var i:int=0; i<avatarNum; i++)
-			{	
-				////trace("sizeArray:",i,_sizeArray[i])
-				
+			{					
 				if((width)&&(height)){
 			
 				var	pixelSize:Number = sizeArray[i];
