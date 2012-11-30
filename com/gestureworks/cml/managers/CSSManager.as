@@ -73,9 +73,9 @@ package com.gestureworks.cml.managers
 		{
 			if (debug)
 			{
-				//trace(StringUtils.printf("\n%4sBegin CSS parsing\n", ""));
-				//trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "cmlIndex", "target", "property", "value"));						
-				//trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "--------", "------", "--------", "-----"));						
+				trace(StringUtils.printf("\n%4sBegin CSS parsing\n", ""));
+				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "cmlIndex", "target", "property", "value"));						
+				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", "--------", "------", "--------", "-----"));						
 			}
 			
 			// add styles to objects --------------------------------------			
@@ -121,7 +121,7 @@ package com.gestureworks.cml.managers
 									if (CMLObjectList.instance.getIndex(j).hasOwnProperty(property))
 									{
 										if (debug)
-											//trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, ClassSelectors[i], property,  properties[property]));						
+											trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, ClassSelectors[i], property,  properties[property]));						
 										
 										if (properties[property] == "false")
 											properties[property] = false;
@@ -154,7 +154,7 @@ package com.gestureworks.cml.managers
 								if (CMLObjectList.instance.getIndex(j).hasOwnProperty(property))
 								{
 									if (debug)
-										//trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, IdSelectors[i], property,  properties[property]));									
+										trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s", "", j, IdSelectors[i], property,  properties[property]));									
 									
 									if (properties[property] == "false")
 										properties[property] = false;
