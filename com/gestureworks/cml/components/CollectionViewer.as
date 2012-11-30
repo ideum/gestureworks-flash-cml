@@ -490,11 +490,12 @@ package com.gestureworks.cml.components
 			var album:Album = CMLObjectList.instance.getId("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
 			album.clear();
 			for each(var clone:* in clones)
-				album.addChild(getAlbumRepresentation(clone));
+				album.addChild(getPreview(clone));
+			album.margin = 15;
 			album.init();
 		}
 		
-		private function getAlbumRepresentation(obj:ImageViewer):TouchContainer
+		private function getPreview(obj:ImageViewer):TouchContainer
 		{
 			var ar:TouchContainer = new TouchContainer();
 			var img:Image = obj.image.clone();

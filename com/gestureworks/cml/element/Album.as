@@ -48,6 +48,7 @@ package com.gestureworks.cml.element
 		private var _maskHeight:Number;		
 		private var _horizontal:Boolean = true;
 		private var _margin:Number = 1;
+		private var _centerContent = true;
 		private var _dragAngle:Number = 0;
 		private var _loop:Boolean = false;
 		private var _loopQueue:Array;
@@ -126,7 +127,18 @@ package com.gestureworks.cml.element
 		public function set margin(m:Number):void
 		{
 			_margin = m;
-		}	
+		}
+		
+		/**
+		 * Flag indicating the album items should be centered horizontally and
+		 * vertically
+		 * @default true
+		 */
+		public function get centerContent():Boolean { return _centerContent; }
+		public function set centerContent(c:Boolean):void
+		{
+			_centerContent = c;
+		}
 		
 		/**
 		 * Returns the space between two items based on the margin
@@ -438,9 +450,18 @@ package com.gestureworks.cml.element
 		 */
 		private function storeSnapPoints():void
 		{
-			snapPoints = new Array;			
-			for (var i:int = 0; i < belt[dimension]; i = i + this[dimension] + space)
-				snapPoints.push( -i);
+			snapPoints = new Array;	
+			
+			if (centerContent)
+			{
+				for (var i:int = 0; i < belt[dimension]; i = i + this[dimension] + space)
+					snapPoints.push( -i);
+			}
+			else
+			{
+				for (i = 0; i < belt.numChildren; i++)
+					snapPoints.push( -belt.getChildAt(i)[axis]);
+			}
 		}
 		
 		/**
@@ -456,8 +477,8 @@ package com.gestureworks.cml.element
 			}
 			else if (snapPoints.length > 0)
 			{			
-				boundary1 = snapPoints[0] + this[dimension] / 2;
-				boundary2 = snapPoints[snapPoints.length - 1] - this[dimension] / 2;
+				boundary1 = snapPoints[0];
+				boundary2 = snapPoints[snapPoints.length - 1];
 			}
 		}
 		
@@ -468,7 +489,7 @@ package com.gestureworks.cml.element
 		 */
 		private function setBeltLayout():void
 		{
-			if (loop)
+			if (loop) //&& centerContent
 			{
 				var holder:Array = new Array();
 				while (belt.numChildren)
@@ -502,8 +523,8 @@ package com.gestureworks.cml.element
 				belt.layout.marginX = margin;
 				belt.layout.marginY = margin;
 				belt.layout.type = horizontal ? "horizontal" : "vertical";
-				belt.layout.centerColumn = false;			
-				belt.layout.centerRow = false;			
+				belt.layout.centerColumn = centerContent;			
+				belt.layout.centerRow = centerContent;			
 				belt.applyLayout();				
 			}
 		}
@@ -515,7 +536,7 @@ package com.gestureworks.cml.element
 		{
 			if (!belt.numChildren) return;
 			var last:* = belt.getChildAt(belt.numChildren - 1);
-			var edge:Number = (last[axis] + last[dimension] / 2) + this[dimension] / 2;
+			var edge:Number = centerContent ? (last[axis] + last[dimension] / 2) + this[dimension] / 2 : last[axis] + last[dimension];
 			belt.width = horizontal ? edge : width;
 			belt.height = horizontal ? height : edge;
 		}
@@ -747,7 +768,7 @@ package com.gestureworks.cml.element
 			
 			if (loop)
 				processLoop(dx);				
-			else if (belt.x + dx < boundary1 && belt.x + dx > boundary2)			
+			else if (belt.x + dx < boundary1 && belt.x + dx > boundary2)	
 				belt.x += dx;				
 			else if(released)
 			{
