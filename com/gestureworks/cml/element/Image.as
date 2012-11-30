@@ -3,7 +3,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.display.PixelSnapping;
 	import flash.events.*;
 	
@@ -56,8 +55,7 @@ package com.gestureworks.cml.element
 		{
 			var clone:Image = CloneUtils.clone(this, null);
 			
-			if (bitmapData) {
-				clone.bitmapData = new BitmapData(width, height, false, 0xFFFFFF);			
+			if (bitmapData) {			
 				clone.bitmapData = bitmapData.clone();
 				clone.bitmap = new Bitmap(clone.bitmapData, PixelSnapping.NEVER, true);				
 			}	

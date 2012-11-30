@@ -430,8 +430,8 @@ package com.gestureworks.cml.factories
 			var percentY:Number = 1;
 					
 			
-			var newBitmap:Bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);			
-			var newBitmapData:BitmapData = new BitmapData(_bitmapData.width * percentX, _bitmapData.height * percentY, true, 0x000000);
+			//var newBitmap:Bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);			
+			//var newBitmapData:BitmapData = new BitmapData(_bitmapData.width * percentX, _bitmapData.height * percentY, true, 0x000000);
 			
 			
 			if (width && height)
@@ -465,21 +465,17 @@ package com.gestureworks.cml.factories
 			{
 				var resizeMatrix:Matrix = new Matrix();		
 				resizeMatrix.scale(percentX, percentY);				
-				newBitmapData = new BitmapData(bitmap.width * percentX, bitmap.height * percentY, true, 0x000000);
-				newBitmapData.draw(bitmap, resizeMatrix);
-				newBitmap = new Bitmap(newBitmapData, PixelSnapping.NEVER, true);
+				bitmapData = new BitmapData(bitmap.width * percentX, bitmap.height * percentY, true, 0x000000);
+				bitmap = new Bitmap(bitmapData, PixelSnapping.NEVER, true);
+				this.transform.matrix = resizeMatrix;
 				resizeMatrix = null;
 			}			
 		
 			
 			// very important to set width and height!
-			width = newBitmap.width * scaleX;
-			height = newBitmap.height * scaleY;
+			width = bitmap.width * scaleX;
+			height = bitmap.height * scaleY;
 			
-			
-			_bitmapData.dispose();
-			_bitmapData = newBitmapData;
-			_bitmap = newBitmap;
 		}
 		
 		

@@ -502,8 +502,8 @@ package com.gestureworks.cml.element
 				belt.layout.marginX = margin;
 				belt.layout.marginY = margin;
 				belt.layout.type = horizontal ? "horizontal" : "vertical";
-				belt.layout.centerColumn = true;			
-				belt.layout.centerRow = true;			
+				belt.layout.centerColumn = false;			
+				belt.layout.centerRow = false;			
 				belt.applyLayout();				
 			}
 		}

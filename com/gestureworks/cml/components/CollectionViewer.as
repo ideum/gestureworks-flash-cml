@@ -498,12 +498,13 @@ package com.gestureworks.cml.components
 		{
 			var ar:TouchContainer = new TouchContainer();
 			var img:Image = obj.image.clone();
-			
-			img.width = 300;
-			img.height = 0;
+									
+			img.width = 0;
+			img.height = 120;
 			img.resample = true;
-			img.resize();
-			
+			img.scale = 1;
+			img.resize();			
+									
 			ar.addChild(img);
 			ar.width = img.width;
 			ar.height = img.height;
