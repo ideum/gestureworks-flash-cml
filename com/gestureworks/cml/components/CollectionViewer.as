@@ -243,8 +243,7 @@ package com.gestureworks.cml.components
 						
 			
 			hideAll();
-			connect();
-						
+			connect();						
 			
 			// test text box
 			if(1)//if (!docks)
@@ -268,6 +267,9 @@ package com.gestureworks.cml.components
 				entry.addEventListener(KeyboardEvent.KEY_DOWN, query);
 				addChild(entry);
 			}
+			
+			addEventListener(StateEvent.CHANGE, selection);
+			
 		}
 		
 		
@@ -347,6 +349,7 @@ package com.gestureworks.cml.components
 		
 		
 		private var clones:Array = [];
+		private var previews:Array = [];		
 		private var loadCnt:int = 0;
 		private var resultCnt:int = 0;
 		private var maxLoad:int = 2;
@@ -391,6 +394,9 @@ package com.gestureworks.cml.components
 				}
 				i++;
 			}
+			
+			var resultTxt:Text = CMLObjectList.instance.getId("result_text");
+			resultTxt.text = resultCnt + " Results";
 		}
 		
 		private function searchExp(obj:*, prop:String=null, val:*=null):void
@@ -440,9 +446,7 @@ package com.gestureworks.cml.components
 			if (event.property == "percentLoaded") {
 				loadText.text = "loading " + (String)(loadCnt+1) + " of " + resultCnt + ": " + event.value;
 			}
-		}		
-		
-		
+		}						
 		
 		private function onLoadComplete(event:StateEvent=null):void 
 		{
@@ -453,7 +457,7 @@ package com.gestureworks.cml.components
 				loadCnt++;
 				
 				if (loadCnt == amountToShow) {
-					showClones();
+					//showClones();
 				}
 				else if (loadCnt == resultCnt) {
 					displayResults();
@@ -497,20 +501,33 @@ package com.gestureworks.cml.components
 		
 		private function getPreview(obj:ImageViewer):TouchContainer
 		{
-			var ar:TouchContainer = new TouchContainer();
+			var prv:TouchContainer = new TouchContainer();
 			var img:Image = obj.image.clone();
-									
+													
 			img.width = 0;
-			img.height = 120;
+			img.height = 140;
 			img.resample = true;
 			img.scale = 1;
-			img.resize();			
-									
-			ar.addChild(img);
-			ar.width = img.width;
-			ar.height = img.height;
+			img.resize();
+						
+			var title:Text = obj.back.childList.getKey("title").clone();
+			title.width = img.width;
+			title.textAlign = "center";
+			title.y = img.height;			
 			
-			return ar;
+			prv.addChild(img);
+			prv.addChild(title);
+			prv.width = img.width;
+			prv.height = img.height + 30;
+			previews.push(prv);
+			
+			return prv;
+		}
+		
+		private function selection(e:StateEvent):void
+		{
+			if (e.property == "selectedItem")
+				clones[previews.indexOf(e.value)].visible = true;
 		}
 				
 		private function updateSets(result:Object):void
