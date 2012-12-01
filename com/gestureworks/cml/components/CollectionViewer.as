@@ -8,6 +8,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.events.*;
 	import flash.display.*;
 	import flash.events.*;
+	import flash.geom.Point;
 	import flash.net.NetConnection;
 	import flash.net.Responder;
 	import flash.utils.*;
@@ -343,12 +344,15 @@ package com.gestureworks.cml.components
 				resultCnt++;	
 			}
 			trace("resultCnt", resultCnt);
+			getCloneLocations();
 			printResult(result);
 			updateObjects();
 		}
 		
 		
 		private var clones:Array = [];
+		private var cloneLocations:Array;
+		private var clIndex:int = 0;
 		private var previews:Array = [];		
 		private var loadCnt:int = 0;
 		private var resultCnt:int = 0;
@@ -364,7 +368,17 @@ package com.gestureworks.cml.components
 			loadClone();
 		}
 		
-		
+		private function getCloneLocations():void
+		{
+			if (cloneLocations)
+				return;
+			
+			cloneLocations = [];
+			var top:Array = CMLObjectList.instance.getCSSClass("bg-rect-bot").getValueArray();
+			for each(var val:* in top)
+				cloneLocations.push(new Point(val.x, val.y));
+		}
+				
 		private function loadClone():void
 		{
 			var num:int=0;
@@ -527,7 +541,17 @@ package com.gestureworks.cml.components
 		private function selection(e:StateEvent):void
 		{
 			if (e.property == "selectedItem")
-				clones[previews.indexOf(e.value)].visible = true;
+			{				
+				clIndex = clIndex == cloneLocations.length  ? 0 : clIndex;	
+				var point:Point = cloneLocations[clIndex];
+				
+				var obj:* = clones[previews.indexOf(e.value)];
+				obj.scale = .4;				
+				obj.x = point.x;
+				obj.y = point.y;
+				obj.visible = true;				
+				clIndex++;
+			}
 		}
 				
 		private function updateSets(result:Object):void
