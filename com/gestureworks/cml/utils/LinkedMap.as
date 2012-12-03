@@ -203,7 +203,7 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
-		 * Searches by value and returns the last value found
+		 * Searches by value and returns the first value found
 		 * @param	value
 		 * @return
 		 */
@@ -223,6 +223,16 @@ package com.gestureworks.cml.utils
 			var index:int = listValue.search(value);
 			return listValue.getIndex(index);
 		}
+		
+		/**
+		 * Searches by value and returns the index
+		 * @param	value
+		 * @return
+		 */
+		public function searchIndex(value:*):*
+		{
+			return listValue.search(value);
+		}		
 		
 		/**
 		 * Appends a value to the list

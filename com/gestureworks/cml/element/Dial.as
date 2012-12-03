@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
@@ -794,6 +795,12 @@ package com.gestureworks.cml.element
 			//if (event.value.localY < minPos || event.value.localY > maxPos)
 				//onEnd();
 		}
+		
+		
+		public var currentIndex:int = 0;
+		public var currentString:String;
+		
+		
 		/**
 		 * Finds the closest value and snaps to the center with change in text color
 		 */
@@ -888,6 +895,10 @@ package com.gestureworks.cml.element
 				else
 					textFieldArray[j].textColor = textColor;
 			}
+			
+			currentIndex = closestIndex;
+			currentString = textFieldArray[currentIndex].text;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "currentString", currentString));
 		}
 		
 		/**

@@ -1,5 +1,6 @@
 package com.gestureworks.cml.factories 
 {	
+	import com.gestureworks.cml.factories.ElementFactory;
 	import flash.display.CapsStyle;
 	import flash.display.GradientType;
 	import flash.display.InterpolationMethod;

@@ -423,6 +423,7 @@ package com.gestureworks.cml.factories
 		}		
 		
 		
+		
 		public function resize():void
 		{
 			// scale percentages needed to achieve desired diemensions

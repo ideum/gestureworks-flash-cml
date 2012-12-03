@@ -297,7 +297,7 @@ package com.gestureworks.cml.components
 			}			
 			
 			if (timeout > 0) {
-				timer = new Timer(timeout * 1000);
+				timer = new Timer(timeout * 1000, 1);
 				timer.addEventListener(TimerEvent.TIMER, onTimer);
 				
 				if (GestureWorks.activeTUIO)
@@ -335,8 +335,6 @@ package com.gestureworks.cml.components
 				timer.reset();
 				timer.start();
 			}
-			
-			trace(id);
 		}			
 
 		/**
@@ -415,26 +413,111 @@ package com.gestureworks.cml.components
 			else if (event.value == "close")
 			{
 				this.visible = false;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", false));				
 			}	
 		}
 		
+		
+		
+		
 		protected function onTimer(e:TimerEvent):void {
+			timer.stop();
 			
 			if (fadeoutDuration > 0) {
-				//trace("Starting fade out");
-				tween = BetweenAS3.tween(this, { alpha:0 }, null, fadeoutDuration);
-				tween.onComplete = fadeout();
-				tween.play();
+				fadeOut(fadeoutDuration);
 			}
-			else { this.visible = false; }
-			
-			function fadeout():void {
-				//trace(" Faded out entirely. ");
-				this.visible = false;
-				this.alpha = 1;
+			else { 
+				this.visible = false; 
 			}
 		}
 	
+		public function reset():void
+		{
+			front.visible = true;
+			_side = "front";
+			back.visible = false;
+		}
+		
+		
+		public function fadeIn(dur:Number=250):void
+		{
+			if (tween && tween.isPlaying)
+				return;
+				
+			tween = BetweenAS3.tween(this, { alpha:1 }, null, dur);
+			tween.play();
+		}
+		
+
+		public function fadeOut(dur:Number=250):void
+		{
+			if (tween && tween.isPlaying)
+				return;
+				
+			tween = BetweenAS3.tween(this, { alpha:0 }, null, dur);
+			tween.play();
+			tween.onComplete = function():void { this.visible = false;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", false));
+			};
+		}			
+		
+
+		private var glowTween:ITween;
+		
+		public function glowIn(dur:Number=1):void
+		{
+			if (glowTween && glowTween.isPlaying)
+				return;
+				
+				glowTween = BetweenAS3.tween(this, {
+					_glowFilter: {
+						blurX: 25,
+						blurY: 25, 
+						color: 0xFFFFFF
+					}
+				},{
+					_glowFilter: {
+						blurX: 0,
+						blurY: 0, 
+						color: 0xFFFFFF
+					}
+				},
+				dur);
+				
+				glowTween.play();
+		}
+		
+		public function glowPulse():void
+		{
+			glowIn();
+			glowTween.onComplete = glowOut;
+		}
+		
+		
+
+		public function glowOut(dur:Number=1):void
+		{
+			if (glowTween && glowTween.isPlaying)
+				return;			
+			
+			glowTween = BetweenAS3.tween(this, {
+				_glowFilter: {
+					blurX: 0,
+					blurY: 0, 
+					color: 0xFFFFFF
+				}
+			},null, dur);
+			glowTween.play();		
+		}			
+		
+		
+		
+		public function restartTimer():void
+		{
+			timer.stop();
+			timer.reset();
+			timer.start();
+		}
 		
 		/**
 		 * Returns clone of self
