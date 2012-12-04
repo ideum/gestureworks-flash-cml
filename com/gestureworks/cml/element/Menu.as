@@ -2,8 +2,10 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.Button;
 	import com.gestureworks.cml.element.Container
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.cml.utils.LinkedMap;
+	import com.gestureworks.cml.utils.StateUtils;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.display.DisplayObject;
@@ -97,13 +99,16 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void {
 			//updateLayout(this.width, this.height)
 			//init();
+			addEventListener(StateEvent.CHANGE, onStateEvent);
 		}
 		
 		/**
 		 * Initialisation method
 		 */
 		public function init():void {
+			trace("Menu init being called here -------------------------------------------");
 			updateLayout(this.width, this.height);	
+			addEventListener(StateEvent.CHANGE, onStateEvent);
 		}
 		
 		private function onClick(event:*):void
@@ -145,7 +150,14 @@ package com.gestureworks.cml.element
 				}
 			}
 		}
-
+		
+		private function onStateEvent(e:StateEvent):void {
+			trace("Button event caught.");
+			for (var i:int = 0; i < buttonArray.length; i++) 
+			{
+				buttonArray[i].onFlip(e);
+			}
+		}
 		
 		/**
 		 * Returns clone of self
@@ -162,6 +174,9 @@ package com.gestureworks.cml.element
 			return clone;
 		}		
 		
+		public function reset():void { 
+			StateUtils.loadState(this, 0, true);
+		}
 		
 		/**
 		 * sets the layout depending on the position
@@ -209,7 +224,7 @@ package com.gestureworks.cml.element
 					// position middle buttons
 					else
 						buttonArray[i].x = buttonArray[i - 1].x + buttonArray[i - 1].width + margin;
-						
+					
 					// position y
 					if (position == "bottom")
 						buttonArray[i].y = containerHeight - buttonArray[i].height - paddingBottom;		
