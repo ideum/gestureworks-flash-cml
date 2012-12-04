@@ -433,7 +433,7 @@ package com.gestureworks.cml.element
 							{
 								returnVal = arr[i].childList[sType](val);
 								if (returnVal)
-									return arr[i].childList[sType](val);
+									return returnVal;
 							}
 							
 							if (!returnVal && arr[i].childList.getValueArray())

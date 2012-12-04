@@ -155,12 +155,13 @@ package com.gestureworks.cml.element
 				
 		
 		/**
-		 * This method does a depth first search of childLists. Search parameter can a simple CSS selector 
+		 * This method does a depth first search of childLists. Search parameter can be a simple CSS selector 
 		 * (id or class) or AS3 Class. If found, a corresponding display object is returned, if not, null is returned.
 		 * The first occurrance that matches the parameter is returned.
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):*
-		{
+		{		
+			//trace(value is Class);
 			var returnVal:* = null;
 			var searchType:String = null;
 			
@@ -220,11 +221,14 @@ package com.gestureworks.cml.element
 			else 
 			{
 				if (this.childList.getValueArray())
-					returnVal = loopSearch(this.childList.getValueArray(), value, searchType);
+					loopSearch(this.childList.getValueArray(), value, searchType);
 			}
 			
 			function loopSearch(arr:Array, val:*, sType:String):*
 			{
+				if (returnVal)
+					return;
+				
 				var tmp:Array;
 				var i:int;
 				
@@ -259,28 +263,29 @@ package com.gestureworks.cml.element
 						{						
 							if (sType == "getCSSClass" || sType == "getClass")
 							{
-								if (arr[i].childList[sType](val, 0))
-									return arr[i].childList[sType](val, 0);						
+								returnVal = arr[i].childList[sType](val, 0);
+								if (returnVal)
+									return returnVal;						
 							}
 							else 
 							{
-								if (arr[i].childList[sType](val))
-									return arr[i].childList[sType](val);
+								returnVal = arr[i].childList[sType](val);
+								if (returnVal)
+									return returnVal;
 							}
 							
-							if (arr[i].childList.getValueArray())
+							if (!returnVal && arr[i].childList.getValueArray())
 								loopSearch(arr[i].childList.getValueArray(), val, sType);							
 						}
 					}
 				}
 			}
 			
-			
 			if (returnType == Array)
 				return returnArray;
 			else
 				return returnVal;
-		}
+		}	
 		
 		/**
 		 * Parse cml for local layouts.
