@@ -353,7 +353,7 @@ package com.gestureworks.cml.element
 			
 			// if object is already on the stage
 			if (obj.visible) {
-				obj.restartTimer();					
+				obj.onDown();					
 				obj.glowPulse();
 				return;				
 			}
@@ -425,7 +425,7 @@ package com.gestureworks.cml.element
 			if (e.property == "droppedItem" && dropLocation)
 			{
 				selectItem(clones[previews.indexOf(e.value)]);
-				CMLObjectList.instance.getId("menu1").select(e.value);
+				searchChildren("#menu1").select(e.value);
 			}
 		}
 				

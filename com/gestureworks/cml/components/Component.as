@@ -319,7 +319,7 @@ package com.gestureworks.cml.components
 		 * @param	event
 		 */
 		
-		public function onDown(event:*):void
+		public function onDown(event:* = null):void
 		{
 			if (timer) {
 				restartTimer();
@@ -340,7 +340,7 @@ package com.gestureworks.cml.components
 		 * handles event
 		 * @param	event
 		 */
-		public function onUp(event:*):void
+		public function onUp(event:* = null):void
 		{
 			if (menu)
 				menu.mouseChildren = true;
