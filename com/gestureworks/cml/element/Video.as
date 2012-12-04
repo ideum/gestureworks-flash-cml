@@ -43,7 +43,7 @@ package com.gestureworks.cml.element
 		  positionTimer = new Timer(20);
 		}
 		
-		private var _debug:Boolean=false;
+		private var _debug:Boolean=true;
 		/**
 		 * Prints status message to console
 		 */	
@@ -92,7 +92,6 @@ package com.gestureworks.cml.element
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 
 		{	
-			trace("Autoplay set to:", value);
 			_autoplay = value;
 			
 		}
@@ -108,7 +107,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Sets the video file path
 		 */	
-		public function get src():String { return _src; trace("Returning vid source"); }
+		public function get src():String { return _src; }
 		public function set src(value:String):void
 		{
 			if (src == value) return;					
@@ -320,7 +319,6 @@ package com.gestureworks.cml.element
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;	
 				case "NetStream.Play.Stop":
-					 end();
 				     _isPlaying = false;
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;
@@ -331,10 +329,6 @@ package com.gestureworks.cml.element
 				case "NetStream.Seek.Notify":
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
 					 break;
-					
-					end();
-					break;
-
 			}	
 				if (debug)
 					trace(event.info.code);
@@ -369,10 +363,11 @@ package com.gestureworks.cml.element
 				
 			addChild(video);			
 			
+			play();
 			netStream.pause();
 			netStream.seek(0);
-			if (autoplay) play();	
-			
+			if (autoplay)		
+				play();
 		}
 		
 		private function onMetaData(meta:Object):void
@@ -444,7 +439,6 @@ package com.gestureworks.cml.element
 				if (debug)
 					trace(src + " percent loaded: " + percentLoaded);
 			}	
-			trace("onProgress");
 		}
 		
 		private function onPosition(event:TimerEvent):void
