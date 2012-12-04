@@ -47,7 +47,7 @@ package  com.gestureworks.cml.element
 		
 		private var background:*;
 		private var keyText:Text;
-		private var dropShadow:DropShadowFilter = new DropShadowFilter();
+		private var dropshadow:DropShadowFilter = new DropShadowFilter();
 		private var charCodeRef:uint;
 		
 		
@@ -264,13 +264,13 @@ package  com.gestureworks.cml.element
 				background.lineColor = 0x787878;
 				background.lineStroke = 3;	
 				
-				dropShadow.color = 0x000000;
-				dropShadow.blurX = 5;
-				dropShadow.blurY = 5;
-				dropShadow.angle = 45;
-				dropShadow.alpha = 0.4;
-				dropShadow.distance = 5;
-				background.filters = new Array(dropShadow);
+				dropshadow.color = 0x000000;
+				dropshadow.blurX = 5;
+				dropshadow.blurY = 5;
+				dropshadow.angle = 45;
+				dropshadow.alpha = 0.4;
+				dropshadow.distance = 5;
+				background.filters = new Array(dropshadow);
 				
 				initial = background;
 			}			
@@ -457,7 +457,7 @@ package  com.gestureworks.cml.element
 			background = null;
 			keyText = null;
 			icon = null;
-			dropShadow = null;
+			dropshadow = null;
 		}
 	}
 

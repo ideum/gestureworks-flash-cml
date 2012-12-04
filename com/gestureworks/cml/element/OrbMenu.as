@@ -247,12 +247,12 @@ package com.gestureworks.cml.element
 		/**
 		* Defines dropshadow filter for shape.
 		*/
-		public var dropShadow:DropShadowFilter = new DropShadowFilter();
+		public var dropshadow:DropShadowFilter = new DropShadowFilter();
 		
 		/**
 		* Defines array for drop shadow filter.
 		*/
-		public var filtersArray:Array = new Array(dropShadow);
+		public var filtersArray:Array = new Array(dropshadow);
 		
 		private var _orbRadius:Number = 100;
 		/**
@@ -640,12 +640,12 @@ package com.gestureworks.cml.element
 		private function displayOrb():void
 		{
 			
-			dropShadow.color = 0x000000;
-			dropShadow.blurX = 300;
-			dropShadow.blurY = 200;
-			dropShadow.angle = 360;
-			dropShadow.alpha = 1;
-			dropShadow.distance = 15;
+			dropshadow.color = 0x000000;
+			dropshadow.blurX = 300;
+			dropshadow.blurY = 200;
+			dropshadow.angle = 360;
+			dropshadow.alpha = 1;
+			dropshadow.distance = 15;
 			
 			matrix.createGradientBox(gradientWidth, gradientHeight, gradientRotation, gradientX, gradientY);
 			
@@ -827,7 +827,7 @@ package com.gestureworks.cml.element
 			tweener = null;
 			timer = null;
 			matrix = null;
-			dropShadow = null;
+			dropshadow = null;
 			filtersArray = null;
 			line = null;
 			buttons = null;

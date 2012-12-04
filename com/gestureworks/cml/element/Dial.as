@@ -9,6 +9,8 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import flash.events.GestureEvent;
 	import flash.events.TouchEvent;
+	import org.libspark.betweenas3.BetweenAS3;
+	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
@@ -663,10 +665,10 @@ package com.gestureworks.cml.element
 			mymask.graphics.endFill();
 			
 			touchSprite = new TouchSprite();
-			touchSprite.gestureList = {"n-drag-inertia": true};
+			touchSprite.gestureList = {"n-drag-dial": true};
 			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
+			touchSprite.addEventListener(GWGestureEvent.COMPLETE, onEnd);			
 		    touchSprite.gestureReleaseInertia = true;
-			touchSprite.addEventListener(GWGestureEvent.COMPLETE, onEnd);
 			//touchSprite.addEventListener(TouchEvent.TOUCH_END, onEnd);
 			//touchSprite.addEventListener(MouseEvent.MOUSE_UP, onEnd);
 				
@@ -716,6 +718,10 @@ package com.gestureworks.cml.element
 			
 			onEnd(null);
 		}
+		
+		
+		public var invertDrag:Boolean = false;
+		
 	    /**
 		 * defines drag functionality for dial boundary and defines the dial mode. 
 		 */
@@ -723,20 +729,31 @@ package com.gestureworks.cml.element
 		{
 			var tf:Text;
 			
-			// re-map drag data
-			var dy:Number = map(event.value.drag_dy, -20, 20, -10, 10, false, true, true);			
+			if (textFieldArray.length < 2)
+				return;
 			
+			// re-map drag data
+			var dy:Number;
+			
+			if (invertDrag)
+				dy = map(event.value.drag_dy, -20, 20, 10, -10, false, true, true);						
+			else
+				dy = map(event.value.drag_dy, -20, 20, -10, 10, false, true, true);			
+			
+		
 			// stop on very small values
 			var abs:Number = Math.abs(dy);			
 			if (abs < 0.001) {
-			//	onEnd();
-				return;
+				//onEnd();
+				//return;
 			}
-						
+			
+			
 			// check max and min bounds
 			if (!continuous) {
-				if ( (textFieldArray[0].y + textFieldArray[0].height + dy > maxPos) || (textFieldArray[textFieldArray.length-1].y + dy < minPos) )
+				if ( (textFieldArray[0].y + textFieldArray[0].height + dy > maxPos-40) || (textFieldArray[textFieldArray.length-1].y + dy < minPos+40) ) {
 					return; 
+				}
 			} 
 			
 			// change position and text
@@ -757,6 +774,7 @@ package com.gestureworks.cml.element
 									tf.y = textFieldArray[0].y - textSpacing - textFieldArray[0].height; // dy already added	
 							else
 								tf.y = textFieldArray[j + 1].y - textSpacing - textFieldArray[j + 1].height + dy;
+								
 						}
 						else {
 							tf.y += dy;
@@ -886,7 +904,10 @@ package com.gestureworks.cml.element
 					} 
 				}
 				else {
-					tf.y += diff;
+					//tf.y += diff;
+							
+					var tween:ITween = BetweenAS3.tween(tf, { y:(tf.y+diff) }, null, .25);
+					tween.play();					
 				}
 				
 				// change color
@@ -896,9 +917,14 @@ package com.gestureworks.cml.element
 					textFieldArray[j].textColor = textColor;
 			}
 			
+
+			
 			currentIndex = closestIndex;
-			currentString = textFieldArray[currentIndex].text;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "currentString", currentString));
+			
+			if (textFieldArray[currentIndex].text != currentString) {
+				currentString = textFieldArray[currentIndex].text;				
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "currentString", currentString));
+			}	
 		}
 		
 		/**

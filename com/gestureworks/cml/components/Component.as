@@ -12,6 +12,7 @@ package com.gestureworks.cml.components
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
+	import flash.filters.DropShadowFilter;
 	import flash.utils.Timer;
 	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
@@ -232,6 +233,8 @@ package com.gestureworks.cml.components
 		 * @default "front"
 		 */
 		protected function get side():String { return _side; }
+				
+		
 		
 		protected function updateLayout(event:*=null):void
 		{	
@@ -318,24 +321,20 @@ package com.gestureworks.cml.components
 		
 		public function onDown(event:*):void
 		{
-			if (menu)
-			{
+			if (timer) {
+				restartTimer();
+			}			
+			if (menu){
 				menu.visible = true;
 				menu.startTimer();
 			}
-			
 			if(tween){
 				if (tween.isPlaying) {
 					tween.stop();
 					this.alpha = 1;
 				}
 			}
-			if (timer) {
-				timer.stop();
-				timer.reset();
-				timer.start();
-			}
-		}			
+		}
 
 		/**
 		 * handles event
@@ -347,10 +346,8 @@ package com.gestureworks.cml.components
 				menu.mouseChildren = true;
 			
 			if (timer) {
-				timer.stop();
-				timer.reset();
-				timer.start();
-			}
+				restartTimer();
+			}	
 		}	
 		
 		private var textCount:Number = 0;
@@ -514,7 +511,6 @@ package com.gestureworks.cml.components
 		
 		public function restartTimer():void
 		{
-			timer.stop();
 			timer.reset();
 			timer.start();
 		}

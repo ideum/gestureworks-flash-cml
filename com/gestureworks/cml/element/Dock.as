@@ -24,6 +24,7 @@ package com.gestureworks.cml.element
 		public var previews:Array = [];		
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = ["work_description:rug"];
+		public var returnFields:Array = ["work_description", "copyrightdate"];
 				
 		public var result:Object;	
 		public var resultCnt:int = 0;
@@ -50,6 +51,9 @@ package com.gestureworks.cml.element
 		public var templates:Array = [];		
 
 		public var album:MenuAlbum;
+		
+
+		public var pos:String;
 		
 		/**
 		 * Constructor
@@ -139,7 +143,6 @@ package com.gestureworks.cml.element
 				return;
 			
 			isLoading = true;
-			var returnFields:Array = ["work_description", "copyrightdate"];
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
 			//var searchString:String = "ca_object_labels.name:Yellow Flower";
@@ -172,7 +175,7 @@ package com.gestureworks.cml.element
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
 			dockText[1].visible = true;
-			var resultTxt:Text = CMLObjectList.instance.getId("result_text");
+			var resultTxt:Text = searchChildren("#result_text");
 			resultTxt.text = "";				
 		}
 		
@@ -283,10 +286,10 @@ package com.gestureworks.cml.element
 				dockText[i].visible = false;
 			}
 			
-			var resultTxt:Text = CMLObjectList.instance.getId("result_text");
+			var resultTxt:Text = searchChildren("#result_text");
 			resultTxt.text = resultCnt + " Results";			
 		
-			var album:Album = CMLObjectList.instance.getId("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
+			//var album:Album = searchChildren("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
 			album.clear();
 			for each(var clone:* in clones)
 				album.addChild(getPreview(clone));
@@ -353,11 +356,21 @@ package com.gestureworks.cml.element
 				}
 				
 				obj.scale = .6;				
-				obj.x = location.x;
-				obj.y = location.y;
+
 				
-				var deg:Number = NumberUtils.randomNumber( -2.5, 2.5);
-				var point:Point = new Point(obj.x + obj.width / 2, obj.y + obj.height / 2);				
+				if (position == "top") {
+					obj.rotation = 180;
+					obj.x = location.x + obj.width*obj.scale;
+					obj.y = location.y + location.height;
+				}
+				else {		
+					obj.x = location.x;
+					obj.y = location.y;				
+				}
+				
+				/*
+				var deg:Number = NumberUtils.randomNumber( -2.5, 2.5);	 
+				var point:Point = new Point(obj.x + (obj.width) / 2, obj.y + (obj.height) / 2);				
 				var m:Matrix=obj.transform.matrix;
 				m.tx -= point.x;
 				m.ty -= point.y;
@@ -365,6 +378,7 @@ package com.gestureworks.cml.element
 				m.tx += point.x;
 				m.ty += point.y;
 				obj.transform.matrix=m;
+				*/
 				
 				obj.reset();
 				moveBelowDock(obj);
@@ -386,8 +400,11 @@ package com.gestureworks.cml.element
 		
 		private function moveBelowDock(obj:DisplayObject):void 
 		{
-			trace(numChildren)
-			parent.setChildIndex(obj, parent.getChildIndex(this));
+			//TODO: Fix rigid structure
+			if (position=="bottom")
+				parent.setChildIndex(obj, parent.getChildIndex(this) - 1);
+			else
+				parent.setChildIndex(obj, parent.getChildIndex(this) - 2);			
 		}
 		
 		private function onCloneChange(e:StateEvent):void
@@ -399,7 +416,7 @@ package com.gestureworks.cml.element
 					e.target.visible = false;
 					var index:int = clones.indexOf(e.target)				
 					if (index >= 0) {
-						var m:MenuAlbum = CMLObjectList.instance.getId("menu1");
+						var m:MenuAlbum = searchChildren("#menu1");
 						var obj:* = previews[index];
 						m.unSelect(obj);
 					}

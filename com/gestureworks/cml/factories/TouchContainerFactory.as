@@ -7,6 +7,8 @@ package com.gestureworks.cml.factories
 	import com.gestureworks.events.*;
 	import flash.display.DisplayObject;
 	import flash.events.*;
+	import flash.filters.BlurFilter;
+	import flash.filters.DropShadowFilter;
 	import flash.utils.*;
 	
 	/** 
@@ -173,6 +175,41 @@ package com.gestureworks.cml.factories
 		public function displayComplete():void{}
 		
 
+		
+		private var dropShadowfilter:DropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);		
+		private var _dropShadow:Boolean = false;
+		/**
+		 * Sets the drop shadow effect
+		 * @default false
+		 */
+		public function get dropShadow():Boolean { return _dropShadow; }		
+		public function set dropShadow(value:Boolean):void 
+		{ 			
+			if (value)
+				this.filters = new Array(dropShadowfilter);
+			else	
+				this.filters = [];
+				
+			_dropShadow = value;
+		}
+		
+		private var blurFilter:BlurFilter = new BlurFilter(5, 5, 1);
+		private var _blur:Boolean = false;
+		/**
+		 * Sets the drop shadow effect
+		 * @default false
+		 */
+		public function get blur():Boolean { return _blur; }		
+		public function set blur(value:Boolean):void 
+		{ 			
+			if (value)
+				this.filters.push(blurFilter);
+			else	
+				this.filters = [];
+				
+			_blur = value;
+		}	
+		
 		//////////////////////////////////////////////////////////////
 		//  ICSS 
 		//////////////////////////////////////////////////////////////
