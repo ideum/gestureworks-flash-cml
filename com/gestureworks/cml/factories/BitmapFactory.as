@@ -40,11 +40,14 @@ package com.gestureworks.cml.factories
 	    override public function dispose():void
 		{
 			super.dispose();
-			img = null;
 			fileData = null;
 			sizeArray = null;
-				   			
-			img.removeEventListener(Event.COMPLETE, loadComplete);
+				
+   			if (img)
+			{
+				img.removeEventListener(Event.COMPLETE, loadComplete);
+				img = null;
+			}
 		}
 		
 		private var _width:Number = 0;
