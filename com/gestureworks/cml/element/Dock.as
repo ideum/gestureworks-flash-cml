@@ -34,8 +34,9 @@ package com.gestureworks.cml.element
 		
 		public var clones:Array = [];
 		public var cloneMap:LinkedMap = new LinkedMap(false);
-		public var cloneLocations:Array = [];
-		public var clIndex:int = 0;		
+		public var placeHolders:Array = [];
+		private var _placeHolderIndex:int = 0;	
+		private var dropLocation:Graphic;
 		
 		public var dockText:Array = [];
 		public var dials:Array = [];		
@@ -51,7 +52,7 @@ package com.gestureworks.cml.element
 		public var templates:Array = [];		
 
 		public var album:MenuAlbum;
-		
+
 
 		public var pos:String;
 		
@@ -90,6 +91,8 @@ package com.gestureworks.cml.element
 			
 			
 			addEventListener(StateEvent.CHANGE, selection);
+			addEventListener(StateEvent.CHANGE, dragSelection);
+			addEventListener(StateEvent.CHANGE, dropSelection);
 			CMLParser.instance.addEventListener(CMLParser.COMPLETE, cmlInit);
 			
 			for (var j:int = 0; j < dials.length; j++) {
@@ -105,6 +108,14 @@ package com.gestureworks.cml.element
 			cmlIni = true;
 		}
 		
+		protected function get placeHolderIndex():int { return _placeHolderIndex; }
+		protected function set placeHolderIndex(i:int):void
+		{
+			placeHolders[_placeHolderIndex].lineColor = 0xbbbbbb;		
+			_placeHolderIndex = i;			
+			_placeHolderIndex = _placeHolderIndex == placeHolders.length  ? 0 : _placeHolderIndex;						
+			placeHolders[_placeHolderIndex].lineColor = 0x000000;			
+		}				
 		
 		public function connect():void
 		{
@@ -159,8 +170,8 @@ package com.gestureworks.cml.element
 			// etc -- see collective access
 			
 			//if (!e || e.keyCode == 13) {
-			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
-				//connection.call("./AMFTest.search_choose_return", responder, searchString, null, null, returnFields);
+			//connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
+				connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
 				//connection.call("./AMFTest.getalldata", responder, entry.text);
 				//connection.call("./SetTest.set_search", responder, entry.text);
@@ -332,67 +343,92 @@ package com.gestureworks.cml.element
 		{
 			if (e.property == "selectedItem")
 			{								
-				var location:Graphic = cloneLocations[clIndex];				
-				var obj:* = clones[previews.indexOf(e.value)];
-				
-				// if object is already on the stage
-				if (obj.visible) {
-					obj.restartTimer();					
-					obj.glowPulse();
-					return;				
-				}
-				
-				obj.restartTimer();
-				obj.addEventListener(StateEvent.CHANGE, onCloneChange);
-				
-				
-				if (autoShuffle) {
-					if (GestureWorks.activeTUIO)
-						obj.addEventListener(TuioTouchEvent.TOUCH_DOWN, moveB);
-					else if (GestureWorks.supportsTouch)
-						obj.addEventListener(TouchEvent.TOUCH_BEGIN, moveB);
-					else 
-						obj.addEventListener(MouseEvent.MOUSE_DOWN, moveB);	
-				}
-				
-				obj.scale = .6;				
-
-				
-				if (position == "top") {
-					obj.rotation = 180;
-					obj.x = location.x + obj.width*obj.scale;
-					obj.y = location.y + location.height;
-				}
-				else {		
-					obj.x = location.x;
-					obj.y = location.y;				
-				}
-				
-				/*
-				var deg:Number = NumberUtils.randomNumber( -2.5, 2.5);	 
-				var point:Point = new Point(obj.x + (obj.width) / 2, obj.y + (obj.height) / 2);				
-				var m:Matrix=obj.transform.matrix;
-				m.tx -= point.x;
-				m.ty -= point.y;
-				m.rotate (deg*(Math.PI/180));
-				m.tx += point.x;
-				m.ty += point.y;
-				obj.transform.matrix=m;
-				*/
-				
-				obj.reset();
-				moveBelowDock(obj);
-				fadein(obj);				
-				obj.visible = true;			
-				
-				cloneLocations[clIndex].lineColor = 0xbbbbbb;
-				clIndex++;					
-				clIndex = clIndex == cloneLocations.length  ? 0 : clIndex;	
-				cloneLocations[clIndex].lineColor = 0x000000;
+				selectItem(clones[previews.indexOf(e.value)]);
 			}
 		}
 		
+		private function selectItem(obj:*):void
+		{
+			var location:Graphic = placeHolders[placeHolderIndex];				
+			
+			// if object is already on the stage
+			if (obj.visible) {
+				obj.restartTimer();					
+				obj.glowPulse();
+				return;				
+			}
+			
+			
+			obj.restartTimer();
+			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
+			
+			
+			if (autoShuffle) {
+				if (GestureWorks.activeTUIO)
+					obj.addEventListener(TuioTouchEvent.TOUCH_DOWN, moveB);
+				else if (GestureWorks.supportsTouch)
+					obj.addEventListener(TouchEvent.TOUCH_BEGIN, moveB);
+				else 
+					obj.addEventListener(MouseEvent.MOUSE_DOWN, moveB);	
+			}
+			
+			obj.scale = .6;				
+			if (position == "top") {
+				obj.rotation = 180;
+				obj.x = location.x + obj.width*obj.scale;
+				obj.y = location.y + location.height;
+			}
+			else {		
+				obj.x = location.x;
+				obj.y = location.y;				
+			}
+			
+			/*
+			var deg:Number = NumberUtils.randomNumber( -2.5, 2.5);	 
+			var point:Point = new Point(obj.x + (obj.width) / 2, obj.y + (obj.height) / 2);				
+			var m:Matrix=obj.transform.matrix;
+			m.tx -= point.x;
+			m.ty -= point.y;
+			m.rotate (deg*(Math.PI/180));
+			m.tx += point.x;
+			m.ty += point.y;
+			obj.transform.matrix=m;
+			*/
+			
+			obj.reset();
+			moveBelowDock(obj);
+			fadein(obj);				
+			obj.visible = true;				
+			
+			placeHolderIndex++;						
+		}
 		
+		private function dragSelection(e:StateEvent):void
+		{
+			if (e.property == "draggedItem")
+			{
+				for each(var placeHolder:* in placeHolders)
+				{					
+					if (CollisionDetection.isColliding(DisplayObject(e.value), DisplayObject(placeHolder), this))
+					{
+						placeHolderIndex= placeHolders.indexOf(placeHolder);
+						dropLocation = placeHolder;
+						return;
+					}
+				}
+				dropLocation = null;				
+			}
+		}
+				
+		private function dropSelection(e:StateEvent):void
+		{
+			if (e.property == "droppedItem" && dropLocation)
+			{
+				selectItem(clones[previews.indexOf(e.value)]);
+				CMLObjectList.instance.getId("menu1").select(e.value);
+			}
+		}
+				
 		private function moveB(e:*):void 
 		{
 			moveBelowDock(e.currentTarget as DisplayObject);

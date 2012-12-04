@@ -166,7 +166,7 @@ package com.gestureworks.cml.components
 			
 			
 			hideAll();			
-			getCloneLocations();
+			getPlaceHolders();
 			connect();
 			
 			/*
@@ -193,7 +193,7 @@ package com.gestureworks.cml.components
 		}		
 
 
-		private function getCloneLocations():void
+		private function getPlaceHolders():void
 		{
 			// TODO: remove strict referencing
 			var bot:Array = CMLObjectList.instance.getCSSClass("bg-rect-bot").getValueArray();
@@ -202,13 +202,13 @@ package com.gestureworks.cml.components
 			for (var i:int = 0; i < docks.length; i++) {
 				if (i == 0) {
 					for each(var val:* in bot) {
-						docks[i].cloneLocations.push(val);
+						docks[i].placeHolders.push(val);
 					}
 				}
 				
 				if (i == 1) {
 					for each(var val:* in top) {
-						docks[i].cloneLocations.push(val);
+						docks[i].placeHolders.push(val);
 					}
 				}
 			}
@@ -216,7 +216,6 @@ package com.gestureworks.cml.components
 		}
 		
 		
-
 		
 		// file version
 		
