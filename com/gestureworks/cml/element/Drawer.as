@@ -559,6 +559,8 @@ package com.gestureworks.cml.element
 		{		
 			handleTransition();
 			downTween.stop();
+			leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
+			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
 			upTween.play();
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.addEventListener(GWGestureEvent.TAP, close);	
@@ -569,10 +571,13 @@ package com.gestureworks.cml.element
 		 * @param	e  the tap event
 		 */		
 		private function close(e:GWGestureEvent):void
-		{
-			handleTransition();
+		{			
 			upTween.stop();
+			handle.visible = true;
+			leftHandle.searchChildren(Graphic).topLeftRadius = 0;
+			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
 			downTween.play();
+			downTween.onComplete = handleTransition;
 			handle.removeEventListener(GWGestureEvent.TAP, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
 		}
