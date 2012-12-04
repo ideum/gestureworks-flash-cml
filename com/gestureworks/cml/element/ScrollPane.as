@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {
+	import away3d.bounds.NullBounds;
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.factories.*;
@@ -11,6 +12,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
 	import flash.utils.Dictionary;
+	import com.gestureworks.cml.utils.CloneUtils;
 		
 	/**
 	 * 
@@ -25,23 +27,22 @@ package com.gestureworks.cml.element
 	
 	public class ScrollPane extends Container
 	{				
-		private var _itemList:List;
-		private var _verticalScroll:ScrollBar;
-		private var _horizontalScroll:ScrollBar;
-		private var _vertical:Boolean = false;
-		private var _horizontal:Boolean = false;
-		private var _mask:Graphic;
-		private var _hit:TouchContainer;
-		private var _vertStyleSet:Boolean = false;
-		private var _horizStyleSet:Boolean = false;
+		public var _itemList:List;
+		public var _verticalScroll:ScrollBar;
+		public var _horizontalScroll:ScrollBar;
+		public var _vertical:Boolean = false;
+		public var _horizontal:Boolean = false;
+		public var _mask:Graphic;
+		public var _hit:TouchContainer;
+		public var _vertStyleSet:Boolean = false;
+		public var _horizStyleSet:Boolean = false;
 		
-		private var _horizontalMovement:Number;
-		private var _verticalMovement:Number;
+		public var _horizontalMovement:Number;
+		public var _verticalMovement:Number;
 		
 		public function ScrollPane()
 		{
 			super();
-			_itemList = new List();
 		}	
 		
 		private var _paneWidth:Number;
@@ -109,6 +110,69 @@ package com.gestureworks.cml.element
 			_scrollThickness = value;
 		}
 		
+		override public function clone():*{
+			trace("Clone in ScrollPane.");
+			
+			//this.init();
+			
+			var v:Vector.<String> = new < String > ["childList", "_mask", "_itemList", "_hit", "_verticalScroll", "_horizontalScroll" ]
+			var clone:ScrollPane = CloneUtils.clone(this, null, v);
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
+			
+			CloneUtils.copyChildList(this, clone);
+			this._itemList.array[0].mask = _mask;
+			trace("Clone childlist:", clone.childList);
+			
+			clone._itemList = new List();
+			clone._itemList.array = clone.childList.getValueArray();
+			for (var j:Number = 0; j < clone._itemList.array.length; j++) {
+				trace("clone item :", clone._itemList.array[j], j);
+				if (clone._itemList.array[j] is ScrollBar || clone._itemList.array[j] is TouchContainer ||
+				clone._itemList.array[j] == null || clone._itemList.array[j] is String) {
+					clone._itemList.array.splice(j, 1);
+					j--;
+				}
+			}
+			
+			for (var i:Number = 0; i < clone.numChildren; i++) {
+					//if (clone.getChildAt(i).name == clone._itemList.array[i].name) {
+						//clone._itemList.array[i] = clone.getChildAt(i);
+					//}
+					if (clone.getChildAt(i).name == _hit.name) {
+						clone._hit = clone.getChildAt(i) as TouchContainer;
+						trace("Hit area");
+						trace(clone._hit.hasEventListener(GWGestureEvent.DRAG));
+					}
+					else if (clone.getChildAt(i).name == _verticalScroll.name) {
+						clone._verticalScroll = clone.getChildAt(i) as ScrollBar;
+						//clone._verticalScroll.init();
+						trace("Vertical scroll", clone._verticalScroll, this._verticalScroll);
+					}
+					else if (clone.getChildAt(i).name == _horizontalScroll.name) {
+						clone._horizontalScroll = clone.getChildAt(i) as ScrollBar;
+						trace("Horizontal scroll", clone._horizontalScroll, this._horizontalScroll);
+					}
+					else if (clone.getChildAt(i).name == _mask.name) {
+						clone._mask = clone.getChildAt(i) as Graphic;
+						("Mask");
+					}
+				}
+			
+			trace("clone item 0:", clone._itemList.array[0]);
+			clone._itemList.array[0].mask = clone._mask;
+			//clone._verticalScroll.init();
+			//clone._horizontalScroll.init();
+			
+			//clone.init();
+			clone.createEvents();
+			
+			return clone;
+		}
+		
 		override public function dispose():void {
 			super.dispose();
 			
@@ -140,6 +204,9 @@ package com.gestureworks.cml.element
 		}
 		
 		public function init():void {
+			trace("Init in ScrollPane.");
+			_itemList = new List();
+			
 			// Check the child list. 
 			// Iterate through each item, getting position, width, and height.
 			// Check if total items width are larger than the container.
@@ -202,6 +269,7 @@ package com.gestureworks.cml.element
 			}
 			
 			// Create the scroll bar properties that would not be affected by setting out a style.
+			trace(_itemList.array[0]);
 			_verticalMovement = _itemList.array[0].height - paneHeight;
 			_vertical = true;
 			_verticalScroll.contentHeight = _itemList.array[0].height;
@@ -270,11 +338,22 @@ package com.gestureworks.cml.element
 					_hitBox.y -= _paneStrokeMargin / 2;
 				}
 				_hit.addChild(_hitBox);
-				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
-				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
+				//_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+				//_hit.addEventListener(GWGestureEvent.SCALE, onScale);
 			}
 			
+			createEvents();
 			
+			//_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			//_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded"));
+		}
+		
+		public function createEvents():void {
+			
+			_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+			_hit.addEventListener(GWGestureEvent.SCALE, onScale);
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
@@ -330,33 +409,35 @@ package com.gestureworks.cml.element
 		private function onScale(e:GWGestureEvent):void {
 			var xShift:Number = e.value.localX - _itemList.array[0].x;
 			var yShift:Number = e.value.localY - _itemList.array[0].y;
-			_itemList.array[0].scale += e.value.scale_dsx + e.value.scale_dsy;
-			if (_itemList.array[0].height * _itemList.array[0].scale > paneHeight) {
+			//_itemList.array[0].scale += e.value.scale_dsx + e.value.scale_dsy;
+			_itemList.array[0].scaleX += e.value.scale_dsx;
+			_itemList.array[0].scaleY += e.value.scale_dsy;
+			if (_itemList.array[0].height * _itemList.array[0].scaleY > paneHeight) {
 				
 				_verticalScroll.resize(_itemList.array[0].height * _itemList.array[0].scale);
-				_verticalMovement = _itemList.array[0].height * _itemList.array[0].scale - paneHeight;
+				_verticalMovement = _itemList.array[0].height * _itemList.array[0].scaleY - paneHeight;
 				_verticalScroll.thumbPosition = _itemList.array[0].y / _verticalMovement;
 				
 				_vertical = true;
 				
 				if (!(contains(_verticalScroll))) addChild(_verticalScroll);
 				
-			} else if (_itemList.array[0].height * _itemList.array[0].scale < paneHeight) {
+			} else if (_itemList.array[0].height * _itemList.array[0].scaleY < paneHeight) {
 				
 				if (contains(_verticalScroll)) removeChild(_verticalScroll);
 				
 			}
-			if (_itemList.array[0].width * _itemList.array[0].scale > paneWidth) {
+			if (_itemList.array[0].width * _itemList.array[0].scaleX > paneWidth) {
 				
 				_horizontalScroll.resize(_itemList.array[0].width * _itemList.array[0].scale);
-				_horizontalMovement = _itemList.array[0].width * _itemList.array[0].scale - paneWidth;
+				_horizontalMovement = _itemList.array[0].width * _itemList.array[0].scaleX - paneWidth;
 				_horizontalScroll.thumbPosition = _itemList.array[0].x / _horizontalMovement;
 				
 				_horizontal = true;
 				
 				if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
 				
-			} else if (_itemList.array[0].width * _itemList.array[0].scale < paneWidth) {
+			} else if (_itemList.array[0].width * _itemList.array[0].scaleX < paneWidth) {
 				
 				if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
 				
