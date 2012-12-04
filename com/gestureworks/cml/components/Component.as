@@ -433,6 +433,8 @@ package com.gestureworks.cml.components
 			front.visible = true;
 			_side = "front";
 			back.visible = false;
+			if(menu)
+				menu.reset();
 		}
 		
 		
