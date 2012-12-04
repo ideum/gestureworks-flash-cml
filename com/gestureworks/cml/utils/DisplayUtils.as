@@ -6,6 +6,7 @@ package com.gestureworks.cml.utils
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
 	import flash.events.Event;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 
 	
@@ -123,6 +124,78 @@ package com.gestureworks.cml.utils
 				obj.removeEventListener(Event.ENTER_FRAME, arguments.callee);
 				callback();
 			});
+		}
+		
+		
+		/**
+		 * Rotates an object around a spcecific point at a specific angle of rotation
+		 * @param	obj  the object to rotate
+		 * @param	angle  the angle of rotation
+		 * @param	aroundX  the x coordinate of the point to rotate around
+		 * @param	aroundY  the y coordinate of the point to rotate around
+		 */
+		public static function rotateAroundPoint(obj:*, angle:Number, aroundX:Number, aroundY:Number):void
+		{		
+			var m:Matrix = obj.transform.matrix;			 
+			m = pointRotateMatrix(angle, aroundX, aroundY, m);
+			obj.transform.matrix = m;
+		}
+		
+		/**
+		 * Rotates an object around it's center point at a specific angle of rotation
+		 * @param	obj  the object to rotate
+		 * @param	angle  the angle of rotation
+		 */
+		public static function rotateAroundCenter(obj:*, angle:Number):void
+		{
+			var center:Point = getCenterPoint(obj);
+			rotateAroundPoint(obj, angle, center.x, center.y);
+		}
+		
+		/**
+		 * Returns a matrix rotated around a specific point at a specific angle
+		 * @param	angle  the angle of rotation
+		 * @param	aroundX  the x coordinate of the point to rotate around
+		 * @param	aroundY  the y coordinate of the point to rotate around
+		 * @param	m  the matrix to rotate
+		 * @return
+		 */
+		public static function pointRotateMatrix(angle:Number, aroundX:Number, aroundY:Number, m:Matrix=null):Matrix
+		{
+			if (!m) m = new Matrix();
+			m.translate( -aroundX, -aroundY );
+			m.rotate(Math.PI * angle / 180);
+			m.translate( aroundX, aroundY );
+			return m; 
+		}
+		
+		/**
+		 * Returns the center point of the object
+		 * @param	obj  the object 
+		 * @return  the object's center point
+		 */
+		public static function getCenterPoint(obj:*):Point
+		{
+			var centerX:Number = obj.x + obj.width / 2;
+			var centerY:Number = obj.y + obj.height / 2;
+			return new Point(centerX, centerY);
+		}
+		
+		/**
+		 * Returns the first parent of the specified type
+		 * @param	obj
+		 * @return  the parent if the parent of type exists, null otherwise
+		 */
+		public static function getParentType(type:Class, obj:*):*
+		{
+			var parent:* = obj.parent;
+			
+			if (!parent)
+				return null;
+			else if (parent is type)
+				return parent;
+			else
+				return getParentType(type,parent);			
 		}		
 		
 	}
