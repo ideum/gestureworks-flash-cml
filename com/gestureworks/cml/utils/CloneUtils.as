@@ -100,14 +100,14 @@ package com.gestureworks.cml.utils
 		public static function copyChildList(source:*, destination:*):void 
 		{
 			
-			var arr:Array = source.childList.getKeyArray();
+			var arr:Array = source.childList.getValueArray();
 			
 			for (var i:int = 0; i < arr.length; i++) 
 			{	
 				for (var j:int = 0; j < destination.numChildren; j++) 
 				{
-					if (destination.getChildAt(j)["id"] == arr[i])
-						destination.childList.replaceKey(String(arr[i]), destination.getChildAt(j));
+					if (destination.getChildAt(j)["name"] == arr[i]["name"])
+						destination.childList.insert(i, source.childList.getKeyArray()[i], destination.getChildAt(j));
 				}				
 			}			
 		}
