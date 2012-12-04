@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.events.*;
@@ -17,19 +18,19 @@ package com.gestureworks.cml.element
 	 */
 	public class ScrollBar extends ElementFactory
 	{
-		private var railGraphic:Graphic;
-		private var railTouch:TouchContainer;
+		public var railGraphic:Graphic;
+		public var railTouch:TouchContainer;
 		
-		private var scrollBtn1:Graphic;
-		private var touchBtn1:TouchContainer;
+		public var scrollBtn1:Graphic;
+		public var touchBtn1:TouchContainer;
 		
-		private var scrollBtn2:Graphic;
-		private var touchBtn2:TouchContainer;
+		public var scrollBtn2:Graphic;
+		public var touchBtn2:TouchContainer;
 		
-		private var thumb:Graphic;
-		private var thumbTouch:TouchContainer;
+		public var thumb:Graphic;
+		public var thumbTouch:TouchContainer;
 		
-		private var movementRail:Number;
+		public var movementRail:Number;
 		
 		/**
 		 * Constructor
@@ -37,26 +38,6 @@ package com.gestureworks.cml.element
 		public function ScrollBar() 
 		{			
 			super();
-			
-			railTouch = new TouchContainer();
-			railTouch.gestureEvents = true;
-			addChild(railTouch);
-			
-			touchBtn1 = new TouchContainer();
-			touchBtn1.gestureEvents = true;
-			touchBtn1.gestureList = { "n-tap":true };
-			addChild(touchBtn1);
-			
-			touchBtn2 = new TouchContainer();
-			touchBtn2.gestureEvents = true;
-			touchBtn2.gestureList = { "n-tap":true };
-			addChild(touchBtn2);
-			
-			thumbTouch = new TouchContainer();
-			thumbTouch.gestureEvents = true;
-			thumbTouch.gestureList = { "n-drag":true };
-			thumbTouch.disableNativeTransform = true;
-			addChild(thumbTouch);
 			
 			this.mouseChildren = true;
 		}		
@@ -195,6 +176,35 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{ 
+			trace("Hi, this is the scrollbar init. How are you?");
+			if(!railTouch){
+				railTouch = new TouchContainer();
+				railTouch.gestureEvents = true;
+				addChild(railTouch);
+			}
+			
+			if(!touchBtn1){
+				touchBtn1 = new TouchContainer();
+				touchBtn1.gestureEvents = true;
+				touchBtn1.gestureList = { "n-tap":true };
+				addChild(touchBtn1);
+			}
+			
+			if (!touchBtn2) {
+			touchBtn2 = new TouchContainer();
+			touchBtn2.gestureEvents = true;
+			touchBtn2.gestureList = { "n-tap":true };
+			addChild(touchBtn2);
+			}
+			
+			if (!thumbTouch){
+			thumbTouch = new TouchContainer();
+			thumbTouch.gestureEvents = true;
+			thumbTouch.gestureList = { "n-drag":true };
+			thumbTouch.disableNativeTransform = true;
+			addChild(thumbTouch);
+			}
+			
 			// Create the rail.
 			railGraphic = new Graphic();
 			railGraphic.color = _fill;
@@ -289,7 +299,7 @@ package com.gestureworks.cml.element
 			createEvents();
 		}
 		
-		private function createEvents():void {
+		public function createEvents():void {
 			touchBtn1.addEventListener(GWGestureEvent.TAP, onTap1);
 			touchBtn2.addEventListener(GWGestureEvent.TAP, onTap2);
 			
@@ -386,6 +396,48 @@ package com.gestureworks.cml.element
 				movementRail = railGraphic.width - thumb.width;
 				//thumb.x = railGraphic.x;
 			}
+		}
+		
+		override public function clone():*{
+			//clone.displayComplete();
+			//var v:Vector.<String> = new < String > ["childList", "initial", "hit", "up", "down", "over", "out",
+			//"mouseUp", "mouseDown", "mouseOver", "mouseOut", "touchUp", "touchDown", "touchOver", "touchOut"];
+			
+			var v:Vector.<String> = new < String > ["railTouch", "railGraphic", "touchBtn1", "scrollBtn1", "touchBtn2", "scrollBtn2", "thumbTouch", "thumb" ];
+			
+			var clone:ScrollBar = CloneUtils.clone(this, null, v);
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
+			
+			for (var i:Number = 0; i < clone.numChildren; i++) {
+				if (clone.getChildAt(i).name == railTouch.name) {
+					clone.railTouch = clone.getChildAt(i) as TouchContainer;
+					clone.railGraphic = clone.railTouch.getChildAt(0) as Graphic;
+					trace("Cloning rail 1");
+				}
+				else if (clone.getChildAt(i).name == touchBtn1.name) {
+					clone.touchBtn1 = clone.getChildAt(i) as TouchContainer;
+					clone.scrollBtn1 = clone.touchBtn1.getChildAt(0) as Graphic;
+					trace("Cloning rail 2");
+				}
+				else if (clone.getChildAt(i).name == touchBtn2.name) {
+					clone.touchBtn2 = clone.getChildAt(i) as TouchContainer;
+					clone.scrollBtn2 = clone.touchBtn2.getChildAt(0) as Graphic;
+					trace("Cloning rail 3");
+				}
+				else if (clone.getChildAt(i).name == thumbTouch.name) {
+					clone.thumbTouch = clone.getChildAt(i) as TouchContainer;
+					clone.thumb = clone.thumbTouch.getChildAt(0) as Graphic;
+					trace("Cloning rail 4");
+				}
+			}
+			
+			clone.createEvents();
+			
+			return clone;
 		}
 		
 		/**
