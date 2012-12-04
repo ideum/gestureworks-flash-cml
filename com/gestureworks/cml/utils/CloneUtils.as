@@ -51,7 +51,7 @@ package com.gestureworks.cml.utils
 		{
 			
 			//trace(pExclusions);
-			
+			trace(source);
 			var cloneObj:*;
 			var childClone:DisplayObject;
 							
@@ -160,6 +160,10 @@ package com.gestureworks.cml.utils
 														
 							if (destination[pName] != source[pName])
 								destination[pName] = source[pName];
+								
+							if (pName == "propertyStates") {
+								copyPropertyStates(source, destination);
+							}
 						}
 					}
 						
@@ -177,6 +181,22 @@ package com.gestureworks.cml.utils
 				}
 				
 				catch (err:*) { throw new Error(err); }
+			}
+		}
+		
+		public static function copyPropertyStates(source:*, destination:*):void {
+			
+			destination.propertyStates = [];
+			
+			for (var i:int = 0; i < source.propertyStates.length; i++) 
+			{
+				destination.propertyStates[i] = new Dictionary();
+				
+				for (var item:String in source.propertyStates[i]) 
+				{
+					trace("item:", item, i);
+					destination.propertyStates[i][item] = source.propertyStates[i][item];
+				}
 			}
 		}
 		
