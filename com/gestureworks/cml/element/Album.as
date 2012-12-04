@@ -97,6 +97,10 @@ package com.gestureworks.cml.element
 			initBelt();
 			checkMask();
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isLoaded", true, true));	
+			
+			addEventListener(TouchEvent.TOUCH_BEGIN, inBounds);
+			addEventListener(TouchEvent.TOUCH_END, outOfBounds);
+			addEventListener(TouchEvent.TOUCH_ROLL_OVER, inBounds);
 		}
 		
 		/**
@@ -341,7 +345,7 @@ package com.gestureworks.cml.element
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
 			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
+			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 			if (snapping)
 			{
 				var snapType:Function = loop ? loopSnap : snap;				
@@ -367,7 +371,7 @@ package com.gestureworks.cml.element
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;
 
-			if (menuMode) //wrap child in a TouchSprite and register tap event
+			if (menuMode) //wrap child in a TouchSprite and register events
 			{
 				var ts:TouchSprite;
 				if (child is TouchSprite)
@@ -381,8 +385,11 @@ package com.gestureworks.cml.element
 				}
 				
 				belt.addChild(ts);
-				ts.gestureList = { "n-tap":true };
-				ts.addEventListener(GWGestureEvent.TAP, selection);										
+				ts.disableNativeTransform = true;
+				ts.gestureList = { "n-tap":true, "n-drag":true};
+				ts.addEventListener(GWGestureEvent.TAP, selection);	
+				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
+				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
 			}
 			else
 				belt.addChild(child);
@@ -402,7 +409,7 @@ package com.gestureworks.cml.element
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;
 
-			if (menuMode) //wrap child in a TouchSprite and register tap event
+			if (menuMode) //wrap child in a TouchSprite and register events
 			{
 				var ts:TouchSprite;
 				if (child is TouchSprite)
@@ -415,9 +422,12 @@ package com.gestureworks.cml.element
 					ts.height = child.height;
 				}
 				
-				belt.addChildAt(ts,index);
-				ts.gestureList = { "n-tap":true };
+				belt.addChildAt(ts, index);
+				ts.disableNativeTransform = true;
+				ts.gestureList = { "n-tap":true, "n-drag":true };
 				ts.addEventListener(GWGestureEvent.TAP, selection);										
+				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
+				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
 			}
 			else
 				belt.addChildAt(child, index);
@@ -443,6 +453,18 @@ package com.gestureworks.cml.element
 		{
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", e.target, true));
 		}
+		
+		/**
+		 * Abstract drag item function
+		 * @param	e
+		 */
+		protected function dragItem(e:GWGestureEvent):void { }
+		
+		/**
+		 * Abstract drop item function
+		 * @param	e
+		 */
+		protected function dropItem(e:GWGestureEvent):void {}
 		
 		/**
 		 * Stores the additive inverse of the x or y coordinates of each frame on the belt based on the horizontal
@@ -731,7 +753,35 @@ package com.gestureworks.cml.element
 					index--;
 				snap(null, snapPoints[index]);
 			}
-		}		
+		}
+		
+		/**
+		 * Disables the drag if the touch moves outside of the album
+		 * @param	e
+		 */
+		protected function outOfBounds(e:TouchEvent):void
+		{
+			if (e.type == "touchEnd")
+			{	
+				removeEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);			
+			}
+			else
+			{	
+				var scrollType:Function = horizontal ? scrollH : scrollV;
+				belt.removeEventListener(GWGestureEvent.DRAG, scrollType);
+			}			
+		}
+		
+		/**
+		 * Enables the drag if the touch is inside or moves inside the album
+		 * @param	e
+		 */
+		protected function inBounds(e:TouchEvent):void
+		{
+			var scrollType:Function = horizontal ? scrollH : scrollV;
+			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
+			addEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
+		}
 		
 		/**
 		 * Reactivates the drag handler, enables release inertia, and resets the released
@@ -760,7 +810,7 @@ package com.gestureworks.cml.element
 		 * belt is not being touched, the drag is disabled and the snaps into place.
 		 * @param	e the drag event
 		 */
-		private function scrollH(e:GWGestureEvent):void
+		protected function scrollH(e:GWGestureEvent):void
 		{	
 			var COS:Number = Math.cos(dragAngle);
 			var SIN:Number = Math.sin(dragAngle);
@@ -784,7 +834,7 @@ package com.gestureworks.cml.element
 		 * Drag the belt vertically within the boundaries
 		 * @param	e the drag event
 		 */
-		private function scrollV(e:GWGestureEvent):void
+		protected function scrollV(e:GWGestureEvent):void
 		{
 			var COS:Number = Math.cos(dragAngle);
 			var SIN:Number = Math.sin(dragAngle);
