@@ -383,11 +383,14 @@ package com.gestureworks.cml.element
 			else 
 			{
 				if (this.childList.getValueArray())
-					returnVal = loopSearch(this.childList.getValueArray(), value, searchType);
+					loopSearch(this.childList.getValueArray(), value, searchType);
 			}
 			
 			function loopSearch(arr:Array, val:*, sType:String):*
 			{
+				if (returnVal)
+					return;
+				
 				var tmp:Array;
 				var i:int;
 				
@@ -422,22 +425,23 @@ package com.gestureworks.cml.element
 						{						
 							if (sType == "getCSSClass" || sType == "getClass")
 							{
-								if (arr[i].childList[sType](val, 0))
-									return arr[i].childList[sType](val, 0);						
+								returnVal = arr[i].childList[sType](val, 0);
+								if (returnVal)
+									return returnVal;						
 							}
 							else 
 							{
-								if (arr[i].childList[sType](val))
+								returnVal = arr[i].childList[sType](val);
+								if (returnVal)
 									return arr[i].childList[sType](val);
 							}
 							
-							if (arr[i].childList.getValueArray())
+							if (!returnVal && arr[i].childList.getValueArray())
 								loopSearch(arr[i].childList.getValueArray(), val, sType);							
 						}
 					}
 				}
 			}
-			
 			
 			if (returnType == Array)
 				return returnArray;
