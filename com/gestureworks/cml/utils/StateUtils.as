@@ -45,9 +45,9 @@ package com.gestureworks.cml.utils
 		 */
 		public static function loadState(obj:Object, state:Number, recursion:Boolean=false):void 
 		{		
-			if (obj.propertyStates[state])
+			if (obj.hasOwnProperty("propertyStates") && obj["propertyStates"][state])
 				obj.updateProperties(state);
-				
+			
 			if (obj is DisplayObjectContainer && recursion)
 			{
 				for (var i:int = 0; i < obj.numChildren; i++)
