@@ -7,6 +7,8 @@ package com.gestureworks.cml.utils
 	import com.gestureworks.cml.interfaces.IContainer;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	import flash.utils.Dictionary;
@@ -61,7 +63,11 @@ package com.gestureworks.cml.utils
 				
 				if (cloneObj)
 				{
-					copyData(source, cloneObj, pExclusions);
+					// reset transform matrix
+					if (cloneObj.hasOwnProperty("transform"))
+						cloneObj.transform.matrix = new Matrix(1, 0, 0, 1, 0, 0);
+						
+					copyData(source, cloneObj, pExclusions);	
 				}
 			}
 			
@@ -144,7 +150,7 @@ package com.gestureworks.cml.utils
 		 */
 		public static function copyData(source:*, destination:*, pExclusions:Vector.<String>=null):void 
 		{	
-			if (source && destination) {
+			if (source && destination) {			
 				
 				try {
 					var sourceInfo:XML = describeType(source);
