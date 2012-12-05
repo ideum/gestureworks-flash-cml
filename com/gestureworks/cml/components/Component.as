@@ -3,12 +3,14 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.Frame;
 	import com.gestureworks.cml.element.Graphic;
 	import com.gestureworks.cml.element.Menu;
+	import com.gestureworks.cml.element.ScrollPane;
 	import com.gestureworks.cml.element.Text;
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.GestureWorks;
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
@@ -72,7 +74,10 @@ package com.gestureworks.cml.components
 			textFields = searchChildren(Text, Array);
 			for (var i:int = 0; i < textFields.length; i++)
 				fontArray.push(textFields[i].fontSize);
-						
+			
+			scrollPanes = [];
+			scrollPanes = searchChildren(ScrollPane, Array);
+			
 			updateLayout();				
 		}
 		
@@ -183,7 +188,7 @@ package com.gestureworks.cml.components
 			else
 				_frame = searchChildren(value);				
 		}			
-		
+
 		
 		private var _hideFrontOnFlip:Boolean = false;
 		/**
@@ -247,7 +252,18 @@ package com.gestureworks.cml.components
 			if (back)
 			{
 				back.width = width;
-				back.height = height;				
+				back.height = height;
+				trace("---------------- back dimensions", back.width, back.height, "---------------------------------");
+				if (back is DisplayObjectContainer) {
+					trace("Back is displayObjectContainer.");
+					for (var j:int = 0; j < back.numChildren; j++) 
+					{
+						if ("updateLayout" in back.getChildAt(j)) {
+							trace("Updating layout in:", back.getChildAt(j), j);
+							back.getChildAt(j).updateLayout(front.width, front.height);
+						}
+					}
+				}
 			}
 			
 			if (background)
@@ -299,6 +315,14 @@ package com.gestureworks.cml.components
 				}
 			}			
 			
+			if (scrollPanes) {
+				for (var k:int = 0; k < scrollPanes.length; k++) 
+				{
+					scrollPanes[k].updateLayout(width, height);
+					
+				}
+			}
+			
 			if (timeout > 0) {
 				timer = new Timer(timeout * 1000, 1);
 				timer.addEventListener(TimerEvent.TIMER, onTimer);
@@ -312,6 +336,8 @@ package com.gestureworks.cml.components
 					
 				timer.start();
 			}
+			
+			
 		}
 		
 		/**
@@ -415,8 +441,6 @@ package com.gestureworks.cml.components
 		}
 		
 		
-		
-		
 		protected function onTimer(e:TimerEvent):void {
 			timer.stop();
 			
@@ -462,6 +486,7 @@ package com.gestureworks.cml.components
 		
 
 		private var glowTween:ITween;
+		private var scrollPanes:Array;
 		
 		public function glowIn(dur:Number=1):void
 		{
