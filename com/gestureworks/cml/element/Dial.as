@@ -729,8 +729,8 @@ package com.gestureworks.cml.element
 		{
 			var tf:Text;
 			
-			if (textFieldArray.length < 2)
-				return;
+			//if (textFieldArray.length < 2)
+			//	return;
 			
 			// re-map drag data
 			var dy:Number;
