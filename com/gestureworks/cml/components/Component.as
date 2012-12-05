@@ -457,6 +457,16 @@ package com.gestureworks.cml.components
 			front.visible = true;
 			_side = "front";
 			back.visible = false;
+			
+			//rotation = propertyStates[0]["rotation"];
+			//scaleX = propertyStates[0]["scaleX"];
+			//scaleY = propertyStates[0]["scaleY"];
+			
+			if (timer) {
+				timer.reset();
+				timer.start();
+			}
+			
 			if(menu)
 				menu.reset();
 		}
@@ -541,6 +551,22 @@ package com.gestureworks.cml.components
 			timer.reset();
 			timer.start();
 		}
+		
+		public function resetTimer():void
+		{
+			timer.reset();
+		}		
+		
+		public function stopTimer():void
+		{
+			timer.stop();
+		}
+		
+		public function startTimer():void
+		{
+			timer.start();
+		}			
+		
 		
 		/**
 		 * Returns clone of self

@@ -57,7 +57,7 @@ package com.gestureworks.cml.factories
 		{			
 			for (var i:int = 0; i < _childList.length; i++) 
 			{
-				if(childList.getIndex(i) is DisplayObject)
+				if (childList.getIndex(i) is DisplayObject)
 				addChild(_childList.getIndex(i));
 			}
 		}

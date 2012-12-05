@@ -170,13 +170,17 @@ package com.gestureworks.cml.element
 			// etc -- see collective access
 			
 			//if (!e || e.keyCode == 13) {
-			//connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
-				connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
+			    connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
+				//connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
 				//connection.call("./AMFTest.getalldata", responder, entry.text);
 				//connection.call("./SetTest.set_search", responder, entry.text);
 			//}			
 			
+			
+			for (var i:int = 0; i < clones.length; i++) {
+				clones[i].stopTimer();
+			}
 			
 			album.clear();
 			
@@ -194,6 +198,7 @@ package com.gestureworks.cml.element
 		{			
 			result = res;
 			resultCnt = 0;		
+			loadCnt = 0;		
 			
 			for (var n:* in result) {
 				resultCnt++;	
@@ -205,7 +210,7 @@ package com.gestureworks.cml.element
 			if (amountToShow > resultCnt)
 				amountToShow = resultCnt;			
 			
-			//printResult(result);
+			printResult(result);
 			
 			loadClone();			
 		}
@@ -242,9 +247,11 @@ package com.gestureworks.cml.element
 			
 			if (cloneMap.hasKey(src)) {
 				clones.push(cloneMap.getKey(src));
-				loadCnt++;
-				if (loadCnt == resultCnt)
+				
+				if (loadCnt >= resultCnt)
 					loadEnd();
+				else 
+					onCloneLoad();
 			}
 			else {
 				clone = templates[0].clone(); // TODO: remove hardcoded template item 			
@@ -260,13 +267,15 @@ package com.gestureworks.cml.element
 		// image load data
 		private function onCloneLoad(event:StateEvent=null):void 
 		{			
-			if (event.property == "percentLoaded") {
+			if (event && event.property == "percentLoaded") {
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt + ": " + event.value;
 			}
 			
-			else if (event.property == "isLoaded") {
-				event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
-				event.target.init();
+			else if ( (!event) || event.property == "isLoaded") {
+				if (event) {
+					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
+					event.target.init();
+				}
 				loadCnt++;
 				
 				if (loadCnt >= resultCnt) {
@@ -288,6 +297,10 @@ package com.gestureworks.cml.element
 			displayResults();
 			loadCnt = 0;
 			isLoading = false;
+			
+			for (var i:int = 0; i < clones.length; i++) {
+				clones[i].restartTimer();
+			}			
 		}
 		
 		
