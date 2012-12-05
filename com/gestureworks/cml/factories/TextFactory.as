@@ -8,6 +8,8 @@ package com.gestureworks.cml.factories
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
 	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 	import flash.text.*;
 	import flash.text.TextFieldType;
 	import flash.utils.Dictionary;
@@ -476,6 +478,16 @@ package com.gestureworks.cml.factories
 			updateTextFormat();
 		}
 		
+		private var _scrollable:Boolean = false;
+		/**
+		 * Sets whether or not the text is scrollable.
+		 */
+		public function get scrollable():Boolean { return _scrollable; }
+		public function set scrollable(value:Boolean):void {
+			_scrollable = value;
+			updateTextFormat();
+		}
+		
 		
 		// protected methods	
 		protected function updateTextFormat():void 
@@ -498,10 +510,13 @@ package com.gestureworks.cml.factories
 					parent.addChild(b);
 				}
 			}
+			if (scrollable) {
+				this.scrollRect = new Rectangle(0, 0, this.width, this.height);
+				trace("Hi, this is your scrollable text box speaking here. My width right now is:", this.width, "And my height is:", this.height);
+			}
 			
 			super.text = this.text;
 		}
-		
 		
 		//////////////
 		//  IClone  
