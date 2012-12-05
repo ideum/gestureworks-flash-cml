@@ -3,6 +3,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.element.Container;
 	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.cml.utils.StateUtils;
 	import com.gestureworks.core.GestureWorks;
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
@@ -1270,10 +1271,11 @@ package com.gestureworks.cml.element
 		}
 
 		private function setSide():void {
-			GestureWorks.application.addEventListener(StateEvent.CHANGE, onFlip);
+			//addEventListener(StateEvent.CHANGE, onFlip);
 		}
 		
-		private function onFlip(e:StateEvent):void {
+		public function onFlip(e:StateEvent):void {
+			trace("Button flip:", e.value);
 			if (e.value == side) {
 				visible = !visible;
 			}
