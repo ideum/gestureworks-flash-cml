@@ -178,10 +178,6 @@ package com.gestureworks.cml.element
 			//}			
 			
 			
-			for (var i:int = 0; i < clones.length; i++) {
-				clones[i].stopTimer();
-			}
-			
 			album.clear();
 			
 			previews = [];
@@ -296,11 +292,7 @@ package com.gestureworks.cml.element
 		{
 			displayResults();
 			loadCnt = 0;
-			isLoading = false;
-			
-			for (var i:int = 0; i < clones.length; i++) {
-				clones[i].restartTimer();
-			}			
+			isLoading = false;			
 		}
 		
 		
@@ -366,13 +358,13 @@ package com.gestureworks.cml.element
 			
 			// if object is already on the stage
 			if (obj.visible) {
-				obj.onDown();					
+				obj.onUp();					
 				obj.glowPulse();
 				return;				
 			}
+			else
+				obj.visible = true;
 			
-			
-			obj.restartTimer();
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
 			
 			
@@ -457,12 +449,11 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onCloneChange(e:StateEvent):void
-		{					
-			e.target.removeEventListener(StateEvent.CHANGE, onCloneChange);
-						
-			if (e.property == "visible") {
+		{											
+			if (e.property == "visible") {				
 				if (!e.value) {
-					e.target.visible = false;
+					e.target.removeEventListener(StateEvent.CHANGE, onCloneChange);
+					//e.target.visible = false;
 					var index:int = clones.indexOf(e.target)				
 					if (index >= 0) {
 						var m:MenuAlbum = searchChildren("#menu1");

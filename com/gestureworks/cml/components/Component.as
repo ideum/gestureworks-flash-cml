@@ -239,7 +239,19 @@ package com.gestureworks.cml.components
 		 */
 		protected function get side():String { return _side; }
 				
-		
+		/**
+		 * Manages the timer and dispatches a state event
+		 */
+		override public function set visible(value:Boolean):void 
+		{
+			super.visible = value;			
+			if (value && timer)
+				restartTimer();
+			else if (!value && timer)
+				timer.stop();
+				
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", value));								
+		}
 		
 		protected function updateLayout(event:*=null):void
 		{	
@@ -327,14 +339,9 @@ package com.gestureworks.cml.components
 				timer = new Timer(timeout * 1000, 1);
 				timer.addEventListener(TimerEvent.TIMER, onTimer);
 				
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-				else if	(GestureWorks.supportsTouch)
-					this.addEventListener(TouchEvent.TOUCH_END, onUp);
-				else	
-					this.addEventListener(MouseEvent.MOUSE_UP, onUp);
 					
-				timer.start();
+				if (visible && timer)
+					timer.start();
 			}
 			
 			
@@ -348,18 +355,16 @@ package com.gestureworks.cml.components
 		public function onDown(event:* = null):void
 		{
 			if (timer) {
-				restartTimer();
+				timer.stop();
 			}			
 			if (menu){
 				menu.visible = true;
 				menu.startTimer();
 			}
-			if(tween){
-				if (tween.isPlaying) {
-					tween.stop();
-					this.alpha = 1;
-				}
-			}
+			if(tween && tween.isPlaying){
+				tween.stop();
+				this.alpha = 1;
+			}						
 		}
 
 		/**
@@ -373,7 +378,12 @@ package com.gestureworks.cml.components
 			
 			if (timer) {
 				restartTimer();
-			}	
+			}
+			
+			if(tween && tween.isPlaying){
+				tween.stop();
+				this.alpha = 1;
+			}			
 		}	
 		
 		private var textCount:Number = 0;
@@ -435,8 +445,7 @@ package com.gestureworks.cml.components
 			}
 			else if (event.value == "close")
 			{
-				this.visible = false;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", false));				
+				this.visible = false;							
 			}	
 		}
 		
@@ -457,20 +466,11 @@ package com.gestureworks.cml.components
 			front.visible = true;
 			_side = "front";
 			back.visible = false;
-			
-			//rotation = propertyStates[0]["rotation"];
-			//scaleX = propertyStates[0]["scaleX"];
-			//scaleY = propertyStates[0]["scaleY"];
-			
-			if (timer) {
-				timer.reset();
-				timer.start();
-			}
-			
 			if(menu)
 				menu.reset();
-		}
-		
+			if (timer)
+				restartTimer();
+		}		
 		
 		public function fadeIn(dur:Number=250):void
 		{
@@ -489,9 +489,9 @@ package com.gestureworks.cml.components
 				
 			tween = BetweenAS3.tween(this, { alpha:0 }, null, dur);
 			tween.play();
-			tween.onComplete = function():void { this.visible = false;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", false));
-			};
+			tween.onComplete = function():void { 
+				visible = false;
+				};
 		}			
 		
 
@@ -551,22 +551,6 @@ package com.gestureworks.cml.components
 			timer.reset();
 			timer.start();
 		}
-		
-		public function resetTimer():void
-		{
-			timer.reset();
-		}		
-		
-		public function stopTimer():void
-		{
-			timer.stop();
-		}
-		
-		public function startTimer():void
-		{
-			timer.start();
-		}			
-		
 		
 		/**
 		 * Returns clone of self
