@@ -48,7 +48,7 @@ package com.gestureworks.cml.element
 		private var _maskHeight:Number;		
 		private var _horizontal:Boolean = true;
 		private var _margin:Number = 1;
-		private var _centerContent = true;
+		private var _centerContent:Boolean = true;
 		private var _dragAngle:Number = 0;
 		private var _loop:Boolean = false;
 		private var _loopQueue:Array;
@@ -76,7 +76,7 @@ package com.gestureworks.cml.element
 		{
 			mouseChildren = true;
 			albumMask = new Graphic();
-			albumMask.shape = "rectangle";
+			albumMask.shape = "rectangle";				
 			_belt = new TouchContainer();
 		}
 				
@@ -473,16 +473,27 @@ package com.gestureworks.cml.element
 		private function storeSnapPoints():void
 		{
 			snapPoints = new Array;	
+			var limit:Number = applyMask ? belt[dimension] - albumMask[dimension] : belt[dimension] - this[dimension];
+			limit = limit < 0 ? 0 : limit;
 			
 			if (centerContent)
 			{
-				for (var i:int = 0; i < belt[dimension]; i = i + this[dimension] + space)
-					snapPoints.push( -i);
+				for (var i:int = 0; i <= limit; i = i + this[dimension] + space)
+				{
+					snapPoints.push( -i);				
+				}
 			}
 			else
 			{
 				for (i = 0; i < belt.numChildren; i++)
-					snapPoints.push( -belt.getChildAt(i)[axis]);
+				{
+					if (belt.getChildAt(i)[axis] > limit)
+					{
+						snapPoints.push(-limit);
+						break;
+					}					
+					snapPoints.push( -belt.getChildAt(i)[axis]);					
+				}
 			}
 		}
 		
@@ -492,15 +503,18 @@ package com.gestureworks.cml.element
 		 */
 		private function setBoundaries():void
 		{
+			var half:Number = this[dimension] / 2;
+			
 			if (loop)
 			{
 				boundary1 = 0;				
 				boundary2 = this[dimension];
 			}
-			else if (snapPoints.length > 0)
+			else 
 			{			
-				boundary1 = snapPoints[0];
-				boundary2 = snapPoints[snapPoints.length - 1];
+				var b2Limit:Number = applyMask ? albumMask[dimension] : this[dimension];
+				boundary1 = half;
+				boundary2 = b2Limit < belt[dimension] ? -(belt[dimension] - (b2Limit - half)) : -half;
 			}
 		}
 		
@@ -587,7 +601,7 @@ package com.gestureworks.cml.element
 		 * Apply the mask
 		 */
 		private function checkMask():void
-		{
+		{			
 			if (applyMask)
 			{
 				addUIComponent(albumMask);
@@ -604,7 +618,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Intended to synchronize this album with another's state during album linking through the AlbumViewer.
+		 * Intended to synchronize this album with another's state when album linking through the AlbumViewer.
 		 * @param	album  the album to synch to
 		 */
 		public function updateState(album:Album):void
@@ -807,7 +821,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Drag the belt horizontally within the boundaries. If boundaries are exceeded and the
-		 * belt is not being touched, the drag is disabled and the snaps into place.
+		 * belt is not being touched, the drag is disabled and the belt snaps into place.
 		 * @param	e the drag event
 		 */
 		protected function scrollH(e:GWGestureEvent):void
@@ -824,7 +838,7 @@ package com.gestureworks.cml.element
 			{
 				belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
 				belt.gestureReleaseInertia = false;
-				snap();				
+				snap();
 			}
 			
 			publishState();
