@@ -64,11 +64,33 @@ package com.gestureworks.cml.element
 			clampThumb();
 		}
 		
+		private var _width:Number = 0;
+		override public function get width():Number { return _width; }
+		override public function set width(value:Number):void {
+			_width = value;
+			super.width = value;
+			if (_loaded)
+				resizeGraphics();
+		}
+		
+		private var _height:Number = 0;
+		override public function get height():Number { return _height; }
+		override public function set height(value:Number):void {
+			_height = value;
+			super.height = value;
+			if (_loaded)
+				resizeGraphics();
+		}
+		
 		private var _loaded:Boolean = false;
 		/**
 		 * Checks to see if the element is loaded.
+		 * Setter is only for cloning to be available to set a scrollbar is loaded, do not set this variable.
 		 */
 		public function get loaded():Boolean { return _loaded; }
+		/*public function set loaded(value:Boolean):void {
+			_loaded = value;
+		}*/
 		
 		private var _orientation:String = "vertical";
 		/**
@@ -206,15 +228,17 @@ package com.gestureworks.cml.element
 			}
 			
 			// Create the rail.
-			railGraphic = new Graphic();
-			railGraphic.color = _fill;
-			railGraphic.height = this.height;
-			railGraphic.width = this.width;
-			railGraphic.lineStroke = 0;
-			railGraphic.shape = "rectangle";
+			if (!railGraphic){
+				railGraphic = new Graphic();
+				railGraphic.color = _fill;
+				railGraphic.height = this.height;
+				railGraphic.width = this.width;
+				railGraphic.lineStroke = 0;
+				railGraphic.shape = "rectangle";
+			}
 			
 			// Create and position buttons based upon either orientation.
-			if (_orientation == "vertical") {
+			if (_orientation == "vertical" && !scrollBtn1 && !scrollBtn2) {
 				scrollBtn1 = new Graphic();
 				scrollBtn1.color = _buttonFill;
 				scrollBtn1.width = this.width;
@@ -233,7 +257,7 @@ package com.gestureworks.cml.element
 				railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
 				railGraphic.y = scrollBtn1.height;
 			}
-			else if (_orientation == "horizontal") {
+			else if (_orientation == "horizontal" && !scrollBtn1 && !scrollBtn2) {
 				scrollBtn1 = new Graphic();
 				scrollBtn1.shape = "rectangle";
 				scrollBtn1.color = _buttonFill;
@@ -256,18 +280,23 @@ package com.gestureworks.cml.element
 				railGraphic.x = scrollBtn1.width;
 			}
 			
-			railTouch.addChild(railGraphic);
-			touchBtn1.addChild(scrollBtn1);
-			touchBtn2.addChild(scrollBtn2);
+			if(!(railTouch.contains(railGraphic)))
+				railTouch.addChild(railGraphic);
+			if(!(touchBtn1.contains(scrollBtn1)))
+				touchBtn1.addChild(scrollBtn1);
+			if(!(touchBtn2.contains(scrollBtn2)))
+				touchBtn2.addChild(scrollBtn2);
 			
 			// Create the thumb. 
 				// Create the rectangle.
 				// Round corners if necessary.
 				// Etc.
 			
-			thumb = new Graphic();
-			thumb.shape = _shape;
-			thumb.lineStroke = 0;
+			if(!thumb){
+				thumb = new Graphic();
+				thumb.shape = _shape;
+				thumb.lineStroke = 0;
+			}
 			
 			if (_orientation == "vertical"){
 				thumb.width = this.width;
@@ -378,6 +407,34 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		private function resizeGraphics():void {
+			
+			if (orientation == "vertical") {
+				scrollBtn1.width = width;
+				scrollBtn1.height = width;
+				
+				scrollBtn2.width = width;
+				scrollBtn2.height = width;
+				scrollBtn2.y = height - scrollBtn2.height;
+				
+				railGraphic.height = height - scrollBtn1.height - scrollBtn2.height;
+				
+				resize(_contentHeight);
+			} else if (orientation == "horizontal") {
+				scrollBtn1.height = height;
+				scrollBtn1.width = height;
+				
+				scrollBtn2.height = height;
+				scrollBtn2.width = height;
+				scrollBtn2.x = width - scrollBtn2.width;
+				
+				railGraphic.width = width - scrollBtn1.width - scrollBtn2.width;
+				
+				resize(_contentWidth);
+			}
+			
+		}
+		
 		/**
 		 * Used by the ScrollPane class to resize the scrollbar when scrollable content is scaled larger or smaller.
 		 * @param	newDimension
@@ -385,14 +442,14 @@ package com.gestureworks.cml.element
 		public function resize(newDimension:Number):void {
 			if (_orientation == "vertical") {
 				contentHeight = newDimension;
-				thumb.width = this.width;
-				thumb.height = (this.height / contentHeight) * railGraphic.height;
+				thumb.width = width;
+				thumb.height = (height / contentHeight) * railGraphic.height;
 				movementRail = railGraphic.height - thumb.height;
 				//thumb.y = railGraphic.y;
 			} else if (_orientation == "horizontal") {
 				contentWidth = newDimension;
-				thumb.height = this.height;
-				thumb.width = (this.width / contentWidth) * railGraphic.width;
+				thumb.height = height;
+				thumb.width = (width / contentWidth) * railGraphic.width;
 				movementRail = railGraphic.width - thumb.width;
 				//thumb.x = railGraphic.x;
 			}
