@@ -56,14 +56,14 @@ package com.gestureworks.cml.components
 			super();
 		}
 		
-		/*override public function set width(value:Number):void {
+		override public function set width(value:Number):void {
 			super.width = value;
-			trace("setting component width to new value:", value);
+			//trace("setting component width to new value:", value);
 		}
 		override public function get width():Number {
-			trace("Super width retrieval:", super.width);
+			//trace("Super width retrieval:", super.width);
 			return super.width;
-		}*/
+		}
 		
 		/**
 		 * Initialisation method
@@ -306,7 +306,8 @@ package com.gestureworks.cml.components
 						this.addEventListener(TouchEvent.TOUCH_END, onUp);
 					else	
 						this.addEventListener(MouseEvent.MOUSE_UP, onUp);							
-				}					
+				}	
+				
 			}
 			
 			if (textFields && autoTextLayout)
@@ -342,12 +343,20 @@ package com.gestureworks.cml.components
 		private function formatPane(t:Text, sp:ScrollPane):void {
 			sp.y = t.y;
 			t.y = 0;
-			var fakeWidth:Number = width;
-			t.width = fakeWidth - t.paddingLeft - t.paddingRight;
-			sp.width = this.width;
-			sp.height = 300;
-			trace("Formatting the pane to the following dimensions:", sp.width, "x", sp.height, fakeWidth);
-			//sp.updateLayout(t.width, t.height);
+			sp.width = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
+			sp.x = t.paddingLeft;
+			t.width = sp.width - t.paddingLeft - t.paddingRight;
+			t.x = t.paddingLeft;
+			sp.height = this.height - t.paddingBottom - sp.y;
+			
+			for (var z:Number = 0; z < textFields.length; z++ ) {
+				if (t != textFields[z]) {
+					sp.height -= textFields[z].height;
+					if (menu) {
+						sp.height -= menu.getChildAt(0).height + menu.paddingBottom;
+					}
+				}
+			}
 		}
 		
 		/**
@@ -397,20 +406,29 @@ package com.gestureworks.cml.components
 			{
 				if (textCount >= 3)
 				{
-				for (var j:int = 0; j < textFields.length; j++)
-				{
-				    textFields[j].fontSize = fontArray[j];		
-			    }
-			    textCount = 0;
+					for (var j:int = 0; j < textFields.length; j++)
+					{
+						textFields[j].fontSize = fontArray[j];	
+						if (textFields[j].parent is ScrollPane) {
+							//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
+							textFields[j].parent.updateLayout(textFields[j].parent.width, textFields[j].parent.height);
+						}
+					}
+					textCount = 0;
 				}
 				else
 				{
-				for (var i:int = 0; i < textFields.length; i++)
-				{
-					textFields[i].fontSize += fontIncrement;
+					for (var i:int = 0; i < textFields.length; i++)
+					{
+						textFields[i].fontSize += fontIncrement;
+						if (textFields[i].parent is ScrollPane) {
+							//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
+							textFields[i].parent.updateLayout(textFields[i].parent.width, textFields[i].parent.height);
+						}
+					}
 				}
-			}
             }
+			//updateLayout();
 		}
 		
 		protected function onStateEvent(event:StateEvent):void
