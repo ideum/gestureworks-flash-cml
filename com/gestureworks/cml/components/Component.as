@@ -62,8 +62,8 @@ package com.gestureworks.cml.components
 		}
 		override public function get width():Number {
 			trace("Super width retrieval:", super.width);
-			*/return super.width;
-		}
+			return super.width;
+		}*/
 		
 		/**
 		 * Initialisation method
