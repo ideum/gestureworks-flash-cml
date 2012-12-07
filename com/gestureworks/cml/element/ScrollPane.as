@@ -188,7 +188,7 @@ package com.gestureworks.cml.element
 			//clone._verticalScroll.init();
 			//clone._horizontalScroll.init();
 			
-			//clone.init();
+			clone.init();
 			clone.createEvents();
 			
 			for (var z:Number = 0; z < clone.numChildren; z++) {
@@ -377,9 +377,10 @@ package com.gestureworks.cml.element
 		}
 		
 		public function createEvents():void {
-			
-			_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
-			_hit.addEventListener(GWGestureEvent.SCALE, onScale);
+			if(_hit){
+				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
+			}
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
