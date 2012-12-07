@@ -56,6 +56,15 @@ package com.gestureworks.cml.components
 			super();
 		}
 		
+		/*override public function set width(value:Number):void {
+			super.width = value;
+			trace("setting component width to new value:", value);
+		}
+		override public function get width():Number {
+			trace("Super width retrieval:", super.width);
+			*/return super.width;
+		}
+		
 		/**
 		 * Initialisation method
 		 */
@@ -265,17 +274,6 @@ package com.gestureworks.cml.components
 			{
 				back.width = width;
 				back.height = height;
-				trace("---------------- back dimensions", back.width, back.height, "---------------------------------");
-				if (back is DisplayObjectContainer) {
-					trace("Back is displayObjectContainer.");
-					for (var j:int = 0; j < back.numChildren; j++) 
-					{
-						if ("updateLayout" in back.getChildAt(j)) {
-							trace("Updating layout in:", back.getChildAt(j), j);
-							back.getChildAt(j).updateLayout(front.width, front.height);
-						}
-					}
-				}
 			}
 			
 			if (background)
@@ -323,28 +321,33 @@ package com.gestureworks.cml.components
 					if (i == 0)
 						textFields[i].y = textFields[i].paddingTop;
 					else
-						textFields[i].y = textFields[i].paddingTop + textFields[i-1].paddingBottom + textFields[i-1].height;
+						textFields[i].y = textFields[i].paddingTop + textFields[i - 1].paddingBottom + textFields[i - 1].height;
+					
+					if (textFields[i].parent is ScrollPane) {
+						formatPane(textFields[i], textFields[i].parent);
+					}
 				}
 			}			
-			
-			if (scrollPanes) {
-				for (var k:int = 0; k < scrollPanes.length; k++) 
-				{
-					scrollPanes[k].updateLayout(width, height);
-					
-				}
-			}
 			
 			if (timeout > 0) {
 				timer = new Timer(timeout * 1000, 1);
 				timer.addEventListener(TimerEvent.TIMER, onTimer);
 				
-					
 				if (visible && timer)
 					timer.start();
 			}
 			
-			
+		}
+		
+		private function formatPane(t:Text, sp:ScrollPane):void {
+			sp.y = t.y;
+			t.y = 0;
+			var fakeWidth:Number = width;
+			t.width = fakeWidth - t.paddingLeft - t.paddingRight;
+			sp.width = this.width;
+			sp.height = 300;
+			trace("Formatting the pane to the following dimensions:", sp.width, "x", sp.height, fakeWidth);
+			//sp.updateLayout(t.width, t.height);
 		}
 		
 		/**
