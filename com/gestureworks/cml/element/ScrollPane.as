@@ -446,7 +446,7 @@ package com.gestureworks.cml.element
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				//trace("Vertical dragging");
-				newPos = _content.y + e.value.drag_dy;
+				newPos = _content.y + e.value.drag_dy * (-1);
 				newPos = clampPos(newPos, "vertical");
 				// Apply the new position.
 				_content.y = newPos;
@@ -456,7 +456,7 @@ package com.gestureworks.cml.element
 			if (_horizontal) {
 				//trace("Horizontal dragging");
 				// Check the new position won't be further than the limits, and if so, clamp it.
-				newPos = _content.x + e.value.drag_dx;
+				newPos = _content.x + e.value.drag_dx * (-1);
 				newPos = clampPos(newPos, "horizontal");
 				// Apply the new position.
 				_content.x = newPos;
