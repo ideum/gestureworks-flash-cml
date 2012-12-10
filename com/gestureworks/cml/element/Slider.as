@@ -24,7 +24,7 @@ package com.gestureworks.cml.element
 		private var debug:Boolean = false;				
 		private var knobOffset:Number = 0;
 		private var stepknobPositions:Array;
-		private var touchKnob:TouchSprite;
+		public var touchKnob:TouchContainer;
 		private var minPos:Number		
 		private var maxPos:Number;
 		
@@ -34,7 +34,7 @@ package com.gestureworks.cml.element
 		public function Slider() 
 		{
 			super();
-			touchKnob = new TouchSprite;
+			//touchKnob = new TouchSprite;
 		}				
 		
 		
@@ -48,8 +48,10 @@ package com.gestureworks.cml.element
 		{
 			if (value is DisplayObject)
 				_hit = value;
-			else
+			else {
 				_hit = searchChildren(value);
+				_hit = CMLObjectList.instance.getId(value);
+			}
 		}
 		
 		
@@ -63,8 +65,11 @@ package com.gestureworks.cml.element
 		{
 			if (value is DisplayObject)
 				_rail = value;
-			else
-				_rail = searchChildren(value);	
+			else {
+				_rail = searchChildren(value);
+				_rail = CMLObjectList.instance.getId(value);
+			}
+			trace("WTF setting rail", _rail, value);
 		}			
 		
 
@@ -78,8 +83,10 @@ package com.gestureworks.cml.element
 		{
 			if (value is DisplayObject)
 				_knob = value;
-			else
-				_knob = searchChildren(value);				
+			else {
+				_knob = searchChildren(value);	
+				_knob = CMLObjectList.instance.getId(value);
+			}
 		}
 			
 		
@@ -183,10 +190,11 @@ package com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void
 		{
-			this.width = rail.width;
+			//this.width = rail.width;
 			
-			if (!rail)
+			if (!rail){
 				throw new Error("rail must be set");
+			}
 			if (!hit)
 				throw new Error("hit must be set");
 			if (!knob)
@@ -194,28 +202,17 @@ package com.gestureworks.cml.element
 			
 			
 			if (mouseEnabled) {
-
-				if (GestureWorks.activeTUIO)
-					hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-				else if (GestureWorks.supportsTouch)
-					hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-				else
-					hit.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
-			
-				touchKnob = new TouchSprite;
+				
+				touchKnob = new TouchContainer;
 				touchKnob.mouseChildren = false;
 				touchKnob.disableAffineTransform = true;
 				touchKnob.disableNativeTransform = true;	
 				touchKnob.gestureEvents = true;
 				touchKnob.gestureList = { "n-drag-inertia": true };
 				touchKnob.gestureReleaseInertia = gestureReleaseInertia;
-				touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
-				if (gestureReleaseInertia)
-				  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-				else{
-					touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
-					hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
-				}
+				
+				createEvents();
+				
 				touchKnob.addChild(knob);
 				addChild(touchKnob);					
 			}
@@ -259,6 +256,23 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		public function createEvents():void {
+			trace("Creating events for:", this.id);
+			if (GestureWorks.activeTUIO)
+				hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
+			else if (GestureWorks.supportsTouch)
+				hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
+			else
+				hit.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
+			
+			touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
+			if (gestureReleaseInertia)
+			  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+			else{
+				touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
+				hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+			}
+		}
 		
 		/**
 		 * Resets the knob position
@@ -337,7 +351,7 @@ package com.gestureworks.cml.element
 				trace("drag");			
 				
 			var newValue:Number = 0;	
-				
+			
 			if (orientation == "horizontal")
 				newValue = knob.x + event.value.drag_dx;
 			else if (orientation == "vertical")
@@ -435,8 +449,37 @@ package com.gestureworks.cml.element
 				trace("knobPosition:", _knobPosition);
 				trace("value:", _value)				
 			}
-
+			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value, true));			
+		}
+		
+		override public function clone():*{
+			var v:Vector.<String> = new < String > ["touchKnob", "knob", "hit", "rail"];
+			var clone:Slider = CloneUtils.clone(this, parent, v);
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
+			
+			for (var i:int = 0; i < clone.numChildren; i++) 
+			{
+				if (clone.getChildAt(i).name == touchKnob.name) {
+					clone.touchKnob = clone.getChildAt(i) as TouchContainer;
+					clone.knob = clone.touchKnob.getChildAt(0) as Graphic;
+				}
+				else if (clone.getChildAt(i).name == hit.name) {
+					clone.hit = clone.getChildAt(i);
+				}
+				else if (clone.getChildAt(i).name == rail.name) {
+					clone.rail = clone.getChildAt(i);
+				}
+			}
+			
+			if (clone.mouseEnabled)
+				clone.createEvents();
+			
+			return clone;
 		}
 		
 		/**
@@ -452,7 +495,7 @@ package com.gestureworks.cml.element
 			knob = null;
 			touchKnob.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
 			touchKnob.removeEventListener(GWTouchEvent.TOUCH_END, onComplete);
-			hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+			hit.removeEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
 			hit.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 			hit.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 			hit.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
