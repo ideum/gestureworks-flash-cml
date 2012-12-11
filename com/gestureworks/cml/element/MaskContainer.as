@@ -173,10 +173,10 @@ package com.gestureworks.cml.element
 		override public function displayComplete():void {
 			//super.displayComplete();
 			
-			graphicArray.array = childList.getValueArray();
+			//graphicArray.array = childList.getValueArray();
 			
-			for (var i:Number = graphicArray.length - 1; i > -1; i--) {
-				removeChild(graphicArray.array[i]);
+			for (var i:Number = 0; i < numChildren; i++) {
+				graphicArray.array.push(getChildAt(i));
 			}
 			
 			createMasks();
