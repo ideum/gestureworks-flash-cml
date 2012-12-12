@@ -38,6 +38,9 @@ package com.gestureworks.cml.element
 		private const PItoRAD:Number = Math.PI / 180;
 		private const RADtoPI:Number = 180 / Math.PI;
 		
+		protected var _touchScreen:TouchContainer;
+		public function get touchScreen():TouchContainer { return _touchScreen; }
+		
 		private const LOADED:String = "LOADED";
 		
 		protected var graphicArray:List;
@@ -176,7 +179,13 @@ package com.gestureworks.cml.element
 			//graphicArray.array = childList.getValueArray();
 			
 			for (var i:Number = 0; i < numChildren; i++) {
-				graphicArray.array.push(getChildAt(i));
+				if (getChildAt(i) is TouchContainer) {
+					_touchScreen = getChildAt(i) as TouchContainer;
+					removeChildAt(i);
+					i--;
+				} else {
+					graphicArray.array.push(getChildAt(i));
+				}
 			}
 			
 			createMasks();
@@ -193,77 +202,61 @@ package com.gestureworks.cml.element
 		private function createMasks():void {
 			overallMask = new Graphic();
 			
-			_mShape = new Graphic();
-			borderShape = new Graphic();
-			wShape = new Graphic();
-			hitShape = new Graphic();
+			//_touchScreen = new TouchContainer();
+			//_touchScreen.gestureEvents = true;
+			//_touchScreen.gestureList = { "n-drag":true, "n-rotate":true, "2-finger-scale":true, "n-double_tap":true, "3-finger-tilt":true };
+			addChild(_touchScreen);
 			
 			switch(_maskShape) {
 				case "rectangle":
-					_mShape.graphics.beginFill(0xffffff, 0);
-					_mShape.graphics.drawRect(_maskBorderStroke/2, _maskBorderStroke/2, _maskWidth, _maskHeight);
-					_mShape.graphics.endFill();
+					if(!_mShape){
+						_mShape = new Graphic();
+						_mShape.graphics.beginFill(0xffffff, 0);
+						_mShape.graphics.drawRect(_maskBorderStroke/2, _maskBorderStroke/2, _maskWidth, _maskHeight);
+						_mShape.graphics.endFill();
+					}
 					
-					borderShape.graphics.beginFill(_maskBorderColor, _maskBorderAlpha);
-					borderShape.graphics.lineStyle(0, 0, 0);
-					borderShape.graphics.drawRect(0, 0, _maskWidth + _maskBorderStroke, _maskHeight + _maskBorderStroke);
-					borderShape.graphics.endFill();
+					if(!borderShape){
+						borderShape = new Graphic();
+						borderShape.graphics.beginFill(_maskBorderColor, 0);
+						borderShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
+						borderShape.graphics.drawRect(0, 0, _maskWidth, _maskHeight);
+						borderShape.graphics.endFill();
+					}
 					
-					wShape.graphics.beginFill(_maskBorderColor, _maskBorderAlpha);
-					wShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
-					wShape.graphics.drawRect(0, 0, _maskWidth + _maskBorderStroke, _maskHeight + _maskBorderStroke);
-					wShape.graphics.endFill();
-					
-					hitShape.graphics.beginFill(0xffffff, 0);
-					hitShape.graphics.lineStyle(0, 0, 0);
-					hitShape.graphics.drawRect(0, 0, _maskWidth + _maskBorderStroke, _maskHeight + _maskBorderStroke);
-					hitShape.graphics.endFill();
 					break;
 				case "circle":
-					_mShape.graphics.beginFill(0xffffff, 0);
-					_mShape.graphics.drawCircle(0, 0, _maskRadius);
-					_mShape.graphics.endFill();
+					if(!_mShape){
+						_mShape = new Graphic();
+						_mShape.graphics.beginFill(0xffffff, 0);
+						_mShape.graphics.drawCircle(0, 0, _maskRadius);
+						_mShape.graphics.endFill();
+					}
 					
-					borderShape.graphics.beginFill(_maskBorderColor, _maskBorderAlpha);
-					borderShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
-					borderShape.graphics.drawCircle(0, 0, _maskRadius + (_maskBorderStroke * 2));
-					borderShape.graphics.endFill();
-					
-					wShape.graphics.beginFill(_maskBorderColor, _maskBorderAlpha);
-					wShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
-					wShape.graphics.drawCircle(0, 0, _maskRadius + (_maskBorderStroke * 2));
-					wShape.graphics.endFill();
-					
-					hitShape.graphics.beginFill(0x000000, 0);
-					hitShape.graphics.lineStyle(0, 0, 0);
-					hitShape.graphics.drawCircle(0, 0, _maskRadius + (_maskBorderStroke * 2));
-					hitShape.graphics.endFill();
+					if (!borderShape) {
+						borderShape = new Graphic();
+						borderShape.graphics.beginFill(_maskBorderColor, _maskBorderAlpha);
+						borderShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
+						borderShape.graphics.drawCircle(0, 0, _maskRadius + (_maskBorderStroke * 2));
+						borderShape.graphics.endFill();
+					}
 					break;
 			}
 			
-			addChild(borderShape);
-			addChild(wShape);
-			borderShape.mask = wShape;
-			addChild(_mShape);
+			if (_touchScreen){
+				_touchScreen.addChild(borderShape);
+				_touchScreen.addChild(_mShape);
+			} else { addChild(borderShape); addChild(_mShape); }
 			
-			
-			addChild(graphicArray.array[counter]);
 			graphicArray.array[counter].visible = true;
 			graphicArray.array[counter].mask = mShape;
 			this.width = graphicArray.array[counter].width;
 			this.height = graphicArray.array[counter].height;
 			
-			addChild(hitShape);
-			
-			_mShape.x = _maskX;
-			borderShape.x = _maskX;
-			hitShape.x = _maskX;
-			wShape.x = _maskX;
-			
-			_mShape.y = _maskY;
-			borderShape.y = _maskY;
-			hitShape.y = _maskY;
-			wShape.y = _maskY;
+			if(_touchScreen){
+				_touchScreen.x = _maskX;
+				_touchScreen.y = _maskY;
+			}
 			
 			overallMask.graphics.beginFill(0x000000, 0);
 			overallMask.graphics.lineStyle(0, 0, 0);
@@ -272,109 +265,14 @@ package com.gestureworks.cml.element
 			addChild(overallMask);
 			this.mask = overallMask;
 			
-			addEventListener(GWGestureEvent.DRAG, dragHandler);
-			addEventListener(GWGestureEvent.ROTATE, rotateHandler);
-			addEventListener(GWGestureEvent.SCALE, scaleHandler);
-			addEventListener(GWTouchEvent.TOUCH_BEGIN, gestureHandler);
-			addEventListener(GWGestureEvent.DOUBLE_TAP, cycleMasks);
+			if(_touchScreen){
+				_touchScreen.addEventListener(GWGestureEvent.DOUBLE_TAP, cycleMasks);
+				_touchScreen.addEventListener(GWGestureEvent.TILT, alphaHandler);
+			}
 			
 			if (this.parent) {
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", LOADED));
 			}
-		}
-		
-		private function gestureHandler(e:*):void {
-			_x = e.localX;
-			_y = e.localY;
-		}
-		
-		private function dragHandler(event:GWGestureEvent):void 
-		{
-			//Calculate vector transformations in case contained within a viewer or other container.
-			//This prevents an inversion in translations from occurring when the container has been
-			//flipped upside down.
-			
-			var ang2:Number = _dragAngle * (Math.PI / 180);
-			var COS2:Number = Math.cos(ang2);
-			var SIN2:Number = Math.sin(ang2);
-			var dX:Number = event.value.drag_dx * COS2 + event.value.drag_dy * SIN2;
-			var dY:Number = (-1 * event.value.drag_dx * SIN2) + event.value.drag_dy * COS2;
-			
-				_mShape.x += dX;
-				borderShape.x += dX;
-				hitShape.x += dX;
-				wShape.x += dX;
-			
-			if (_mShape.x < 0) {
-				_mShape.x = 0;
-				borderShape.x = 0;
-				hitShape.x = 0;
-				wShape.x = 0;
-			}
-			if (_mShape.x + _mShape.width > this.width) {
-				_mShape.x = width - _mShape.width;
-				borderShape.x = width - borderShape.width;
-				hitShape.x = width - hitShape.width;
-				wShape.x = width - wShape.width;
-			}
-				
-				_mShape.y += dY;
-				borderShape.y += dY;
-				hitShape.y += dY;
-				wShape.y += dY;
-			
-			if (_mShape.y < 0) {
-				_mShape.y = 0;
-				borderShape.y = 0;
-				hitShape.y = 0;
-				wShape.y = 0;
-			}
-			if (_mShape.y + (_mShape.height * 2) > height) {
-				_mShape.y = height - _mShape.height;
-				borderShape.y = height - borderShape.height;
-				hitShape.y = height - hitShape.height;
-				wShape.y = height - wShape.height;
-			}
-			
-		}
-		
-		private function rotateHandler(e:GWGestureEvent):void 
-		{
-			//Calculate rotation transformations for all the pieces of the mask.
-			var m:Matrix = hitShape.transform.matrix;
-			m.tx -= _x;
-			m.ty -= _y;
-			
-			m.rotate(e.value.rotate_dtheta * PItoRAD);
-			m.tx += _x;
-			m.ty += _y;
-			hitShape.transform.matrix = m;
-						
-			_mShape.x = hitShape.x;
-			borderShape.x = hitShape.x;
-			wShape.x = hitShape.x;
-			
-			_mShape.y = hitShape.y;
-			borderShape.y = hitShape.y;
-			wShape.y = hitShape.y;
-			
-			_mShape.rotation = hitShape.rotation;
-			borderShape.rotation = hitShape.rotation;
-			wShape.rotation = hitShape.rotation;
-		}
-		
-		private function scaleHandler(e:GWGestureEvent):void 
-		{
-			_mShape.scaleX += e.value.scale_dsx;
-			_mShape.scaleY += e.value.scale_dsy;
-			
-			borderShape.scaleX += e.value.scale_dsx;
-			borderShape.scaleY += e.value.scale_dsy;
-			
-			hitShape.scaleX += e.value.scale_dsx;
-			hitShape.scaleY += e.value.scale_dsy;
-			wShape.scaleX += e.value.scale_dsx;
-			wShape.scaleY += e.value.scale_dsy;
 		}
 		
 		/**
@@ -382,27 +280,36 @@ package com.gestureworks.cml.element
 		 * @param	e
 		 */
 		public function cycleMasks(e:GWGestureEvent):void {			
-			removeChild(graphicArray.array[counter]);
+			//removeChild(graphicArray.array[counter]);
+			var tempAlpha:Number = graphicArray.array[counter].alpha;
+			graphicArray.array[counter].visible = false;
 			counter++;
 			
-			if (counter >= graphicArray.length - 1) {
+			if (counter >= graphicArray.length) {
 				counter = 0;
 			}
-			addChild(graphicArray.array[counter]);
 			graphicArray.array[counter].mask = mShape;
+			
 			graphicArray.array[counter].visible = true;
+			graphicArray.array[counter].alpha = tempAlpha;
+		}
+		
+		public function alphaHandler(e:GWGestureEvent):void {
+			
+			var alpha:Number = graphicArray.array[counter].alpha + e.value.tilt_dy + e.value.tilt_dx
+			if (alpha < 0.3)
+				alpha = 0.3;
+			else if (alpha > 1)
+				alpha = 1;
+			else 
+				graphicArray.array[counter].alpha = alpha;
 		}
 		
 		public function reset():void {
-			//trace("Resetting a maskContainer's position.");
-			var mTween:ITween = BetweenAS3.tween(_mShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
+			var mTween:ITween = BetweenAS3.tween(_touchScreen, { x:_maskX, y:_maskY, rotation:0, scale:1, alpha:1 }, null, 0.5);
 			mTween.play();
-			var borderTween:ITween = BetweenAS3.tween(borderShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
-			borderTween.play();
-			var hitTween:ITween = BetweenAS3.tween(hitShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
-			hitTween.play();
-			var wTween:ITween = BetweenAS3.tween(wShape, { x:_maskX, y:_maskY, rotation:0, scale:1 }, null, 0.5);
-			wTween.play();
+			var oTween:ITween = BetweenAS3.tween(graphicArray.array[counter], { alpha:1 }, null, 0.5);
+			oTween.play();
 		}
 		
 		/**
@@ -411,11 +318,8 @@ package com.gestureworks.cml.element
 		override public function dispose():void {
 			super.dispose();
 			
-			removeEventListener(GWGestureEvent.DRAG, dragHandler);
-			removeEventListener(GWGestureEvent.ROTATE, rotateHandler);
-			removeEventListener(GWGestureEvent.SCALE, scaleHandler);
-			removeEventListener(GWTouchEvent.TOUCH_BEGIN, gestureHandler);
-			removeEventListener(GWGestureEvent.DOUBLE_TAP, cycleMasks);
+			_touchScreen.removeEventListener(GWGestureEvent.DOUBLE_TAP, cycleMasks);
+			_touchScreen.removeEventListener(GWGestureEvent.TILT, alphaHandler);
 			
 			graphicArray = null;
 			
@@ -427,6 +331,7 @@ package com.gestureworks.cml.element
 			_mShape = null;
 			borderShape = null;
 			wShape = null;
+			_touchScreen = null;
 		}
 	}
 
