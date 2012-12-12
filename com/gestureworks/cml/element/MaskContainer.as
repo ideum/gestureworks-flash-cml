@@ -207,6 +207,7 @@ package com.gestureworks.cml.element
 			//_touchScreen.gestureEvents = true;
 			//_touchScreen.gestureList = { "n-drag":true, "n-rotate":true, "2-finger-scale":true, "n-double_tap":true, "3-finger-tilt":true };
 			addChild(_touchScreen);
+			_touchScreen.gestureReleaseInertia = true;
 			
 			switch(_maskShape) {
 				case "rectangle":
@@ -292,14 +293,14 @@ package com.gestureworks.cml.element
 			graphicArray.array[_counter].mask = mShape;
 			
 			graphicArray.array[_counter].visible = true;
-			graphicArray.array[_counter].alpha = tempAlpha;
-			
+			//graphicArray.array[_counter].alpha = tempAlpha;
+			graphicArray.array[_counter].alpha = 1
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _counter));
 		}
 		
 		public function alphaHandler(e:GWGestureEvent):void {
 			
-			var alpha:Number = graphicArray.array[_counter].alpha + e.value.tilt_dy + e.value.tilt_dx
+			var alpha:Number = graphicArray.array[_counter].alpha + e.value.tilt_dy;
 			if (alpha < 0.3)
 				alpha = 0.3;
 			else if (alpha > 1)
