@@ -50,7 +50,8 @@ package com.gestureworks.cml.element
 		protected var borderShape:Graphic;	
 		protected var wShape:Graphic;
 		
-		private var counter:Number = 0;
+		private var _counter:Number = 0;
+		public function get counter():Number { return _counter; }
 		
 		private var _x:Number;
 		private var _y:Number;
@@ -220,7 +221,7 @@ package com.gestureworks.cml.element
 						borderShape = new Graphic();
 						borderShape.graphics.beginFill(_maskBorderColor, 0);
 						borderShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
-						borderShape.graphics.drawRect(0, 0, _maskWidth, _maskHeight);
+						borderShape.graphics.drawRect(0, 0, _maskWidth + (maskBorderStroke), _maskHeight + (maskBorderStroke));
 						borderShape.graphics.endFill();
 					}
 					
@@ -248,10 +249,10 @@ package com.gestureworks.cml.element
 				_touchScreen.addChild(_mShape);
 			} else { addChild(borderShape); addChild(_mShape); }
 			
-			graphicArray.array[counter].visible = true;
-			graphicArray.array[counter].mask = mShape;
-			this.width = graphicArray.array[counter].width;
-			this.height = graphicArray.array[counter].height;
+			graphicArray.array[_counter].visible = true;
+			graphicArray.array[_counter].mask = mShape;
+			this.width = graphicArray.array[_counter].width;
+			this.height = graphicArray.array[_counter].height;
 			
 			if(_touchScreen){
 				_touchScreen.x = _maskX;
@@ -279,36 +280,38 @@ package com.gestureworks.cml.element
 		 * cycles through multiple images
 		 * @param	e
 		 */
-		public function cycleMasks(e:GWGestureEvent):void {			
+		public function cycleMasks(e:GWGestureEvent = null):void {			
 			//removeChild(graphicArray.array[counter]);
-			var tempAlpha:Number = graphicArray.array[counter].alpha;
-			graphicArray.array[counter].visible = false;
-			counter++;
+			var tempAlpha:Number = graphicArray.array[_counter].alpha;
+			graphicArray.array[_counter].visible = false;
+			_counter++;
 			
-			if (counter >= graphicArray.length) {
-				counter = 0;
+			if (_counter >= graphicArray.length) {
+				_counter = 0;
 			}
-			graphicArray.array[counter].mask = mShape;
+			graphicArray.array[_counter].mask = mShape;
 			
-			graphicArray.array[counter].visible = true;
-			graphicArray.array[counter].alpha = tempAlpha;
+			graphicArray.array[_counter].visible = true;
+			graphicArray.array[_counter].alpha = tempAlpha;
+			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _counter));
 		}
 		
 		public function alphaHandler(e:GWGestureEvent):void {
 			
-			var alpha:Number = graphicArray.array[counter].alpha + e.value.tilt_dy + e.value.tilt_dx
+			var alpha:Number = graphicArray.array[_counter].alpha + e.value.tilt_dy + e.value.tilt_dx
 			if (alpha < 0.3)
 				alpha = 0.3;
 			else if (alpha > 1)
 				alpha = 1;
 			else 
-				graphicArray.array[counter].alpha = alpha;
+				graphicArray.array[_counter].alpha = alpha;
 		}
 		
 		public function reset():void {
 			var mTween:ITween = BetweenAS3.tween(_touchScreen, { x:_maskX, y:_maskY, rotation:0, scale:1, alpha:1 }, null, 0.5);
 			mTween.play();
-			var oTween:ITween = BetweenAS3.tween(graphicArray.array[counter], { alpha:1 }, null, 0.5);
+			var oTween:ITween = BetweenAS3.tween(graphicArray.array[_counter], { alpha:1 }, null, 0.5);
 			oTween.play();
 		}
 		
