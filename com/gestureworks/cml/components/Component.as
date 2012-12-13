@@ -328,7 +328,10 @@ package com.gestureworks.cml.components
 						formatPane(textFields[i], textFields[i].parent);
 					}
 				}
-			}			
+			}
+			
+			if (textFields)	
+				textSize();
 			
 			if (timeout > 0) {
 				timer = new Timer(timeout * 1000, 1);
