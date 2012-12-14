@@ -11,6 +11,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.utils.CloneUtils;
 		
@@ -25,7 +26,7 @@ package com.gestureworks.cml.element
 	 * @author Ideum
 	 */
 	
-	public class ScrollPane extends Container
+	public class ScrollPane extends TouchContainer
 	{	
 		public var _verticalScroll:ScrollBar;
 		public var _horizontalScroll:ScrollBar;
@@ -39,6 +40,9 @@ package com.gestureworks.cml.element
 		
 		public var _horizontalMovement:Number;
 		public var _verticalMovement:Number;
+		
+		private var oldY:Number;
+		private var oldX:Number;
 		
 		public var _content:*;
 		
@@ -129,21 +133,7 @@ package com.gestureworks.cml.element
 			else
 				this.parent.addChild(clone);
 			
-			//CloneUtils.copyChildList(this, clone);
-			
-			//clone._content = this.
-			
 			this._content.mask = _mask;
-			trace("Original hitbox:", _hitBox.name);
-			trace("Clone childlist:", clone.childList);
-			/*
-			for (var j:Number = 0; j < clone.numChildren; j++) {
-				if (clone.getChildAt(j) is ScrollBar || clone.getChildAt(j) is TouchContainer ||
-				clone.getChildAt(j) == null || clone.getChildAt(j) is String) {
-					clone.removeChildAt(j);
-					j--;
-				}
-			}*/
 			
 			for (var i:Number = 0; i < clone.numChildren; i++) {
 				
@@ -184,9 +174,6 @@ package com.gestureworks.cml.element
 			
 			trace("clone item 0:", clone._content);
 			clone._content.mask = clone._mask;
-			//clone._itemList.array[1] = clone._hit;
-			//clone._verticalScroll.init();
-			//clone._horizontalScroll.init();
 			
 			clone.init();
 			clone.createEvents();
@@ -228,7 +215,7 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
-		public function init():void {
+		override public function init():void {
 			
 			// Check the child list. 
 			// Iterate through each item, getting position, width, and height.
@@ -443,21 +430,58 @@ package com.gestureworks.cml.element
 		private function onDrag(e:GWGestureEvent):void {
 			
 			var newPos:Number;
+			
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				//trace("Vertical dragging");
-				newPos = _content.y + e.value.drag_dy * (-1);
+				newPos = _content.y;
+				
+				if (!oldY) {
+					oldY = e.value.localY;
+					newPos = oldY;
+				}
+				else if (oldY) {
+					newPos += oldY - e.value.localY;
+					oldY = e.value.localY;
+				}
+				
+				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				// Get the localY of the previous gesture call
+				// Get the differential of the previous localY and the new localY
+				// (Negative values should move the content upwards, positive values downwards)
+				// Assign old localY to current localY.
+				// Now clamp and apply differential.
+				
 				newPos = clampPos(newPos, "vertical");
+				
 				// Apply the new position.
 				_content.y = newPos;
 				_verticalScroll.thumbPosition = -newPos / _verticalMovement;
 			}
 			
 			if (_horizontal) {
-				//trace("Horizontal dragging");
-				// Check the new position won't be further than the limits, and if so, clamp it.
-				newPos = _content.x + e.value.drag_dx * (-1);
+				
+				newPos = _content.x;
+				
+				if (!oldX) {
+					oldX = e.value.localX;
+					newPos = oldX;
+				}
+				else if (oldX) {
+					newPos += oldX - e.value.localX;
+					oldX = e.value.localX;
+				}
+				
+				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				// Get the localX of the previous gesture call
+				// Get the differential of the previous localX and the new localX
+				// (Negative values should move the content left, positive values right)
+				// Assign old localX to current localX.
+				// Now clamp and apply differential.
+				
 				newPos = clampPos(newPos, "horizontal");
+				
+				
 				// Apply the new position.
 				_content.x = newPos;
 				_horizontalScroll.thumbPosition = -newPos / _horizontalMovement;
