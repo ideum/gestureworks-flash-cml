@@ -171,6 +171,15 @@ package com.gestureworks.cml.element
 			_dragAngle = value;
 		}
 		
+		private var _maskRotation:Number = 0;
+		/**
+		 * Set the starting rotation of the mask.
+		 */
+		public function get maskRotation():Number { return _maskRotation; }
+		public function set maskRotation(value:Number):void {
+			_maskRotation = value;
+		}
+		
 		/**
 		 * CML call back Initialisation
 		 */
@@ -214,7 +223,7 @@ package com.gestureworks.cml.element
 					if(!_mShape){
 						_mShape = new Graphic();
 						_mShape.graphics.beginFill(0xffffff, 0);
-						_mShape.graphics.drawRect(_maskBorderStroke/2, _maskBorderStroke/2, _maskWidth, _maskHeight);
+						_mShape.graphics.drawRect((_maskBorderStroke/2) - (_maskWidth / 2), _maskBorderStroke/2 - (_maskHeight / 2), _maskWidth, _maskHeight);
 						_mShape.graphics.endFill();
 					}
 					
@@ -222,7 +231,7 @@ package com.gestureworks.cml.element
 						borderShape = new Graphic();
 						borderShape.graphics.beginFill(_maskBorderColor, 0);
 						borderShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
-						borderShape.graphics.drawRect(0, 0, _maskWidth + (maskBorderStroke), _maskHeight + (maskBorderStroke));
+						borderShape.graphics.drawRect(-1 * (_maskWidth / 2), -1 * (_maskHeight / 2), _maskWidth + (maskBorderStroke), _maskHeight + (maskBorderStroke));
 						borderShape.graphics.endFill();
 					}
 					
@@ -231,7 +240,7 @@ package com.gestureworks.cml.element
 					if(!_mShape){
 						_mShape = new Graphic();
 						_mShape.graphics.beginFill(0xffffff, 0);
-						_mShape.graphics.drawCircle(0, 0, _maskRadius);
+						_mShape.graphics.drawCircle(-1 * (_maskWidth / 2), -1 * (_maskHeight / 2), _maskRadius);
 						_mShape.graphics.endFill();
 					}
 					
@@ -239,7 +248,7 @@ package com.gestureworks.cml.element
 						borderShape = new Graphic();
 						borderShape.graphics.beginFill(_maskBorderColor, _maskBorderAlpha);
 						borderShape.graphics.lineStyle(_maskBorderStroke, _maskBorderColor, _maskBorderAlpha);
-						borderShape.graphics.drawCircle(0, 0, _maskRadius + (_maskBorderStroke * 2));
+						borderShape.graphics.drawCircle(-1 * (_maskWidth / 2), -1 * (_maskHeight / 2), _maskRadius + (_maskBorderStroke * 2));
 						borderShape.graphics.endFill();
 					}
 					break;
@@ -258,6 +267,7 @@ package com.gestureworks.cml.element
 			if(_touchScreen){
 				_touchScreen.x = _maskX;
 				_touchScreen.y = _maskY;
+				_touchScreen.rotation = _maskRotation;
 			}
 			
 			overallMask.graphics.beginFill(0x000000, 0);
@@ -310,7 +320,7 @@ package com.gestureworks.cml.element
 		}
 		
 		public function reset():void {
-			var mTween:ITween = BetweenAS3.tween(_touchScreen, { x:_maskX, y:_maskY, rotation:0, scale:1, alpha:1 }, null, 0.5);
+			var mTween:ITween = BetweenAS3.tween(_touchScreen, { x:_maskX, y:_maskY, rotation:_maskRotation, scale:1, alpha:1 }, null, 0.5);
 			mTween.play();
 			var oTween:ITween = BetweenAS3.tween(graphicArray.array[_counter], { alpha:1 }, null, 0.5);
 			oTween.play();
