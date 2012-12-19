@@ -215,8 +215,10 @@ package com.gestureworks.cml.element
 			//_touchScreen = new TouchContainer();
 			//_touchScreen.gestureEvents = true;
 			//_touchScreen.gestureList = { "n-drag":true, "n-rotate":true, "2-finger-scale":true, "n-double_tap":true, "3-finger-tilt":true };
-			addChild(_touchScreen);
-			_touchScreen.gestureReleaseInertia = true;
+			if (_touchScreen){
+				addChild(_touchScreen);
+				_touchScreen.gestureReleaseInertia = true;
+			}
 			
 			switch(_maskShape) {
 				case "rectangle":
