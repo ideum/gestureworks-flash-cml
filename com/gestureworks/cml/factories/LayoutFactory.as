@@ -188,7 +188,11 @@ package com.gestureworks.cml.factories
 			if (tween)
 			{
 				if (layoutTween && layoutTween.isPlaying)
+				{
+					layoutTween.onUpdate = onUpdate;
+					layoutTween.onComplete = onComplete;
 					return;
+				}
 				
 				childTweens = new Array();
 				tweenedObjects = new Array();
@@ -205,8 +209,8 @@ package com.gestureworks.cml.factories
 					}
 				}
 				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
-				if (onComplete != null) layoutTween.onComplete = onComplete;
-				if (onUpdate != null) layoutTween.onUpdate = onUpdate;
+				layoutTween.onUpdate = onUpdate;
+				layoutTween.onComplete = onComplete;				
 				layoutTween.play();
 			}
 			else
