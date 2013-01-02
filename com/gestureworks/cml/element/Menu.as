@@ -106,7 +106,6 @@ package com.gestureworks.cml.element
 		 * Initialisation method
 		 */
 		public function init():void {
-			trace("Menu init being called here -------------------------------------------");
 			updateLayout(this.width, this.height);	
 			addEventListener(StateEvent.CHANGE, onStateEvent);
 		}
@@ -152,10 +151,11 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onStateEvent(e:StateEvent):void {
-			trace("Button event caught.");
-			for (var i:int = 0; i < buttonArray.length; i++) 
+			//trace("Button event caught.");
+			for (var i:int = 0; i < numChildren; i++) 
 			{
-				buttonArray[i].onFlip(e);
+				if(getChildAt(i) is Button)
+					Button(getChildAt(i)).onFlip(e);
 			}
 		}
 		
@@ -168,8 +168,19 @@ package com.gestureworks.cml.element
 			var clone:Menu = CloneUtils.clone(this, null, v);
 			
 			CloneUtils.copyChildList(this, clone);
+			//clone.buttonArray = [];
+			/*for (var i:int = 0; i < clone.buttonArray.length; i++) 
+			{
+				for (var j:int = 0; j < clone.numChildren; j++) 
+				{
+					if (clone.buttonArray[i].name == clone.getChildAt(j).name) {
+						clone.buttonArray[i] = clone.getChildAt(j);
+					}
+				}
+			}*/
 
-			clone.displayComplete();
+			//clone.displayComplete();
+			clone.init();
 
 			return clone;
 		}		
@@ -185,32 +196,146 @@ package com.gestureworks.cml.element
 		 */
 		public function updateLayout(containerWidth:Number, containerHeight:Number):void
 		{	
-			buttonArray = [];
+			//buttonArray = [];
 			var margin:Number = paddingLeft + paddingRight;
 			
-			for (var j:int = 0; j < childList.length; j++) 
-			{
-				if (childList.getIndex(j) is DisplayObject) {
-					buttonArray.push(childList.getIndex(j));
-					if (buttonArray[j] is Slider) {
-						slider = buttonArray[j];
-					}
-				}
-			}
-			
-			
 			var i:int;
-		
-			for (i = 0; i < buttonArray.length; i++)
-			{
-				buttonArray[i].updateLayout();
-				margin += buttonArray[i].width;
+			
+			for (i = 0; i < this.numChildren; i++) {
+				if ( childList.getIndex(i) is Button) {
+					Button(childList.getIndex(i)).updateLayout();
+					margin += childList.getIndex(i).width;
+				}
+				else if (childList.getIndex(i) is Slider) {
+					Slider(childList.getIndex(i)).updateLayout();
+					margin += childList.getIndex(i).width;
+				}
 			}
 			
 			margin = containerWidth - margin;
 			margin /= buttonArray.length - 1;
 			
+			//Experimental code
+			
 			if (position == "bottom" || position == "top")	
+			{						
+				// Find the margin.
+				
+				// position all but last buttons			
+				for (i = 0; i < childList.length; i++) 
+				{
+					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
+						var num:Number = getChildIndex(childList.getIndex(i));
+						// position first button
+						if (num == 0) 
+							getChildAt(num).x = paddingLeft;
+							
+						// position middle buttons
+						else
+							getChildAt(num).x = getChildAt(num - 1).x + getChildAt(num - 1).width + margin;
+						
+						// position y
+						if (position == "bottom")
+							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;		
+						else if (position == "top")
+							getChildAt(num).y = paddingTop;
+					}
+				}
+				
+				
+				/*if ( childList.length > 1){
+					for (var j:int = childList.length - 1; j > 0; j--) {
+						if (childList.getIndex(j) is DisplayObject) {
+							var num2:Number = getChildIndex(childList.getIndex(j));
+							
+							if (getChildAt(num2) is Button || getChildAt(num2) is Slider) {
+							getChildAt(num2).x = containerWidth - paddingRight - getChildAt(num2).width;	
+							
+							// position y
+							if (position == "bottom")
+								getChildAt(num2).y = containerHeight - getChildAt(num2).height - paddingBottom;				
+							
+							else if (position == "top")
+								getChildAt(num2).y = paddingTop;
+							}
+						}
+					}
+				}*/
+				
+				// position last button, if more than one
+				if (childList.length > 1 && childList.getIndex(childList.length - 1) is DisplayObject)  {
+					var num2:Number = getChildIndex(childList.getIndex(childList.length - 1));
+					if (getChildAt(num2) is Button || getChildAt(num2) is Slider) {
+						getChildAt(num2).x = containerWidth - paddingRight - getChildAt(num2).width;	
+						
+						// position y
+						if (position == "bottom")
+							getChildAt(num2).y = containerHeight - getChildAt(num2).height - paddingBottom;				
+						
+						else if (position == "top")
+							getChildAt(num2).y = paddingTop;
+					}
+					
+				}
+				
+			}
+			
+			else if (position == "bottomLeft" || position == "topLeft")	
+			{
+				
+				// position buttons		
+				for (i = 0; i < childList.length; i++) 
+				{
+					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
+						var num:Number = getChildIndex(childList.getIndex(i));
+						// position first button
+						if (i == 0) 
+							getChildAt(num).x = paddingLeft;
+							
+						// position the rest
+						else
+							getChildAt(num).x = getChildAt(num - 1).x + getChildAt(num - 1).width + paddingLeft + paddingRight;
+							
+						// position y
+						if (position == "bottomLeft")
+							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;				
+						
+						else if (position == "topLeft")
+							getChildAt(num).y = paddingTop;
+					}
+											
+				}	
+				
+			}	
+			
+			else if (position == "bottomRight" || position == "topRight")	
+			{																
+				// position buttons		
+				for (i = buttonArray.length-1; i >= 0; i--) 
+				{
+					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
+						var num:Number = getChildIndex(childList.getIndex(i));
+						// position last button
+						if (i == childList.length-1) 
+							getChildAt(num).x = containerWidth - getChildAt(num).width - paddingRight;
+							
+						// position the rest
+						else
+							getChildAt(num).x = getChildAt(num + 1).x - getChildAt(num + 1).width - paddingLeft - paddingRight;										
+						
+						// position y
+						if (position == "bottomRight")	
+							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;
+						
+						else if (position == "topRight")
+							getChildAt(num).y = paddingTop;
+					}
+				}	
+			}
+			
+			// Original code, scroll down. Experimental code, scroll up.
+			
+			/*if (position == "bottom" || position == "top")	
 			{						
 				// Find the margin.
 				
@@ -244,10 +369,9 @@ package com.gestureworks.cml.element
 						buttonArray[buttonArray.length - 1].y = paddingTop;
 					
 				}
-				
-			}
+			}*/
 			
-			else if (position == "bottomLeft" || position == "topLeft")	
+			/*else if (position == "bottomLeft" || position == "topLeft")	
 			{
 				
 				// position buttons		
@@ -270,9 +394,9 @@ package com.gestureworks.cml.element
 											
 				}	
 				
-			}		
+			}	*/	
 			
-			else if (position == "bottomRight" || position == "topRight")	
+			/*else if (position == "bottomRight" || position == "topRight")	
 			{																
 				// position buttons		
 				for (i = buttonArray.length-1; i >= 0; i--) 
@@ -292,7 +416,7 @@ package com.gestureworks.cml.element
 					else if (position == "topRight")
 						buttonArray[i].y = paddingTop;
 				}	
-			}			
+			}*/			
 		}
 	}
 }
