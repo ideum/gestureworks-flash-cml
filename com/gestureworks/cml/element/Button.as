@@ -1169,7 +1169,7 @@ package com.gestureworks.cml.element
 		 * @param	event
 		 */
 		protected function onToggle(event:*):void
-		{					
+		{
 			if (childList.hasNext())
 			{				
 				childList.currentValue.visible = false;
@@ -1275,7 +1275,6 @@ package com.gestureworks.cml.element
 		}
 		
 		public function onFlip(e:StateEvent):void {
-			trace("Button flip:", e.value);
 			if (e.value == side) {
 				visible = !visible;
 			}
@@ -1312,6 +1311,17 @@ package com.gestureworks.cml.element
 			
 			
 			clone.displayComplete();
+			
+			// Workaround: Loop through the childList after the cloning is complete and remove the duplicate items that were created.
+			for (var y:Number = 0; y < this.childList.length; y++) {
+				for (var yy:Number = 0; yy < this.childList.length; yy++) {
+					if (childList.getIndex(yy).name == childList.getIndex(y).name && yy != y) {
+						childList.removeIndex(yy);
+						yy--;
+					}
+				}
+			}
+			
 			return clone;
 		}			
 		
