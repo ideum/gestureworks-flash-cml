@@ -15,6 +15,8 @@ package com.gestureworks.cml.components
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
 	import flash.filters.DropShadowFilter;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 	import flash.utils.Timer;
 	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
@@ -58,10 +60,12 @@ package com.gestureworks.cml.components
 		
 		override public function set width(value:Number):void {
 			super.width = value;
+			
 			//trace("setting component width to new value:", value);
 		}
 		override public function get width():Number {
-			//trace("Super width retrieval:", super.width);
+			var myRect:Rectangle = getRect(this);
+			//trace("Super width retrieval:", super.width, myRect.width);
 			return super.width;
 		}
 		
@@ -70,6 +74,7 @@ package com.gestureworks.cml.components
 		 */
 		override public function init():void
 		{	
+			trace("INIT in component.");
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			if (!menu)
@@ -123,7 +128,16 @@ package com.gestureworks.cml.components
 			if (value is DisplayObject)
 				_front = value;
 			else 
-				_front = searchChildren(value);			
+				_front = searchChildren(value);		
+			
+			fronts = [];
+			fronts = String(value).split(",");
+			if (fronts.length > 1) {
+				for (var i:int = 0; i < backs.length; i++) 
+				{
+					fronts[i] = searchChildren(fronts[i]);
+				}
+			}
 		}				
 		
 		
@@ -138,10 +152,20 @@ package com.gestureworks.cml.components
 		{
 			if (!value) return;
 			
-			if (value is DisplayObject)
+			if (value is DisplayObject) {
 				_back = value;
-			else
+			}
+			else {
 				_back = searchChildren(value);
+			}
+			backs = [];
+			backs = String(value).split(",");
+			if (backs.length > 1) {
+				for (var i:int = 0; i < backs.length; i++) 
+				{
+					backs[i] = searchChildren(backs[i]);
+				}
+			}
 		}		
 		
 		
@@ -270,14 +294,31 @@ package com.gestureworks.cml.components
 				front.height = height;				
 			}			
 			
+			if (fronts && fronts.length > 1) {
+				for (var k:int = 0; k < fronts.length; k++) 
+				{
+					fronts[k].width = width;
+					fronts[k].height = height;
+				}
+			}
+			
 			if (back)
 			{
 				back.width = width;
 				back.height = height;
 			}
 			
+			if (backs && backs.length > 1) {
+				for (var j:int = 0; j < backs.length; j++) 
+				{
+					backs[j].width = width;
+					backs[j].height = height;
+				}
+			}
+			
 			if (background)
 			{
+				trace("Setting background");
 				background.width = width;
 				background.height = height;
 			}
@@ -446,7 +487,7 @@ package com.gestureworks.cml.components
 
 			if (event.value == "info") 
 			{
-				if (back)
+				if (back && backs.length == 1)
 				{
 					if (!back.visible) { 
 						back.visible = true;
@@ -456,14 +497,36 @@ package com.gestureworks.cml.components
 						back.visible = false;
 					}
 				}
-				if (front && hideFrontOnFlip)
+				else if (backs && backs.length > 1) {
+					for (var i:int = 0; i < backs.length; i++) 
+					{
+						backs[i].visible = !backs[i].visible;
+					}
+					if (backs[0].visible == false) {
+						_side = "front";
+					} else { _side = "back"; }
+				}
+				
+				if (front && hideFrontOnFlip && fronts.length == 1)
 				{
 					if (!front.visible) { 
 						front.visible = true;
 						_side = "front";
+						if (fronts.length > 1) {
+							for (var j:int = 0; j < fronts.length; j++) 
+							{
+								fronts[j].visible = true;
+							}
+						}
 					}
 					else { 
 						front.visible = false;
+						if (fronts.length > 1) {
+							for (var k:int = 0; k < fronts.length; k++) 
+							{
+								fronts[k].visible = false;
+							}
+						}
 					}
 				}
 			}
@@ -521,6 +584,8 @@ package com.gestureworks.cml.components
 
 		private var glowTween:ITween;
 		private var scrollPanes:Array;
+		public var backs:Array;
+		public var fronts:Array;
 		
 		public function glowIn(dur:Number=1):void
 		{
@@ -588,8 +653,9 @@ package com.gestureworks.cml.components
 			if (front)
 				clone.front = String(front.id);
 			
-			if (back)
+			if (back) {
 				clone.back = String(back.id);
+			}
 			
 			if (background)
 				clone.background = String(background.id);
@@ -599,13 +665,26 @@ package com.gestureworks.cml.components
 			
 			if (frame)
 				clone.frame = String(frame.id);	
-						
+			
+			//clone.resetMatrix();
 			clone.displayComplete();
 			
-
 			return clone;
 		}		
 		
+		public function resetMatrix():void {
+			this.transform.matrix.identity();
+		}
+		
+		public function invertMatrix(displayObject:DisplayObject, newParent:DisplayObjectContainer):void {
+			var concatenatedChildMatrix:Matrix = displayObject.transform.concatenatedMatrix;
+			var concatenatedNewParentMatrix:Matrix = newParent.transform.concatenatedMatrix;
+			
+			concatenatedNewParentMatrix.invert();
+			concatenatedChildMatrix.concat(concatenatedNewParentMatrix);
+			
+			displayObject.transform.matrix = concatenatedChildMatrix;
+		}
 		
 		override public function dispose():void 
 		{
