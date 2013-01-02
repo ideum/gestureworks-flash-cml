@@ -121,9 +121,6 @@ package com.gestureworks.cml.element
 		}
 		
 		override public function clone():*{
-			trace("Clone in ScrollPane.");
-			
-			//this.init();
 			
 			var v:Vector.<String> = new < String > ["childList", "_hit", "_hitBox", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ]
 			var clone:ScrollPane = CloneUtils.clone(this, null, v);
@@ -144,43 +141,31 @@ package com.gestureworks.cml.element
 						//trace("Clone _hit item:", clone._hit
 						if (clone._hit.getChildAt(j) is Graphic) {
 							clone._hitBox = clone._hit.getChildAt(j) as Graphic;
-							trace("Clone hitbox found.", clone._hitBox.name);
 						}
 					}
-					trace("Hit area", clone._hitBox);
-					trace(clone._hit.hasEventListener(GWGestureEvent.MANIPULATE));
 				}
 				else if (clone.getChildAt(i).name == _verticalScroll.name) {
 					clone._verticalScroll = clone.getChildAt(i) as ScrollBar;
 					//clone._verticalScroll.loaded = true;
 					clone._verticalScroll.init();
-					trace("Vertical scroll", clone._verticalScroll, this._verticalScroll);
 				}
 				else if (clone.getChildAt(i).name == _horizontalScroll.name) {
 					clone._horizontalScroll = clone.getChildAt(i) as ScrollBar;
 					//clone._horizontalScroll.loaded = true;
 					clone._horizontalScroll.init();
-					trace("Horizontal scroll", clone._horizontalScroll, this._horizontalScroll);
 				}
 				else if (clone.getChildAt(i).name == _mask.name) {
 					clone._mask = clone.getChildAt(i) as Graphic;
-					trace("Mask");
 				}
 				else if (clone.getChildAt(i).name == _content.name) {
 					clone._content = clone.getChildAt(i);
-					trace("Clone content found");
 				}
 			}
 			
-			trace("clone item 0:", clone._content);
 			clone._content.mask = clone._mask;
 			
 			clone.init();
 			clone.createEvents();
-			
-			for (var z:Number = 0; z < clone.numChildren; z++) {
-				trace("Clone complete child list:", clone.getChildAt(z), clone.getChildAt(z).name);
-			}
 			
 			return clone;
 		}
@@ -374,11 +359,6 @@ package com.gestureworks.cml.element
 		}
 		
 		public function updateLayout(inWidth:Number, inHeight:Number):void {
-			trace("updating layout in scrollPane---------------------------", width, height);
-			
-			/*if(_itemList && _itemList.array[0])
-				_content = _itemList.array[0];
-			else { return; }*/
 			
 			width = inWidth;
 			height = inHeight;
@@ -416,7 +396,6 @@ package com.gestureworks.cml.element
 				_horizontalMovement = _content.width * _content.scaleX - width;
 				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
 			}
-			//trace("Scrollpane layout updated", _hitBox.width, _hitBox.height);
 		}
 		
 		private function onScroll(e:StateEvent):void {
@@ -428,6 +407,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onDrag(e:GWGestureEvent):void {
+			e.stopImmediatePropagation();
 			
 			var newPos:Number;
 			
