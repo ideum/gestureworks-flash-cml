@@ -4,6 +4,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
@@ -78,10 +79,11 @@ package com.gestureworks.cml.components
 				menu = searchChildren(".menu_container");
 			if (!frame)
 				frame = searchChildren(".frame_element");
-			if (!front)
+			if (!front && !fronts)
 				front = searchChildren(".image_container");
-			if (!back)
-				back = searchChildren(".info_container");				
+			if (!back && !backs) {
+				back = searchChildren(".info_container");
+			}
 			if (!background)
 				background = searchChildren(".info_bg");	
 			
@@ -141,28 +143,60 @@ package com.gestureworks.cml.components
 		
 		override public function clone():* 
 		{	
+			cloneExclusions.push("backs");
 			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);		
 				
 			CloneUtils.copyChildList(this, clone);		
 			
-			if (image)
+			if (image) {
 				clone.image = String(image.id);
+			}
 			
-			if (front)
+			if (front){
 				clone.front = String(front.id);
+			}
 			
-			if (back)
+			if (back) {
 				clone.back = String(back.id);
+			}
 			
-			if (background)
+			if (background){
 				clone.background = String(background.id);
+			}
 			
-			if (menu)	
+			if (menu)	{
 				clone.menu = String(menu.id);
+			}
 			
-			if (frame)
+			if (frame) {
 				clone.frame = String(frame.id);
-				
+			}
+			
+			if (fronts.length > 1) {
+				clone.fronts = [];
+				for (var l:int = 0; l < fronts.length; l++) 
+				{
+					for (var m:int = 0; m < clone.numChildren; m++) 
+					{
+						if (fronts[l].name == clone.getChildAt(m).name) {
+							clone.fronts[l] = clone.getChildAt(m);
+						}
+					}
+				}
+			}
+			
+			if (backs.length > 1) {
+				clone.backs = [];
+				for (var j:int = 0; j < backs.length; j++) 
+				{
+					for (var k:int = 0; k < clone.numChildren; k++) 
+					{
+						if (backs[j].name == clone.getChildAt(k).name) {
+							clone.backs[j] = clone.getChildAt(k);
+						}
+					}
+				}
+			}
 			clone.displayComplete();				
 			
 			for (var i:int = 0; i < clone.textFields.length; i++) {					
@@ -172,7 +206,6 @@ package com.gestureworks.cml.components
 
 			return clone;
 		}			
-		
 	}
 	
 }
