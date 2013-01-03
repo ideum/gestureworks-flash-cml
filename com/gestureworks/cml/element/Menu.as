@@ -168,18 +168,7 @@ package com.gestureworks.cml.element
 			var clone:Menu = CloneUtils.clone(this, null, v);
 			
 			CloneUtils.copyChildList(this, clone);
-			//clone.buttonArray = [];
-			/*for (var i:int = 0; i < clone.buttonArray.length; i++) 
-			{
-				for (var j:int = 0; j < clone.numChildren; j++) 
-				{
-					if (clone.buttonArray[i].name == clone.getChildAt(j).name) {
-						clone.buttonArray[i] = clone.getChildAt(j);
-					}
-				}
-			}*/
-
-			//clone.displayComplete();
+			
 			clone.init();
 
 			return clone;
@@ -311,7 +300,7 @@ package com.gestureworks.cml.element
 			else if (position == "bottomRight" || position == "topRight")	
 			{																
 				// position buttons		
-				for (i = buttonArray.length-1; i >= 0; i--) 
+				for (i = childList.length - 1; i >= 0; i--) 
 				{
 					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
 						var num:Number = getChildIndex(childList.getIndex(i));
