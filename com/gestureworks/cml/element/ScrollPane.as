@@ -352,6 +352,7 @@ package com.gestureworks.cml.element
 			if(_hit){
 				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
+				_hit.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 			}
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
@@ -418,13 +419,12 @@ package com.gestureworks.cml.element
 				
 				if (!oldY) {
 					oldY = e.value.localY;
-					newPos = oldY;
+					//newPos = oldY;
 				}
 				else if (oldY) {
-					newPos += oldY - e.value.localY;
+					newPos -= e.value.localY - oldY;
 					oldY = e.value.localY;
 				}
-				
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 				// Get the localY of the previous gesture call
 				// Get the differential of the previous localY and the new localY
@@ -466,6 +466,12 @@ package com.gestureworks.cml.element
 				_content.x = newPos;
 				_horizontalScroll.thumbPosition = -newPos / _horizontalMovement;
 			}
+		}
+		
+		private function onComplete(e:GWGestureEvent):void {
+			//Reset the position values so the scrollPane will move cumulatively.
+			oldX = null;
+			oldY = null;
 		}
 		
 		private function clampPos(pos:Number, direction:String):Number {
