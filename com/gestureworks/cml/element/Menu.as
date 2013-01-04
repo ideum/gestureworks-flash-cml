@@ -154,8 +154,9 @@ package com.gestureworks.cml.element
 			//trace("Button event caught.");
 			for (var i:int = 0; i < numChildren; i++) 
 			{
-				if(getChildAt(i) is Button)
+				if(getChildAt(i) is Button) {
 					Button(getChildAt(i)).onFlip(e);
+				}
 			}
 		}
 		
@@ -185,24 +186,25 @@ package com.gestureworks.cml.element
 		 */
 		public function updateLayout(containerWidth:Number, containerHeight:Number):void
 		{	
-			//buttonArray = [];
 			var margin:Number = paddingLeft + paddingRight;
-			
-			var i:int;
-			
+			var i:int = 0;
+			var itemCount:Number = 0;
 			for (i = 0; i < this.numChildren; i++) {
-				if ( childList.getIndex(i) is Button) {
-					Button(childList.getIndex(i)).updateLayout();
-					margin += childList.getIndex(i).width;
+				if ( getChildAt(i) is Button) {
+					Button(getChildAt(i)).updateLayout();
+					margin += getChildAt(i).width;
+					itemCount++;
 				}
-				else if (childList.getIndex(i) is Slider) {
-					Slider(childList.getIndex(i)).updateLayout();
-					margin += childList.getIndex(i).width;
+				else if (getChildAt(i) is Slider) {
+					Slider(getChildAt(i)).updateLayout();
+					margin += getChildAt(i).width;
+					itemCount++;
 				}
 			}
 			
 			margin = containerWidth - margin;
-			margin /= buttonArray.length - 1;
+			//margin /= buttonArray.length - 1;
+			margin /= (itemCount - 1);
 			
 			//Experimental code
 			
@@ -222,7 +224,6 @@ package com.gestureworks.cml.element
 						// position middle buttons
 						else
 							getChildAt(num).x = getChildAt(num - 1).x + getChildAt(num - 1).width + margin;
-						
 						// position y
 						if (position == "bottom")
 							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;		
@@ -322,6 +323,8 @@ package com.gestureworks.cml.element
 				}	
 			}
 			
+			
+			i = 0;
 			// Original code, scroll down. Experimental code, scroll up.
 			
 			/*if (position == "bottom" || position == "top")	
