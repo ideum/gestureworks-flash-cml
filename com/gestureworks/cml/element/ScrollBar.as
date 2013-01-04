@@ -16,7 +16,7 @@ package com.gestureworks.cml.element
 	 * 
 	 * @author Ideum
 	 */
-	public class ScrollBar extends ElementFactory
+	public class ScrollBar extends TouchContainer
 	{
 		public var railGraphic:Graphic;
 		public var railTouch:TouchContainer;
@@ -196,9 +196,8 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void
+		override public function init():void
 		{ 
-			trace("Hi, this is the scrollbar init. How are you?");
 			if(!railTouch){
 				railTouch = new TouchContainer();
 				railTouch.gestureEvents = true;
@@ -473,22 +472,18 @@ package com.gestureworks.cml.element
 				if (clone.getChildAt(i).name == railTouch.name) {
 					clone.railTouch = clone.getChildAt(i) as TouchContainer;
 					clone.railGraphic = clone.railTouch.getChildAt(0) as Graphic;
-					trace("Cloning rail 1");
 				}
 				else if (clone.getChildAt(i).name == touchBtn1.name) {
 					clone.touchBtn1 = clone.getChildAt(i) as TouchContainer;
 					clone.scrollBtn1 = clone.touchBtn1.getChildAt(0) as Graphic;
-					trace("Cloning rail 2");
 				}
 				else if (clone.getChildAt(i).name == touchBtn2.name) {
 					clone.touchBtn2 = clone.getChildAt(i) as TouchContainer;
 					clone.scrollBtn2 = clone.touchBtn2.getChildAt(0) as Graphic;
-					trace("Cloning rail 3");
 				}
 				else if (clone.getChildAt(i).name == thumbTouch.name) {
 					clone.thumbTouch = clone.getChildAt(i) as TouchContainer;
 					clone.thumb = clone.thumbTouch.getChildAt(0) as Graphic;
-					trace("Cloning rail 4");
 				}
 			}
 			
