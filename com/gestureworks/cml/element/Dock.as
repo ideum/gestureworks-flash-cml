@@ -326,7 +326,14 @@ package com.gestureworks.cml.element
 			img.scale = 1;
 			img.resize();
 						
-			var title:Text = obj.back.childList.getKey("title").clone();
+			var title:Text;
+			//var title:Text = obj.back.childList.getKey("title").clone();
+			if (obj.back || obj.backs.length == 1) {
+				title = obj.back.childList.getKey("title").clone();
+			}
+			else if (obj.backs && obj.backs.length > 1) {
+				title = obj.searchChildren("title").clone();
+			}
 			title.width = img.width;
 			title.textAlign = "center";
 			title.fontSize = 10;
