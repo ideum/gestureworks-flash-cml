@@ -58,23 +58,11 @@ package com.gestureworks.cml.components
 			super();
 		}
 		
-		override public function set width(value:Number):void {
-			super.width = value;
-			
-			//trace("setting component width to new value:", value);
-		}
-		override public function get width():Number {
-			var myRect:Rectangle = getRect(this);
-			//trace("Super width retrieval:", super.width, myRect.width);
-			return super.width;
-		}
-		
 		/**
 		 * Initialisation method
 		 */
 		override public function init():void
 		{	
-			trace("INIT in component.");
 			this.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			if (!menu)
@@ -318,7 +306,6 @@ package com.gestureworks.cml.components
 			
 			if (background)
 			{
-				trace("Setting background");
 				background.width = width;
 				background.height = height;
 			}
@@ -389,17 +376,17 @@ package com.gestureworks.cml.components
 			t.y = 0;
 			sp.width = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
 			sp.x = t.paddingLeft;
-			t.width = sp.width - t.paddingLeft - t.paddingRight;
+			t.width = sp.width - ((t.paddingLeft + t.paddingRight));
 			t.x = t.paddingLeft;
 			sp.height = this.height - t.paddingBottom - sp.y;
 			
-			for (var z:Number = 0; z < textFields.length; z++ ) {
+			for (var z:Number = textFields.indexOf(t); z < textFields.length; z++ ) {
 				if (t != textFields[z]) {
 					sp.height -= textFields[z].height;
-					if (menu) {
-						sp.height -= menu.getChildAt(0).height + menu.paddingBottom;
-					}
 				}
+			}
+			if (menu) {
+				sp.height -= menu.getChildAt(0).height + menu.paddingBottom + t.paddingBottom;
 			}
 		}
 		
@@ -452,10 +439,12 @@ package com.gestureworks.cml.components
 				{
 					for (var j:int = 0; j < textFields.length; j++)
 					{
-						textFields[j].fontSize = fontArray[j];	
-						if (textFields[j].parent is ScrollPane) {
-							//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
-							textFields[j].parent.updateLayout(textFields[j].parent.width, textFields[j].parent.height);
+						if( textFields[j] != searchChildren(".info_title")){
+							textFields[j].fontSize = fontArray[j];	
+							if (textFields[j].parent is ScrollPane) {
+								//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
+								textFields[j].parent.updateLayout(textFields[j].parent.width, textFields[j].parent.height);
+							}
 						}
 					}
 					textCount = 0;
@@ -464,10 +453,12 @@ package com.gestureworks.cml.components
 				{
 					for (var i:int = 0; i < textFields.length; i++)
 					{
-						textFields[i].fontSize += fontIncrement;
-						if (textFields[i].parent is ScrollPane) {
-							//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
-							textFields[i].parent.updateLayout(textFields[i].parent.width, textFields[i].parent.height);
+						if ( textFields[i] != searchChildren(".info_title")){
+							textFields[i].fontSize += fontIncrement;
+							if (textFields[i].parent is ScrollPane) {
+								//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
+								textFields[i].parent.updateLayout(textFields[i].parent.width, textFields[i].parent.height);
+							}
 						}
 					}
 				}
@@ -550,9 +541,21 @@ package com.gestureworks.cml.components
 	
 		public function reset():void
 		{
-			front.visible = true;
+			if (front)
+				front.visible = true;
+			else if (fronts) {
+				for (var y:Number = 0; y < fronts.length; y++) {
+					fronts[y].visible = true;
+				}
+			}
 			_side = "front";
-			back.visible = false;
+			if (back)
+				back.visible = false;
+			else if (backs) {
+				for (var z:Number = 0; z < backs.length; z++) {
+					backs[z].visible = false;
+				}
+			}
 			if(menu)
 				menu.reset();
 			if (timer)
