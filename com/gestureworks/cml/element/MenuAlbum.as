@@ -223,6 +223,15 @@ package  com.gestureworks.cml.element
 			super.inBounds(e);
 			inAlbumBounds = true;
 		}
+		
+		override public function dispose():void 
+		{
+			super.dispose();
+			_selectedItem = null;
+			dragClones = null;
+			collectionViewer = null;
+			dock = null;
+		}
 				
 	}
 
