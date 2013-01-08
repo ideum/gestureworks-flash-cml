@@ -58,7 +58,8 @@ package com.gestureworks.cml.element
 		private var _menuMode:Boolean = false;
 		
 		private var _dimension:String;
-		private var _axis:String;		
+		private var _axis:String;	
+		private var _dragGesture:String = "n-drag-inertia";
 		
 		private var snapPoints:Array;
 		private var albumMask:Graphic;
@@ -158,7 +159,17 @@ package com.gestureworks.cml.element
 		public function set dragAngle(a:Number):void
 		{
 			_dragAngle = Math.PI * a / 180;
-		}	
+		}
+		
+		/**
+		 * Specifies the GML drag gesture of the belt (e.g. n-drag, 2-finger-drag, etc.).
+		 * @default n-drag-inertia
+		 */
+		public function get dragGesture():String { return _dragGesture; }
+		public function set dragGesture(g:String):void
+		{
+			_dragGesture = g;
+		}
 		
 		/**
 		 * A flag instructing the album to continuously cycle through the objects opposed
@@ -182,8 +193,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * A flag indicating the album content is selectable. The selected item can be accessed
-		 * through the associated state event (property = "selectedItem").
+		 * A flag indicating the album content is interactive.
 		 */
 		public function get menuMode():Boolean { return _menuMode; }
 		public function set menuMode(m:Boolean):void
@@ -338,8 +348,11 @@ package com.gestureworks.cml.element
 			
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
-			belt.gestureList = { "n-drag-inertia":true };
 			belt.disableAffineTransform = true;
+			
+			var gList:Object = new Object();
+			gList[_dragGesture] = true;
+			belt.gestureList = gList;
 			
 			//add gesture events
 			var scrollType:Function = horizontal ? scrollH : scrollV;
@@ -371,7 +384,7 @@ package com.gestureworks.cml.element
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;
 
-			if (menuMode) //wrap child in a TouchSprite and register events
+			if (menuMode) //wrap child in a TouchSprite 
 			{
 				var ts:TouchSprite;
 				if (child is TouchSprite)
@@ -385,11 +398,6 @@ package com.gestureworks.cml.element
 				}
 				
 				belt.addChild(ts);
-				ts.disableNativeTransform = true;
-				ts.gestureList = { "n-tap":true, "n-drag":true};
-				ts.addEventListener(GWGestureEvent.TAP, selection);	
-				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
-				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
 			}
 			else
 				belt.addChild(child);
@@ -423,11 +431,6 @@ package com.gestureworks.cml.element
 				}
 				
 				belt.addChildAt(ts, index);
-				ts.disableNativeTransform = true;
-				ts.gestureList = { "n-tap":true, "n-drag":true };
-				ts.addEventListener(GWGestureEvent.TAP, selection);										
-				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
-				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
 			}
 			else
 				belt.addChildAt(child, index);
@@ -444,27 +447,6 @@ package com.gestureworks.cml.element
 		{
 			super.addChild(child);
 		}
-		
-		/**
-		 * Dispatch a state event with the selected album item
-		 * @param	e the tap gesture event
-		 */
-		private function selection(e:GWGestureEvent):void
-		{
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", e.target, true));
-		}
-		
-		/**
-		 * Abstract drag item function
-		 * @param	e
-		 */
-		protected function dragItem(e:GWGestureEvent):void { }
-		
-		/**
-		 * Abstract drop item function
-		 * @param	e
-		 */
-		protected function dropItem(e:GWGestureEvent):void {}
 		
 		/**
 		 * Stores the additive inverse of the x or y coordinates of each frame on the belt based on the horizontal
