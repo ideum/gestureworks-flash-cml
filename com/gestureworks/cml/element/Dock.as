@@ -25,6 +25,8 @@ package com.gestureworks.cml.element
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = ["work_description:rug"];
 		public var returnFields:Array = ["work_description", "copyrightdate"];
+		private var _searchFieldsArray:Array;
+		public var searchFields:String;
 				
 		public var result:Object;	
 		public var resultCnt:int = 0;
@@ -80,6 +82,8 @@ package com.gestureworks.cml.element
 		{
 			super.init();
 			
+			_searchFieldsArray = searchFields.split(",");
+			
 			dockText = searchChildren(".dock-text", Array);
 
 			var c:Container = childList.getCSSClass("dials", 0);
@@ -131,13 +135,13 @@ package com.gestureworks.cml.element
 			var index:int = dials.indexOf(e.target);
 			
 			if (index == 0)
-				searchTerms[index] = "work_description:" + e.value; 
+				searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
 			
 			else if (index == 1)
-				searchTerms[index] = "work_description:" + e.value; 
+				searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
 			
 			else if (index == 2)
-				searchTerms[index] = "work_description:" + e.value; 
+				searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
 			
 			trace("searchTerms", searchTerms);
 			
@@ -168,7 +172,7 @@ package com.gestureworks.cml.element
 			// medium
 			// small
 			// etc -- see collective access
-			
+		
 			//if (!e || e.keyCode == 13) {
 			    connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
 				//connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
