@@ -44,6 +44,7 @@ package com.gestureworks.cml.components
 		public var amountToShow:int = -1;
 		private var hitBg:Sprite;
 		private var tweens:Dictionary = new Dictionary(true)
+		private var timer:Timer;
 		
 		
 		// database version
@@ -127,6 +128,10 @@ package com.gestureworks.cml.components
 						queue.append(childList.getIndex(i));
 					}	
 				}
+				
+				timer = new Timer(1000);
+				timer.addEventListener(TimerEvent.TIMER, timerCheck);
+				timer.start();
 			}
 			
 			// database version
@@ -136,7 +141,11 @@ package com.gestureworks.cml.components
 		}
 		
 				
-		
+		private function timerCheck(e:TimerEvent):void {
+			if (numChildren - 1 < amountToShow) {
+				addNextComponent();
+			}
+		}
 		
 		// database methods
 
@@ -246,17 +255,20 @@ package com.gestureworks.cml.components
 		{	
 			if (event.value == "close") 
 			{				
-				removeComponent(event.currentTarget);				
-				if (numChildren-1 < amountToShow)
+				removeComponent(event.currentTarget);			
+				
+				if (numChildren - 1 < amountToShow) {
 					addNextComponent();
+				}
 			}	
 		}	
 		
 		private function removeComponent(component:*):void
 		{
 			queue.append(component);
-			if (contains(component as DisplayObject))
-				removeChild(component as DisplayObject);
+			if (contains(component as DisplayObject)) {
+				removeChild(component);
+			}
 		}
 		
 		private function addNextComponent():void
@@ -285,14 +297,17 @@ package com.gestureworks.cml.components
 			{			
 				tweens[newComponent] = null;
 			}
-						
+			
+			/*if (this.numChildren - 1 < amountToShow) {
+				addNextComponent();
+			}*/
 		}		
 		
 		private function onBoundsTimer(event:GWGestureEvent=null):void
 		{
 			var onscreen:Boolean = CollisionDetection.isColliding(DisplayObject(event.target), hitBg, this, true, 0);								
 			if (!onscreen)
-				removeComponent(DisplayObject(event.target));			
+				removeComponent(DisplayObject(event.target));
 				
 			if (this.numChildren-1 < amountToShow)
 				addNextComponent();			
@@ -327,8 +342,8 @@ package com.gestureworks.cml.components
 		{
 			if (obj.parent && obj.parent != this )
 				moveToTop(obj.parent);
-			else
-				addChild(obj);
+			else if (obj.parent && obj.parent == this) setChildIndex(obj, this.numChildren - 1);
+				//addChild(obj);
 		}
 		
 		private function hideAll():void
