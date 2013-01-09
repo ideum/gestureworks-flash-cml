@@ -30,15 +30,24 @@ package  com.gestureworks.cml.element
 		public function MenuAlbum() 
 		{
 			super();
-			menuMode = true;
+			clusterBubbling = true;
+			mouseChildren = true;
 		}
 		
 		/**
-		 * Prevents disabling of the menu mode
+		 * Prevent disabling of clusterBubbling
 		 */
-		override public function set menuMode(value:Boolean):void 
+		override public function set clusterBubbling(value:Boolean):void 
 		{
-			super.menuMode = true;
+			super.clusterBubbling = true;
+		}
+		
+		/**
+		 * Prevent disabling of mouseChildren
+		 */
+		override public function set mouseChildren(value:Boolean):void 
+		{
+			super.mouseChildren = true;
 		}
 		
 		/**

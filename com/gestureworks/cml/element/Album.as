@@ -55,7 +55,6 @@ package com.gestureworks.cml.element
 		private var _belt:TouchContainer;
 		private var _backgroundColor:uint = 0x000000;
 		private var _snapping:Boolean = true;	
-		private var _menuMode:Boolean = false;
 		
 		private var _dimension:String;
 		private var _axis:String;	
@@ -75,7 +74,7 @@ package com.gestureworks.cml.element
 		 */
 		public function Album() 
 		{
-			mouseChildren = true;
+			super.mouseChildren = true;
 			albumMask = new Graphic();
 			albumMask.shape = "rectangle";				
 			_belt = new TouchContainer();
@@ -190,15 +189,6 @@ package com.gestureworks.cml.element
 		public function set snapping(e:Boolean):void
 		{
 			_snapping = e;
-		}
-		
-		/**
-		 * A flag indicating the album content is interactive.
-		 */
-		public function get menuMode():Boolean { return _menuMode; }
-		public function set menuMode(m:Boolean):void
-		{
-			_menuMode = m;
 		}
 		
 		/**
@@ -339,13 +329,7 @@ package com.gestureworks.cml.element
 		 * the scrolling of the child objects. 
 		 */
 		private function initBelt():void
-		{
-			if (menuMode)
-			{
-				belt.clusterBubbling = true;
-				belt.mouseChildren = true;
-			}
-			
+		{			
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
 			belt.disableAffineTransform = true;
@@ -375,6 +359,24 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Redirect clusterBubbling setting to the belt
+		 */
+		override public function set clusterBubbling(value:Boolean):void 
+		{
+			if(belt)
+				belt.clusterBubbling = value;
+		}
+		
+		/**
+		 * Redirect mouseChidren setting to the belt
+		 */
+		override public function set mouseChildren(value:Boolean):void 
+		{
+			if(belt)
+				belt.mouseChildren = value;
+		}
+		
+		/**
 		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
 		 * based on the greatest width and height of the child dimensions. If in menu mode, the children are wrapped in a
 		 * TouchSprite to enable interactivity.
@@ -384,7 +386,7 @@ package com.gestureworks.cml.element
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;
 
-			if (menuMode) //wrap child in a TouchSprite 
+			if (belt.clusterBubbling) //wrap child in a TouchSprite 
 			{
 				var ts:TouchSprite;
 				if (child is TouchSprite)
@@ -417,7 +419,7 @@ package com.gestureworks.cml.element
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;
 
-			if (menuMode) //wrap child in a TouchSprite and register events
+			if (belt.clusterBubbling) //wrap child in a TouchSprite and register events
 			{
 				var ts:TouchSprite;
 				if (child is TouchSprite)
@@ -575,6 +577,7 @@ package com.gestureworks.cml.element
 			background.addChild(g);
 			background.width = g.width;
 			background.height = g.height;
+			background.targetParent = true;
 			
 			belt.addChildAt(background, 0);			
 		}
