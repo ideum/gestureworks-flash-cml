@@ -802,6 +802,8 @@ package com.gestureworks.cml.element
 		private function onRelease(e:GWGestureEvent):void
 		{
 			released = true;
+			if (!snapping && (belt[axis] > snapPoints[0] || belt[axis] < snapPoints[snapPoints.length-1]))
+				snap();
 		}		
 		
 		/**
