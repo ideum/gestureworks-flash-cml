@@ -6,6 +6,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.events.TouchEvent;
+	import flash.geom.Rectangle;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.Exponential;
 	import org.libspark.betweenas3.tweens.ITween;
@@ -44,8 +45,6 @@ package com.gestureworks.cml.element
 	public class Album extends TouchContainer
 	{	
 		private var _applyMask:Boolean = true;
-		private var _maskWidth:Number;		
-		private var _maskHeight:Number;		
 		private var _horizontal:Boolean = true;
 		private var _margin:Number = 1;
 		private var _centerContent:Boolean = true;
@@ -68,6 +67,7 @@ package com.gestureworks.cml.element
 		private var boundary2:Number;
 		private var released:Boolean = false;
 		private var index:int = 0;
+		private var frame:Rectangle;  //the dimensions of the largest object
 		
 		/**
 		 * Constructor
@@ -76,7 +76,8 @@ package com.gestureworks.cml.element
 		{
 			super.mouseChildren = true;
 			albumMask = new Graphic();
-			albumMask.shape = "rectangle";				
+			albumMask.shape = "rectangle";	
+			frame = new Rectangle(0, 0, 0, 0);  
 			_belt = new TouchContainer();
 		}
 				
@@ -207,7 +208,7 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void 
 		{
 			super.width = value;	
-			if (albumMask && !maskWidth) albumMask.width = value;
+			albumMask.width = value;
 		}
 		
 		/**
@@ -216,27 +217,7 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void 
 		{
 			super.height = value;
-			if (albumMask && !maskHeight) albumMask.height = value;
-		}
-		
-		/**
-		 * Sets the mask width independently from the album width
-		 */
-		public function get maskWidth():Number { return _maskWidth; }
-		public function set maskWidth(w:Number):void
-		{
-			_maskWidth = w;
-			if (albumMask) albumMask.width = w;
-		}
-		
-		/**
-		 * Sets the mask height independently from the album height
-		 */
-		public function get maskHeight():Number { return _maskHeight; }
-		public function set maskHeight(h:Number):void
-		{
-			_maskHeight = h;
-			if (albumMask) albumMask.height = h;
+			albumMask.height = value;
 		}		
 		
 		/**
@@ -320,8 +301,8 @@ package com.gestureworks.cml.element
 				belt.x = 0;
 				belt.y = 0;
 			}
-			width = 0;
-			height = 0;
+			frame.width = 0;
+			frame.height = 0;
 		}
 			
 		/**
@@ -329,7 +310,11 @@ package com.gestureworks.cml.element
 		 * the scrolling of the child objects. 
 		 */
 		private function initBelt():void
-		{			
+		{		
+			//initial dimensions
+			belt.height = height;
+			belt.width = width;
+
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
 			belt.disableAffineTransform = true;
@@ -378,13 +363,15 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
-		 * based on the greatest width and height of the child dimensions. If in menu mode, the children are wrapped in a
-		 * TouchSprite to enable interactivity.
+		 * based on the greatest width and height of the child dimensions. If clusterBubbling is enabled, the children 
+		 * are wrapped in a TouchSprite to enable interactivity.
 		 */		
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{			
 			width = child.width > width ? child.width : width;
-			height = child.height > height ? child.height: height;
+			height = child.height > height ? child.height: height;			
+			frame.width = child.width > frame.width ? child.width: frame.width;
+			frame.height = child.height > frame.height ? child.height : frame.height;
 
 			if (belt.clusterBubbling) //wrap child in a TouchSprite 
 			{
@@ -410,16 +397,18 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Reroutes the addition of children from the album to the album's belt and sets the dimesions of the container 
-		 * based on the greatest width and height of the child dimensions. If in menu mode, the children are wrapped in a
-		 * TouchSprite to enable interactivity.
+		 * based on the greatest width and height of the child dimensions. If clusterBubbling is enabled, the children 
+		 * are wrapped in a TouchSprite to enable interactivity.
 		 */		
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{	
 			index = index == 0 ? 1 : index;
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;
+			frame.width = child.width > frame.width ? child.width: frame.width;
+			frame.height = child.height > frame.height ? child.height : frame.height;			
 
-			if (belt.clusterBubbling) //wrap child in a TouchSprite and register events
+			if (belt.clusterBubbling) //wrap child in a TouchSprite 
 			{
 				var ts:TouchSprite;
 				if (child is TouchSprite)
@@ -457,14 +446,13 @@ package com.gestureworks.cml.element
 		private function storeSnapPoints():void
 		{
 			snapPoints = new Array;	
-			var limit:Number = applyMask ? belt[dimension] - albumMask[dimension] : belt[dimension] - this[dimension];
-			limit = limit < 0 ? 0 : limit;
+			var limit:Number = belt[dimension] - this[dimension] < 0 ? 0 : belt[dimension] - this[dimension];
 			
 			if (centerContent)
 			{
-				for (var i:int = 0; i <= limit; i = i + this[dimension] + space)
+				for (var i:int = 0; i <= limit; i = i + frame[dimension] + space)
 				{
-					snapPoints.push( -i);				
+					snapPoints.push( -i);
 				}
 			}
 			else
@@ -487,18 +475,17 @@ package com.gestureworks.cml.element
 		 */
 		private function setBoundaries():void
 		{
-			var half:Number = this[dimension] / 2;
+			var half:Number = frame[dimension] / 2;
 			
 			if (loop)
 			{
 				boundary1 = 0;				
-				boundary2 = this[dimension];
+				boundary2 = frame[dimension];
 			}
 			else 
 			{			
-				var b2Limit:Number = applyMask ? albumMask[dimension] : this[dimension];
 				boundary1 = half;
-				boundary2 = b2Limit < belt[dimension] ? -(belt[dimension] - (b2Limit - half)) : -half;
+				boundary2 = this[dimension] < belt[dimension] ? -(belt[dimension] - (this[dimension] - half)) : -half;
 			}
 		}
 		
@@ -524,8 +511,8 @@ package com.gestureworks.cml.element
 					slide.shape = "rectangle";
 					slide.color = backgroundColor;
 					slide.lineStroke = 0;
-					slide.width = width;
-					slide.height = height;
+					slide.width = frame.width;
+					slide.height = frame.height;
 					slide.visible = i == 0 ? true : false;   //initially hide all but head of list
 					
 					holder[i].x = slide.width / 2 - holder[i].width / 2;
@@ -556,9 +543,9 @@ package com.gestureworks.cml.element
 		{
 			if (!belt.numChildren) return;
 			var last:* = belt.getChildAt(belt.numChildren - 1);
-			var edge:Number = centerContent ? (last[axis] + last[dimension] / 2) + this[dimension] / 2 : last[axis] + last[dimension];
-			belt.width = horizontal ? edge : width;
-			belt.height = horizontal ? height : edge;
+			var edge:Number = centerContent ? (last[axis] + last[dimension] / 2) + frame[dimension] / 2 : last[axis] + last[dimension];
+			belt.width = horizontal ? edge : belt.width;
+			belt.height = horizontal ? belt.height : edge;
 		}
 		
 		/**

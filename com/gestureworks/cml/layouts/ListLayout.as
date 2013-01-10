@@ -131,7 +131,7 @@ package com.gestureworks.cml.layouts
 			var yVal:Number = 0;
 			var matrix:Matrix;
 			var columnWidth:Number = getMaxWidth(container);
-			var rowHeight:Number = getMaxHeight(container);
+			var rowHeight:Number = Math.max(getMaxHeight(container), container.height);
 			var sumx:Number = centerColumn ? columnWidth/2 : 0;
 			
 			for (var i:int = childTransformations.length; i < n; i++) 
@@ -162,7 +162,7 @@ package com.gestureworks.cml.layouts
 			var xVal:Number;
 			var yVal:Number = 0;
 			var matrix:Matrix;
-			var columnWidth:Number = getMaxWidth(container);
+			var columnWidth:Number = Math.max(getMaxWidth(container), container.width);
 			var rowHeight:Number = getMaxHeight(container);
 			var sumy:Number = centerRow ? rowHeight/2 : 0;			
 			
