@@ -480,7 +480,7 @@ package com.gestureworks.cml.element
 			if (loop)
 			{
 				boundary1 = 0;				
-				boundary2 = frame[dimension];
+				boundary2 = this[dimension];
 			}
 			else 
 			{			
@@ -490,22 +490,40 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * In loop mode, adds individual backgrounds for each item and centers the items on their associated background. The backgrounds
-		 * provide a uniform reference to better evaluate boundary thresholds and tweening snap points. If not in loop mode, generates a 
-		 * horiztonal/vertical list layout and applies it to the belt. 
+		 * Generate a horiztonal/vertical list layout and apply it to the belt 
 		 */
 		private function setBeltLayout():void
 		{
-			if (loop) //&& centerContent
+			belt.layout = new ListLayout();
+			belt.layout.useMargins = true;
+			belt.layout.marginX = margin;
+			belt.layout.marginY = margin;
+			belt.layout.type = horizontal ? "horizontal" : "vertical";	
+			belt.layout.centerColumn = centerContent;			
+			belt.layout.centerRow = centerContent;	
+			applyLoopLayout();
+			belt.applyLayout();
+		}
+		
+		/**
+		 * Since album items are constantly being repositioned in loop mode, maintainging the layout requires more distribution management. 
+		 * This function adds the items to a queue and sets their visibility. If centerContent is enabled, a new background object is generated 
+		 * for each item to be centered on. The background provide a uniform reference to better evaluate boundary thresholds and tweening snap points. 
+		 */
+		private function applyLoopLayout():void
+		{
+			if (!loop) return;
+			
+			if (centerContent)
 			{
 				var holder:Array = new Array();
 				while (belt.numChildren)
 				{
-					holder.push(belt.getChildAt(belt.numChildren - 1));
+					holder.unshift(belt.getChildAt(belt.numChildren - 1));
 					belt.removeChildAt(belt.numChildren - 1);
 				}
 				
-				for (var i:int = 0; i < holder.length; i++)
+				for each(var obj:DisplayObject in holder)
 				{
 					var slide:Graphic = new Graphic();
 					slide.shape = "rectangle";
@@ -513,27 +531,20 @@ package com.gestureworks.cml.element
 					slide.lineStroke = 0;
 					slide.width = frame.width;
 					slide.height = frame.height;
-					slide.visible = i == 0 ? true : false;   //initially hide all but head of list
 					
-					holder[i].x = slide.width / 2 - holder[i].width / 2;
-					holder[i].y = slide.height / 2 - holder[i].height / 2;
-					slide.addChild(holder[i]);
-					
-					loopQueue.push(slide);					
-					addChild(slide);					
+					obj.x = slide.width / 2 - obj.width / 2;
+					obj.y = slide.height / 2 - obj.height / 2;
+					slide.addChild(obj);
+					belt.addChild(slide);
 				}
-			}
-			else
+			}			
+			
+			for (var i:int = 0; i < belt.numChildren; i++)
 			{
-				belt.layout = new ListLayout();
-				belt.layout.useMargins = true;
-				belt.layout.marginX = margin;
-				belt.layout.marginY = margin;
-				belt.layout.type = horizontal ? "horizontal" : "vertical";
-				belt.layout.centerColumn = centerContent;			
-				belt.layout.centerRow = centerContent;			
-				belt.applyLayout();				
-			}
+				var child:DisplayObject = belt.getChildAt(i);
+				child.visible = child[axis] > this[dimension] ? false : true;
+				loopQueue.push(child);
+			}			
 		}
 		
 		/**
@@ -710,6 +721,7 @@ package com.gestureworks.cml.element
 		{
 			if (loop)
 			{
+				if (loopSnapTween && loopSnapTween.isPlaying) return;
 				loopQueue[0][axis] = -1;
 				processLoop();
 				loopSnap(null, -(this[dimension] + space - 1));				
@@ -729,6 +741,7 @@ package com.gestureworks.cml.element
 		{			
 			if (loop)
 			{		
+				if (loopSnapTween && loopSnapTween.isPlaying) return;
 				loopQueue[0][axis] = 1;
 				processLoop();
 				loopSnap(null, this[dimension] + space - 1)
@@ -819,7 +832,8 @@ package com.gestureworks.cml.element
 		}
 				
 		/**
-		 * Drag the belt vertically within the boundaries
+		 * Drag the belt vertically within the boundaries. If boundaries are exceeded and the
+		 * belt is not being touched, the drag is disabled and the belt snaps into place.
 		 * @param	e the drag event
 		 */
 		protected function scrollV(e:GWGestureEvent):void
@@ -853,24 +867,21 @@ package com.gestureworks.cml.element
 			{
 				if (!isNaN(delta) && child.visible)
 					child[axis] += delta;
+				if (child[axis] > boundary2)
+					child.visible = false;
 			}
 			
 			var head:* = loopQueue[0];
 			var edge1:Number = head[axis];
 			var edge2:Number = head[axis] + head[dimension];
+			var edge3:Number = edge1 + this[dimension];
 			
-			if (edge2 > boundary2)						
-				tailToHead();	
-			else if (edge2 < boundary1)
+			if (edge2 < boundary1)
 				headToTail();
-			else if (edge1 < boundary1)
-			{
-				if (!loopQueue[1].visible)
-				{
-					loopQueue[1].visible = true;
-					loopQueue[1][axis] = head[axis] + head[dimension] + space;
-				}
-			}
+			if (edge1 < boundary1)
+				queueNext();
+			if (edge3 > boundary2)
+				tailToHead();
 		}
 	
 		/**
@@ -879,10 +890,7 @@ package com.gestureworks.cml.element
 		 */
 		private function tailToHead():void
 		{		
-			if (loopSnapTween && loopSnapTween.isPlaying) return;
-			
-			loopQueue[1].visible = false;
-			loopQueue[1][axis] = 0;		
+			if (loopSnapTween && loopSnapTween.isPlaying) return;	
 			
 			var tail:* = loopQueue[loopQueue.length - 1];
 			tail.visible = true;
@@ -906,6 +914,26 @@ package com.gestureworks.cml.element
 			
 			loopQueue.shift();
 			loopQueue.push(head);
+		}
+		
+		/**
+		 * Determines the next child in the queue, enables its visiblity, and appends it to the end of
+		 * the album. 
+		 */
+		private function queueNext():void
+		{
+			for (var i:int = 0; i < loopQueue.length; i++)
+			{
+				if (!loopQueue[i].visible)
+				{
+					loopQueue[i].visible = true;
+					loopQueue[i][axis] = loopQueue[i - 1][axis] + loopQueue[i-1][dimension] + space;
+					
+					return;
+				}
+				else if (loopQueue[i][axis] > boundary2)
+					return;
+			}
 		}
 
 		/**
