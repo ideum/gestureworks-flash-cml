@@ -2,15 +2,18 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.ListLayout;
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Rectangle;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.easing.Exponential;
 	import org.libspark.betweenas3.tweens.ITween;
 	import org.libspark.betweenas3.tweens.ITweenGroup;
+	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * The Album element provides a list of display objects that can be 
@@ -99,9 +102,24 @@ package com.gestureworks.cml.element
 			checkMask();
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isLoaded", true, true));	
 			
-			addEventListener(TouchEvent.TOUCH_BEGIN, inBounds);
-			addEventListener(TouchEvent.TOUCH_END, outOfBounds);
-			addEventListener(TouchEvent.TOUCH_ROLL_OVER, inBounds);
+			if (GestureWorks.activeTUIO)
+			{
+				addEventListener(TuioTouchEvent.TOUCH_DOWN, inBounds);
+				addEventListener(TuioTouchEvent.TOUCH_UP, outOfBounds);
+				addEventListener(TuioTouchEvent.TOUCH_OVER, inBounds);               
+			}
+			else if (GestureWorks.supportsTouch)
+			{
+				addEventListener(TouchEvent.TOUCH_BEGIN, inBounds);
+				addEventListener(TouchEvent.TOUCH_END, outOfBounds);
+				addEventListener(TouchEvent.TOUCH_ROLL_OVER, inBounds);				
+			}
+			else
+			{
+				addEventListener(MouseEvent.MOUSE_DOWN, inBounds);
+				addEventListener(MouseEvent.MOUSE_UP, outOfBounds);
+				addEventListener(MouseEvent.MOUSE_OVER, inBounds);				
+			}
 		}
 		
 		/**
@@ -327,7 +345,14 @@ package com.gestureworks.cml.element
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
 			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
+			
+			if (GestureWorks.activeTUIO)			
+				belt.addEventListener(TuioTouchEvent.TOUCH_DOWN, resetDrag);
+			else if (GestureWorks.supportsTouch)
+				belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
+			else
+				belt.addEventListener(MouseEvent.MOUSE_DOWN, resetDrag);			
+			
 			if (snapping)
 			{
 				var snapType:Function = loop ? loopSnap : snap;				
@@ -758,7 +783,7 @@ package com.gestureworks.cml.element
 		 * Disables the drag if the touch moves outside of the album
 		 * @param	e
 		 */
-		protected function outOfBounds(e:TouchEvent):void
+		protected function outOfBounds(e:*):void
 		{
 			if (e.type == "touchEnd")
 			{	
@@ -775,11 +800,17 @@ package com.gestureworks.cml.element
 		 * Enables the drag if the touch is inside or moves inside the album
 		 * @param	e
 		 */
-		protected function inBounds(e:TouchEvent):void
+		protected function inBounds(e:*):void
 		{
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
-			addEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
+			
+			if(GestureWorks.activeTUIO)
+				addEventListener(TuioTouchEvent.TOUCH_OUT, outOfBounds);
+			else if (GestureWorks.supportsTouch)
+				addEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
+			else
+				addEventListener(MouseEvent.MOUSE_OUT, outOfBounds);			
 		}
 		
 		/**

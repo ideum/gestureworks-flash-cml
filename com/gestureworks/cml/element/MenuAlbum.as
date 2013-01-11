@@ -217,7 +217,7 @@ package  com.gestureworks.cml.element
 		 * Sets inAlbumBounds flag to false
 		 * @param	e
 		 */
-		override protected function outOfBounds(e:TouchEvent):void 
+		override protected function outOfBounds(e:*):void 
 		{
 			super.outOfBounds(e);
 			inAlbumBounds = false;
@@ -227,7 +227,7 @@ package  com.gestureworks.cml.element
 		 * Sets inAlbumBounds flag to true
 		 * @param	e
 		 */
-		override protected function inBounds(e:TouchEvent):void 
+		override protected function inBounds(e:*):void 
 		{
 			super.inBounds(e);
 			inAlbumBounds = true;
