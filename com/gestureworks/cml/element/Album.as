@@ -71,6 +71,7 @@ package com.gestureworks.cml.element
 		private var released:Boolean = false;
 		private var index:int = 0;
 		private var frame:Rectangle;  //the dimensions of the largest object
+		private var beltMouseChildren:Boolean = false;
 		
 		/**
 		 * Constructor
@@ -336,6 +337,8 @@ package com.gestureworks.cml.element
 			belt.gestureReleaseInertia = true;
 			belt.disableNativeTransform = true;
 			belt.disableAffineTransform = true;
+			belt.mouseChildren = beltMouseChildren;
+			belt.clusterBubbling = clusterBubbling;
 			
 			var gList:Object = new Object();
 			gList[_dragGesture] = true;
@@ -367,21 +370,24 @@ package com.gestureworks.cml.element
 			setBoundaries();
 			addUIComponent(belt);			
 		}
-		
+						
 		/**
 		 * Redirect clusterBubbling setting to the belt
-		 */
+		 */	
 		override public function set clusterBubbling(value:Boolean):void 
 		{
+			super.clusterBubbling = value;
 			if(belt)
 				belt.clusterBubbling = value;
 		}
-		
+						
 		/**
 		 * Redirect mouseChidren setting to the belt
 		 */
+		override public function get mouseChildren():Boolean { return beltMouseChildren; }
 		override public function set mouseChildren(value:Boolean):void 
 		{
+			beltMouseChildren = value;
 			if(belt)
 				belt.mouseChildren = value;
 		}
@@ -792,7 +798,7 @@ package com.gestureworks.cml.element
 			else
 			{	
 				var scrollType:Function = horizontal ? scrollH : scrollV;
-				belt.removeEventListener(GWGestureEvent.DRAG, scrollType);
+				belt.removeEventListener(GWGestureEvent.DRAG, scrollType);				
 			}			
 		}
 		

@@ -61,7 +61,6 @@ package com.gestureworks.cml.components
 			if (!back && albums[1])
 				back = albums[1];
 									
-			synchAlbums();
 			super.init();
 		}
 		
@@ -177,13 +176,14 @@ package com.gestureworks.cml.components
 			linkAlbums = linkAlbums ? (back is Album) : false;
 			if (linkAlbums)
 			{				
-				if (album.numChildren != back.numChildren)
+				if (album.belt.numChildren != back.belt.numChildren)
 					throw new Error("Cannot link albums with different number of objects");
 				
 				back.horizontal = album.horizontal;
 				back.loop = album.loop;	
 				back.margin = album.margin;
 				back.snapping = album.snapping;
+				back.centerContent = album.centerContent;
 				addEventListener(StateEvent.CHANGE, updateAlbums);								
 			}			
 		}
@@ -212,6 +212,8 @@ package com.gestureworks.cml.components
 			{
 				updateLayout();
 				e.target.dragAngle = rotation;
+				if (e.target == back && linkAlbums)
+					synchAlbums();
 			}
 		}
 		
