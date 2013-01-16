@@ -33,6 +33,7 @@ package  com.gestureworks.cml.element
 		private var displayPic:Bitmap = null;
 		private var loader:Loader;
 		private var service:FlickrService;
+		public var resultPhotos:Array;
 		
 		/**
 		 * Constructor
@@ -124,7 +125,7 @@ package  com.gestureworks.cml.element
 			
 			service = new FlickrService(_API_KEY);
 			service.addEventListener(FlickrResultEvent.PHOTOS_SEARCH, onSearchComplete);
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 100, 100, "date-posted-desc", _group_id);
+			//service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 100, 100, "date-posted-desc", _group_id);
 		}
 		
 		
@@ -136,6 +137,9 @@ package  com.gestureworks.cml.element
 			displayComplete();
 		}
 		
+		public function flickrSearch():void {
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 100, 100, "date-posted-desc");
+		}
 		
 		private function onSearchComplete(e:FlickrResultEvent):void {
 			trace("Search complete");
@@ -146,25 +150,30 @@ package  com.gestureworks.cml.element
 			
 			if (e.success) {
 				trace("Data: ", e.data, e.data.photos.page);
-				
-				for (var i:Number = 0; i < 10; i++) {
-					var img:Flickr = new Flickr();
-					img.src = e.data.photos.photos[i].id;
-					img.apikey = _API_KEY;
-					addChild(img);
-					
-					img.init();
-					
-					img.x = xPos;
-					xPos += 300;
-					img.rotation = rot;
-					rot += 9;
-					if (xPos > stage.stageWidth){
-						xPos = 0;
-						yPos += 400;
+				/*if (e.data.photos.photos.length > 0) {
+					for (var i:Number = 0; i < 10; i++) {
+						var img:Flickr = new Flickr();
+						img.src = e.data.photos.photos[i].id;
+						img.apikey = _API_KEY;
+						stage.addChild(img);
+						
+						img.init();
+						
+						img.x = xPos;
+						xPos += 300;
+						img.rotation = rot;
+						rot += 9;
+						if (xPos > stage.stageWidth){
+							xPos = 0;
+							yPos += 400;
+						}
 					}
-				}
+				}*/
+				
+				resultPhotos = e.data.photos.photos;
+				trace("ResultPhotos info:", resultPhotos.length);
 			}
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 		}
 		
 		
