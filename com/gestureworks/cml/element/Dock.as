@@ -55,6 +55,7 @@ package com.gestureworks.cml.element
 
 		public var album:MenuAlbum;
 
+		private var flickrQuery:FlickrQuery;
 
 		public var pos:String;
 		
@@ -92,6 +93,12 @@ package com.gestureworks.cml.element
 			
 			album = searchChildren(MenuAlbum);  //TODO: for testing purposes; need to provide more reliable access to album		
 			//trace(album, dockText, dials);
+			
+			if (!flickrQuery) {
+				flickrQuery = searchChildren(FlickrQuery);
+				//flickrQuery = new FlickrQuery();
+				trace("Initiating dock. FlickrQuery:", flickrQuery);
+			}
 			
 			
 			addEventListener(StateEvent.CHANGE, selection);
@@ -134,19 +141,49 @@ package com.gestureworks.cml.element
 		{
 			var index:int = dials.indexOf(e.target);
 			
-			if (index == 0)
-				searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+			if (!flickrQuery){
+				if (index == 0)
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+				
+				else if (index == 1)
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+				
+				else if (index == 2)
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+				
+				trace("searchTerms", searchTerms);
+			}
+			// If this were Flickr...
+			// FlickrQuery -- generate search?
+			// Pass in searchFields array items, get out search setup?
+			// 
+			// service.photos.search( user_id, tag_string, tag_mode, 
 			
-			else if (index == 1)
-				searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+			else if (flickrQuery) {
+				
+				trace("Flickr test:", Object(flickrQuery).hasOwnProperty(_searchFieldsArray[index]), _searchFieldsArray[index]);
+				for (var i:int = 0; i < 3; i++) 
+				{
+					trace("Setting field:", _searchFieldsArray[i]);
+					if (_searchFieldsArray[i] == "text" ) {
+						// Do something with text.
+						//flickrQuery[_searchFieldsArray[i]] = "hyena " + dials[2].currentString;
+						trace("FlickrQuery text:", flickrQuery.text);
+					}
+					if (_searchFieldsArray[i] == "tags") {
+						flickrQuery[_searchFieldsArray[i]] += dials[1].currentString + ", ";
+						//flickrQuery[_searchFieldsArray[i]] = "striped, hyena, africa";
+						trace("FlickrQuery tags:", flickrQuery.tags);
+					}
+				}
+				
+				// Set up event listener and run a search here.
+			}
 			
-			else if (index == 2)
-				searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
-			
-			trace("searchTerms", searchTerms);
-			
-			if (cmlIni)
+			if (cmlIni && !flickrQuery)
 				query();
+			else if (cmlIni && flickrQuery)
+				queryFlickr();
 		}	
 		
 		
@@ -194,6 +231,20 @@ package com.gestureworks.cml.element
 			resultTxt.text = "";				
 		}
 		
+		private function queryFlickr():void {
+			//flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
+			flickrQuery.flickrSearch();
+			flickrQuery.tags = "";
+			flickrQuery.text = "";
+		}
+		
+		private function onQueryLoad(e:StateEvent):void {
+			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
+			
+			resultCnt = flickrQuery.resultPhotos.length;
+			loadClone();
+		}
+		
 		private function onResult(res:Object):void
 		{			
 			result = res;
@@ -204,8 +255,10 @@ package com.gestureworks.cml.element
 				resultCnt++;	
 			}
 						
-			if (!resultCnt)
+			if (!resultCnt) {
 				isLoading = false;
+				dockText[1].text = "No objects found. Please search again.";
+			}
 			
 			if (amountToShow > resultCnt)
 				amountToShow = resultCnt;			
@@ -225,7 +278,7 @@ package com.gestureworks.cml.element
 		private function loadClone():void
 		{
 			var num:int=0;
-						
+			
 			num = maxLoad + loadCnt;
 			
 			if (num >= resultCnt)
@@ -233,7 +286,8 @@ package com.gestureworks.cml.element
 				
 			for (var i:int = loadCnt; i < num; i++) {				
 				for (var j:* in result[i]) {
-					searchExp(templates[0], String(j), result[i][j]);			
+					searchExp(templates[0], String(j), result[i][j]);	
+					//searchExp(templates[1], String(j), result[i][j]);
 				}
 				createClone(clones[i]);			
 			}					
@@ -244,6 +298,7 @@ package com.gestureworks.cml.element
 		private function createClone(clone:*):void
 		{
 			var src:String = templates[0].image.src;
+			//var src:String = templates[1].image.src;
 			
 			if (cloneMap.hasKey(src)) {
 				clones.push(cloneMap.getKey(src));
@@ -309,7 +364,7 @@ package com.gestureworks.cml.element
 			var resultTxt:Text = searchChildren("#result_text");
 			resultTxt.text = resultCnt + " Results";			
 		
-			//var album:Album = searchChildren("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
+			//var album:Album = ("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
 			album.clear();
 			for each(var clone:* in clones)
 				album.addChild(getPreview(clone));
@@ -339,9 +394,11 @@ package com.gestureworks.cml.element
 				title = obj.searchChildren("title").clone();
 			}
 			title.width = img.width;
+			
 			title.textAlign = "center";
 			title.fontSize = 10;
 			title.y = img.height;			
+			title.x = img.x;
 			
 			fadein(img, 1);
 			
