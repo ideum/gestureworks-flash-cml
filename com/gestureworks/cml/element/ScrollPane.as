@@ -352,6 +352,7 @@ package com.gestureworks.cml.element
 			if(_hit){
 				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
+				_hit.addEventListener(GWGestureEvent.MANIPULATE, onManipulate);
 				_hit.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 			}
 			
@@ -405,6 +406,11 @@ package com.gestureworks.cml.element
 			} else if (e.target == _horizontalScroll) {
 				_content.x = _horizontalMovement * e.value * -1;
 			}
+		}
+		
+		private function onManipulate(e:GWGestureEvent):void {
+			//onDrag(e);
+			//onScale(e);
 		}
 		
 		private function onDrag(e:GWGestureEvent):void {
@@ -512,7 +518,7 @@ package com.gestureworks.cml.element
 			}
 			if (_content.width * _content.scaleX > width) {
 				
-				_horizontalScroll.resize(_content.width * _content.scale);
+				_horizontalScroll.resize(_content.width * _content.scaleX);
 				_horizontalMovement = _content.width * _content.scaleX - width;
 				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
 				
