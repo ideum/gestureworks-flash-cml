@@ -389,6 +389,12 @@ package com.gestureworks.cml.element
 				_verticalScroll.resize(_content.height * _content.scaleY);
 				_verticalMovement = _content.height * _content.scaleY - height;
 				_verticalScroll.thumbPosition = _content.y / _verticalMovement;
+				
+				if (_content.height * _content.scaleY > height) {
+					if (!(contains(_verticalScroll))) addChild(_verticalScroll);
+				} else if (_content.height * _content.scaleY < height) {
+					if (contains(_verticalScroll)) removeChild(_verticalScroll);
+				}
 			}
 			
 			if (_horizontalScroll) {
@@ -397,6 +403,12 @@ package com.gestureworks.cml.element
 				_horizontalScroll.resize(_content.width * _content.scaleX);
 				_horizontalMovement = _content.width * _content.scaleX - width;
 				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
+				
+				if (_content.width * _content.scaleX > width) {
+					if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
+				} else if (_content.width * _content.scaleX < width) {
+					if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
+				}
 			}
 		}
 		
