@@ -663,24 +663,33 @@ package com.gestureworks.cml.element
 			mymask.graphics.beginFill(0xFF0000);
 			mymask.graphics.drawRect(0, 0, background.width - 3, background.height - 3);
 			mymask.graphics.endFill();
+
 			
 			touchSprite = new TouchSprite();
-			touchSprite.gestureList = {"n-drag-dial": true};
+			touchSprite.gestureList = {"n-drag": true};
 			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 			touchSprite.addEventListener(GWGestureEvent.COMPLETE, onEnd);			
 		    touchSprite.gestureReleaseInertia = true;
-			//touchSprite.addEventListener(TouchEvent.TOUCH_END, onEnd);
-			//touchSprite.addEventListener(MouseEvent.MOUSE_UP, onEnd);
+			touchSprite.graphics.clear();
+			touchSprite.graphics.lineStyle(0, 0);
+			touchSprite.graphics.drawRect(0, 0, width, height);
+			touchSprite.graphics.endFill();
+			
+			
+			var gradAlphas:Array = [1, 0, 1];
+			var gradColors:Array = [0x000000, 0xFFFFFF, 0x000000];
+			
+			
+			var grad:Sprite	= new Sprite;	
+			grad.graphics.lineStyle(0, 0);
+			grad.graphics.beginGradientFill(gradientType, gradColors, gradAlphas, gradientRatioArray, matrix);
+			grad.graphics.drawRect(0, 0, width, height);
 				
+			
 			if(!(touchSprite.contains(background)))
 				touchSprite.addChild(background);
-			if (!(touchSprite.contains(centerLine)));
-				touchSprite.addChild(centerLine);
-			if (!(touchSprite.contains(leftTriangle)));
-				touchSprite.addChild(leftTriangle);
-			if (!(touchSprite.contains(rightTriangle)));
-				touchSprite.addChild(rightTriangle);
-			if (!(touchSprite.contains(mymask)));
+
+			if (!(touchSprite.contains(mymask)))
 				touchSprite.addChild(mymask);
 				
 			for (var i:int = 0; i < textArray.length; i++)
@@ -705,9 +714,22 @@ package com.gestureworks.cml.element
 				textFieldArray.push(txt);				
 			}
 			
+			
+			if (!(touchSprite.contains(centerLine)))
+				touchSprite.addChild(centerLine);
+				
 			textContainer.mask = mymask;
+			
 			if(!(touchSprite.contains(textContainer)))
 				touchSprite.addChild(textContainer);
+				
+			textContainer.addChild(grad);
+			
+			if (!(touchSprite.contains(leftTriangle)))
+				touchSprite.addChild(leftTriangle);
+			if (!(touchSprite.contains(rightTriangle)))
+				touchSprite.addChild(rightTriangle);			
+			
 			
 			if(!(contains(touchSprite)))
 				addChild(touchSprite);
