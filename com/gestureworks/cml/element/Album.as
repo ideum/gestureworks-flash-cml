@@ -341,7 +341,7 @@ package com.gestureworks.cml.element
 			belt.clusterBubbling = clusterBubbling;
 			
 			var gList:Object = new Object();
-			gList[_dragGesture] = true;
+			gList[dragGesture] = true;
 			belt.gestureList = gList;
 			
 			//add gesture events
@@ -827,8 +827,7 @@ package com.gestureworks.cml.element
 		private function resetDrag(e:TouchEvent):void
 		{
 			var scrollType:Function = horizontal ? scrollH : scrollV;
-			belt.addEventListener(GWGestureEvent.DRAG, scrollType);	
-			belt.gestureReleaseInertia = true;
+			belt.gestureList[dragGesture] = true;
 			released = false;
 		}
 		
@@ -860,8 +859,9 @@ package com.gestureworks.cml.element
 				belt.x += dx;				
 			else if(released)
 			{
-				belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
-				belt.gestureReleaseInertia = false;
+				var gList:Object = belt.gestureList;
+				gList[dragGesture] = false;				
+				belt.gestureList = gList;
 				snap();
 			}
 			
