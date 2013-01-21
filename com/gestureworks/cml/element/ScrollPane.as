@@ -412,10 +412,13 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			if (contains(_horizontalScroll) || contains(_verticalScroll))
-				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+			if ( _horizontalScroll || _verticalScroll) {
+				if (contains(_horizontalScroll) || contains(_verticalScroll))
+					_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+			}
 			else {
-				_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
+				if (_hit)
+					_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			}
 		}
 		
