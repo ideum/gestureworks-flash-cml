@@ -1280,6 +1280,14 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		public function reset():void {
+			if (toggle) {
+				childList.currentValue.visible = false;				
+				childList.reset();
+				childList.currentValue.visible = true;
+			}
+		}
+		
 		/**
 		 * Returns clone of self
 		 */
