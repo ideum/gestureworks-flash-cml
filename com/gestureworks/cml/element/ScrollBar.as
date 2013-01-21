@@ -444,6 +444,7 @@ package com.gestureworks.cml.element
 				thumb.width = width;
 				thumb.height = (height / contentHeight) * railGraphic.height;
 				movementRail = railGraphic.height - thumb.height;
+				railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
 				//thumb.y = railGraphic.y;
 			} else if (_orientation == "horizontal") {
 				contentWidth = newDimension;
