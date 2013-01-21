@@ -138,7 +138,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		public function flickrSearch():void {
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 100, 100, "date-posted-desc");
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 4, 100, "date-posted-desc");
 		}
 		
 		private function onSearchComplete(e:FlickrResultEvent):void {
