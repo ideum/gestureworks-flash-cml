@@ -349,8 +349,9 @@ package com.gestureworks.cml.element
 		}
 		
 		public function createEvents():void {
-			if(_hit){
-				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+			if (_hit) {
+				if (contains(_horizontalScroll) || contains(_verticalScroll))
+					_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
 				_hit.addEventListener(GWGestureEvent.MANIPULATE, onManipulate);
 				_hit.addEventListener(GWGestureEvent.COMPLETE, onComplete);
@@ -409,6 +410,12 @@ package com.gestureworks.cml.element
 				} else if (_content.width * _content.scaleX < width) {
 					if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
 				}
+			}
+			
+			if (contains(_horizontalScroll) || contains(_verticalScroll))
+				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+			else {
+				_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			}
 		}
 		
@@ -546,6 +553,11 @@ package com.gestureworks.cml.element
 			
 			//_content.x -= xShift * _content.scale;
 			//_content.y -= yShift * _content.scale;
+			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
+				_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+			} else {
+				_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
+			}
 		}
 	}
 }
