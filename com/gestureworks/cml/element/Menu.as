@@ -193,6 +193,12 @@ package com.gestureworks.cml.element
 		
 		public function reset():void { 
 			StateUtils.loadState(this, 0, true);
+			for (var i:int = 0; i < this.numChildren; i++) 
+			{
+				if (getChildAt(i) is Button) {
+					Button(getChildAt(i)).reset();
+				}
+			}
 		}
 		
 		/**
