@@ -1,6 +1,8 @@
 package com.gestureworks.cml.element 
 {
 	import away3d.materials.methods.AlphaMaskMethod;
+	import com.adobe.webapis.flickr.Photo;
+	import com.gestureworks.cml.components.FlickrViewer;
 	import com.gestureworks.cml.components.ImageViewer;
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
@@ -160,19 +162,20 @@ package com.gestureworks.cml.element
 			// service.photos.search( user_id, tag_string, tag_mode, 
 			
 			else if (flickrQuery) {
-				
+				flickrQuery.tags = "";
+				flickrQuery.text = "";
 				trace("Flickr test:", Object(flickrQuery).hasOwnProperty(_searchFieldsArray[index]), _searchFieldsArray[index]);
 				for (var i:int = 0; i < 3; i++) 
 				{
 					trace("Setting field:", _searchFieldsArray[i]);
 					if (_searchFieldsArray[i] == "text" ) {
 						// Do something with text.
-						//flickrQuery[_searchFieldsArray[i]] = "hyena " + dials[2].currentString;
+						flickrQuery[_searchFieldsArray[i]] = "hyena " + dials[2].currentString;
 						trace("FlickrQuery text:", flickrQuery.text);
 					}
 					if (_searchFieldsArray[i] == "tags") {
-						flickrQuery[_searchFieldsArray[i]] += dials[1].currentString + ", ";
-						//flickrQuery[_searchFieldsArray[i]] = "striped, hyena, africa";
+						//flickrQuery[_searchFieldsArray[i]] += dials[i].currentString + ", ";
+						flickrQuery[_searchFieldsArray[i]] = "striped, hyena, africa";
 						trace("FlickrQuery tags:", flickrQuery.tags);
 					}
 				}
@@ -232,7 +235,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function queryFlickr():void {
-			//flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
+			flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 			flickrQuery.flickrSearch();
 			flickrQuery.tags = "";
 			flickrQuery.text = "";
@@ -284,10 +287,34 @@ package com.gestureworks.cml.element
 			if (num >= resultCnt)
 				num = resultCnt;
 				
-			for (var i:int = loadCnt; i < num; i++) {				
-				for (var j:* in result[i]) {
-					searchExp(templates[0], String(j), result[i][j]);	
-					//searchExp(templates[1], String(j), result[i][j]);
+			for (var i:int = loadCnt; i < num; i++) {	
+				if (result){
+					for (var j:* in result[i]) {
+						searchExp(templates[0], String(j), result[i][j]);	
+						//searchExp(templates[1], String(j), result[i][j]);
+					}
+				}
+				else if (flickrQuery && !result) {
+					for (var k:int = 0; k < templates.length; k++) {
+						if (templates[k] is FlickrViewer) {
+							trace("Hi, I found your flickrViewr for you, so now you know how to safely search for the results you're expecting, have a nice day.");
+							//trace(flickrQuery.resultPhotos[i]);
+							var tempObj:Object = flickrQuery.resultPhotos[i];
+							var flickrPhoto:Photo =  new Photo();
+							flickrPhoto = flickrQuery.resultPhotos[i];
+							trace(flickrPhoto);
+							for (var l:String in flickrPhoto) {
+								trace("l:", l);
+								searchExp(templates[k], String(l), flickrPhoto[l]);
+							}
+							trace("Checking id:", flickrPhoto["id"]);
+							trace("Checking title:", flickrPhoto["title"]);
+							trace("Method test:", "id" in flickrPhoto);
+							searchExp(templates[k], "id", flickrPhoto["id"]);
+							searchExp(templates[k], "title", flickrPhoto["title"]);
+							searchExp(templates[k], "description", flickrPhoto["description"]);
+						}
+					}
 				}
 				createClone(clones[i]);			
 			}					
@@ -297,8 +324,8 @@ package com.gestureworks.cml.element
 		// creates image viewer clone
 		private function createClone(clone:*):void
 		{
-			var src:String = templates[0].image.src;
-			//var src:String = templates[1].image.src;
+			//var src:String = templates[0].image.src;
+			var src:String = templates[1].image.src;
 			
 			if (cloneMap.hasKey(src)) {
 				clones.push(cloneMap.getKey(src));
@@ -309,11 +336,13 @@ package com.gestureworks.cml.element
 					onCloneLoad();
 			}
 			else {
-				clone = templates[0].clone(); // TODO: remove hardcoded template item 			
+				//clone = templates[0].clone(); // TODO: remove hardcoded template item 			
+				clone = templates[1].clone();
 				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				clone.image.open(src);
+				//clone.image.open(src);
+				//clone.init();
 				cloneMap.append(src, clone);
 			}
 		}		
@@ -374,16 +403,33 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		private function getPreview(obj:ImageViewer):TouchContainer
+		private function getPreview(obj:*):TouchContainer
 		{
 			var prv:TouchContainer = new TouchContainer();
-			var img:Image = obj.image.clone();
+			
+			var flickr:Flickr;
+			var img:Image;
+			if (flickrQuery) {
+				flickr = obj.image.clone();
+				//flickr.displayComplete();
+			}
+			else if (!flickrQuery)
+				img = obj.image.clone();
 													
-			img.width = 0;
-			img.height = 140;
-			img.resample = true;
-			img.scale = 1;
-			img.resize();
+				
+			if (img){
+				img.width = 0;
+				img.height = 140;
+				img.resample = true;
+				img.scale = 1;
+				img.resize();
+			} else if (flickr) {
+				flickr.width = 0;
+				flickr.height = 140;
+				flickr.resample = true;
+				flickr.scale = 1;
+				flickr.resize();
+			}
 						
 			var title:Text;
 			//var title:Text = obj.back.childList.getKey("title").clone();
@@ -393,20 +439,39 @@ package com.gestureworks.cml.element
 			else if (obj.backs && obj.backs.length > 1) {
 				title = obj.searchChildren("title").clone();
 			}
-			title.width = img.width;
+			if (img)
+				title.width = img.width;
+			else if (flickr)
+				title.width = flickr.width;
 			
 			title.textAlign = "center";
 			title.fontSize = 10;
-			title.y = img.height;			
-			title.x = img.x;
 			
-			fadein(img, 1);
+			if(img) {
+				title.y = img.height;			
+				title.x = img.x;
+				
+				fadein(img, 1);
+				
+				prv.addChild(img);
+				prv.addChild(title);
+				prv.width = img.width;
+				prv.height = img.height + 30;
+				previews.push(prv);
+			}
 			
-			prv.addChild(img);
-			prv.addChild(title);
-			prv.width = img.width;
-			prv.height = img.height + 30;
-			previews.push(prv);
+			else if (flickr) {
+				title.y = flickr.height;			
+				title.x = flickr.x;
+				
+				fadein(flickr, 1);
+				
+				prv.addChild(flickr);
+				prv.addChild(title);
+				prv.width = flickr.width;
+				prv.height = flickr.height + 30;
+				previews.push(prv);
+			}
 			
 			return prv;
 		}
@@ -547,7 +612,7 @@ package com.gestureworks.cml.element
 				if ((String(obj.propertyStates[0][p]).indexOf("{") != -1)) {					
 					var str:String = String(obj.propertyStates[0][p]).substring(1, String(obj.propertyStates[0][p]).length -1);
 					
-					if (str == prop) {
+					if (str == prop && val != null) {
 						obj[p] = val;
 					}
 				}
@@ -557,9 +622,9 @@ package com.gestureworks.cml.element
 			if (obj is DisplayObjectContainer) {
 				for (var i:int = 0; i < obj.numChildren; i++) {
 					searchExp(obj.getChildAt(i), prop, val);		
-				}					
+				}
 			}
-		}			
+		}
 
 		
 		// traces result object
