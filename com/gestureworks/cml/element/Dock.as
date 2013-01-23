@@ -324,8 +324,8 @@ package com.gestureworks.cml.element
 		// creates image viewer clone
 		private function createClone(clone:*):void
 		{
-			//var src:String = templates[0].image.src;
-			var src:String = templates[1].image.src;
+			var src:String = templates[0].image.src;
+			//var src:String = templates[1].image.src;
 			
 			if (cloneMap.hasKey(src)) {
 				clones.push(cloneMap.getKey(src));
@@ -336,12 +336,12 @@ package com.gestureworks.cml.element
 					onCloneLoad();
 			}
 			else {
-				//clone = templates[0].clone(); // TODO: remove hardcoded template item 			
-				clone = templates[1].clone();
+				clone = templates[0].clone(); // TODO: remove hardcoded template item 			
+				//clone = templates[1].clone();
 				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				//clone.image.open(src);
+				clone.image.open(src);
 				//clone.init();
 				cloneMap.append(src, clone);
 			}
