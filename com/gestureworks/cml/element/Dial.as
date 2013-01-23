@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
@@ -9,6 +10,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import flash.events.GestureEvent;
 	import flash.events.TouchEvent;
+	import flash.utils.Dictionary;
 	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
@@ -150,11 +152,14 @@ package com.gestureworks.cml.element
 	public class Dial extends ElementFactory
 	{
 		private var touchSprite:TouchSprite;
-		private var textFieldArray:Array = new Array();		
+		private var textFieldArray:Array;		
 		private var textSpacing:int;
 		private var minPos:Number;		
 		private var maxPos:Number;
 		private var centerPos:Number;
+		private var _filterDial:Dial;
+		private var filterMap:Dictionary;
+		private const NO_FILTER:String = "no_filter";
 		
 		/**
 		 * Contructor
@@ -250,7 +255,7 @@ package com.gestureworks.cml.element
 			_maxItemsOnScreen = value;
 		}
 		
-		private var textArray:Array = ["Collection 1", "Collection 2", "Collection 3", "Collection 4", "Collection 5", "Collection 6", "Collection 7", "Collection 8", "Collection 9", "Collection 10"];
+		private var textArray:Array = []; 
 		private var _text:String = "Collection 1, Collection 2, Collection 3, Collection 4, Collection 5, Collection 6, Collection 7, Collection 8, Collection 9, Collection 10";
 		/**
 		 * Sets array of text elements
@@ -262,7 +267,8 @@ package com.gestureworks.cml.element
 		}
 		public function set text(value:String):void
 		{
-			_text = value;
+	//		var rex:RegExp = /[\r\n]*/gim;
+			_text = value;// .replace(rex, '');
 			textArray = _text.split(",");
 		}
 		
@@ -608,6 +614,22 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * The <code>Dial</code> object used to filter the text values of this <code>Dial</code> based on
+		 * its current selection.
+		 */
+		public function get filterDial():* { return _filterDial; }
+		public function set filterDial(obj:*):void
+		{
+			if (!(obj is Dial))
+				obj = CMLObjectList.instance.getId(obj.toString());
+			if (obj is Dial)
+			{
+				_filterDial = obj;
+				_filterDial.addEventListener(StateEvent.CHANGE, applyFilter);
+			}
+		}
+		
+		/**
 		 * Initializes the configuration and display of dial elements
 		 */
 		public function init():void
@@ -691,29 +713,6 @@ package com.gestureworks.cml.element
 
 			if (!(touchSprite.contains(mymask)))
 				touchSprite.addChild(mymask);
-				
-			for (var i:int = 0; i < textArray.length; i++)
-			{	
-				if (continuous && i == maxItemsOnScreen)
-					break;	
-				
-				var txt:Text = new Text();
-				txt.x = 20;
-				txt.y = 50;
-				txt.fontSize = _fontSize;
-				txt.wordWrap = true;
-				txt.text = textArray[i];
-				txt.font = "OpenSansBold";
-				textContainer.addChild(txt);
-				txt.width = centerLine.width;
-				txt.border = false;
-				txt.autoSize = "left";
-				textSpacing = (background.height - (txt.height * maxItemsOnScreen)) / (maxItemsOnScreen - 1);	
-				txt.y = textSpacing * i + txt.height * i ;
-				txt.color = textColor;
-				textFieldArray.push(txt);				
-			}
-			
 			
 			if (!(touchSprite.contains(centerLine)))
 				touchSprite.addChild(centerLine);
@@ -723,7 +722,6 @@ package com.gestureworks.cml.element
 			if(!(touchSprite.contains(textContainer)))
 				touchSprite.addChild(textContainer);
 				
-			textContainer.addChild(grad);
 			
 			if (!(touchSprite.contains(leftTriangle)))
 				touchSprite.addChild(leftTriangle);
@@ -738,9 +736,108 @@ package com.gestureworks.cml.element
 			minPos = background.y;
 			centerPos = background.height / 2;
 			
-			onEnd(null);
+			configFilters();			
+			updateTextFields();
+			textContainer.addChild(grad);
+			onEnd();
 		}
 		
+		private function updateTextFields():void
+		{
+			textFieldArray = new Array();
+			textFieldArray = new Array();
+			
+			for (var i:int = textContainer.numChildren-1; i >= 0; i--)
+			{
+				if (textContainer.getChildAt(i) is Text)
+					textContainer.removeChildAt(i);
+			}
+							
+			for (i = 0; i < textArray.length; i++)
+			{	
+				if (continuous && i == maxItemsOnScreen)
+					break;	
+				
+				var txt:Text = new Text();
+				txt.x = 20;
+				txt.y = 50;
+				txt.fontSize = _fontSize;
+				txt.wordWrap = true;
+				txt.text = textArray[i];
+				txt.font = "OpenSansBold";
+				textContainer.addChildAt(txt,0);
+				txt.width = centerLine.width;
+				txt.border = false;
+				txt.autoSize = "left";
+				textSpacing = (background.height - (txt.height * maxItemsOnScreen)) / (maxItemsOnScreen - 1);	
+				txt.y = textSpacing * i + txt.height * i ;
+				txt.color = textColor;
+				textFieldArray.push(txt);				
+			}
+		}
+		
+		/**
+		 * Associates filters of the <code>filterDial</code> to this dial's values by parsing the user-defined text values. Filter assignment, means the filtered 
+		 * value will not display unless its associated filter is the current value of the <code>filterDial</code>. A colon character in a String value denotes 
+		 * the assignment of a filter (or multiple filters) to a value of the dial. The syntax is "filter:value" for a single filter and "filter1:filter2:value"
+		 * for multiple filters. If no colon exists in the String, the value will not be constantly displayed. 
+		 */
+		private function configFilters():void
+		{
+			if (!filterDial) return;
+			
+			filterMap = new Dictionary();
+			
+			for each(var txt:String in textArray)
+			{
+				if (txt.search(":") > -1)
+				{
+					var keys:Array = txt.split(":");
+					var value:String = keys.pop();
+					for each(var key:String in keys)
+						addFilter(key, value);
+				}
+				else
+				{
+					addFilter(NO_FILTER, txt);				
+				}
+			}
+
+			textArray = filterMap[filterDial.currentString] ? filterMap[filterDial.currentString] : new Array();
+			textArray = filterMap[NO_FILTER] ? textArray.concat(filterMap[NO_FILTER]) : textArray;
+		}
+		
+		/**
+		 * Maps a filter to an array of values
+		 * @param	filter  the value of the <code>filterDial</code>
+		 * @param	value  the value to filter
+		 */
+		private function addFilter(filter:String, value:String):void
+		{
+			if (!filterMap[filter]) 
+				filterMap[filter] = new Array();
+				
+			filterMap[filter].push(value);
+		}
+		
+		/**
+		 * Triggered by the state change event of the <code>filterDial</code>. Applies the currently selected filter 
+		 * of the <code>filterDial</code> to the text fields. Nothing changes, if the current selection is not a filter.
+		 * @param	e
+		 */
+		private function applyFilter(e:StateEvent):void
+		{
+			if (!filterMap) return;
+			textArray = new Array();
+			
+			if(filterMap[e.value])
+				textArray = filterMap[e.value];
+			if (filterMap[NO_FILTER])
+				textArray = textArray.concat(filterMap[NO_FILTER]);
+						
+			updateTextFields();
+			onEnd(e.id);
+		}
 		
 		public var invertDrag:Boolean = false;
 		
@@ -838,7 +935,7 @@ package com.gestureworks.cml.element
 		
 		
 		public var currentIndex:int = 0;
-		public var currentString:String;
+		public var currentString:String;		
 		
 		
 		/**
@@ -846,6 +943,7 @@ package com.gestureworks.cml.element
 		 */
 		private function onEnd(event:* = null):void
 		{	
+			
 			// difference to closest and center
 			var diff:Number = 0;
 			var diffArray:Array = [];
@@ -858,7 +956,7 @@ package com.gestureworks.cml.element
 			
 			// closest textfield array index
 			var closestIndex:int = -1;
-			
+
 			// find closest textfield array index to center
 			for (var i:int = 0; i < textFieldArray.length; i++)
 			{				
@@ -944,8 +1042,9 @@ package com.gestureworks.cml.element
 			currentIndex = closestIndex;
 			
 			if (textFieldArray[currentIndex].text != currentString) {
+				var dispatchID:String = event is String ? event : this.id;
 				currentString = textFieldArray[currentIndex].text;				
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "currentString", currentString));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, dispatchID, "currentString", currentString));
 			}	
 		}
 		

@@ -142,7 +142,7 @@ package com.gestureworks.cml.element
 		private function onDialChange(e:StateEvent):void 
 		{
 			var index:int = dials.indexOf(e.target);
-			
+
 			if (!flickrQuery){
 				if (index == 0)
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
@@ -183,10 +183,15 @@ package com.gestureworks.cml.element
 				// Set up event listener and run a search here.
 			}
 			
-			if (cmlIni && !flickrQuery)
-				query();
-			else if (cmlIni && flickrQuery)
-				queryFlickr();
+			//verify the cml has been initialized and the event was triggered
+			//by the target (scond condition is for filtering)
+			if(cmlIni && e.target.id == e.id)
+			{
+				if (flickrQuery)
+					queryFlickr();
+				else
+					 query();
+			}
 		}	
 		
 		
