@@ -207,7 +207,7 @@ package com.gestureworks.cml.core
 			
 			
 			if (debug)	
-			FileManager.instance.debug = true;				
+				FileManager.instance.debug = true;				
 			
 			
 			if (FileManager.instance.cmlCount > 0)
@@ -228,8 +228,6 @@ package com.gestureworks.cml.core
 			}
 			
 		}			
-		
-		
 		
 		
 		private static function loadExtFiles():void
@@ -309,7 +307,7 @@ package com.gestureworks.cml.core
 			
 			
 			if (debug)
-				trace("\n 9) Activate touch... apply GestureList to TouchContainers");				
+				trace("\n 8) Activate touch... apply GestureList to TouchContainers");				
 			
 			DisplayManager.instance.activateTouch();				
 			
@@ -321,13 +319,13 @@ package com.gestureworks.cml.core
 
 			
 			if (debug)
-				trace("\n 10) Add child display objects to parents... make objects visible");				
+				trace("\n 9) Add child display objects to parents... make objects visible");				
 			
 			DisplayManager.instance.addCMLChildren();
 						
 			
 			if (debug)
-				trace("\n 8) Layout Containers... set dimensions to child");				
+				trace("\n 10) Layout Containers... set dimensions to child");				
 			
 			DisplayManager.instance.layoutCML();
 			
@@ -377,7 +375,7 @@ package com.gestureworks.cml.core
 					loadRenderer(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlRendererKitFileComplete-1]);
 			}
 			else if (event.fileType == "cmlRendererData")
-			{
+			{		
 				var renderKit:XML = <RenderKit/>
 				var data:XMLList = cmlRenderer + CMLLoader.getInstance(event.filePath).data.RendererData;
 				renderKit.appendChild(data);				
@@ -385,7 +383,7 @@ package com.gestureworks.cml.core
 			}
 				
 			else
-				createElements(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1]);				
+				createElements(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1], true);				
 			
 			
 			if (cmlFilesComplete == FileManager.instance.cmlCount)
@@ -405,7 +403,7 @@ package com.gestureworks.cml.core
 		
 		private static var currentParent:*;
 		
-		public static function createElements(cml:*, parent:*=null):void
+		public static function createElements(cml:*, parent:*=null, fromInclude:Boolean=false):void
 		{
 			if (debug)
 					trace(StringUtils.printf("\n%4s%s", "", "Create AS3 objects from CML elements"));				
@@ -417,7 +415,7 @@ package com.gestureworks.cml.core
 				
 				if (name != "LibraryKit" && name != "LayoutKit" && 
 					name != "WindowKit" && name != "DebugKit") 
-					loopCML(cml.child(i), parent);				
+					loopCML(cml.child(i), parent, null, fromInclude);				
 			}
 					
 		}
@@ -453,6 +451,7 @@ package com.gestureworks.cml.core
 
 		private static var index:int = 0;
 		private static var includeParentIndex:Array = [];
+		private static var includeCMLIndex:Array = [];
 		
 		/**
 		 * Recursive CML parsing
@@ -460,8 +459,8 @@ package com.gestureworks.cml.core
 		 * @param	parent
 		 * @param	properties
 		 */
-		public static function loopCML(cml:*, parent:*=null, properties:*=null):void
-		{			
+		public static function loopCML(cml:*, parent:*=null, properties:*=null, fromInclude:Boolean=false):void
+		{	
 			var className:String = null;
 			var obj:* = null;
 			var returnedNode:XMLList = null;
@@ -498,6 +497,8 @@ package com.gestureworks.cml.core
 							}	
 							
 							includeParentIndex.push(parent);
+							includeCMLIndex.push(CMLObjectList.instance.currentIndex+1);
+
 							FileManager.instance.addToQueue(attrValue, "cml");			
 						}
 					}
@@ -550,8 +551,8 @@ package com.gestureworks.cml.core
 				
 				// unique object identifier
 				obj.cmlIndex = CMLObjectList.instance.length-1;
-				
-				
+	
+					
 				/*
 				// add to master tree node
 				
@@ -616,21 +617,32 @@ package com.gestureworks.cml.core
 					}
 				}
 				
-				
 				obj.postparseCML(XMLList(node));
 				
-				if (parent is (IContainer))
-				{
-					parent.childToList(obj.id, obj);
+				if (parent is (IContainer)) {
+					if (fromInclude)
+						parent.childList.insert(includeCMLIndex.shift(), obj.id, obj);
+					else
+						parent.childToList(obj.id, obj);
 				}				
 				
 				//recursion
-				if (returnedNode)
+				if (returnedNode) {
 					loopCML(returnedNode, obj, properties);					
+				}
+								
 			}
 			
-			if (parent == defaultContainer && obj is DisplayObject)
-					defaultContainer.addChild(obj);			
+			if (parent == defaultContainer && obj is DisplayObject) {
+				if (fromInclude) {
+									trace(".......................", includeCMLIndex.length);
+	
+					defaultContainer.addChildAt(obj, includeCMLIndex.shift());
+				}
+				else	
+					defaultContainer.addChild(obj);
+			}
+			
 		}		
 		
 		
@@ -952,7 +964,6 @@ package com.gestureworks.cml.core
 				
 				for (var i:int = 0; i < obj.childList.length; i++) 
 				{
-		
 					cmlIndex = -1;
 					id = "";
 					class_ = "";
