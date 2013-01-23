@@ -522,6 +522,7 @@ package com.gestureworks.cml.element
 				obj.y = location.y + location.height;
 			}
 			else {		
+				obj.rotation = 0;
 				obj.x = location.x;
 				obj.y = location.y;				
 			}
