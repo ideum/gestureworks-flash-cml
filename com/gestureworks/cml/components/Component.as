@@ -388,6 +388,8 @@ package com.gestureworks.cml.components
 			if (menu) {
 				sp.height -= menu.getChildAt(0).height + menu.paddingBottom + t.paddingBottom;
 			}
+			
+			//sp.updateLayout(t.width, t.height);
 		}
 		
 		/**
@@ -537,6 +539,8 @@ package com.gestureworks.cml.components
 			else { 
 				this.visible = false; 
 			}
+			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
 		}
 	
 		public function reset():void
