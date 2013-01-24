@@ -89,6 +89,8 @@ package com.gestureworks.cml.loaders
 			//trace("Percent downloaded", event.bytesLoaded / event.bytesTotal); 
 		}	
 		
-		
+		public function unloadAndStop():void {
+			loader.unloadAndStop();
+		}
 	}
 }
