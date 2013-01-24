@@ -46,8 +46,13 @@ package com.gestureworks.cml.factories
    			if (img)
 			{
 				img.removeEventListener(Event.COMPLETE, loadComplete);
+				img.unloadAndStop();
 				img = null;
 			}
+			
+			bitmap = null;
+			bitmapData = null;
+			
 		}
 		
 		private var _width:Number = 0;
