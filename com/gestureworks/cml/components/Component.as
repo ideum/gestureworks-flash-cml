@@ -538,9 +538,8 @@ package com.gestureworks.cml.components
 			}
 			else { 
 				this.visible = false; 
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
 			}
-			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
 		}
 	
 		public function reset():void
@@ -584,7 +583,8 @@ package com.gestureworks.cml.components
 			tween = BetweenAS3.tween(this, { alpha:0 }, null, dur);
 			tween.play();
 			tween.onComplete = function():void { 
-				visible = false;
+					visible = false;
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
 				};
 		}			
 		
