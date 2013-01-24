@@ -45,27 +45,10 @@ package com.gestureworks.cml.core
 		private static var cmlTreeNodes:Array = [];
 		public static var relativePaths:Boolean = false;
 		public static var extensions:RegExp;			
-		public static var rootDirectory:String = "";		
+		public static var rootDirectory:String = "";	
+		private static var currentParent:*;			
 		
-        private static var _dispatcher:EventDispatcher = new EventDispatcher();
- 
-        public static function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
-            _dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
-        }
-        public static function dispatchEvent(event:Event):Boolean {
-            return _dispatcher.dispatchEvent(event);
-        }
-        public static function hasEventListener(type:String):Boolean {
-            return _dispatcher.hasEventListener(type);
-        }
-        public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
-            _dispatcher.removeEventListener(type, listener, useCapture);
-        }
-        public static function willTrigger(type:String):Boolean {
-            return _dispatcher.willTrigger(type);
-        }		
-		
-		
+
 		/**
 		 * Initial parsing of the cml document
 		 * @param 	xml
@@ -194,40 +177,35 @@ package com.gestureworks.cml.core
 			*/
 			
 			
-			
+			if (debug)	
+				FileManager.instance.debug = true;	
+				
+				
 			
 			if (debug)
 				trace("\n 4) Begin recursive depth traversal");	
 			
 			currentParent = defaultContainer;
-			createElements(cml, defaultContainer);
-	
 			
-			
-			
-			
-			if (debug)	
-				FileManager.instance.debug = true;				
-			
-			
-			if (FileManager.instance.cmlCount > 0)
-			{	
-				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);												
-				FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
-				FileManager.instance.startCMLQueue();				
-			}	
-			else if (FileManager.instance.fileCount > 0)
-			{
-				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);								
-				loadExtFiles();
-			}
-			else
-			{
-				FileManager.instance.removeEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);												
-				loadCSS();
-			}
-			
+			var xmllist:XMLList = XMLList(cml.*);
+			loopCML(xmllist, defaultContainer);
+			evaluate();	
 		}			
+		
+		
+		private static function evaluate():void
+		{
+			if (cmlFilesComplete != FileManager.instance.cmlCount)
+				return;
+			else if (pausedCML.length > 0) {
+				loopCML(pausedCML.pop(), includeParentIndex[cmlFilesComplete-1]);
+				evaluate();
+			}
+			else if (FileManager.instance.fileCount > 0 && !extFilesLoaded)
+				loadExtFiles();
+			else
+				loadCSS();			
+		}
 		
 		
 		private static function loadExtFiles():void
@@ -239,14 +217,17 @@ package com.gestureworks.cml.core
 			FileManager.instance.startFileQueue();				
 		}
 		
-				
+		
+		private static var extFilesLoaded:Boolean = false;
+		
 		private static function onLoadComplete(event:Event):void
-		{
+		{			
 			FileManager.instance.removeEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
 			
 			if (debug)
 				trace(StringUtils.printf("\n%4s%s", "", "External file loading complete"));
-
+				
+			extFilesLoaded = true;	
 			loadCSS();
 		}
 
@@ -307,7 +288,7 @@ package com.gestureworks.cml.core
 			
 			
 			if (debug)
-				trace("\n 8) Activate touch... apply GestureList to TouchContainers");				
+				trace("\n 9) Activate touch... apply GestureList to TouchContainers");				
 			
 			DisplayManager.instance.activateTouch();				
 			
@@ -319,13 +300,13 @@ package com.gestureworks.cml.core
 
 			
 			if (debug)
-				trace("\n 9) Add child display objects to parents... make objects visible");				
+				trace("\n 10) Add child display objects to parents... make objects visible");				
 			
 			DisplayManager.instance.addCMLChildren();
 						
 			
 			if (debug)
-				trace("\n 10) Layout Containers... set dimensions to child");				
+				trace("\n 8) Layout Containers... set dimensions to child");				
 			
 			DisplayManager.instance.layoutCML();
 			
@@ -375,50 +356,19 @@ package com.gestureworks.cml.core
 					loadRenderer(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlRendererKitFileComplete-1]);
 			}
 			else if (event.fileType == "cmlRendererData")
-			{		
+			{
 				var renderKit:XML = <RenderKit/>
 				var data:XMLList = cmlRenderer + CMLLoader.getInstance(event.filePath).data.RendererData;
 				renderKit.appendChild(data);				
 				loadRenderer(XMLList(renderKit), includeParentIndex[cmlRendererKitFileComplete-1]);	
 			}
-				
-			else
-				createElements(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlFilesComplete-1], true);				
-			
-			
-			if (cmlFilesComplete == FileManager.instance.cmlCount)
-			{				
-				if (FileManager.instance.fileCount > 0)
-					loadExtFiles();
-				else
-					loadCSS();				
+			else {
+				var xml:XML = XML(CMLLoader.getInstance(event.filePath).data);
+				var xmllist:XMLList = XMLList((xml.*).toXMLString());				
+				loopCML(xmllist, includeParentIndex[cmlFilesComplete-1]);
+				evaluate();
 			}
-			
-			else
-			{
-				FileManager.instance.resumeCMLQueue();
-			}
-			
 		}			
-		
-		private static var currentParent:*;
-		
-		public static function createElements(cml:*, parent:*=null, fromInclude:Boolean=false):void
-		{
-			if (debug)
-					trace(StringUtils.printf("\n%4s%s", "", "Create AS3 objects from CML elements"));				
-							
-			var name:String;
-			for (var i:int=0; i<cml.children().length(); i++)
-			{
-				name = cml.child(i).name().toString();	
-				
-				if (name != "LibraryKit" && name != "LayoutKit" && 
-					name != "WindowKit" && name != "DebugKit") 
-					loopCML(cml.child(i), parent, null, fromInclude);				
-			}
-					
-		}
 		
 		
 		
@@ -448,10 +398,10 @@ package com.gestureworks.cml.core
 		}			
 
 					
-
 		private static var index:int = 0;
 		private static var includeParentIndex:Array = [];
-		private static var includeCMLIndex:Array = [];
+		private static var pausedCML:Array = [];
+		
 		
 		/**
 		 * Recursive CML parsing
@@ -459,17 +409,22 @@ package com.gestureworks.cml.core
 		 * @param	parent
 		 * @param	properties
 		 */
-		public static function loopCML(cml:*, parent:*=null, properties:*=null, fromInclude:Boolean=false):void
-		{	
+		public static function loopCML(cml:XMLList, parent:*=null, properties:*=null):void
+		{			
 			var className:String = null;
 			var obj:* = null;
 			var returnedNode:XMLList = null;
 			var classNameKeyword:Boolean = false;
 			
-			for each (var node:* in cml)
+			var i:int = 0;
+			for each (var node:XML in cml)
 			{
 				className = node.name();								
 				classNameKeyword = false;
+				
+				
+				if (className == "LibraryKit" || className == "LayoutKit" || className == "WindowKit" || className == "DebugKit")
+					continue;
 				
 				// nested cml loader
 				if (className == "Include")
@@ -495,17 +450,32 @@ package com.gestureworks.cml.core
 									attrValue = rootDirectory.concat(attrValue);
 								}
 							}	
-							
+														
 							includeParentIndex.push(parent);
-							includeCMLIndex.push(CMLObjectList.instance.currentIndex+1);
-
-							FileManager.instance.addToQueue(attrValue, "cml");			
+							FileManager.instance.addToQueue(attrValue, "cml");								
+							
+							pausedCML.push(cml.copy());
+														
+							for (var j:int = i; j >= 0; j--) {
+								delete pausedCML[pausedCML.length - 1][j];
+							}
+																
+							FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
+							
+							if (FileManager.instance.cmlCount == 1)
+								FileManager.instance.startCMLQueue();
+							else 
+								FileManager.instance.resumeCMLQueue();
+							
+							return;	
+									
 						}
 					}
 					
+
 					continue;
 				}
-				
+			
 				
 				// look for className keyword
 				// this changes the class type of the loaded object	
@@ -550,29 +520,7 @@ package com.gestureworks.cml.core
 				DisplayList.array.push(obj);					
 				
 				// unique object identifier
-				obj.cmlIndex = CMLObjectList.instance.length-1;
-	
-					
-				/*
-				// add to master tree node
-				
-				if (parent == defaultContainer)
-				{
-					cmlTreeNodes[0] = new TreeNode(obj);
-				}
-				else
-				{					
-					for (var i:int = 0; i < cmlTreeNodes.length; i++) 
-					{
-						if (cmlTreeNodes[i].data == parent)
-						{
-							trace("_________________________");
-							cmlTreeNodes[CMLObjectList.instance.length - 1] = new TreeNode(obj, cmlTreeNodes[i]);
-						}
-						
-					}
-				}
-				*/		
+				obj.cmlIndex = CMLObjectList.instance.length-1;	
 				
 				// run object's parse routine	
 				returnedNode = obj.parseCML(XMLList(node));
@@ -596,7 +544,7 @@ package com.gestureworks.cml.core
 						for each (var val:* in properties.*)
 						{							
 							if (obj.propertyStates[0][key] == val.name().toString()){
-								obj.propertyStates[0][key] = val;					
+								obj.propertyStates[0][key] = val;
 	
 							}	
 						}
@@ -617,32 +565,21 @@ package com.gestureworks.cml.core
 					}
 				}
 				
+				
 				obj.postparseCML(XMLList(node));
 				
-				if (parent is (IContainer)) {
-					if (fromInclude)
-						parent.childList.insert(includeCMLIndex.shift(), obj.id, obj);
-					else
-						parent.childToList(obj.id, obj);
-				}				
+				if (parent is (IContainer))
+					parent.childToList(obj.id, obj);				
+				else if (parent == defaultContainer && obj is DisplayObject)
+					defaultContainer.addChild(obj);					
 				
 				//recursion
-				if (returnedNode) {
-					loopCML(returnedNode, obj, properties);					
-				}
-								
+				if (returnedNode.length() > 0)
+					loopCML(returnedNode, obj, properties);	
+					
+				i++;	
 			}
-			
-			if (parent == defaultContainer && obj is DisplayObject) {
-				if (fromInclude) {
-									trace(".......................", includeCMLIndex.length);
-	
-					defaultContainer.addChildAt(obj, includeCMLIndex.shift());
-				}
-				else	
-					defaultContainer.addChild(obj);
-			}
-			
+				
 		}		
 		
 		
@@ -674,12 +611,8 @@ package com.gestureworks.cml.core
 			{
 				//begin search in core class list
 				obj = searchPackages(className, CML_CORE.CML_CORE_PACKAGES);
-								
-				//if search failed, try the external list
-				//if (!obj)
-					//obj = searchPackages(className, CML_EXTERNAL_PACKAGES);
 
-				//if search failed again, throw an error
+				//if search failed, throw an error
 				if (!obj)
 					throw new Error(className + " failed to load");
 			}
@@ -964,6 +897,7 @@ package com.gestureworks.cml.core
 				
 				for (var i:int = 0; i < obj.childList.length; i++) 
 				{
+		
 					cmlIndex = -1;
 					id = "";
 					class_ = "";
@@ -1006,6 +940,22 @@ package com.gestureworks.cml.core
 		
 		
 		
-		
+        private static var _dispatcher:EventDispatcher = new EventDispatcher();
+ 
+        public static function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
+            _dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+        }
+        public static function dispatchEvent(event:Event):Boolean {
+            return _dispatcher.dispatchEvent(event);
+        }
+        public static function hasEventListener(type:String):Boolean {
+            return _dispatcher.hasEventListener(type);
+        }
+        public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+            _dispatcher.removeEventListener(type, listener, useCapture);
+        }
+        public static function willTrigger(type:String):Boolean {
+            return _dispatcher.willTrigger(type);
+        }		
 	}
 }
