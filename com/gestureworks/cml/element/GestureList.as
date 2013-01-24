@@ -34,6 +34,11 @@ package com.gestureworks.cml.element
 		public function get gestureList():XMLList{return _gestureList;}
 		public function set gestureList(value:XMLList):void
 		{
+			if (value == null) {
+				_gestureList = null;
+				return;
+			}
+			
 			if (gestureList === value.Gesture) 
 				return;
 			
