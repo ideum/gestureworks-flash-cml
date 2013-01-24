@@ -6,6 +6,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Rectangle;
@@ -310,8 +311,16 @@ package com.gestureworks.cml.element
 		 */
 		public function clear():void
 		{
-			while (belt.numChildren)
-				belt.removeChildAt(belt.numChildren - 1);
+			while (belt.numChildren > 0) {
+				while(DisplayObjectContainer(belt.getChildAt(0)).numChildren > 0){
+					if ("close" in DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)) 
+						DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)["close"]();
+					/*if ("dispose" in DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)) 
+						DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)["dispose"];*/
+					DisplayObjectContainer(belt.getChildAt(0)).removeChildAt(0);
+				}
+				belt.removeChildAt(0);
+			}
 			
 			if (loop)
 				_loopQueue = new Array();
