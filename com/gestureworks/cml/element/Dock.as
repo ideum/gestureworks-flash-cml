@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element 
 {
-	import away3d.materials.methods.AlphaMaskMethod;
 	import com.adobe.webapis.flickr.Photo;
 	import com.gestureworks.cml.components.FlickrViewer;
 	import com.gestureworks.cml.components.ImageViewer;
@@ -68,6 +67,25 @@ package com.gestureworks.cml.element
 		{
 			super();
 		
+		}
+		
+		private var _nextArrow:*;
+		/**
+		 * An optional way to set a custom graphic for multiple pages of results. Setting this will remove it from the childList to be placed inside the menu album.
+		 */
+		public function get nextArrow():* { return _nextArrow; }
+		public function set nextArrow(value:String):void {
+			_nextArrow = searchChildren(value);
+			if (contains(_nextArrow))
+				removeChild(_nextArrow);
+		}
+		
+		private var _previousArrow:*;
+		public function get previousArrow():* { return _previousArrow; }
+		public function set previousArrow(value:String):void {
+			_previousArrow = searchChildren(value);
+			if (contains(_previousArrow))
+				removeChild(_previousArrow);
 		}
 		
 		/**
@@ -141,8 +159,21 @@ package com.gestureworks.cml.element
 		// get search terms from dial and submit query
 		private function onDialChange(e:StateEvent):void 
 		{
+			for each (var obj:* in clones) {
+				//album.belt.removeChild(obj);
+				cloneMap.removeKey(obj.image.src);
+				//if (obj["image"]) obj.image.close();
+				if ("dispose" in obj && obj.visible == false) {
+					obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
+					obj.dispose();
+				}
+			}
+			cloneMap = new LinkedMap(false);
+			clones = [];
+			album.clear();
+			
 			var index:int = dials.indexOf(e.target);
-
+			
 			if (!flickrQuery){
 				if (index == 0)
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
@@ -170,6 +201,7 @@ package com.gestureworks.cml.element
 					trace("Setting field:", _searchFieldsArray[i]);
 					if (_searchFieldsArray[i] == "text" ) {
 						// Do something with text.
+						
 						flickrQuery[_searchFieldsArray[i]] = "hyena " + dials[2].currentString;
 						trace("FlickrQuery text:", flickrQuery.text);
 					}
@@ -183,15 +215,10 @@ package com.gestureworks.cml.element
 				// Set up event listener and run a search here.
 			}
 			
-			//verify the cml has been initialized and the event was triggered
-			//by the target (scond condition is for filtering)
-			if(cmlIni && e.target.id == e.id)
-			{
-				if (flickrQuery)
-					queryFlickr();
-				else
-					 query();
-			}
+			if (cmlIni && !flickrQuery)
+				query();
+			else if (cmlIni && flickrQuery)
+				queryFlickr();
 		}	
 		
 		
@@ -242,12 +269,24 @@ package com.gestureworks.cml.element
 		private function queryFlickr():void {
 			flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 			flickrQuery.flickrSearch();
-			flickrQuery.tags = "";
-			flickrQuery.text = "";
+			//flickrQuery.tags = "";
+			//flickrQuery.text = "";
+			
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
+			
+			album.clear();
+			
+			previews = [];
+			clones = [];
+			
+			dockText[1].text = "searching collection...";
+			dockText[0].visible = true;
+			dockText[1].visible = true;
+			var resultTxt:Text = searchChildren("#result_text");
+			resultTxt.text = "";
 			
 			resultCnt = flickrQuery.resultPhotos.length;
 			loadClone();
@@ -293,31 +332,20 @@ package com.gestureworks.cml.element
 				num = resultCnt;
 				
 			for (var i:int = loadCnt; i < num; i++) {	
-				if (result){
-					for (var j:* in result[i]) {
-						searchExp(templates[0], String(j), result[i][j]);	
-						//searchExp(templates[1], String(j), result[i][j]);
+				if (result) {
+					for (var m:int = 0; m < templates.length; m++) 
+					{
+						if (templates[m] is ImageViewer){
+							for (var j:* in result[i]) {
+								searchExp(templates[m], result[i]);
+							}
+						}
 					}
 				}
 				else if (flickrQuery && !result) {
 					for (var k:int = 0; k < templates.length; k++) {
 						if (templates[k] is FlickrViewer) {
-							trace("Hi, I found your flickrViewr for you, so now you know how to safely search for the results you're expecting, have a nice day.");
-							//trace(flickrQuery.resultPhotos[i]);
-							var tempObj:Object = flickrQuery.resultPhotos[i];
-							var flickrPhoto:Photo =  new Photo();
-							flickrPhoto = flickrQuery.resultPhotos[i];
-							trace(flickrPhoto);
-							for (var l:String in flickrPhoto) {
-								trace("l:", l);
-								searchExp(templates[k], String(l), flickrPhoto[l]);
-							}
-							trace("Checking id:", flickrPhoto["id"]);
-							trace("Checking title:", flickrPhoto["title"]);
-							trace("Method test:", "id" in flickrPhoto);
-							searchExp(templates[k], "id", flickrPhoto["id"]);
-							searchExp(templates[k], "title", flickrPhoto["title"]);
-							searchExp(templates[k], "description", flickrPhoto["description"]);
+							searchExp(templates[k], flickrQuery.resultPhotos[i]);
 						}
 					}
 				}
@@ -329,8 +357,17 @@ package com.gestureworks.cml.element
 		// creates image viewer clone
 		private function createClone(clone:*):void
 		{
-			var src:String = templates[0].image.src;
+			//var src:String = templates[0].image.src;
 			//var src:String = templates[1].image.src;
+			
+			// Check the templates for the one that's been populated, then update the source.
+			var src:String = "";
+			
+			for (var i:int = 0; i < templates.length; i++) 
+			{
+				if (templates[i].image.src)
+					src = templates[i].image.src;
+			}
 			
 			if (cloneMap.hasKey(src)) {
 				clones.push(cloneMap.getKey(src));
@@ -341,12 +378,12 @@ package com.gestureworks.cml.element
 					onCloneLoad();
 			}
 			else {
-				clone = templates[0].clone(); // TODO: remove hardcoded template item 			
-				//clone = templates[1].clone();
+				//clone = templates[0].clone(); // TODO: remove hardcoded template item
+				clone = templates[1].clone();
 				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				clone.image.open(src);
+				//clone.image.open(src);
 				//clone.init();
 				cloneMap.append(src, clone);
 			}
@@ -356,14 +393,16 @@ package com.gestureworks.cml.element
 		// image load data
 		private function onCloneLoad(event:StateEvent=null):void 
 		{			
-			if (event && event.property == "percentLoaded") {
+			/*if (event && event.property == "percentLoaded") {
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt + ": " + event.value;
 			}
 			
-			else if ( (!event) || event.property == "isLoaded") {
+			else*/ if ( (!event) || event.property == "isLoaded") {
+				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
 				if (event) {
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
 					event.target.init();
+					event.target.addEventListener(StateEvent.CHANGE, onCloneTimeout);
 				}
 				loadCnt++;
 				
@@ -391,18 +430,40 @@ package com.gestureworks.cml.element
 		
 		private function displayResults():void
 		{
+				
 			for (var i:int = 0; i < dockText.length; i++) {
 				dockText[i].visible = false;
 			}
 			
 			var resultTxt:Text = searchChildren("#result_text");
-			resultTxt.text = resultCnt + " Results";			
+			resultTxt.text = resultCnt + " Results";	
+			if (flickrQuery && flickrQuery.pages > 1) {
+				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
+			}
 		
 			//var album:Album = ("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
 			album.clear();
+			
+			if (flickrQuery && flickrQuery.pages > 1) {
+				if (flickrQuery.pageNumber > 1) {
+					if (_previousArrow) 
+						album.addChild(_previousArrow);
+						//album.setChildIndex(_previousArrow, 0);
+					// else...auto-generate one?
+				}
+			}
+			
 			for each(var clone:* in clones)
 				album.addChild(getPreview(clone));
-				
+			
+			if (flickrQuery && flickrQuery.pages > 1) {
+				// Add a next arrow.
+				if (flickrQuery.pageNumber < flickrQuery.pages) {
+					if (_nextArrow) album.addChild(_nextArrow);
+					// else...auto-generate one?
+				}
+			}
+			
 			album.margin = 15;
 			album.init();
 		}
@@ -485,8 +546,43 @@ package com.gestureworks.cml.element
 		private function selection(e:StateEvent):void
 		{
 			if (e.property == "selectedItem")
-			{								
-				selectItem(clones[previews.indexOf(e.value)]);
+			{	
+				if (clones[previews.indexOf(e.value)])
+					selectItem(clones[previews.indexOf(e.value)]);
+				else if (e.value.contains(_nextArrow)) {
+					if (flickrQuery) {
+						for each (var obj:* in clones) {
+							//album.belt.removeChild(obj);
+							cloneMap.removeKey(obj.image.src);
+							//if (obj["image"]) obj.image.close();
+							if ("dispose" in obj && obj.visible == false) {
+								obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
+								obj.dispose();
+							}
+						}
+						cloneMap = new LinkedMap(false);
+						clones = [];
+						album.clear();
+						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
+						flickrQuery.nextPage();
+					} // else if something else...
+				} else if (e.value.contains(_previousArrow)) {
+					if (flickrQuery) {
+						for each (var obj:* in clones) {
+							//album.belt.removeChild(obj);
+							cloneMap.removeKey(obj.image.src);
+							//if (obj["image"]) obj.image.close();
+							if ("dispose" in obj && obj.visible == false) {
+								obj.dispose();
+							}
+						}
+						cloneMap = new LinkedMap(false);
+						clones = [];
+						album.clear();
+						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
+						flickrQuery.previousPage();
+					} // else if something else...This should probably be replaced with a method search instead of hard coding.
+				}
 			}
 		}
 		
@@ -609,25 +705,39 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		// searches for expressions attributes and replaces with result data
-		private function searchExp(obj:*, prop:String=null, val:*=null):void
-		{	
+		private function searchExp(obj:*, target:*):void {
 			if (!obj.propertyStates) return;
 			
-			for (var p:String in obj.propertyStates[0]) {
-				if ((String(obj.propertyStates[0][p]).indexOf("{") != -1)) {					
-					var str:String = String(obj.propertyStates[0][p]).substring(1, String(obj.propertyStates[0][p]).length -1);
+			// Pass in the template, and the object to compare.
+			
+			// Iterate through the properties of the object to find {values}
+			for (var s:String in obj.propertyStates[0]) {
+				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
 					
-					if (str == prop && val != null) {
-						obj[p] = val;
+					// Create substring, check for substring "in" comparison object.
+					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
+					
+					if (str in target && target[str] != null) {
+						// Assign object's values to template clone if found.
+						obj[s] = target[str];
 					}
 				}
 			}
 			
-			// recursion
 			if (obj is DisplayObjectContainer) {
 				for (var i:int = 0; i < obj.numChildren; i++) {
-					searchExp(obj.getChildAt(i), prop, val);		
+					searchExp(obj.getChildAt(i), target);		
+				}
+			}
+		}
+		
+		private function onCloneTimeout(e:StateEvent):void {
+			if (e.value == "timeout" || e.value == "quit"){
+				if (clones.indexOf(e.target) > -1) return;
+				else {
+					trace("Disposing of target on timeout.");
+					e.target.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
+					e.target.dispose();
 				}
 			}
 		}
