@@ -1,5 +1,6 @@
 package  com.gestureworks.cml.element
 {
+	import com.adobe.webapis.flickr.methodgroups.Photos;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.events.StateEvent;
 	import flash.display.Bitmap;
@@ -34,6 +35,8 @@ package  com.gestureworks.cml.element
 		private var loader:Loader;
 		private var service:FlickrService;
 		public var resultPhotos:Array;
+		private var _data:*;
+		public function get data():Object { return _data; }
 		
 		/**
 		 * Constructor
@@ -116,6 +119,18 @@ package  com.gestureworks.cml.element
 		 */
 		public function get loaded():String { return _loaded;}
 		
+		private var _pages:Number = 0;
+		/**
+		 * Read-only property indicating number of page results returned.
+		 */
+		public function get pages():Number { return _pages; }
+		
+		private var _results:Number = 0;
+		public var pageNumber:int = 1;
+		/**
+		 * Read-only property indicating total results returned.
+		 */
+		public function get results():Number { return _results; }
 		
 		/**
 		 * CML display callback Initialisation
@@ -138,37 +153,18 @@ package  com.gestureworks.cml.element
 		}
 		
 		public function flickrSearch():void {
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 4, 100, "date-posted-desc");
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 12, 1, "date-posted-desc");
 		}
 		
 		private function onSearchComplete(e:FlickrResultEvent):void {
 			trace("Search complete");
 			
-			var xPos:Number = 0;
-			var yPos:Number = 0;
-			var rot:Number = 0;
+			var pList:Photos = new Photos(service);
 			
 			if (e.success) {
 				trace("Data: ", e.data, e.data.photos.page);
-				/*if (e.data.photos.photos.length > 0) {
-					for (var i:Number = 0; i < 10; i++) {
-						var img:Flickr = new Flickr();
-						img.src = e.data.photos.photos[i].id;
-						img.apikey = _API_KEY;
-						stage.addChild(img);
-						
-						img.init();
-						
-						img.x = xPos;
-						xPos += 300;
-						img.rotation = rot;
-						rot += 9;
-						if (xPos > stage.stageWidth){
-							xPos = 0;
-							yPos += 400;
-						}
-					}
-				}*/
+				_pages = e.data.photos.pages;
+				//pageNumber = e.data.photos.page;
 				
 				resultPhotos = e.data.photos.photos;
 				trace("ResultPhotos info:", resultPhotos.length);
@@ -176,6 +172,28 @@ package  com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 		}
 		
+		// Update photo page.
+		public function nextPage():void {
+			resultPhotos = [];
+			
+			pageNumber++;
+			if (pageNumber > _pages)
+				pageNumber = _pages;
+			
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 12, pageNumber, "date-posted-desc");
+			
+			//resultPhotos = _data.photos.photos;
+		}
+		
+		public function previousPage():void {
+			resultPhotos = [];
+			
+			pageNumber--;
+			if (pageNumber < 1)
+				pageNumber = 1;
+			
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 12, pageNumber, "date-posted-desc");
+		}
 		
 		/**
 		 * Dispose method to nullify the children and remove listener
@@ -192,6 +210,8 @@ package  com.gestureworks.cml.element
 			
 			loader.unload();
 			loader = null;
+			
+			_data = null;
 			
 			displayPic = null;
 		}
