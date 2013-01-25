@@ -201,13 +201,13 @@ package com.gestureworks.cml.element
 					trace("Setting field:", _searchFieldsArray[i]);
 					if (_searchFieldsArray[i] == "text" ) {
 						// Do something with text.
-						
-						flickrQuery[_searchFieldsArray[i]] = "hyena " + dials[2].currentString;
+						if (dials[i] != "" || dials[i] != null && i < 2)
+							flickrQuery[_searchFieldsArray[i]] += dials[i] + ",";
 						trace("FlickrQuery text:", flickrQuery.text);
 					}
 					if (_searchFieldsArray[i] == "tags") {
-						//flickrQuery[_searchFieldsArray[i]] += dials[i].currentString + ", ";
-						flickrQuery[_searchFieldsArray[i]] = "striped, hyena, africa";
+						if (dials[i] != "" || dials[i] != null && i < 2)
+							flickrQuery[_searchFieldsArray[i]] += dials[i] + ",";
 						trace("FlickrQuery tags:", flickrQuery.tags);
 					}
 				}
