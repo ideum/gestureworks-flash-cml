@@ -181,7 +181,6 @@ package com.gestureworks.cml.core
 				FileManager.instance.debug = true;	
 				
 				
-			
 			if (debug)
 				trace("\n 4) Begin recursive depth traversal");	
 			
@@ -198,13 +197,13 @@ package com.gestureworks.cml.core
 			if (cmlFilesComplete != FileManager.instance.cmlCount)
 				return;
 			else if (pausedCML.length > 0) {
-				loopCML(pausedCML.pop(), includeParentIndex[cmlFilesComplete-1]);
+				loopCML(pausedCML.pop(), includeParentIndex.pop());
 				evaluate();
 			}
 			else if (FileManager.instance.fileCount > 0 && !extFilesLoaded)
 				loadExtFiles();
 			else
-				loadCSS();			
+				loadCSS();
 		}
 		
 		
@@ -214,7 +213,7 @@ package com.gestureworks.cml.core
 				trace("\n 5) Begin loading non-CML external files");	
 				
 			FileManager.instance.addEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
-			FileManager.instance.startFileQueue();				
+			FileManager.instance.startFileQueue();
 		}
 		
 		
@@ -365,7 +364,7 @@ package com.gestureworks.cml.core
 			else {
 				var xml:XML = XML(CMLLoader.getInstance(event.filePath).data);
 				var xmllist:XMLList = XMLList((xml.*).toXMLString());				
-				loopCML(xmllist, includeParentIndex[cmlFilesComplete-1]);
+				loopCML(xmllist, includeParentIndex[includeParentIndex.length-1]);
 				evaluate();
 			}
 		}			
@@ -415,6 +414,9 @@ package com.gestureworks.cml.core
 			var obj:* = null;
 			var returnedNode:XMLList = null;
 			var classNameKeyword:Boolean = false;
+
+			if (!parent)
+				trace('---------------- no parent');			
 			
 			var i:int = 0;
 			for each (var node:XML in cml)
@@ -459,7 +461,8 @@ package com.gestureworks.cml.core
 							for (var j:int = i; j >= 0; j--) {
 								delete pausedCML[pausedCML.length - 1][j];
 							}
-																
+							
+														
 							FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
 							
 							if (FileManager.instance.cmlCount == 1)
