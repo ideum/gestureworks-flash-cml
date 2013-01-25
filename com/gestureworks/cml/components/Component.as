@@ -357,8 +357,8 @@ package com.gestureworks.cml.components
 			{
 				for (var i:int = 0; i < textFields.length; i++) 
 				{					
-					textFields[i].x = textFields[i].x + textFields[i].paddingLeft;
-					
+					textFields[i].x = textFields[i].paddingLeft;
+					Text(textFields[i]).fontSize = Text(textFields[i]).fontSize;
 					textFields[i].autoSize = "left";
 					//Text(textFields[i]).textAlign = _autoAlign;
 					if (textFields[i] == searchChildren(".info_title"))
