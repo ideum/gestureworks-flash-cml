@@ -53,15 +53,17 @@ package com.gestureworks.cml.utils
 		 *  @param the type of children to remove
 		 *  @author John Lindquist
 		 */
-		public static function removeAllChildrenByType(container:DisplayObjectContainer, type:Class):void
+		public static function removeAllChildrenByType(container:DisplayObjectContainer, type:Class):Array
 		{
-			for each(var child:DisplayObject in container)
+			var removed:Array = [];
+			for (var i:int = container.numChildren - 1; i >= 0; i--)
 			{
-				if(child is type)
+				if(container.getChildAt(i) is type)
 				{
-					container.removeChild(child);
+					removed.push(container.removeChildAt(i));
 				}
 			}
+			return removed;
 		}		
 		
 		/**
@@ -70,13 +72,26 @@ package com.gestureworks.cml.utils
 		 *   @param leave (optional) Number of bottom children to leave
 		 *   @author Jackson Dunstan
 		 */
-		public static function removeAllChildren(container:DisplayObjectContainer, leave:int = 0):void
+		public static function removeAllChildren(container:DisplayObjectContainer, leave:int = 0):Array
 		{
+			var removed:Array = [];
 			while (container.numChildren > leave)
 			{
-				container.removeChildAt(leave);
+				removed.push(container.removeChildAt(leave));
 			}
+			return removed;
 		}	
+		
+		/**
+		 * Add an array of children to a container
+		 * @param	container Container to add to
+		 * @param	children  the child array
+		 */
+		public static function addChildren(container:DisplayObjectContainer, children:Array):void
+		{
+			for each(var child:* in children)
+				container.addChild(child);
+		}
 		
 		/**
 		 *	 Returns relative position as a point between two display objects  
