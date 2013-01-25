@@ -50,6 +50,9 @@ package com.gestureworks.cml.components
 		// database version
 		private var templates:Array = [];		
 		private var docks:Array = [];
+		private var _topContainer:TouchContainer;
+		private var _bottomContainer:TouchContainer;
+		private var containerTags:Dictionary = new Dictionary();
 		
 		
 		// tmp
@@ -73,6 +76,29 @@ package com.gestureworks.cml.components
 			_gateway = g;
 		}	
 		
+		public function get topContainer():* { return _topContainer; }
+		public function set topContainer(c:*):void
+		{
+			if (!(c is TouchContainer))
+				c = CMLObjectList.instance.getId(c.toString());
+			if (c is TouchContainer)
+			{
+				_topContainer = c;
+				_topContainer.addEventListener(GWGestureEvent.TAP, tapLayout);
+			}			
+		}
+		
+		public function get bottomContainer():* { return _bottomContainer; }
+		public function set bottomContainer(c:*):void
+		{
+			if (!(c is TouchContainer))
+				c = CMLObjectList.instance.getId(c.toString());
+			if (c is TouchContainer)
+			{
+				_bottomContainer = c;
+				_bottomContainer.addEventListener(GWGestureEvent.TAP, tapLayout);
+			}			
+		}		
 		
 		/**
 		 * CML display initialization callback
@@ -140,6 +166,15 @@ package com.gestureworks.cml.components
 			}
 		}
 		
+		public function tagObject(obj:* , top:Boolean):void
+		{
+			containerTags[obj] = top;
+		}	
+		
+		public function untagObject(obj:*):void 
+		{
+			delete containerTags[obj];
+		}
 				
 		private function timerCheck(e:TimerEvent):void {
 			if (numChildren - 1 < amountToShow) {
@@ -224,7 +259,49 @@ package com.gestureworks.cml.components
 			
 		}
 		
-		
+		private function tapLayout(e:GWGestureEvent):void
+		{			
+			var top:Boolean = e.target == topContainer;
+			var temp:Array = DisplayUtils.removeAllChildren(DisplayObjectContainer(e.target));
+			var gestures:Array = [];
+			var dock:Dock = top ? docks[1] : docks[0];
+			var position:int = 0;
+			var rotation:Number = top ? 180 : 0;
+			
+			//add children to temporary container
+			for (var obj:* in containerTags)
+			{
+				if (!obj.activity && containerTags[obj] == top)
+				{
+					e.target.addChild(obj)
+					obj.reset();
+					obj.rotation = rotation;
+					obj.scale = .6;
+					gestures.push(obj.gestureList);
+					obj.gestureList = null;
+				}
+			}
+			
+			//reposition children to placeholders
+			for (var i:int = e.target.numChildren-1; i>=0; i--)
+			{
+				var child:* = e.target.getChildAt(i);
+				var xPos:Number = dock.placeHolders[position].x;
+				var yPos:Number = dock.placeHolders[position].y;
+				child.x = top ? xPos + obj.width*obj.scale : xPos;
+				child.y = top ? yPos + dock.placeHolders[position].height : yPos;
+				child.gestureList = gestures[i];
+				addChild(child);
+				dock.moveBelowDock(child);
+				
+				if (position == dock.placeHolders.length - 1)
+					position = 0;
+				else
+					position++;
+			}
+			
+			DisplayUtils.addChildren(DisplayObjectContainer(e.target), temp);			
+		}
 		
 		// file version
 		
@@ -383,6 +460,13 @@ package com.gestureworks.cml.components
 			currentTween = null;			
 			hitBg = null;			
 			tweens = null;
+			timer = null;
+			templates = null;
+			docks = null;
+			topContainer = null;
+			bottomContainer = null;
+			containerTags = null;
+			entry = null;
 			
 			if (childList)
 			{

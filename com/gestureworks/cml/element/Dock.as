@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.adobe.webapis.flickr.Photo;
+	import com.gestureworks.cml.components.CollectionViewer;
 	import com.gestureworks.cml.components.FlickrViewer;
 	import com.gestureworks.cml.components.ImageViewer;
 	import com.gestureworks.cml.core.*;
@@ -55,6 +56,7 @@ package com.gestureworks.cml.element
 		public var templates:Array = [];		
 
 		public var album:MenuAlbum;
+		public var collectionViewer:CollectionViewer;
 
 		private var flickrQuery:FlickrQuery;
 
@@ -103,6 +105,7 @@ package com.gestureworks.cml.element
 		{
 			super.init();
 			
+			collectionViewer = DisplayUtils.getParentType(CollectionViewer,this);
 			_searchFieldsArray = searchFields.split(",");
 			
 			dockText = searchChildren(".dock-text", Array);
@@ -215,10 +218,15 @@ package com.gestureworks.cml.element
 				// Set up event listener and run a search here.
 			}
 			
-			if (cmlIni && !flickrQuery)
-				query();
-			else if (cmlIni && flickrQuery)
-				queryFlickr();
+			//verify the cml has been initialized and the event was triggered
+			//by the target (scond condition is for filtering)
+			if(cmlIni && e.target.id == e.id)
+			{
+				if (flickrQuery)
+					queryFlickr();
+				else
+					 query();
+			}
 		}	
 		
 		
@@ -616,11 +624,13 @@ package com.gestureworks.cml.element
 				obj.rotation = 180;
 				obj.x = location.x + obj.width*obj.scale;
 				obj.y = location.y + location.height;
+				collectionViewer.tagObject(obj, true);
 			}
 			else {		
 				obj.rotation = 0;
 				obj.x = location.x;
 				obj.y = location.y;				
+				collectionViewer.tagObject(obj, false);
 			}
 			
 			/*
@@ -674,7 +684,7 @@ package com.gestureworks.cml.element
 			moveBelowDock(e.currentTarget as DisplayObject);
 		}
 		
-		private function moveBelowDock(obj:DisplayObject):void 
+		public function moveBelowDock(obj:DisplayObject):void 
 		{
 			//TODO: Fix rigid structure
 			if (position=="bottom")
