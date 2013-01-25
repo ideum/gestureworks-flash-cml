@@ -105,6 +105,16 @@ package com.gestureworks.cml.components
 		{	
 			_fontIncrement = value;			
 		}
+		
+		private var _autoAlign:String = "center";
+		/**
+		 * Set the autoAlign for the auto text layout feature if desired. Options are "left", "center", "right".
+		 * @default "center"
+		 */
+		public function get autoAlign():String { return _autoAlign; }
+		public function set autoAlign(value:String):void {
+			_autoAlign = value;
+		}
 				
 		private var _front:*;
 		/**
@@ -350,6 +360,10 @@ package com.gestureworks.cml.components
 					textFields[i].x = textFields[i].x + textFields[i].paddingLeft;
 					
 					textFields[i].autoSize = "left";
+					//Text(textFields[i]).textAlign = _autoAlign;
+					if (textFields[i] == searchChildren(".info_title"))
+						textFields[i].textAlign = "center";
+					else textFields[i].textAlign = "left";
 					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
 					
 					if (i == 0)
@@ -447,7 +461,7 @@ package com.gestureworks.cml.components
 			_activity = false;
 		}
 		
-		private var textCount:Number = 0;
+		private var textCount:Number = 4;
 				
 		private function textSize():void
 		{
@@ -541,7 +555,8 @@ package com.gestureworks.cml.components
 			}
 			else if (event.value == "close")
 			{
-				this.visible = false;							
+				this.visible = false;	
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "quit"));
 			}	
 		}
 		
