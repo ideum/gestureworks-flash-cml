@@ -9,6 +9,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.GestureWorks;
+	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
@@ -49,6 +50,7 @@ package com.gestureworks.cml.components
 		public var fontArray:Array = new Array();
 		private var timer:Timer;
 		private var tween:ITween;
+		private var _activity:Boolean = false;
 		
 		/**
 		 * component Constructor
@@ -79,6 +81,8 @@ package com.gestureworks.cml.components
 			
 			scrollPanes = [];
 			scrollPanes = searchChildren(ScrollPane, Array);
+			
+			addEventListener(GWGestureEvent.RELEASE, noActivity);
 			
 			updateLayout();				
 		}
@@ -258,7 +262,8 @@ package com.gestureworks.cml.components
 		 * Specifies the currently displayed side
 		 * @default "front"
 		 */
-		protected function get side():String { return _side; }
+		protected function get side():String { return _side; }		
+		public function get activity():Boolean { return _activity; }
 				
 		/**
 		 * Manages the timer and dispatches a state event
@@ -399,6 +404,9 @@ package com.gestureworks.cml.components
 		
 		public function onDown(event:* = null):void
 		{
+			if (event) {
+				_activity = true;
+			}
 			if (timer) {
 				timer.stop();
 			}			
@@ -418,6 +426,9 @@ package com.gestureworks.cml.components
 		 */
 		public function onUp(event:* = null):void
 		{
+			if (event) {
+				_activity = false;
+			}
 			if (menu)
 				menu.mouseChildren = true;
 			
@@ -429,7 +440,12 @@ package com.gestureworks.cml.components
 				tween.stop();
 				this.alpha = 1;
 			}			
-		}	
+		}
+		
+		public function noActivity(e:GWGestureEvent):void
+		{
+			_activity = false;
+		}
 		
 		private var textCount:Number = 0;
 				
@@ -715,7 +731,8 @@ package com.gestureworks.cml.components
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
 			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);		
 			this.removeEventListener(TouchEvent.TOUCH_END, onUp);			
-			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);						
+			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);
+			this.removeEventListener(GWGestureEvent.RELEASE, noActivity);
 		}
 	}
 
