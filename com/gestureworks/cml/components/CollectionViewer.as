@@ -3,6 +3,9 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.interfaces.ILayout;
+	import com.gestureworks.cml.layouts.ListLayout;
+	import com.gestureworks.cml.layouts.PointLayout;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
@@ -261,18 +264,19 @@ package com.gestureworks.cml.components
 		
 		private function tapLayout(e:GWGestureEvent):void
 		{			
+			if (e.value.tap_n > 1) return;
 			var top:Boolean = e.target == topContainer;
-			var temp:Array = DisplayUtils.removeAllChildren(DisplayObjectContainer(e.target));
+			var temp:Array = DisplayUtils.removeAllChildren(DisplayObjectContainer(e.target));  
 			var gestures:Array = [];
 			var dock:Dock = top ? docks[1] : docks[0];
-			var position:int = 0;
 			var rotation:Number = top ? 180 : 0;
+			var layout:ILayout;
 			
 			//add children to temporary container
 			for (var obj:* in containerTags)
 			{
 				if (!obj.activity && containerTags[obj] == top)
-				{
+				{					
 					e.target.addChild(obj)
 					obj.reset();
 					obj.rotation = rotation;
@@ -282,25 +286,55 @@ package com.gestureworks.cml.components
 				}
 			}
 			
-			//reposition children to placeholders
-			for (var i:int = e.target.numChildren-1; i>=0; i--)
+			switch(e.value.tap_n)
 			{
-				var child:* = e.target.getChildAt(i);
-				var xPos:Number = dock.placeHolders[position].x;
-				var yPos:Number = dock.placeHolders[position].y;
-				child.x = top ? xPos + obj.width*obj.scale : xPos;
-				child.y = top ? yPos + dock.placeHolders[position].height : yPos;
-				child.gestureList = gestures[i];
-				addChild(child);
-				dock.moveBelowDock(child);
-				
-				if (position == dock.placeHolders.length - 1)
-					position = 0;
-				else
-					position++;
+				case 1:
+					var pLayout:PointLayout = new PointLayout();
+					pLayout.tween = true;
+					pLayout.continuousTransform = false;
+					var position:int = 0;
+					
+					//reposition children to placeholders
+					for (var i:int = e.target.numChildren-1; i>=0; i--)
+					{
+						var xPos:Number = top ? dock.placeHolders[position].x + obj.width * obj.scale :  dock.placeHolders[position].x;
+						var yPos:Number = top ? dock.placeHolders[position].y + dock.placeHolders[position].height : dock.placeHolders[position].y;
+						if (pLayout.points)
+							pLayout.points = pLayout.points.concat("," + xPos + "," + yPos);
+						else
+							pLayout.points = xPos + "," + yPos;
+						
+						if (position == dock.placeHolders.length - 1)
+							position = 0;
+						else
+							position++;					
+					}
+					layout = pLayout;
+					break;
+				case 2:
+					var lLayout:ListLayout = new ListLayout();
+					lLayout.tween = true;
+					lLayout.continuousTransform = false;
+					lLayout.spacingX = 100;
+					layout = lLayout;
+					break;
+				default:
+					break;
 			}
-			
-			DisplayUtils.addChildren(DisplayObjectContainer(e.target), temp);			
+				
+			//apply layout and restore states when complete
+			e.target.layoutComplete = function():void {
+				for (i = e.target.numChildren - 1; i >= 0; i--)
+				{
+					var child:* = e.target.getChildAt(i);
+					child.gestureList = gestures[i];
+					addChild(child);
+					dock.moveBelowDock(child);				
+				}
+				
+				DisplayUtils.addChildren(DisplayObjectContainer(e.target), temp);			
+			};
+			e.target.applyLayout(layout);
 		}
 		
 		// file version

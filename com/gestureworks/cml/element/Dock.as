@@ -386,12 +386,12 @@ package com.gestureworks.cml.element
 					onCloneLoad();
 			}
 			else {
-				//clone = templates[0].clone(); // TODO: remove hardcoded template item
-				clone = templates[1].clone();
+				clone = templates[0].clone(); // TODO: remove hardcoded template item
+				//clone = templates[1].clone();
 				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				//clone.image.open(src);
+				clone.image.open(src);
 				//clone.init();
 				cloneMap.append(src, clone);
 			}
