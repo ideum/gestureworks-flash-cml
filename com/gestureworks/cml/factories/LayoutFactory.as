@@ -174,7 +174,19 @@ package com.gestureworks.cml.factories
 		public function set onUpdate(f:Function):void
 		{
 			_onUpdate = f;
-		}		
+		}
+		
+		private var _continuousTransform:Boolean = true;
+	
+		/**
+		 * Flag indicating the application of a transform from the current transform state. If this flag
+		 * is turned off, the transformation is reset with the principle layout attributes. 
+		 */
+		public function get continuousTransform():Boolean { return _continuousTransform; }
+		public function set continuousTransform(c:Boolean):void
+		{
+			_continuousTransform = i;
+		}
 		
 		/**
 		 * The object distribution function. If tween is on, creates a tween for each child and applies the child transformations. If tween is off,

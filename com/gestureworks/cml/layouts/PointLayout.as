@@ -94,9 +94,15 @@ package com.gestureworks.cml.layouts
 			{		
 				var child:* = container.getChildAt(i/2);
 				if (!child || !child is DisplayObject) return;
-				
+								
 				matrix = child.transform.matrix;
-				matrix.translate(pts[i], pts[i + 1]);			
+				if (continuousTransform)
+					matrix.translate(pts[i], pts[i + 1]);
+				else{
+					matrix.tx = pts[i];
+					matrix.ty = pts[i + 1];
+				}
+							
 				childTransformations.push(matrix);
 			}
 			
