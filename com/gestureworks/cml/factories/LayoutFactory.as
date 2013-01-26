@@ -185,7 +185,7 @@ package com.gestureworks.cml.factories
 		public function get continuousTransform():Boolean { return _continuousTransform; }
 		public function set continuousTransform(c:Boolean):void
 		{
-			_continuousTransform = i;
+			_continuousTransform = c;
 		}
 		
 		/**
