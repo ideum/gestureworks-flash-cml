@@ -205,12 +205,17 @@ package com.gestureworks.cml.element
 					if (_searchFieldsArray[i] == "text" ) {
 						// Do something with text.
 						if (dials[i] != "" || dials[i] != null && i < 2)
-							flickrQuery[_searchFieldsArray[i]] += dials[i] + ",";
+							flickrQuery[_searchFieldsArray[i]] += dials[i].currentString + ", ";
 						trace("FlickrQuery text:", flickrQuery.text);
 					}
 					if (_searchFieldsArray[i] == "tags") {
-						if (dials[i] != "" || dials[i] != null && i < 2)
-							flickrQuery[_searchFieldsArray[i]] += dials[i] + ",";
+						if (dials[i] != "" || dials[i] != null) {
+							if (i < 2)
+								flickrQuery[_searchFieldsArray[i]] += dials[i].currentString + ", ";
+							else if (i == 2)
+								flickrQuery[_searchFieldsArray[i]] += dials[i].currentString;
+						}
+							
 						trace("FlickrQuery tags:", flickrQuery.tags);
 					}
 				}
@@ -297,6 +302,12 @@ package com.gestureworks.cml.element
 			resultTxt.text = "";
 			
 			resultCnt = flickrQuery.resultPhotos.length;
+			
+			if (!resultCnt) {
+				isLoading = false;
+				dockText[1].text = "No objects found. Please search again.";
+			}
+			
 			loadClone();
 		}
 		
@@ -370,8 +381,8 @@ package com.gestureworks.cml.element
 			
 			// Check the templates for the one that's been populated, then update the source.
 			var src:String = "";
-			
-			for (var i:int = 0; i < templates.length; i++) 
+			var i:int = 0;
+			for (i = 0; i < templates.length; i++) 
 			{
 				if (templates[i].image.src)
 					src = templates[i].image.src;
@@ -386,8 +397,15 @@ package com.gestureworks.cml.element
 					onCloneLoad();
 			}
 			else {
-				clone = templates[0].clone(); // TODO: remove hardcoded template item
+				//clone = templates[0].clone(); // TODO: remove hardcoded template item
 				//clone = templates[1].clone();
+				for (var j:int = 0; j < templates.length; j++) 
+				{
+					if (templates[j].image.src)
+					clone = templates[j].clone();
+				}
+				//if (flickrQuery)
+					//searchExp(clone, templates[1]);
 				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
@@ -401,11 +419,10 @@ package com.gestureworks.cml.element
 		// image load data
 		private function onCloneLoad(event:StateEvent=null):void 
 		{			
-			/*if (event && event.property == "percentLoaded") {
-				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt + ": " + event.value;
-			}
-			
-			else*/ if ( (!event) || event.property == "isLoaded") {
+			if ( (!event) || event.property == "isLoaded") {
+				//trace("Clone:", clone, templates[1]);
+				searchExp(event.target, event.target.image);
+				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
 				if (event) {
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
@@ -716,7 +733,7 @@ package com.gestureworks.cml.element
 		
 		
 		private function searchExp(obj:*, target:*):void {
-			if (!obj.propertyStates) return;
+			if (!("propertyStates" in obj)) return;
 			
 			// Pass in the template, and the object to compare.
 			
