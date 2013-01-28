@@ -8,6 +8,7 @@ package  com.gestureworks.cml.element
 	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.geom.Matrix;
 	import flash.net.URLRequest;
 	import flash.system.Security;
@@ -79,6 +80,8 @@ package  com.gestureworks.cml.element
 		 */
 		public function get loaded():String { return _loaded;}
 		
+		private var _description:String = "";
+		public function get description():String { return _description; }
 		
 		/**
 		 * CML display callback Initialisation
@@ -88,6 +91,7 @@ package  com.gestureworks.cml.element
 			
 			service = new FlickrService(_API_KEY);
 			service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
+			service.addEventListener(IOErrorEvent.IO_ERROR, errorEvent);
 			service.photos.getInfo(_imageId);
 		}
 		
@@ -100,11 +104,14 @@ package  com.gestureworks.cml.element
 			displayComplete();
 		}
 		
+		private function errorEvent(e:IOErrorEvent):void {
+			trace("Error in loading file:", e);
+		}
+		
 		private function loadImage(e:FlickrResultEvent):void {
-			//trace(e.data.photo.server);
-			//trace(e.data.photo.id);
 			
-			if(e.success){
+			if (e.success) {
+				_description = e.data.photo.description;
 				var picLink:String = "http://farm1.staticflickr.com/" + e.data.photo.server + "/" + e.data.photo.id + "_" + 
 					e.data.photo.secret + ".jpg";
 			
@@ -121,6 +128,7 @@ package  com.gestureworks.cml.element
 			super.dispose();
 			
 			service.removeEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
+			service.removeEventListener(IOErrorEvent.IO_ERROR, errorEvent);
 			service = null;
 			
 			while (this.numChildren > 0) {
