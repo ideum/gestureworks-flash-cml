@@ -43,7 +43,7 @@ package com.gestureworks.cml.element
 		  positionTimer = new Timer(20);
 		}
 		
-		private var _debug:Boolean=true;
+		private var _debug:Boolean=false;
 		/**
 		 * Prints status message to console
 		 */	
