@@ -435,6 +435,8 @@ package com.gestureworks.cml.element
 			//onScale(e);
 		}
 		
+		public var invertDrag:Boolean = false;
+		
 		private function onDrag(e:GWGestureEvent):void {
 			e.stopImmediatePropagation();
 			
@@ -450,7 +452,10 @@ package com.gestureworks.cml.element
 					//newPos = oldY;
 				}
 				else if (oldY) {
-					newPos -= e.value.localY - oldY;
+					if (invertDrag)
+						newPos += e.value.localY - oldY;
+					else
+						newPos -= e.value.localY - oldY;
 					oldY = e.value.localY;
 				}
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -473,10 +478,14 @@ package com.gestureworks.cml.element
 				
 				if (!oldX) {
 					oldX = e.value.localX;
-					newPos = oldX;
+					//newPos = oldX;
 				}
 				else if (oldX) {
-					newPos += oldX - e.value.localX;
+					if (invertDrag)
+						newPos -= e.value.localX  - oldX;
+					else
+						newPos += e.value.localX - oldX;
+						
 					oldX = e.value.localX;
 				}
 				
