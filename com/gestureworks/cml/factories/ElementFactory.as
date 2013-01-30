@@ -177,50 +177,8 @@ package com.gestureworks.cml.factories
 		{
 			_scaleY = value
 			super.scaleY = value;
-		}			
-		
-		
-		private var _minScale:Number = 0;
-		/**
-		 * Sets minimum scale of the display object in pixels
-		 * @default 0;
-		 */		
-		public function get minScale():Number{return _minScale;}
-		public function set minScale(value:Number):void
-		{
-			_minScale = value;
-		}
-		
-
-		private var _maxScale:Number = 0;
-		/**
-		 * Sets maximum scale of the display object in pixels
-		 * @default 0
-		 */				
-		public function get maxScale():Number{return _maxScale;}
-		public function set maxScale(value:Number):void
-		{
-			_maxScale = value;
 		}		
 		
-		
-		private var originalScale:int = 1;
-		
-		/*
-		 * Display Manager onEnterFrame Event callback 
-		 * 
-		 */
-		
-		/*
-		public function onEnterFrame():void
-		{					
-			if (parent && fixedScale)
-			{
-				scale = originalScale / parent["scaleX"];
-			}
-		}	*/	
-		
-
 		
 		private var _widthPercent:String = "";		
 		/**
