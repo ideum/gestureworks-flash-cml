@@ -355,18 +355,6 @@ package com.gestureworks.cml.factories
 		{
 			_debugStyle = value;
 		}
-		
-		private var _fixedScale:Boolean = false;
-		/**
-		 * specifies the fixed scaling of display object
-		 */
-		public function get fixedScale():Boolean{return _fixedScale;}
-		public function set fixedScale(value:Boolean):void
-		{
-			_fixedScale = value;
-			originalScale = scaleX;
-		}
-		
 
 		private var _displayEvents:String = "complete";
 		/**
