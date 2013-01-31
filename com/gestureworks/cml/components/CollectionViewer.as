@@ -265,12 +265,12 @@ package com.gestureworks.cml.components
 		private function tapLayout(e:GWGestureEvent):void
 		{			
 			if (e.value.tap_n > 1) return;
-			var top:Boolean = e.target == topContainer;
-			var temp:Array = DisplayUtils.removeAllChildren(DisplayObjectContainer(e.target));  
-			var gestures:Array = [];
+			var top:Boolean = e.target == topContainer; 
 			var dock:Dock = top ? docks[1] : docks[0];
 			var rotation:Number = top ? 180 : 0;
 			var layout:ILayout;
+			var gestures:Object;
+			var exclusions:Array = DisplayUtils.getAllChildren(DisplayObjectContainer(e.target));
 			
 			//add children to temporary container
 			for (var obj:* in containerTags)
@@ -281,8 +281,8 @@ package com.gestureworks.cml.components
 					obj.reset();
 					obj.rotation = rotation;
 					obj.scale = .6;
-					gestures.push(obj.gestureList);
-					obj.gestureList = null;
+					gestures = obj.gestureList; //reset gesture list to clear inertia cache
+					obj.gestureList = gestures;					
 				}
 			}
 			
@@ -292,10 +292,12 @@ package com.gestureworks.cml.components
 					var pLayout:PointLayout = new PointLayout();
 					pLayout.tween = true;
 					pLayout.continuousTransform = false;
+					pLayout.exclusions = exclusions;
 					var position:int = 0;
+					var numPoints:int = e.target.numChildren - pLayout.exclusions.length;
 					
 					//reposition children to placeholders
-					for (var i:int = e.target.numChildren-1; i>=0; i--)
+					for (var i:int = 0; i < numPoints; i++)
 					{
 						var xPos:Number = top ? dock.placeHolders[position].x + obj.width * obj.scale :  dock.placeHolders[position].x;
 						var yPos:Number = top ? dock.placeHolders[position].y + dock.placeHolders[position].height : dock.placeHolders[position].y;
@@ -324,15 +326,11 @@ package com.gestureworks.cml.components
 				
 			//apply layout and restore states when complete
 			e.target.layoutComplete = function():void {
-				for (i = e.target.numChildren - 1; i >= 0; i--)
+				for (var child:* in containerTags)
 				{
-					var child:* = e.target.getChildAt(i);
-					child.gestureList = gestures[i];
 					addChild(child);
 					dock.moveBelowDock(child);				
-				}
-				
-				DisplayUtils.addChildren(DisplayObjectContainer(e.target), temp);			
+				}		
 			};
 			e.target.applyLayout(layout);
 		}
