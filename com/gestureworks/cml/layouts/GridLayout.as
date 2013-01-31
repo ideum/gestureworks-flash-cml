@@ -129,16 +129,17 @@ package com.gestureworks.cml.layouts
 			var xVal:Number;
 			var yVal:Number;
 			var matrix:Matrix;
+			var index:int = 0;
 						
 			for (var i:int = childTransformations.length; i < container.numChildren; i++) 
 			{		
 				child = container.getChildAt(i);				
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				if (leftToRight)
 				{					
-                    row = Math.floor(i / columns);               
-                    col = (i % columns);
+                    row = Math.floor(index / columns);               
+                    col = (index % columns);
 
                     xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX;
                     yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY;
@@ -148,12 +149,12 @@ package com.gestureworks.cml.layouts
 					childTransformations.push(matrix);
 					
 					sumx = col == columns - 1 ? 0 : sumx + child.width;
-					sumy = col == columns-1 ? sumy + child.height  : sumy;						
+					sumy = col == columns - 1 ? sumy + child.height  : sumy;											
 				}
                 else
                 {
-                    row = (i % rows);
-                    col = Math.floor(i / rows);
+                    row = (index % rows);
+                    col = Math.floor(index / rows);
                
                     xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX;
                     yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY;	
@@ -165,6 +166,8 @@ package com.gestureworks.cml.layouts
 					sumx = row == rows-1 ? sumx + child.width : sumx;
 					sumy = row == rows - 1 ? 0 : sumy + child.height;					
                 }
+
+				index++;
 			}
 	
 			super.layout(container);

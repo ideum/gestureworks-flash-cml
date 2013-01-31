@@ -123,7 +123,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{		
 				var child:DisplayObject = c.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
 				matrix.translate(originX - child.width / 2, originY - child.height / 2);

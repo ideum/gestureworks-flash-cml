@@ -134,7 +134,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
 				matrix.translate(originX, originY);
@@ -155,7 +155,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
 				matrix.translate(originX - child.width, originY);
@@ -176,7 +176,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
 				matrix.translate(originX, originY-child.height);
@@ -197,7 +197,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{				
 				var child:* = c.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
 				matrix.translate(originX-child.width, originY-child.height);

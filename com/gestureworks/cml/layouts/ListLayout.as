@@ -132,14 +132,15 @@ package com.gestureworks.cml.layouts
 			var matrix:Matrix;
 			var columnWidth:Number = getMaxWidth(container);
 			var rowHeight:Number = Math.max(getMaxHeight(container), container.height);
-			var sumx:Number = centerColumn ? columnWidth/2 : 0;
+			var sumx:Number = centerColumn ? columnWidth / 2 : 0;
+			var index:int = 0;
 			
 			for (var i:int = childTransformations.length; i < n; i++) 
 			{		
 				var child:* = container.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 
-				xVal = useMargins ? sumx + i * (2 * marginX) : i * spacingX;
+				xVal = useMargins ? sumx + index * (2 * marginX) : index * spacingX;
 				xVal = centerColumn ? xVal - child.width/2 : xVal;         //adjust spacing for column centering
 				yVal = centerRow ? rowHeight/2 - child.height/2: yVal;	   //adjust spacing for row centering
 				
@@ -152,6 +153,7 @@ package com.gestureworks.cml.layouts
 				}
 				childTransformations.push(matrix);
 				sumx = centerColumn ?  sumx + columnWidth : sumx + child.width;
+				index++;
 			}
 		}
 		
@@ -169,21 +171,23 @@ package com.gestureworks.cml.layouts
 			var matrix:Matrix;
 			var columnWidth:Number = Math.max(getMaxWidth(container), container.width);
 			var rowHeight:Number = getMaxHeight(container);
-			var sumy:Number = centerRow ? rowHeight/2 : 0;			
+			var sumy:Number = centerRow ? rowHeight / 2 : 0;	
+			var index:int = 0;
 			
 			for (var i:int = childTransformations.length; i < n; i++) 
 			{				
 				var child :* = container.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 							
-				yVal = useMargins ? sumy + i * (2 * marginY) : i * spacingY;
+				yVal = useMargins ? sumy + index * (2 * marginY) : index * spacingY;
 				yVal = centerRow ? yVal - child.height / 2 : yVal;                //adjust spacing for row centering
 				xVal = centerColumn ? columnWidth/2 - child.width/2: xVal;		  //adjust spacing for column centering		
 				
 				matrix = child.transform.matrix;
 				matrix.translate(xVal, yVal);			
 				childTransformations.push(matrix);						
-				sumy = centerRow ?  sumy + rowHeight : sumy + child.height;				
+				sumy = centerRow ?  sumy + rowHeight : sumy + child.height;	
+				index++;
 			}
 		}		
 		

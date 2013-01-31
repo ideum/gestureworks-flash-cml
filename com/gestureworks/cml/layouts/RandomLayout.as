@@ -184,10 +184,10 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < container.numChildren; i++) 
 			{
 				child = container.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if(!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;
-				matrix.translate(randomMinMax(minX, maxX), 0);			
+				matrix.translate(randomMinMax(minX, maxX), 0);						
 				childTransformations.push(matrix);				
 			}			
 		}
@@ -205,9 +205,9 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < container.numChildren; i++) 
 			{				
 				child = container.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if(!validObject(child)) continue;
 				
-				matrix = child.transform.matrix;
+				matrix = child.transform.matrix;				
 				matrix.translate(0, randomMinMax(minY, maxY));			
 				childTransformations.push(matrix);
 			}			
@@ -226,7 +226,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < container.numChildren; i++) 
 			{
 				child = container.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;
 				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));			
@@ -248,7 +248,7 @@ package com.gestureworks.cml.layouts
 			for (var i:int = childTransformations.length; i < container.numChildren; i++) 
 			{
 				child = container.getChildAt(i);
-				if (!child is DisplayObject) return;
+				if (!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;
 				matrix.rotate(degreesToRadians(randomMinMax(minRot, maxRot)));

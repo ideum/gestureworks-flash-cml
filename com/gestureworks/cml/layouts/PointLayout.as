@@ -87,23 +87,28 @@ package com.gestureworks.cml.layouts
 			var matrix:Matrix;
 			if (!points) return;
 			
-			var pts:Array = points.split(",");
-			if (pts.length % 2 != 0) pts.push("0");
+			var pts:Array = points.split(","); 
+			var ptIndex:int = 0;
 			
-			for (var i:int = childTransformations.length*2; i < pts.length; i+=2) 
-			{		
-				var child:* = container.getChildAt(i/2);
-				if (!child || !child is DisplayObject) return;
-								
+			for (var i:int = childTransformations.length; i < container.numChildren; i++)
+			{
+				var child:* = container.getChildAt(i);
+				if (!validObject(child)) continue;
+				
+				var x:Number = pts[ptIndex*2] ? pts[ptIndex*2] : 0;
+				var y:Number = pts[ptIndex*2 + 1] ? pts[ptIndex*2 + 1] : 0;
+				
 				matrix = child.transform.matrix;
 				if (continuousTransform)
-					matrix.translate(pts[i], pts[i + 1]);
-				else{
-					matrix.tx = pts[i];
-					matrix.ty = pts[i + 1];
+					matrix.translate(x, y);
+				else
+				{
+					matrix.tx = x;
+					matrix.ty = y;
 				}
-							
+				
 				childTransformations.push(matrix);
+				ptIndex++;
 			}
 			
 			super.layout(container);
