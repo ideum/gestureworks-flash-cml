@@ -188,6 +188,17 @@ package com.gestureworks.cml.factories
 			_continuousTransform = c;
 		}
 		
+		private var _exclusions:Array = new Array();
+		
+		/**
+		 * An array of objects to exclude from the layout application
+		 */
+		public function get exclusions():Array { return _exclusions; }
+		public function set exclusions(e:Array):void
+		{
+			_exclusions = e;
+		}
+		
 		/**
 		 * The object distribution function. If tween is on, creates a tween for each child and applies the child transformations. If tween is off,
 		 * assigns the child transformations to the corresponding children. 
@@ -196,6 +207,7 @@ package com.gestureworks.cml.factories
 		public function layout(container:DisplayObjectContainer):void 
 		{
 			var childTweens:Array;
+			var tIndex:int = 0;
 			
 			if (tween)
 			{
@@ -212,13 +224,15 @@ package com.gestureworks.cml.factories
 				for (var i:int = 0; i < container.numChildren; i++) 
 				{				
 					var child:* = container.getChildAt(i);
-					if (!child is DisplayObject) return;
+					if(!validObject(child)) continue;
 					
-					if (i < childTransformations.length)
+					if (tIndex < childTransformations.length)
 					{
-						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(childTransformations[i]), alpha:alpha }, null, tweenTime / 1000, Exponential.easeOut));
+						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(childTransformations[tIndex]), alpha:alpha }, null, tweenTime / 1000, Exponential.easeOut));
 						tweenedObjects.push(child);
 					}
+					
+					tIndex++;
 				}
 				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
 				layoutTween.onUpdate = onUpdate;
@@ -230,12 +244,25 @@ package com.gestureworks.cml.factories
 				for (var j:int = 0; j < container.numChildren; j++)
 				{
 					child = container.getChildAt(j);
-					child.transform.matrix = childTransformations[j];
+					if (!validObject(child)) continue;
+					
+					child.transform.matrix = childTransformations[tIndex];
 					child.alpha = alpha;
+					tIndex++;
 				}
 				if (onComplete != null) onComplete.call();
 				if (onUpdate != null) onUpdate.call();
 			}
+		}
+		
+		/**
+		 * Determines if an object meets the criteria to be included in the layout 
+		 * @param	obj  the object to check
+		 * @return  true if valid, false otherwise
+		 */
+		protected function validObject(obj:*):Boolean
+		{
+			return obj && obj is DisplayObject && (exclusions.indexOf(obj) == -1);
 		}
 		
 		/**
@@ -351,6 +378,11 @@ package com.gestureworks.cml.factories
 		{
 			super.dispose();
 			childTransformations = null;
+			layoutTween = null;
+			tweenedObjects = null;
+			onComplete = null;
+			onUpdate = null;
+			exclusions = null;
 		}
 	}
 
