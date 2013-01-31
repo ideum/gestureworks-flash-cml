@@ -83,6 +83,39 @@ package com.gestureworks.cml.utils
 		}	
 		
 		/**
+		 *  Returns all children of a specific type from a container.
+		 *   
+		 * 	@param container Container to remove from
+		 *  @param the type of children to remove
+		 */
+		public static function getAllChildrenByType(container:DisplayObjectContainer, type:Class):Array
+		{
+			var children:Array = [];
+			for (var i:int = 0; i < container.numChildren; i++)
+			{
+				if(container.getChildAt(i) is type)
+				{
+					children.push(container.getChildAt(i));
+				}
+			}
+			return children;
+		}		
+		
+		/**
+		 *   Returns all children of a container
+		 *   @param container 
+		 */
+		public static function getAllChildren(container:DisplayObjectContainer):Array
+		{
+			var children:Array = [];
+			for (var i:int = 0; i < container.numChildren; i++)
+			{
+				children.push(container.getChildAt(i));
+			}
+			return children;
+		}			
+		
+		/**
 		 * Add an array of children to a container
 		 * @param	container Container to add to
 		 * @param	children  the child array
