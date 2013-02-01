@@ -252,7 +252,8 @@ package com.gestureworks.cml.utils
 			
 			list.append(key);
 			listValue.append(value);			
-			dictionary[key] = value;		
+			dictionary[key] = value;
+			
 		}
 		
 		/**
@@ -303,7 +304,7 @@ package com.gestureworks.cml.utils
 			}	
 			
 			list.insert(index, key);				
-			listValue.insert(index, key);				
+			listValue.insert(index, value);	
 			
 			dictionary[key] = value;
 			if (currentIndex >= index)
