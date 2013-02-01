@@ -99,14 +99,7 @@ package com.gestureworks.cml.layouts
 				var y:Number = pts[ptIndex*2 + 1] ? pts[ptIndex*2 + 1] : 0;
 				
 				matrix = child.transform.matrix;
-				if (continuousTransform)
-					matrix.translate(x, y);
-				else
-				{
-					matrix.tx = x;
-					matrix.ty = y;
-				}
-				
+				translateTransform(matrix, x, y);
 				childTransformations.push(matrix);
 				ptIndex++;
 			}

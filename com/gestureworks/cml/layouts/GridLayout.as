@@ -145,7 +145,7 @@ package com.gestureworks.cml.layouts
                     yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY + originY;
 
 					matrix = child.transform.matrix;
-					matrix.translate(xVal, yVal);			
+					translateTransform(matrix, xVal, yVal);
 					childTransformations.push(matrix);
 					
 					sumx = col == columns - 1 ? originX : sumx + child.width;
@@ -160,7 +160,7 @@ package com.gestureworks.cml.layouts
                     yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY + originY;	
 
 					matrix = child.transform.matrix;
-					matrix.translate(xVal, yVal);			
+					translateTransform(matrix, xVal, yVal);
 					childTransformations.push(matrix);
 
 					sumx = row == rows-1 ? sumx + child.width : sumx;

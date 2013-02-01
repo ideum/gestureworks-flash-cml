@@ -159,6 +159,26 @@ package com.gestureworks.cml.factories
 			_alpha = a > 1 ? 1 : a < 0 ? 0 : a;
 		}
 		
+		private var _scale:Number;
+		/**
+		 * Specifies the scale value of the display objects in the layout
+		 */
+		public function get scale():Number { return _scale; }
+		public function set scale(s:Number):void
+		{
+			_scale = s;
+		}
+		
+		private var _rotation:Number;
+		/**
+		 * Specifies the rotation value of the display objects in the layout
+		 */
+		public function get rotation():Number { return _rotation; }
+		public function set rotation(r:Number):void
+		{
+			_rotation = r;
+		}
+		
 		private var _tween:Boolean = false;
 		/**
 		 * Flag indicating the display objects will animate to their layout positions. If false,
@@ -183,7 +203,9 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _onComplete:Function;
-		
+		/**
+		 * Function to call on layout complete
+		 */
 		public function get onComplete():Function { return _onComplete; }
 		public function set onComplete(f:Function):void
 		{
@@ -191,18 +213,21 @@ package com.gestureworks.cml.factories
 		}
 		
 		private var _onUpdate:Function;
-		
+		/**
+		 * Function to call on layout update
+		 */
 		public function get onUpdate():Function { return _onUpdate; }
 		public function set onUpdate(f:Function):void
 		{
 			_onUpdate = f;
 		}
 		
-		private var _continuousTransform:Boolean = true;
-	
+		private var _continuousTransform:Boolean = true;	
 		/**
-		 * Flag indicating the application of a transform from the current transform state. If this flag
-		 * is turned off, the transformation is reset with the principle layout attributes. 
+		 * Flag indicating the application of a transform relative to the current transform. If this flag is turned off, the transformation is 
+		 * reset with the principle layout attributes. (e.g. Given an object with a rotation of 45 degrees, applying a rotation of 10 in continuous mode
+		 * will set the object's rotation to 55. In non-continuous mode, applying a rotation of 10 degrees will set the object's rotation to 10).
+		 * @default true;
 		 */
 		public function get continuousTransform():Boolean { return _continuousTransform; }
 		public function set continuousTransform(c:Boolean):void
@@ -210,8 +235,7 @@ package com.gestureworks.cml.factories
 			_continuousTransform = c;
 		}
 		
-		private var _exclusions:Array = new Array();
-		
+		private var _exclusions:Array = new Array();		
 		/**
 		 * An array of objects to exclude from the layout application
 		 */
@@ -219,6 +243,18 @@ package com.gestureworks.cml.factories
 		public function set exclusions(e:Array):void
 		{
 			_exclusions = e;
+		}
+		
+		private var _cacheTransforms:Boolean = true;
+		/**
+		 * Flag indicating the childTransformations are to be cached and reapplied for convenience. If this flag is disabled, the transformations
+		 * will need to be recreated for each child. 
+		 * @default true
+		 */
+		public function get cacheTransforms():Boolean { return _cacheTransforms; }
+		public function set cacheTransforms(c:Boolean):void
+		{
+			_cacheTransforms = c;
 		}
 		
 		/**
@@ -250,7 +286,13 @@ package com.gestureworks.cml.factories
 					
 					if (tIndex < childTransformations.length)
 					{
-						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(childTransformations[tIndex]), alpha:alpha }, null, tweenTime / 1000, Exponential.easeOut));
+						var transformation:Matrix = childTransformations[tIndex];						
+						if (!isNaN(rotation))
+							rotateTransform(transformation, degreesToRadians(rotation));
+						if (!isNaN(scale))
+							scaleTransform(transformation, scale);
+							
+						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(transformation), alpha:alpha }, null, tweenTime / 1000, Exponential.easeOut));
 						tweenedObjects.push(child);
 					}
 					
@@ -268,13 +310,22 @@ package com.gestureworks.cml.factories
 					child = container.getChildAt(j);
 					if (!validObject(child)) continue;
 					
-					child.transform.matrix = childTransformations[tIndex];
+					var transformation:Matrix = childTransformations[tIndex];;
+					if (!isNaN(rotation))
+						rotateTransform(transformation, degreesToRadians(rotation));
+					if (!isNaN(scale))
+						scaleTransform(transformation, scale);
+					
+					child.transform.matrix = transformation;
 					child.alpha = alpha;
 					tIndex++;
 				}
 				if (onComplete != null) onComplete.call();
 				if (onUpdate != null) onUpdate.call();
 			}
+			
+			if (!cacheTransforms)
+				childTransformations = new Array();
 		}
 		
 		/**
@@ -302,6 +353,57 @@ package com.gestureworks.cml.factories
 				{ //TODO: need to investigate BetweenAS3 to figure out how to stop an indidual tween from a group tween
 					layoutTween.getTweenAt(tweenedObjects.indexOf(child)).stop();
 				}
+			}
+		}
+		
+		/**
+		 * Apply a translation to the provided transformation matrix
+		 * @param	m  the transformation matrix
+		 * @param	x  the x value of the translation
+		 * @param	y  the y value of the translation
+		 */
+		protected function translateTransform(m:Matrix, x:Number, y:Number):void
+		{
+			if (continuousTransform)
+				m.translate(x, y);
+			else
+			{
+				m.tx = x;
+				m.ty = y;
+			}			
+		}
+		
+		/**
+		 * Apply a rotation to the provided transformation matrix
+		 * @param	m  the transformation matrix
+		 * @param	rot  the rotation (in radians) to apply
+		 */
+		protected function rotateTransform(m:Matrix, rot:Number):void
+		{
+			if (continuousTransform)
+				m.rotate(rot);
+			else
+			{
+				m.a = Math.cos(rot);
+				m.b = Math.sin(rot);
+				m.c = -Math.sin(rot);
+				m.d = Math.cos(rot);								
+			}
+		}	
+		
+		/**
+		 * Apply a scale to the provided transformation matrix
+		 * @param	m  the transformation matrix
+		 * @param	s  the scale to apply
+		 */
+		protected function scaleTransform(m:Matrix, s:Number):void
+		{
+			if (continuousTransform)
+				m.scale(s, s);
+			else
+			{
+				m.a = s;
+				m.d = s;
 			}
 		}
 		

@@ -139,6 +139,11 @@ package com.gestureworks.cml.layouts
 		{
 			_maxRot = value;
 		}	
+		
+		/**
+		 * Since this is a rotaion dependent layout, override rotation mutator to prevent conflicts.
+		 */
+		override public function set rotation(value:Number):void {}
 				
 		
 		/**
@@ -187,7 +192,7 @@ package com.gestureworks.cml.layouts
 				if(!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;
-				matrix.translate(randomMinMax(minX, maxX), 0);						
+				translateTransform(matrix, randomMinMax(minX, maxX), 0);						
 				childTransformations.push(matrix);				
 			}			
 		}
@@ -208,7 +213,7 @@ package com.gestureworks.cml.layouts
 				if(!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;				
-				matrix.translate(0, randomMinMax(minY, maxY));			
+				translateTransform(matrix, 0, randomMinMax(minY, maxY));			
 				childTransformations.push(matrix);
 			}			
 		}
@@ -229,7 +234,7 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;
-				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));			
+				translateTransform(matrix, randomMinMax(minX, maxX), randomMinMax(minY, maxY));			
 				childTransformations.push(matrix);
 			}			
 		}
@@ -251,8 +256,8 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 				
 				matrix = child.transform.matrix;
-				matrix.rotate(degreesToRadians(randomMinMax(minRot, maxRot)));
-				matrix.translate(randomMinMax(minX, maxX), randomMinMax(minY, maxY));
+				translateTransform(matrix, randomMinMax(minX, maxX), randomMinMax(minY, maxY));
+				rotateTransform(matrix, degreesToRadians(randomMinMax(minRot, maxRot)));
 				childTransformations.push(matrix);	
 			}			
 		}	

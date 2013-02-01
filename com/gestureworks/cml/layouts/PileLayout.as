@@ -89,6 +89,11 @@ package com.gestureworks.cml.layouts
 		{
 			_angle = a;
 		}
+		
+		/**
+		 * Since this is a rotation dependent layout, override the rotation mutator to prevent conflicts. 
+		 */
+		override public function set rotation(value:Number):void {}
 
 		/**
 		 * Centers and rotates the container's display objects around a common point. If the angle of rotation has
@@ -106,7 +111,7 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
-				matrix.translate(originX - child.width / 2, originY - child.height / 2);
+				translateTransform(matrix, originX - child.width / 2, originY - child.height / 2);
 				nextAngle = !isNaN(angle) ? nextAngle += angle : randomMinMax(0, 360); 				
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);				

@@ -145,12 +145,7 @@ package com.gestureworks.cml.layouts
 				yVal = centerRow ? rowHeight/2 - child.height/2 + yVal: yVal;	   //adjust spacing for row centering
 				
 				matrix = child.transform.matrix;
-				if (continuousTransform)					
-					matrix.translate(xVal, yVal);			
-				else {
-					matrix.tx = xVal;
-					matrix.ty = yVal;
-				}
+				translateTransform(matrix, xVal, yVal);
 				childTransformations.push(matrix);
 				sumx = centerColumn ?  sumx + columnWidth : sumx + child.width;
 				index++;
@@ -184,7 +179,7 @@ package com.gestureworks.cml.layouts
 				xVal = centerColumn ? columnWidth/2 - child.width/2 + xVal: xVal;		  //adjust spacing for column centering		
 				
 				matrix = child.transform.matrix;
-				matrix.translate(xVal, yVal);			
+				translateTransform(matrix, xVal, yVal);
 				childTransformations.push(matrix);						
 				sumy = centerRow ?  sumy + rowHeight : sumy + child.height;	
 				index++;
