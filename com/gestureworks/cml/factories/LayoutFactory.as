@@ -36,6 +36,28 @@ package com.gestureworks.cml.factories
 			childTransformations = new Array();
 		}
 		
+		private var _originX:Number = 0;		
+		/**
+		 * Starting x coordinate of layout relative to the container
+		 * @default 0
+		 */
+		public function get originX():Number { return _originX; }
+		public function set originX(x:Number):void
+		{
+			_originX = x;
+		}
+		
+		public var _originY:Number = 0;
+		/**
+		 * Starting y coordinate of layout relative to the container
+		 * @default 0
+		 */
+		public function get originY():Number { return _originY; }
+		public function set originY(y:Number):void
+		{
+			_originY = y;
+		}
+		
 		private var _spacingX:Number = 100;
 		/**
 		 * Horizontal distance between the origins of two objects

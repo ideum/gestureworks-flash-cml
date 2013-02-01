@@ -122,8 +122,8 @@ package com.gestureworks.cml.layouts
 		{
             var row:Number;
             var col:Number;
-			var sumx:Number = 0;
-			var sumy:Number = 0;
+			var sumx:Number = originX;
+			var sumy:Number = originY;
             var num:int = (columns * rows);
 			var child:*;
 			var xVal:Number;
@@ -141,14 +141,14 @@ package com.gestureworks.cml.layouts
                     row = Math.floor(index / columns);               
                     col = (index % columns);
 
-                    xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX;
-                    yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY;
+                    xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX + originX;
+                    yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY + originY;
 
 					matrix = child.transform.matrix;
 					matrix.translate(xVal, yVal);			
 					childTransformations.push(matrix);
 					
-					sumx = col == columns - 1 ? 0 : sumx + child.width;
+					sumx = col == columns - 1 ? originX : sumx + child.width;
 					sumy = col == columns - 1 ? sumy + child.height  : sumy;											
 				}
                 else
@@ -156,15 +156,15 @@ package com.gestureworks.cml.layouts
                     row = (index % rows);
                     col = Math.floor(index / rows);
                
-                    xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX;
-                    yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY;	
+                    xVal = useMargins ? sumx + col * (2*marginX) : col * spacingX + originX;
+                    yVal = useMargins ? sumy + row * (2 * marginY) : row * spacingY + originY;	
 
 					matrix = child.transform.matrix;
 					matrix.translate(xVal, yVal);			
 					childTransformations.push(matrix);
 
 					sumx = row == rows-1 ? sumx + child.width : sumx;
-					sumy = row == rows - 1 ? 0 : sumy + child.height;					
+					sumy = row == rows - 1 ? originY : sumy + child.height;					
                 }
 
 				index++;

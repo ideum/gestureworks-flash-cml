@@ -128,11 +128,11 @@ package com.gestureworks.cml.layouts
 		{		
 			n = container.numChildren;			
 			var xVal:Number;
-			var yVal:Number = 0;
+			var yVal:Number = originY;
 			var matrix:Matrix;
 			var columnWidth:Number = getMaxWidth(container);
 			var rowHeight:Number = Math.max(getMaxHeight(container), container.height);
-			var sumx:Number = centerColumn ? columnWidth / 2 : 0;
+			var sumx:Number = centerColumn ? originX+(columnWidth / 2) : originX;
 			var index:int = 0;
 			
 			for (var i:int = childTransformations.length; i < n; i++) 
@@ -140,9 +140,9 @@ package com.gestureworks.cml.layouts
 				var child:* = container.getChildAt(i);
 				if (!validObject(child)) continue;
 
-				xVal = useMargins ? sumx + index * (2 * marginX) : index * spacingX;
+				xVal = useMargins ? sumx + index * (2 * marginX) : index * spacingX + originX;
 				xVal = centerColumn ? xVal - child.width/2 : xVal;         //adjust spacing for column centering
-				yVal = centerRow ? rowHeight/2 - child.height/2: yVal;	   //adjust spacing for row centering
+				yVal = centerRow ? rowHeight/2 - child.height/2 + yVal: yVal;	   //adjust spacing for row centering
 				
 				matrix = child.transform.matrix;
 				if (continuousTransform)					
@@ -166,12 +166,12 @@ package com.gestureworks.cml.layouts
 		public function vertical(container:DisplayObjectContainer):void
 		{
 			n = container.numChildren; 			
-			var xVal:Number;
-			var yVal:Number = 0;
+			var xVal:Number = originX;
+			var yVal:Number;
 			var matrix:Matrix;
 			var columnWidth:Number = Math.max(getMaxWidth(container), container.width);
 			var rowHeight:Number = getMaxHeight(container);
-			var sumy:Number = centerRow ? rowHeight / 2 : 0;	
+			var sumy:Number = centerRow ? originY+(rowHeight / 2) : originY;	
 			var index:int = 0;
 			
 			for (var i:int = childTransformations.length; i < n; i++) 
@@ -179,9 +179,9 @@ package com.gestureworks.cml.layouts
 				var child :* = container.getChildAt(i);
 				if (!validObject(child)) continue;
 							
-				yVal = useMargins ? sumy + index * (2 * marginY) : index * spacingY;
+				yVal = useMargins ? sumy + index * (2 * marginY) : index * spacingY + originY;
 				yVal = centerRow ? yVal - child.height / 2 : yVal;                //adjust spacing for row centering
-				xVal = centerColumn ? columnWidth/2 - child.width/2: xVal;		  //adjust spacing for column centering		
+				xVal = centerColumn ? columnWidth/2 - child.width/2 + xVal: xVal;		  //adjust spacing for column centering		
 				
 				matrix = child.transform.matrix;
 				matrix.translate(xVal, yVal);			

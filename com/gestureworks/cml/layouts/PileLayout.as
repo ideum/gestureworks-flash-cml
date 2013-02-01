@@ -81,26 +81,6 @@ package com.gestureworks.cml.layouts
 		}	
 		
 		/**
-		 * The x coordinate the display objects are centered and rotated on
-		 */
-		private var _originX:Number = 0;
-		public function get originX():Number { return _originX; }
-		public function set originX(ox:Number):void
-		{
-			_originX = ox;
-		}
-
-		/**
-		 * The y coordinate the display objects are centered and rotated on
-		 */		
-		private var _originY:Number = 0;
-		public function get originY():Number { return _originY; }
-		public function set originY(oy:Number):void
-		{
-			_originY = oy;
-		}
-		
-		/**
 		 * The angle of rotation between the display objects
 		 */
 		private var _angle:Number;
