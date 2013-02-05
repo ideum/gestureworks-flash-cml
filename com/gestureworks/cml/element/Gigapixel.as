@@ -37,7 +37,7 @@
 	 * @author Josh
 	 * @see Panoramic
 	 */
-	public class Gigapixel extends ElementFactory
+	public class Gigapixel extends TouchContainer
 	{
 		private var _clickZoomInFactor:Number = 1.7
 		private var _scaleZoomFactor:Number = 1.4
@@ -45,6 +45,7 @@
 		private var image:MultiScaleImage
     	private var sceneNavigator:SceneNavigator
     	private var scaleConstraint:ScaleConstraint;
+		private var hotspots:Array = [];
 		
 		/**
 		 * Constructor
@@ -52,6 +53,22 @@
 		public function Gigapixel()
 		{
 			super();
+		}
+		
+		private var _viewportX:Number = 0;
+		public function get viewportX():Number {
+			if (image) {
+				_viewportX = image.viewportX
+				return _viewportX;
+			} else return _viewportX;
+		}
+		
+		private var _viewportY:Number = 0;
+		public function get viewportY():Number {
+			if (image) {
+				_viewportY = image.viewportY
+				return _viewportY;
+			} else return _viewportY;
 		}
 		
 		private var _minScaleConstraint:Number = 0.001;
@@ -95,16 +112,34 @@
 		 */
 		public function get loaded():Boolean { return _loaded; }
 		
+		public function get sceneWidth():Number { return image.sceneWidth; }
+		public function get sceneHeight():Number { return image.sceneHeight; }
+		
+		public function get viewportWidth():Number { return image.viewportWidth; }
+		public function get viewportHeight():Number { return image.viewportHeight; }
+		
+		public function localToScene(p:Point):Point {
+			return image.localToScene(p);
+		}
+		
 		
 		/**
 		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void
 		{			
+			while (this.numChildren > 0) {
+				if (this.getChildAt(0) is Hotspot) {
+					hotspots.push(this.getChildAt(0));
+				}
+				removeChildAt(0);
+				trace("Clearing markers to put them back later.");
+			}
+			
 			image = new MultiScaleImage();
 			image.mouseChildren = true;
 			image.addEventListener(Event.COMPLETE, image_completeHandler)
-	
+			
 			// Add transformer for smooth zooming
 			var transformer:TweenerTransformer = new TweenerTransformer()
 			transformer.easing = "EaseOut";
@@ -141,14 +176,37 @@
 			
 			addChild(image);
 			
+			for (var i:Number = 0; i < hotspots.length; i++) {
+				if (!(contains(hotspots[i])))
+					addChild(hotspots[i]);
+				var point:Point = image.sceneToLocal(new Point(hotspots[i].sceneX, hotspots[i].sceneY));
+				hotspots[i].x = point.x;
+				hotspots[i].y = point.y;
+				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
+			}
+			
+			if (hotspots.length > 0)
+				addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			
 			_loaded = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
+		}
+		
+		private function onEnterFrame(e:Event):void {
+			for (var i:Number = 0; i < hotspots.length; i++) {
+				if (!(contains(hotspots[i])))
+					addChild(hotspots[i]);
+				var point:Point = image.sceneToLocal(new Point(hotspots[i].sceneX, hotspots[i].sceneY));
+				hotspots[i].x = point.x;
+				hotspots[i].y = point.y;
+				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
+			}
 		}
 		
 		/**
 		 * Initialisation method
 		 */
-		public function init():void
+		override public function init():void
 		{ 
 			displayComplete();
 		}
@@ -168,6 +226,8 @@
 		{
 			super.dispose();
 			scaleConstraint = null;
+			
+			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			
 			while (this.numChildren > 0){
 				this.removeChildAt(0);
