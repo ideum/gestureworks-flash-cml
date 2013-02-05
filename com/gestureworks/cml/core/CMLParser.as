@@ -188,17 +188,24 @@ package com.gestureworks.cml.core
 			
 			var xmllist:XMLList = XMLList(cml.*);
 			loopCML(xmllist, defaultContainer);
-			evaluate();	
+			evaluate();
 		}			
 		
 		
 		private static function evaluate():void
 		{
-			if (cmlFilesComplete != FileManager.instance.cmlCount)
+			if (cmlFilesComplete != FileManager.instance.cmlCount) {
+				trace("cmlFilesComplete", cmlFilesComplete, "FileManager.instance.cmlCount", FileManager.instance.cmlCount);
 				return;
+			}
 			else if (pausedCML.length > 0) {
 				loopCML(pausedCML.pop(), includeParentIndex.pop());
 				evaluate();
+			}
+			else if (pausedCML2.length > 0) {
+				var arr:Array = pausedCML2.pop();				
+				loopCML(XMLList(arr[0]),arr[1],arr[2]);
+				evaluate();				
 			}
 			else if (FileManager.instance.fileCount > 0 && !extFilesLoaded)
 				loadExtFiles();
@@ -363,8 +370,9 @@ package com.gestureworks.cml.core
 			}
 			else {
 				var xml:XML = XML(CMLLoader.getInstance(event.filePath).data);
-				var xmllist:XMLList = XMLList((xml.*).toXMLString());				
-				loopCML(xmllist, includeParentIndex[includeParentIndex.length-1]);
+				var xmllist:XMLList = XMLList((xml.*).toXMLString());
+				includeFound = false;
+				loopCML(xmllist, includeParentIndex[includeParentIndex.length - 1]);
 				evaluate();
 			}
 		}			
@@ -400,7 +408,8 @@ package com.gestureworks.cml.core
 		private static var index:int = 0;
 		private static var includeParentIndex:Array = [];
 		private static var pausedCML:Array = [];
-		
+		private static var pausedCML2:Array = [];
+		private static var includeFound:Boolean = false;
 		
 		/**
 		 * Recursive CML parsing
@@ -408,8 +417,13 @@ package com.gestureworks.cml.core
 		 * @param	parent
 		 * @param	properties
 		 */
-		public static function loopCML(cml:XMLList, parent:*=null, properties:*=null):void
-		{			
+		public static function loopCML(cml:XMLList, parent:*= null, properties:*= null):void
+		{
+				if (includeFound) {
+					pausedCML2.push(new Array(cml, parent, properties));
+					return;
+				}		
+			
 			var className:String = null;
 			var obj:* = null;
 			var returnedNode:XMLList = null;
@@ -419,8 +433,25 @@ package com.gestureworks.cml.core
 				trace('---------------- no parent');			
 			
 			var i:int = 0;
+			
+			var index:int = -1;
 			for each (var node:XML in cml)
 			{
+				index++;
+				
+				if (includeFound) {
+					var tmp:XMLList = cml.copy();
+					
+					for (var j:int = index-1; j >= 0; j--) {
+						delete tmp[j];
+					}
+					
+					pausedCML2.push(new Array(tmp, parent, properties));
+					
+					break;
+					return;
+				}
+				
 				className = node.name();								
 				classNameKeyword = false;
 				
@@ -461,7 +492,6 @@ package com.gestureworks.cml.core
 							for (var j:int = i; j >= 0; j--) {
 								delete pausedCML[pausedCML.length - 1][j];
 							}
-							
 														
 							FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
 							
@@ -470,12 +500,12 @@ package com.gestureworks.cml.core
 							else 
 								FileManager.instance.resumeCMLQueue();
 							
-							return;	
-									
+							includeFound = true;				
+							
+							return;
 						}
 					}
 					
-
 					continue;
 				}
 			
@@ -578,7 +608,7 @@ package com.gestureworks.cml.core
 				
 				//recursion
 				if (returnedNode.length() > 0)
-					loopCML(returnedNode, obj, properties);	
+					loopCML(returnedNode, obj, properties);
 					
 				i++;	
 			}
