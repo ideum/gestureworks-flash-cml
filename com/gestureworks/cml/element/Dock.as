@@ -27,7 +27,7 @@ package com.gestureworks.cml.element
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = ["work_description:rug"];
 		public var returnFields:Array = ["work_description", "copyrightdate"];
-		private var _searchFieldsArray:Array;
+		protected var _searchFieldsArray:Array;
 		public var searchFields:String;
 				
 		public var result:Object;	
@@ -160,7 +160,7 @@ package com.gestureworks.cml.element
 		
 		
 		// get search terms from dial and submit query
-		private function onDialChange(e:StateEvent):void 
+		protected function onDialChange(e:StateEvent):void 
 		{
 			for each (var obj:* in clones) {
 				//album.belt.removeChild(obj);
@@ -374,7 +374,7 @@ package com.gestureworks.cml.element
 		
 		
 		// creates image viewer clone
-		private function createClone(clone:*):void
+		protected function createClone(clone:*):void
 		{
 			//var src:String = templates[0].image.src;
 			//var src:String = templates[1].image.src;
@@ -406,10 +406,10 @@ package com.gestureworks.cml.element
 				}
 				//if (flickrQuery)
 					//searchExp(clone, templates[1]);
-				clone.image.close();
+				//clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				clone.image.open(src);
+				//clone.image.open(src);
 				//clone.init();
 				cloneMap.append(src, clone);
 			}
@@ -417,11 +417,12 @@ package com.gestureworks.cml.element
 
 		
 		// image load data
-		private function onCloneLoad(event:StateEvent=null):void 
+		protected function onCloneLoad(event:StateEvent=null):void 
 		{			
 			if ( (!event) || event.property == "isLoaded") {
-				//trace("Clone:", clone, templates[1]);
-				searchExp(event.target, event.target.image);
+				
+				if (event.target is FlickrViewer)
+					searchExp(event.target, event.target.image);
 				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
 				if (event) {
@@ -453,7 +454,7 @@ package com.gestureworks.cml.element
 		}
 		
 		
-		private function displayResults():void
+		protected function displayResults():void
 		{
 				
 			for (var i:int = 0; i < dockText.length; i++) {
