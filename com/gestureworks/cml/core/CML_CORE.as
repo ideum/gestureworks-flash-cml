@@ -149,5 +149,20 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.layouts.PileLayout; PileLayout;
 	import com.gestureworks.cml.layouts.FanLayout; FanLayout;
 	
+	
+	
+	///////////////////////
+	//  BETWEENAS3 
+	//////////////////////
+	import org.libspark.betweenas3.easing.Back; Back;	
+	import org.libspark.betweenas3.easing.Bounce; Bounce;	
+	import org.libspark.betweenas3.easing.Circular; Circular;	
+	import org.libspark.betweenas3.easing.Cubic; Cubic;	
+	import org.libspark.betweenas3.easing.Elastic; Elastic;	
+	import org.libspark.betweenas3.easing.Exponential; Exponential;		
+	import org.libspark.betweenas3.easing.Quadratic; Quadratic;	
+	import org.libspark.betweenas3.easing.Quartic; Quartic;	
+	import org.libspark.betweenas3.easing.Quintic; Quintic;
+	import org.libspark.betweenas3.easing.Sine; Sine;	
 
 }

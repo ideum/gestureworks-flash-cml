@@ -1,14 +1,13 @@
 package com.gestureworks.cml.factories 
 {
-	import com.gestureworks.cml.interfaces.ILayout;	
+	import com.gestureworks.cml.interfaces.ILayout;
 	import flash.display.DisplayObject;
-	import flash.geom.Matrix;
 	import flash.display.DisplayObjectContainer;
-	import flash.utils.Dictionary;
+	import flash.geom.Matrix;
+	import flash.utils.getDefinitionByName;
 	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.core.tweens.ObjectTween;
+	import org.libspark.betweenas3.core.easing.IEasing;
 	import org.libspark.betweenas3.easing.Exponential;
-	import org.libspark.betweenas3.tweens.ITween;
 	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/** 
@@ -201,6 +200,32 @@ package com.gestureworks.cml.factories
 		{
 			_tweenTime = t;
 		}
+
+		private var _easing:IEasing = Exponential.easeOut;
+		/**
+		 * Specifies the easing equation. Argument must be an IEasing instance or a String defining the IEasing class
+		 * either by property syntax or class name (e.g. Exponential.easeOut or ExponentialEaseOut). 
+		 */
+		public function get easing():* { return _easing; }
+		public function set easing(e:*):void
+		{
+			if (!(e is IEasing))
+			{   
+				var value:String = e.toString();
+				if (value.indexOf("Linear") != -1)
+					value = "EaseNone";
+				else if (value.indexOf(".") != -1)
+				{
+					var chars:String = value.substr(value.indexOf("."), 2);
+					value = value.replace(chars, chars.substr(1).toUpperCase());
+				}
+				
+				var easingType:Class = getDefinitionByName("org.libspark.betweenas3.core.easing." + value) as Class;
+				e = new easingType();
+			}
+			if (e is IEasing)
+				_easing = e;
+		}
 		
 		private var _onComplete:Function;
 		/**
@@ -292,7 +317,7 @@ package com.gestureworks.cml.factories
 						if (!isNaN(scale))
 							scaleTransform(transformation, scale);
 							
-						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(transformation), alpha:alpha }, null, tweenTime / 1000, Exponential.easeOut));
+						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(transformation), alpha:alpha }, null, tweenTime / 1000, easing));
 						tweenedObjects.push(child);
 					}
 					
@@ -454,7 +479,7 @@ package com.gestureworks.cml.factories
 		{
 			if (!m) m = new Matrix();
 			m.translate( -aroundX, -aroundY );
-			m.rotate(Math.PI * angle / 180);
+			m.rotate(degreesToRadians(angle));
 			m.translate( aroundX, aroundY );
 			return m;
 		}
