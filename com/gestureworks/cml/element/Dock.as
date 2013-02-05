@@ -119,8 +119,6 @@ package com.gestureworks.cml.element
 			
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
-				//flickrQuery = new FlickrQuery();
-				trace("Initiating dock. FlickrQuery:", flickrQuery);
 			}
 			
 			
@@ -406,10 +404,10 @@ package com.gestureworks.cml.element
 				}
 				//if (flickrQuery)
 					//searchExp(clone, templates[1]);
-				//clone.image.close();
+				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				//clone.image.open(src);
+				clone.image.open(src);
 				//clone.init();
 				cloneMap.append(src, clone);
 			}
