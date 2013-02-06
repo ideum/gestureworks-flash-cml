@@ -146,7 +146,7 @@ package com.gestureworks.cml.components
 			cloneExclusions.push("backs");
 			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);		
 				
-			CloneUtils.copyChildList(this, clone);		
+			//CloneUtils.copyChildList(this, clone);	// commented out b/c it was duplicating childlist (2012/2/6)
 			
 			if (image) {
 				clone.image = String(image.id);
