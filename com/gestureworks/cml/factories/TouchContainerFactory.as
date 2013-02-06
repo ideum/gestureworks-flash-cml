@@ -32,7 +32,7 @@ package com.gestureworks.cml.factories
 			propertyStates = [];
 			propertyStates[0] = new Dictionary(false);			
 			
-			_childList = new LinkedMap;			
+			_childList = new ChildList;			
 			
 			addEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);
 			//alpha = 1;
@@ -234,11 +234,11 @@ package com.gestureworks.cml.factories
 		
 		
 		
-		private var _childList:LinkedMap;
+		private var _childList:ChildList;
 		/**
 		 * returns the childlist
 		 */
-		public function get childList():LinkedMap {return _childList;}			
+		public function get childList():ChildList {return _childList;}			
 		
 		
 		

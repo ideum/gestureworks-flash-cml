@@ -2,6 +2,7 @@ package com.gestureworks.cml.utils
 {
 	import com.gestureworks.cml.interfaces.IList;
 	import com.gestureworks.cml.interfaces.IListIterator;
+	import flash.utils.Proxy;
 	
 	/**
 	 * The List utility is a data structure that creates an ordered
@@ -20,20 +21,20 @@ package com.gestureworks.cml.utils
 		l.append(new Sprite());
 		l.append(new TouchSprite());
 		
-		lm.reset();
-		//trace(lm.next());	 
+		l.reset();
+		trace(l.next());	 
 	 
 	 * </codeblock>
 	 * 
 	 * @author Ideum
 	 * @see LinkedMap
 	 */
-	public class List implements IList, IListIterator 
+	public dynamic class List implements IList, IListIterator 
 	{
 		/**
-		 * Stores the array of items
+		 * Stores the vector of items
 		 */
-		public var array:Array;		
+		private var vector:Vector.<*>;	
 		
 		
 		/**
@@ -41,7 +42,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function List()
 		{
-			array = new Array;
+			vector = new Vector.<*>();
 		}
 		
 		
@@ -57,14 +58,14 @@ package com.gestureworks.cml.utils
 		/**
 		 * Returns the current value
 		 */
-		public function get currentValue():* { return array[currentIndex]; }		
+		public function get currentValue():* { return vector[currentIndex]; }		
 		
 		
 		private var _length:int = 0;
 		/**
 		 * Returns the length of list
 		 */
-		public function get length():int { return array.length }
+		public function get length():int { return vector.length }
 
 		
 		/**
@@ -74,7 +75,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function getIndex(index:int):*
 		{
-			return array[index];
+			return vector[index];
 		}		
 		
 		
@@ -87,18 +88,37 @@ package com.gestureworks.cml.utils
 		public function selectIndex(index:int):*
 		{
 			_currentIndex = index;
-			return array[index];
+			return vector[index];
 		}
 		
 		
 		/**
-		 * Searches by value and returns the index that matches the value
+		 * Searches by value and returns the first index that matches the value
 		 * @param	value
 		 * @return
 		 */
 		public function search(value:*):int
 		{	
-			return array.indexOf(value);
+			return vector.indexOf(value);
+		}
+		
+		
+		/**
+		 * Searches by value and returns all found indices in an ordered array
+		 * @param	value
+		 * @return
+		 */
+		public function searchAll(value:*):Array
+		{
+			var arr:Array = [];
+			
+			for (var i:int = 0; i < length; i++) 
+			{
+				if (vector[i] == value)
+					arr.push(i);
+			}
+			
+			return arr;
 		}
 		
 		
@@ -108,7 +128,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function append(value:*):void
 		{
-			array.push(value);			
+			vector.push(value);			
 		}
 		
 		
@@ -118,7 +138,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function prepend(value:*):void
 		{
-			array.unshift(value);
+			vector.unshift(value);
 			if (currentIndex > 0)
 				_currentIndex++;			
 		}
@@ -131,14 +151,14 @@ package com.gestureworks.cml.utils
 		 */
 		public function insert(index:int, value:*):void 
 		{
-			if (index < 0 || index > array.length)
-				throw new Error("array index out of bounds");
+			if (index < 0 || index > vector.length)
+				throw new Error("vector index out of bounds");
 			
-			var original:Array = array.slice();
-			var temp:Array = original.splice(index);
+			var original:Vector.<*> = vector.slice();
+			var temp:Vector.<*> = original.splice(index, 1);
 			original[index] = value;
 			original = original.concat(temp);
-			array = original;
+			vector = original;
 			if (currentIndex >= index)
 				_currentIndex++;				
 		}
@@ -150,11 +170,11 @@ package com.gestureworks.cml.utils
 		 */
 		public function remove(index:int):void
 		{			
-			var original:Array = array.slice(); 
-			var temp:Array = original.splice(index); 
+			var original:Vector.<*> = vector.slice(); 
+			var temp:Vector.<*> = original.splice(index, 1); 
 			temp.shift();
 			original = original.concat(temp); 
-			array = original;
+			vector = original;
 			if (currentIndex > 0 && currentIndex >= index)
 				_currentIndex--;
 		}
@@ -166,12 +186,23 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasIndex(index:int):Boolean
 		{
-			if (array[index])
+			if (vector[index])
 				return true;
 			else
 				return false;
 		}		
 		
+		
+		/**
+		 * Returns the previous index
+		 * @return
+		 */
+		public function toArray():Array 
+		{
+			 var ret:Array = [];
+			 for each (var elem:* in vector) ret.push(elem);
+			 return ret;
+		}
 		
 		
 		// iterator methods //
@@ -190,7 +221,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasNext():Boolean
 		{
-			return _currentIndex < array.length-1;
+			return _currentIndex < vector.length-1;
 		}
 		
 		/**
@@ -212,7 +243,7 @@ package com.gestureworks.cml.utils
 		public function next():*
 		{
 			_currentIndex++;
-			return array[currentIndex];
+			return vector[currentIndex];
 		}
 		
 		/**
@@ -222,7 +253,9 @@ package com.gestureworks.cml.utils
 		public function prev():*
 		{
 			_currentIndex--;
-			return array[currentIndex];
+			return vector[currentIndex];
 		}
+	
+	
 	}
 }

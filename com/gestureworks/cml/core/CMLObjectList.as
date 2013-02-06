@@ -1,5 +1,6 @@
 package com.gestureworks.cml.core 
 {
+	import com.gestureworks.cml.utils.ChildList;
 	import com.gestureworks.cml.utils.LinkedMap;
 	
 	/**
@@ -26,7 +27,7 @@ package com.gestureworks.cml.core
 	 * @see com.gestureworks.cml.core.CMLParser
 	 * @see com.gestureworks.cml.core.CMLDisplay
 	 */
-	public class CMLObjectList extends LinkedMap
+	public class CMLObjectList extends ChildList
 	{	
 		/**
 		 * Constructor allows single instance

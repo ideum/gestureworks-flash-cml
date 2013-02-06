@@ -1,6 +1,7 @@
 package com.gestureworks.cml.factories
 {
 	import com.gestureworks.cml.factories.ElementFactory;
+	import com.gestureworks.cml.utils.ChildList;
 	import com.gestureworks.cml.utils.LinkedMap;
 	import flash.display.DisplayObject;
 	
@@ -20,7 +21,7 @@ package com.gestureworks.cml.factories
 		 */
 		public function ContainerFactory()
 		{
-			_childList = new LinkedMap;
+			_childList = new ChildList
 		}	
 		
 		/**
@@ -33,11 +34,11 @@ package com.gestureworks.cml.factories
 		}
 				
 		
-		private var _childList:LinkedMap;
+		private var _childList:ChildList;
 		/**
 		 * store the child list
 		 */
-		public function get childList():LinkedMap {return _childList;}	
+		public function get childList():ChildList {return _childList;}	
 		
 		
 		private var _dimensionsTo:String;

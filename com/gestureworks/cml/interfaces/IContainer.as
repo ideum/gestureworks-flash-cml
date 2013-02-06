@@ -1,5 +1,6 @@
 package com.gestureworks.cml.interfaces 
 {
+	import com.gestureworks.cml.utils.ChildList;
 	import com.gestureworks.cml.utils.LinkedMap;
 	
 	/**
@@ -11,7 +12,7 @@ package com.gestureworks.cml.interfaces
 		/**
 		 * Returns the CML childlist.
 		 */
-		function get childList():LinkedMap;
+		function get childList():ChildList;
 		
 		/**
 		 * Returns the layout.

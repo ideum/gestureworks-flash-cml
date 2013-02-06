@@ -1,13 +1,11 @@
 package com.gestureworks.cml.utils
 {	
-	import com.gestureworks.cml.element.Container;
-	import com.gestureworks.cml.interfaces.IContainer;
-	import flash.utils.Dictionary;
-	
+	import adobe.utils.CustomActions;
+	import com.gestureworks.cml.element.Key;
 	/**
 	 * The LinkedMap utility is a data structure that creates an ordered
-	 * Dictionary, has a built-in two-way iterator, and contains many 
-	 * options for storing and retrieving values.
+	 * map that can store duplicate keys. It has a built-in two-way iterator, 
+	 * and contains many options for storing and retrieving values.
 	 * 
 	 * <p>The structure is comprised of:
 	 * <ul>
@@ -23,7 +21,7 @@ package com.gestureworks.cml.utils
 		lm.append("s2", new TouchSprite());
 		
 		lm.reset();
-		//trace(lm.next());
+		trace(lm.next());
 	 
 	 * </codeblock>
 	 * 
@@ -32,66 +30,8 @@ package com.gestureworks.cml.utils
 	 */
 	public class LinkedMap
 	{
-		
-		/**
-		 * Returns a LinkedMap of objects that are of the 
-		 * specified CSS class if no second argument is given.
-		 * Returns the nth object of the retuned LinkedMap
-		 * if the second argument is present. 
-		 * @param	value
-		 * @param	index
-		 * @return
-		 */
-		public function getCSSClass(value:String, index:int=-1):*
-		{
-			var tmp:LinkedMap = new LinkedMap(true);
-			
-			for (var i:int = 0; i < this.length; i++) 
-			{
-				if (!this.getIndex(i)) continue; // Make sure index is defined; causing error when cloning the ScrollPane.
-				
-				if (this.getIndex(i).hasOwnProperty("class_"))
-				{
-					if (this.getIndex(i).class_ == value)
-						tmp.append(this.getIndex(i).id, this.getIndex(i));
-				}
-			}
-						
-			if (index > -1)
-				return tmp.getIndex(index);
-			else
-				return tmp;
-		}
-		
-		
-		/**
-		 * Returns a LinkedMap of objects that are of the 
-		 * specified AS3 class if no second argument is given.
-		 * Returns the nth object of the returned LinkedMap
-		 * if the second argument is present.
-		 * @param	value
-		 * @param	index
-		 * @return
-		 */
-		public function getClass(value:Class, index:int=-1):*
-		{
-			var tmp:LinkedMap = new LinkedMap(true);
-			
-			for (var i:int = 0; i < this.length; i++) 
-			{
-				if (this.getIndex(i) is value)
-					tmp.append(this.getIndex(i).id, this.getIndex(i));
-			}	
-			
-			if (index > -1)
-				return tmp.getIndex(index);
-			else
-				return tmp;				
-		}		
-		
-		private var dictionary:Dictionary;
-		private var list:List;
-		private var listValue:List;
+		private var keys:List;
+		private var values:List;
 		
 		/**
 		 * Constructor
@@ -99,47 +39,38 @@ package com.gestureworks.cml.utils
 		 */
 		public function LinkedMap(weakKeys:Boolean=false)
 		{
-			dictionary = new Dictionary(weakKeys);
-			list = new List;
-			listValue = new List;
+			keys = new List;
+			values = new List;
 		}
 		
 		private var _currentIndex:int = 0;
 		/**
 		 * Returns and sets the current index
 		 */
-		public function get currentIndex():int { return list.currentIndex }
-		public function set currentIndex(value:int):void { list.currentIndex = value; }
-
+		public function get currentIndex():int { return keys.currentIndex }
+		public function set currentIndex(value:int):void { keys.currentIndex = value; }		
 		
-		private var _uniqueKey:Boolean = false;
-		/**
-		 * Determines whether the structure enforces unique keys. If 
-		 * set to true, a duplicate key value will replace the old one.
-		 * @default false
-		 */
-		public function get uniqueKey():Boolean { return _uniqueKey }
-		public function set uniqueKey(value:Boolean):void { _uniqueKey = value }		
 		
 		
 		private var _currentKey:int = 0;
 		/**
 		 * Returns the current key
 		 */
-		public function get currentKey():* { return list.selectIndex(currentIndex) };
+		public function get currentKey():* { return keys.selectIndex(currentIndex) };
 		
 		private var _currentValue:*;
 		/**
 		 * Returns the current value
 		 */
-		public function get currentValue():* { return listValue.getIndex(currentIndex); }	
+		public function get currentValue():* { return values.getIndex(currentIndex); }	
 		
 		private var _length:int = 0;
 		/**
-		 * Returns the list length
+		 * Returns the length of the LinkedMap
 		 */
-		public function get length():int { return list.length }
+		public function get length():int { return values.length }
 
+		
 		
 		/**
 		 * Returns the value by index
@@ -148,7 +79,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function getIndex(index:int):*
 		{			
-			return listValue.getIndex(index);
+			return values.getIndex(index);
 		}
 		
 		/**
@@ -157,17 +88,17 @@ package com.gestureworks.cml.utils
 		 * @return
 		 */
 		public function getKey(key:*):*
-		{			
-			return dictionary[key];
+		{
+			return getIndex(keys.search(key));
 		}
 		
 		/**
-		 * Returns an array of keys
+		 * Returns an array of keys.
 		 * @return
 		 */
 		public function getKeyArray():Array
 		{			
-			return list.array;
+			return keys.toArray();
 		}		
 		
 		/**
@@ -176,9 +107,28 @@ package com.gestureworks.cml.utils
 		 */
 		public function getValueArray():Array
 		{			
-			return listValue.array;
+			return values.toArray();
 		}		
 				
+		/**
+		 * Returns a multidimensional array of key / value pairs
+		 * @return
+		 */
+		public function toArray():Array
+		{
+			var ret:Array = [];
+			var k:Array = keys.toArray();
+			var v:Array = values.toArray();
+			
+			for (var i:int = 0; i < length; i++){
+				ret[i] = [];
+				ret[i][0] = k[i];
+				ret[i][1] = v[i];
+			}
+			
+			return ret;
+		}		
+		
 		
 		/**
 		 * Returns a value by index and increments the current index 
@@ -189,7 +139,7 @@ package com.gestureworks.cml.utils
 		public function selectIndex(index:int):*
 		{
 			currentIndex = index;
-			return listValue.getIndex(index)
+			return values.getIndex(currentIndex);
 		}		
 				
 		/**
@@ -200,60 +150,41 @@ package com.gestureworks.cml.utils
 		 */
 		public function selectKey(key:*):*
 		{			
-			currentIndex = list.search(key);
-			return dictionary[currentKey];
+			currentIndex = keys.search(key);
+			return values.getIndex(currentIndex);
 		}
 		
+		
 		/**
-		 * Searches by value and returns the first value found
+		 * Searches by value and returns the first index found
 		 * @param	value
 		 * @return
 		 */
-		public function search(value:*):*
+		public function search(value:*):int
 		{
-			/*
-			var result:*=null;
-			for each (var k:* in dictionary)
-			{
-				if (k == value) {
-					result = k;
-				}
-			}
-			return result;	
-			*/
-			
-			var index:int = listValue.search(value);
-			return listValue.getIndex(index);
+			return values.search(value);
 		}
 		
 		/**
-		 * Searches by value and returns the index
+		 * Searches by value and returns an array of indices found
 		 * @param	value
 		 * @return
 		 */
-		public function searchIndex(value:*):*
+		public function searchAll(value:*):Array
 		{
-			return listValue.search(value);
+			return values.searchAll(value);
 		}		
+	
 		
 		/**
-		 * Appends a value to the list
+		 * Appends a value to the keys
 		 * @param	key
 		 * @param	value
 		 */
 		public function append(key:*, value:*):void 
-		{
-			if (uniqueKey){
-				if (dictionary[key] != null){
-					list.remove(list.search(key));
-					listValue.remove(list.search(key));
-				}
-			}
-			
-			list.append(key);
-			listValue.append(value);			
-			dictionary[key] = value;
-			
+		{			
+			keys.append(key);
+			values.append(value);			
 		}
 		
 		/**
@@ -263,29 +194,24 @@ package com.gestureworks.cml.utils
 		 */
 		public function prepend(key:*, value:*):void 
 		{
-			if (uniqueKey){
-				if (dictionary[key] != null){
-					list.remove(list.search(key));
-					listValue.remove(list.search(key));
-				}
-			}	
-			
-			list.prepend(key);
-			listValue.prepend(value);
-			
-			dictionary[key] = value;
+			keys.prepend(key);
+			values.prepend(value);
+
 			if (currentIndex > 0)
 				currentIndex++;			
 		}
 		
 		/**
-		 * Replaces a value by key
+		 * Replaces a value by key. If more than one key is found. The first instance will be replaced.
+		 * To replace all keys, repeatedly call replaceKey until key is no longer found.
 		 * @param	key
 		 * @param	value
 		 */
 		public function replaceKey(key:*, value:*):void 
 		{
-			dictionary[key] = value;	
+			var i:int = keys.search(key);
+			keys[i] = key;
+			values[i] = value;
 		}		
 		
 		/**
@@ -296,17 +222,8 @@ package com.gestureworks.cml.utils
 		 */
 		public function insert(index:int, key:*, value:*):void 
 		{
-			if (uniqueKey){
-				if (dictionary[key] != null){
-					list.remove(list.search(key));
-					listValue.remove(list.search(key));
-				}
-			}	
-			
-			list.insert(index, key);				
-			listValue.insert(index, value);	
-			
-			dictionary[key] = value;
+			keys.insert(index, key);				
+			values.insert(index, value);
 			if (currentIndex >= index)
 				currentIndex++;			
 		}		
@@ -316,13 +233,9 @@ package com.gestureworks.cml.utils
 		 * @param	index
 		 */
 		public function removeIndex(index:int):void
-		{	
-			var key:* = list.selectIndex(index);
-			dictionary[key] = null;
-			delete dictionary[key];			
-			
-			list.remove(index);			
-			listValue.remove(index);			
+		{				
+			keys.remove(index);			
+			values.remove(index);			
 			
 			if (currentIndex > 0 && currentIndex >= index)
 				currentIndex--;
@@ -334,14 +247,11 @@ package com.gestureworks.cml.utils
 		 */
 		public function removeKey(key:*):void
 		{	
-			var index:int = list.search(key);
+			var i:int = keys.search(key);
+			keys.remove(i);
+			values.remove(i);
 			
-			list.remove(index);
-			listValue.remove(index);
-			
-			dictionary[key] = null;
-			delete dictionary[key];	
-			if (currentIndex > 0 && currentIndex >= index)
+			if (currentIndex > 0 && currentIndex >= i)
 				currentIndex++;			
 		}
 
@@ -352,10 +262,10 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasKey(key:String):Boolean
 		{
-			if (dictionary[key] == null)
-				return false;
-			else
+			if (values.search(key) >= 0)
 				return true;
+			else
+				return false;
 		}		
 		
 		
@@ -376,7 +286,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasNext():Boolean
 		{
-			return currentIndex < list.length-1;
+			return currentIndex < keys.length-1;
 		}
 		
 		/**
@@ -398,7 +308,7 @@ package com.gestureworks.cml.utils
 		public function next():*
 		{
 			currentIndex++;
-			return listValue.getIndex(currentIndex);
+			return values.getIndex(currentIndex);
 		}
 		
 		/**
@@ -408,7 +318,7 @@ package com.gestureworks.cml.utils
 		public function prev():*
 		{
 			currentIndex--;
-			return listValue.getIndex(currentIndex);
+			return values.getIndex(currentIndex);
 		}
 		
 		

@@ -37,7 +37,7 @@ package com.gestureworks.cml.element
 		public var loadText:Text;	
 		
 		public var clones:Array = [];
-		public var cloneMap:LinkedMap = new LinkedMap(false);
+		public var cloneMap:ChildList = new ChildList(false);
 		public var placeHolders:Array = [];
 		private var _placeHolderIndex:int = 0;	
 		private var dropLocation:Graphic;
@@ -169,7 +169,7 @@ package com.gestureworks.cml.element
 					obj.dispose();
 				}
 			}
-			cloneMap = new LinkedMap(false);
+			cloneMap = new ChildList(false);
 			clones = [];
 			album.clear();
 			
@@ -584,7 +584,7 @@ package com.gestureworks.cml.element
 								obj.dispose();
 							}
 						}
-						cloneMap = new LinkedMap(false);
+						cloneMap = new ChildList(false);
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -600,7 +600,7 @@ package com.gestureworks.cml.element
 								obj.dispose();
 							}
 						}
-						cloneMap = new LinkedMap(false);
+						cloneMap = new ChildList(false);
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -722,7 +722,7 @@ package com.gestureworks.cml.element
 						m.unSelect(obj);
 					}
 					else {
-						index = cloneMap.searchIndex(e.value);
+						index = cloneMap.search(e.value);
 						if (index >= 0)
 							cloneMap.removeIndex(index);
 					}

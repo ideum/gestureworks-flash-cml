@@ -238,7 +238,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{
-			if (!(childList.search(child))) {
+			if ((childList.search(child) >= 0)) {
 				
 				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
 					childToList(child["id"], child);
