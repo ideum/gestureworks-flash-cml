@@ -169,6 +169,10 @@ package com.gestureworks.cml.element
 			super.dispose();
 			
 			removeEventListener(StateEvent.CHANGE, onHotspot);
+			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			
+			if (_component)
+				_component.removeEventListener(StateEvent.CHANGE, onComponentState);
 			
 			while (numChildren > 0) {
 				removeChildAt(0);
