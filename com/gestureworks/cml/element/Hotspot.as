@@ -4,7 +4,10 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.modestmaps.geo.Location;
 	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	/**
 	 * A Hotspot is primarily a container for graphic objects that is set at an index local to a gigapixel scene.
@@ -22,9 +25,15 @@ package com.gestureworks.cml.element
 			super();
 		}
 		
+		private var _tether:Boolean = true;
+		/**
+		 * Whether or not a tethering line will be drawn from the hotspot graphic to the component.
+		 */
+		
+		
 		private var _sceneX:Number = 0;
 		/**
-		 * The relative _x coordinate to be attached to on the scene.
+		 * The relative _x coordinate to be attached to on the scene of an object that does not use regular stage coordinates (ie: gigapixel).
 		 */
 		public function get sceneX():Number { return _sceneX; }
 		public function set sceneX(value:Number):void {
@@ -33,7 +42,7 @@ package com.gestureworks.cml.element
 		
 		private var _sceneY:Number = 0;
 		/**
-		 * the relative _y coordinate to be attached to on the scene.
+		 * the relative _y coordinate to be attached to on the scene of an object that does not use regular stage coordinates (ie: gigapixel).
 		 */
 		public function get sceneY():Number { return _sceneY; }
 		public function set sceneY(value:Number):void {
@@ -41,6 +50,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _component:DisplayObject;
+		private var tether:Sprite;
 		/**
 		 * The component CSS id to attach this hotspot to. Attaching a component to a hotspot that is a button will toggle the component's visibility.
 		 * It is recommended that you set all items attached to the hotspot to visible="false" as their initial state.
@@ -73,11 +83,25 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void {
 			addEventListener(StateEvent.CHANGE, onHotspot);
+			if (_tether)
+				addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			if (_component)
+				_component.addEventListener(StateEvent.CHANGE, onComponentState);
+		}
+		
+		private function onComponentState(e:StateEvent):void {
+			if (e.value == "close") {
+				_component.visible = false;
+				if (tether)
+					tether.visible = false;
+			}
 		}
 		
 		private function onHotspot(e:StateEvent):void {
 			if (_component) {
 				_component.visible = !_component.visible;
+				if (_tether && tether)
+					tether.visible = _component.visible;
 				
 				var offsetX:Number = 0;
 				var offsetY:Number = 0;
@@ -96,13 +120,49 @@ package com.gestureworks.cml.element
 				_component.x += offsetX;
 				if (_component.x + _component.width > stage.stageWidth) {
 					_component.x = x - _component.width;
-					_component.x -= offsetX;
+					//_component.x -= offsetX;
 				}
 				
-				/*if (y + _component.height > stage.stageHeight) {
-					_component.y = y + _component.height - this.height;
-				} else ( */
+				
+				if (y + _component.height < stage.stageHeight) {
+					_component.y = y;
+				} else if (y - _component.height + offsetY > 0) { 
+					_component.y = y - _component.height + offsetY; 
+				} else {
+					var diffY:Number = 0;
+					if (y + _component.height > stage.stageHeight) {
+						diffY = (y + _component.height - stage.stageHeight);
+						_component.y = y - diffY;
+					} else if (y - _component.height + offsetY < 0) {
+						diffY = (y - _component.height + offsetY) * -1;
+						_component.y = y - _component.height + offsetY + diffY;
+					}
+				}
 			}
+		}
+		
+		private function onEnterFrame(e:Event):void {
+			if (!_tether || !_component) return;
+			
+			if (!tether) {
+				tether = new Sprite();
+				addChildAt(tether, 0);
+			}
+			
+			if (_component.visible){
+				tether.x = 18;
+				tether.y = 12;
+				tether.graphics.clear();
+				tether.graphics.lineStyle(1, 0xffffff, 1);
+				var point:Point = globalToLocal(new Point(_component.x, _component.y));
+				tether.graphics.lineTo(point.x, point.y);
+				//tether.
+				
+			}
+			//addChild(tether);
+			
+			trace("Component:", _component.x, _component.y);
+			
 		}
 		
 		override public function dispose():void {
