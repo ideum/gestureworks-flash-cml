@@ -75,7 +75,10 @@ package com.gestureworks.cml.utils
 		 */
 		public function getIndex(index:int):*
 		{
-			return vector[index];
+			if (hasIndex(index))
+				return vector[index];
+			else
+				return null;
 		}		
 		
 		
@@ -87,8 +90,12 @@ package com.gestureworks.cml.utils
 		 */
 		public function selectIndex(index:int):*
 		{
-			_currentIndex = index;
-			return vector[index];
+			if (hasIndex(index)) {
+				_currentIndex = index;
+				return vector[index];
+			}
+			else
+				return null;
 		}
 		
 		
@@ -186,7 +193,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasIndex(index:int):Boolean
 		{
-			if (vector[index])
+			if (index >= 0 && index < vector.length)
 				return true;
 			else
 				return false;

@@ -262,7 +262,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasKey(key:String):Boolean
 		{
-			if (values.search(key) >= 0)
+			if (keys.search(key) >= 0)
 				return true;
 			else
 				return false;
