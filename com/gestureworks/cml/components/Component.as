@@ -15,14 +15,11 @@ package com.gestureworks.cml.components
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
-	import flash.filters.DropShadowFilter;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 	import flash.utils.Timer;
+	import org.libspark.betweenas3.BetweenAS3;
 	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
-	import flash.utils.Dictionary;
-	import org.libspark.betweenas3.BetweenAS3;
 	
 	/**
 	 * The Component manages a group of elements to create a high-level interactive touch container.
@@ -283,8 +280,12 @@ package com.gestureworks.cml.components
 			super.visible = value;			
 			if (value && timer)
 				restartTimer();
-			else if (!value && timer)
-				timer.stop();
+			else if (!value)
+			{
+				_activity = value;
+				if(timer)
+					timer.stop();
+			}
 				
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", value));								
 		}
@@ -419,7 +420,7 @@ package com.gestureworks.cml.components
 		public function onDown(event:* = null):void
 		{
 			if (event) {
-				_activity = true;
+				_activity = visible;
 			}
 			if (timer) {
 				timer.stop();
@@ -555,7 +556,7 @@ package com.gestureworks.cml.components
 			}
 			else if (event.value == "close")
 			{
-				this.visible = false;	
+				this.visible = false;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "quit"));
 			}	
 		}
@@ -594,6 +595,13 @@ package com.gestureworks.cml.components
 				menu.reset();
 			if (timer)
 				restartTimer();
+				
+			//reset gestureList to clear inertia cache
+			if (gestureList)
+			{
+				var gestures:Object = gestureList;
+				gestureList = gestures;
+			}
 		}		
 		
 		public function fadeIn(dur:Number=250):void
