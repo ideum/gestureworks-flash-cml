@@ -31,8 +31,6 @@ package  com.gestureworks.cml.element
 	 */
 	public class FlickrQuery extends ElementFactory
 	{
-		private var displayPic:Bitmap = null;
-		private var loader:Loader;
 		private var service:FlickrService;
 		public var resultPhotos:Array;
 		private var _data:*;
@@ -111,7 +109,15 @@ package  com.gestureworks.cml.element
 			_is_commons = value;
 		}
 		
-		// TO DO: Add in Latitude, Longitude, and geo-search radius as options?
+		private var _resultsPerPage:int = 12;
+		/**
+		 * Select the number of results to turn per page.
+		 * @default 12
+		 */
+		public function get resultsPerPage():int { return _resultsPerPage; }
+		public function set resultsPerPage(value:int):void {
+			_resultsPerPage = value;
+		}
 		
 		private var _loaded:String = "";
 		/**
@@ -126,6 +132,7 @@ package  com.gestureworks.cml.element
 		public function get pages():Number { return _pages; }
 		
 		private var _results:Number = 0;
+		private var checkTags:Array;
 		public var pageNumber:int = 1;
 		/**
 		 * Read-only property indicating total results returned.
@@ -153,7 +160,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		public function flickrSearch():void {
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 12, 1, "date-posted-desc");
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, 1, "date-posted-desc");
 		}
 		
 		private function onSearchComplete(e:FlickrResultEvent):void {
@@ -161,15 +168,22 @@ package  com.gestureworks.cml.element
 			
 			var pList:Photos = new Photos(service);
 			
-			if (e.success) {
+			//if (e.success && _tag_mode == "any") {
 				trace("Data: ", e.data, e.data.photos.page);
 				_pages = e.data.photos.pages;
 				//pageNumber = e.data.photos.page;
 				
 				resultPhotos = e.data.photos.photos;
 				trace("ResultPhotos info:", resultPhotos.length);
-			}
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
+			/*} else if (e.success && _tag_mode == "all") {
+				_pages = e.data.photos.pages;
+				//pageNumber = 1;
+				if (pageNumber == 1)
+					resultPhotos = [];
+				cullResults(e.data);
+			}*/
+			
 		}
 		
 		// Update photo page.
@@ -180,7 +194,7 @@ package  com.gestureworks.cml.element
 			if (pageNumber > _pages)
 				pageNumber = _pages;
 			
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 12, pageNumber, "date-posted-desc");
+			service.photos.search(_user_id, _tags, "any", _text, null, null, null, null, -1, "", _resultsPerPage, pageNumber, "date-posted-desc");
 			
 			//resultPhotos = _data.photos.photos;
 		}
@@ -192,7 +206,69 @@ package  com.gestureworks.cml.element
 			if (pageNumber < 1)
 				pageNumber = 1;
 			
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 12, pageNumber, "date-posted-desc");
+			service.photos.search(_user_id, _tags, "any", _text, null, null, null, null, -1, "", _resultsPerPage, pageNumber, "date-posted-desc");
+		}
+		
+		private function cullResults(res:Object):void {
+			checkTags = _tags.split(", ");
+			trace("checktags:", checkTags);
+			var readyCount:Number = 0;
+			//resultPhotos = [];
+			
+			// Query flickr service through getInfo.
+			for (var i:int = 0; i < res.photos.photos.length; i++) 
+			{
+				service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, onInfoGet);
+				service.photos.getInfo(res.photos.photos[i].id);
+			}
+			
+			// Retrieve all info.
+			function onInfoGet(e:FlickrResultEvent):void {
+				resultPhotos.push(e.data.photo);
+				readyCount++;
+				if (readyCount == res.photos.photos.length)
+					queueCulling();
+			}
+			// Might as well get and set the description.
+			
+		}
+		
+		private function queueCulling():void {
+			// Check for relevant tags. If not all three, cut it out.
+			for (var j:Number = 0; j < resultPhotos.length; j++ ) 
+			{
+				var relevant:Boolean = false;
+				var c:int = 0;
+				
+				for (var k:int = 0; k < resultPhotos[j].tags.length; k++) 
+				{
+					if (String(resultPhotos[j].tags[k].raw).toLowerCase() == String(checkTags[0]).toLowerCase() ||
+						String(resultPhotos[j].tags[k].raw).toLowerCase() == String(checkTags[1]).toLowerCase() ||
+						String(resultPhotos[j].tags[k].raw).toLowerCase() == String(checkTags[2]).toLowerCase()) 
+					{
+						c++;
+					}
+					
+					if (c == 3) {
+						relevant = true;
+						//break;
+					}
+				}
+				
+				if (relevant != true) {
+					resultPhotos.splice(resultPhotos[j], 1);
+					j--;
+				}
+			}
+			
+			trace("End of photo cull", resultPhotos);
+			pageNumber++;
+			if (pageNumber <= _pages) {
+				service.photos.search(_user_id, _tags, "any", _text, null, null, null, null, -1, "", 12, pageNumber, "date-posted-desc");
+			} else {
+				pageNumber = 1;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
+			}
 		}
 		
 		/**
@@ -208,12 +284,7 @@ package  com.gestureworks.cml.element
 				removeChildAt(0);
 			}
 			
-			loader.unload();
-			loader = null;
-			
 			_data = null;
-			
-			displayPic = null;
 		}
 	}
 
