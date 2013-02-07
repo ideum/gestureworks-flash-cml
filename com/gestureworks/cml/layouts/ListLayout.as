@@ -1,11 +1,8 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import com.gestureworks.cml.interfaces.IContainer;
-	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
-	import flash.sampler.NewObjectSample;
 	
 	/**	 
 	 * The ListLayout positions the display objects in a list.
@@ -86,8 +83,7 @@ package com.gestureworks.cml.layouts
 		{
 			super();
 			type = "horizontal";
-		}
-				
+		}				
 		
 		/**
 		 * Apply layout type to container object
@@ -139,8 +135,12 @@ package com.gestureworks.cml.layouts
 			{		
 				var child:* = container.getChildAt(i);
 				if (!validObject(child)) continue;
-
-				xVal = useMargins ? sumx + index * (2 * marginX) : index * spacingX + originX;
+				
+				//TODO: expand rotation factor to apply to vertical scroll and margins
+				var COS:Number = Math.cos(degreesToRadians(child.rotation));
+				var dx:Number = spacingX*COS;
+				
+				xVal = useMargins ? sumx + index * (2 * marginX) : index * dx + originX;
 				xVal = centerColumn ? xVal - child.width/2 : xVal;         //adjust spacing for column centering
 				yVal = centerRow ? rowHeight/2 - child.height/2 + yVal: yVal;	   //adjust spacing for row centering
 				
@@ -148,7 +148,7 @@ package com.gestureworks.cml.layouts
 				translateTransform(matrix, xVal, yVal);
 				childTransformations.push(matrix);
 				sumx = centerColumn ?  sumx + columnWidth : sumx + child.width;
-				index++;
+				index++;					
 			}
 		}
 		

@@ -1,10 +1,8 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;;
+	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
-	import flash.geom.Point;
 	
 	/**
 	 * The PileLayout positions the centers of the container's objects in the same 
@@ -107,11 +105,17 @@ package com.gestureworks.cml.layouts
 		
 			for (var i:int = childTransformations.length; i < c.numChildren; i++) 
 			{		
-				var child:DisplayObject = c.getChildAt(i);
+				var child:* = c.getChildAt(i);
 				if (!validObject(child)) continue;
 				
+				var rad:Number = degreesToRadians(child.rotation);
+				var COS:Number = Math.cos(rad);
+				var SIN:Number = Math.sin(rad);
+				var dx:Number = (child.height * child.scale / 2)*SIN + (child.width * child.scale / 2)*COS;
+				var dy:Number = (child.height * child.scale / 2)*COS - (child.width * child.scale / 2)*SIN;
+				
 				var matrix:Matrix = child.transform.matrix;
-				translateTransform(matrix, originX - child.width / 2, originY - child.height / 2);
+				translateTransform(matrix, originX - dx, originY - dy);
 				nextAngle = !isNaN(angle) ? nextAngle += angle : randomMinMax(0, 360); 				
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);				

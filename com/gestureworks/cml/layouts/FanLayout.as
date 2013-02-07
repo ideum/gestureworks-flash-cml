@@ -1,7 +1,6 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.factories.LayoutFactory;
-	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
 	
@@ -142,8 +141,8 @@ package com.gestureworks.cml.layouts
 				var child:* = c.getChildAt(i);
 				if (!validObject(child)) continue;
 				
-				var matrix:Matrix = child.transform.matrix;
-				translateTransform(matrix, originX - child.width, originY);
+				var matrix:Matrix = child.transform.matrix;			
+				translateTransform(matrix, originX - (child.width * child.scale), originY);
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);
 				nextAngle += angle;
@@ -164,7 +163,7 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
-				translateTransform(matrix, originX, originY - child.height);
+				translateTransform(matrix, originX, originY + (child.height * child.scale));
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);
 				nextAngle += angle;
@@ -183,9 +182,9 @@ package com.gestureworks.cml.layouts
 			{				
 				var child:* = c.getChildAt(i);
 				if (!validObject(child)) continue;
-				
+					
 				var matrix:Matrix = child.transform.matrix;
-				translateTransform(matrix, originX - child.width, originY - child.height);
+				translateTransform(matrix, originX - (child.width * child.scale), originY - (child.height * child.scale));
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);
 				nextAngle += angle;
