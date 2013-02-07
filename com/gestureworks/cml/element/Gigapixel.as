@@ -9,6 +9,7 @@
 	import org.openzoom.flash.descriptors.IMultiScaleImageDescriptor;
 	import org.openzoom.flash.viewport.constraints.CenterConstraint;
 	import org.openzoom.flash.viewport.constraints.CompositeConstraint;
+	import org.openzoom.flash.viewport.constraints.FillConstraint;
 	import org.openzoom.flash.viewport.constraints.ScaleConstraint;
 	import org.openzoom.flash.viewport.constraints.VisibilityConstraint;
 	import org.openzoom.flash.viewport.constraints.ZoomConstraint;
@@ -55,22 +56,6 @@
 			super();
 		}
 		
-		private var _viewportX:Number = 0;
-		public function get viewportX():Number {
-			if (image) {
-				_viewportX = image.viewportX
-				return _viewportX;
-			} else return _viewportX;
-		}
-		
-		private var _viewportY:Number = 0;
-		public function get viewportY():Number {
-			if (image) {
-				_viewportY = image.viewportY
-				return _viewportY;
-			} else return _viewportY;
-		}
-		
 		private var _minScaleConstraint:Number = 0.001;
 		/**
 		 * sets the scaling
@@ -78,9 +63,17 @@
 		 */
 		public function get minScaleConstraint():Number { return _minScaleConstraint; }
 		public function set minScaleConstraint(value:Number):void {
-			if(!isNaN(value) && value >=0){
-				_minScaleConstraint = value;
-			}
+			_minScaleConstraint = value;
+		}
+		
+		private var _visibilityRatio:Number = 0.6;
+		/**
+		 * Sets how much of the gigapixel must be seen. Setting it to 1 will ensure no border is ever seen within the viewer.
+		 * @default 0.6
+		 */
+		public function get visibilityRatio():Number { return _visibilityRatio; }
+		public function set visibilityRatio(value:Number):void {
+			_visibilityRatio = value;
 		}
 		
 		private var _srcXML:String = "";
@@ -133,7 +126,7 @@
 					hotspots.push(this.getChildAt(0));
 				}
 				removeChildAt(0);
-				trace("Clearing markers to put them back later.");
+				//trace("Clearing markers to put them back later.");
 			}
 			
 			image = new MultiScaleImage();
@@ -157,7 +150,7 @@
 				
 			var centerConstraint:CenterConstraint = new CenterConstraint()
 			var visibilityConstraint:VisibilityConstraint = new VisibilityConstraint()
-			visibilityConstraint.visibilityRatio = 0.6;
+			visibilityConstraint.visibilityRatio = _visibilityRatio;
 			constraint.constraints = [zoomConstraint, scaleConstraint, centerConstraint, visibilityConstraint];
 	
 			image.constraint = constraint;
