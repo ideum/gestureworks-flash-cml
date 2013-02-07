@@ -640,13 +640,13 @@ package com.gestureworks.cml.element
 				obj.rotation = 180;
 				obj.x = location.x + obj.width*obj.scale;
 				obj.y = location.y + location.height;
-				collectionViewer.tagObject(obj, true);
+				collectionViewer.tagObject(true, obj);
 			}
 			else {		
 				obj.rotation = 0;
 				obj.x = location.x;
 				obj.y = location.y;				
-				collectionViewer.tagObject(obj, false);
+				collectionViewer.tagObject(false, obj);
 			}
 			
 			/*
@@ -710,7 +710,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onCloneChange(e:StateEvent):void
-		{											
+		{					
 			if (e.property == "visible") {				
 				if (!e.value) {
 					e.target.removeEventListener(StateEvent.CHANGE, onCloneChange);
@@ -720,6 +720,7 @@ package com.gestureworks.cml.element
 						var m:MenuAlbum = searchChildren("#menu1");
 						var obj:* = previews[index];
 						m.unSelect(obj);
+						collectionViewer.untagObject(e.target);
 					}
 					else {
 						index = cloneMap.search(e.value);

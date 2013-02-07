@@ -3,8 +3,9 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.interfaces.ILayout;
+	import com.gestureworks.cml.layouts.FanLayout;
 	import com.gestureworks.cml.layouts.ListLayout;
+	import com.gestureworks.cml.layouts.PileLayout;
 	import com.gestureworks.cml.layouts.PointLayout;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
@@ -56,6 +57,7 @@ package com.gestureworks.cml.components
 		private var _topContainer:TouchContainer;
 		private var _bottomContainer:TouchContainer;
 		private var containerTags:Dictionary = new Dictionary();
+		private var positions:Dictionary;
 		
 		
 		// tmp
@@ -88,7 +90,7 @@ package com.gestureworks.cml.components
 			{
 				_topContainer = c;
 				_topContainer.addEventListener(GWGestureEvent.TAP, tapLayout);
-			}			
+			}
 		}
 		
 		public function get bottomContainer():* { return _bottomContainer; }
@@ -169,14 +171,31 @@ package com.gestureworks.cml.components
 			}
 		}
 		
-		public function tagObject(obj:* , top:Boolean):void
+		/**
+		 * Classifies the object as either a top-container object or a bottom-container object
+		 * @param	top  container tag
+		 * @param	obj  the object to tag
+		 */		
+		public function tagObject(top:Boolean, obj:*):void
 		{
-			containerTags[obj] = top;
+			if (!(containerTags[top]))
+				containerTags[top] = new Array();
+			containerTags[top].push(obj);
 		}	
 		
-		public function untagObject(obj:*):void 
+		/**
+		 * Disassociates the provided object from the top or bottom containers
+		 * @param	obj
+		 */
+		public function untagObject(obj:*):void
 		{
-			delete containerTags[obj];
+			var top:Number = containerTags[true] ? containerTags[true].indexOf(obj) : -1;			
+			var bot:Number = containerTags[false] ? containerTags[false].indexOf(obj) : -1;			
+			
+			if (top >= 0)
+				containerTags[true].splice(top, 1);
+			else if (bot >= 0)
+				containerTags[false].splice(bot, 1);
 		}
 				
 		private function timerCheck(e:TimerEvent):void {
@@ -250,90 +269,192 @@ package com.gestureworks.cml.components
 				if (i == 0) {
 					for each(var val:* in bot) {
 						docks[i].placeHolders.push(val);
+						addTapContainer(false, val);
 					}
 				}
 				
 				if (i == 1) {
-					for each(var val:* in top) {
-						docks[i].placeHolders.push(val);
+					for (var j:int = top.length - 1; j >= 0; j--) {
+						docks[i].placeHolders.push(top[j]);
+						addTapContainer(true, top[j]);
 					}
 				}
 			}
 			
 		}
 		
-		private function tapLayout(e:GWGestureEvent):void
-		{			
-			if (e.value.tap_n > 1) return;
-			var top:Boolean = e.target == topContainer; 
-			var dock:Dock = top ? docks[1] : docks[0];
-			var rotation:Number = top ? 180 : 0;
-			var layout:ILayout;
-			var gestures:Object;
-			var exclusions:Array = DisplayUtils.getAllChildren(DisplayObjectContainer(e.target));
+		/**
+		 * Adds a second level of nested containers to apply layouts to on tap events. Also generates
+		 * a positioning map to store the place holder locations.
+		 * @param	top  flag indicating addition to the top or bottom container
+		 */
+		private function addTapContainer(top:Boolean, placeHolder:*):void
+		{
+			var container:TouchContainer = top ? topContainer : bottomContainer;
+			var x:Number = placeHolder.x;
+			var y:Number = placeHolder.y;
 			
-			//add children to temporary container
-			for (var obj:* in containerTags)
+			var tapC:TouchContainer = new TouchContainer();
+			tapC.class_ = "tap_container";
+			
+			if (top && topContainer)
+				topContainer.addChild(tapC);
+			else if (!top && bottomContainer)
+				bottomContainer.addChild(tapC);
+			else
+				return;
+				
+			if (!positions)
+				positions = new Dictionary();
+				
+			if (!(positions[top]))
+				positions[top] = new Array();
+				
+			if (top)
 			{
-				if (!obj.activity && containerTags[obj] == top)
-				{					
-					e.target.addChild(obj)
+				x+=placeHolder.width;
+				y+=placeHolder.height;
+			}
+			
+			positions[top].push(new Point(x, y));
+		}
+			
+		/**
+		 * Dynamically transfers objects from the CollectionViewer to temporary containers for layout applications
+		 * @param container  the parent container
+		 * @param nested   a flag indicating the distribution of objects to the nested containers
+		 * @return  an array of the containers the objects were distributed to
+		 */
+		private function assignTapContainers(container:TouchContainer, nested:Boolean=false):Array
+		{
+			var containers:Array = nested ? container.childList.getCSSClass("tap_container").getValueArray() : [container];
+			var top:Boolean = container == topContainer;
+			var index:int = 0;
+			
+			for each(var obj:* in containerTags[top])
+			{
+				if (!obj.activity)
+				{
 					obj.reset();
-					obj.rotation = rotation;
-					obj.scale = .6;
-					gestures = obj.gestureList; //reset gesture list to clear inertia cache
-					obj.gestureList = gestures;					
+					containers[index].addChild(obj);
+					index = index == containers.length - 1 ? 0 : index + 1;					
 				}
 			}
 			
+			return containers;
+		}
+		
+		/**
+		 * Generates a layout template to instantiate all layouts with common settings
+		 * @param	type  the type of layout
+		 * @param	tapContainer   the container that dispatched the tap event
+		 * @return
+		 */
+		private function tapLayoutInstance(type:Class, tapContainer:*):*
+		{			
+			var top:Boolean = tapContainer == topContainer;
+			var source:Class = getDefinitionByName(getQualifiedClassName(type)) as Class;
+			var layout:* = new source();
+			layout.tween = true;
+			layout.continuousTransform = false;
+			layout.rotation = top ? 180 : 0;
+			layout.scale = top ? -.6 : .6;
+			layout.exclusions = DisplayUtils.getAllChildren(DisplayObjectContainer(tapContainer));
+			
+			return layout;
+		}
+		
+		/**
+		 * Applies different layouts depending on the number of touches dispatching the tap event
+		 * @param	e
+		 */
+		private function tapLayout(e:GWGestureEvent):void
+		{	
+			var top:Boolean = e.target == topContainer;
+			
+			//check requirements
+			var tapLimit:Boolean = e.value.tap_n < 5;
+			var taggedObj:Boolean = containerTags[top] && containerTags[top].length > 0;
+			if (!tapLimit || !taggedObj) return;
+			
+			var dock:Dock = top ? docks[1] : docks[0];
+			var layouts:Array = new Array();
+			var tapContainers:Array;
+			
+			//transfer objects back to CollectionViewer
+			var layoutComplete:Function = function ():void {
+					for each(var child:* in containerTags[top])
+					{
+						addChild(child);
+						dock.moveBelowDock(child);				
+					}
+				};
+
+			//evaluate tap count and apply layouts
 			switch(e.value.tap_n)
 			{
 				case 1:
-					var pLayout:PointLayout = new PointLayout();
-					pLayout.tween = true;
-					pLayout.continuousTransform = false;
-					pLayout.exclusions = exclusions;
+					var point:PointLayout = tapLayoutInstance(PointLayout, e.target);
+					tapContainers = assignTapContainers(TouchContainer(e.target));
 					var position:int = 0;
-					var numPoints:int = e.target.numChildren - pLayout.exclusions.length;
+					var numPoints:int = e.target.numChildren - point.exclusions.length;
 					
 					//reposition children to placeholders
 					for (var i:int = 0; i < numPoints; i++)
 					{
-						var xPos:Number = top ? dock.placeHolders[position].x + obj.width * obj.scale :  dock.placeHolders[position].x;
-						var yPos:Number = top ? dock.placeHolders[position].y + dock.placeHolders[position].height : dock.placeHolders[position].y;
-						if (pLayout.points)
-							pLayout.points = pLayout.points.concat("," + xPos + "," + yPos);
+						var xPos:Number = positions[top][position].x;
+						var yPos:Number = positions[top][position].y;
+						if (point.points)
+							point.points = point.points.concat("," + xPos + "," + yPos);
 						else
-							pLayout.points = xPos + "," + yPos;
-						
-						if (position == dock.placeHolders.length - 1)
-							position = 0;
-						else
-							position++;					
+							point.points = xPos + "," + yPos;						
+						position = position == positions[top].length - 1 ? 0 : position + 1;
 					}
-					layout = pLayout;
+					
+					tapContainers[0].layoutComplete = layoutComplete;
+					tapContainers[0].applyLayout(point);
 					break;
-				case 2:
-					var lLayout:ListLayout = new ListLayout();
-					lLayout.tween = true;
-					lLayout.continuousTransform = false;
-					lLayout.spacingX = 100;
-					layout = lLayout;
+				case 2:					
+					var list:ListLayout = tapLayoutInstance(ListLayout, e.target);
+					tapContainers = assignTapContainers(TouchContainer(e.target));
+					list.originX = positions[top][0].x;
+					list.originY = positions[top][0].y;					
+					tapContainers[0].layoutComplete = layoutComplete;
+					tapContainers[0].applyLayout(list);					
+					break;
+				case 3:
+					tapContainers = assignTapContainers(TouchContainer(e.target), true);
+					var count:int = 0;
+					for (i=0; i < tapContainers.length; i++)
+					{
+						var pile:PileLayout = tapLayoutInstance(PileLayout, e.target);
+						pile.scale = NaN;
+						pile.originX = top ? positions[top][i].x - 150 : positions[top][i].x + 150;
+						pile.originY = top ? positions[top][i].y - 150 : positions[top][i].y + 150;
+						tapContainers[i].layoutComplete = function():void {
+							if (count == tapContainers.length-1)
+								layoutComplete();
+							count++;
+						};
+						tapContainers[i].applyLayout(pile);
+					}
+					break;
+				case 4:
+					var fan:FanLayout = tapLayoutInstance(FanLayout, e.target);
+					tapContainers = assignTapContainers(TouchContainer(e.target));
+					fan.type = top ? "bottomLeftOrigin" : "bottomRightOrigin";
+					fan.scale = NaN;
+					fan.originX = top ? 1440 : 480;
+					fan.originY = top ? 230: 850;
+					fan.angle = top ? -10 : 10;
+					tapContainers[0].layoutComplete = layoutComplete;
+					tapContainers[0].applyLayout(fan);					
 					break;
 				default:
 					break;
 			}
-				
-			//apply layout and restore states when complete
-			e.target.layoutComplete = function():void {
-				for (var child:* in containerTags)
-				{
-					addChild(child);
-					dock.moveBelowDock(child);				
-				}		
-			};
-			e.target.applyLayout(layout);
 		}
+		
 		
 		// file version
 		
