@@ -833,7 +833,7 @@ package com.gestureworks.cml.element
 		 * flag to indicate the belt is being touched. 
 		 * @param	e  the touch event
 		 */
-		private function resetDrag(e:TouchEvent):void
+		private function resetDrag(e:*):void
 		{
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.gestureList[dragGesture] = true;
