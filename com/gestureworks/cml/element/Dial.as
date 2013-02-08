@@ -267,8 +267,8 @@ package com.gestureworks.cml.element
 		}
 		public function set text(value:String):void
 		{
-	//		var rex:RegExp = /[\r\n]*/gim;
-			_text = value;// .replace(rex, '');
+			var rex:RegExp = /(\t|\n|\r)/gi;
+			_text = value.replace(rex, '');
 			textArray = _text.split(",");
 		}
 		
