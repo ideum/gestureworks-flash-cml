@@ -241,6 +241,9 @@ package com.gestureworks.cml.element
 				triangle.x = _width - (triangle.width / 2);
 				addChild(triangle);
 			}
+			
+			this.height = _menuTitle.height;
+			this.width = _width;
 		}
 		
 		private function createHit():void {
@@ -317,7 +320,10 @@ package com.gestureworks.cml.element
 				i.backgroundColor = _color;
 				i.color = _fill;
 				addChild(i);
+				
 			}
+			
+			this.height = _height * _menuItemsArray.length + _menuTitle.height;
 			
 			if (GestureWorks.supportsTouch)
 				_hit.addEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
@@ -330,6 +336,8 @@ package com.gestureworks.cml.element
 		private function hideMenu():void {
 			//Hide menu here.
 			_open = false;
+			
+			this.height = _menuTitle.height;
 			
 			_menuTitle.backgroundColor = _fill;
 			_menuTitle.color = _color;
