@@ -58,6 +58,7 @@ package com.gestureworks.cml.components
 		private var _bottomContainer:TouchContainer;
 		private var containerTags:Dictionary = new Dictionary();
 		private var positions:Dictionary;
+		private var layoutThreshold:Boolean = true;
 		
 		
 		// tmp
@@ -317,6 +318,11 @@ package com.gestureworks.cml.components
 			}
 			
 			positions[top].push(new Point(x, y));
+			var layoutLimit:Timer = new Timer(1000);
+			layoutLimit.start();
+			layoutLimit.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void {
+				layoutThreshold = true;
+			});
 		}
 			
 		/**
@@ -370,8 +376,15 @@ package com.gestureworks.cml.components
 		 */
 		private function tapLayout(e:GWGestureEvent):void
 		{	
+			//limits time between tap events
+			if (layoutThreshold)
+				layoutThreshold = false;
+			else
+				return;
+				
+			//determines which container dispatched the tap event	
 			var top:Boolean = e.target == topContainer;
-			
+		
 			//check requirements
 			var tapLimit:Boolean = e.value.tap_n < 5;
 			var taggedObj:Boolean = containerTags[top] && containerTags[top].length > 0;
@@ -599,10 +612,6 @@ package com.gestureworks.cml.components
 		}		
 		
 		
-		
-		
-		
-		
 		/**
 		 * Dispose method
 		 */
@@ -613,13 +622,27 @@ package com.gestureworks.cml.components
 			currentTween = null;			
 			hitBg = null;			
 			tweens = null;
-			timer = null;
 			templates = null;
 			docks = null;
-			topContainer = null;
-			bottomContainer = null;
 			containerTags = null;
 			entry = null;
+			positions = null;
+			
+			if (topContainer){
+				topContainer.addEventListener(GWGestureEvent.TAP, tapLayout);
+				topContainer = null;
+			}
+			
+			if (bottomContainer) {
+				bottomContainer.addEventListener(GWGestureEvent.TAP, tapLayout);		
+				bottomContainer = null;
+			}
+			
+			if (timer){
+				timer.stop();
+				timer.removeEventListener(TimerEvent.TIMER, timerCheck);
+				timer = null;
+			}
 			
 			if (childList)
 			{
