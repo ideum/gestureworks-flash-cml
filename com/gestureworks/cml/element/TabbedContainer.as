@@ -1,10 +1,8 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.events.StateEvent;
-	import flash.display.DisplayObject;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import flash.events.TouchEvent;
 	import flash.geom.ColorTransform;
-	import flash.sampler.NewObjectSample;
 	
 	/**
 	 * The TabbedContainer element is a container that allows switching between a group of containers by selecting their associated tabs. 
@@ -170,7 +168,7 @@ package com.gestureworks.cml.element
 		 */
 		private function selectTab(e:TouchEvent):void
 		{
-			addTab(Tab(e.target));
+			addTab(DisplayUtils.getParentType(Tab, e.target));
 		}	
 		
 		/**

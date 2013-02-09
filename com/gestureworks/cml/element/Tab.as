@@ -63,8 +63,7 @@ package com.gestureworks.cml.element
 			super();
 			width = 462;
 			height = 423;
-			mouseChildren = false;
-			
+
 			text = new Text();
 			tabGE = new Graphic();
 			contentContainer = new Container();
@@ -268,7 +267,7 @@ package com.gestureworks.cml.element
 			text.font = tabFont;
 			text.textColor = tabFontColor;
 			text.width = tabWidth ? tabWidth : text.width;
-			text.height = tabHeight ? tabHeight : text.height;
+			text.height = tabHeight ? tabHeight : text.height;			
 			
 			//setup tab graphics
 			tabWidth = text.width;
@@ -348,6 +347,17 @@ package com.gestureworks.cml.element
 		{
 			index = index == 0 ? 1 : index;  //index 0 is reserved for background
 			return contentContainer.addChildAt(child, index);
+		}
+				
+		/**
+		 * Sets the mouseChildren flag 
+		 * @param value  true to enable, false otherwise
+		 */
+		override public function set mouseChildren(value:Boolean):void 
+		{
+			super.mouseChildren = value;
+			if(contentContainer)
+				contentContainer.mouseChildren = value;
 		}
 		
 		/**
