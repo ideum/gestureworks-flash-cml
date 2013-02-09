@@ -384,9 +384,9 @@ package com.gestureworks.cml.core
 			if (debug)
 				trace("\n\nloading renderer");
 				
-			var rendererId:String = renderKit.Renderer.@id; 
+			//var rendererId:String = renderKit.Renderer.@id; 
 			var rendererData:XMLList = renderKit.RendererData;
-			
+						
 			for (var q:int; q < renderKit.Renderer.length(); q++)
 			{
 				var renderList:XMLList = rendererData.*;
@@ -398,7 +398,7 @@ package com.gestureworks.cml.core
 					for each (var node:XML in cmlRenderer) 
 					{						
 						var properties:XMLList = XMLList(renderList[i]);	
-						CMLParser.instance.loopCML(node, parent, properties);
+						CMLParser.instance.loopCML(XMLList(node), parent, properties);
 					}
 				}
 			}
@@ -419,10 +419,10 @@ package com.gestureworks.cml.core
 		 */
 		public static function loopCML(cml:XMLList, parent:*= null, properties:*= null):void
 		{
-				if (includeFound) {
-					pausedCML2.push(new Array(cml, parent, properties));
-					return;
-				}		
+			if (includeFound) {
+				pausedCML2.push(new Array(cml, parent, properties));
+				return;
+			}		
 			
 			var className:String = null;
 			var obj:* = null;
@@ -456,11 +456,15 @@ package com.gestureworks.cml.core
 				classNameKeyword = false;
 				
 				
-				if (className == "LibraryKit" || className == "LayoutKit" || className == "WindowKit" || className == "DebugKit")
+				if (className == "LibraryKit" || className == "LayoutKit" || className == "WindowKit" || className == "DebugKit") {
 					continue;
-				
+				}
+				else if (className == "RenderKit") {
+					loadRenderer(XMLList(node), parent);	
+					return;
+				}	
 				// nested cml loader
-				if (className == "Include")
+				else if (className == "Include")
 				{
 					if (debug)
 						trace(StringUtils.printf("%9s%s", "", "*** Include found... object creation skipped... adding CML file to queue ***"));					
@@ -573,13 +577,25 @@ package com.gestureworks.cml.core
 							FileManager.instance.addToQueue(val, "cmlRenderKit");
 						}
 						
-						
 						for each (var val:* in properties.*)
-						{							
-							if (obj.propertyStates[0][key] == val.name().toString()){
-								obj.propertyStates[0][key] = val;
-	
+						{
+							var str:String = obj.propertyStates[0][key];
+							var eval:Boolean = false;
+							
+							// filter value for expression delimiter "{}"
+							if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
+								// remove whitepsace and {} characters
+								var regExp:RegExp = /[\s\r\n{}]*/gim;
+								str = str.replace(regExp, '');
+								eval = true;
 							}	
+							
+							if (str == val.name().toString()) {
+								eval = false;
+								obj.propertyStates[0][key] = val;
+							}								
+
+							
 						}
 					}						
 				}				
