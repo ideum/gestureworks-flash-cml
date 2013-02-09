@@ -168,7 +168,12 @@ package com.gestureworks.cml.element
 		 */
 		private function selectTab(e:TouchEvent):void
 		{
-			addTab(DisplayUtils.getParentType(Tab, e.target));
+			var tab:Tab;
+			if (e.target is Tab)
+				tab = Tab(e.target);
+			else
+				tab = DisplayUtils.getParentType(Tab, e.target);				
+			addTab(tab);
 		}	
 		
 		/**
@@ -211,7 +216,7 @@ package com.gestureworks.cml.element
 		 */
 		private function nextTabX():Number
 		{
-			var lastTab:Tab = lastTab();
+			var lastTab:Tab = getLastTab();
 			if (lastTab)
 				return lastTab.tabX + lastTab.tabWidth + spacing;
 			return spacing;
@@ -233,7 +238,7 @@ package com.gestureworks.cml.element
 		 * Returns the most recently added tab
 		 * @return  the furthest tab to the right
 		 */
-		private function lastTab():Tab
+		private function getLastTab():Tab
 		{
 			if (tabs.length > 0)
 				return tabs[tabs.length - 1];
