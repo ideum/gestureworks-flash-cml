@@ -195,7 +195,7 @@ package com.gestureworks.cml.core
 		private static function evaluate():void
 		{
 			if (cmlFilesComplete != FileManager.instance.cmlCount) {
-				trace("cmlFilesComplete", cmlFilesComplete, "FileManager.instance.cmlCount", FileManager.instance.cmlCount);
+				//trace("cmlFilesComplete", cmlFilesComplete, "FileManager.instance.cmlCount", FileManager.instance.cmlCount);
 				return;
 			}
 			else if (pausedCML.length > 0) {
