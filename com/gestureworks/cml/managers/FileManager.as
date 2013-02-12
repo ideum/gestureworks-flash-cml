@@ -58,7 +58,7 @@ package com.gestureworks.cml.managers
 		/**
 		 * Turns on the debug information
 		 */
-		public var debug:Boolean = true;
+		public var debug:Boolean = false;
 		
 		/**
 		 * The number of files in file list

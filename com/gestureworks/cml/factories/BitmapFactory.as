@@ -313,9 +313,9 @@ package com.gestureworks.cml.factories
 				else
 					imageSrc = src;	
 				
-				trace(FileManager.instance.fileList.hasKey(imageSrc));
+				//trace(FileManager.instance.fileList.hasKey(imageSrc));
 				
-				trace(FileManager.instance.fileList.toArray());
+				//trace(FileManager.instance.fileList.toArray());
 					
 				if (!FileManager.instance.fileList.hasKey(imageSrc))
 					return;

@@ -53,7 +53,7 @@ package com.gestureworks.cml.utils
 		{
 			
 			//trace(pExclusions);
-			trace(source);
+			//trace(source);
 			var cloneObj:*;
 			var childClone:DisplayObject;
 							
@@ -200,7 +200,7 @@ package com.gestureworks.cml.utils
 				
 				for (var item:String in source.propertyStates[i]) 
 				{
-					trace("item:", item, i);
+					//trace("item:", item, i);
 					destination.propertyStates[i][item] = source.propertyStates[i][item];
 				}
 			}
