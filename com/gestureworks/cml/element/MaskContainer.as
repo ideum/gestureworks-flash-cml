@@ -194,7 +194,7 @@ package com.gestureworks.cml.element
 					removeChildAt(i);
 					i--;
 				} else {
-					graphicArray.array.push(getChildAt(i));
+					graphicArray.append(getChildAt(i));
 				}
 			}
 			
@@ -261,10 +261,10 @@ package com.gestureworks.cml.element
 				_touchScreen.addChild(_mShape);
 			} else { addChild(borderShape); addChild(_mShape); }
 			
-			graphicArray.array[_counter].visible = true;
-			graphicArray.array[_counter].mask = mShape;
-			this.width = graphicArray.array[_counter].width;
-			this.height = graphicArray.array[_counter].height;
+			graphicArray.selectIndex(_counter).visible = true;
+			graphicArray.selectIndex(_counter).mask = mShape;
+			this.width = graphicArray.selectIndex(_counter).width;
+			this.height = graphicArray.selectIndex(_counter).height;
 			
 			if(_touchScreen){
 				_touchScreen.x = _maskX;
@@ -295,36 +295,40 @@ package com.gestureworks.cml.element
 		 */
 		public function cycleMasks(e:GWGestureEvent = null):void {			
 			//removeChild(graphicArray.array[counter]);
-			var tempAlpha:Number = graphicArray.array[_counter].alpha;
-			graphicArray.array[_counter].visible = false;
+			var tempAlpha:Number = graphicArray.selectIndex(_counter).alpha;
+			graphicArray.selectIndex(_counter).visible = false;
 			_counter++;
 			
 			if (_counter >= graphicArray.length) {
 				_counter = 0;
 			}
-			graphicArray.array[_counter].mask = mShape;
+			graphicArray.selectIndex(_counter).mask = mShape;
 			
-			graphicArray.array[_counter].visible = true;
-			//graphicArray.array[_counter].alpha = tempAlpha;
-			graphicArray.array[_counter].alpha = 1
+			graphicArray.selectIndex(_counter).visible = true;
+			//graphicArray.selectIndex(_counter).alpha = tempAlpha;
+			graphicArray.selectIndex(_counter).alpha = 1
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _counter));
 		}
 		
 		public function alphaHandler(e:GWGestureEvent):void {
 			
-			var alpha:Number = graphicArray.array[_counter].alpha + e.value.tilt_dy;
+			var alpha:Number = graphicArray.selectIndex(_counter).alpha + e.value.tilt_dy;
 			if (alpha < 0.3)
 				alpha = 0.3;
 			else if (alpha > 1)
 				alpha = 1;
-			else 
-				graphicArray.array[_counter].alpha = alpha;
+			
+			alphaShift(alpha);
+		}
+		
+		public function alphaShift(n:Number):void {
+			graphicArray.selectIndex(_counter).alpha = n;
 		}
 		
 		public function reset():void {
 			var mTween:ITween = BetweenAS3.tween(_touchScreen, { x:_maskX, y:_maskY, rotation:_maskRotation, scale:1, alpha:1 }, null, 0.5);
 			mTween.play();
-			var oTween:ITween = BetweenAS3.tween(graphicArray.array[_counter], { alpha:1 }, null, 0.5);
+			var oTween:ITween = BetweenAS3.tween(graphicArray.selectIndex(_counter), { alpha:1 }, null, 0.5);
 			oTween.play();
 		}
 		
