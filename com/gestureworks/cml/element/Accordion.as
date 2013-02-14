@@ -76,15 +76,17 @@ package com.gestureworks.cml.element
 				
 				addChild(tabs[i]);
 			
-				if (i < _labelsArray.length){
-					var label:Text = new Text();
-					label.font = _font;
-					label.color = _fontColor;
-					label.fontSize = _fontSize;
-					label.autoSize = "left";
-					label.text = _labelsArray[i];
-					tabs[i].addChild(label);
-					label.y = (tabs[i].height - label.height) / 2;
+				if (_labelsArray){
+					if (i < _labelsArray.length){
+						var label:Text = new Text();
+						label.font = _font;
+						label.color = _fontColor;
+						label.fontSize = _fontSize;
+						label.autoSize = "left";
+						label.text = _labelsArray[i];
+						tabs[i].addChild(label);
+						label.y = (tabs[i].height - label.height) / 2;
+					}
 				}
 				
 				if (width == 0 && contents[i].width > width)
@@ -185,7 +187,7 @@ package com.gestureworks.cml.element
 			_gradientAlphas = value;
 		}
 		 
-		private var _color:uint = 0x0;
+		private var _color:uint = 0xff00ff;
 		/**
 		 * The flat fill color
 		 */
@@ -194,10 +196,10 @@ package com.gestureworks.cml.element
 			_color = value;
 		}
 		
-		private var _fill:String = "color";
+		private var _fill:String = "gradient";
 		/**
 		 * Choose whether to use a solid fill color or gradient.
-		 * @default "color"
+		 * @default "gradient"
 		 */
 		public function get fill():String { return _fill; }
 		public function set fill(value:String):void {
