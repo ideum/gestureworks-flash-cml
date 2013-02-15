@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.*;
 	import flash.display.*;
 	import flash.events.*;
+	import flash.geom.Point;
 	import flash.utils.*;
 	import org.tuio.*;
 	
@@ -176,6 +177,7 @@ package com.gestureworks.cml.element
 		public function get knobPosition():Number {return _knobPosition;}
 			
 		private var _value:Number = 0;
+		private var oldPoint:Point;
 		/**
 		 * Stores the current value as mapped to the min and max values.
 		 * Can be used as input value, set input=true
@@ -318,6 +320,7 @@ package com.gestureworks.cml.element
 		private function onDownHit(event:*):void
 		{			
 			var num:Number;
+			trace("On down hit:", event.localX, event.localY);
 			
 			if (orientation == "horizontal")		
 				num = event.localX;
@@ -341,6 +344,8 @@ package com.gestureworks.cml.element
 					knob.y = stepknobPositions[index] - knobOffset;
 			}
 			
+			trace("knob:", knob.x, knob.y, rail.x, rail.y, event.localX, event.localY);
+			
 			updateValues();
 		}	
 	
@@ -350,30 +355,32 @@ package com.gestureworks.cml.element
 			if (debug)			
 				trace("drag");			
 				
-			var newValue:Number = 0;	
+			var newValue:Number = 0;
+			var point:Point = new Point(knob.x, knob.y);
 			
-			if (orientation == "horizontal")
-				newValue = knob.x + event.value.drag_dx;
-			else if (orientation == "vertical")
-				newValue = knob.y + event.value.drag_dy;
+			if (!oldPoint) {
+				oldPoint = new Point(event.value.localX, event.value.localY);
+			}
+			else if (oldPoint) {
+				point.x += event.value.localX - point.x;
+				point.y += event.value.localY - point.y;
+				oldPoint.y = event.value.localY;
+				oldPoint.x = event.value.localX;
+			}
 			
-			if (newValue < minPos) {
-				if (orientation == "horizontal")	
-					knob.x = minPos;
-				else if (orientation == "vertical")	
-					knob.y = minPos;
-			}	
-			else if (newValue > maxPos) {
-				if (orientation == "horizontal")	
-					knob.x = maxPos;
-				else if (orientation == "vertical")	
-					knob.y = maxPos;
-			}	
+			if (orientation == "horizontal" && point.x < minPos)	
+				knob.x = minPos;
+			else if (orientation == "vertical" && point.y < minPos)	
+				knob.y = minPos;
+			else if (orientation == "horizontal" && point.x > maxPos)	
+				knob.x = maxPos;
+			else if (orientation == "vertical" && point.y > maxPos)	
+				knob.y = maxPos;
 			else {
 				if (orientation == "horizontal")	
-					knob.x = newValue;
+					knob.x = point.x;
 				else if (orientation == "vertical")	
-					knob.y = newValue;
+					knob.y = point.y;
 			}
 			
 			updateValues();
@@ -450,12 +457,18 @@ package com.gestureworks.cml.element
 				trace("value:", _value)				
 			}
 			
+			trace("id:", this.id);
+				trace("knobPosition:", _knobPosition);
+				trace("value:", _value)	
+			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value, true));			
 		}
 		
 		override public function clone():*{
 			var v:Vector.<String> = new < String > ["touchKnob", "knob", "hit", "rail"];
 			var clone:Slider = CloneUtils.clone(this, parent, v);
+			
+			//CloneUtils.copyChildList(this, clone);
 			
 			if (clone.parent)
 				clone.parent.addChild(clone);
@@ -476,6 +489,7 @@ package com.gestureworks.cml.element
 				}
 			}
 			
+			clone.init();
 			if (clone.mouseEnabled)
 				clone.createEvents();
 			
@@ -502,9 +516,11 @@ package com.gestureworks.cml.element
 		}
 		
 		public function updateLayout():void {
-			if (orientation == "horizontal"){
-				this.width = rail.width;
-				this.height = rail.height;
+			if (orientation == "horizontal") {
+				if (rail) {
+					this.width = rail.width;
+					this.height = rail.height;
+				}
 			}
 		}
 		
