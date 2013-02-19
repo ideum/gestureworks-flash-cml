@@ -794,6 +794,15 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		public function snapTo(num:Number):void {
+			if (num < 0 || num > snapPoints.length - 1) {
+				return;
+			}
+			else {
+				snap(null, snapPoints[num]);
+			}
+		}
+		
 		/**
 		 * Disables the drag if the touch moves outside of the album
 		 * @param	e
