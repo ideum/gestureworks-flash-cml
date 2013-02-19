@@ -131,12 +131,13 @@
 				caption.font = _fontStyle;
 			if (_fontColor) 
 				caption.color = _fontColor;	
-				
+			
+			caption.alpha = _fontAlpha;
 			var button:Sprite = new Sprite();
 			radius = caption.fontSize/2;
 			button.name = label;
-			button.graphics.lineStyle(1, 0x000000);
-			button.graphics.beginFill(0xFFFFFF);			
+			button.graphics.lineStyle(_radioStroke, _radioStrokeColor);
+			button.graphics.beginFill(_radioColor);			
 			button.graphics.drawCircle(radius, radius, radius);			
 			button.graphics.endFill();														
 			setButtonPosition(button);
@@ -178,7 +179,8 @@
 				else
 				{
 					min = lastLabel.textWidth + 10;
-					offset = _horizontalOffset > min ? _horizontalOffset : min;
+					//offset = _horizontalOffset > min ? _horizontalOffset : min;
+					offset = _horizontalOffset;
 					button.x = lastLabel.x + offset;
 				}
 			}
@@ -208,8 +210,8 @@
 			selected = new Sprite();
 			selected.name = "selected";
 			selected.graphics.lineStyle(1, 0x000000);
-			selected.graphics.beginFill(0x000000);		
-			selected.graphics.drawCircle(radius, radius, radius*.6);
+			selected.graphics.beginFill(_selectedColor);		
+			selected.graphics.drawCircle(radius, radius, radius * _selectedFillRatio);
 			selected.graphics.endFill();
 		}
 		
@@ -290,6 +292,60 @@
 		 */
 		private var _textElements:Dictionary = new Dictionary();
 		public function get textEls():Dictionary { return _textElements; }
+		
+		private var _fontAlpha:Number = 1;
+		/**
+		 * The alpha for the labels.
+		 */
+		public function get fontAlpha():Number { return _fontAlpha; }
+		public function set fontAlpha(value:Number):void {
+			_fontAlpha = value;
+		}
+		
+		private var _radioColor:uint = 0xffffff;
+		/**
+		 * The color for the radio buttons;
+		 */
+		public function get radioColor():uint { return _radioColor; }
+		public function set radioColor(value:uint):void {
+			_radioColor = value;
+		}
+		
+		private var _radioStroke:Number = 1;
+		/**
+		 * The stroke of the radio button's graphic.
+		 */
+		public function get radioStroke():Number { return _radioStroke; }
+		public function set radioStroke(value:Number):void {
+			_radioStroke = value;
+		}
+		
+		private var _radioStrokeColor:uint = 0x000000;
+		/**
+		 * The color of a radio button's stroke;
+		 */
+		public function get radioStrokeColor():uint { return _radioStrokeColor; }
+		public function set radioStrokeColor(value:uint):void {
+			_radioStrokeColor = value;
+		}
+		
+		private var _selectedColor:uint = 0x000000;
+		/**
+		 * The color of the fill of the selected radio button;
+		 */
+		public function get selectedColor():uint { return _selectedColor; }
+		public function set selectedColor(value:uint):void {
+			_selectedColor = value;
+		}
+		
+		private var _selectedFillRatio:Number = 0.6;
+		/**
+		 * The amount of fill when the radio button is selected.
+		 */
+		public function get selectedFillRatio():Number { return _selectedFillRatio; }
+		public function set selectedFillRatio(value:Number):void {
+			_selectedFillRatio = value;
+		}
 		
 		/**
 		 * Label name to button Sprite mapping
