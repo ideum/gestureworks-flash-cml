@@ -37,7 +37,7 @@ package com.gestureworks.cml.element
 		public var loadText:Text;	
 		
 		public var clones:Array = [];
-		public var cloneMap:ChildList = new ChildList(false);
+		public var cloneMap:ChildList = new ChildList(true);
 		public var placeHolders:Array = [];
 		private var _placeHolderIndex:int = 0;	
 		private var dropLocation:Graphic;
@@ -162,14 +162,14 @@ package com.gestureworks.cml.element
 		{
 			for each (var obj:* in clones) {
 				//album.belt.removeChild(obj);
-				cloneMap.removeKey(obj.image.src);
 				//if (obj["image"]) obj.image.close();
 				if ("dispose" in obj && obj.visible == false) {
+					cloneMap.removeKey(obj.image.src);
 					obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
 					obj.dispose();
 				}
 			}
-			cloneMap = new ChildList(false);
+			//cloneMap = new ChildList(true);
 			clones = [];
 			album.clear();
 			
@@ -419,15 +419,17 @@ package com.gestureworks.cml.element
 		{			
 			if ( (!event) || event.property == "isLoaded") {
 				
-				if (event.target is FlickrViewer)
+				if (event && event.target is FlickrViewer)
 					searchExp(event.target, event.target.image);
 				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
+				
 				if (event) {
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
 					event.target.init();
 					event.target.addEventListener(StateEvent.CHANGE, onCloneTimeout);
 				}
+				
 				loadCnt++;
 				
 				if (loadCnt >= resultCnt) {
@@ -577,14 +579,14 @@ package com.gestureworks.cml.element
 					if (flickrQuery) {
 						for each (var obj:* in clones) {
 							//album.belt.removeChild(obj);
-							cloneMap.removeKey(obj.image.src);
+							//cloneMap.removeKey(obj.image.src);
 							//if (obj["image"]) obj.image.close();
 							if ("dispose" in obj && obj.visible == false) {
 								obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
 								obj.dispose();
 							}
 						}
-						cloneMap = new ChildList(false);
+						//cloneMap = new ChildList(true);
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -594,13 +596,13 @@ package com.gestureworks.cml.element
 					if (flickrQuery) {
 						for each (var obj:* in clones) {
 							//album.belt.removeChild(obj);
-							cloneMap.removeKey(obj.image.src);
+							//cloneMap.removeKey(obj.image.src);
 							//if (obj["image"]) obj.image.close();
 							if ("dispose" in obj && obj.visible == false) {
 								obj.dispose();
 							}
 						}
-						cloneMap = new ChildList(false);
+						//cloneMap = new ChildList(true);
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
