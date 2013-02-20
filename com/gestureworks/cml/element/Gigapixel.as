@@ -56,6 +56,16 @@
 			super();
 		}
 		
+		private var _toggleHotspots:Boolean = true;
+		/**
+		 * Set the visibility of hotspots.
+		 */
+		public function get toggleHotspots():Boolean { return _toggleHotspots; }
+		public function set toggleHotspots(value:Boolean):void {
+			_toggleHotspots = value;
+			flipHotspots(_toggleHotspots);
+		}
+		
 		private var _minScaleConstraint:Number = 0.001;
 		/**
 		 * sets the scaling
@@ -129,9 +139,14 @@
 				//trace("Clearing markers to put them back later.");
 			}
 			
+			/*if (image)
+				image.dispose();*/
+			
+			
 			image = new MultiScaleImage();
 			image.mouseChildren = true;
-			image.addEventListener(Event.COMPLETE, image_completeHandler)
+			if (!image.hasEventListener(Event.COMPLETE))
+				image.addEventListener(Event.COMPLETE, image_completeHandler)
 			
 			// Add transformer for smooth zooming
 			var transformer:TweenerTransformer = new TweenerTransformer()
@@ -212,6 +227,14 @@
 				scaleConstraint.maxScale = descriptor.width / image.sceneWidth;
 		}
 		
+		private function flipHotspots(onOff:Boolean):void {
+			
+			for (var i:int = 0; i < hotspots.length; i++) 
+			{
+				hotspots[i].visible = onOff;
+			}
+		}
+		
 		/**
 		 * Dispose method and remove listener
 		 */
@@ -229,6 +252,7 @@
 			if (image)
 			{
 				image.removeEventListener(Event.COMPLETE, image_completeHandler);
+				//image.dispose();
 				image = null;
 			}	
 		}
