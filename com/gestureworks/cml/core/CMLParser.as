@@ -118,13 +118,15 @@ package com.gestureworks.cml.core
 				
 			if (debug)
 				trace(StringUtils.printf("\n%5s%s %s", "", "3a)", "Search for LibraryKit"));
+			
 				
 			if (cml.children().(name() == "LibraryKit") != undefined)
 			{
 				if (debug)
 					trace(StringUtils.printf("%9s%s", "", "LibraryKit found... loading LibraryKit"));
 				
-				LibraryKit.instance.parseCML(cml.children().(name() == "LibraryKit"));
+				LibraryKit.instance.parseCML(cml.children().(name() == "LibraryKit"));	
+				delete cml["LibraryKit"];
 			}
 			else 
 			{
@@ -145,6 +147,7 @@ package com.gestureworks.cml.core
 					trace(StringUtils.printf("%9s%s", "", "LayoutKit found... loading LayoutKit"));				
 				
 				LayoutKit.instance.parseCML(cml.children().(name() == "LayoutKit"));
+				delete cml["LayoutKit"];
 			}			
 			else 
 			{
@@ -433,7 +436,9 @@ package com.gestureworks.cml.core
 				trace('---------------- no parent');			
 			
 			var i:int = 0;
-			
+
+	
+		
 			var index:int = -1;
 			for each (var node:XML in cml)
 			{
@@ -456,7 +461,7 @@ package com.gestureworks.cml.core
 				classNameKeyword = false;
 				
 				
-				if (className == "LibraryKit" || className == "LayoutKit" || className == "WindowKit" || className == "DebugKit") {
+				if (className == "LibraryKit" || className == "Library" || className == "LayoutKit" || className == "WindowKit" || className == "DebugKit") {
 					continue;
 				}
 				else if (className == "RenderKit") {
