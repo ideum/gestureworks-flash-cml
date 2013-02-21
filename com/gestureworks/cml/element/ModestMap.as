@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 		 * MicrosoftRoadMapProvider, OpenStreeMapProvider,   
 		 * YahooAerialMapProvider, YahooHybridMapProvider, YahooRoadMapProvider.
 		 */
-		public function get mapprovider():String { return _mapProvider.toString(); }
+		public function get mapprovider():String { return _mapProvider ? _mapProvider.toString() : null; }
 		public function set mapprovider(value:String):void {
 			value = value.toLowerCase();
 			
