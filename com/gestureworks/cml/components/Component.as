@@ -503,7 +503,7 @@ package com.gestureworks.cml.components
 		
 		protected function onStateEvent(event:StateEvent):void
 		{
-			
+			//trace(event);
 			if (event.value == "fontSize")
 			{
 				textSize();
@@ -560,7 +560,18 @@ package com.gestureworks.cml.components
 			{
 				this.visible = false;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "quit"));
-			}	
+			}
+			else if (event.property == "selectedLabel") {
+				if (!isNaN(Number(event.value))) {
+					var index:Number = Number(event.value);
+					for (var l:int = 0; l < numChildren; l++) 
+					{
+						if ("snapTo" in getChildAt(i)) {
+							getChildAt(i)["snapTo"](index);
+						}
+					}
+				}
+			}
 		}
 		
 		
