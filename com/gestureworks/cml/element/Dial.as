@@ -158,7 +158,7 @@ package com.gestureworks.cml.element
 		private var maxPos:Number;
 		private var centerPos:Number;
 		private var _filterDial:Dial;
-		private var filterMap:Dictionary;
+		private var filterMap:Object;
 		private const NO_FILTER:String = "no_filter";
 		
 		/**
@@ -780,44 +780,62 @@ package com.gestureworks.cml.element
 		 * Associates filters of the <code>filterDial</code> to this dial's values by parsing the user-defined text values. Filter assignment, means the filtered 
 		 * value will not display unless its associated filter is the current value of the <code>filterDial</code>. A colon character in a String value denotes 
 		 * the assignment of a filter (or multiple filters) to a value of the dial. The syntax is "filter:value" for a single filter and "filter1:filter2:value"
-		 * for multiple filters. If no colon exists in the String, the value will not be constantly displayed. 
+		 * for multiple filters. If no colon exists in the String, the value will not be filtered and always be displayed. For more complex filtering, a pipe (|) 
+		 * character denotes a combination of filters. For example, given dial1 is a filter of dial2 and dial 2 is a filter of dial3, the following filter assignment 
+		 * "dial1Filter|dial2Filter:value" means the specified value will not display on dial3 unless the combination of dial1 and dial2 matches the criteria.
 		 */
 		private function configFilters():void
 		{
 			if (!filterDial) return;
 			
-			filterMap = new Dictionary();
+			filterMap = new Object();
 			
 			for each(var txt:String in textArray)
-			{
+			{			
 				if (txt.search(":") > -1)
 				{
 					var keys:Array = txt.split(":");
 					var value:String = keys.pop();
 					for each(var key:String in keys)
-						addFilter(key, value);
+						filterMap = addFilter(filterMap, filterDial, key, value);
 				}
 				else
 				{
-					addFilter(NO_FILTER, txt);				
+					addFilter(filterMap, filterDial, NO_FILTER, txt);				
 				}
 			}
 
-			textArray = filterMap[filterDial.currentString] ? filterMap[filterDial.currentString] : new Array();
-			textArray = filterMap[NO_FILTER] ? textArray.concat(filterMap[NO_FILTER]) : textArray;
+			processFilters(filterDial.currentString);
 		}
 		
 		/**
-		 * Maps a filter to an array of values
+		 * Maps filter to arrays of values. Parses and handles combination filters.
+		 * @param   map  the filter map
+		 * @param   dial  the filter dial
 		 * @param	filter  the value of the <code>filterDial</code>
 		 * @param	value  the value to filter
 		 */
-		private function addFilter(filter:String, value:String):void
+		private function addFilter(map:Object, dial:Dial, filter:String, value:String):Object
 		{
-			if (!filterMap[filter]) 
-				filterMap[filter] = new Array();
-				
-			filterMap[filter].push(value);
+			var delimter:int = filter.indexOf("|");
+			var head:String = filter.substring(0, delimter);
+			var tail:String = filter.substring(delimter+1);
+			
+			//recursively construct combination filters
+			if (delimter > -1 && dial["filterDial"])
+			{
+				if (!map[head])
+					map[head] = new Object();
+				map[head] = addFilter(map[head], dial["filterDial"], tail, value);
+			}
+			//map values to filter assignment
+			else {
+				if(!map[tail])
+					map[tail] = new Array();				
+				map[tail].push(value);	
+			}
+			
+			return map;
 		}
 		
 		/**
@@ -827,16 +845,52 @@ package com.gestureworks.cml.element
 		 */
 		private function applyFilter(e:StateEvent):void
 		{
-			if (!filterMap) return;
-			textArray = new Array();
-			
-			if(filterMap[e.value])
-				textArray = filterMap[e.value];
-			if (filterMap[NO_FILTER])
-				textArray = textArray.concat(filterMap[NO_FILTER]);
-						
+			if (!filterMap) return;		
+									
+			processFilters(e.value);
 			updateTextFields();
 			onEnd(e.id);
+		}
+		
+		/**
+		 * Searches values associated with provided key
+		 * @param	key
+		 */
+		private function processFilters(key:String):void
+		{
+			textArray = new Array();
+			var filters:Array = [key];
+			var dial:Dial = filterDial;
+			while (dial["filterDial"]) 
+			{
+				dial = dial.filterDial;
+				filters.push(dial.currentString);
+			}
+				
+			textArray = validValues(filterMap, filters);
+			textArray = filterMap[NO_FILTER] ? textArray.concat(filterMap[NO_FILTER]) : textArray;			
+		}
+		
+		/**
+		 * Recursively evaluates filters or combination filters and returns the associated
+		 * array of values.
+		 * @param	map  the filter map
+		 * @param	filters  the filters to evaluate
+		 * @return
+		 */
+		private function validValues(map:Object, filters:Array):Array
+		{
+			var values:Array = new Array();
+			
+			var filter:String = filters.pop();
+			if (map[filter] && map[filter] is Array)
+				values =  map[filter];
+			else if (map[filter])  //combination filter search
+				values = validValues(map[filter], filters);
+			else if (!map[filter] && filters.length)  //not a combination check the next filter
+				values = validValues(map, filters);
+				
+			return values;
 		}
 		
 		public var invertDrag:Boolean = false;
@@ -943,7 +997,6 @@ package com.gestureworks.cml.element
 		 */
 		private function onEnd(event:* = null):void
 		{	
-			
 			// difference to closest and center
 			var diff:Number = 0;
 			var diffArray:Array = [];
@@ -1036,7 +1089,6 @@ package com.gestureworks.cml.element
 				else
 					textFieldArray[j].textColor = textColor;
 			}
-			
 
 			
 			currentIndex = closestIndex;

@@ -164,17 +164,17 @@ package  com.gestureworks.cml.element
 		}
 		
 		private function onSearchComplete(e:FlickrResultEvent):void {
-			trace("Search complete");
+			//trace("Search complete");
 			
 			var pList:Photos = new Photos(service);
 			
 			//if (e.success && _tag_mode == "any") {
-				trace("Data: ", e.data, e.data.photos.page);
+				//trace("Data: ", e.data, e.data.photos.page);
 				_pages = e.data.photos.pages;
 				//pageNumber = e.data.photos.page;
 				
 				resultPhotos = e.data.photos.photos;
-				trace("ResultPhotos info:", resultPhotos.length);
+				//trace("ResultPhotos info:", resultPhotos.length);
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 			/*} else if (e.success && _tag_mode == "all") {
 				_pages = e.data.photos.pages;
