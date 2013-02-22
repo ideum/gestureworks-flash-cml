@@ -2,6 +2,9 @@
     {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.ElementFactory;
+	import com.gestureworks.events.GWTouchEvent;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.TouchEvent;
 	import com.gestureworks.core.GestureWorks;
@@ -39,7 +42,7 @@
 	 * @see Button
 	 * @see DropDownMenu
 	 */
-	public class RadioButtons extends ElementFactory 	 
+	public class RadioButtons extends Container 	 
 	{		
 		private var selected:Sprite;
 		private var radius:Number;
@@ -72,6 +75,15 @@
 				this.addEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
 			else 
 				this.addEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
+			
+			if (_graphicsArray && _graphicsArray.length > 0) {
+				_selectedLabel = _graphicsArray[0].name;
+				_graphicsArray[0].alpha = 1;
+			}
+			else {
+				_radioButtons[labelList[0]].addChild(selected);
+				_selectedLabel = _radioButtons[labelList[0]].name;
+			}
 		}	
 		
 		/**
@@ -80,6 +92,7 @@
 		public override function displayComplete():void
 		{
 			super.displayComplete();
+			trace(_graphicReps);
 			init();
 		}		
 		
@@ -90,11 +103,21 @@
 		{
 			clear();
 			
+			if (_graphicReps) {
+				_graphicsArray = [];
+				_graphicsArray = _graphicReps.split(",");
+				for (var i:int = 0; i < _graphicsArray.length; i++) 
+				{
+					_graphicsArray[i] = childList.getKey(_graphicsArray[i]);
+					trace("Grabbing graphics.");
+				}
+			}
+			
 			if (_labels)
 			{
-				var labelList:Array = _labels.split(",");
-				for (var index:String in labelList)
-					drawButton(labelList[index]);
+				labelList = _labels.split(",");
+				for (var index:Number = 0; index < labelList.length; index++ )
+					drawButton(index);
 					
 				drawSelection();		
 			}
@@ -105,8 +128,10 @@
 		 */
 		private function clear():void
 		{		
+			trace(graphicReps);
 			for (var i:int = numChildren-1; i >= 0; i--)
 				removeChildAt(i);
+			trace(graphicReps);
 		}	
 		
 		/**
@@ -122,8 +147,9 @@
 		 * to the display object. The size of the button is a factor of the font size.
 		 * @param	label  the label name
 		 */
-		private function drawButton(label:String):void
+		private function drawButton(index:Number):void
 		{	
+			var label:String = labelList[index];
 			var caption:Text = new Text();			
 			if (_fontSize)
 				caption.fontSize = _fontSize;
@@ -131,15 +157,22 @@
 				caption.font = _fontStyle;
 			if (_fontColor) 
 				caption.color = _fontColor;	
-			
 			caption.alpha = _fontAlpha;
+			
 			var button:Sprite = new Sprite();
-			radius = caption.fontSize/2;
 			button.name = label;
-			button.graphics.lineStyle(_radioStroke, _radioStrokeColor);
-			button.graphics.beginFill(_radioColor);			
-			button.graphics.drawCircle(radius, radius, radius);			
-			button.graphics.endFill();														
+			radius = caption.fontSize/2;
+			if (_graphicsArray && index < _graphicsArray.length) {
+				button.addChild(_graphicsArray[index]);
+				button.alpha = 0.5;
+				_graphicsArray[index] = button;
+			}
+			else {
+				button.graphics.lineStyle(_radioStroke, _radioStrokeColor);
+				button.graphics.beginFill(_radioColor);			
+				button.graphics.drawCircle(radius, radius, radius);			
+				button.graphics.endFill();
+			}
 			setButtonPosition(button);
 					
 			caption.autoSize = "left";
@@ -172,15 +205,15 @@
 				
 				if (_verticalLayout)
 				{
-					min = lastLabel.textHeight + 10 ;
+					min = lastLabel.textHeight + 10 > button.height ? lastLabel.textHeight + 10 : button.height;
 					offset = _verticalOffset > min ? _verticalOffset : min;
 					button.y = lastLabel.y + offset;
 				}
 				else
 				{
-					min = lastLabel.textWidth + 10;
-					//offset = _horizontalOffset > min ? _horizontalOffset : min;
-					offset = _horizontalOffset;
+					min = lastLabel.textWidth + (lastLabel.textWidth * 0.1) > button.width ? lastLabel.textWidth + (lastLabel.textWidth * 0.1) : button.width;
+					offset = _horizontalOffset > min ? _horizontalOffset : min;
+					//offset = _horizontalOffset;
 					button.x = lastLabel.x + offset;
 				}
 			}
@@ -223,8 +256,18 @@
 		public function set labels(labels:String):void
 		{
 			_labels = labels;
-
-		}		
+		}
+		
+		private var _graphicsArray:Array;
+		private var _graphicReps:String;
+		/**
+		 * A comma delimited string of ids of display objects to use for buttons.
+		 * If a display object is selected this way, its alpha will be dimmed when not selected.
+		 */
+		public function get graphicReps():String { return _graphicReps; }
+		public function set graphicReps(value:String):void {
+			_graphicReps = value;
+		}
 		
 		/**
 		 * Vertical distance between buttons
@@ -273,7 +316,7 @@
 		public function get fontSize():Number { return _fontSize; }
 		public function set fontSize(fs:Number):void
 		{
-			if(fs > 9)
+			//if(fs > 9)
 				_fontSize = fs;
 		}
 		
@@ -357,8 +400,9 @@
 		 * The currently selected label
 		 */
 		private var _selectedLabel:String;
+		
 		public function get selectedLabel():String { return _selectedLabel; }
-				
+		private var labelList:Array;
 		
 		/**
 		 * Handles the event indicating a radio button is selected 
@@ -369,14 +413,42 @@
 			if (event.target is Sprite)
 			{
 				var button:Sprite = Sprite(event.target);
-				if (button.name != selected.name)
+				if (_graphicsArray) {
+					for (var i:int = 0; i < _graphicsArray.length; i++) 
+					{
+						if (_graphicsArray[i] != event.target) {
+							if (compareChildren(_graphicsArray[i], event.target)) {
+								_graphicsArray[i].alpha = 1;
+								_selectedLabel = _graphicsArray[i].name;
+							}
+							else {
+								_graphicsArray[i].alpha = 0.5;
+							}
+						}
+					}
+				}
+				else if (selected && button.name != selected.name)
 				{
 					button.addChild(selected);
 					_selectedLabel = button.name;
 				}
+				trace(_selectedLabel);
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));		
 			}
 		}	
+		
+		private function compareChildren(target:*, comparison:*):Boolean {
+			if ( target == comparison) {
+				return true;
+			} else if ( target is DisplayObjectContainer && target.numChildren > 0) {
+				for (var i:Number = 0; i < target.numChildren; i++) {
+					if (compareChildren(target.getChildAt(i), comparison)) {
+						return true;
+					}
+				}
+				return false;
+			} else return false;
+		}
 		
 		/**
 		 * Dispose methods and remove listeners
