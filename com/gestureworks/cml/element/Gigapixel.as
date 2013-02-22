@@ -46,7 +46,7 @@
 		private var image:MultiScaleImage
     	private var sceneNavigator:SceneNavigator
     	private var scaleConstraint:ScaleConstraint;
-		private var hotspots:Array = [];
+		private var _hotspots:Array = [];
 		
 		/**
 		 * Constructor
@@ -121,6 +121,11 @@
 		public function get viewportWidth():Number { return image.viewportWidth; }
 		public function get viewportHeight():Number { return image.viewportHeight; }
 		
+		public function get hotspots():Array { return _hotspots; }
+		public function set hotspots(value:Array):void {
+			_hotspots = value;
+		}
+		
 		public function localToScene(p:Point):Point {
 			return image.localToScene(p);
 		}
@@ -133,7 +138,7 @@
 		{			
 			while (this.numChildren > 0) {
 				if (this.getChildAt(0) is Hotspot) {
-					hotspots.push(this.getChildAt(0));
+					_hotspots.push(this.getChildAt(0));
 				}
 				removeChildAt(0);
 				//trace("Clearing markers to put them back later.");
@@ -184,16 +189,16 @@
 			
 			addChild(image);
 			
-			for (var i:Number = 0; i < hotspots.length; i++) {
-				if (!(contains(hotspots[i])))
-					addChild(hotspots[i]);
-				var point:Point = image.sceneToLocal(new Point(hotspots[i].sceneX, hotspots[i].sceneY));
-				hotspots[i].x = point.x;
-				hotspots[i].y = point.y;
+			for (var i:Number = 0; i < _hotspots.length; i++) {
+				if (!(contains(_hotspots[i])))
+					addChild(_hotspots[i]);
+				var point:Point = image.sceneToLocal(new Point(_hotspots[i].sceneX, _hotspots[i].sceneY));
+				_hotspots[i].x = point.x;
+				_hotspots[i].y = point.y;
 				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
 			}
 			
-			if (hotspots.length > 0)
+			if (_hotspots.length > 0)
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			
 			_loaded = true;
@@ -201,12 +206,12 @@
 		}
 		
 		private function onEnterFrame(e:Event):void {
-			for (var i:Number = 0; i < hotspots.length; i++) {
-				if (!(contains(hotspots[i])))
-					addChild(hotspots[i]);
-				var point:Point = image.sceneToLocal(new Point(hotspots[i].sceneX, hotspots[i].sceneY));
-				hotspots[i].x = point.x;
-				hotspots[i].y = point.y;
+			for (var i:Number = 0; i < _hotspots.length; i++) {
+				if (!(contains(_hotspots[i])))
+					addChild(_hotspots[i]);
+				var point:Point = image.sceneToLocal(new Point(_hotspots[i].sceneX, _hotspots[i].sceneY));
+				_hotspots[i].x = point.x;
+				_hotspots[i].y = point.y;
 				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
 			}
 		}
@@ -229,9 +234,9 @@
 		
 		private function flipHotspots(onOff:Boolean):void {
 			
-			for (var i:int = 0; i < hotspots.length; i++) 
+			for (var i:int = 0; i < _hotspots.length; i++) 
 			{
-				hotspots[i].visible = onOff;
+				_hotspots[i].visible = onOff;
 			}
 		}
 		
