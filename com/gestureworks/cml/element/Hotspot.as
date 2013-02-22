@@ -176,6 +176,7 @@ package com.gestureworks.cml.element
 				}
 				
 				//trace("Setting component:", _component.x, _component.y);
+				_component.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "hotspot", "visible", true));
 			}
 		}
 		
