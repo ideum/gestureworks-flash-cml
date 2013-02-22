@@ -809,9 +809,11 @@ package com.gestureworks.cml.element
 		 */
 		protected function outOfBounds(e:*):void
 		{
-			if (e.type == "touchEnd")
+			if (e.type == "touchEnd" || e.type == "mouseOut" || e.type == "org.tuio.TuioTouchEvent.TOUCH_OUT")
 			{	
-				removeEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);			
+				removeEventListener(TuioTouchEvent.TOUCH_OUT, outOfBounds);				
+				removeEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
+				removeEventListener(MouseEvent.MOUSE_OUT, outOfBounds);				
 			}
 			else
 			{	
