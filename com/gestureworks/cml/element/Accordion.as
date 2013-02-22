@@ -247,12 +247,14 @@ package com.gestureworks.cml.element
 			_fontColor = value;
 		}
 		
+		private var _current:int;
+		public function get current():int { return _current; }
 
 		private var tabs:Array = [];			
 		//private var labels:Array = ["label 1", "label 2", "label 3"];	
 		
 		private var cMask:Graphic;
-		private var current:int;
+		
 		private var isTweening:Boolean = false;
 		private var cTab:TouchContainer;
 		private var down:Boolean;
@@ -268,15 +270,15 @@ package com.gestureworks.cml.element
 						
 			for (var i:int = 0; i < tabs.length; i++) {
 				if (e.target == tabs[i])
-					current = i;
+					_current = i;
 			}
 			
-			for (i = current + 1; i < tabs.length; i++) {
+			for (i = _current + 1; i < tabs.length; i++) {
 				tweenArray.push(BetweenAS3.to(tabs[i], { y: background.height - (tabs.length - i) * tabs[i].height }, 0.3));
 				tweenArray.push(BetweenAS3.to(contents[i], { y: (background.height - (tabs.length - i) * tabs[i].height) + tabs[i].height }, 0.3));
 			}
 			
-			for (i = 1; i <= current; i++) {
+			for (i = 1; i <= _current; i++) {
 				tweenArray.push(BetweenAS3.to(tabs[i], { y:(i) * tabs[i].height }, 0.3));
 				tweenArray.push(BetweenAS3.to(contents[i], { y:((i) * tabs[i].height) + tabs[i].height }, 0.3));
 			}	
@@ -284,6 +286,23 @@ package com.gestureworks.cml.element
 			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
 			tweenGroup.onComplete = function():void { isTweening = false };
 			tweenGroup.play();			
+		}
+		
+		public function select(index:Number):void {
+						
+			if (index > 0 && index < tabs.length) {
+				_current = index;
+			}
+			var i:int = 0;
+			for (i = _current + 1; i < tabs.length; i++) {
+				tabs[i].y = background.height - (tabs.length - i) * tabs[i].height;
+				contents[i].y = (background.height - (tabs.length - i) * tabs[i].height) + tabs[i].height;
+			}
+			
+			for (i = 1; i <= _current; i++) {
+				tabs[i].y = i * tabs[i].height;
+				contents[i].y = (i * tabs[i].height) + tabs[i].height;
+			}	
 		}
 
 		private function createTab():TouchSprite
@@ -315,10 +334,10 @@ package com.gestureworks.cml.element
 			
 			for (var i:int = 0; i < tabs.length; i++) {
 				if (e.target == tabs[i])
-					current = i;
+					_current = i;
 			}
 			
-			if (current == 0) return;
+			if (_current == 0) return;
 			
 			down = false;
 			if (e.value.drag_dy > 0) 
@@ -326,7 +345,7 @@ package com.gestureworks.cml.element
 			
 			
 			if (down){
-				for (i = current; i < tabs.length; i++) {
+				for (i = _current; i < tabs.length; i++) {
 					
 					if (tabs[i].y + e.value.drag_dy > background.height - (tabs[i].height * (tabs.length - i))) {
 						tabs[i].y = background.height - (tabs[i].height * (tabs.length - i));
@@ -339,7 +358,7 @@ package com.gestureworks.cml.element
 				}
 			}
 			else {
-				for (i = 1; i <= current; i++) {
+				for (i = 1; i <= _current; i++) {
 					
 					if (tabs[i].y + e.value.drag_dy < tabs[i].height * i) {
 						tabs[i].y = tabs[i].height * i;
