@@ -296,7 +296,7 @@ package com.gestureworks.cml.element
 			tab.gradientColors = _gradientColors;
 			tab.gradientRatios = _gradientRatios;
 			tab.width = width ;
-			tab.height = height * .1;
+			tab.height = height * .15;
 			tab.gradientWidth = tab.width;
 			tab.gradientHeight = tab.height;
 			tab.gradientRotation = 90;
