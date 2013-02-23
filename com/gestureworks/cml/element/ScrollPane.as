@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element
 {
 	import away3d.bounds.NullBounds;
+	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.factories.*;
@@ -10,7 +11,9 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWGestureEvent;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.utils.CloneUtils;
@@ -47,6 +50,7 @@ package com.gestureworks.cml.element
 		public var _content:*;
 		
 		private var loaded:Boolean = false;
+	
 		
 		public function ScrollPane()
 		{
@@ -120,6 +124,7 @@ package com.gestureworks.cml.element
 			_scrollThickness = value;
 		}
 		
+		
 		override public function clone():*{
 			
 			var v:Vector.<String> = new < String > ["childList", "_hit", "_hitBox", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ]
@@ -134,7 +139,7 @@ package com.gestureworks.cml.element
 			
 			for (var i:Number = 0; i < clone.numChildren; i++) {
 				
-				if (clone.getChildAt(i).name == _hit.name) {
+				if (_hit && clone.getChildAt(i).name == _hit.name) {
 					clone._hit = clone.getChildAt(i) as TouchContainer;
 					for (var j:int = 0; j < clone._hit.numChildren; j++) 
 					{
@@ -201,7 +206,7 @@ package com.gestureworks.cml.element
 		}
 		
 		override public function init():void {
-			
+
 			// Check the child list. 
 			// Iterate through each item, getting position, width, and height.
 			// Check if total items width are larger than the container.
@@ -361,6 +366,8 @@ package com.gestureworks.cml.element
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 		}
 		
+			
+		
 		public function updateLayout(inWidth:Number, inHeight:Number):void {
 			
 			width = inWidth;
@@ -413,8 +420,10 @@ package com.gestureworks.cml.element
 			}
 			
 			if ( _horizontalScroll || _verticalScroll) {
-				if (contains(_horizontalScroll) || contains(_verticalScroll))
-					_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+				if (contains(_horizontalScroll) || contains(_verticalScroll)) {
+					if (_hit)
+						_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+				}
 			}
 			else {
 				if (_hit)
@@ -452,7 +461,7 @@ package com.gestureworks.cml.element
 					//newPos = oldY;
 				}
 				else if (oldY) {
-					if (invertDrag)
+					if (!invertDrag)
 						newPos += e.value.localY - oldY;
 					else
 						newPos -= e.value.localY - oldY;
@@ -481,7 +490,7 @@ package com.gestureworks.cml.element
 					//newPos = oldX;
 				}
 				else if (oldX) {
-					if (invertDrag)
+					if (!invertDrag)
 						newPos -= e.value.localX  - oldX;
 					else
 						newPos += e.value.localX - oldX;

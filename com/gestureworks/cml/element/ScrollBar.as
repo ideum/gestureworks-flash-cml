@@ -3,9 +3,12 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.events.*;
 	import flash.display.*;
+	import flash.geom.Matrix;
 
 	/**
 	 * 
@@ -32,6 +35,8 @@ package com.gestureworks.cml.element
 		
 		public var movementRail:Number;
 		
+		
+		
 		/**
 		 * Constructor
 		 */
@@ -41,6 +46,8 @@ package com.gestureworks.cml.element
 			
 			this.mouseChildren = true;
 		}		
+		
+				
 		
 		private var _scrollPosition:Number;
 		/**
@@ -54,13 +61,25 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _scrollPosition, true));
 		}
 		
+		
+		
 		/**
 		 * This sets the thumbPosition, this is not to be accessed externally in CML or used in Actionscript,
 		 * it is solely here for the ScrollPane class to reach when content is dragged.
 		 */
 		public function set thumbPosition(value:Number):void {
-			if (orientation == "vertical") thumb.y = movementRail * value + scrollBtn1.height;
-			else if (orientation == "horizontal") thumb.x = movementRail * value + scrollBtn1.width;
+			if (orientation == "vertical") {
+				if (buttonVisible)
+					thumb.y = movementRail * value + scrollBtn1.height;
+				else
+					thumb.y = movementRail * value;
+			}
+			else if (orientation == "horizontal") {
+				if (buttonVisible)
+					thumb.x = movementRail * value + scrollBtn1.width;
+				else
+					thumb.x = movementRail * value;
+			}
 			clampThumb();
 		}
 		
@@ -121,6 +140,27 @@ package com.gestureworks.cml.element
 			_buttonFill = value;
 		}
 		
+		
+		private var _buttonAlpha:Number = 1.0;
+		/**
+		 * The color of the button's background.
+		 */
+		public function get buttonAlpha():Number { return _buttonAlpha; }
+		public function set buttonAlpha(value:Number):void {
+			_buttonAlpha = value;
+		}
+		
+		
+		private var _buttonVisible:Boolean = true;
+		/**
+		 * The color of the button's background.
+		 */
+		public function get buttonVisible():Boolean { return _buttonVisible; }
+		public function set buttonVisible(value:Boolean):void {
+			_buttonVisible = value;
+		}			
+		
+		
 		// TO DO: Button stroke, button triangle
 		
 		private var _thumbFill:uint;
@@ -167,7 +207,7 @@ package com.gestureworks.cml.element
 		}
 		
 		// Size of the item the scollbar's container is holding.
-		private var _contentHeight:Number;
+		private var _contentHeight:Number = 100;
 		/**
 		 * The height of the content that needs to be scrolled.
 		 */
@@ -176,7 +216,7 @@ package com.gestureworks.cml.element
 			_contentHeight = value;
 		}
 		
-		private var _contentWidth:Number;
+		private var _contentWidth:Number = 100;
 		/**
 		 * The width of the content that needs to be scrolled;
 		 */
@@ -238,53 +278,76 @@ package com.gestureworks.cml.element
 			
 			// Create and position buttons based upon either orientation.
 			if (_orientation == "vertical" && !scrollBtn1 && !scrollBtn2) {
-				scrollBtn1 = new Graphic();
-				scrollBtn1.color = _buttonFill;
-				scrollBtn1.width = this.width;
-				scrollBtn1.height = this.width;
-				scrollBtn1.shape = "rectangle";
-				scrollBtn1.lineStroke = 0;
 				
-				scrollBtn2 = new Graphic();
-				scrollBtn2.color = _buttonFill;
-				scrollBtn2.width = this.width;
-				scrollBtn2.height = this.width;
-				scrollBtn2.shape = "rectangle";
-				scrollBtn2.y = this.height - scrollBtn2.height;
-				scrollBtn2.lineStroke = 0;
+				if (buttonVisible) {
+					scrollBtn1 = new Graphic();
+					scrollBtn1.color = _buttonFill;
+					scrollBtn1.alpha = buttonAlpha;
+					scrollBtn1.width = this.width;
+					scrollBtn1.height = this.width;
+					scrollBtn1.shape = "rectangle";
+					scrollBtn1.lineStroke = 0;
+					
+					scrollBtn2 = new Graphic();
+					scrollBtn2.color = _buttonFill;
+					scrollBtn2.alpha = buttonAlpha;
+					scrollBtn2.width = this.width;
+					scrollBtn2.height = this.width;
+					scrollBtn2.shape = "rectangle";
+					scrollBtn2.y = this.height - scrollBtn2.height;
+				}
 				
-				railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
-				railGraphic.y = scrollBtn1.height;
+				if (buttonVisible) {
+					railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
+					railGraphic.y = scrollBtn1.height;
+				}
+				else {
+					railGraphic.height = this.height;
+				}
 			}
 			else if (_orientation == "horizontal" && !scrollBtn1 && !scrollBtn2) {
-				scrollBtn1 = new Graphic();
-				scrollBtn1.shape = "rectangle";
-				scrollBtn1.color = _buttonFill;
-				scrollBtn1.fill = "color";
-				scrollBtn1.width = this.height;
-				scrollBtn1.height = this.height;
-				scrollBtn1.lineStroke = 0;
-				scrollBtn1.y = railGraphic.y;
 				
-				scrollBtn2 = new Graphic();
-				scrollBtn2.shape = "rectangle";
-				scrollBtn2.color = _buttonFill;
-				scrollBtn2.width = this.height;
-				scrollBtn2.height = this.height;
-				scrollBtn2.x = this.width - scrollBtn2.width;
-				scrollBtn2.lineStroke = 0;
-				scrollBtn2.y = railGraphic.y;
+				if (buttonVisible) {
+					scrollBtn1 = new Graphic();
+					scrollBtn1.shape = "rectangle";
+					scrollBtn1.color = _buttonFill;
+					scrollBtn1.alpha = buttonAlpha;				
+					scrollBtn1.fill = "color";
+					scrollBtn1.width = this.height;
+					scrollBtn1.height = this.height;
+					scrollBtn1.lineStroke = 0;
+					scrollBtn1.y = railGraphic.y;
+					
+					scrollBtn2 = new Graphic();
+					scrollBtn2.shape = "rectangle";
+					scrollBtn2.color = _buttonFill;
+					scrollBtn2.alpha = buttonAlpha;	
+					scrollBtn2.width = this.height;
+					scrollBtn2.height = this.height;
+					scrollBtn2.x = this.width - scrollBtn2.width;
+					scrollBtn2.lineStroke = 0;
+					scrollBtn2.y = railGraphic.y;
+				}
 				
-				railGraphic.width = this.width - scrollBtn1.width - scrollBtn2.width;
-				railGraphic.x = scrollBtn1.width;
+				if (buttonVisible) {
+					railGraphic.width = this.width - scrollBtn1.width - scrollBtn2.width;
+					railGraphic.x = scrollBtn1.width;
+				}
+				else {
+					railGraphic.width = this.width;
+				}				
+
 			}
 			
 			if(!(railTouch.contains(railGraphic)))
 				railTouch.addChild(railGraphic);
-			if(!(touchBtn1.contains(scrollBtn1)))
-				touchBtn1.addChild(scrollBtn1);
-			if(!(touchBtn2.contains(scrollBtn2)))
-				touchBtn2.addChild(scrollBtn2);
+				
+			if (buttonVisible) {	
+				if(!(touchBtn1.contains(scrollBtn1)))
+					touchBtn1.addChild(scrollBtn1);
+				if(!(touchBtn2.contains(scrollBtn2)))
+					touchBtn2.addChild(scrollBtn2);
+			}
 			
 			// Create the thumb. 
 				// Create the rectangle.
@@ -328,10 +391,17 @@ package com.gestureworks.cml.element
 		}
 		
 		public function createEvents():void {
-			touchBtn1.addEventListener(GWGestureEvent.TAP, onTap1);
-			touchBtn2.addEventListener(GWGestureEvent.TAP, onTap2);
-			
+			if (buttonVisible) {
+				touchBtn1.addEventListener(GWGestureEvent.TAP, onTap1);
+				touchBtn2.addEventListener(GWGestureEvent.TAP, onTap2);
+			}			
 			thumbTouch.addEventListener(GWGestureEvent.DRAG, onDrag);
+			
+			if (parent && parent is ScrollPane && !parent["_hit"]) {
+				thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+				thumbTouch.addEventListener(GWGestureEvent.RELEASE, onRelease);
+			}
+			thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);			
 		}
 		
 		private function onTap1(e:GWGestureEvent):void {
@@ -371,23 +441,158 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function onDrag(e:GWGestureEvent):void {
+		public var invertDrag:Boolean = false;
+		private var newPos:Number = 0;
+		
+		private function onDrag(e:GWGestureEvent):void {		
+			e.stopImmediatePropagation();
+			
+			
+			
+			if(_orientation == "vertical") {
+				// Check the new position won't be further than the limits, and if so, clamp it.
+				//trace("Vertical dragging");
+				//newPos = _content.y;
+				
+				if (!oldY) {
+					oldY = e.value.localY;
+				}
+				else if (oldY) {
+					if (!invertDrag)
+						newPos += e.value.localY - oldY;
+					else
+						newPos -= e.value.localY - oldY;
+					oldY = e.value.localY;
+				}
+				
+				
+				
+				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				// Get the localY of the previous gesture call
+				// Get the differential of the previous localY and the new localY
+				// (Negative values should move the content upwards, positive values downwards)
+				// Assign old localY to current localY.
+				// Now clamp and apply differential.
+				
+				newPos = clampPos(newPos, "vertical");
+				
+				trace(oldY, newPos, e.value.localY);
+				
+				// Apply the new position.
+				thumb.y = newPos;
+				if (buttonVisible)
+					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+				else
+					scrollPosition = thumb.y / movementRail;
+					
+					
+				//trace(e.value.localY, thumb.y);
+			}			
+			
+			if (_orientation == "horizontal") {
+				
+				//newPos = _content.x;
+				
+				if (!oldX) {
+					oldX = e.value.localX;
+					//newPos = oldX;
+				}
+				else if (oldX) {
+					if (invertDrag)
+						newPos -= e.value.localX  - oldX;
+					else
+						newPos += e.value.localX - oldX;
+						
+					oldX = e.value.localX;
+				}
+				
+				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				// Get the localX of the previous gesture call
+				// Get the differential of the previous localX and the new localX
+				// (Negative values should move the content left, positive values right)
+				// Assign old localX to current localX.
+				// Now clamp and apply differential.
+				
+				newPos = clampPos(newPos, "horizontal");
+				
+				
+				// Apply the new position.
+				thumb.x = newPos;
+				if (buttonVisible)
+					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+				else
+					scrollPosition = thumb.x / movementRail;
+			}			
+			
+			/*
 			if(_orientation == "vertical") {
 				thumb.y += e.value.drag_dy;
 				clampThumb();
 				// Dispatch the scroll position.
-				scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+				if (buttonVisible)
+					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+				else
+					scrollPosition = thumb.y / movementRail;
 			}
 			else if (_orientation == "horizontal") {
 				thumb.x += e.value.drag_dx;
 				clampThumb();
 				// Dispatch the scroll position.
-				scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+				if (buttonVisible)
+					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+				else
+					scrollPosition = thumb.x / movementRail;
 			}
+			*/
 		}
 		
-		private function clampThumb():void {
+		
+		
+		private function onBegin(e:GWTouchEvent):void {	
+			var p1:TouchContainer = parent as TouchContainer;
+			var p2:TouchContainer = p1.parent as TouchContainer;	
+			p2.disableNativeTransform = true;			
+		}
+		
+		private function onRelease(e:GWGestureEvent):void {
+			var p1:TouchContainer = parent as TouchContainer;
+			var p2:TouchContainer = p1.parent as TouchContainer;
+	
+			p1.cO.pointArray.length = 0;
+			p2.cO.pointArray.length = 0;
+			p2.disableNativeTransform = false;
+						
+		}
+	
+		private var oldX:Number = 0;
+		private var oldY:Number = 0;
+		
+		private function onComplete(e:GWGestureEvent):void {
+			//Reset the position values so the scrollPane will move cumulatively.
+			oldX = 0;
+			oldY = 0;
+		}
+		
+		
+		private function clampPos(pos:Number, direction:String):Number {			
+			if (direction == "vertical"){
+				if (pos < railGraphic.y) {
+					pos = railGraphic.y;
+				}
+				if (pos > (railGraphic.y + movementRail)) {
+					pos = railGraphic.y + movementRail;
+				}
+			}
+			if (direction == "horizontal") {
+				if (pos < railGraphic.x) thumb.x = railGraphic.x;
+				if (pos > railGraphic.x + movementRail) thumb.x = railGraphic.x + movementRail;
+			}
 			
+			return pos;
+		}
+		
+			
+		private function clampThumb():void {
 			// Check the orientation, and make sure the thumb hasn't slid off the rail.
 			
 			if (_orientation == "vertical"){
@@ -409,25 +614,33 @@ package com.gestureworks.cml.element
 		private function resizeGraphics():void {
 			
 			if (orientation == "vertical") {
-				scrollBtn1.width = width;
-				scrollBtn1.height = width;
 				
-				scrollBtn2.width = width;
-				scrollBtn2.height = width;
-				scrollBtn2.y = height - scrollBtn2.height;
-				
-				railGraphic.height = height - scrollBtn1.height - scrollBtn2.height;
-				
+				if (buttonVisible) {
+					scrollBtn1.width = width;
+					scrollBtn1.height = width;
+					
+					scrollBtn2.width = width;
+					scrollBtn2.height = width;
+					scrollBtn2.y = height - scrollBtn2.height;
+					railGraphic.height = height - scrollBtn1.height - scrollBtn2.height;
+				}
+				else {
+					railGraphic.height = height;
+				}
 				resize(_contentHeight);
 			} else if (orientation == "horizontal") {
-				scrollBtn1.height = height;
-				scrollBtn1.width = height;
-				
-				scrollBtn2.height = height;
-				scrollBtn2.width = height;
-				scrollBtn2.x = width - scrollBtn2.width;
-				
-				railGraphic.width = width - scrollBtn1.width - scrollBtn2.width;
+				if (buttonVisible) {
+					scrollBtn1.height = height;
+					scrollBtn1.width = height;
+					
+					scrollBtn2.height = height;
+					scrollBtn2.width = height;
+					scrollBtn2.x = width - scrollBtn2.width;
+					railGraphic.width = width - scrollBtn1.width - scrollBtn2.width;
+				}
+				else {
+					railGraphic.width = width;
+				}
 				
 				resize(_contentWidth);
 			}
@@ -444,12 +657,18 @@ package com.gestureworks.cml.element
 				thumb.width = width;
 				thumb.height = (height / contentHeight) * railGraphic.height;
 				movementRail = railGraphic.height - thumb.height;
-				railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
+				if (buttonVisible) {
+					railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
+				}
+				else {
+					railGraphic.height = this.height;
+				}
 				//thumb.y = railGraphic.y;
 			} else if (_orientation == "horizontal") {
 				contentWidth = newDimension;
 				thumb.height = height;
 				thumb.width = (width / contentWidth) * railGraphic.width;
+				
 				movementRail = railGraphic.width - thumb.width;
 				//thumb.x = railGraphic.x;
 			}
@@ -470,19 +689,21 @@ package com.gestureworks.cml.element
 				this.parent.addChild(clone);
 			
 			for (var i:Number = 0; i < clone.numChildren; i++) {
-				if (clone.getChildAt(i).name == railTouch.name) {
+				if (railTouch && clone.getChildAt(i).name == railTouch.name) {
 					clone.railTouch = clone.getChildAt(i) as TouchContainer;
 					clone.railGraphic = clone.railTouch.getChildAt(0) as Graphic;
 				}
-				else if (clone.getChildAt(i).name == touchBtn1.name) {
+				else if (touchBtn1 && clone.getChildAt(i).name == touchBtn1.name) {
 					clone.touchBtn1 = clone.getChildAt(i) as TouchContainer;
-					clone.scrollBtn1 = clone.touchBtn1.getChildAt(0) as Graphic;
+					if (clone.buttonVisible)
+						clone.scrollBtn1 = clone.touchBtn1.getChildAt(0) as Graphic;
 				}
-				else if (clone.getChildAt(i).name == touchBtn2.name) {
+				else if (touchBtn2 && clone.getChildAt(i).name == touchBtn2.name) {
 					clone.touchBtn2 = clone.getChildAt(i) as TouchContainer;
-					clone.scrollBtn2 = clone.touchBtn2.getChildAt(0) as Graphic;
+					if (clone.buttonVisible)
+						clone.scrollBtn2 = clone.touchBtn2.getChildAt(0) as Graphic;
 				}
-				else if (clone.getChildAt(i).name == thumbTouch.name) {
+				else if (thumbTouch && clone.getChildAt(i).name == thumbTouch.name) {
 					clone.thumbTouch = clone.getChildAt(i) as TouchContainer;
 					clone.thumb = clone.thumbTouch.getChildAt(0) as Graphic;
 				}
@@ -500,8 +721,10 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			
-			touchBtn1.removeEventListener(GWGestureEvent.TAP, onTap1);
-			touchBtn2.removeEventListener(GWGestureEvent.TAP, onTap2);
+			if (touchBtn1)
+				touchBtn1.removeEventListener(GWGestureEvent.TAP, onTap1);
+			if (touchBtn2)
+				touchBtn2.removeEventListener(GWGestureEvent.TAP, onTap2);
 			
 			thumbTouch.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			
