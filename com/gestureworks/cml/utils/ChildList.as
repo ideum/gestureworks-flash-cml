@@ -31,7 +31,7 @@ package com.gestureworks.cml.utils
 		
 		public function ChildList(weakKeys:Boolean=false)
 		{				
-			super();
+			super(weakKeys);
 		}
 		
 		/**
