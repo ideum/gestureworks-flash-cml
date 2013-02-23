@@ -386,7 +386,7 @@ package com.gestureworks.cml.components
 			var top:Boolean = e.target == topContainer;
 		
 			//check requirements
-			var tapLimit:Boolean = e.value.tap_n < 5;
+			var tapLimit:Boolean = e.value.tap_n < 4;
 			var taggedObj:Boolean = containerTags[top] && containerTags[top].length > 0;
 			if (!tapLimit || !taggedObj) return;
 			
@@ -406,7 +406,7 @@ package com.gestureworks.cml.components
 			//evaluate tap count and apply layouts
 			switch(e.value.tap_n)
 			{
-				case 1:
+				case 2:
 					var point:PointLayout = tapLayoutInstance(PointLayout, e.target);
 					tapContainers = assignTapContainers(TouchContainer(e.target));
 					var position:int = 0;
@@ -427,7 +427,7 @@ package com.gestureworks.cml.components
 					tapContainers[0].layoutComplete = layoutComplete;
 					tapContainers[0].applyLayout(point);
 					break;
-				case 2:					
+				case 3:					
 					var list:ListLayout = tapLayoutInstance(ListLayout, e.target);
 					tapContainers = assignTapContainers(TouchContainer(e.target));
 					list.originX = positions[top][0].x;
@@ -435,7 +435,7 @@ package com.gestureworks.cml.components
 					tapContainers[0].layoutComplete = layoutComplete;
 					tapContainers[0].applyLayout(list);					
 					break;
-				case 3:
+				case 4:
 					tapContainers = assignTapContainers(TouchContainer(e.target), true);
 					var count:int = 0;
 					for (i=0; i < tapContainers.length; i++)
@@ -452,7 +452,7 @@ package com.gestureworks.cml.components
 						tapContainers[i].applyLayout(pile);
 					}
 					break;
-				case 4:
+				case 5:
 					var fan:FanLayout = tapLayoutInstance(FanLayout, e.target);
 					tapContainers = assignTapContainers(TouchContainer(e.target));
 					fan.type = top ? "bottomLeftOrigin" : "bottomRightOrigin";
