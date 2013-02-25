@@ -59,6 +59,13 @@ package com.gestureworks.cml.element
 		public var collectionViewer:CollectionViewer;
 
 		private var flickrQuery:FlickrQuery;
+		
+		//search term filtering attributes
+		private var _searchTermFilters:Boolean = false;
+		private var combinations:int = 0;
+		private var dial2Filters:Object = new Object();
+		private var dial3Filters:Object = new Object();
+		private var progress:Text;
 
 		public var pos:String;
 		
@@ -120,17 +127,18 @@ package com.gestureworks.cml.element
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
 			}
-			
-			
+							
 			addEventListener(StateEvent.CHANGE, selection);
 			addEventListener(StateEvent.CHANGE, dragSelection);
 			addEventListener(StateEvent.CHANGE, dropSelection);
 			CMLParser.instance.addEventListener(CMLParser.COMPLETE, cmlInit);
-			
+						
 			for (var j:int = 0; j < dials.length; j++) {
 				dials[j].addEventListener(StateEvent.CHANGE, onDialChange);
 				searchTerms[j] = "";
-			}				
+			}
+			
+			searchTermFiltering();
 		}
 		
 		// used as flag for dial listeners to skip default selections
@@ -818,16 +826,205 @@ package com.gestureworks.cml.element
 		{
 			var tween:ITween = BetweenAS3.tween(obj, { alpha:1 }, { alpha:0 }, duration);
 			tween.play();
-		}	
+		}
 		
+		/**
+		 * Automates the generation of filtered search term lists and applies them to the dials. 
+		 * This will require additional load time relative to the number of search terms. 
+		 */
+		public function get searchTermFilters():Boolean { return _searchTermFilters; }
+		public function set searchTermFilters(f:Boolean):void
+		{
+			_searchTermFilters = f;
+		}
 		
-		
+		//NOTE: 
+		//
+		/**
+		 * Mechanism to preprocess defined queries and automate the generation of filtered lists for flickrQueries.
+		 * TODO: Exapand to work with collective access queries and flickr text searches
+		 */
+		private function searchTermFiltering():void
+		{
+			if (!searchTermFilters || !flickrQuery) return;
+			
+			//create temporary load screen
+			var top:Boolean = position == "top";
+			var filterScreen:Graphic = new Graphic();
+			filterScreen.shape = "rectangle";
+			filterScreen.width = stage.stageWidth;
+			filterScreen.height = stage.stageHeight/2;
+			filterScreen.y = top ? 0 : filterScreen.height;
+			filterScreen.color = 0x000000;
+			filterScreen.lineStroke = 0;
+			
+			//progress update
+			progress = new Text();
+			progress.color = 0xFFFFFF;
+			progress.fontSize = 40;					
+			progress.autoSize = "right";
+			progress.x = filterScreen.width / 2;
+			progress.y = filterScreen.height / 2;
+			if (top)
+				DisplayUtils.rotateAroundCenter(progress, 180);
+			filterScreen.addChild(progress);
+			
+			//add load screen at initialization and remove after filter process
+			collectionViewer.addChild(filterScreen);
+			addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
+				if (e.property == "filters_complete")
+					collectionViewer.removeChild(filterScreen);
+			});
+			
+			
+			//access search terms from the dock's dials and generate a query for each combination
+			var d1SearchTerms:Array = dials[0].text.split(",");
+			var d2SearchTerms:Array = dials[1].text.split(",");
+			var d3SearchTerms:Array = dials[2].text.split(",");
+			
+			var queries:Array = [];
+			
+			for each(var i:String in d1SearchTerms)
+			{
+				for each(var j:String in d2SearchTerms)
+				{
+					for each(var k:String in d3SearchTerms)
+					{
+						var query:FlickrQuery = new FlickrQuery();
+						query.apikey = "5487a9cd58bb07a37700558d6362972f";
+						query.tagMode = "all"; 
+						query.userid = "25053835@N03";
+						query.init();
+						query.tags = (i + ", " + j + ", " + k);
+						query.addEventListener(StateEvent.CHANGE, resultCount);
+						queries.push(query);
+					}
+				}
+			}			
+						
+			//initate query queue
+			queries[0].flickrSearch();
+			addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
+				if (e.property == "query_complete")
+				{
+					progress.text = "Loading: applying "+e.value+" of "+queries.length+" search term filters";
+					if(e.value < queries.length)
+						queries[e.value].flickrSearch();
+					else
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "filters_generated"));
+				}
+			});
+			
+			//translate the valid maps into the dial's filter syntax and apply the filters to
+			//the filtered dials
+			addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
+				if (e.property == "filters_generated")
+				{
+					var dial2Text:String;
+					for (var d2Key:String in dial2Filters)
+					{
+						if (!dial2Text)
+							dial2Text = d2Key + ",";
+						else
+							dial2Text = d2Key + ",\n\t" + dial2Text;
+						for each(var d2Val:String in dial2Filters[d2Key])
+							dial2Text = d2Val + ":" + dial2Text;
+					}
+					
+					var dial3Text:String;
+					for (var d3Key:String in dial3Filters)
+					{
+						if (!dial3Text)
+							dial3Text = d3Key + ",";
+						else
+							dial3Text = d3Key + ",\n\t" + dial3Text;
+						for each(var d3Val:String in dial3Filters[d3Key])
+							dial3Text = d3Val + ":" + dial3Text;
+					}
+					
+					trace("DIAL 2: "+dial2Text + "\n\n\n\nDIAL 3: " + dial3Text);	
+						
+					dials[1].text = dial2Text;
+					dials[1].filterDial = dials[0];
+					dials[1].init();
+					
+					dials[2].text = dial3Text;
+					dials[2].filterDial = dials[1];
+					dials[2].init();
+					
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "filters_complete"));
+				}
+			});
+		}
+			
+		/**
+		 * Evaluates valid(combinations with non-empty result sets) search terms and generates filter mappings.
+		 * @param	e
+		 */
+		private function resultCount(e:StateEvent):void {
+			if (e.value == "flickrResult")
+			{
+				var query:FlickrQuery = FlickrQuery(e.target);
+				query.removeEventListener(StateEvent.CHANGE, resultCount);			
+				resultCnt = query.resultPhotos.length;
+				var tags:Array = query.tags.split(",");
+				
+				if (resultCnt)
+				{					
+					if (!dial2Filters[tags[1]])
+						dial2Filters[tags[1]] = new Array();			
+					if (dial2Filters[tags[1]].indexOf(tags[0]) < 0)
+						dial2Filters[tags[1]].push(tags[0]);										
+						
+					if (!dial3Filters[tags[2]])
+						dial3Filters[tags[2]] = new Array();			
+					if (dial3Filters[tags[2]].indexOf(tags[0]+"|"+tags[1]) < 0)
+						dial3Filters[tags[2]].push(tags[0]+"|"+tags[1]);							
+				}
+				
+				combinations++;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "query_complete", combinations));
+			}
+		}		
+					
 		/**
 		 * Destructor
 		 */
 		override public function dispose():void 
 		{
 			super.dispose();	
+			previews = null;
+			searchTerms = null;
+			returnFields = null;
+			_searchFieldsArray = null;
+			result = null;
+			loadText = null;
+			clones = null;
+			cloneMap = null;
+			placeHolders = null;
+			dropLocation = null;
+			dockText = null;
+			dials = null;
+			connection = null;
+			responder = null;
+			templates = null;
+			album = null;
+			collectionViewer = null;
+			dial2Filters = null;
+			dial3Filters = null;
+			progress = null;
+			nextArrow = null;
+			previousArrow = null;
+			
+			removeEventListener(StateEvent.CHANGE, selection);
+			removeEventListener(StateEvent.CHANGE, dragSelection);
+			removeEventListener(StateEvent.CHANGE, dropSelection);
+			
+			if (flickrQuery)
+			{
+				flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
+				flickrQuery = null;
+			}
 		}
 	}
 
