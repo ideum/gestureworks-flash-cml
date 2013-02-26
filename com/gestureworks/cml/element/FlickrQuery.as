@@ -194,7 +194,7 @@ package  com.gestureworks.cml.element
 			if (pageNumber > _pages)
 				pageNumber = _pages;
 			
-			service.photos.search(_user_id, _tags, "any", _text, null, null, null, null, -1, "", _resultsPerPage, pageNumber, "date-posted-desc");
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, 2, "date-posted-desc");
 			
 			//resultPhotos = _data.photos.photos;
 		}
@@ -206,7 +206,7 @@ package  com.gestureworks.cml.element
 			if (pageNumber < 1)
 				pageNumber = 1;
 			
-			service.photos.search(_user_id, _tags, "any", _text, null, null, null, null, -1, "", _resultsPerPage, pageNumber, "date-posted-desc");
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, pageNumber, "date-posted-desc");
 		}
 		
 		private function cullResults(res:Object):void {
