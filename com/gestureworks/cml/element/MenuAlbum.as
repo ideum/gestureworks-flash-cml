@@ -164,6 +164,9 @@ package  com.gestureworks.cml.element
 		 */
 		protected function dragItem(e:GWGestureEvent):void 
 		{
+			//prevent drag if item is already selected
+			if (selections.search(e.target) != -1) return;
+			
 			//Only create drag item when percentage of vertical drag is greater than .5
 			var yPercentage:Number = (Math.abs(e.value.drag_dx) / Math.abs(e.value.drag_dy));
 			if (inAlbumBounds && (yPercentage >= 1 || yPercentage < .7))
