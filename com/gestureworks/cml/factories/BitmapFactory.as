@@ -20,7 +20,7 @@ package com.gestureworks.cml.factories
 	public class BitmapFactory extends ElementFactory
 	{		
 		// image file loader
-		private var img:IMGLoader;
+		protected var img:IMGLoader;
 		
 		// loaded bitmap data from file
 		private var fileData:*;
@@ -43,8 +43,7 @@ package com.gestureworks.cml.factories
 			fileData = null;
 			sizeArray = null;
 				
-   			if (img)
-			{
+   			if (img) {
 				img.removeEventListener(Event.COMPLETE, loadComplete);
 				img.unloadAndStop();
 				img = null;
@@ -52,7 +51,6 @@ package com.gestureworks.cml.factories
 			
 			bitmap = null;
 			bitmapData = null;
-			
 		}
 		
 		private var _width:Number = 0;
@@ -239,7 +237,7 @@ package com.gestureworks.cml.factories
 		
 		
 		public var percentLoaded:Number;
-		private function onPercentLoad(event:StateEvent):void
+		protected function onPercentLoad(event:StateEvent):void
 		{
 			if (event.property == "percentLoaded") {
 				percentLoaded = event.value;
@@ -311,11 +309,7 @@ package com.gestureworks.cml.factories
 				if (src)
 					imageSrc = propertyStates[0]["src"];
 				else
-					imageSrc = src;	
-				
-				//trace(FileManager.instance.fileList.hasKey(imageSrc));
-				
-				//trace(FileManager.instance.fileList.toArray());
+					imageSrc = src;
 					
 				if (!FileManager.instance.fileList.hasKey(imageSrc))
 					return;
@@ -441,12 +435,7 @@ package com.gestureworks.cml.factories
 			// scale percentages needed to achieve desired diemensions
 			var percentX:Number = 1; 
 			var percentY:Number = 1;
-					
-			
-			//var newBitmap:Bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);			
-			//var newBitmapData:BitmapData = new BitmapData(_bitmapData.width * percentX, _bitmapData.height * percentY, true, 0x000000);
-			
-			
+								
 			if (width && height)
 			{
 				if ((width != bitmap.width) && (height != bitmap.height))

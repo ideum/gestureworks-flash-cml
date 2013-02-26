@@ -1,20 +1,15 @@
 package  com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.BitmapFactory;
-	import com.gestureworks.cml.factories.ElementFactory;
+	import com.adobe.webapis.flickr.*;
+	import com.adobe.webapis.flickr.events.*;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.cml.factories.BitmapFactory;
+	import com.gestureworks.cml.loaders.IMGLoader;
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
-	import flash.geom.Matrix;
-	import flash.net.URLRequest;
 	import flash.system.Security;
-	import com.adobe.webapis.flickr.*;
-	import com.adobe.webapis.flickr.events.*;
-	import flash.display.PixelSnapping;
 	/**
 	 * The Flick element provides access to images stored on Flickr through the Flickr API. To access the image, one must have the image's ID from the flickr server, and a Flickr API Key.
 	 * Flickr API keys start out at free and have some subscription plans depending on the amount of use they receive. They are available at: http://www.flickr/com/service/api
@@ -36,8 +31,6 @@ package  com.gestureworks.cml.element
 	 */
 	public class Flickr extends BitmapFactory
 	{
-		private var displayPic:Bitmap = null;
-		private var loader:Loader;
 		private var service:FlickrService;
 		
 		/**
@@ -73,6 +66,15 @@ package  com.gestureworks.cml.element
 		override public function set src(value:String):void {
 			_src = value;
 		}
+		
+		private var _url:String;
+		/**
+		 * A string for the image url.
+		 */
+		public function get url():String { return _url; }
+		public function set url(value:String):void {
+			_url = value;
+		}		
 		
 		private var _loaded:String = "";
 		/**
@@ -112,14 +114,28 @@ package  com.gestureworks.cml.element
 			
 			if (e.success) {
 				_description = e.data.photo.description;
-				var picLink:String = "http://farm1.staticflickr.com/" + e.data.photo.server + "/" + e.data.photo.id + "_" + 
+				url = "http://farm1.staticflickr.com/" + e.data.photo.server + "/" + e.data.photo.id + "_" + 
 					e.data.photo.secret + ".jpg";
-			
-				open(picLink);
+				open();
 			}
 			else { trace("Image " + _src + " failed to load. Please check your image ID and make sure it is accurate.");}
 			
 		}
+		
+		
+		/**
+		 * Opens an external image file
+		 * @param	file
+		 */
+		override public function open(file:String=null):void
+		{
+			if (file) url = file;
+			img = new IMGLoader;
+			img.load(url);
+			img.addEventListener(Event.COMPLETE, loadComplete);
+			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
+		}			
+		
 		
 		/**
 		 * Dispose method to nullify the children and remove listener
