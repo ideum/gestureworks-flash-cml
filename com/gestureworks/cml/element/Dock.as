@@ -66,6 +66,7 @@ package com.gestureworks.cml.element
 		private var dial2Filters:Object = new Object();
 		private var dial3Filters:Object = new Object();
 		private var progress:Text;
+		private var filteringInProcess:Boolean = false;
 
 		public var pos:String;
 		
@@ -147,7 +148,7 @@ package com.gestureworks.cml.element
 		private function cmlInit(e:Event):void
 		{
 			CMLParser.instance.removeEventListener(CMLParser.COMPLETE, cmlInit);
-			cmlIni = true;
+			cmlIni = !filteringInProcess;
 		}
 		
 		protected function get placeHolderIndex():int { return _placeHolderIndex; }
@@ -818,6 +819,19 @@ package com.gestureworks.cml.element
 		{
 			if (!searchTermFilters || !flickrQuery) return;
 		
+			//verify lists are unfiltered
+			for each(var dial:Dial in dials)
+			{
+				if (dial.text.indexOf(":") > -1)
+				{
+					throw new Error("Colon(:) characters are reserved for search term filtering and cannot exist in an unfiltered list. If attempting to auto-generate" +
+					" the filters through the \"searchTermFilters\" flag, remove filter syntax from the text of the dials. Otherwise disable the flag.");
+					return;
+				}
+			}
+			
+			filteringInProcess = true;
+			
 			//create temporary load screen
 			var top:Boolean = position == "top";
 			var filterScreen:Graphic = new Graphic();
@@ -843,9 +857,12 @@ package com.gestureworks.cml.element
 			collectionViewer.addChild(filterScreen);
 			addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
 				if (e.property == "filters_complete")
+				{
+					filteringInProcess = false;
+					cmlIni = true;
 					collectionViewer.removeChild(filterScreen);
-			});
-			
+				}
+			});						
 			
 			//access search terms from the dock's dials and generate a query for each combination
 			var d1SearchTerms:Array = dials[0].text.split(",");
@@ -908,12 +925,15 @@ package com.gestureworks.cml.element
 							dial3Text = d3Key + ",";
 						else
 							dial3Text = d3Key + ",\n\t" + dial3Text;
+						
 						for each(var d3Val:String in dial3Filters[d3Key])
 							dial3Text = d3Val + ":" + dial3Text;
 					}
 					
+					dial2Text = dial2Text.substr(0, dial2Text.length-1);
+					dial3Text = dial3Text.substr(0, dial3Text.length-1);
 					trace("DIAL 2: "+dial2Text + "\n\n\n\nDIAL 3: " + dial3Text);	
-						
+											
 					dials[1].text = dial2Text;
 					dials[1].filterDial = dials[0];
 					dials[1].init();
