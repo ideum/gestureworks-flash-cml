@@ -66,7 +66,7 @@ package com.gestureworks.cml.element
 		private var dial2Filters:Object = new Object();
 		private var dial3Filters:Object = new Object();
 		private var progress:Text;
-		private var filteringInProcess:Boolean = false;
+		private var filteringInProcess:Boolean = false;		
 
 		public var pos:String;
 		
@@ -98,6 +98,22 @@ package com.gestureworks.cml.element
 			if (contains(_previousArrow))
 				removeChild(_previousArrow);
 		}
+		
+		private var serverTimer:Timer;
+		
+		private var _serverTimeOut:Number = 30;
+		public function get serverTimeOut():Number { return _serverTimeOut; }
+		public function set serverTimeOut(t:Number):void
+		{
+			_serverTimeOut = t;
+		}
+		
+		private function serverTimeExpired(e:TimerEvent):void
+		{
+			dockText[1].text = "Server Time Expired: Make a new selection.";
+			dockText[1].visible = true;
+		}
+				
 		
 		/**
 		 * CML init
@@ -285,12 +301,22 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
+			
+			if (serverTimeOut && !serverTimer)
+			{
+				serverTimer = new Timer(serverTimeOut * 1000);
+				serverTimer.addEventListener(TimerEvent.TIMER, serverTimeExpired);
+			}
+			if(serverTimer)
+				serverTimer.start();
+			
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 			
 			album.clear();
 			
 			previews = [];
 			clones = [];
+			loadCnt = 0;
 			
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
@@ -443,6 +469,8 @@ package com.gestureworks.cml.element
 		
 		protected function displayResults():void
 		{
+			if (serverTimer)
+				serverTimer.reset();
 				
 			for (var i:int = 0; i < dockText.length; i++) {
 				dockText[i].visible = false;
