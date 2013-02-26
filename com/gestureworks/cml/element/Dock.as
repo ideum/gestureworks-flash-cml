@@ -25,8 +25,8 @@ package com.gestureworks.cml.element
 	{		
 		public var previews:Array = [];		
 		public var loadCnt:int = 0;
-		public var searchTerms:Array = ["work_description:rug"];
-		public var returnFields:Array = ["work_description", "copyrightdate"];
+		public var searchTerms:Array = [];
+		public var returnFields:Array = [];
 		protected var _searchFieldsArray:Array;
 		public var searchFields:String;
 				
@@ -37,7 +37,7 @@ package com.gestureworks.cml.element
 		public var loadText:Text;	
 		
 		public var clones:Array = [];
-		public var cloneMap:ChildList = new ChildList(true);
+		public var cloneMap:ChildList = new ChildList(false);
 		public var placeHolders:Array = [];
 		private var _placeHolderIndex:int = 0;	
 		private var dropLocation:Graphic;
@@ -59,7 +59,7 @@ package com.gestureworks.cml.element
 		public var collectionViewer:CollectionViewer;
 
 		private var flickrQuery:FlickrQuery;
-		
+
 		//search term filtering attributes
 		private var _searchTermFilters:Boolean = false;
 		private var combinations:int = 0;
@@ -68,6 +68,7 @@ package com.gestureworks.cml.element
 		private var progress:Text;
 
 		public var pos:String;
+		
 		
 		/**
 		 * Constructor
@@ -127,17 +128,18 @@ package com.gestureworks.cml.element
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
 			}
-							
+			
 			addEventListener(StateEvent.CHANGE, selection);
 			addEventListener(StateEvent.CHANGE, dragSelection);
 			addEventListener(StateEvent.CHANGE, dropSelection);
 			CMLParser.instance.addEventListener(CMLParser.COMPLETE, cmlInit);
-						
+			
 			for (var j:int = 0; j < dials.length; j++) {
 				dials[j].addEventListener(StateEvent.CHANGE, onDialChange);
 				searchTerms[j] = "";
 			}
 			
+						
 			searchTermFiltering();
 		}
 		
@@ -169,15 +171,12 @@ package com.gestureworks.cml.element
 		protected function onDialChange(e:StateEvent):void 
 		{
 			for each (var obj:* in clones) {
-				//album.belt.removeChild(obj);
-				//if (obj["image"]) obj.image.close();
 				if ("dispose" in obj && obj.visible == false) {
 					cloneMap.removeKey(obj.image.src);
 					obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
 					obj.dispose();
 				}
 			}
-			//cloneMap = new ChildList(true);
 			clones = [];
 			album.clear();
 			
@@ -192,8 +191,7 @@ package com.gestureworks.cml.element
 				
 				else if (index == 2)
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
-				
-				trace("searchTerms", searchTerms);
+
 			}
 			// If this were Flickr...
 			// FlickrQuery -- generate search?
@@ -204,15 +202,12 @@ package com.gestureworks.cml.element
 			else if (flickrQuery) {
 				flickrQuery.tags = "";
 				flickrQuery.text = "";
-				trace("Flickr test:", Object(flickrQuery).hasOwnProperty(_searchFieldsArray[index]), _searchFieldsArray[index]);
-				for (var i:int = 0; i < 3; i++) 
-				{
-					trace("Setting field:", _searchFieldsArray[i]);
+				//trace("Flickr test:", Object(flickrQuery).hasOwnProperty(_searchFieldsArray[index]), _searchFieldsArray[index]);
+				for (var i:int = 0; i < 3; i++) {
 					if (_searchFieldsArray[i] == "text" ) {
 						// Do something with text.
 						if (dials[i] != "" || dials[i] != null && i < 2)
 							flickrQuery[_searchFieldsArray[i]] += dials[i].currentString + ", ";
-						trace("FlickrQuery text:", flickrQuery.text);
 					}
 					if (_searchFieldsArray[i] == "tags") {
 						if (dials[i] != "" || dials[i] != null) {
@@ -220,9 +215,7 @@ package com.gestureworks.cml.element
 								flickrQuery[_searchFieldsArray[i]] += dials[i].currentString + ", ";
 							else if (i == 2)
 								flickrQuery[_searchFieldsArray[i]] += dials[i].currentString;
-						}
-							
-						trace("FlickrQuery tags:", flickrQuery.tags);
+						}							
 					}
 				}
 				
@@ -231,8 +224,8 @@ package com.gestureworks.cml.element
 			
 			//verify the cml has been initialized and the event was triggered
 			//by the target (scond condition is for filtering)
-			if(cmlIni && e.target.id == e.id)
-			{
+			
+			if(cmlIni && e.target.id == e.id) {
 				if (flickrQuery)
 					queryFlickr();
 				else
@@ -288,9 +281,6 @@ package com.gestureworks.cml.element
 		private function queryFlickr():void {
 			flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 			flickrQuery.flickrSearch();
-			//flickrQuery.tags = "";
-			//flickrQuery.text = "";
-			
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
@@ -335,7 +325,7 @@ package com.gestureworks.cml.element
 			if (amountToShow > resultCnt)
 				amountToShow = resultCnt;			
 			
-			printResult(result);
+			//printResult(result);
 			
 			loadClone();			
 		}
@@ -382,14 +372,10 @@ package com.gestureworks.cml.element
 		// creates image viewer clone
 		protected function createClone(clone:*):void
 		{
-			//var src:String = templates[0].image.src;
-			//var src:String = templates[1].image.src;
-			
 			// Check the templates for the one that's been populated, then update the source.
 			var src:String = "";
 			var i:int = 0;
-			for (i = 0; i < templates.length; i++) 
-			{
+			for (i = 0; i < templates.length; i++) {
 				if (templates[i].image.src)
 					src = templates[i].image.src;
 			}
@@ -403,20 +389,14 @@ package com.gestureworks.cml.element
 					onCloneLoad();
 			}
 			else {
-				//clone = templates[0].clone(); // TODO: remove hardcoded template item
-				//clone = templates[1].clone();
-				for (var j:int = 0; j < templates.length; j++) 
-				{
+				for (var j:int = 0; j < templates.length; j++) {
 					if (templates[j].image.src)
-					clone = templates[j].clone();
+						clone = templates[j].clone();
 				}
-				//if (flickrQuery)
-					//searchExp(clone, templates[1]);
 				clone.image.close();
 				clones.push(clone);
 				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				clone.image.open(src);
-				//clone.init();
+				clone.image.open(src);				
 				cloneMap.append(src, clone);
 			}
 		}		
@@ -424,19 +404,20 @@ package com.gestureworks.cml.element
 		
 		// image load data
 		protected function onCloneLoad(event:StateEvent=null):void 
-		{			
+		{
+			if (event) {
+				event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
+				event.target.addEventListener(StateEvent.CHANGE, onCloneTimeout);
+			}					
+			
 			if ( (!event) || event.property == "isLoaded") {
 				
 				if (event && event.target is FlickrViewer)
 					searchExp(event.target, event.target.image);
-				
+				else if (event && event.target)
+					event.target.init();					
+					
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
-				
-				if (event) {
-					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
-					event.target.init();
-					event.target.addEventListener(StateEvent.CHANGE, onCloneTimeout);
-				}
 				
 				loadCnt++;
 				
@@ -446,10 +427,7 @@ package com.gestureworks.cml.element
 				
 				else if ( (loadCnt % maxLoad) == 0 ) {
 					loadClone();
-				}
-				else {
-					//trace((loadCnt % maxLoad))
-				}				
+				}			
 			}				
 		}						
 		
@@ -475,7 +453,6 @@ package com.gestureworks.cml.element
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
 			}
 		
-			//var album:Album = ("menu1");  //TODO: for testing purposes; need to provide more reliable access to album
 			album.clear();
 			
 			if (flickrQuery && flickrQuery.pages > 1) {
@@ -500,6 +477,12 @@ package com.gestureworks.cml.element
 			
 			album.margin = 15;
 			album.init();
+			
+			for (var k:int = 0; k < clones.length; k++) {
+				if (clones[k].visible)
+					album.select(previews[k]);
+			}	
+			
 		}
 		
 		
@@ -507,15 +490,10 @@ package com.gestureworks.cml.element
 		{
 			var prv:TouchContainer = new TouchContainer();
 			
-			var flickr:Flickr;
-			var img:Image;
-			if (flickrQuery) {
-				flickr = obj.image.clone();
-				//flickr.displayComplete();
-			}
+			if (flickrQuery)
+				var flickr:Flickr = obj.image.clone();
 			else if (!flickrQuery)
-				img = obj.image.clone();
-													
+				var img:Image = obj.image.clone();				
 				
 			if (img){
 				img.width = 0;
@@ -532,7 +510,6 @@ package com.gestureworks.cml.element
 			}
 						
 			var title:Text;
-			//var title:Text = obj.back.childList.getKey("title").clone();
 			if (obj.back || obj.backs.length == 1) {
 				title = obj.back.childList.getKey("title").clone();
 			}
@@ -586,15 +563,11 @@ package com.gestureworks.cml.element
 				else if (e.value.contains(_nextArrow)) {
 					if (flickrQuery) {
 						for each (var obj:* in clones) {
-							//album.belt.removeChild(obj);
-							//cloneMap.removeKey(obj.image.src);
-							//if (obj["image"]) obj.image.close();
 							if ("dispose" in obj && obj.visible == false) {
 								obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
 								obj.dispose();
 							}
 						}
-						//cloneMap = new ChildList(true);
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -603,14 +576,10 @@ package com.gestureworks.cml.element
 				} else if (e.value.contains(_previousArrow)) {
 					if (flickrQuery) {
 						for each (var obj:* in clones) {
-							//album.belt.removeChild(obj);
-							//cloneMap.removeKey(obj.image.src);
-							//if (obj["image"]) obj.image.close();
 							if ("dispose" in obj && obj.visible == false) {
 								obj.dispose();
 							}
 						}
-						//cloneMap = new ChildList(true);
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -719,17 +688,18 @@ package com.gestureworks.cml.element
 				parent.setChildIndex(obj, parent.getChildIndex(this) - 2);			
 		}
 		
+
+		
 		private function onCloneChange(e:StateEvent):void
 		{					
 			if (e.property == "visible") {				
 				if (!e.value) {
 					e.target.removeEventListener(StateEvent.CHANGE, onCloneChange);
 					//e.target.visible = false;
-					var index:int = clones.indexOf(e.target)				
+					var index:int = clones.indexOf(e.target);				
 					if (index >= 0) {
-						var m:MenuAlbum = searchChildren("#menu1");
 						var obj:* = previews[index];
-						m.unSelect(obj);
+						album.unSelect(obj);
 						collectionViewer.untagObject(e.target);
 					}
 					else {
@@ -741,10 +711,11 @@ package com.gestureworks.cml.element
 			}				
 		}
 		
+	
 		
-		private function searchExp(obj:*, target:*):void {
+		private function searchExp(obj:*, target:*):void {					
 			if (!("propertyStates" in obj)) return;
-			
+
 			// Pass in the template, and the object to compare.
 			
 			// Iterate through the properties of the object to find {values}
@@ -772,7 +743,6 @@ package com.gestureworks.cml.element
 			if (e.value == "timeout" || e.value == "quit"){
 				if (clones.indexOf(e.target) > -1) return;
 				else {
-					trace("Disposing of target on timeout.");
 					e.target.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
 					e.target.dispose();
 				}
@@ -826,7 +796,7 @@ package com.gestureworks.cml.element
 		{
 			var tween:ITween = BetweenAS3.tween(obj, { alpha:1 }, { alpha:0 }, duration);
 			tween.play();
-		}
+		}	
 		
 		/**
 		 * Automates the generation of filtered search term lists and applies them to the dials. 
@@ -847,7 +817,7 @@ package com.gestureworks.cml.element
 		private function searchTermFiltering():void
 		{
 			if (!searchTermFilters || !flickrQuery) return;
-			
+		
 			//create temporary load screen
 			var top:Boolean = position == "top";
 			var filterScreen:Graphic = new Graphic();
@@ -1024,8 +994,8 @@ package com.gestureworks.cml.element
 			{
 				flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 				flickrQuery = null;
-			}
 		}
+	}
 	}
 
 }
