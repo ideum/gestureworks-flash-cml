@@ -255,9 +255,7 @@ package com.gestureworks.cml.element
 		// submit query
 		private function query(e:KeyboardEvent=null):void
 		{
-			if (isLoading)
-				return;
-			
+			checkServerTimer();
 			isLoading = true;
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
@@ -300,8 +298,8 @@ package com.gestureworks.cml.element
 			flickrQuery.flickrSearch();
 		}
 		
-		private function onQueryLoad(e:StateEvent):void {
-			
+		private function checkServerTimer():void
+		{
 			if (serverTimeOut && !serverTimer)
 			{
 				serverTimer = new Timer(serverTimeOut * 1000);
@@ -309,7 +307,10 @@ package com.gestureworks.cml.element
 			}
 			if(serverTimer)
 				serverTimer.start();
-			
+		}
+		
+		private function onQueryLoad(e:StateEvent):void {
+			checkServerTimer();
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 			
 			album.clear();
