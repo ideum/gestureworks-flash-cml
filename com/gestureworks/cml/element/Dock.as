@@ -183,7 +183,6 @@ package com.gestureworks.cml.element
 			responder = new Responder(onResult, onFault);	
 		}
 		
-		
 		// get search terms from dial and submit query
 		protected function onDialChange(e:StateEvent):void 
 		{
@@ -273,7 +272,7 @@ package com.gestureworks.cml.element
 			// etc -- see collective access
 		
 			//if (!e || e.keyCode == 13) {
-			    connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
+			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
 				//connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
 				//connection.call("./AMFTest.getalldata", responder, entry.text);
@@ -361,7 +360,8 @@ package com.gestureworks.cml.element
 		
 		private function onFault(fault:Object):void
 		{
-			trace(fault.description);
+			dockText[1].text = fault.description;
+			dockText[1].visible = true;
 		}		
 		
 
