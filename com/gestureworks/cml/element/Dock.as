@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.adobe.webapis.flickr.Photo;
 	import com.gestureworks.cml.components.CollectionViewer;
+	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.cml.components.FlickrViewer;
 	import com.gestureworks.cml.components.ImageViewer;
 	import com.gestureworks.cml.core.*;
@@ -69,6 +70,8 @@ package com.gestureworks.cml.element
 		private var filteringInProcess:Boolean = false;		
 
 		public var pos:String;
+		
+		public var maxClones:int = 10;
 		
 		
 		/**
@@ -156,9 +159,65 @@ package com.gestureworks.cml.element
 				searchTerms[j] = "";
 			}
 			
-						
 			searchTermFiltering();
+			preloadClones(maxClones);
 		}
+		
+
+		
+		
+		private function preloadClones(amt:int):void
+		{			
+			cloneMap = new ChildList();
+			
+			var clone:Component;
+			for (var i:int = 0; i < amt; i++) {				
+				clone = templates[i % templates.length].clone();
+				cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
+			}
+			
+			
+			// temp
+			trace("cloneMap.length", cloneMap.length);
+			
+			var cloneMapKeys:Array = cloneMap.getKeyArray();
+			var cloneMapValues:Array = cloneMap.getValueArray();
+			
+			
+			for (var j:int = 0; j < cloneMap.length; j++) {
+				trace("\n");
+				trace( cloneMapKeys[j], cloneMapValues[j], cloneMapValues[j].getKeyArray(), cloneMapValues[j].getValueArray() );	
+			}
+			// 
+		}
+		
+		
+		
+		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 
+		{	
+			if (!("propertyStates" in obj)) return lm;
+
+						
+			// Iterate through the properties of the object to find {values}
+			for (var s:String in obj.propertyStates[0]) {
+				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
+					
+					// Create substring, check for substring "in" comparison object.
+					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
+					obj.propertyStates[0][s] = str;
+					lm.append(obj, s);
+				}
+			}
+			
+			if (obj is DisplayObjectContainer) {
+				for (var i:int = 0; i < obj.numChildren; i++) {
+					lm = preloadExp(obj.getChildAt(i), lm);		
+				}
+			}
+			return lm;
+		}
+		
+		
 		
 		// used as flag for dial listeners to skip default selections
 		private function cmlInit(e:Event):void
