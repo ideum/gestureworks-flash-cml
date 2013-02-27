@@ -44,7 +44,8 @@
 	 */
 	public class RadioButtons extends Container 	 
 	{		
-		private var selected:Sprite;
+		//private var selected:Sprite;
+		private var selected:Graphic;
 		private var radius:Number;
 		
 		/**
@@ -240,12 +241,19 @@
 		 */
 		private function drawSelection(): void
 		{		
-			selected = new Sprite();
+			/*selected = new Sprite();
 			selected.name = "selected";
 			selected.graphics.lineStyle(1, 0x000000);
 			selected.graphics.beginFill(_selectedColor);		
 			selected.graphics.drawCircle(radius, radius, radius * _selectedFillRatio);
-			selected.graphics.endFill();
+			selected.graphics.endFill();*/
+			selected = new Graphic();
+			selected.name = "selected";
+			selected.shape = "circle";
+			selected.fill = "color";
+			selected.color = _selectedColor;
+			selected.lineStroke = 0;
+			selected.radius = radius * _selectedFillRatio;
 		}
 		
 		/**
@@ -352,6 +360,12 @@
 		public function get radioColor():uint { return _radioColor; }
 		public function set radioColor(value:uint):void {
 			_radioColor = value;
+			if (_radioButtons && labelList) {
+				for (var i:int = 0; i < labelList.length; i++) 
+				{
+					_radioButtons[labelList[i]].color = _radioColor;
+				}
+			}
 		}
 		
 		private var _radioStroke:Number = 1;
@@ -379,6 +393,9 @@
 		public function get selectedColor():uint { return _selectedColor; }
 		public function set selectedColor(value:uint):void {
 			_selectedColor = value;
+			if (selected) {
+				selected.color = _selectedColor;
+			}
 		}
 		
 		private var _selectedFillRatio:Number = 0.6;
