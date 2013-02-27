@@ -110,8 +110,7 @@ package  com.gestureworks.cml.element
 			trace("Error in loading file:", e);
 		}
 		
-		private function loadImage(e:FlickrResultEvent):void {
-			
+		private function loadImage(e:FlickrResultEvent):void {			
 			if (e.success) {
 				_description = e.data.photo.description;
 				url = "http://farm1.staticflickr.com/" + e.data.photo.server + "/" + e.data.photo.id + "_" + 
@@ -119,7 +118,6 @@ package  com.gestureworks.cml.element
 				open();
 			}
 			else { trace("Image " + _src + " failed to load. Please check your image ID and make sure it is accurate.");}
-			
 		}
 		
 		
