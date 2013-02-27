@@ -127,9 +127,9 @@
 			else return _viewportX;
 		}
 		public function set viewportX(value:Number):void {
-			_viewportX = value * image.sceneWidth;
+			_viewportX = value;
 			if (image)
-				panTo(value, image.viewportY);
+				panTo(value, image.viewportX);
 		}
 		
 		private var _viewportY:Number;
@@ -140,7 +140,7 @@
 		public function set viewportY(value:Number):void {
 			_viewportY = value;
 			if (image)
-				panTo(image.viewportX, value);
+				panTo(image.viewportY, value);
 		}
 		
 		private var _zoom:Number;
