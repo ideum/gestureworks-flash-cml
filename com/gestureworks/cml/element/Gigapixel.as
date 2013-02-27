@@ -121,6 +121,39 @@
 		public function get viewportWidth():Number { return image.viewportWidth; }
 		public function get viewportHeight():Number { return image.viewportHeight; }
 		
+		private var _viewportX:Number;
+		public function get viewportX():Number { 
+			if (image) return image.viewportX;
+			else return _viewportX;
+		}
+		public function set viewportX(value:Number):void {
+			_viewportX = value * image.sceneWidth;
+			if (image)
+				panTo(value, image.viewportY);
+		}
+		
+		private var _viewportY:Number;
+		public function get viewportY():Number { 
+			if (image) return image.viewportY;
+			else return _viewportY;
+		}
+		public function set viewportY(value:Number):void {
+			_viewportY = value;
+			if (image)
+				panTo(image.viewportX, value);
+		}
+		
+		private var _zoom:Number;
+		public function get zoom():Number {
+			if (image) return image.zoom;
+			else return _zoom;
+		}
+		public function set zoom(value:Number):void {
+			_zoom = value;
+			if (image)
+				image.zoomTo(_zoom);
+		}
+		
 		public function get hotspots():Array { return _hotspots; }
 		public function set hotspots(value:Array):void {
 			_hotspots = value;
@@ -230,6 +263,19 @@
 			var descriptor:IMultiScaleImageDescriptor = image.source as IMultiScaleImageDescriptor;
 			if (descriptor)
 				scaleConstraint.maxScale = descriptor.width / image.sceneWidth;
+			
+			if (isNaN(_zoom)) {
+				_zoom = image.zoom;
+			}
+			else zoom = _zoom;
+			
+			if (_viewportX && _viewportY) {
+				panTo(_viewportX, _viewportY);
+			}
+			else if (_viewportX && !_viewportY)
+				panTo(_viewportX, image.viewportY);
+			else if (_viewportY && !_viewportX)
+				panTo(image.viewportX, _viewportY);
 		}
 		
 		private function flipHotspots(onOff:Boolean):void {
@@ -238,6 +284,10 @@
 			{
 				_hotspots[i].visible = onOff;
 			}
+		}
+		
+		public function panTo(x:Number, y:Number, immediately:Boolean = false):void {
+			image.panTo(x, y, immediately);
 		}
 		
 		/**
