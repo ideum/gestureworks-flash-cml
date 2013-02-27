@@ -24,10 +24,11 @@ package com.gestureworks.cml.element
 	
 	public class Dock extends Drawer
 	{		
-		public var previews:Array = [];		
+		public var previews:Array = [];
+		public var selections:Array = [];		
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = [];
-		public var returnFields:Array = [];
+		public var returnFields:Array = [];		
 		protected var _searchFieldsArray:Array;
 		public var searchFields:String;
 				
@@ -305,6 +306,9 @@ package com.gestureworks.cml.element
 					queryFlickr();
 				else
 					 query();
+					 
+				checkServerTimer();
+				freeClones();
 			}
 		}	
 		
@@ -313,7 +317,6 @@ package com.gestureworks.cml.element
 		// submit query
 		private function query(e:KeyboardEvent=null):void
 		{
-			checkServerTimer();
 			isLoading = true;
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
@@ -368,7 +371,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
-			checkServerTimer();
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 			
 			album.clear();
@@ -392,6 +394,7 @@ package com.gestureworks.cml.element
 			
 			loadClone();
 		}
+		
 		
 		private function onResult(res:Object):void
 		{			
@@ -423,6 +426,18 @@ package com.gestureworks.cml.element
 			dockText[1].visible = true;
 		}		
 		
+		private function freeClones():void
+		{
+			cloneMap.reset();
+			
+			for each(var clone:* in selections)
+			{
+				var value:* = cloneMap.getKey(clone);
+				cloneMap.removeKey(clone);
+				cloneMap.insert(cloneMap.currentIndex, clone, value);
+				cloneMap.next();
+			}
+		}
 
 		private function loadClone():void
 		{
@@ -680,6 +695,7 @@ package com.gestureworks.cml.element
 		
 		private function selectItem(obj:*):void
 		{
+			selections.push(obj);
 			var location:Graphic = placeHolders[placeHolderIndex];				
 			
 			// if object is already on the stage
@@ -790,6 +806,7 @@ package com.gestureworks.cml.element
 						var obj:* = previews[index];
 						album.unSelect(obj);
 						collectionViewer.untagObject(e.target);
+						selections.splice(selections.indexOf(e.target), 1);
 					}
 					else {
 						index = cloneMap.search(e.value);
