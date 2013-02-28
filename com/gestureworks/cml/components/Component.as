@@ -566,9 +566,25 @@ package com.gestureworks.cml.components
 					var index:Number = Number(event.value);
 					for (var l:int = 0; l < numChildren; l++) 
 					{
-						if ("snapTo" in getChildAt(i)) {
-							getChildAt(i)["snapTo"](index);
+						if ("snapTo" in getChildAt(l)) {
+							getChildAt(l)["snapTo"](index);
 						}
+					}
+				}
+			}
+			else if (event.value == "forward") {
+				for (var m:int = 0; m < numChildren; m++) 
+				{
+					if ("next" in getChildAt(m)) {
+						getChildAt(m)["next"]();
+					}
+				}
+			}
+			else if (event.value == "back") {
+				for (var n:int = 0; n < numChildren; n++) 
+				{
+					if ("previous" in getChildAt(n)) {
+						getChildAt(n)["previous"]();
 					}
 				}
 			}
