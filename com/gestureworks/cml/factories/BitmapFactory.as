@@ -261,6 +261,7 @@ package com.gestureworks.cml.factories
 		 */
 		public function close():void
 		{
+			isLoaded = false;
 			//_src = null;
 			_aspectRatio = 0;
 			_landscape = false;
@@ -495,11 +496,12 @@ package com.gestureworks.cml.factories
 	
 		protected function bitmapComplete():void 
 		{
+			isLoaded = true;
 			dispatchEvent(new Event(Event.COMPLETE, false, false));
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 		}
 	
-		public var isLoaded:Boolean = true;
+		public var isLoaded:Boolean = false;
 		
 
 		////////////////////////////////////////////////////////////////////////////////
