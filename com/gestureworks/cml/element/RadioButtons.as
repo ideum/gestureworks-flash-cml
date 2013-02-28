@@ -469,32 +469,65 @@
 		
 		public function next():void {
 			var button:Sprite;
-			for (var i:int = 0; i < numChildren; i++) 
-			{
-				if (_selectedLabel == getChildAt(i).name) {
-					
-					if (i + 2 < numChildren)
-						i += 2;
-					button = Sprite(getChildAt(i));
-					button.addChild(selected);
-					_selectedLabel = button.name;
-					return;
+			if (_graphicsArray ) {
+				for (var j:int = 0; j < _graphicsArray.length; j++) 
+				{
+					if (_selectedLabel == _graphicsArray[j].name) {
+						_graphicsArray[j].alpha = 0.5;
+						j++;
+						_graphicsArray[j].alpha = 1;
+						_selectedLabel = _graphicsArray[j].name;
+						return;
+					}
+				}
+			}
+			else {
+				for (var i:int = 0; i < numChildren; i++) 
+				{
+					if (_selectedLabel == getChildAt(i).name) {
+						
+						// The childlist is populated in Button, Text pairs,
+						// so we must increase by two to get to the next button
+						// instead of getting caught up on the text element following
+						// the current button.
+						if (i + 2 < numChildren)
+							i += 2;
+						button = Sprite(getChildAt(i));
+						button.addChild(selected);
+						_selectedLabel = button.name;
+						return;
+					}
 				}
 			}
 		}
 		
 		public function previous():void {
 			var button:Sprite;
-			for (var i:int = 0; i < numChildren; i++) 
-			{
-				if (_selectedLabel == getChildAt(i).name) {
-					
-					if (i - 2 > -1)
-						i -= 2;
-					button = Sprite(getChildAt(i));
-					button.addChild(selected);
-					_selectedLabel = button.name;
-					return;
+			
+			if (_graphicsArray ) {
+				for (var j:int = 0; j < _graphicsArray.length; j++) 
+				{
+					if (_selectedLabel == _graphicsArray[j].name) {
+						_graphicsArray[j].alpha = 0.5;
+						j++;
+						_graphicsArray[j].alpha = 1;
+						_selectedLabel = _graphicsArray[j].name;
+						return;
+					}
+				}
+			}
+			else {
+				for (var i:int = 0; i < numChildren; i++) 
+				{
+					if (_selectedLabel == getChildAt(i).name) {
+						
+						if (i - 2 > -1)
+							i -= 2;
+						button = Sprite(getChildAt(i));
+						button.addChild(selected);
+						_selectedLabel = button.name;
+						return;
+					}
 				}
 			}
 		}
