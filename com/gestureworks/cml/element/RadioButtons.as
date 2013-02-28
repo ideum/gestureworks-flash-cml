@@ -467,6 +467,38 @@
 			} else return false;
 		}
 		
+		public function next():void {
+			var button:Sprite;
+			for (var i:int = 0; i < numChildren; i++) 
+			{
+				if (_selectedLabel == getChildAt(i).name) {
+					
+					if (i + 2 < numChildren)
+						i += 2;
+					button = Sprite(getChildAt(i));
+					button.addChild(selected);
+					_selectedLabel = button.name;
+					return;
+				}
+			}
+		}
+		
+		public function previous():void {
+			var button:Sprite;
+			for (var i:int = 0; i < numChildren; i++) 
+			{
+				if (_selectedLabel == getChildAt(i).name) {
+					
+					if (i - 2 > -1)
+						i -= 2;
+					button = Sprite(getChildAt(i));
+					button.addChild(selected);
+					_selectedLabel = button.name;
+					return;
+				}
+			}
+		}
+		
 		/**
 		 * Dispose methods and remove listeners
 		 */
