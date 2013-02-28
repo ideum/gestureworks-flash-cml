@@ -132,33 +132,22 @@ package  com.gestureworks.cml.element
 			}
 			else { trace("Image " + _src + " failed to load. Please check your image ID and make sure it is accurate.");}
 		}
-
-		 * Opens an external image file
-		 * @param	file
-		 */
-		override public function open(file:String=null):void
-		{
-			if (file) url = file;
-			img = new IMGLoader;
-			img.load(url);
-			img.addEventListener(Event.COMPLETE, loadComplete);
-			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
-		}			
-			
-
-		 * Opens an external image file
-		 * @param	file
-		 */
-		override public function open(file:String=null):void
-		{
-			if (file) url = file;
-			img = new IMGLoader;
-			img.load(url);
-			img.addEventListener(Event.COMPLETE, loadComplete);
-			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
-		}			
 		
-
+		/*
+		 * Opens an external image file
+		 * @param	file
+		 */
+		override public function open(file:String=null):void
+		{
+			if (file) url = file;
+			img = new IMGLoader;
+			img.load(url);
+			img.addEventListener(Event.COMPLETE, loadComplete);
+			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
+		}			
+					
+		
+		/*
 		 * Dispose method to nullify the children and remove listener
 		 */
 		override public function dispose():void {
