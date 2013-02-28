@@ -82,6 +82,8 @@ package  com.gestureworks.cml.element
 		 */
 		public function get loaded():String { return _loaded;}
 		
+		
+		
 		private var _description:String = "";
 		public function get description():String { return _description; }
 		
@@ -90,11 +92,14 @@ package  com.gestureworks.cml.element
 		 */
 		override public function displayComplete():void {
 			super.displayComplete();
+		
 			
-			service = new FlickrService(_API_KEY);
-			service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
-			service.addEventListener(IOErrorEvent.IO_ERROR, errorEvent);
-			service.photos.getInfo(_src);
+			if (src && src.length > 1) {
+				service = new FlickrService(_API_KEY);
+				service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
+				service.addEventListener(IOErrorEvent.IO_ERROR, errorEvent);
+				service.photos.getInfo(_src);
+			}
 		}
 		
 		
@@ -110,18 +115,37 @@ package  com.gestureworks.cml.element
 			trace("Error in loading file:", e);
 		}
 		
+
 		private function loadImage(e:FlickrResultEvent):void {			
+
+			e.target.removeEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
+			e.target.removeEventListener(IOErrorEvent.IO_ERROR, errorEvent);
+			
 			if (e.success) {
 				_description = e.data.photo.description;
 				url = "http://farm1.staticflickr.com/" + e.data.photo.server + "/" + e.data.photo.id + "_" + 
 					e.data.photo.secret + ".jpg";
-				open();
+	
+				if (!isLoaded)	
+					open(url);
+
 			}
 			else { trace("Image " + _src + " failed to load. Please check your image ID and make sure it is accurate.");}
 		}
-		
-		
-		/**
+
+		 * Opens an external image file
+		 * @param	file
+		 */
+		override public function open(file:String=null):void
+		{
+			if (file) url = file;
+			img = new IMGLoader;
+			img.load(url);
+			img.addEventListener(Event.COMPLETE, loadComplete);
+			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
+		}			
+			
+
 		 * Opens an external image file
 		 * @param	file
 		 */
@@ -134,8 +158,7 @@ package  com.gestureworks.cml.element
 			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
 		}			
 		
-		
-		/**
+
 		 * Dispose method to nullify the children and remove listener
 		 */
 		override public function dispose():void {
