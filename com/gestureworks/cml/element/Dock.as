@@ -32,7 +32,7 @@ package com.gestureworks.cml.element
 		protected var _searchFieldsArray:Array;
 		public var searchFields:String;
 				
-		public var result:Object;	
+		public var result:*;	
 		public var resultCnt:int = 0;
 		
 		public var isLoading:Boolean = false;
@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 
 		public var pos:String;
 		
-		public var maxClones:int = 10;
+		public var maxClones:int = 20;
 		
 		
 		/**
@@ -177,9 +177,8 @@ package com.gestureworks.cml.element
 				cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
 			}
 			
-			
 			// temp
-			trace("cloneMap.length", cloneMap.length);
+			/*trace("cloneMap.length", cloneMap.length);
 			
 			var cloneMapKeys:Array = cloneMap.getKeyArray();
 			var cloneMapValues:Array = cloneMap.getValueArray();
@@ -189,7 +188,8 @@ package com.gestureworks.cml.element
 				trace("\n");
 				trace( cloneMapKeys[j], cloneMapValues[j], cloneMapValues[j].getKeyArray(), cloneMapValues[j].getValueArray() );	
 			}
-			// 
+			*/
+			 			
 		}
 		
 		
@@ -197,13 +197,12 @@ package com.gestureworks.cml.element
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 
 		{	
 			if (!("propertyStates" in obj)) return lm;
-
 						
 			// Iterate through the properties of the object to find {values}
 			for (var s:String in obj.propertyStates[0]) {
 				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
 					
-					// Create substring, check for substring "in" comparison object.
+					// Create substring
 					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
 					obj.propertyStates[0][s] = str;
 					lm.append(obj, s);
@@ -218,6 +217,58 @@ package com.gestureworks.cml.element
 			return lm;
 		}
 		
+		
+		
+		private function resolveExp(cMap:LinkedMap, res:*):void
+		{			
+			var keys:Array = cMap.currentValue.getKeyArray();
+			var values:Array = cMap.currentValue.getValueArray();
+						
+			var obj:Object;
+			var prop:String;
+			var exp:*;
+			
+			for (var i:int = 0; i < keys.length; i++) {
+				obj = keys[i];
+				prop = values[i];
+				exp = obj["propertyStates"][0][prop];
+				
+				if ( (exp in res) && (obj[prop] != res[exp]) ) {
+				
+					try {
+						obj[prop] = null;
+					}
+					catch(e:Error) {
+						obj[prop] = "";
+					}
+					
+					if ( res[exp] ) {
+						obj[prop] = res[exp];
+						
+						if (prop == "src") {
+							obj.close();
+							cMap.currentKey.addEventListener(StateEvent.CHANGE, onCloneLoad);
+							if (obj is Flickr)
+								obj.init();
+							else
+								obj.open();
+						}
+					}
+				}
+				
+				else if ( (exp in res) && (prop == "src") && (obj[prop] == res[exp]) ) {
+					loadCnt++;
+					if (loadCnt >= resultCnt)
+						loadEnd();			
+				}				
+			}
+			clones.push(cMap.currentKey);
+			
+			if (cMap.hasNext())
+				cMap.next();
+			else
+				cMap.reset();
+		}
 		
 		
 		// used as flag for dial listeners to skip default selections
@@ -246,13 +297,7 @@ package com.gestureworks.cml.element
 		// get search terms from dial and submit query
 		protected function onDialChange(e:StateEvent):void 
 		{
-			for each (var obj:* in clones) {
-				if ("dispose" in obj && obj.visible == false) {
-					cloneMap.removeKey(obj.image.src);
-					obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
-					obj.dispose();
-				}
-			}
+			previews = [];			
 			clones = [];
 			album.clear();
 			
@@ -372,12 +417,10 @@ package com.gestureworks.cml.element
 		
 		private function onQueryLoad(e:StateEvent):void {
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
-			
 			album.clear();
 			
-			previews = [];
-			clones = [];
 			loadCnt = 0;
+			result = flickrQuery.resultPhotos;
 			
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
@@ -397,7 +440,7 @@ package com.gestureworks.cml.element
 		
 		
 		private function onResult(res:Object):void
-		{			
+		{
 			result = res;
 			resultCnt = 0;		
 			loadCnt = 0;		
@@ -449,73 +492,35 @@ package com.gestureworks.cml.element
 				num = resultCnt;
 				
 			for (var i:int = loadCnt; i < num; i++) {	
-				if (result) {
-					for (var m:int = 0; m < templates.length; m++) 
-					{
-						if (templates[m] is ImageViewer){
-							for (var j:* in result[i]) {
-								searchExp(templates[m], result[i]);
-							}
-						}
-					}
-				}
-				else if (flickrQuery && !result) {
-					for (var k:int = 0; k < templates.length; k++) {
-						if (templates[k] is FlickrViewer) {
-							searchExp(templates[k], flickrQuery.resultPhotos[i]);
-						}
-					}
-				}
-				createClone(clones[i]);			
-			}					
+				resolveExp(cloneMap, result[i]);				
+			}
 		}
 		
-		
-		// creates image viewer clone
-		protected function createClone(clone:*):void
-		{
-			// Check the templates for the one that's been populated, then update the source.
-			var src:String = "";
-			var i:int = 0;
-			for (i = 0; i < templates.length; i++) {
-				if (templates[i].image.src)
-					src = templates[i].image.src;
-			}
-			
-			if (cloneMap.hasKey(src)) {
-				clones.push(cloneMap.getKey(src));
-				
-				if (loadCnt >= resultCnt)
-					loadEnd();
-				else 
-					onCloneLoad();
-			}
-			else {
-				for (var j:int = 0; j < templates.length; j++) {
-					if (templates[j].image.src)
-						clone = templates[j].clone();
-				}
-				clone.image.close();
-				clones.push(clone);
-				clone.addEventListener(StateEvent.CHANGE, onCloneLoad);			
-				clone.image.open(src);				
-				cloneMap.append(src, clone);
-			}
-		}		
-
+	
 		
 		// image load data
-		protected function onCloneLoad(event:StateEvent=null):void 
-		{
-			if (event) {
-				event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);			
-				event.target.addEventListener(StateEvent.CHANGE, onCloneTimeout);
-			}					
-			
-			if ( (!event) || event.property == "isLoaded") {
+		protected function onCloneLoad(event:StateEvent):void 
+		{						
+			if (event.property == "isLoaded" && event.value) {
 				
-				if (event && event.target is FlickrViewer)
-					searchExp(event.target, event.target.image);
+				if (event)
+					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
+				
+					
+				if (event && event.target is FlickrViewer) {
+					
+					///searchExp(event.target, event.target.image);
+					// this hack b/c Flickr API is broken
+					//var res:Object = { "description":event.target.image.description };
+					//resolveExp(cloneMap, res);
+					///cloneMap.prev();
+					
+					event.target.searchChildren(".info_description").htmlText = event.target.image.description;
+				}
+				
+				//if (event && event.target is FlickrViewer)
+				//	searchExp(event.target, event.target.image);
+				
 				else if (event && event.target)
 					event.target.init();					
 					
@@ -523,14 +528,11 @@ package com.gestureworks.cml.element
 				
 				loadCnt++;
 				
-				if (loadCnt >= resultCnt) {
+				if (loadCnt >= resultCnt)
 					loadEnd();
-				}
-				
-				else if ( (loadCnt % maxLoad) == 0 ) {
-					loadClone();
-				}			
-			}				
+				else if ( (loadCnt % maxLoad) == 0 )
+					loadClone();						
+			}
 		}						
 		
 		
@@ -563,7 +565,6 @@ package com.gestureworks.cml.element
 				if (flickrQuery.pageNumber > 1) {
 					if (_previousArrow) 
 						album.addChild(_previousArrow);
-						//album.setChildIndex(_previousArrow, 0);
 					// else...auto-generate one?
 				}
 			}
@@ -666,12 +667,6 @@ package com.gestureworks.cml.element
 					selectItem(clones[previews.indexOf(e.value)]);
 				else if (e.value.contains(_nextArrow)) {
 					if (flickrQuery) {
-						for each (var obj:* in clones) {
-							if ("dispose" in obj && obj.visible == false) {
-								obj.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
-								obj.dispose();
-							}
-						}
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -719,31 +714,31 @@ package com.gestureworks.cml.element
 					obj.addEventListener(MouseEvent.MOUSE_DOWN, moveB);	
 			}
 			
-			obj.scale = .6;				
+			//if ("scale" in obj["propertyStates"][0])
+			//	obj.scale = obj["propertyStates"][0]["scale"];
+			//else
+				obj.scale = .6;
+					
 			if (position == "top") {
-				obj.rotation = 180;
+				//if ("rotation" in obj["propertyStates"][0])
+				//	obj.rotation = obj["propertyStates"][0]["rotation"];
+				//else
+					obj.rotation = 180;
+				
 				obj.x = location.x + obj.width*obj.scale;
 				obj.y = location.y + location.height;
 				collectionViewer.tagObject(true, obj);
 			}
 			else {		
-				obj.rotation = 0;
+				//if ("rotation" in obj["propertyStates"][0])
+				//	obj.rotation = obj["propertyStates"][0]["rotation"];
+				//else
+					obj.rotation = 0;
 				obj.x = location.x;
 				obj.y = location.y;				
 				collectionViewer.tagObject(false, obj);
 			}
 			
-			/*
-			var deg:Number = NumberUtils.randomNumber( -2.5, 2.5);	 
-			var point:Point = new Point(obj.x + (obj.width) / 2, obj.y + (obj.height) / 2);				
-			var m:Matrix=obj.transform.matrix;
-			m.tx -= point.x;
-			m.ty -= point.y;
-			m.rotate (deg*(Math.PI/180));
-			m.tx += point.x;
-			m.ty += point.y;
-			obj.transform.matrix=m;
-			*/
 			
 			obj.reset();
 			moveBelowDock(obj);
@@ -752,6 +747,32 @@ package com.gestureworks.cml.element
 			
 			placeHolderIndex++;						
 		}
+		
+		private function searchExp(obj:*, target:*):void {					
+			if (!("propertyStates" in obj)) return;
+
+			// Pass in the template, and the object to compare.
+			
+			// Iterate through the properties of the object to find {values}
+			for (var s:String in obj.propertyStates[0]) {
+				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
+					
+					// Create substring, check for substring "in" comparison object.
+					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
+					
+					if (str in target && target[str] != null) {
+						// Assign object's values to template clone if found.
+						obj[s] = target[str];
+					}
+				}
+			}
+			
+			if (obj is DisplayObjectContainer) {
+				for (var i:int = 0; i < obj.numChildren; i++) {
+					searchExp(obj.getChildAt(i), target);		
+				}
+			}
+		}		
 		
 		private function dragSelection(e:StateEvent):void
 		{
@@ -766,7 +787,7 @@ package com.gestureworks.cml.element
 						return;
 					}
 				}
-				dropLocation = null;				
+				dropLocation = null;
 			}
 		}
 				
@@ -808,54 +829,12 @@ package com.gestureworks.cml.element
 						collectionViewer.untagObject(e.target);
 						selections.splice(selections.indexOf(e.target), 1);
 					}
-					else {
-						index = cloneMap.search(e.value);
-						if (index >= 0)
-							cloneMap.removeIndex(index);
-					}
 				}
 			}				
 		}
 		
 	
-		
-		private function searchExp(obj:*, target:*):void {					
-			if (!("propertyStates" in obj)) return;
 
-			// Pass in the template, and the object to compare.
-			
-			// Iterate through the properties of the object to find {values}
-			for (var s:String in obj.propertyStates[0]) {
-				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
-					
-					// Create substring, check for substring "in" comparison object.
-					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
-					
-					if (str in target && target[str] != null) {
-						// Assign object's values to template clone if found.
-						obj[s] = target[str];
-					}
-				}
-			}
-			
-			if (obj is DisplayObjectContainer) {
-				for (var i:int = 0; i < obj.numChildren; i++) {
-					searchExp(obj.getChildAt(i), target);		
-				}
-			}
-		}
-		
-		private function onCloneTimeout(e:StateEvent):void {
-			if (e.value == "timeout" || e.value == "quit"){
-				if (clones.indexOf(e.target) > -1) return;
-				else {
-					e.target.removeEventListener(StateEvent.CHANGE, onCloneTimeout);
-					e.target.dispose();
-				}
-			}
-		}
-
-		
 		// traces result object
 		private function printResult(result:Object):void
 		{
