@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 
 		public var pos:String;
 		
-		public var maxClones:int = 12;
+		public var maxClones:int = 30;
 		
 		
 		/**
@@ -230,6 +230,7 @@ package com.gestureworks.cml.element
 				obj = keys[i];
 				prop = values[i];
 				exp = obj["propertyStates"][0][prop];
+				StateUtils.loadState(obj, 0, true);  //restore initial state
 				
 				if ( (exp in res) && (obj[prop] != res[exp]) ) {
 				
@@ -248,15 +249,11 @@ package com.gestureworks.cml.element
 							cMap.currentKey.addEventListener(StateEvent.CHANGE, onCloneLoad);
 							if (obj is Flickr)
 							{				
-								restoreDimensions(obj);								
 								obj.init();	
 								cMap.currentKey.listenLoadComplete();																
 							}
 							else
-							{
-								restoreDimensions(obj);
 								obj.open();
-							}
 								
 							clones.push(cMap.currentKey);
 							
@@ -281,14 +278,7 @@ package com.gestureworks.cml.element
 				
 			}
 								
-		}
-		
-		private function restoreDimensions(obj:*):void
-		{
-			obj["width"] = obj["propertyStates"][0]["width"] ? obj["propertyStates"][0]["width"] : 0;
-			obj["height"] = obj["propertyStates"][0]["height"] ? obj["propertyStates"][0]["height"] : 0;
-			obj["scale"] = obj["propertyStates"][0]["scale"] ? obj["propertyStates"][0]["scale"] : 1;
-		}		
+		}	
 		
 		// used as flag for dial listeners to skip default selections
 		private function cmlInit(e:Event):void
