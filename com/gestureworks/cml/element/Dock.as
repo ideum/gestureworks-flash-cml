@@ -358,7 +358,6 @@ package com.gestureworks.cml.element
 			if (cmlIni && e.target.id == e.id) {
 				
 				checkServerTimer();
-				freeClones();
 				
 				if (flickrQuery)
 					queryFlickr();
@@ -372,6 +371,7 @@ package com.gestureworks.cml.element
 		// submit query
 		private function query(e:KeyboardEvent=null):void
 		{
+			freeClones();
 			isLoading = true;
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
@@ -426,6 +426,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
+			freeClones();
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 			album.clear();
 			
@@ -494,6 +495,9 @@ package com.gestureworks.cml.element
 				var value:* = cloneMap.getKey(clone);
 				cloneMap.removeKey(clone);
 				cloneMap.insert(cloneMap.currentIndex, clone, value);
+				
+				if (cloneMap.currentIndex >= cloneMap.length - 1)
+					cloneMap.reset();
 			}
 		}
 
@@ -684,6 +688,7 @@ package com.gestureworks.cml.element
 					selectItem(clones[previews.indexOf(e.value)]);
 				else if (e.value.contains(_nextArrow)) {
 					if (flickrQuery) {
+						previews = [];
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -691,11 +696,7 @@ package com.gestureworks.cml.element
 					} // else if something else...
 				} else if (e.value.contains(_previousArrow)) {
 					if (flickrQuery) {
-						for each (var obj:* in clones) {
-							if ("dispose" in obj && obj.visible == false) {
-								obj.dispose();
-							}
-						}
+						previews = []
 						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
@@ -706,19 +707,20 @@ package com.gestureworks.cml.element
 		}
 		
 		private function selectItem(obj:*):void
-		{
-			selections.push(obj);
-			var location:Graphic = placeHolders[placeHolderIndex];				
-			
+		{					
 			// if object is already on the stage
-			if (obj.visible) {
+			if (selections.indexOf(obj) != -1) {
 				obj.onUp();					
 				obj.glowPulse();
 				return;				
 			}
 			else
+			{
 				obj.visible = true;
-			
+				selections.push(obj);				
+			}
+							
+			var location:Graphic = placeHolders[placeHolderIndex];								
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
 			
 			
