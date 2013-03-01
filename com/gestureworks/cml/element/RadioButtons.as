@@ -584,6 +584,7 @@
 						}
 						_graphicsArray[j].alpha = 1;
 						_selectedLabel = _graphicsArray[j].name;
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 						return;
 					}
 				}
@@ -602,6 +603,7 @@
 						button = Sprite(getChildAt(i));
 						button.addChild(selected);
 						_selectedLabel = button.name;
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 						return;
 					}
 				}
@@ -624,6 +626,7 @@
 						}
 						_graphicsArray[j].alpha = 1;
 						_selectedLabel = _graphicsArray[j].name;
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 						return;
 					}
 				}
@@ -638,6 +641,7 @@
 						button = Sprite(getChildAt(i));
 						button.addChild(selected);
 						_selectedLabel = button.name;
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 						return;
 					}
 				}
