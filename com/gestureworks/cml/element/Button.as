@@ -81,6 +81,7 @@ package com.gestureworks.cml.element
 		{
 			super();
 			buttonStates = new Array();
+			dispatchDict = new Dictionary(true);
 		}		
 		
 		/**
@@ -92,8 +93,17 @@ package com.gestureworks.cml.element
 			if (toggle)
 			{
 				listenToggle();
-				for (var i:int = 1; i < childList.length; i++)
-					childList.getIndex(i).visible = false;
+				
+				if (!initial)
+					initial = childList.getIndex(0);
+				
+				for (var i:int = 0; i < childList.length; i++) {
+					if (childList.getIndex(i) == initial)
+						childList.selectIndex(i).visible = true;
+					else
+						childList.getIndex(i).visible = false;
+				}			
+				
 				return; //if toggle is used, bypass state events
 			}
 			
@@ -107,7 +117,7 @@ package com.gestureworks.cml.element
 			for each(var state:* in buttonStates)
 			{
 				if (state && state != initial)
-					state.visible = false;	
+					state.visible = false;
 			}				
 
 			// float hit area to the top of the display list
@@ -212,10 +222,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get dispatch():String {return _dispatch;}
 		public function set dispatch(value:String):void 
-		{
-			if (!dispatchDict)
-				dispatchDict = new Dictionary(true);
-			
+		{			
 			_dispatch = value;
 			
 			var arr:Array = _dispatch.split(":");
@@ -1182,10 +1189,14 @@ package com.gestureworks.cml.element
 				childList.currentValue.visible = true;			
 			}							
 			
-			//if (dispatchDict["toggle"])
-			//	dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", dispatchDict["toggle"], true, true));	
-			//else if (dispatchDefault)
-			//	dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", "toggle", true, true));			
+			if (dispatchDict["toggle"]) {
+				if (dispatchDict["toggle"] == "{currentIndex}")
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", childList.currentIndex, true, true));
+				else
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", dispatchDict["toggle"], true, true));	
+			}
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", "toggle", true, true));	
 		}
 		
 		/**
