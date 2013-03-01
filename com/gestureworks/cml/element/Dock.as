@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 
 		public var pos:String;
 		
-		public var maxClones:int = 30;
+		public var maxClones:int = 20;
 		
 		
 		/**

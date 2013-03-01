@@ -661,6 +661,7 @@ package com.gestureworks.cml.components
 		private var scrollPanes:Array;
 		public var backs:Array;
 		public var fronts:Array;
+		public var glowColor:uint = 0xFFFFFF;
 		
 		public function glowIn(dur:Number=1):void
 		{
@@ -671,13 +672,13 @@ package com.gestureworks.cml.components
 					_glowFilter: {
 						blurX: 25,
 						blurY: 25, 
-						color: 0xFFFFFF
+						color: glowColor
 					}
 				},{
 					_glowFilter: {
 						blurX: 0,
 						blurY: 0, 
-						color: 0xFFFFFF
+						color: glowColor
 					}
 				},
 				dur);
@@ -702,7 +703,7 @@ package com.gestureworks.cml.components
 				_glowFilter: {
 					blurX: 0,
 					blurY: 0, 
-					color: 0xFFFFFF
+					color: glowColor
 				}
 			},null, dur);
 			glowTween.play();		
