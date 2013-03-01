@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 
 		public var pos:String;
 		
-		public var maxClones:int = 20;
+		public var maxClones:int = 12;
 		
 		
 		/**
@@ -217,10 +217,9 @@ package com.gestureworks.cml.element
 			return lm;
 		}
 		
-		
-		
 		private function resolveExp(cMap:LinkedMap, res:*):void
-		{			
+		{							
+			//trace(cMap.currentIndex);			
 			var keys:Array = cMap.currentValue.getKeyArray();
 			var values:Array = cMap.currentValue.getValueArray();
 						
@@ -249,25 +248,36 @@ package com.gestureworks.cml.element
 							obj.close();
 							cMap.currentKey.addEventListener(StateEvent.CHANGE, onCloneLoad);
 							if (obj is Flickr)
-								obj.init();
+							{				
+								obj.init();	
+								cMap.currentKey.listenLoadComplete();																
+							}
 							else
 								obj.open();
+								
+							clones.push(cMap.currentKey);
+							
+							if (cMap.hasNext())
+								cMap.next();
+							else
+								cMap.reset();									
 						}
 					}
 				}
 				
 				else if ( (exp in res) && (prop == "src") && (obj[prop] == res[exp]) ) {
-					loadCnt++;
-					if (loadCnt >= resultCnt)
-						loadEnd();			
+					clones.push(cMap.currentKey);
+					
+					if (cMap.hasNext())
+						cMap.next();
+					else
+						cMap.reset();						
+					onCloneLoad();
+					break;
 				}				
+				
 			}
-			clones.push(cMap.currentKey);
-			
-			if (cMap.hasNext())
-				cMap.next();
-			else
-				cMap.reset();
+								
 		}
 		
 		
@@ -346,14 +356,15 @@ package com.gestureworks.cml.element
 			//verify the cml has been initialized and the event was triggered
 			//by the target (scond condition is for filtering)
 			
-			if(cmlIni && e.target.id == e.id) {
+			if (cmlIni && e.target.id == e.id) {
+				
+				checkServerTimer();
+				freeClones();
+				
 				if (flickrQuery)
 					queryFlickr();
 				else
 					 query();
-					 
-				checkServerTimer();
-				freeClones();
 			}
 		}	
 		
@@ -475,10 +486,15 @@ package com.gestureworks.cml.element
 			
 			for each(var clone:* in selections)
 			{
+				if (cloneMap.getKeyArray().indexOf(clone) == cloneMap.currentIndex)
+				{
+					cloneMap.next();
+					continue;
+				}
+					
 				var value:* = cloneMap.getKey(clone);
 				cloneMap.removeKey(clone);
 				cloneMap.insert(cloneMap.currentIndex, clone, value);
-				cloneMap.next();
 			}
 		}
 
@@ -491,48 +507,50 @@ package com.gestureworks.cml.element
 			if (num >= resultCnt)
 				num = resultCnt;
 				
-			for (var i:int = loadCnt; i < num; i++) {	
-				resolveExp(cloneMap, result[i]);				
+			for (var i:int = loadCnt; i < num; i++) {
+				resolveExp(cloneMap, result[i]);					
 			}
 		}
 		
 	
 		
 		// image load data
-		protected function onCloneLoad(event:StateEvent):void 
-		{						
-			if (event.property == "isLoaded" && event.value) {
+		protected function onCloneLoad(event:StateEvent = null):void 
+		{		
+
+			if (!event || (event.property == "isLoaded" && event.value)) {
 				
 				if (event)
-					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
-				
+				{
+						event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
 					
-				if (event && event.target is FlickrViewer) {
+						
+					if (event.target is FlickrViewer) {
+						
+						// this hack b/c Flickr API is broken
+						//var res:Object = { "description":event.target.image.description };
+						//var index:int = cloneMap.currentIndex;
+						//resolveExp(cloneMap, res);
+						//cloneMap.currentIndex = index;
+						
+						event.target.searchChildren(".info_description").htmlText = event.target.image.description;
+					}
 					
-					///searchExp(event.target, event.target.image);
-					// this hack b/c Flickr API is broken
-					//var res:Object = { "description":event.target.image.description };
-					//resolveExp(cloneMap, res);
-					///cloneMap.prev();
+					//if (event && event.target is FlickrViewer)
+					//	searchExp(event.target, event.target.image);
 					
-					event.target.searchChildren(".info_description").htmlText = event.target.image.description;
+					else 
+						event.target.init();											
 				}
 				
-				//if (event && event.target is FlickrViewer)
-				//	searchExp(event.target, event.target.image);
-				
-				else if (event && event.target)
-					event.target.init();					
-					
-				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
-				
+				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;			
 				loadCnt++;
 				
 				if (loadCnt >= resultCnt)
 					loadEnd();
 				else if ( (loadCnt % maxLoad) == 0 )
-					loadClone();						
-			}
+					loadClone();				
+			}						
 		}						
 		
 		

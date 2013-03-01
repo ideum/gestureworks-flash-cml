@@ -143,6 +143,12 @@ package com.gestureworks.cml.components
 			}
 		}
 		
+		public function listenLoadComplete():void
+		{
+			if(image)
+			image.addEventListener(StateEvent.CHANGE, onLoadComplete);			
+		}
+		
 		public var isLoaded:Boolean = true;
 		
 		override public function clone():*
