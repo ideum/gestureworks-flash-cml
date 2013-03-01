@@ -44,8 +44,8 @@
 	 */
 	public class RadioButtons extends Container 	 
 	{		
-		//private var selected:Sprite;
-		private var selected:Graphic;
+		private var selected:Sprite;
+		//private var selected:Graphic;
 		private var radius:Number;
 		
 		/**
@@ -93,7 +93,7 @@
 		public override function displayComplete():void
 		{
 			super.displayComplete();
-			trace(_graphicReps);
+			//trace(_graphicReps);
 			init();
 		}		
 		
@@ -103,6 +103,10 @@
 		private function draw():void
 		{
 			clear();
+			
+			if (_pageButtons) {
+				drawPageButtons("left");
+			}
 			
 			if (_graphicReps) {
 				_graphicsArray = [];
@@ -122,6 +126,10 @@
 					
 				drawSelection();		
 			}
+			
+			if (_pageButtons) {
+				drawPageButtons("right");
+			}
 		}
 		
 		/**
@@ -129,10 +137,8 @@
 		 */
 		private function clear():void
 		{		
-			trace(graphicReps);
 			for (var i:int = numChildren-1; i >= 0; i--)
 				removeChildAt(i);
-			trace(graphicReps);
 		}	
 		
 		/**
@@ -220,6 +226,78 @@
 			}
 		}
 		
+		private function drawPageButtons(side:String):void {
+			radius = _fontSize/2;
+			var button:Sprite = new Sprite();
+			button.graphics.beginFill(_radioColor, 0);			
+			button.graphics.drawCircle(radius, radius, radius);			
+			button.graphics.endFill();
+			
+			
+			switch (side) {
+				case "left":
+					button.name = "back";
+					
+					var left:Graphic = new Graphic();
+					left.shape = "triangle";
+					left.lineStroke = _radioStroke;
+					left.lineColor = _radioStrokeColor;
+					left.height = _fontSize;
+					left.fill = "color";
+					left.color = _radioColor;
+					left.rotation = -90;
+					left.y = left.height;
+					left.name = "back";
+					button.addChild(left);
+					addChild(button);
+					
+					setButtonPosition(button);
+					
+					var captionLeft:Text = new Text();			
+					captionLeft.fontSize = 1;
+					captionLeft.autoSize = "left";
+					captionLeft.text = "b";
+					captionLeft.height = captionLeft.fontSize;
+					captionLeft.x = button.x + button.width;
+					//captionLeft.y = left.y - (captionLeft.height - captionLeft.getLineMetrics(0).height);
+					captionLeft.selectable = false;
+					captionLeft.alpha = 0;
+					addChild(captionLeft);
+					break;
+				
+				case "right":
+					button.name = "forward";
+					
+					var right:Graphic = new Graphic();
+					right.shape = "triangle";
+					right.lineStroke = _radioStroke;
+					right.lineColor = _radioStrokeColor;
+					right.height = _fontSize;
+					//right.width = _fontSize;
+					right.fill = "color";
+					right.color = _radioColor;
+					right.rotation = 90;
+					right.x = _fontSize;
+					//right.y = right.height;
+					right.name = "forward";
+					button.addChild(right);
+					addChild(button);
+					setButtonPosition(button);
+					
+					var captionRight:Text = new Text();			
+					captionRight.fontSize = 1;
+					captionRight.autoSize = "left";
+					captionRight.text = "f";
+					captionRight.height = captionRight.fontSize;
+					captionRight.x = button.x + button.width;
+					//captionRight.y = left.y - (captionRight.height - captionRight.getLineMetrics(0).height);
+					captionRight.selectable = false;
+					captionRight.alpha = 0;
+					addChild(captionRight);
+					break;
+			}
+		}
+		
 		/**
 		 * Returns the last child object of the provided type
 		 * @param	type  the type of object to retrieve
@@ -241,19 +319,21 @@
 		 */
 		private function drawSelection(): void
 		{		
-			/*selected = new Sprite();
+			selected = new Sprite();
 			selected.name = "selected";
 			selected.graphics.lineStyle(1, 0x000000);
 			selected.graphics.beginFill(_selectedColor);		
 			selected.graphics.drawCircle(radius, radius, radius * _selectedFillRatio);
-			selected.graphics.endFill();*/
-			selected = new Graphic();
+			selected.graphics.endFill();
+			/*selected = new Graphic();
 			selected.name = "selected";
 			selected.shape = "circle";
 			selected.fill = "color";
 			selected.color = _selectedColor;
 			selected.lineStroke = 0;
 			selected.radius = radius * _selectedFillRatio;
+			selected.y = radius - (radius / 1.5);
+			selected.x = radius - (radius / 1.5);*/
 		}
 		
 		/**
@@ -394,7 +474,10 @@
 		public function set selectedColor(value:uint):void {
 			_selectedColor = value;
 			if (selected) {
-				selected.color = _selectedColor;
+				//selected.color = _selectedColor;
+				selected.graphics.beginFill(_selectedColor, 1);
+				selected.graphics.drawCircle(selected.x, selected.y, radius * _selectedFillRatio);
+				selected.graphics.endFill();
 			}
 		}
 		
@@ -405,6 +488,17 @@
 		public function get selectedFillRatio():Number { return _selectedFillRatio; }
 		public function set selectedFillRatio(value:Number):void {
 			_selectedFillRatio = value;
+		}
+		
+		private var _pageButtons:Boolean = false;
+		/**
+		 * Set whether or not the buttons are being used for pagination.
+		 * This will automatically add arrows to either side of the buttons
+		 * the same color as them.
+		 */
+		public function get pageButtons():Boolean { return _pageButtons; }
+		public function set pageButtons(value:Boolean):void {
+			_pageButtons = value;
 		}
 		
 		/**
@@ -427,6 +521,14 @@
 		 */
 		private function buttonSelected(event:*):void
 		{		
+			if (event.target.name == "forward") {
+				next();
+				return;
+			} else if (event.target.name == "back") {
+				previous();
+				return;
+			}
+			
 			if (event.target is Sprite)
 			{
 				var button:Sprite = Sprite(event.target);
@@ -467,14 +569,19 @@
 			} else return false;
 		}
 		
-		public function next():void {
+		private function next():void {
 			var button:Sprite;
 			if (_graphicsArray ) {
 				for (var j:int = 0; j < _graphicsArray.length; j++) 
 				{
 					if (_selectedLabel == _graphicsArray[j].name) {
 						_graphicsArray[j].alpha = 0.5;
-						j++;
+						if (j + 1 < _graphicsArray.length)
+							j++;
+						else {
+							_graphicsArray[j].alpha = 1;
+							return;
+						}
 						_graphicsArray[j].alpha = 1;
 						_selectedLabel = _graphicsArray[j].name;
 						return;
@@ -490,7 +597,7 @@
 						// so we must increase by two to get to the next button
 						// instead of getting caught up on the text element following
 						// the current button.
-						if (i + 2 < numChildren)
+						if (i + 2 < numChildren - 2)
 							i += 2;
 						button = Sprite(getChildAt(i));
 						button.addChild(selected);
@@ -501,15 +608,20 @@
 			}
 		}
 		
-		public function previous():void {
+		private function previous():void {
 			var button:Sprite;
 			
 			if (_graphicsArray ) {
-				for (var j:int = 0; j < _graphicsArray.length; j++) 
+				for (var j:int = _graphicsArray.length - 1; j > -1; j--) 
 				{
 					if (_selectedLabel == _graphicsArray[j].name) {
 						_graphicsArray[j].alpha = 0.5;
-						j++;
+						if (j - 1 > -1)
+							j--;
+						else {
+							_graphicsArray[j].alpha = 1;
+							return;
+						}
 						_graphicsArray[j].alpha = 1;
 						_selectedLabel = _graphicsArray[j].name;
 						return;
@@ -521,7 +633,7 @@
 				{
 					if (_selectedLabel == getChildAt(i).name) {
 						
-						if (i - 2 > -1)
+						if (i - 2 > 1)
 							i -= 2;
 						button = Sprite(getChildAt(i));
 						button.addChild(selected);
