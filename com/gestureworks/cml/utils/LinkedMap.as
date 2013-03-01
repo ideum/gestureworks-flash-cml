@@ -43,7 +43,6 @@ package com.gestureworks.cml.utils
 			values = new List;
 		}
 		
-		private var _currentIndex:int = 0;
 		/**
 		 * Returns and sets the current index
 		 */
@@ -195,10 +194,7 @@ package com.gestureworks.cml.utils
 		public function prepend(key:*, value:*):void 
 		{
 			keys.prepend(key);
-			values.prepend(value);
-
-			if (currentIndex > 0)
-				currentIndex++;			
+			values.prepend(value);		
 		}
 		
 		/**
@@ -223,9 +219,7 @@ package com.gestureworks.cml.utils
 		public function insert(index:int, key:*, value:*):void 
 		{
 			keys.insert(index, key);				
-			values.insert(index, value);
-			if (currentIndex >= index)
-				currentIndex++;			
+			values.insert(index, value);		
 		}		
 		
 		/**
@@ -236,9 +230,6 @@ package com.gestureworks.cml.utils
 		{				
 			keys.remove(index);			
 			values.remove(index);			
-			
-			if (currentIndex > 0 && currentIndex >= index)
-				currentIndex--;
 		}		
 		
 		/**
@@ -249,10 +240,7 @@ package com.gestureworks.cml.utils
 		{	
 			var i:int = keys.search(key);
 			keys.remove(i);
-			values.remove(i);
-			
-			if (currentIndex > 0 && currentIndex >= i)
-				currentIndex++;			
+			values.remove(i);		
 		}
 
 		/**
@@ -277,7 +265,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function reset():void
 		{
-			currentIndex = 0;
+			keys.reset();
 		}
 		
 		/**
@@ -286,7 +274,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasNext():Boolean
 		{
-			return currentIndex < keys.length-1;
+			return keys.hasNext();
 		}
 		
 		/**
@@ -295,10 +283,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function hasPrev():Boolean
 		{
-			if (currentIndex > 0)
-				return true;
-			else
-				return false;
+			return keys.hasPrev();
 		}		
 		
 		/**

@@ -161,11 +161,10 @@ package com.gestureworks.cml.utils
 			if (index < 0 || index > vector.length)
 				throw new Error("vector index out of bounds");
 			
-			var original:Vector.<*> = vector.slice();
-			var temp:Vector.<*> = original.splice(index, 1);
+			var original:Vector.<*> = vector.slice(0,index);
+			var shift:Vector.<*> = vector.slice(index);
 			original[index] = value;
-			original = original.concat(temp);
-			vector = original;
+			vector = original.concat(shift);
 			if (currentIndex >= index)
 				_currentIndex++;				
 		}
