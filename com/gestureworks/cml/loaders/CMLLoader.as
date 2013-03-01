@@ -15,6 +15,7 @@ package com.gestureworks.cml.loaders
 	public class CMLLoader extends EventDispatcher
 	{
 		private var urlLoader:URLLoader;
+		private var urlRequest:URLRequest;
 		
 		/**
 		 * Holds class instances of the multiton
@@ -64,7 +65,7 @@ package com.gestureworks.cml.loaders
 		 */
 		public function loadCML(url:String):void
 		{			
-			var urlRequest:URLRequest = new URLRequest(url);
+			urlRequest = new URLRequest(url);
 			urlLoader = new URLLoader;
 			urlLoader.addEventListener(Event.COMPLETE, onCMLDataLoaded);
 			urlLoader.load(urlRequest);
@@ -76,7 +77,12 @@ package com.gestureworks.cml.loaders
 		 */
 		private function onCMLDataLoaded(e:Event):void
 		{
-			data = XML(urlLoader.data);			
+			try {
+				data = XML(urlLoader.data);	
+			}
+			catch (er:Error) {
+				throw new Error(er.message + " File Path: " + urlRequest.url);
+			}				
 			_isLoaded = true;
 			dispatchEvent(new Event(CMLLoader.INIT, true, true));
 		}
