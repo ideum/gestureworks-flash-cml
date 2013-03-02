@@ -358,7 +358,7 @@ package com.gestureworks.cml.element
 			if (cmlIni && e.target.id == e.id) {
 				
 				checkServerTimer();
-				
+				freeClones();
 				if (flickrQuery)
 					queryFlickr();
 				else
@@ -371,7 +371,6 @@ package com.gestureworks.cml.element
 		// submit query
 		private function query(e:KeyboardEvent=null):void
 		{
-			freeClones();
 			isLoading = true;
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
@@ -426,7 +425,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
-			freeClones();
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 			album.clear();
 			
@@ -482,23 +480,27 @@ package com.gestureworks.cml.element
 		
 		private function freeClones():void
 		{
+
 			cloneMap.reset();
 			
 			for each(var clone:* in selections)
 			{
 				if (cloneMap.getKeyArray().indexOf(clone) == cloneMap.currentIndex)
 				{
-					cloneMap.next();
+					if (cloneMap.hasNext())
+						cloneMap.next();
+					else 
+						cloneMap.reset();
 					continue;
 				}
 					
 				var value:* = cloneMap.getKey(clone);
 				cloneMap.removeKey(clone);
-				cloneMap.insert(cloneMap.currentIndex, clone, value);
+				cloneMap.insert(cloneMap.currentIndex, clone, value);				
 				
-				if (cloneMap.currentIndex >= cloneMap.length - 1)
+				if (cloneMap.currentIndex > cloneMap.length - 1)
 					cloneMap.reset();
-			}
+			}		
 		}
 
 		private function loadClone():void
