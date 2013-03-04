@@ -2,7 +2,6 @@ package com.gestureworks.cml.utils
 {
 	import com.gestureworks.cml.interfaces.IList;
 	import com.gestureworks.cml.interfaces.IListIterator;
-	import flash.utils.Proxy;
 	
 	/**
 	 * The List utility is a data structure that creates an ordered
@@ -29,13 +28,14 @@ package com.gestureworks.cml.utils
 	 * @author Ideum
 	 * @see LinkedMap
 	 */
-	public dynamic class List implements IList, IListIterator 
+	public class List implements IList, IListIterator 
 	{
 		/**
 		 * Stores the vector of items
 		 */
-		private var vector:Vector.<*>;	
+		private var vector:Vector.<*>;
 		
+
 		
 		/**
 		 * Constructor
@@ -44,6 +44,12 @@ package com.gestureworks.cml.utils
 		{
 			vector = new Vector.<*>();
 		}
+		
+		/**
+		 * Returns and sets the current index
+		 */
+		public function get index():int { return _currentIndex }
+		public function set index(value:int):void { _currentIndex = value; }
 		
 		
 		private var _currentIndex:int = 0;
@@ -54,6 +60,15 @@ package com.gestureworks.cml.utils
 		public function set currentIndex(value:int):void { _currentIndex = value; }
 		
 		
+		
+		
+		/**
+		 * Returns the current value
+		 */
+		public function get value():* { return vector[currentIndex]; }		
+		public function set value(val:*):void { vector[currentIndex] = value; }		
+		
+		
 		private var _currentValue:*;
 		/**
 		 * Returns the current value
@@ -61,12 +76,14 @@ package com.gestureworks.cml.utils
 		public function get currentValue():* { return vector[currentIndex]; }		
 		
 		
+		
 		private var _length:int = 0;
 		/**
 		 * Returns the length of list
 		 */
-		public function get length():int { return vector.length }
+		public function get length():int { return vector.length; }
 
+		
 		
 		/**
 		 * Returns the value by index
@@ -105,8 +122,8 @@ package com.gestureworks.cml.utils
 		 * @return
 		 */
 		public function search(value:*):int
-		{	
-			return vector.indexOf(value);
+		{
+			return vector.indexOf(value); 
 		}
 		
 		
@@ -135,7 +152,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function append(value:*):void
 		{
-			vector.push(value);			
+			vector.push(value);
 		}
 		
 		
@@ -169,6 +186,13 @@ package com.gestureworks.cml.utils
 				_currentIndex++;				
 		}
 		
+		/**
+		 * Replaces value by index
+		 */
+		public function replace(index:int, value:String):void
+		{
+			vector[index] = value;
+		}
 		
 		/**
 		 * Removes a value by index
@@ -220,6 +244,7 @@ package com.gestureworks.cml.utils
 		{
 			_currentIndex = 0;			
 		}
+
 		
 		/**
 		 * Returns true if the iteration can return one more than the current index
