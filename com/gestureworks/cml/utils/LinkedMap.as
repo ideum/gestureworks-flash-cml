@@ -1,6 +1,5 @@
 package com.gestureworks.cml.utils
 {	
-	import adobe.utils.CustomActions;
 	import com.gestureworks.cml.element.Key;
 	/**
 	 * The LinkedMap utility is a data structure that creates an ordered
@@ -43,19 +42,38 @@ package com.gestureworks.cml.utils
 			values = new List;
 		}
 		
+		
 		/**
 		 * Returns and sets the current index
 		 */
-		public function get currentIndex():int { return keys.currentIndex }
-		public function set currentIndex(value:int):void { keys.currentIndex = value; }		
+		public function get index():int { return keys.currentIndex;  }
+		public function set index(value:int):void { keys.currentIndex = value; }		
+		
+		/**
+		 * Returns and sets the current index
+		 */
+		public function get currentIndex():int { return keys.currentIndex; }
+		public function set currentIndex(value:int):void { keys.currentIndex = value; values.currentIndex = value; }		
 		
 		
-		
-		private var _currentKey:int = 0;
+		/**
+		 * Returns the current key
+		 */		
+		public function get key():* { return keys.getIndex(currentIndex);  }
+	
+		private var _currentKey:*;
 		/**
 		 * Returns the current key
 		 */
-		public function get currentKey():* { return keys.selectIndex(currentIndex) };
+		public function get currentKey():* { return keys.getIndex(currentIndex); };
+		
+		
+	
+		
+		/**
+		 * Returns the current value
+		 */
+		public function get value():* { return values.getIndex(currentIndex); }		
 		
 		private var _currentValue:*;
 		/**
@@ -63,11 +81,15 @@ package com.gestureworks.cml.utils
 		 */
 		public function get currentValue():* { return values.getIndex(currentIndex); }	
 		
+		
+	
+		
+		
 		private var _length:int = 0;
 		/**
 		 * Returns the length of the LinkedMap
 		 */
-		public function get length():int { return values.length }
+		public function get length():int { return values.length; }
 
 		
 		
@@ -183,7 +205,7 @@ package com.gestureworks.cml.utils
 		public function append(key:*, value:*):void 
 		{			
 			keys.append(key);
-			values.append(value);			
+			values.append(value);	
 		}
 		
 		/**
@@ -196,6 +218,9 @@ package com.gestureworks.cml.utils
 			keys.prepend(key);
 			values.prepend(value);		
 		}
+
+		
+
 		
 		/**
 		 * Replaces a value by key. If more than one key is found. The first instance will be replaced.
@@ -206,9 +231,25 @@ package com.gestureworks.cml.utils
 		public function replaceKey(key:*, value:*):void 
 		{
 			var i:int = keys.search(key);
-			keys[i] = key;
-			values[i] = value;
+			
+			if (i >= 0) {
+				insert(i, key, value);
+				removeIndex(i+1);				
+			}
 		}		
+		
+		
+		/**
+		 * Replaces a key, value pair at the current index
+		 * @param	key
+		 * @param	value
+		 */
+		public function replace(key:*, value:*):void 
+		{
+			var i:int = keys.search(key);
+			insert(i, key, value);
+			removeIndex(i + 1);	
+		}			
 		
 		/**
 		 * Inserts a new key and value by index
@@ -233,7 +274,7 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * Removes a value by key
+		 * Removes a key, value pair by key
 		 * @param	key
 		 */
 		public function removeKey(key:*):void
@@ -242,19 +283,46 @@ package com.gestureworks.cml.utils
 			keys.remove(i);
 			values.remove(i);		
 		}
+		
+		/**
+		 * Removes a key, value at current index
+		 * @param	key
+		 */
+		public function remove():void
+		{	
+			keys.remove(currentIndex);
+			values.remove(currentIndex);		
+		}		
 
 		/**
-		 * Returns true if a value exists for the key
-		 * @param	value
+		 * Returns true if key exists
+		 * @param	key
 		 * @return
 		 */
-		public function hasKey(key:String):Boolean
+		public function hasKey(key:*):Boolean
 		{
-			if (keys.search(key) >= 0)
+			var i:int = keys.search(key);
+			
+			if (i >= 0)
 				return true;
 			else
 				return false;
-		}		
+		}
+		
+		/**
+		 * Returns true if value exists
+		 * @param	value
+		 * @return
+		 */
+		public function hasValue(value:*):Boolean
+		{
+			var i:int = values.search(key);
+			
+			if (i >= 0)
+				return true;
+			else
+				return false;
+		}			
 		
 		
 		// iterator methods //
@@ -265,7 +333,9 @@ package com.gestureworks.cml.utils
 		 */
 		public function reset():void
 		{
+			currentIndex = 0;
 			keys.reset();
+			values.reset();
 		}
 		
 		/**
