@@ -1,96 +1,35 @@
 package com.gestureworks.cml.loaders 
 {
-	import com.gestureworks.cml.events.StateEvent;
-	import flash.display.Loader;
+	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.factories.*;
+	import flash.display.*;
 	import flash.events.*;
-	import flash.net.URLRequest;
-	import flash.utils.*;
+	import flash.net.*;
 	
 	/**
-	 * The IMGLoader class loads and stores a global reference to an external bitmap image file.
+	 * The IMGLoader class loads an external bitmap file.
 	 * 
 	 * @author Charles
 	 * @see com.gestureworks.element.Image
 	 */
-	public class IMGLoader extends EventDispatcher
-	{
+	public class IMGLoader extends LoaderFactory
+	{		
 		/**
 		 * Constructor
 		 */
-		public function IMGLoader() {}
-		
-		/**
-		 * Contains the loaded bitmap data
-		 */
-		public var loader:Loader
-		
-		private var _isLoaded:Boolean = false;
-		/**
-		 * Returns the loaded value
-		 */
-		public function get isLoaded():Boolean { return _isLoaded; }	
-		
-		
-		private var _src:String = "";		
-		/**
-		 * Sets the file source path
-		 */
-		public function get src():String {return _src;}
-		public function set src(value:String):void 
-		{
-			if (src == "")
-			_src = value;
-			
-			if (!_isLoaded)
-				load(src);
-		}
+		public function IMGLoader() { super(); }		
 
 		/**
-		 * Loads an external bitmap file
-		 * @param	url
+		 * The COMPLETE string is dispatched when the file has loaded.
 		 */
-		public function load(url:String):void
-		{
-			if (src == "")
-				_src = url;
-			
-			loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
-			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-			loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);			
-			loader.load(new URLRequest(url));
-		}		
+		static public const COMPLETE:String = "COMPLETE";	
 		
-		/**
-		 * Bitmap load complete handler
-		 * @param	event
-		 */
-		private function onComplete(event:Event):void
+		override protected function onComplete(e:Event):void
 		{
-			//trace(event);
-			_isLoaded = true;
-			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);	
-			loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);	
-			loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onProgress);				
-			dispatchEvent(new Event(Event.COMPLETE, false, false));			
+			super.onComplete(e);	
+			dispatchEvent(new Event(IMGLoader.COMPLETE, false, false));			
+			dispatchEvent(new Event(Event.COMPLETE, false, false)); //deprecate			
 		}
-		
-		private function onError(event:IOErrorEvent):void
-		{
-			//trace(event);		
-		}		
 
-		
-		public var percentLoaded:Number;
-		private function onProgress(event:ProgressEvent):void
-		{
-			percentLoaded = event.bytesLoaded / event.bytesTotal;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, null, "percentLoaded", percentLoaded));
-			//trace("Percent downloaded", event.bytesLoaded / event.bytesTotal); 
-		}	
-		
-		public function unloadAndStop():void {
-			loader.unloadAndStop();
-		}
 	}
 }

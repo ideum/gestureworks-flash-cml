@@ -26,35 +26,38 @@ package com.gestureworks.cml.core
 	public class CMLParser extends CML_CORE
 	{	
 		// private variables
-		private static var cmlFilesComplete:int = 0;
-		private static var cmlRenderer:XMLList;
-		private static var cmlRendererKitFileComplete:int = 0;		
+		
+		//preprocess
+		private static var state:String;
+		private static var paths:Dictionary;
+		private static var data:Array = [];
+		private static var cnt:int;
+		
 		private static var GXMLComponent:Class;
 		private static var currentParent:*;			
 		private static var index:int = 0;
-		private static var includeParentIndex:Array = [];
-		private static var pausedCML:Array = [];
-		private static var pausedCML2:Array = [];
-		private static var includeFound:Boolean = false;		
-		private static var extFilesLoaded:Boolean = false;
+
 		
 		//public variables
 		public static const COMPLETE:String = "COMPLETE";
-		public static var extensions:RegExp = /^.*\.(cml|gml|xml|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|png|gif|jpg|mp3|swf|swc)$/i;		
+		
 		public static var debug:Boolean = false;			
-		public static var relativePaths:Boolean = false;			
+		
 		public static var rootDirectory:String = "";	
-		public static var defaultContainer:DisplayObjectContainer;
+		public static var relativePaths:Boolean = false;					
+		
 		public static var cssFile:String;
 		public static var cmlFile:String;
+		public static var cmlData:XML;
+		
+		public static var cmlDisplay:DisplayObjectContainer;
+		
 		
 		public function CMLParser() {}
 		
-		// legacy support, when CMLParser was a singleton instead of a static class
+		// legacy support, when CMLParser was a singleton 
 		private static var _instance:*;
-		public static function get instance():* { 
-			return CMLParser;	
-		}
+		public static function get instance():* {return CMLParser;}
 		
 		
 		/**
@@ -65,240 +68,316 @@ package com.gestureworks.cml.core
 		 */
 		public static function init(cml:XML, parent:*, properties:*=null):void
 		{
-			//need these settings for TLF System
+			// required for TLF
 			XML.ignoreWhitespace = true;
 			XML.prettyPrinting = false;
+		
+			cmlData = cml;			
 			
+			// set paths relative to main cml document
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
 			
+			// set root directory of file paths
 			if (cml.@rootDirectory != undefined && !relativePaths)
 				rootDirectory = cml.@rootDirectory;
 			else if (cml.@rootDirectory != undefined && relativePaths)
 				rootDirectory = relToAbsPath(rootDirectory.concat(cml.@rootDirectory));	
 				
-			// get css file
+			// set css file
 			var cssStr:String = "";
 			if (cml.@css != undefined)
 				cssStr = cml.@css;			
-			if (cssStr.length > 0){
-				if (relativePaths)
-					cssStr = relToAbsPath(rootDirectory.concat(cssStr));
-				else if (rootDirectory.length > 0)
-					cssStr = rootDirectory.concat(cssStr);					
-			}
-			CMLParser.instance.cssFile = cssStr;	
+			if (cssStr.length > 0)
+				CMLParser.cssFile = updatePath(cssStr);
 			
-			if (debug)
-				trace("\n\n========================== CML parser initialized ===============================");						
-		
-			if (debug)
-				trace("\n Parsing main CML document:", cmlFile);					
-					
-			if (debug)
-				trace("\n 1) Load fonts through FontManager");					
-	
-			var fontManager:FontManager = new FontManager;					
 			
-			if (debug)
-				trace("\n 2) Create defaultContainer");					
-				
-			defaultContainer = parent as DisplayObjectContainer;
+			// set parent display
+			cmlDisplay = parent as DisplayObjectContainer;
+			
 
-			if (debug)
-				trace("\n 3) Begin traversal of first children... search for global kits");			
-				
-			if (debug)
-				trace(StringUtils.printf("\n%5s%s %s", "", "3a)", "Search for LibraryKit"));			
-				
-			if (cml.children().(name() == "LibraryKit") != undefined) {
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", "LibraryKit found... loading LibraryKit"));
-				
-				LibraryKit.instance.parseCML(cml.children().(name() == "LibraryKit"));	
-				delete cml["LibraryKit"];
-			}
-			else {
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", "No LibraryKit found... skip LibraryKit"));				
-			}
-
-			if (debug)
-				trace(StringUtils.printf("\n%5s%s %s", "", "3b)", "Search for LayoutKit"));
-						
-			if (cml.children().(name() == "LayoutKit") != undefined) {
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", "LayoutKit found... loading LayoutKit"));				
-				
-				LayoutKit.instance.parseCML(cml.children().(name() == "LayoutKit"));
-				delete cml["LayoutKit"];
-			}			
-			else {
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", "No LayoutKit found... skip LayoutKit"));				
-			}						
-			
-			// TODO: Implement WindowKit
-			/* 
-			if (debug)
-				trace(StringUtils.printf("\n%5s%s %s", "", "3c)", "Search for WindowKit"));
-			
-			if (SystemDetection.AIR && (cml.children().(name() == "WindowKit") != undefined))
-			{
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", "WindowKit found... loading WindowKit"));					
-				
-				var ClassRef:Class = getDefinitionByName("com.gestureworks.cml.kits.WindowKit") as Class;
-				ClassRef["instance"].parseCML(cml.children().(name() == "WindowKit"));
-			}			
-			else // window kit is not specified, use default			
-			{
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", "No WindowKit found... skip WindowKit... adding defaultContainer to stage"));				
-					
-				//DefaultStage.instance.stage.addChildAt(defaultContainer, 0);
-			}			
-			*/
-			
-			if (debug)	
-				FileManager.instance.debug = true;	
-				
-			if (debug)
-				trace("\n 4) Begin recursive depth traversal");	
-			
-			currentParent = defaultContainer;
-			
-			var xmllist:XMLList = XMLList(cml.*);
-			loopCML(xmllist, defaultContainer);
-			if (!renderKitFound)
-				evaluate();
+			// preprocess
+			preprocess(XMLList(cml));
 		}			
-				
-		private static var extFilesLoading:Boolean = false;
-		private static function loadExtFiles():void
-		{	
-			if (debug)
-				trace("\n 5) Begin loading non-CML external files");	
+		
+		
+
+		
+
+		// ************************************************** //		
+		// *************** preprocess stages **************** //
+		// ************************************************** //		
+		
+		private static function preprocess(cml:XMLList):void
+		{
+			if (debug) trace("++ Preprocess Begin ++");	
+
+			paths = new Dictionary;
+			paths["Include"] = [];
+			paths["Library"] = [];
+			paths["Media"] = [];
 			
-			extFilesLoading = true;	
-			FileManager.instance.addEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
-			FileManager.instance.startFileQueue();
+			preprocessLoop(cml);
+			state = "Include";			
+			processPaths(paths[state]);
+		}		
+		
+		private static function ppComplete():void
+		{
+			if (debug) trace("\n++ Preprocess Complete ++");	
+
+			// process
+			process(XMLList(cmlData));			
 		}
 		
+		private static function preprocessLoop(cml:XMLList):void
+		{
+			var tag:String;
+			var i:int;
+			var j:int;
 		
-		private static function onLoadComplete(event:Event):void
+			for (i = 0; i < cml.length(); i++) {
+				tag = cml[i].name();
+				
+				if (!tag) {
+					// TODO: Replace -match against RendererData attribute values to more reliably resolve paths
+					if (cml.parent() && 
+						cml.parent().parent().parent().name() == "RendererData") {			
+						if ( cml[i].toString().search(FileManager.cmlType) > -1 )
+							ppInclude(cml[i], cml[i].toString());					
+						else if ( cml[i].toString().search(FileManager.mediaTypes) > -1 )
+							ppMedia(cml[i], cml[i].toString());
+					}	
+					continue;
+				}
+				
+				if (tag == "cml") trace("");
+				trace(dash(XMLList(cml[i])) + tag + "");
+				
+				if (tag == "Include")
+					ppInclude(cml[i]);				
+				else if (tag == "RenderKit")
+					ppRenderKit(cml[i]);
+				else if (tag == "LibraryKit" || tag == "Library")
+					ppLibraryKit(cml[i]);
+				else if (tag == "LayoutKit" || tag == "Layout")
+					ppLayoutKit(cml[i]);					
+				else if (cml[i].@src != undefined)
+					ppMedia(cml[i]);					
+				
+				if (cml[i].*.length() > 0)
+					preprocessLoop(cml[i].*);
+			}
+			
+		}							
+		
+		
+		private static function processPaths(p:Array):void
+		{
+			var cnt:int = 0;
+			
+			for (var i:int = 0; i < p.length; i++) {
+				if (!FileManager.hasFile(p[i])) {
+					FileManager.addToQueue(p[i]);
+					cnt++;
+				}	
+			}
+			paths[state] = [];
+			
+			if (cnt)
+				startQueue();
+			else
+				ppEval();
+		}
+
+		
+		private static function startQueue():void 
+		{
+			FileManager.addEventListener(FileEvent.FILE_LOADED, fileLoaded);
+			FileManager.addEventListener(FileEvent.FILES_LOADED, filesLoaded);
+			FileManager.startQueue();			
+		}
+		
+		private static function stopQueue():void 
+		{
+			FileManager.removeEventListener(FileEvent.FILE_LOADED, fileLoaded);
+			FileManager.removeEventListener(FileEvent.FILES_LOADED, filesLoaded);
+			FileManager.stopQueue();			
+		}		
+		
+		private static function fileLoaded(e:FileEvent):void
+		{
+			if (debug) trace("0:" + cnt.toString(), "File loaded:", e.path, e.data);
+			data.push(e.data);
+			cnt++;
+		}
+		
+		private static function filesLoaded(e:FileEvent):void
+		{
+			if (debug) trace("0:*", "Files loaded");			
+			for (var i:int = 0; i < data.length; i++) {
+				preprocessLoop(XMLList(data[i]));
+			}
+			data = [];
+			processPaths(paths[state]);			
+		}		
+		
+		
+		private static function ppEval():void
 		{			
-			FileManager.instance.removeEventListener(FileEvent.FILES_LOADED, onLoadComplete);				
-			
-			if (debug)
-				trace(StringUtils.printf("\n%4s%s", "", "External file loading complete"));
-			
-			extFilesLoading = false;	
-			extFilesLoaded = true;	
-			loadCSS();
-		}
-
-		private static function loadCSS():void
-		{		
-			if (debug)
-				trace("\n 6) Search for main CSS file");					
-				
-			if (cssFile.length > 0) {
-				if (debug) {
-					trace(StringUtils.printf("\n%4s%s%s", "", "CSS file found... loading: ", cssFile));				
-					CSSManager.instance.debug = true;
+			if (paths[state].length == 0) {
+				if (state == "Include") {
+					state = "Library";
+					processPaths(paths[state]);
+					return;
 				}
-				CSSManager.instance.addEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
-				CSSManager.instance.loadCSS(cssFile);
+				else if (state == "Library") {
+					state = "Media";
+					processPaths(paths[state]);
+					return;
+				}					
+				else if (state == "Media"){
+					ppComplete();
+					return;
+				}
+			}
+			processPaths(paths[state]);			
+		}
+		
+		private static function ppInclude(cml:XML, str:String=""):void 
+		{			
+			var path:String;
+			
+			if (str.length > 0)
+				path = str;			
+			else {
+				if (cml.@src != undefined)
+					path = cml.@src;
+				else if (cml.@cml != undefined) // deprecate
+					path = cml.@cml;
+				else throw new Error("Include statement must contain the 'src' attribute");
 			}	
-			else {
-				if (debug)
-					trace(StringUtils.printf("\n%4s%s", "", "No CSS file found... skipping CSS parsing"));						
-				loadDisplay();	
-			}
+			
+			if (!FileManager.isCML(path)) return;
+			
+			if (paths["Include"].indexOf(path) == -1)
+				paths["Include"].push(path);
+			if (debug) trace("0:  Include found: " + path);
 		}
 		
-		
-		private static function onCSSLoaded(event:FileEvent):void
+		private static function ppRenderKit(cml:XML):void 
 		{
-			CSSManager.instance.removeEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
-		
-			if (debug)
-				trace(StringUtils.printf("%4s%s%s", "", "CSS file load complete: ", cssFile));		
-			
-			CSSManager.instance.parseCSS();
-			loadDisplay();
-		}
-
-		
-		private static function onCMLLoadComplete(event:FileEvent):void
-		{	
-			cmlFilesComplete++;
-			
-			if (event.fileType == "cmlRenderKit") {
-				cmlRendererKitFileComplete++;
+			if (debug) trace("0:  RenderKit found" );
+			var path:String;
+			if (cml.Renderer != undefined && cml.RendererData == undefined && 
+				cml.Renderer.@dataPath != undefined) {
+				path = cml.Renderer.@dataPath;
 				
-				if (CMLLoader.getInstance(event.filePath).data.Renderer.@dataPath != undefined) {
-					cmlRenderer = CMLLoader.getInstance(event.filePath).data.Renderer;
-					var cmlRendererData:String = CMLLoader.getInstance(event.filePath).data.Renderer.@dataPath;
-					FileManager.instance.addToQueue(cmlRendererData, "cmlRendererData");
-				}
-				else	
-					loadRenderer(CMLLoader.getInstance(event.filePath).data, includeParentIndex[cmlRendererKitFileComplete-1]);
-			}
-			else if (event.fileType == "cmlRendererData") {
-				var renderKit:XML = <RenderKit/>
-				var data:XMLList = cmlRenderer + CMLLoader.getInstance(event.filePath).data.RenderKit.RendererData;
-				renderKit.appendChild(data);
-				loadRenderer(XMLList(renderKit), includeParentIndex[includeParentIndex.length-1]);	
-			}
-			else {
-				var xml:XML = XML(CMLLoader.getInstance(event.filePath).data);
-				var xmllist:XMLList = XMLList((xml.*).toXMLString());
-				includeFound = false;
-				loopCML(xmllist, includeParentIndex[includeParentIndex.length - 1]);
-				evaluate();
-			}
-		}			
+				if (!FileManager.isCML(path)) return;
+				
+				if (paths["Include"].indexOf(path) == -1)
+					paths["Include"].push(path);
+				if (debug) trace("0:  Renderer dataPath found: " + path);
+			}					
+		}		
 		
-		
-		
-		public static function loadRenderer(renderKit:*, parent:*):void
+		private static function ppLibraryKit(cml:XML):void 
 		{
-			if (debug)
-				trace("\n\nloading renderer");
-		
-			var rendererData:XMLList = renderKit.RendererData;
-			var renderList:XMLList;	
-			var cmlRenderer:XMLList;
-			var dataRootTag:String;
+			if (cml.name() != "Library") return;
+			if (cml.parent().name() != "LibraryKit") return; 
 			
-			for (var q:int; q < renderKit.Renderer.length(); q++) {
+			var path:String = cml.@src;
+			if (!FileManager.isLibrary(path)) return;
 
-				if (renderKit.Renderer.@dataRootTag == undefined)
-					renderList = rendererData.*;
-				else {
-					dataRootTag = renderKit.Renderer.@dataRootTag;
-					renderList = rendererData.*.(name() == dataRootTag);
-					trace(renderList.toString());
-				}				
-				for (var i:int = 0; i < renderList.length(); i++) {
-					cmlRenderer = new XMLList(renderKit.Renderer[q].*);
-					
-					for each (var node:XML in cmlRenderer) {						
-						var properties:XMLList = XMLList(renderList[i]);	
-						loopCML(XMLList(node), parent, properties);
-					}
-				}
+			if (paths["Library"].indexOf(path) == -1)
+				paths["Library"].push(path);	
+			if (debug) trace("0:  Library found: " + path);						
+		}				
+		
+		private static function ppLayoutKit(cml:XML):void 
+		{
+			if (cml.name() != "Layout") return;
+			if (cml.parent().name() != "LayoutKit") return; 
+			
+			LayoutKit.instance.parseCML(XMLList(cml));
+			if (debug) trace("0:  Layout found: " + cml.@ref + cml.@classRef);									
+		}	
+		
+		private static function ppMedia(cml:XML, str:String=""):void 
+		{	
+			var path:String; 
+			
+			if (str.length > 0)
+				path = str;
+			else
+				path = cml.@src;
+			
+			if (!FileManager.isMedia(path)) return;				
+				
+			if (paths["Media"].indexOf(path) == -1)
+				paths["Media"].push(path);
+			if (debug) trace("0:   Media found: " + path);				
+		}		 
+		
+		private static function dash(cml:XMLList):String
+		{
+			var str:String="-";
+			while (cml.parent()) {
+				str += "-"
+				cml = XMLList(cml.parent());
 			}
-			
-			renderKitFound = false;
-			evaluate();			
-		}			
-
-					
-		private static var renderKitFound:Boolean = false;
+			return str;
+		}
 		
+
+		
+		private static function updatePath(path:String):String 
+		{
+			if (relativePaths && rootDirectory.length > 0){	
+				path = rootDirectory.concat(path);
+				path = relToAbsPath(path);
+			}
+			else if (rootDirectory.length > 0)
+				path = rootDirectory.concat(path);
+				
+			return path;
+		}
+		
+		
+			
+		
+		
+		
+		
+		// ************************************************** //		
+		// ***************** processing stages ***************** //
+		// ************************************************** //		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		private static function process(cml:XMLList):void
+		{
+			if (debug) trace("\n++ Process Begin ++");	
+			if (debug) trace("\n" + dash(XMLList(cml)) + "cml");	
+			
+			loopCML(cml.children(), cmlDisplay);
+			loadCSS();
+			
+			if (debug) trace("\n++ Process Complete ++");
+			
+			
+		}
+		
+	
+		
+	
+							
 		/**
 		 * Recursive CML parsing
 		 * @param	cml
@@ -306,156 +385,78 @@ package com.gestureworks.cml.core
 		 * @param	properties
 		 */
 		public static function loopCML(cml:XMLList, parent:*= null, properties:*= null):void
-		{
-			if (includeFound) {
-				pausedCML2.push(new Array(cml, parent, properties));
-				return;
-			}		
+		{			
+			var node:XML;			
+			var tag:String;
+			var attr:String;
+			var obj:*;
+			var returned:XMLList=null;
+
 			
-			var className:String = null;
-			var attrName:String;
-			var obj:* = null;
-			var returnedNode:XMLList = null;
-			var i:int = 0;
-			var index:int = -1;
-			var node:XML;
 			
 			for each (node in cml) {
-				index++;
+				tag = node.name();	
+				if (debug) trace(dash(XMLList(node)) + tag + "");
 				
-				if (includeFound) {
-					var tmp:XMLList = cml.copy();
-					for (var j:int = index-1; j >= 0; j--) {
-						delete tmp[j];
+				
+				
+				if (tag == "Include") {
+					if (FileManager.hasFile(node.@src)) {
+						node = XML(FileManager.fileList.getKey(String(node.@src)));
+						tag = node.name();
+						loopCML(node.*, parent);
 					}
-					pausedCML2.push(new Array(tmp, parent, properties));					
-					break;
-					return;
-				}
-				
-				className = node.name();
-				
-				
-				// skip over tags which aren't in the correct place
-				if (className == "LibraryKit" || className == "Library" || className == "LayoutKit" || 
-					className == "WindowKit" || className == "DebugKit") {
 					continue;
-				}
-				// nested RenderKit
-				else if (className == "RenderKit") {
-					if (node.Renderer != undefined) {
-						if (node.Renderer.@dataPath != undefined) {
-							cmlRenderer = node.Renderer;
-							includeParentIndex.push(parent);
-							pausedCML.push(cml.copy());
-							for (var j:int = i; j >= 0; j--) {
-								delete pausedCML[pausedCML.length - 1][j];
-							}
-							renderKitFound = true;
-							FileManager.instance.addToQueue(String(node.Renderer.@dataPath), "cmlRendererData");
-							FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
-							if (FileManager.instance.cmlCount == 1)
-								FileManager.instance.startCMLQueue();
-							else
-								FileManager.instance.resumeCMLQueue();
-						}
-						else if (node.RendererData != undefined)			
-							loadRenderer(XMLList(node), parent);
-					}
-					return;
-				}	
-				// nested cml loader
-				else if (className == "Include") {
-					if (debug)
-						trace(StringUtils.printf("%9s%s", "", "*** Include found... object creation skipped... adding CML file to queue ***"));					
-					
-					for each (var attrValue:* in node.@*) {
-						attrName = attrValue.name().toString();
 
-						if ((attrName == "cml" || attrName == "src") && attrValue.toString().length > 0) {
-							if (attrValue.search(extensions) >= 0){
-								// rootDirectory allows you to change root path	
-								if (relativePaths && rootDirectory.length > 0){	
-									attrValue = rootDirectory.concat(attrValue);
-									attrValue = relToAbsPath(attrValue);
-								}
-								else if (rootDirectory.length > 0) {
-									attrValue = rootDirectory.concat(attrValue);
-								}
-							}	
-														
-							includeParentIndex.push(parent);
-							FileManager.instance.addToQueue(attrValue, "cml");								
-							pausedCML.push(cml.copy());
-														
-							for (var j:int = i; j >= 0; j--) {
-								delete pausedCML[pausedCML.length - 1][j];
-							}
-														
-							FileManager.instance.addEventListener(FileEvent.CML_LOADED, onCMLLoadComplete);
-							
-							if (FileManager.instance.cmlCount == 1)
-								FileManager.instance.startCMLQueue();
-							else 
-								FileManager.instance.resumeCMLQueue();
-							
-							includeFound = true;
-							return;
-						}
-					}
+				}
+				else if (tag == "RenderKit") {
+					loadRenderer(cml, parent);
 					continue;
 				}
+				else if (tag == "DebugKit" || tag == "Rendererer" || tag == "RendererData" 
+					|| tag == "LibraryKit" || tag == "Library" || tag == "LayoutKit" || tag == "Layout" )
+					continue;
+				
+
 			
-				// look for className keyword
-				// this changes the class type of the loaded object	
-				var aName:String;
-				var aValue:*;
-				for each (aValue in node.@*) {
-					aName = aValue.name().toString();
-					if (aName == "className")
-						className = aValue;
-				}
-										
-				if (debug)
-					trace(StringUtils.printf("%9s%s", "", className));					
-								
-				obj = createObject(className);	
+				
+				obj = createObject(tag);	
 	
+				
 				// assign id and class values
 				if (node.@id != undefined) {
 					obj.id = node.@id;
 					if (node.@['class'] != undefined)
 						obj.class_ = node.@['class'];
-				}
+				} 
 				else if (node.@['class'] != undefined) {
 					obj.class_ = node.@['class'];
 					obj.id = node.@['class'];
-				}
-				else
-					obj.id = className;
-						
+				} 
+				else obj.id = tag;
+				
+				
+					
 				// add to master object list
 				CMLObjectList.instance.append(obj.id, obj);				
+				
+				
 				
 				// unique object identifier
 				obj.cmlIndex = CMLObjectList.instance.length-1;	
 				
+				
+				
 				// run object's parse routine	
-				returnedNode = obj.parseCML(XMLList(node));
+				returned = obj.parseCML(XMLList(node));
+				obj.postparseCML(XMLList(node));
+				
+				
 				
 				 //target render data
-				if (properties){
-					if (debug)
-						trace("\ncomponent kit render properties of id: ", obj.id);					
-					
-					obj.propertyStates[0]["id"] = obj.id;				
-									
-					for (var key:* in obj.propertyStates[0]) {						
-						if (key == "rendererList") {
-							includeParentIndex.push(obj);
-							FileManager.instance.addToQueue(val, "cmlRenderKit");
-						}
-						
+				if (properties){			
+					obj.propertyStates[0]["id"] = obj.id;									
+					for (var key:* in obj.propertyStates[0]) {		
 						for each (var val:* in properties.*) {
 							var str:String = obj.propertyStates[0][key];
 							var eval:Boolean = false;
@@ -475,55 +476,152 @@ package com.gestureworks.cml.core
 						}
 					}						
 				}				
-				else {
-					// look for rendererList keyword
-					// loads an external RenderKit	
-					for each (aValue in node.@*) {
-						aName = aValue.name().toString();
-						
-						if (aName == "rendererList") {					
-							includeParentIndex.push(obj);
-							FileManager.instance.addToQueue(aValue, "cmlRenderKit");						
-						}		
-					}
-				}
+
 				
-				obj.postparseCML(XMLList(node));
 				
 				if (parent is (IContainer))
-					parent.childToList(obj.id, obj);				
-				else if (parent == defaultContainer && obj is DisplayObject)
-					defaultContainer.addChild(obj);					
+					parent.childToList(obj.id, obj);
+				
+				else if (parent == cmlDisplay && obj is DisplayObject)
+					cmlDisplay.addChild(obj);					
 				
 				//recursion
-				if (returnedNode.length() > 0)
-					loopCML(returnedNode, obj, properties);
+				if (returned.length() > 0)
+					loopCML(returned, obj, properties);
 					
-				i++;	
 			}
 		}		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	
+		
+		
+		
+
+		
+		public static function loadRenderer(renderKit:*, parent:*):void
+		{
+			if (debug)
+				trace("\n\nloading renderer");
+		
+			var rendererData:XMLList;
+			var renderList:XMLList;	
+			var cmlRenderer:XMLList;
+			var dataRootTag:String;
+			
+			var tmp:XMLList;
+			
+			for (var q:int; q < renderKit.Renderer.length(); q++) {
+
+				if (renderKit.Renderer.@dataPath == undefined) {
+					rendererData = renderKit.RendererData;
+				}
+				else {
+					tmp = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)));
+					rendererData = tmp.RenderKit.RendererData;
+				}
+				
+				
+				if (renderKit.Renderer.@dataRootTag == undefined) {
+					renderList = rendererData.*;
+				}
+				else {
+					dataRootTag = renderKit.Renderer.@dataRootTag;
+					renderList = rendererData.*.(name() == dataRootTag);
+				}	
+				
+				
+				for (var i:int = 0; i < renderList.length(); i++) {
+					cmlRenderer = new XMLList(renderKit.Renderer[q].*);
+					
+					for each (var node:XML in cmlRenderer) {						
+						var properties:XMLList = XMLList(renderList[i]);	
+						loopCML(XMLList(node), parent, properties);
+					}
+				}
+			}
+			
+		}			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		private static function loadCSS():void
+		{		
+			if (debug)
+				trace("\n 6) Search for main CSS file");					
+				
+			if (cssFile && cssFile.length > 0) {
+				if (debug) {
+					trace(StringUtils.printf("\n%4s%s%s", "", "CSS file found... loading: ", cssFile));				
+					CSSManager.instance.debug = true;
+				}
+				CSSManager.instance.addEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
+				CSSManager.instance.loadCSS(cssFile);
+			}	
+			else {
+				if (debug)
+					trace(StringUtils.printf("\n%4s%s", "", "No CSS file found... skipping CSS parsing"));
+				loadDisplay();	
+			}
+		}
+
+		private static function onCSSLoaded(event:FileEvent):void
+		{
+			CSSManager.instance.removeEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
+		
+			if (debug)
+				trace(StringUtils.printf("%4s%s%s", "", "CSS file load complete: ", cssFile));		
+			
+			CSSManager.instance.parseCSS();
+			loadDisplay();
+		}
+		
 		
 		
 		/**
 		 * Creates object from class name
 		 * Returns a new object of the class
-		 * @param	className
+		 * @param	tag
 		 * @return
 		 */
-		public static function createObject(className:String):Object
+		public static function createObject(tag:String):Object
 		{
 			//new object reference
 			var obj:* = null;			
+			var as3class:Class;
 			
 			//search for package syntax
-			if (className.indexOf('.') != -1)
+			if (tag.indexOf('.') != -1)
 			{
 				//create object
 				try {
-					GXMLComponent = getDefinitionByName(className) as Class;					
-					obj = new GXMLComponent();
+					as3class = getDefinitionByName(tag) as Class;					
+					obj = new as3class();
 				}
 				catch (e:Error){}					
 			}
@@ -531,11 +629,11 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				obj = searchPackages(className, CML_CORE.CML_CORE_PACKAGES);
+				obj = searchPackages(tag, CML_CORE.CML_CORE_PACKAGES);
 
 				//if search failed, throw an error
 				if (!obj)
-					throw new Error(className + " failed to load");
+					throw new Error(tag + " failed to load");
 			}
 				
 			return obj;
@@ -547,21 +645,22 @@ package com.gestureworks.cml.core
 		/**
 		 * Searches a class name from an array of packages
 		 * Returns a new object of the class
-		 * @param	className
+		 * @param	tag
 		 * @param	packageArray
 		 * @return
 		 */
-		private static function searchPackages(className:String, packageArray:Array):Object
+		private static function searchPackages(tag:String, packageArray:Array):Object
 		{
 			var obj:* = null;
+			var as3class:Class;
 			
 			//search package list
 			for (var i:int=0; i<packageArray.length; i++)
 			{
 				//create object
 				try {
-					GXMLComponent = getDefinitionByName(packageArray[i] + className) as Class;					
-					obj = new GXMLComponent();
+					as3class = getDefinitionByName(packageArray[i] + tag) as Class;					
+					obj = new as3class();
 					break;
 				}
 				catch (e:Error){}	
@@ -593,34 +692,30 @@ package com.gestureworks.cml.core
 		
 		public static function attrLoop(obj:*, cml:XMLList):void
 		{
-			var attrName:String;
+			var attr:String;
 			
-			for each (var attrValue:* in cml.@*)
-			{
-				attrName = attrValue.name().toString();
+			for each (var attrValue:* in cml.@*) {
+				attr = attrValue.name().toString();
 
 				// check for css keyword
-				if (attrName == "class")
-					attrName = "class_";				
+				if (attr == "class")
+					attr = "class_";				
 				
-				if (attrValue.search(extensions) >= 0 && String(attrValue.charAt(0) != "{") )
-				{
+				if (attrValue.search(FileManager.fileTypes) >= 0 && String(attrValue.charAt(0) != "{") ) {
 					// rootDirectory allows you to change root path	
-					if (relativePaths && rootDirectory.length > 1)	
-					{	
+					if (relativePaths && rootDirectory.length > 1) {	
 						attrValue = rootDirectory.concat(attrValue);
 						attrValue = relToAbsPath(attrValue);	
 					}
-					else if (rootDirectory.length > 0)	
-					{	
+					else if (rootDirectory.length > 0) {	
 						attrValue = rootDirectory.concat(attrValue);
 					}					
 				}
 					
-				obj.propertyStates[0][attrName] = attrValue;
+				obj.propertyStates[0][attr] = attrValue;
 			}
 					
-			attrName = null;			
+			attr = null;			
 		}
 		
 		
@@ -754,27 +849,31 @@ package com.gestureworks.cml.core
 		}
 		
 		
-		/**
-		 * Evaluates whether or not to exit recursive parsing loop
-		 */
-		private static function evaluate():void
-		{
-			if ( (cmlFilesComplete != FileManager.instance.cmlCount) || renderKitFound || extFilesLoading)
-				return;
-			else if (pausedCML.length > 0) {
-				loopCML(pausedCML.pop(), includeParentIndex.pop());
-				evaluate();
-			}
-			else if (pausedCML2.length > 0) {
-				var arr:Array = pausedCML2.pop();				
-				loopCML(XMLList(arr[0]),arr[1],arr[2]);
-				evaluate();				
-			}
-			else if (FileManager.instance.fileCount > 0 && !extFilesLoaded)
-				loadExtFiles();
-			else
-				loadCSS();
-		}
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		/**
@@ -901,7 +1000,7 @@ package com.gestureworks.cml.core
 						str += "*";
 					}
 					
-					trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", class_, " object:", object);					
+					if (debug) trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", class_, " object:", object);					
 					
 					if (obj.childList.getIndex(i).hasOwnProperty("childList"))
 						childLoop(obj.childList.getIndex(i), index + 1); 										

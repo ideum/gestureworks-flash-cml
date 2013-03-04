@@ -32,38 +32,43 @@ package com.gestureworks.cml.events
 		
 		
 		/**
-		 * Event initiator's file type
-		 * @default null
+		 * Event constant
+		 * @default FILES_LOADED
 		 */	
-		private var _fileType:String;
-		public function get fileType():String { return _fileType; }	
+		public static const FILE_LOADED:String = "FILE_LOADED";
 		
 		
 		/**
 		 * Event initiator's file path name
 		 * @default null
 		 */	
-		private var _filePath:String;
-		public function get filePath():String { return _filePath; }				
+		private var _path:String;
+		public function get path():String { return _path; }				
 		
+		/**
+		 * Event initiator's file path name
+		 * @default null
+		 */	
+		private var _data:*;
+		public function get data():* { return _data; }	
 		
 		/**
 		 * Creates a FileEvent object and sets defaults
 		 * @param type
-		 * @param id
+		 * @param path
 		 * @param property
 		 * @param bubbles
 		 * @param cancelelable
 		 * @return none
 		 */		
-		public function FileEvent(type:String, fileType:String=null, filePath:String=null, bubbles:Boolean=false, cancelable:Boolean = false):void 
+		public function FileEvent(type:String, path:String=null, data:*=null, bubbles:Boolean=false, cancelable:Boolean = false):void 
 		{
 			//calls the super class Event
 			super(type, bubbles, cancelable);
 
 			//sets custom values
-			_fileType = fileType;
-			_filePath = filePath;
+			_path = path;
+			_data = data;
 		}
 		
 		
@@ -74,7 +79,7 @@ package com.gestureworks.cml.events
 		 */		
 		override public function clone():Event
 		{
-			return new FileEvent(type, _fileType, _filePath, bubbles, cancelable);
+			return new FileEvent(type, _path, _data, bubbles, cancelable);
 		}		
 	
 		

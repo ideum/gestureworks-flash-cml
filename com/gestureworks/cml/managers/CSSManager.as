@@ -53,7 +53,7 @@ package com.gestureworks.cml.managers
 		{
 			file = filePath;
 			CSSLoader.getInstance(file).loadStyle(file);
-			CSSLoader.getInstance(file).addEventListener(FileEvent.CSS_LOADED, onCSSLoad);			
+			CSSLoader.getInstance(file).addEventListener(CSSLoader.COMPLETE, onCSSLoad);			
 		}
 		
 		/**
@@ -62,8 +62,8 @@ package com.gestureworks.cml.managers
 		 */		
 		private function onCSSLoad(event:Event):void
 		{			
-			event.target.removeEventListener(FileEvent.CSS_LOADED, onCSSLoad);
-			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED, "css", file));
+			event.target.removeEventListener(CSSLoader.COMPLETE, onCSSLoad);
+			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED, file, event.target));
 		}
 		
 		/**

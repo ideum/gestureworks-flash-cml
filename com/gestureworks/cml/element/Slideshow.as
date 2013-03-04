@@ -119,19 +119,22 @@ package com.gestureworks.cml.element
 		{
 			super.displayComplete();
 			
-			slideshowItems.array = childList.getValueArray();
+			var arr:Array = childList.getValueArray();
+			for (var j:int = 0; j < arr.length; j++) {
+				slideshowItems.append(arr[i]); 
+			}
 			
 			for (var i:Number = slideshowItems.length; i > 0; i--) {
-				////trace("Removing item: " + slideshowItems.array[i] + ", " + i);
-				if (getChildAt(slideshowItems.array[i]).width > maxWidth) {
-					maxWidth = getChildAt(slideshowItems.array[i]).width;
+				////trace("Removing item: " + slideshowItems.getIndex(i) + ", " + i);
+				if (getChildAt(slideshowItems.getIndex(i)).width > maxWidth) {
+					maxWidth = getChildAt(slideshowItems.getIndex(i)).width;
 					this.width = maxWidth;
 				}
-				if (getChildAt(slideshowItems.array[i]).height > maxHeight) {
-					maxHeight = getChildAt(slideshowItems.array[i]).height;
+				if (getChildAt(slideshowItems.getIndex(i)).height > maxHeight) {
+					maxHeight = getChildAt(slideshowItems.getIndex(i)).height;
 					this.height = maxHeight;
 				}
-				removeChildAt(slideshowItems.array[i]);
+				removeChildAt(slideshowItems.getIndex(i));
 			}
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded", true));
@@ -232,9 +235,9 @@ package com.gestureworks.cml.element
 		 */
 		public function fadeout(index:int):void
 		{
-			var lastItem:DisplayObject = slideshowItems.array[index];
+			var lastItem:DisplayObject = slideshowItems.getIndex(index);
 			
-			if (slideshowItems.array[index])
+			if (slideshowItems.getIndex(index))
 			{
 				tween = BetweenAS3.tween(lastItem, { alpha:0 }, null, fadeDuration/1000);
 				tween.onComplete = onFadeOutEnd;
@@ -245,8 +248,8 @@ package com.gestureworks.cml.element
 			{
 				lastItem.visible = false;
 				////trace(lastItem.parent);
-				if (contains(slideshowItems.array[index])){
-					removeChild(slideshowItems.array[index]);
+				if (contains(slideshowItems.getIndex(index))){
+					removeChild(slideshowItems.getIndex(index));
 				}
 				tween = null;
 			}				
@@ -258,11 +261,11 @@ package com.gestureworks.cml.element
 		 */
 		public function fadein(index:int):void
 		{
-			var currentItem:* = slideshowItems.array[index];
+			var currentItem:* = slideshowItems.getIndex(index);
 			
-			slideshowItems.array[index].alpha = 0;
-			slideshowItems.array[index].visible = true;
-			addChild(slideshowItems.array[index]);
+			slideshowItems.getIndex(index).alpha = 0;
+			slideshowItems.getIndex(index).visible = true;
+			addChild(slideshowItems.getIndex(index));
 			
 			tween = BetweenAS3.tween(currentItem, { alpha:1 }, null, fadeDuration/1000);
 			tween.onComplete = onFadeInEnd;
@@ -337,7 +340,7 @@ package com.gestureworks.cml.element
 			timer = null;
 			tween = null;
 			
-			for each (var item:DisplayObject in slideshowItems.array) {
+			for each (var item:DisplayObject in slideshowItems.toArray()) {
 				if (contains(item)) {
 					removeChild(item);
 				}
@@ -353,7 +356,7 @@ package com.gestureworks.cml.element
 		public function clear():void {
 			timer.stop();
 			
-			for each (var item:DisplayObject in slideshowItems.array) {
+			for each (var item:DisplayObject in slideshowItems.toArray()) {
 				if (contains(item))
 					removeChild(item);
 			}

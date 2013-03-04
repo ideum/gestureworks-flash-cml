@@ -1,82 +1,55 @@
 package com.gestureworks.cml.loaders
 {
-	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.net.URLRequest;
-	import flash.system.ApplicationDomain;
-	import flash.system.LoaderContext;
+	import com.gestureworks.cml.factories.*;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.net.*;
+	import flash.system.*;
 	import flash.utils.*;
 	
 	/**
-	 * The SWFLoader class loads and stores a global reference to an exteranl SWF file.
+	 * The SWFLoader class loads an external SWF file.
 	 * 
 	 * @author Charles
 	 * @see com.gestureworks.element.SWF
 	 */
-	public class SWFLoader extends EventDispatcher
-	{ 
+	public class SWFLoader extends LoaderFactory
+	{ 		
 		/**
 		 * Constructor
 		 */
-		public function SWFLoader() {}		
+		public function SWFLoader() { super(); }		
 		
 		/**
-		 * The FILE_LOADED string is dispatch when file load is complete
+		 * The COMPLETE string is dispatched when the file has loaded.
 		 */
-		public static const FILE_LOADED:String = "FILE_LOADED";				
+		public static const COMPLETE:String = "COMPLETE";		
 		
 		/**
-		 * Hold information of loaded swf file
-		 */
-		public var loader:Loader;
-		
-		private var _isLoaded:Boolean = false;
-		/**
-		 * Returns loaded to true or false
-		 */
-		public function get isLoaded():Boolean { return _isLoaded; }	
-		
-		private var _src:String = "";		
-		/**
-		 * Sets the file source path
-		 */
-		public function get src():String {return _src;}
-		public function set src(value:String):void 
-		{
-			if (src == "")
-			_src = value;
-			
-			if (!_isLoaded)
-				load(src);
-		}
-
-		/**
-		 * Loads an external bitmap file
+		 * Loads an external swf file
 		 * @param	url
 		 */
-		public function load(url:String):void
+		override public function load(url:String):void
 		{
-			if (src == "")
-				_src = url;
+			_src = url;
+			urlRequest = new URLRequest(url);
 							
-			loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loaderCompleteHandler);
+			_loader = new Loader();
+			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
+			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);						
+			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
+						
 			var loaderContext:LoaderContext = new LoaderContext(false);
 			loaderContext.allowCodeImport = true;
 			loaderContext.applicationDomain = ApplicationDomain.currentDomain;
-			loader.load(new URLRequest(url), loaderContext);			
+			
+			_loader.load(urlRequest, loaderContext);
 		}		
-
-		/**
-		 * SWF load complete hander
-		 * @param	event
-		 */		
-		private function loaderCompleteHandler(event:Event):void
-		{			
-			_isLoaded = true;
-			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, loaderCompleteHandler);			
-			dispatchEvent(new Event(SWFLoader.FILE_LOADED, true, true));			
+		
+		override protected function onComplete(e:Event):void
+		{
+			super.onComplete(e);
+			dispatchEvent(new Event(SWFLoader.COMPLETE, false, false));						
 		}		
 	}
 }

@@ -3,6 +3,7 @@ package com.gestureworks.cml.managers
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.utils.*;
+	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
@@ -29,273 +30,206 @@ package com.gestureworks.cml.managers
 	 * @author Charles
 	 * @see com.gestureworks.cml.loaders.CSSManager
 	 */
-	public class FileManager extends EventDispatcher
+	public class FileManager
 	{
 		// supported file types
-		private var imageTypes:RegExp = /^.*\.(png|gif|jpg)$/i;  
-		private var	videoTypes:RegExp = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
-		private var	swfType:RegExp = /^.*\.(swf)$/i;
-		private var	cmlType:RegExp = /^.*\.(cml)$/i;
+		public static var audioType:RegExp = /^.*\.(mp3|wav|)$/i;		
+		public static var imageType:RegExp = /^.*\.(png|gif|jpg)$/i;  
+		public static var videoType:RegExp = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
+		public static var swfType:RegExp = /^.*\.(swf)$/i;
+		public static var swcType:RegExp = /^.*\.(swc)$/i;
+		public static var cmlType:RegExp = /^.*\.(cml)$/i;
+		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
+		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
+		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
-		private var rendererDataCount:int;		
-		/**
-		 * Constructor
-		 * @param	enforcer
-		 */
-		public function FileManager(enforcer:SingletonEnforcer) {}
+
+		public function FileManager() { }
 		
-		private static var _instance:FileManager;
-		/**
-		 * Returns an instance of the FileManager class
-		 */
-		public static function get instance():FileManager 
-		{ 
-			if (_instance == null)
-				_instance = new FileManager(new SingletonEnforcer());			
-			return _instance; 
-		}	
+		// legacy support, when FileManager was a singleton
+		private static var _instance:*;
+		public static function get instance():* { 
+			return FileManager;	
+		}
+		
+		public static var fileList:LinkedMap = new LinkedMap;
+		private static var first:Boolean = true;
 		
 		/**
 		 * Turns on the debug information
 		 */
-		public var debug:Boolean = false;
+		public static var debug:Boolean = false;
 		
 		/**
 		 * The number of files in file list
 		 */
-		public var fileCount:int = 0;
-		private var fileQueue:LinkedMap = new LinkedMap;
-		/**
-		 * The list of files that FileManager processes
-		 */
-		public var fileList:LinkedMap = new LinkedMap;
+		public static var fileCount:int;
 		
-		/**
-		 * The number of CML files in the cml file queue
-		 */
-		public var cmlCount:int = 0;
-		
-		/**
-		 * The list of CML files in the queue
-		 */
-		public var cmlQueue:LinkedMap = new LinkedMap;
-		private var cmlLoaded:Boolean = false;
 		
 		/**
 		 * Indicates whther the file queue has stopped
 		 */
-		public var stopped:Boolean = false;
+		public static var stopped:Boolean = false;
 		
-
 		
 		/**
-		 * Validates the file type and appends to file queue
-		 * @param	file - file name
-		 * @param	type - type of file
+		 *  
 		 */
-		public function addToQueue(file:String, type:String=null):void
+		public static function isMedia(file:String):Boolean
 		{
-			if (type == "cml" && file.search(cmlType) >= 0)
-			{				
-				cmlQueue.append(file, type);				
-				cmlCount++;
-			}
-			
-			else if (type == "cmlRenderKit" && file.search(cmlType) >= 0)
-			{				
-				cmlQueue.append(file, type);			
-				cmlCount++;
-			}
-			
-			else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
-			{				
-				if (cmlQueue.currentIndex + 1 > cmlQueue.length-1)
-					cmlQueue.append(file, type);
-				else
-					cmlQueue.insert(cmlQueue.currentIndex + 1, file, type);	
-									
-				cmlCount++;
-			}				
-			
-			else if (type == "swf" && file.search(swfType) >= 0 && !fileQueue.hasKey(file))
-			{				
-				fileQueue.append(file, type);
-				fileCount++;
-			}
-						
-			else if (type == "img" && file.search(imageTypes) >= 0 && !fileQueue.hasKey(file))
-			{
-				fileQueue.append(file, type);
-				fileCount++;
-			}			
-		}
-		
-		
-		/**
-		 * Starts processing of the CML file queue
-		 */
-		public function startCMLQueue():void
-		{					
-			stopped = false;						
-			if (cmlLoaded < cmlCount)
-				processCMLQueue();
-		}
-	
-		/**
-		 * Resumes processing of the CML file queue
-		 */
-		public function resumeCMLQueue():void
-		{
-			stopped = false;
-
-			cmlQueue.currentIndex += 1;			
-			startCMLQueue();
+			return file.search(mediaTypes) != -1;
 		}		
 		
+
+		/**
+		 *  
+		 */
+		public static function isCML(file:String):Boolean
+		{
+			return file.search(fileTypes) != -1;
+		}		
+				
+		
+		
+
+		/**
+		 *  
+		 */
+		public static function isLibrary(file:String):Boolean
+		{
+			return file.search(libraryTypes) != -1;
+		}	
+		
+				
+		/**
+		 * 
+		 */
+		public static function hasFile(file:String):Boolean
+		{
+			return fileList.hasKey(file);
+		}		
 		
 		/**
-		 * Resumes processing of the non-CML file queue
+		 * Appends to file queue
+		 * @param	file - file name
 		 */
-		public function startFileQueue():void
+		public static function addToQueue(file:String):void
+		{
+			fileList.append(file, null);
+			fileCount++;			
+		}
+		
+		/**
+		 * Resets file queue
+		 */
+		public static function resetQueue():void
+		{
+			fileList.reset();
+		}	
+		
+		/**
+		 * Starts file queue
+		 */
+		public static function startQueue():void
 		{
 			stopped = false;
 			processFileQueue();
 		}		
 		
 		/**
-		 * Stops processing of all file queues
+		 * Stops file queue
 		 */
-		public function stopQueue():void
+		public static function stopQueue():void
 		{
 			stopped = true;
 		}
+
 		
 		/**
-		 * Processes the CML files in the queue depending on stopped information
-		 */
-		private function processCMLQueue():void
-		{						
-			if (!stopped)
-			{
-				var file:String = cmlQueue.currentKey;		
-				var type:String = cmlQueue.currentValue;
-								
-				if (file)
-				{
-					if (type == "cml" && file.search(cmlType) >= 0)
-					{
-						if (debug)
-							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML include file: ", file));	
-				
-						CMLLoader.getInstance(file).loadCML(file);
-						CMLLoader.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
-						fileList.append(file, CMLLoader.getInstance(file));	
-					}
-					else if (type == "cmlRenderKit" && file.search(cmlType) >= 0)
-					{
-						if (debug)
-							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML RenderKit file: ", file));							
-						
-						CMLLoader.getInstance(file).loadCML(file);
-						CMLLoader.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
-						fileList.append(file, CMLLoader.getInstance(file));	
-					}
-					else if (type == "cmlRendererData" && file.search(cmlType) >= 0)
-					{	
-						if (debug)
-							trace(StringUtils.printf("\n%4s%s%s", "", "Load nested CML RendererData file: ", file));	
-							
-						CMLLoader.getInstance(file).loadCML(file);
-						CMLLoader.getInstance(file).addEventListener(Event.INIT, onCMLLoaded);
-						fileList.append(file, CMLLoader.getInstance(file));	
-					}						
-				}
-			}			
-			
-		}
-		
-		/**
-		 * Processes the non-CML files in the queue depending on stopped information
+		 * Processes file queue
 		 */		
-		private function processFileQueue():void
-		{			
-			if (!stopped)
-			{
-				var file:String = fileQueue.currentKey;		
-				var type:String = fileQueue.currentValue;				
-				var loader:* = null;
+		private static function processFileQueue():void
+		{
+			if (stopped) 
+				return;
+			
+			var file:String;
+			
+			if (first) 
+				file = fileList.key;
+			else if (fileList.hasNext()) {
+				fileList.next();
+				file = fileList.key;
+			}
+			else 
+				return;
 				
-				if (file)
-				{
-					if (type == "swf" && file.search(swfType) >= 0)
-					{
-						if (debug)
-							trace(StringUtils.printf("\n%4s%s%s", "", "Load SWF file: ", file));	
-							
-						loader = new SWFLoader;
-						loader.addEventListener(SWFLoader.FILE_LOADED, onFileLoaded);	
-						loader.load(file);
-						fileList.append(file, loader);	
-					}
-					
-					else if (type == "img" && file.search(imageTypes) >= 0)
-					{
-						if (debug)
-							trace(StringUtils.printf("\n%4s%s%s", "", "Load IMG file: ", file));						
-						
-						loader = new IMGLoader;
-						loader.addEventListener(Event.COMPLETE, onFileLoaded);	
-						loader.load(file);						
-						fileList.append(file, loader);
-					}	
+			var loader:* = null;
+			
+			if (file) {
+				if (file.search(FileManager.cmlType) >= 0) {
+					CMLLoader.getInstance(file).load(file);
+					CMLLoader.getInstance(file).addEventListener(CMLLoader.COMPLETE, onFileLoaded);
+				}					
+				
+				else if (file.search(FileManager.swfType) >= 0) {							
+					loader = new SWFLoader;
+					loader.addEventListener(SWFLoader.COMPLETE, onFileLoaded);	
+					loader.load(file);
 				}
-			}	
+				
+				else if (file.search(FileManager.imageType) >= 0) {
+					loader = new IMGLoader;
+					loader.addEventListener(IMGLoader.COMPLETE, onFileLoaded);	
+					loader.load(file);						
+				}	
+			}
+			first = false;
 		}
 		
-		
-		// TODO: IMPLEMENT UNLOADERS
-		
+			
 		/**
-		 * CML load complete handler
-		 * @param	event
-		 */	
-		private function onCMLLoaded(event:Event):void
-		{			
-			var file:String = cmlQueue.currentKey;				
-			var type:String = cmlQueue.currentValue;				
-			
-			if (debug)
-				trace(StringUtils.printf("%4s%s%s", "", "CML file load complete: ", file));				
-			
-			stopped = true;
-			cmlLoaded = true;
-			
-			dispatchEvent(new FileEvent(FileEvent.CML_LOADED, type, file, true, true));			
-		}		
-		
-		/**
-		 * Non-CML file load complete handler
+		 * File load complete callback
 		 * @param	event
 		 */			
-		private function onFileLoaded(event:Event):void
+		private static function onFileLoaded(e:Event):void
 		{
-			var file:String = fileQueue.currentKey;	
-			var type:String = fileQueue.currentValue;	
-			
-			if (debug)
-				trace(StringUtils.printf("%4s%s%s", "", "External file load complete: ", file));				
-			
-			if (fileQueue.hasNext())
-			{
-				fileQueue.currentIndex += 1;				
-				processFileQueue();
+			var file:String = fileList.key;
+
+			if (file.search(FileManager.cmlType) >= 0) {
+				CMLLoader.getInstance(file).removeEventListener(CMLLoader.COMPLETE, onFileLoaded);
+				fileList.replaceKey(file, CMLLoader.getInstance(file).data);
+				dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, fileList.key, fileList.value, false, false));					
+			}		
+			else {
+				fileList.replaceKey(file, e.target.loader);
+				dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, fileList.key, fileList.value, false, false));
 			}
-			else
-				dispatchEvent(new FileEvent(FileEvent.FILES_LOADED, type, file, true, true));
 			
+			if (fileList.hasNext())				
+				processFileQueue();
+			else	
+				dispatchEvent(new FileEvent(FileEvent.FILES_LOADED, null, null, false, false));
 		}
 		
+		
+		
+		// IEventDispatcher
+        private static var _dispatcher:EventDispatcher = new EventDispatcher();
+        public static function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
+            _dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+        }
+        public static function dispatchEvent(event:Event):Boolean {
+            return _dispatcher.dispatchEvent(event);
+        }
+        public static function hasEventListener(type:String):Boolean {
+            return _dispatcher.hasEventListener(type);
+        }
+        public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+            _dispatcher.removeEventListener(type, listener, useCapture);
+        }
+        public static function willTrigger(type:String):Boolean {
+            return _dispatcher.willTrigger(type);
+        }			
 	}
 }
-
-class SingletonEnforcer{}

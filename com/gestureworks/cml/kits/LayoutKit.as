@@ -39,31 +39,33 @@ package com.gestureworks.cml.kits
 		{
 			var xmlList:XMLList = null;
 			var obj:*;
+
+
+			if (cml.@ref != undefined)
+				obj = CMLParser.instance.createObject(cml.@ref);
+			else if (cml.@classRef != undefined)
+				obj = CMLParser.instance.createObject(cml.@classRef);
+			else
+				throw new Error("The Layout tag requires the 'ref' attribute");
 			
-			for each (var node:* in cml.*)
-			{
-				if (node.name().toString() == "Layout")
-				{					
-					obj = CMLParser.instance.createObject(node.@classRef);
-					obj.id = node.@id;
-					
-					LayoutManager.instance.addLayout(obj.id, obj);
-					
-					// apply attributes
-					var attrName:String;
-					var returnNode:XMLList = new XMLList;
-					
-					for each (var attrValue:* in node.@*)
-					{				
-						attrName = attrValue.name().toString();
-						if (attrName != "classRef")
-							LayoutManager.instance.layoutList[obj.id][attrName] = attrValue;
-					}
-					
-					attrName = null;					
-					
-				}
+			obj.id = cml.@id;
+			
+			LayoutManager.instance.addLayout(obj.id, obj);
+			
+			// apply attributes
+			var attrName:String;
+			var returnNode:XMLList = new XMLList;
+			
+			for each (var attrValue:* in cml.@*)
+			{				
+				attrName = attrValue.name().toString();
+				if (attrName != "classRef" && attrName != "ref")
+					LayoutManager.instance.layoutList[obj.id][attrName] = attrValue;
 			}
+			
+			attrName = null;					
+				
+
 			
 			return xmlList;
 		}		

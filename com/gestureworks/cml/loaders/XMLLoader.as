@@ -1,10 +1,9 @@
 package com.gestureworks.cml.loaders
 {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.utils.Dictionary;
+	import flash.display.Loader;
+	import flash.events.*;
+	import flash.net.*;
+	import flash.utils.*;
 	
 	/**
 	 * The XMLLoader class loads and stores a global reference to an external XML file.
@@ -14,13 +13,24 @@ package com.gestureworks.cml.loaders
 	 */
 	public class XMLLoader extends EventDispatcher
 	{				
-		private var urlLoader:URLLoader;
 		private var urlRequest:URLRequest;
+		
+		
+		/**
+		 * Constructor
+		 * @param	enforcer
+		 */	 
+		public function XMLLoader(enforcer:SingletonEnforcer)
+		{
+			_isLoaded = false;
+		}	
+		
 		
 		/**
 		 * Holds class instances of the multiton
 		 */
 		static private var instances:Dictionary = new Dictionary;
+		
 		
 		/**
 		 * returns the XML loader key value
@@ -34,59 +44,111 @@ package com.gestureworks.cml.loaders
 			return XMLLoader.instances[key];
 		}
 		
-		/**
-		 * The INIT string is dispatch when file load is complete
-		 */
-		static public const INIT:String = "init";		
-		
-		/**
-		 * Contains the loaded xml file data
-		 */
-		public var data:XML = new XML;
 
-		private var _isLoaded:Boolean;		
 		/**
-		 * Returns a boolean determining whether the file has been loaded
+		 * The COMPLETE string is dispatched when the file has loaded.
 		 */
-		public function get isLoaded():Boolean { return _isLoaded; }		
+		static public const COMPLETE:String = "COMPLETE";	
 		
+		
+		private var _loader:Loader;
 		/**
-		 * Constructor
-		 * @param	enforcer
-		 */	 
-		public function XMLLoader(enforcer:SingletonEnforcer)
+		 * Contains the loader
+		 */		
+		public function get loader():Loader {return _loader;}
+
+
+		public var _data:XML;
+		/**
+		 * Contains the loaded data
+		 */		
+		public function get data():XML {return _data;}		
+		
+		
+		private var _isLoaded:Boolean = false;
+		/**
+		 * Returns true if the file is loaded
+		 */
+		public function get isLoaded():Boolean {return _isLoaded;}	
+		
+		
+		private var _percentLoaded:Number;
+		/**
+		 * Returns the percentage loaded value
+		 */
+		public function get percentLoaded():Number { return _percentLoaded; }	
+		
+		
+		private var _src:String = "";		
+		/**
+		 * Sets the file source path
+		 */
+		public function get src():String {return _src;}
+		public function set src(value:String):void 
 		{
-			_isLoaded = false;
+			_src = value;
 		}	
 		
-		/**
-		 * Loads the XML filepath
-		 * @param	url
-		 */
+		
+		// public methods
+				
+		
+		[Deprecated(replacement = "load")]	
 		public function loadXML(url:String):void
 		{
-			urlRequest = new URLRequest(url);
-			urlLoader = new URLLoader;
-			urlLoader.addEventListener(Event.COMPLETE, onXMLDataLoaded);
-			urlLoader.load(urlRequest);
+			load(url);
 		}
 		
 		/**
-		 * XML load complete handler
-		 * @param	e
+		 * Loads an external XML file
+		 * @param	url
 		 */
-		public function onXMLDataLoaded(e:Event):void
+		public function load(url:String):void
 		{
+			_src = url;
+			urlRequest = new URLRequest(url);
+			
+			_loader = new URLLoader();
+			_loader.addEventListener(Event.COMPLETE, onComplete);
+			_loader.addEventListener(ProgressEvent.PROGRESS, onProgress);						
+			_loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
+			_loader.load(urlRequest));
+		}		
+		
+
+		// private methods
+		
+		
+		private function onComplete(e:Event):void
+		{
+			_isLoaded = true;
+			_loader.removeEventListener(Event.COMPLETE, onComplete);
+			_loader.removeEventListener(ProgressEvent.PROGRESS, onProgress);							
+			_loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);	
+			
 			try {
-				data = XML(urlLoader.data);	
+				_data = XML(_loader.data);	
 			}
 			catch (er:Error) {
 				throw new Error(er.message + " File Path: " + urlRequest.url);
 			}
-			_isLoaded = true;
-			dispatchEvent(new Event(XMLLoader.INIT, true, true));
+			
+			dispatchEvent(new Event(XMLLoader.COMLETE, false, false));
 		}
-				
+	
+		
+		private function onProgress(e:ProgressEvent):void
+		{
+			_percentLoaded = e.bytesLoaded / e.bytesTotal;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, null, "percentLoaded", percentLoaded));
+		}	
+
+		
+		private function onError(e:IOErrorEvent):void 
+		{
+			throw new Error(e.text);
+		}			
+		
 	}
 }
 

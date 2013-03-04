@@ -131,9 +131,7 @@ package com.gestureworks.cml.core
 	/////////////////////
 	//  KITS  
 	/////////////////////
-	import com.gestureworks.cml.kits.LibraryKit; LibraryKit;
 	import com.gestureworks.cml.kits.LayoutKit; LayoutKit;		
-	import com.gestureworks.cml.kits.ComponentKit; ComponentKit;	
 	import com.gestureworks.cml.kits.BackgroundKit; BackgroundKit;		
 	import com.gestureworks.cml.kits.StageKit; StageKit;
 	

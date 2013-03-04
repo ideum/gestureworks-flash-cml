@@ -142,7 +142,7 @@ package  com.gestureworks.cml.element
 			if (file) url = file;
 			img = new IMGLoader;
 			img.load(url);
-			img.addEventListener(Event.COMPLETE, loadComplete);
+			img.addEventListener(IMGLoader.COMPLETE, loadComplete);
 			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
 		}			
 					

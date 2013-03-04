@@ -686,8 +686,11 @@ package com.gestureworks.cml.element
 		{
 			if (e.property == "selectedItem")
 			{	
-				if (clones[previews.indexOf(e.value)])
-					selectItem(clones[previews.indexOf(e.value)]);
+				if (clones[previews.indexOf(e.value)]) {
+					
+					var c:DisplayObject = clones[previews.indexOf(e.value)];
+					selectItem(c);					
+				}
 				else if (e.value.contains(_nextArrow)) {
 					if (flickrQuery) {
 						previews = [];
@@ -714,13 +717,15 @@ package com.gestureworks.cml.element
 			if (selections.indexOf(obj) != -1) {
 				obj.onUp();					
 				obj.glowPulse();
+				moveBelowDock(obj);				
 				return;				
 			}
-			else
-			{
-				obj.visible = true;
+			else {
 				selections.push(obj);				
 			}
+			
+			// move to top
+			moveBelowDock(obj);
 							
 			var location:Graphic = placeHolders[placeHolderIndex];								
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);

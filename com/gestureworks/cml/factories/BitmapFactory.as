@@ -23,7 +23,7 @@ package com.gestureworks.cml.factories
 		protected var img:IMGLoader;
 		
 		// loaded bitmap data from file
-		private var fileData:*;
+		private var fileData:Loader;
 		
 		/**
 		 * Constructor
@@ -44,7 +44,7 @@ package com.gestureworks.cml.factories
 			sizeArray = null;
 				
    			if (img) {
-				img.removeEventListener(Event.COMPLETE, loadComplete);
+				img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
 				img.unloadAndStop();
 				img = null;
 			}
@@ -231,7 +231,7 @@ package com.gestureworks.cml.factories
 			if (file) src = file;
 			img = new IMGLoader;
 			img.load(src);
-			img.addEventListener(Event.COMPLETE, loadComplete);
+			img.addEventListener(IMGLoader.COMPLETE, loadComplete);
 			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
 		}	
 		
@@ -283,16 +283,6 @@ package com.gestureworks.cml.factories
 		
 		
 		/**
-		 * This is called by the CML parser. Do not override this method.
-		 */		
-		override public function postparseCML(cml:XMLList):void 
-		{
-			if (this.propertyStates[0]["src"] && String(this.propertyStates[0]["src"]).charAt(0) != "{")
-				preloadFile(this.propertyStates[0]["src"]);
-		}
-		
-		
-		/**
 		 * This is called when the image is loaded. Do not override this method.
 		 */		
 		public function loadComplete(event:Event=null):void
@@ -300,7 +290,7 @@ package com.gestureworks.cml.factories
 			if (img)
 			{
 				fileData = img.loader;
-				img.removeEventListener(Event.COMPLETE, loadComplete);
+				img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
 				img.removeEventListener(StateEvent.CHANGE, onPercentLoad);
 			}
 			else
@@ -312,10 +302,10 @@ package com.gestureworks.cml.factories
 				else
 					imageSrc = src;
 					
-				if (!FileManager.instance.fileList.hasKey(imageSrc))
+				if (!FileManager.fileList.hasKey(imageSrc))
 					return;
 					
-				fileData = FileManager.instance.fileList.getKey(imageSrc).loader;				
+				fileData = (FileManager.fileList.getKey(imageSrc)) as flash.display.Loader;			
 			}
 
 			
@@ -514,8 +504,8 @@ package com.gestureworks.cml.factories
 		 */
 		public function preloadFile(file:String):void
 		{
-			src = file;
-			FileManager.instance.addToQueue(file, "img");
+			//src = file;
+			//FileManager.instance.addToQueue(file, "img");
 		}
 		
 		
