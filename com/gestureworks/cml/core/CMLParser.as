@@ -151,8 +151,8 @@ package com.gestureworks.cml.core
 					continue;
 				}
 				
-				if (tag == "cml") trace("");
-				trace(dash(XMLList(cml[i])) + tag + "");
+				if (debug && tag == "cml") trace("");
+				if (debug) trace(dash(XMLList(cml[i])) + tag + "");
 				
 				if (tag == "Include")
 					ppInclude(cml[i]);				
@@ -402,7 +402,11 @@ package com.gestureworks.cml.core
 				
 				if (tag == "Include") {
 					if (FileManager.hasFile(node.@src)) {
-						node = XML(FileManager.fileList.getKey(String(node.@src)));
+						if (node.@src != undefined)
+							node = XML(FileManager.fileList.getKey(String(node.@src)));
+						else if (node.@cml != undefined) //deprecate
+							node = XML(FileManager.fileList.getKey(String(node.@src)));
+					
 						tag = node.name();
 						loopCML(node.*, parent);
 					}
