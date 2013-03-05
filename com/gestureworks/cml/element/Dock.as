@@ -1,11 +1,6 @@
 package com.gestureworks.cml.element 
 {
-	import com.adobe.protocols.dict.DictionaryServer;
-	import com.adobe.webapis.flickr.Photo;
-	import com.gestureworks.cml.components.CollectionViewer;
-	import com.gestureworks.cml.components.Component;
-	import com.gestureworks.cml.components.FlickrViewer;
-	import com.gestureworks.cml.components.ImageViewer;
+	import com.gestureworks.cml.components.*;
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
@@ -37,14 +32,10 @@ package com.gestureworks.cml.element
 		public var isLoading:Boolean = false;
 		public var loadText:Text;	
 		
-		public var clones:Array = [];
-		public var cloneMap:ChildList = new ChildList(false);
-		public var maxClones:int = 20;
-		
-		
+		public var maxClones:int = 13;		
+
 		private var srcMap:Dictionary;
-		private var cloneSrcMap:LinkedMap
-		private var previewSrcMap:Dictionary;
+		private var cloneMap:LinkedMap;
 		
 		public var placeHolders:Array = [];
 		private var _placeHolderIndex:int = 0;	
@@ -158,7 +149,8 @@ package com.gestureworks.cml.element
 			addEventListener(StateEvent.CHANGE, selection);
 			addEventListener(StateEvent.CHANGE, dragSelection);
 			addEventListener(StateEvent.CHANGE, dropSelection);
-			CMLParser.instance.addEventListener(CMLParser.COMPLETE, cmlInit);
+			
+			CMLParser.addEventListener(CMLParser.COMPLETE, cmlInit);
 			
 			for (var j:int = 0; j < dials.length; j++) {
 				dials[j].addEventListener(StateEvent.CHANGE, onDialChange);
@@ -166,71 +158,73 @@ package com.gestureworks.cml.element
 			}
 			
 			searchTermFiltering();
-			preloadClones(maxClones);
 			
-			srcMap = new Dictionary(true);		
-			cloneSrcMap = new LinkedMap;
-			previewSrcMap = new Dictionary(true);
+			srcMap = new Dictionary;		
+			cloneMap = new LinkedMap(false);
+
+			preloadClones(maxClones);
 		}
 		
 
+		private var previews:Array = [];
 		
-		private function addSrc(clone:Component, preview:TouchContainer):void
-		{
-			var src:String = cloneSrcMap.getKey(clone);
-			
-			if (srcMap[src] || srcMap.length == maxClones) 
-				return;
-			
+		
+		// srcMap // 
+		
+		private function addSrc(src:String, clone:Component):void
+		{			
 			srcMap[src] = new Dictionary();
 			srcMap[src]["clone"] = clone;			
-			srcMap[src]["preview"] = preview;
-			
-			previewSrcMap[preview] = src;
+			srcMap[clone] = src;		
 		}
-		
-		
-		
-		
+	
+		private function addPreview(clone:Component, preview:TouchContainer):void
+		{	
+			var src:String = srcMap[clone];			
+			srcMap[src]["preview"] = preview;			
+			srcMap[preview] = src;
+			previews.push(preview);
+		}
 		
 		private function removeSrc(src:String):void
 		{
-			if (!srcMap[src]) return;
+			var k:*;
+			delete srcMap[src]["clone"];
+			delete srcMap[src]["preview"];
+			
+			for (k in srcMap[src]) {
+				delete srcMap[src][k];
+			}
+			
 			delete srcMap[src];
-			cloneSrcMap.removeByValue(src);	
+			removeByKey(src);
+		}
+	
+		private function removeByKey(key:String):void
+		{
+			var index = previews.search(srcMap[key]["preview"]);
+			
+			if (index == -1)
+				return;
+				
+			var original:Array = previews.slice(); 
+			var temp:Array = original.splice(index, 1); 
+			temp.shift();
+			original = original.concat(temp); 
+			previews = original;			
 		}
 		
 		
-		
-		
-		
+		// preload // 
 		
 		private function preloadClones(amt:int):void
 		{			
-			cloneMap = new ChildList();
-			
 			var clone:Component;
 			for (var i:int = 0; i < amt; i++) {				
 				clone = templates[i % templates.length].clone();
 				cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
-			}
-			
-			// temp
-			/*trace("cloneMap.length", cloneMap.length);
-			
-			var cloneMapKeys:Array = cloneMap.getKeyArray();
-			var cloneMapValues:Array = cloneMap.getValueArray();
-			
-			
-			for (var j:int = 0; j < cloneMap.length; j++) {
-				trace("\n");
-				trace( cloneMapKeys[j], cloneMapValues[j], cloneMapValues[j].getKeyArray(), cloneMapValues[j].getValueArray() );	
-			}
-			*/
-			 			
+			}			
 		}
-		
-		
 		
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 
 		{	
@@ -257,21 +251,44 @@ package com.gestureworks.cml.element
 		
 		private function resolveExp(res:*):void
 		{									
-			var keys:Array = cloneMap.currentValue.getKeyArray();
-			var values:Array = cloneMap.currentValue.getValueArray();
+			var keys:Array = cloneMap.value.getKeyArray();
+			var values:Array = cloneMap.value.getValueArray();
 						
 			var obj:Object;
 			var prop:String;
 			var exp:*;
+			var src:String;
 			
 			for (var i:int = 0; i < keys.length; i++) {
+
 				obj = keys[i];
 				prop = values[i];
 				exp = obj["propertyStates"][0][prop];
 				StateUtils.loadState(obj, 0, true);  //restore initial state
+							
+				if ( (exp in res) && (prop == "src") && ( obj[prop] == res[exp] )) {
+					src = obj[prop];				
+					
+					if (srcMap[src]["clone"] && !(srcMap[src]["clone"].visible) ) {						
+						album.unSelect(srcMap[src]["preview"]);
+						continue;
+					}
+					if ( srcMap[src]["clone"] && srcMap[src]["clone"].visible) {						
+						album.select(srcMap[src]["preview"]);
+						continue;
+					}
+					else  {
+						addSrc(src, cloneMap.key);
+						addPreview(cloneMap.key, getPreview(cloneMap.key));
+						loadClone();
+						if (cloneMap.hasNext()) 
+							cloneMap.next();
+						else 
+							cloneMap.reset();						
+					}				
+				}					
 				
-				if ( (exp in res) && (obj[prop] != res[exp]) ) {
-				
+				else if ( (exp in res) && (obj[prop] != res[exp]) ) {
 					try {
 						obj[prop] = null;
 					}
@@ -279,44 +296,37 @@ package com.gestureworks.cml.element
 						obj[prop] = "";
 					}
 					
-					if ( res[exp] ) {
+					if (res[exp]) {
 						obj[prop] = res[exp];
-						
 						if (prop == "src") {
-							cloneSrcMap.append(cloneMap.currentKey, String(obj[prop]));
-							
-							trace("-", cloneMap.currentKey, cloneSrcMap.currentValue, cloneSrcMap.getKey(clone));
-
-							obj.close();
-							cloneMap.currentKey.addEventListener(StateEvent.CHANGE, onCloneLoad);
-
-							if (obj is Flickr) {				
-								cloneMap.currentKey.listenLoadComplete();
-								obj.init();	
-							}
-							else
-								obj.open();	
-								
-								
-							if (cloneMap.hasNext())
+							processSrc(obj[prop], obj);	
+							if (cloneMap.hasNext()) 
 								cloneMap.next();
 							else 
 								cloneMap.reset();							
-								
 						}
 					}
-				
-					
-				}
-				
-				else if ( (exp in res) && (prop == "src") && (obj[prop] == res[exp]) ) {						
-					onCloneLoad();
-					break;
 				}				
 				
 			}
-								
+			
+				
 		}	
+		
+		private function processSrc(src:String, obj:Object):void
+		{
+			var clone:* = cloneMap.key;
+
+			addSrc(src, clone); 							
+			obj.close();
+			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);
+
+			if (obj is Flickr) {				
+				clone.listenLoadComplete();
+				obj.init();	
+			}
+			else obj.open();		
+		}
 		
 		
 		
@@ -346,8 +356,6 @@ package com.gestureworks.cml.element
 		// get search terms from dial and submit query
 		protected function onDialChange(e:StateEvent):void 
 		{
-			previewSrcMap = new Dictionary(true);
-			
 			album.clear();
 			
 			var index:int = dials.indexOf(e.target);
@@ -393,7 +401,7 @@ package com.gestureworks.cml.element
 			}
 			
 			//verify the cml has been initialized and the event was triggered
-			//by the target (scond condition is for filtering)
+			//by the target (second condition is for filtering)
 			
 			if (cmlIni && e.target.id == e.id) {
 				
@@ -463,7 +471,9 @@ package com.gestureworks.cml.element
 		
 		private function onQueryLoad(e:StateEvent):void {
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
+			
 			album.clear();
+			previews = [];
 			
 			loadCnt = 0;
 			result = flickrQuery.resultPhotos;
@@ -537,28 +547,15 @@ package com.gestureworks.cml.element
 		// image load data
 		protected function onCloneLoad(event:StateEvent = null):void 
 		{			
-			if (!event || (event.property == "isLoaded" && event.value)) {
-				
-				addSrc(Component(event.target), getPreview(event.target));
-
-				
+			if (!event || (event.property == "isLoaded" && event.value)) {				
 				if (event){
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
+					addPreview(Component(event.target), getPreview(event.target));
 					
-					if (event.target is FlickrViewer) {
-						
+					if (event.target is FlickrViewer) {		
 						// this hack b/c Flickr API is broken
-						//var res:Object = { "description":event.target.image.description };
-						//var index:int = cloneMap.currentIndex;
-						//resolveExp(cloneMap, res);
-						//cloneMap.currentIndex = index;
-						
 						event.target.searchChildren(".info_description").htmlText = event.target.image.description;
 					}
-					
-					//if (event && event.target is FlickrViewer)
-					//	searchExp(event.target, event.target.image);
-					
 					else 
 						event.target.init();											
 				}
@@ -608,12 +605,12 @@ package com.gestureworks.cml.element
 			}
 			
 			
-			var src:String
+			var src:String;
 			var j:int;
+			var preview:*
 			
-			for (j=0; j < resultCnt; j++) {
-				src = cloneSrcMap.getIndex(j);
-				album.addChild(srcMap[src]["preview"]);
+			for each (preview in previews) {
+				album.addChild(preview);
 			}
 	
 			if (flickrQuery && flickrQuery.pages > 1) {
@@ -627,12 +624,11 @@ package com.gestureworks.cml.element
 			album.margin = 15;
 			album.init();
 			
-			for (j=0; j < cloneSrcMap.length; j++) {
-				src = cloneSrcMap.getIndex(j);				
-				if (srcMap[src]["clone"].visible)
-					album.select(srcMap[src]["preview"]);				
+			for each (preview in previews) {
+				src = srcMap[preview];
+				if (srcMap[src]["clone"].visible)	
+					album.select(preview);	
 			}			
-			
 		}
 		
 		
@@ -711,7 +707,7 @@ package com.gestureworks.cml.element
 			if (e.property == "selectedItem") {	
 				
 				preview = e.value;
-				src = previewSrcMap[preview];
+				src = srcMap[preview];
 				
 				if (srcMap[src]) {
 					selectItem(srcMap[src]["clone"]);					
@@ -737,7 +733,7 @@ package com.gestureworks.cml.element
 			// if object is already on the stage
 			if (obj.visible) {
 				obj.onUp();					
-				obj.glowPulse();
+				//obj.glowPulse();
 				moveBelowDock(obj);				
 				return;				
 			}
@@ -817,12 +813,9 @@ package com.gestureworks.cml.element
 		
 		private function dragSelection(e:StateEvent):void
 		{
-			if (e.property == "draggedItem")
-			{
-				for each(var placeHolder:* in placeHolders)
-				{					
-					if (CollisionDetection.isColliding(DisplayObject(e.value), DisplayObject(placeHolder), this))
-					{
+			if (e.property == "draggedItem") {
+				for each(var placeHolder:* in placeHolders) {					
+					if (CollisionDetection.isColliding(DisplayObject(e.value), DisplayObject(placeHolder), this)) {
 						placeHolderIndex= placeHolders.indexOf(placeHolder);
 						dropLocation = placeHolder;
 						return;
@@ -835,7 +828,7 @@ package com.gestureworks.cml.element
 		private function dropSelection(e:StateEvent):void
 		{
 			if (e.property == "droppedItem" && dropLocation) {
-				var src:String = previewSrcMap[e.value];
+				var src:String = srcMap[e.value];
 				selectItem(srcMap[src]["clone"]);
 				searchChildren("#menu1").select(e.value);
 			}
@@ -850,9 +843,9 @@ package com.gestureworks.cml.element
 		{
 			//TODO: Fix rigid structure
 			if (position=="bottom")
-				parent.setChildIndex(obj, parent.getChildIndex(this) - 1);
+				parent.setChildIndex(obj, (parent.getChildIndex(this)-1));
 			else
-				parent.setChildIndex(obj, parent.getChildIndex(this) - 2);			
+				parent.setChildIndex(obj, (parent.getChildIndex(this)-2));			
 		}
 		
 
@@ -861,13 +854,15 @@ package com.gestureworks.cml.element
 		{					
 			if (e.property == "visible") {				
 				if (!e.value) {
-					e.target.removeEventListener(StateEvent.CHANGE, onCloneChange);
-					if (cloneSrcMap[e.target]) {
-						var src:String = cloneSrcMap.getKey(e.target);	
-						var preview:TouchContainer = srcMap[src]["preview"];
-						album.unSelect(preview);
-						collectionViewer.untagObject(e.target);
-						removeSrc(src);
+					var clone:* = e.target;
+					clone.removeEventListener(StateEvent.CHANGE, onCloneChange);
+					if (srcMap[clone]) {
+						var src:String = srcMap[clone];	
+						collectionViewer.untagObject(clone);
+						if (srcMap[src]["preview"])
+							album.unSelect(srcMap[src]["preview"]);
+						else
+							removeSrc(src);
 					}
 				}
 			}				
