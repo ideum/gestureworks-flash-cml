@@ -48,7 +48,7 @@ package com.gestureworks.cml.element
 		public var connection:NetConnection;		
 		public var gateway:String;
 		public var responder:Responder;
-		public var maxLoad:int = 2;
+		public var maxLoad:int = 1;
 	
 		public var amountToShow:int = -1;
 		public var autoShuffle:int = -1;
@@ -265,11 +265,11 @@ package com.gestureworks.cml.element
 			var exp:*;
 			var src:String;
 			
-			var loader:* = null;
-			
-		
-			
+			var loader:* = null;			
 			var found:Boolean = false;
+			
+			if (!cloneMap.hasNext())
+				cloneMap.index = -1;
 			
 			while (cloneMap.hasNext()) {
 				cloneMap.next();	
@@ -286,17 +286,10 @@ package com.gestureworks.cml.element
 										
 					if ( srcMap[res[exp]] ) {	
 						src = res[exp];
-						if (srcMap[src]["clone"].visible) 
-							album.select(srcMap[src]["preview"]);							
-						else { 					
-							album.unSelect(srcMap[src]["preview"]);
-							StateUtils.loadState(obj, 0, true);				
-						}
 						found = true;
 					}
 					else {
-						StateUtils.loadState(obj, 0, true);
-					
+						
 						if (exp in res) {	
 							try {
 								obj[prop] = null;
@@ -319,6 +312,7 @@ package com.gestureworks.cml.element
 				if (loader || found)
 					break;				
 			}//while
+			
 			
 			if (found) {
 				addPreview(srcMap[src]["clone"], getPreview(srcMap[src]["clone"]));
@@ -515,7 +509,7 @@ package com.gestureworks.cml.element
 			
 			/// 
 			
-			if (cloneMap.index == cloneMap.length)
+			if (cloneMap.index == cloneMap.length-1)
 				cloneMap.index = -1;
 				
 			//else
