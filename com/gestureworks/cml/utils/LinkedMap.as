@@ -47,7 +47,7 @@ package com.gestureworks.cml.utils
 		 * Returns and sets the current index
 		 */
 		public function get index():int { return keys.currentIndex;  }
-		public function set index(value:int):void { keys.currentIndex = value; }		
+		public function set index(value:int):void { keys.currentIndex = value; values.currentIndex = value; }		
 		
 		/**
 		 * Returns and sets the current index
@@ -264,14 +264,28 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * Removes a value by index
+		 * Removes a key, value pair by index
 		 * @param	index
 		 */
 		public function removeIndex(index:int):void
 		{				
 			keys.remove(index);			
 			values.remove(index);			
-		}		
+		}
+		
+		/**
+		 * Removes a key, value pair by value
+		 * @param	index
+		 */
+		public function removeByValue(value:*):void
+		{
+			var i:int = values.search(value);
+			
+			if (i != -1) {			
+				keys.remove(i);			
+				values.remove(i);
+			}
+		}			
 		
 		/**
 		 * Removes a key, value pair by key

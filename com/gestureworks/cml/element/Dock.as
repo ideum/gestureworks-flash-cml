@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import com.adobe.protocols.dict.DictionaryServer;
 	import com.adobe.webapis.flickr.Photo;
 	import com.gestureworks.cml.components.CollectionViewer;
 	import com.gestureworks.cml.components.Component;
@@ -24,8 +25,6 @@ package com.gestureworks.cml.element
 	
 	public class Dock extends Drawer
 	{		
-		public var previews:Array = [];
-		public var selections:Array = [];		
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = [];
 		public var returnFields:Array = [];		
@@ -40,6 +39,13 @@ package com.gestureworks.cml.element
 		
 		public var clones:Array = [];
 		public var cloneMap:ChildList = new ChildList(false);
+		public var maxClones:int = 20;
+		
+		
+		private var srcMap:Dictionary;
+		private var cloneSrcMap:LinkedMap
+		private var previewSrcMap:Dictionary;
+		
 		public var placeHolders:Array = [];
 		private var _placeHolderIndex:int = 0;	
 		private var dropLocation:Graphic;
@@ -71,8 +77,7 @@ package com.gestureworks.cml.element
 		private var filteringInProcess:Boolean = false;		
 
 		public var pos:String;
-		
-		public var maxClones:int = 20;
+
 		
 		
 		/**
@@ -162,9 +167,42 @@ package com.gestureworks.cml.element
 			
 			searchTermFiltering();
 			preloadClones(maxClones);
+			
+			srcMap = new Dictionary(true);		
+			cloneSrcMap = new LinkedMap;
+			previewSrcMap = new Dictionary(true);
 		}
 		
 
+		
+		private function addSrc(clone:Component, preview:TouchContainer):void
+		{
+			var src:String = cloneSrcMap.getKey(clone);
+			
+			if (srcMap[src] || srcMap.length == maxClones) 
+				return;
+			
+			srcMap[src] = new Dictionary();
+			srcMap[src]["clone"] = clone;			
+			srcMap[src]["preview"] = preview;
+			
+			previewSrcMap[preview] = src;
+		}
+		
+		
+		
+		
+		
+		private function removeSrc(src:String):void
+		{
+			if (!srcMap[src]) return;
+			delete srcMap[src];
+			cloneSrcMap.removeByValue(src);	
+		}
+		
+		
+		
+		
 		
 		
 		private function preloadClones(amt:int):void
@@ -217,10 +255,10 @@ package com.gestureworks.cml.element
 			return lm;
 		}
 		
-		private function resolveExp(cMap:LinkedMap, res:*):void
+		private function resolveExp(res:*):void
 		{									
-			var keys:Array = cMap.currentValue.getKeyArray();
-			var values:Array = cMap.currentValue.getValueArray();
+			var keys:Array = cloneMap.currentValue.getKeyArray();
+			var values:Array = cloneMap.currentValue.getValueArray();
 						
 			var obj:Object;
 			var prop:String;
@@ -245,33 +283,33 @@ package com.gestureworks.cml.element
 						obj[prop] = res[exp];
 						
 						if (prop == "src") {
+							cloneSrcMap.append(cloneMap.currentKey, String(obj[prop]));
+							
+							trace("-", cloneMap.currentKey, cloneSrcMap.currentValue, cloneSrcMap.getKey(clone));
+
 							obj.close();
-							cMap.currentKey.addEventListener(StateEvent.CHANGE, onCloneLoad);
-							if (obj is Flickr)
-							{				
+							cloneMap.currentKey.addEventListener(StateEvent.CHANGE, onCloneLoad);
+
+							if (obj is Flickr) {				
+								cloneMap.currentKey.listenLoadComplete();
 								obj.init();	
-								cMap.currentKey.listenLoadComplete();																
 							}
 							else
-								obj.open();
+								obj.open();	
 								
-							clones.push(cMap.currentKey);
-							
-							if (cMap.hasNext())
-								cMap.next();
-							else
-								cMap.reset();									
+								
+							if (cloneMap.hasNext())
+								cloneMap.next();
+							else 
+								cloneMap.reset();							
+								
 						}
 					}
+				
+					
 				}
 				
-				else if ( (exp in res) && (prop == "src") && (obj[prop] == res[exp]) ) {
-					clones.push(cMap.currentKey);
-					
-					if (cMap.hasNext())
-						cMap.next();
-					else
-						cMap.reset();						
+				else if ( (exp in res) && (prop == "src") && (obj[prop] == res[exp]) ) {						
 					onCloneLoad();
 					break;
 				}				
@@ -279,6 +317,8 @@ package com.gestureworks.cml.element
 			}
 								
 		}	
+		
+		
 		
 		// used as flag for dial listeners to skip default selections
 		private function cmlInit(e:Event):void
@@ -306,8 +346,8 @@ package com.gestureworks.cml.element
 		// get search terms from dial and submit query
 		protected function onDialChange(e:StateEvent):void 
 		{
-			previews = [];			
-			clones = [];
+			previewSrcMap = new Dictionary(true);
+			
 			album.clear();
 			
 			var index:int = dials.indexOf(e.target);
@@ -358,7 +398,6 @@ package com.gestureworks.cml.element
 			if (cmlIni && e.target.id == e.id) {
 				
 				checkServerTimer();
-				freeClones();
 				if (flickrQuery)
 					queryFlickr();
 				else
@@ -366,6 +405,8 @@ package com.gestureworks.cml.element
 			}
 		}	
 		
+		
+	
 		
 		
 		// submit query
@@ -396,11 +437,7 @@ package com.gestureworks.cml.element
 			//}			
 			
 			
-			album.clear();
-			
-			previews = [];
-			clones = [];
-			
+			album.clear();	
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
 			dockText[1].visible = true;
@@ -478,31 +515,9 @@ package com.gestureworks.cml.element
 			dockText[1].visible = true;
 		}		
 		
-		private function freeClones():void
-		{
+		
 
-			cloneMap.reset();
-			
-			for each(var clone:* in selections)
-			{
-				if (cloneMap.getKeyArray().indexOf(clone) == cloneMap.currentIndex)
-				{
-					if (cloneMap.hasNext())
-						cloneMap.next();
-					else 
-						cloneMap.reset();
-					continue;
-				}
-					
-				var value:* = cloneMap.getKey(clone);
-				cloneMap.removeKey(clone);
-				cloneMap.insert(cloneMap.currentIndex, clone, value);				
-				
-				if (cloneMap.currentIndex > cloneMap.length - 1)
-					cloneMap.reset();
-			}		
-		}
-
+		
 		private function loadClone():void
 		{
 			var num:int=0;
@@ -513,7 +528,7 @@ package com.gestureworks.cml.element
 				num = resultCnt;
 				
 			for (var i:int = loadCnt; i < num; i++) {
-				resolveExp(cloneMap, result[i]);					
+				resolveExp(result[i]);					
 			}
 		}
 		
@@ -521,15 +536,15 @@ package com.gestureworks.cml.element
 		
 		// image load data
 		protected function onCloneLoad(event:StateEvent = null):void 
-		{		
-
+		{			
 			if (!event || (event.property == "isLoaded" && event.value)) {
 				
-				if (event)
-				{
-						event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
+				addSrc(Component(event.target), getPreview(event.target));
+
+				
+				if (event){
+					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
 					
-						
 					if (event.target is FlickrViewer) {
 						
 						// this hack b/c Flickr API is broken
@@ -592,9 +607,15 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			for each(var clone:* in clones)
-				album.addChild(getPreview(clone));
 			
+			var src:String
+			var j:int;
+			
+			for (j=0; j < resultCnt; j++) {
+				src = cloneSrcMap.getIndex(j);
+				album.addChild(srcMap[src]["preview"]);
+			}
+	
 			if (flickrQuery && flickrQuery.pages > 1) {
 				// Add a next arrow.
 				if (flickrQuery.pageNumber < flickrQuery.pages) {
@@ -606,10 +627,11 @@ package com.gestureworks.cml.element
 			album.margin = 15;
 			album.init();
 			
-			for (var k:int = 0; k < clones.length; k++) {
-				if (clones[k].visible)
-					album.select(previews[k]);
-			}	
+			for (j=0; j < cloneSrcMap.length; j++) {
+				src = cloneSrcMap.getIndex(j);				
+				if (srcMap[src]["clone"].visible)
+					album.select(srcMap[src]["preview"]);				
+			}			
 			
 		}
 		
@@ -662,7 +684,6 @@ package com.gestureworks.cml.element
 				prv.addChild(title);
 				prv.width = img.width;
 				prv.height = img.height + 30;
-				previews.push(prv);
 			}
 			
 			else if (flickr) {
@@ -675,7 +696,6 @@ package com.gestureworks.cml.element
 				prv.addChild(title);
 				prv.width = flickr.width;
 				prv.height = flickr.height + 30;
-				previews.push(prv);
 			}
 			
 			return prv;
@@ -684,25 +704,26 @@ package com.gestureworks.cml.element
 
 		private function selection(e:StateEvent):void
 		{
-			if (e.property == "selectedItem")
-			{	
-				if (clones[previews.indexOf(e.value)]) {
-					
-					var c:DisplayObject = clones[previews.indexOf(e.value)];
-					selectItem(c);					
+			var preview:*;			
+			var clone:*;			
+			var src:String;
+			
+			if (e.property == "selectedItem") {	
+				
+				preview = e.value;
+				src = previewSrcMap[preview];
+				
+				if (srcMap[src]) {
+					selectItem(srcMap[src]["clone"]);					
 				}
 				else if (e.value.contains(_nextArrow)) {
 					if (flickrQuery) {
-						previews = [];
-						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 						flickrQuery.nextPage();
 					} // else if something else...
 				} else if (e.value.contains(_previousArrow)) {
 					if (flickrQuery) {
-						previews = []
-						clones = [];
 						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 						flickrQuery.previousPage();
@@ -714,19 +735,13 @@ package com.gestureworks.cml.element
 		private function selectItem(obj:*):void
 		{					
 			// if object is already on the stage
-			if (selections.indexOf(obj) != -1) {
+			if (obj.visible) {
 				obj.onUp();					
 				obj.glowPulse();
 				moveBelowDock(obj);				
 				return;				
 			}
-			else {
-				selections.push(obj);				
-			}
-			
-			// move to top
-			moveBelowDock(obj);
-							
+										
 			var location:Graphic = placeHolders[placeHolderIndex];								
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
 			
@@ -819,9 +834,9 @@ package com.gestureworks.cml.element
 				
 		private function dropSelection(e:StateEvent):void
 		{
-			if (e.property == "droppedItem" && dropLocation)
-			{
-				selectItem(clones[previews.indexOf(e.value)]);
+			if (e.property == "droppedItem" && dropLocation) {
+				var src:String = previewSrcMap[e.value];
+				selectItem(srcMap[src]["clone"]);
 				searchChildren("#menu1").select(e.value);
 			}
 		}
@@ -847,13 +862,12 @@ package com.gestureworks.cml.element
 			if (e.property == "visible") {				
 				if (!e.value) {
 					e.target.removeEventListener(StateEvent.CHANGE, onCloneChange);
-					//e.target.visible = false;
-					var index:int = clones.indexOf(e.target);				
-					if (index >= 0) {
-						var obj:* = previews[index];
-						album.unSelect(obj);
+					if (cloneSrcMap[e.target]) {
+						var src:String = cloneSrcMap.getKey(e.target);	
+						var preview:TouchContainer = srcMap[src]["preview"];
+						album.unSelect(preview);
 						collectionViewer.untagObject(e.target);
-						selections.splice(selections.indexOf(e.target), 1);
+						removeSrc(src);
 					}
 				}
 			}				
@@ -1093,13 +1107,11 @@ package com.gestureworks.cml.element
 		override public function dispose():void 
 		{
 			super.dispose();	
-			previews = null;
 			searchTerms = null;
 			returnFields = null;
 			_searchFieldsArray = null;
 			result = null;
 			loadText = null;
-			clones = null;
 			cloneMap = null;
 			placeHolders = null;
 			dropLocation = null;
