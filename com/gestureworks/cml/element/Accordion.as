@@ -71,7 +71,7 @@ package com.gestureworks.cml.element
 				tabs[i].addEventListener(GWGestureEvent.TAP, onTap);								
 				tabs[i].addEventListener(GWGestureEvent.DRAG, onDrag);								
 				tabs[i].addEventListener(GWGestureEvent.RELEASE, onRelease);
-				tabs[i].gestureReleaseInertia = true;
+				tabs[i].gestureReleaseInertia = false;
 					
 				
 				
@@ -110,6 +110,8 @@ package com.gestureworks.cml.element
 			}
 			
 			tabHeight = tabs[0].height;	
+			if (twirlIndicator)
+				twirlIcons[twirlIcons.length - 1].rotation = 180;
 				
 			background.height = height + tabHeight * (tabs.length - 1);
 			
@@ -532,6 +534,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onRelease(e:GWGestureEvent):void {
+			//tabs[i].gestureReleaseInertia = false;
 			if (isTweening) return;
 			else (isTweening = true)
 			
@@ -548,13 +551,15 @@ package com.gestureworks.cml.element
 			
 			//trace("Target index:", dragGroup.indexOf(e.target));
 			
-			
+			var outIndex:Number = tabs.indexOf(dragGroup[0]);
+			var endIndex:Number = tabs.indexOf(dragGroup[dragGroup.length - 1]);
 			
 			var tweenArray:Array = [];
 			var tweenGroup:ITweenGroup;
+			var targetIndex:Number = tabs.indexOf(e.target)
 			
 			// Check the target's snapping direction, and make everything in the dragGroup follow that;
-			if (e.target.y < (background.height - (tabs[tabs.indexOf(e.target)].height * tabs.indexOf(e.target))) / 2) {
+			if (e.target.y < (tabs[targetIndex].height * (targetIndex - 1)) + (height / 2)) {
 				for (var k:int = 0; k < dragGroup.length; k++) 
 				{
 					// Grab index of the dragGroup member in the actual list of tabs.
@@ -565,13 +570,13 @@ package com.gestureworks.cml.element
 					tweenArray.push(BetweenAS3.to(contents[cNum], { y:((cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
 				}
 				
-				for (var l:int = 0; l < tabs.length; l++) 
-				{
-					if (e.target == tabs[l]) {
-						tweenArray.push(BetweenAS3.to(twirlIcons[l], { rotation:180 }, 0.3));
-					}
-					else
-						tweenArray.push(BetweenAS3.to(twirlIcons[l], { rotation:90 }, 0.3));
+				
+				// if ab || B
+				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
+					//Rotate the item preceding the dragGroup to closed.
+					tweenArray.push(BetweenAS3.to(twirlIcons[outIndex - 1], { rotation:90 }, 0.3));
+					//Rotate the item ending the dragGroup to open.
+					tweenArray.push(BetweenAS3.to(twirlIcons[endIndex], { rotation:180 }, 0.3));
 				}
 				
 			} else {
@@ -584,18 +589,18 @@ package com.gestureworks.cml.element
 					tweenArray.push(BetweenAS3.to(contents[cNum], { y: (background.height - (tabs.length - cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
 				}
 				
-				for (var b:int = 0; b < tabs.length; b++) {
-					if (e.target == tabs[b + 1]) {
-						//_current = i;
-						tweenArray.push(BetweenAS3.to(twirlIcons[b], { rotation:180 }, 0.3));
-					}
-					else
-						tweenArray.push(BetweenAS3.to(twirlIcons[b], { rotation:90 }, 0.3));
+				// if a || ba
+				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
+					// Rotate the item preceding all the dragGroup items to open.
+					tweenArray.push(BetweenAS3.to(twirlIcons[outIndex - 1], { rotation:180 }, 0.3));
+					//Rotate the item ending the dragGroup to closed.
+					tweenArray.push(BetweenAS3.to(twirlIcons[endIndex], { rotation:90 }, 0.3));
 				}
 			}
 			
+			
 			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
-			tweenGroup.onComplete = function():void { isTweening = false };
+			tweenGroup.onComplete = function():void { isTweening = false; };
 			tweenGroup.play();
 		}
 		
