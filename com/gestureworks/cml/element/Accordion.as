@@ -40,9 +40,7 @@ package com.gestureworks.cml.element
 		 * Initialization call
 		 */
 		public function init():void
-		{					
-			trace("Padding top:", paddingTop);
-			trace("<( ^.^ )>");
+		{	
 			for (var j:int = 0; j < numChildren; j++) {
 				contents.push(getChildAt(j));
 			}
@@ -95,9 +93,9 @@ package com.gestureworks.cml.element
 								label.x = fontSize * 2;
 						} else {
 							label.y = paddingTop;
-							label.x = paddingRight;
+							label.x = paddingLeft;
 							if (twirlIndicator)
-								label.x = fontSize + (paddingRight * 2);
+								label.x = fontSize + (paddingLeft * 2);
 						}
 					}
 				}
@@ -418,12 +416,12 @@ package com.gestureworks.cml.element
 					sp.x = sp.width + (sp.width / 2);
 					sp.y = sp.height;
 				} else {
-					sp.x = paddingRight + (fontSize);
+					sp.x = paddingLeft + (fontSize);
 					sp.y = paddingTop + (fontSize * 0.75);
 				}
 				sp.rotation = 90;
 				twirlIcons.push(sp);
-				//paddingRight = sp.width + (paddingRight * 2);
+				//paddingLeft = sp.width + (paddingLeft * 2);
 			}
 			
 			return ts;
