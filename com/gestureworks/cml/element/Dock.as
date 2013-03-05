@@ -162,7 +162,7 @@ package com.gestureworks.cml.element
 			srcMap = new Dictionary;		
 			cloneMap = new LinkedMap(false);
 
-			preloadClones(maxClones);
+			//preloadClones(maxClones);
 		}
 		
 
@@ -216,14 +216,17 @@ package com.gestureworks.cml.element
 		
 		
 		// preload // 
+		private var loadIndex:int = 0;
 		
-		private function preloadClones(amt:int):void
+		public function preloadClones():void
 		{			
+			if (loadIndex == maxClones) return;
+			
 			var clone:Component;
-			for (var i:int = 0; i < amt; i++) {				
-				clone = templates[i % templates.length].clone();
-				cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
-			}			
+			clone = templates[0].clone();
+			cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
+			loadIndex++;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));
 		}
 		
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 

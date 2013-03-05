@@ -59,6 +59,7 @@ package com.gestureworks.cml.components
 		private var containerTags:Dictionary = new Dictionary();
 		private var positions:Dictionary;
 		private var layoutThreshold:Boolean = true;
+		private var totalProgress:Number = 0;		
 		
 		
 		// tmp
@@ -248,17 +249,67 @@ package com.gestureworks.cml.components
 			addChild(entry);
 			*/			
 		}
-		
-		
+				
 		// connect docks to gateway
 		public function connect():void
 		{
+			loadScreen();
+			var progressCnt:int = 1;
+			
 			for (var i:int = 0; i < docks.length; i++) {
 				docks[i].gateway = gateway;
-				docks[i].connect();
+				docks[i].connect();	
+				totalProgress += docks[i].maxClones;
+				docks[i].addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
+					if (e.property == "preloaded")
+					{
+						loadPercent.text = String(int((progressCnt / totalProgress) * 100) + "%");
+						progressCnt++;
+						if (progressCnt > totalProgress)
+						{
+							removeChild(loadBkg);
+							loadScrnComplete = true;
+						}
+					}
+				});
 			}
 		}		
 
+		private var loadBkg:Graphic;
+		private var loadPercent:Text;
+		private var loadScrnComplete:Boolean = false;
+		
+		private function loadScreen():void
+		{
+			loadBkg = new Graphic();
+			loadBkg.shape = "rectangle";
+			loadBkg.width = stage.stageWidth;
+			loadBkg.height = stage.stageHeight;
+			loadBkg.lineStroke = 0;
+			loadBkg.color = 0x000000;
+			
+			var loadText:Text = new Text();
+			loadText.fontSize = 50;
+			loadText.color = 0xFFFFFF;
+			loadText.autoSize = "left";
+			loadText.textAlign = "left"
+			loadText.y = 504;
+			loadBkg.addChild(loadText);
+			
+			loadPercent = loadText.clone();
+			loadPercent.addEventListener(Event.ENTER_FRAME, function loadNext(e:Event):void {
+				docks[0].preloadClones();
+				docks[1].preloadClones();
+				if (loadScrnComplete)
+					loadPercent.removeEventListener(Event.ENTER_FRAME, loadNext);
+			});
+			
+			loadText.text = "Loading...";
+			loadText.x = 770;		
+			loadPercent.x = 1040;
+			
+			addChild(loadBkg);
+		}
 
 		private function getPlaceHolders():void
 		{
