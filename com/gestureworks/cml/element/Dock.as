@@ -255,67 +255,76 @@ package com.gestureworks.cml.element
 			return lm;
 		}
 		
+		
 		private function resolveExp(res:*):void
-		{									
-			var keys:Array = cloneMap.value.getKeyArray();
-			var values:Array = cloneMap.value.getValueArray();
-						
+		{			
 			var obj:Object;
 			var prop:String;
 			var exp:*;
 			var src:String;
 			
-			for (var i:int = 0; i < keys.length; i++) {
-
-				obj = keys[i];
-				prop = values[i];
-				exp = obj["propertyStates"][0][prop];
-				StateUtils.loadState(obj, 0, true);  //restore initial state
-							
-				if ( (exp in res) && (prop == "src") && ( obj[prop] == res[exp] )) {
-					src = obj[prop];				
-					
-					if (srcMap[src]["clone"] && !(srcMap[src]["clone"].visible) ) {						
-						album.unSelect(srcMap[src]["preview"]);
-						continue;
-					}
-					if ( srcMap[src]["clone"] && srcMap[src]["clone"].visible) {						
-						album.select(srcMap[src]["preview"]);
-						continue;
-					}
-					else  {
-						addSrc(src, cloneMap.key);
-						addPreview(cloneMap.key, getPreview(cloneMap.key));
-						loadClone();
-						if (cloneMap.hasNext()) 
-							cloneMap.next();
-						else 
-							cloneMap.reset();						
-					}				
-				}					
+			var loader:* = null;
+			
+		
+			
+			var found:Boolean = false;
+			
+			while (cloneMap.hasNext()) {
+				cloneMap.next();	
 				
-				else if ( (exp in res) && (obj[prop] != res[exp]) ) {
-					try {
-						obj[prop] = null;
+				trace(cloneMap.key, cloneMap.value);
+				
+				var keys:Array = cloneMap.value.getKeyArray();
+				var values:Array = cloneMap.value.getValueArray();
+			
+				for (var i:int = 0; i < keys.length; i++) {
+					obj = keys[i];
+					prop = values[i];
+					exp = obj["propertyStates"][0][prop];
+										
+					if ( srcMap[res[exp]] ) {	
+						src = res[exp];
+						if (srcMap[src]["clone"].visible) 
+							album.select(srcMap[src]["preview"]);							
+						else { 					
+							album.unSelect(srcMap[src]["preview"]);
+							StateUtils.loadState(obj, 0, true);				
+						}
+						found = true;
 					}
-					catch(e:Error) {
-						obj[prop] = "";
-					}
+					else {
+						StateUtils.loadState(obj, 0, true);
 					
-					if (res[exp]) {
-						obj[prop] = res[exp];
-						if (prop == "src") {
-							processSrc(obj[prop], obj);	
-							if (cloneMap.hasNext()) 
-								cloneMap.next();
-							else 
-								cloneMap.reset();							
+						if (exp in res) {	
+							try {
+								obj[prop] = null;
+							}
+							catch(e:Error) {
+								obj[prop] = "";
+							}
+							
+							if (res[exp]) {
+								obj[prop] = res[exp];
+								if (prop == "src") {
+									src = obj[prop];
+									loader = obj;
+								}
+							}	
 						}
 					}
-				}				
+				}
 				
-			}
+				if (loader || found)
+					break;				
+			}//while
 			
+			if (found) {
+				addPreview(srcMap[src]["clone"], getPreview(srcMap[src]["clone"]));
+				onCloneLoad();
+			}
+			else if (loader) {
+				processSrc(src, loader);
+			}
 				
 		}	
 		
@@ -497,6 +506,13 @@ package com.gestureworks.cml.element
 				dockText[1].text = "No objects found. Please search again.";
 			}
 			
+			
+			//if (!selection.length)
+				cloneMap.index = -1;
+			//else
+			//	cloneMap.index = selection.length - 2;
+			//	cloneMap.index = selection.length - 2;
+				
 			loadClone();
 		}
 		
@@ -542,7 +558,7 @@ package com.gestureworks.cml.element
 			
 			if (num >= resultCnt)
 				num = resultCnt;
-				
+			
 			for (var i:int = loadCnt; i < num; i++) {
 				resolveExp(result[i]);					
 			}
@@ -553,13 +569,12 @@ package com.gestureworks.cml.element
 		// image load data
 		protected function onCloneLoad(event:StateEvent = null):void 
 		{			
-			if (!event || (event.property == "isLoaded" && event.value)) {				
+			if (!event || event.property == "isLoaded") {				
 				if (event){
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
 					addPreview(Component(event.target), getPreview(event.target));
 					
-					if (event.target is FlickrViewer) {		
-						// this hack b/c Flickr API is broken
+					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken	
 						event.target.searchChildren(".info_description").htmlText = event.target.image.description;
 					}
 					else 
