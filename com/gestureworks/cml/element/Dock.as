@@ -167,7 +167,7 @@ package com.gestureworks.cml.element
 		
 
 		private var previews:Array = [];
-		
+		private var srcCnt:int = 0;
 		
 		// srcMap // 
 		
@@ -175,7 +175,8 @@ package com.gestureworks.cml.element
 		{			
 			srcMap[src] = new Dictionary();
 			srcMap[src]["clone"] = clone;			
-			srcMap[clone] = src;		
+			srcMap[clone] = src;
+			srcCnt++;
 		}
 	
 		private function addPreview(clone:Component, preview:TouchContainer):void
@@ -198,6 +199,7 @@ package com.gestureworks.cml.element
 			}
 			
 			delete srcMap[src];
+			srcCnt--;
 		}
 	
 		private function removeByKey(key:String):void
@@ -507,8 +509,15 @@ package com.gestureworks.cml.element
 			}
 			
 			
-			//if (!selection.length)
+				
+			
+			cloneMap.index = srcCnt - 1;
+			
+			/// 
+			
+			if (cloneMap.index == cloneMap.length)
 				cloneMap.index = -1;
+				
 			//else
 			//	cloneMap.index = selection.length - 2;
 			//	cloneMap.index = selection.length - 2;
