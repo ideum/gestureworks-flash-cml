@@ -32,7 +32,7 @@ package com.gestureworks.cml.element
 		public var isLoading:Boolean = false;
 		public var loadText:Text;	
 		
-		public var maxClones:int = 13;		
+		public var maxClones:int = 30;		
 
 		private var srcMap:Dictionary;
 		private var cloneMap:LinkedMap;
@@ -189,6 +189,7 @@ package com.gestureworks.cml.element
 		private function removeSrc(src:String):void
 		{
 			var k:*;
+			removeByKey(src);			
 			delete srcMap[src]["clone"];
 			delete srcMap[src]["preview"];
 			
@@ -197,12 +198,14 @@ package com.gestureworks.cml.element
 			}
 			
 			delete srcMap[src];
-			removeByKey(src);
 		}
 	
 		private function removeByKey(key:String):void
 		{
-			var index = previews.search(srcMap[key]["preview"]);
+			if (!srcMap[key]) return;
+			if (!srcMap[key]["preview"]) return;
+			
+			var index:int = previews.search(srcMap[key]["preview"]);
 			
 			if (index == -1)
 				return;

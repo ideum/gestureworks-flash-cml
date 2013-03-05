@@ -283,8 +283,8 @@ package com.gestureworks.cml.components
 		{
 			loadBkg = new Graphic();
 			loadBkg.shape = "rectangle";
-			loadBkg.width = stage.stageWidth;
-			loadBkg.height = stage.stageHeight;
+			loadBkg.width = 1920;
+			loadBkg.height = 1080;
 			loadBkg.lineStroke = 0;
 			loadBkg.color = 0x000000;
 			
