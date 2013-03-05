@@ -5,6 +5,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
+	import flash.display.Sprite;
 	import flash.events.TouchEvent;
 	import flash.geom.ColorTransform;
 	import org.libspark.betweenas3.BetweenAS3;
@@ -40,6 +41,8 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{					
+			trace("Padding top:", paddingTop);
+			trace("<( ^.^ )>");
 			for (var j:int = 0; j < numChildren; j++) {
 				contents.push(getChildAt(j));
 			}
@@ -85,7 +88,17 @@ package com.gestureworks.cml.element
 						label.autoSize = "left";
 						label.text = _labelsArray[i];
 						tabs[i].addChild(label);
-						label.y = (tabs[i].height - label.height) / 2;
+						if (autoLayout){
+							label.y = (tabs[i].height - label.height) / 2;
+							label.x = 15;
+							if (twirlIndicator)
+								label.x = fontSize * 2;
+						} else {
+							label.y = paddingTop;
+							label.x = paddingRight;
+							if (twirlIndicator)
+								label.x = fontSize + (paddingRight * 2);
+						}
 					}
 				}
 				
@@ -247,6 +260,43 @@ package com.gestureworks.cml.element
 			_fontColor = value;
 		}
 		
+		private var _autoLayout:Boolean = true;
+		/**
+		 * Set whether to automatically lay out labels,
+		 * or to use padding properties that have been set.
+		 */
+		public function get autoLayout():Boolean { return _autoLayout; }
+		public function set autoLayout(value:Boolean):void {
+			_autoLayout = value;
+		}
+		
+		private var _twirlIndicator:Boolean = false;
+		/**
+		 * Set whether or not to display triangles that twirl when a menu is opened.
+		 */
+		public function get twirlIndicator():Boolean { return _twirlIndicator; }
+		public function set twirlIndicator(value:Boolean):void {
+			_twirlIndicator = value;
+		}
+		
+		private var _twirlStroke:Number = 1;
+		/**
+		 * Set the thickness of the twirl triangle. Everything else is based on font size.
+		 */
+		public function get twirlStroke():Number { return _twirlStroke; }
+		public function set twirlStroke(value:Number):void {
+			_twirlStroke = value;
+		}
+		
+		private var _snapping:Boolean = true;
+		/**
+		 * Set whether or not the accordion menus snap on release.
+		 */
+		public function get snapping():Boolean { return _snapping; }
+		public function set snapping(value:Boolean):void {
+			_snapping = value;
+		}
+		
 		private var _current:int;
 		public function get current():int { return _current; }
 
@@ -258,6 +308,7 @@ package com.gestureworks.cml.element
 		private var isTweening:Boolean = false;
 		private var cTab:TouchContainer;
 		private var down:Boolean;
+		private var twirlIcons:Array = [];
 		
 		private function onTap(e:GWGestureEvent):void 
 		{
@@ -269,8 +320,12 @@ package com.gestureworks.cml.element
 			var tweenGroup:ITweenGroup;
 						
 			for (var i:int = 0; i < tabs.length; i++) {
-				if (e.target == tabs[i])
+				if (e.target == tabs[i]) {
 					_current = i;
+					tweenArray.push(BetweenAS3.to(twirlIcons[current], { rotation:180 }, 0.3));
+				}
+				else
+					tweenArray.push(BetweenAS3.to(twirlIcons[i], { rotation:90 }, 0.3));
 			}
 			
 			for (i = _current + 1; i < tabs.length; i++) {
@@ -307,6 +362,14 @@ package com.gestureworks.cml.element
 
 		private function createTab():TouchSprite
 		{
+			var label:Text = new Text();
+			label.font = _font;
+			label.color = _fontColor;
+			label.fontSize = _fontSize;
+			label.autoSize = "left";
+			label.text = "This is a test.";
+			addChild(label);
+			
 			var tab:Graphic = new Graphic();
 			tab.shape = "rectangle";
 			tab.color = _color;
@@ -315,14 +378,51 @@ package com.gestureworks.cml.element
 			tab.gradientColors = _gradientColors;
 			tab.gradientRatios = _gradientRatios;
 			tab.width = width ;
-			tab.height = height * .15;
+			if (autoLayout)
+				tab.height = label.height * 2;
+			else
+				tab.height = label.height + paddingBottom + paddingTop;
 			tab.gradientWidth = tab.width;
 			tab.gradientHeight = tab.height;
 			tab.gradientRotation = 90;
 			tab.lineStroke = 0;
 			
+			removeChild(label);
+			
 			var ts:TouchSprite = new TouchSprite;
 			ts.addChild(tab);
+			
+			if (twirlIndicator) {
+				var sp:Sprite = new Sprite();
+				sp.graphics.beginFill(0x000000, 0);
+				sp.graphics.drawCircle(fontSize / 2, fontSize / 2, fontSize / 2);
+				sp.graphics.endFill();
+				
+				var twirl:Graphic = new Graphic();
+				twirl.shape = "triangle";
+				twirl.height = fontSize;
+				twirl.fillAlpha = 0;
+				//twirl.color = backgroundColor;
+				//twirl.fill = "color";
+				twirl.lineStroke = _twirlStroke;
+				twirl.lineColor = fontColor;
+				//twirl.rotation = 90;
+				twirl.x -= fontSize / 2;
+				twirl.y -= fontSize / 2;
+				
+				sp.addChild(twirl);
+				ts.addChild(sp);
+				if (autoLayout) {
+					sp.x = sp.width + (sp.width / 2);
+					sp.y = sp.height;
+				} else {
+					sp.x = paddingRight + (fontSize);
+					sp.y = paddingTop + (fontSize * 0.75);
+				}
+				sp.rotation = 90;
+				twirlIcons.push(sp);
+				//paddingRight = sp.width + (paddingRight * 2);
+			}
 			
 			return ts;
 		}	
@@ -333,8 +433,18 @@ package com.gestureworks.cml.element
 		{
 			
 			for (var i:int = 0; i < tabs.length; i++) {
-				if (e.target == tabs[i])
+				if (e.target == tabs[i]) {
 					_current = i;
+				}
+			}
+			
+			var dragGroup:Array = [];
+			for (var j:int = 1; j < tabs.length; j++) {
+				if ( tabs[j].y == j * tabs[j].height || tabs[j].y == background.height - ((tabs.length - j) * tabs[j].height)) {
+					continue;
+				} else {
+					dragGroup.push(tabs[j]);
+				}
 			}
 			
 			if (_current == 0) return;
@@ -350,10 +460,28 @@ package com.gestureworks.cml.element
 					if (tabs[i].y + e.value.drag_dy > background.height - (tabs[i].height * (tabs.length - i))) {
 						tabs[i].y = background.height - (tabs[i].height * (tabs.length - i));
 						contents[i].y = tabs[i].height + tabs[i].y;
+						
 					}	
 					else {
 						tabs[i].y += e.value.drag_dy;
 						contents[i].y += e.value.drag_dy;
+					}
+					
+					if (dragGroup.length > 1) {
+						//trace("Drag grouping");
+						for (var k:int = dragGroup.length - 1; k > -1; k--) 
+						{
+							//trace("K:", k);
+							var index:Number = tabs.indexOf(dragGroup[k]);
+							if (k == dragGroup.length - 1) // Last element in the group that was open before, getting closed now.
+								twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (background.height - (tabs[index].height * (tabs.length - index)))));
+							else if (k == 0)
+								twirlIcons[index - 1].rotation = (90 * (tabs[index].y / (background.height - (tabs[index].height * (tabs.length - index))))) + 90;
+						}
+					}
+					else if (i - 1 == _current - 1 && dragGroup.length == 1) {
+						twirlIcons[i - 1].rotation = (90 * (tabs[i].y / (background.height - (tabs[i].height * (tabs.length - i))))) + 90;
+						twirlIcons[i].rotation = 180 - (90 * (tabs[i].y / (background.height - (tabs[i].height * (tabs.length - i)))));
 					}
 				}
 			}
@@ -368,10 +496,35 @@ package com.gestureworks.cml.element
 						tabs[i].y += e.value.drag_dy;
 						contents[i].y += e.value.drag_dy;
 					}
+					
+					if (dragGroup.length > 1){
+						for (var l:int = dragGroup.length - 1; l > -1; l--) 
+						{
+							var ndex:Number = tabs.indexOf(dragGroup[l]);
+							
+							if (l == dragGroup.length - 1) { // Last element in the group that was open before, getting opened now.
+								//twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (height - (tabs[index].height * (index)))));
+								var zIndex:Number = tabs.indexOf(dragGroup[0]);
+								zIndex -= 1;
+								var baseHeight:Number = tabs[zIndex].y + tabs[zIndex].height;
+								var groupHeight:Number = tabs[ndex].height * (dragGroup.length - 1);
+								var nTarget:Number = baseHeight + groupHeight;
+								twirlIcons[ndex].rotation = (90 * (nTarget / tabs[ndex].y)) + 90;
+							}
+							else if (l == 0)
+								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
+						}
+					}
+					else if (dragGroup.length == 1) {
+						var n:Number = _current - 1;
+						var offset:Number = tabs[n].y + tabs[n].height;
+						var target:Number = height - tabs[current].height;
+						var tempY:Number = tabs[current].y - offset;
+						twirlIcons[n].rotation = 90 * (tempY / target) + 90;
+						twirlIcons[current].rotation = 180 - (90 * (tempY / target));
+					}
 				}
 			}
-			
-			var _snapping:Boolean = true;
 			
 			if (_snapping) {
 				addEventListener(GWGestureEvent.RELEASE, onRelease);
@@ -386,7 +539,7 @@ package com.gestureworks.cml.element
 			// Fill a group with all tabs so they all snap the same direction on release.
 			var dragGroup:Array = [];
 			for (var j:int = 1; j < tabs.length; j++) {
-				if ( tabs[j].y == j * tabs[j].height || tabs[j].y == background.height - (tabs.length - j) * tabs[j].height) {
+				if ( tabs[j].y == j * tabs[j].height || tabs[j].y == background.height - ((tabs.length - j) * tabs[j].height)) {
 					continue;
 				} else {
 					dragGroup.push(tabs[j]);
@@ -394,6 +547,8 @@ package com.gestureworks.cml.element
 			}
 			
 			//trace("Target index:", dragGroup.indexOf(e.target));
+			
+			
 			
 			var tweenArray:Array = [];
 			var tweenGroup:ITweenGroup;
@@ -409,6 +564,16 @@ package com.gestureworks.cml.element
 					tweenArray.push(BetweenAS3.to(tabs[cNum], { y:(cNum) * tabs[cNum].height }, 0.3));
 					tweenArray.push(BetweenAS3.to(contents[cNum], { y:((cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
 				}
+				
+				for (var l:int = 0; l < tabs.length; l++) 
+				{
+					if (e.target == tabs[l]) {
+						tweenArray.push(BetweenAS3.to(twirlIcons[l], { rotation:180 }, 0.3));
+					}
+					else
+						tweenArray.push(BetweenAS3.to(twirlIcons[l], { rotation:90 }, 0.3));
+				}
+				
 			} else {
 				for (var i:int = 0; i < dragGroup.length; i++) 
 				{
@@ -419,6 +584,14 @@ package com.gestureworks.cml.element
 					tweenArray.push(BetweenAS3.to(contents[cNum], { y: (background.height - (tabs.length - cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
 				}
 				
+				for (var b:int = 0; b < tabs.length; b++) {
+					if (e.target == tabs[b + 1]) {
+						//_current = i;
+						tweenArray.push(BetweenAS3.to(twirlIcons[b], { rotation:180 }, 0.3));
+					}
+					else
+						tweenArray.push(BetweenAS3.to(twirlIcons[b], { rotation:90 }, 0.3));
+				}
 			}
 			
 			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
