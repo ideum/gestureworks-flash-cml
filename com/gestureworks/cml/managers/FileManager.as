@@ -41,6 +41,7 @@ package com.gestureworks.cml.managers
 		public static var cmlType:RegExp = /^.*\.(cml)$/i;
 		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
 		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
+		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg)$/i;
 		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
 
@@ -79,8 +80,15 @@ package com.gestureworks.cml.managers
 		{
 			return file.search(mediaTypes) != -1;
 		}		
-		
 
+		/**
+		 *  
+		 */		
+		public static function isPreloadMedia(file:String):Boolean
+		{
+			return file.search(mediaPreloadTypes) != -1;
+		}	
+		
 		/**
 		 *  
 		 */
@@ -167,22 +175,26 @@ package com.gestureworks.cml.managers
 			var loader:* = null;
 			
 			if (file) {
-				if (file.search(FileManager.cmlType) >= 0) {
+				if (file.search(cmlType) >= 0) {
 					CMLLoader.getInstance(file).load(file);
 					CMLLoader.getInstance(file).addEventListener(CMLLoader.COMPLETE, onFileLoaded);
 				}					
 				
-				else if (file.search(FileManager.swfType) >= 0) {							
+				else if (file.search(swfType) >= 0) {							
 					loader = new SWFLoader;
 					loader.addEventListener(SWFLoader.COMPLETE, onFileLoaded);	
 					loader.load(file);
 				}
 				
-				else if (file.search(FileManager.imageType) >= 0) {
+				else if (file.search(mediaPreloadTypes) >= 0) {
 					loader = new IMGLoader;
 					loader.addEventListener(IMGLoader.COMPLETE, onFileLoaded);	
 					loader.load(file);						
-				}	
+				}
+				else {
+					dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, null, null, false, false));						
+				}				
+				
 			}
 			first = false;
 		}
