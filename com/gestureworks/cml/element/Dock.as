@@ -245,7 +245,10 @@ package com.gestureworks.cml.element
 					// Create substring
 					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
 					obj.propertyStates[0][s] = str;
-					lm.append(obj, s);
+					if (s == "src") 
+						lm.prepend(obj, s);
+					else
+						lm.append(obj, s);
 				}
 			}
 			
@@ -276,7 +279,7 @@ package com.gestureworks.cml.element
 				
 				trace(cloneMap.key, cloneMap.value);
 				
-				var keys:Array = cloneMap.value.getKeyArray();
+				var keys:Array = cloneMap.value.getKeyArray();				
 				var values:Array = cloneMap.value.getValueArray();
 			
 				for (var i:int = 0; i < keys.length; i++) {
@@ -287,6 +290,7 @@ package com.gestureworks.cml.element
 					if ( srcMap[res[exp]] ) {	
 						src = res[exp];
 						found = true;
+						break;
 					}
 					else {
 						
