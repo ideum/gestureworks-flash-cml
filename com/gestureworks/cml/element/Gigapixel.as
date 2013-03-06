@@ -270,12 +270,12 @@
 			else zoom = _zoom;
 			
 			if (_viewportX && _viewportY) {
-				panTo(_viewportX, _viewportY);
+				panTo(_viewportX, _viewportY, true);
 			}
 			else if (_viewportX && !_viewportY)
-				panTo(_viewportX, image.viewportY);
+				panTo(_viewportX, image.viewportY, true);
 			else if (_viewportY && !_viewportX)
-				panTo(image.viewportX, _viewportY);
+				panTo(image.viewportX, _viewportY, true);
 		}
 		
 		private function flipHotspots(onOff:Boolean):void {
