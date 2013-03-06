@@ -111,10 +111,21 @@
 			if (_graphicReps) {
 				_graphicsArray = [];
 				_graphicsArray = _graphicReps.split(",");
+				downStates = [];
+				var grabStates:Array = [];
+				for (var j:int = 0; j < _graphicsArray.length; j++) 
+				{
+					grabStates = _graphicsArray[j].split(":");
+					_graphicsArray[j] = grabStates[0];
+					downStates.push(grabStates[1]);
+				}
+				grabStates = null;
 				for (var i:int = 0; i < _graphicsArray.length; i++) 
 				{
 					_graphicsArray[i] = childList.getKey(_graphicsArray[i]);
-					trace("Grabbing graphics.");
+					if (downStates && i < downStates.length) {
+						downStates[i] = childList.getKey(downStates[i]);
+					}
 				}
 			}
 			
@@ -167,12 +178,29 @@
 			caption.alpha = _fontAlpha;
 			
 			var button:Sprite = new Sprite();
+			var downButton:Sprite;
 			button.name = label;
 			radius = caption.fontSize/2;
 			if (_graphicsArray && index < _graphicsArray.length) {
 				button.addChild(_graphicsArray[index]);
-				button.alpha = 0.5;
+				if (downStates.length == 0)
+					button.alpha = 0.5;
+				else if (index < downStates.length) {
+					//_graphicsArray[index].visible = false;
+					//button.addChild(downStates[index]);
+					downButton = new Sprite();
+					downButton.name = label;
+					downButton.addChild(downStates[index]);
+					downStates[index] = button;
+					downStates[index].alpha = 0;
+				}
+				else button.alpha = 0.5;
+				
 				_graphicsArray[index] = button;
+				if (downButton && index > 0) {
+					Sprite(_graphicsArray[index]).alpha = 0;
+					Sprite(downStates[index]).visible = true;
+				}
 			}
 			else {
 				button.graphics.lineStyle(_radioStroke, _radioStrokeColor);
@@ -181,6 +209,12 @@
 				button.graphics.endFill();
 			}
 			setButtonPosition(button);
+			if (downButton) {
+				//setButtonPosition(downButton);
+				downButton.x = button.x;
+				downButton.y = button.y;
+				addChild(downButton);
+			}
 					
 			caption.autoSize = "left";
 			caption.text = label;
@@ -325,15 +359,6 @@
 			selected.graphics.beginFill(_selectedColor);		
 			selected.graphics.drawCircle(radius, radius, radius * _selectedFillRatio);
 			selected.graphics.endFill();
-			/*selected = new Graphic();
-			selected.name = "selected";
-			selected.shape = "circle";
-			selected.fill = "color";
-			selected.color = _selectedColor;
-			selected.lineStroke = 0;
-			selected.radius = radius * _selectedFillRatio;
-			selected.y = radius - (radius / 1.5);
-			selected.x = radius - (radius / 1.5);*/
 		}
 		
 		/**
@@ -514,6 +539,7 @@
 		
 		public function get selectedLabel():String { return _selectedLabel; }
 		private var labelList:Array;
+		private var downStates:Array;
 		
 		/**
 		 * Handles the event indicating a radio button is selected 
@@ -539,9 +565,16 @@
 							if (compareChildren(_graphicsArray[i], event.target)) {
 								_graphicsArray[i].alpha = 1;
 								_selectedLabel = _graphicsArray[i].name;
+								if (downStates && i < downStates.length) {
+									_graphicsArray[i].alpha = 1;
+									//downStates[i].visible = false;
+								}
 							}
-							else {
+							else if (downStates.length == 0) {
 								_graphicsArray[i].alpha = 0.5;
+							} else if (i < downStates.length) {
+								//downStates[i].visible = true;
+								_graphicsArray[i].alpha = 0;
 							}
 						}
 					}
@@ -575,7 +608,11 @@
 				for (var j:int = 0; j < _graphicsArray.length; j++) 
 				{
 					if (_selectedLabel == _graphicsArray[j].name) {
-						_graphicsArray[j].alpha = 0.5;
+						if (downStates.length == 0 || j >= downStates.length)
+							_graphicsArray[j].alpha = 0.5;
+						else if (downStates && j < downStates.length) {
+							_graphicsArray[j].alpha = 0;
+						}
 						if (j + 1 < _graphicsArray.length)
 							j++;
 						else {
@@ -617,7 +654,11 @@
 				for (var j:int = _graphicsArray.length - 1; j > -1; j--) 
 				{
 					if (_selectedLabel == _graphicsArray[j].name) {
-						_graphicsArray[j].alpha = 0.5;
+						
+						if(downStates.length == 0 || j >= downStates.length)
+							_graphicsArray[j].alpha = 0.5;
+						else if (downStates && j < downStates.length)
+							_graphicsArray[j].alpha = 0;
 						if (j - 1 > -1)
 							j--;
 						else {
