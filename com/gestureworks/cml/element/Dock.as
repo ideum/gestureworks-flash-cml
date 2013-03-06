@@ -183,14 +183,17 @@ package com.gestureworks.cml.element
 		{	
 			var src:String = srcMap[clone];			
 			srcMap[src]["preview"] = preview;			
-			srcMap[preview] = src;
-			previews.push(preview);
+			srcMap[preview] = src;			
+			
+			if(previews.indexOf(preview) == -1)
+				previews.push(preview);
 		}
 		
 		private function removeSrc(src:String):void
 		{
 			var k:*;
-			removeByKey(src);			
+			//removeByKey(src);	
+			if (!srcMap[src]) return;
 			delete srcMap[src]["clone"];
 			delete srcMap[src]["preview"];
 			
@@ -286,30 +289,36 @@ package com.gestureworks.cml.element
 					obj = keys[i];
 					prop = values[i];
 					exp = obj["propertyStates"][0][prop];
-										
-					if ( srcMap[res[exp]] ) {	
-						src = res[exp];
-						found = true;
-						break;
-					}
-					else {
-						
-						if (exp in res) {	
-							try {
-								obj[prop] = null;
-							}
-							catch(e:Error) {
-								obj[prop] = "";
-							}
 							
-							if (res[exp]) {
-								obj[prop] = res[exp];
-								if (prop == "src") {
-									src = obj[prop];
-									loader = obj;
-								}
-							}	
+					if ( srcMap[res[exp]]) {	
+						if (obj[prop] == res[exp])
+						{
+							src = res[exp];
+							found = true;
+							break;
 						}
+						else
+						{
+							onCloneChange(null,cloneMap.key);							
+						}
+					}
+					
+					StateUtils.loadState(obj, 0, true);
+					if (exp in res) {	
+						try {
+							obj[prop] = null;
+						}
+						catch(e:Error) {
+							obj[prop] = "";
+						}
+						
+						if (res[exp]) {
+							obj[prop] = res[exp];
+							if (prop == "src") {
+								src = obj[prop];
+								loader = obj;
+							}
+						}	
 					}
 				}
 				
@@ -331,7 +340,8 @@ package com.gestureworks.cml.element
 		private function processSrc(src:String, obj:Object):void
 		{
 			var clone:* = cloneMap.key;
-
+			
+			removeSrc(src);
 			addSrc(src, clone); 							
 			obj.close();
 			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);
@@ -510,11 +520,6 @@ package com.gestureworks.cml.element
 				
 			
 			cloneMap.index = srcCnt - 1;
-			
-			/// 
-			
-			if (cloneMap.index == cloneMap.length-1)
-				cloneMap.index = -1;
 				
 			//else
 			//	cloneMap.index = selection.length - 2;
@@ -878,20 +883,25 @@ package com.gestureworks.cml.element
 		
 
 		
-		private function onCloneChange(e:StateEvent):void
+		private function onCloneChange(e:StateEvent, target:*=null):void
 		{					
-			if (e.property == "visible") {				
-				if (!e.value) {
-					var clone:* = e.target;
+			if (!e || e.property == "visible") {				
+				if (e && !e.value) {
+					target = e.target; 
+				}
+				if (target)				
+				{				
+					var clone:* = target;
 					clone.removeEventListener(StateEvent.CHANGE, onCloneChange);
 					if (srcMap[clone]) {
 						var src:String = srcMap[clone];	
 						collectionViewer.untagObject(clone);
 						if (srcMap[src]["preview"])
 							album.unSelect(srcMap[src]["preview"]);
-						else
+						else 
 							removeSrc(src);
 					}
+					target.visible = false;	
 				}
 			}				
 		}
