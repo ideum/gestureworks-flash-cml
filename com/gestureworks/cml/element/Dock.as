@@ -376,6 +376,7 @@ package com.gestureworks.cml.element
 		// get search terms from dial and submit query
 		protected function onDialChange(e:StateEvent):void 
 		{
+			cancelLoading();
 			album.clear();
 			
 			var index:int = dials.indexOf(e.target);
@@ -490,6 +491,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onQueryLoad(e:StateEvent):void {
+			isLoading = true;
 			flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
 			
 			album.clear();
@@ -654,25 +656,13 @@ package com.gestureworks.cml.element
 		private function getPreview(obj:*):TouchContainer
 		{
 			var prv:TouchContainer = new TouchContainer();
-			
-			if (flickrQuery)
-				var flickr:Flickr = obj.image.clone();
-			else if (!flickrQuery)
-				var img:Image = obj.image.clone();				
+			var img:* = obj.image.clone();
 				
-			if (img){
-				img.width = 0;
-				img.height = 140;
-				img.resample = true;
-				img.scale = 1;
-				img.resize();
-			} else if (flickr) {
-				flickr.width = 0;
-				flickr.height = 140;
-				flickr.resample = true;
-				flickr.scale = 1;
-				flickr.resize();
-			}
+			img.width = 0;
+			img.height = 140;
+			img.resample = true;
+			img.scale = 1;
+			img.resize();
 						
 			var title:Text;
 			if (obj.back || obj.backs.length == 1) {
@@ -681,37 +671,19 @@ package com.gestureworks.cml.element
 			else if (obj.backs && obj.backs.length > 1) {
 				title = obj.searchChildren("title").clone();
 			}
-			if (img)
-				title.width = img.width;
-			else if (flickr)
-				title.width = flickr.width;
 			
+			title.width = img.width;			
 			title.textAlign = "center";
-			title.fontSize = 10;
+			title.fontSize = 10;			
+			title.y = img.height;			
+			title.x = img.x;
 			
-			if(img) {
-				title.y = img.height;			
-				title.x = img.x;
-				
-				fadein(img, 1);
-				
-				prv.addChild(img);
-				prv.addChild(title);
-				prv.width = img.width;
-				prv.height = img.height + 30;
-			}
+			fadein(img, 1);
 			
-			else if (flickr) {
-				title.y = flickr.height;			
-				title.x = flickr.x;
-				
-				fadein(flickr, 1);
-				
-				prv.addChild(flickr);
-				prv.addChild(title);
-				prv.width = flickr.width;
-				prv.height = flickr.height + 30;
-			}
+			prv.addChild(img);
+			prv.addChild(title);
+			prv.width = img.width;
+			prv.height = img.height + 30;			
 			
 			return prv;
 		}
@@ -892,7 +864,15 @@ package com.gestureworks.cml.element
 			}				
 		}
 		
-	
+		private function cancelLoading():void
+		{
+			if (isLoading)
+			{
+				for each(var clone:Component in cloneMap.getKeyArray())
+					clone.removeEventListener(StateEvent.CHANGE, onCloneLoad);
+				isLoading = false;
+			}
+		}
 
 		// traces result object
 		private function printResult(result:Object):void
