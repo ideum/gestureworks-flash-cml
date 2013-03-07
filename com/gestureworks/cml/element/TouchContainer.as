@@ -294,7 +294,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function parseCML(cml:XMLList):XMLList
 		{
-			cmlGestureList = makeGestureList(cml.GestureList);			
+			//cmlGestureList = makeGestureList(cml.GestureList);			
 			
 			var node:XML = XML(cml);
 			var obj:Object;

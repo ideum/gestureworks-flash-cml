@@ -20,6 +20,7 @@ package com.gestureworks.cml.factories
 	 */		
 	public class ElementFactory extends Sprite implements IElement, ICSS
 	{
+		
 		/**
 		 * Constructor
 		 */
@@ -36,8 +37,9 @@ package com.gestureworks.cml.factories
 			mouseChildren = true;
 		}			
 		
-		
 
+		
+	
 		////////////////
 		//  IObject  
 		///////////////		

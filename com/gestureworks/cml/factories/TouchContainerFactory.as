@@ -101,7 +101,7 @@ package com.gestureworks.cml.factories
 		public function parseCML(cml:XMLList):XMLList
 		{
 			var obj:XMLList = CMLParser.instance.parseCML(this, cml);			
-			cmlGestureList = makeGestureList(cml.GestureList);			
+			//cmlGestureList = makeGestureList(cml.GestureList);			
 			return obj;
 		}
 		
@@ -193,22 +193,6 @@ package com.gestureworks.cml.factories
 			_dropShadow = value;
 		}
 		
-		private var blurFilter:BlurFilter = new BlurFilter(5, 5, 1);
-		private var _blur:Boolean = false;
-		/**
-		 * Sets the drop shadow effect
-		 * @default false
-		 */
-		public function get blur():Boolean { return _blur; }		
-		public function set blur(value:Boolean):void 
-		{ 			
-			if (value)
-				this.filters.push(blurFilter);
-			else	
-				this.filters = [];
-				
-			_blur = value;
-		}	
 		
 		//////////////////////////////////////////////////////////////
 		//  ICSS 
@@ -338,19 +322,24 @@ package com.gestureworks.cml.factories
 		 */
 		public function makeGestureList(value:XMLList):Object
 		{			
-			var gl:*;
-			
-			if (gl === value.Gesture) 
-				return null;
-			
+			var gl:*;			
 			gl = value.Gesture;
+			
+			var go:String;
 			
 			var object:Object = new Object();
 			
 			for (var i:int; i < gl.length(); i++)
-			{					
-				object[(gl[i].@ref).toString()] = gl[i].@gestureOn;
+			{
+				if (gl[i].@gestureOn == undefined)
+					go = "true";
+				else 
+					go = String(gl[i].@gestureOn);
+					
+				object[String((gl[i].@ref))] = go;
 			}
+			
+			cmlGestureList = object;
 			
 			return object;
 		}	
@@ -363,7 +352,7 @@ package com.gestureworks.cml.factories
 			this.gestureList = cmlGestureList;
 			
 			for (var j:String in gestureList) {
-				////trace("gesture:",this.id, j+":"+gestureList[j]);
+				trace("gesture:",this.id, j+":"+gestureList[j]);
 			}
 		}
 				

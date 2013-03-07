@@ -31,7 +31,8 @@ package com.gestureworks.cml.core
 			"",
 			"com.gestureworks.cml.buttons.",			
 			"com.gestureworks.cml.components.",		
-			"com.gestureworks.cml.element.", 
+			"com.gestureworks.cml.element.",
+			"com.gestureworks.cml.filters.",
 			"com.gestureworks.cml.kits.",
 			"com.gestureworks.cml.layouts.",
 			"com.gestureworks.cml.menus."
@@ -128,6 +129,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.MediaElement; MediaElement;
 	import com.gestureworks.cml.element.MP3Element; MP3Element;	
 	
+	
+	
 	/////////////////////
 	//  KITS  
 	/////////////////////
@@ -146,6 +149,16 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.layouts.PointLayout; PointLayout;
 	import com.gestureworks.cml.layouts.PileLayout; PileLayout;
 	import com.gestureworks.cml.layouts.FanLayout; FanLayout;
+	
+
+	
+	///////////////////////
+	//  Filters 
+	//////////////////////
+	import com.gestureworks.cml.filters.DropShadow; DropShadow;	
+	import com.gestureworks.cml.filters.Glow; Glow;	
+	import com.gestureworks.cml.filters.Bevel; Bevel;	
+	import com.gestureworks.cml.filters.Blur; Blur;	
 	
 	
 	
