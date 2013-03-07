@@ -73,6 +73,7 @@ package com.gestureworks.cml.element
 		private var index:int = 0;
 		private var frame:Rectangle;  //the dimensions of the largest object
 		private var beltMouseChildren:Boolean = false;
+		private var snapIndex:Number = 0;
 		
 		/**
 		 * Constructor
@@ -289,6 +290,17 @@ package com.gestureworks.cml.element
 			dragAngle = value;
 			super.rotationY = value;
 		}	
+		
+		public function get currentSnapPoint():Number {
+			var d:Number = horizontal ? belt.x : belt.y;
+			for (var i:int = 0; i < snapPoints.length; i++) {
+				if (snapPoints[i] + (belt.width * 0.1) > d && d > snapPoints[i] - (belt.width * 0.1)) {
+					snapIndex = i;
+				}
+			}
+			//trace(d);
+			return snapIndex;
+		}
 		
 		/**
 		 * Returns the "width" if horizontal and "height" if vertical
