@@ -141,13 +141,13 @@ package com.gestureworks.cml.core
 				
 				if (!tag) {
 					// TODO: Replace -match against RendererData attribute values to more reliably resolve paths
-					if (cml.parent() && 
-						cml.parent().parent().parent().name() == "RendererData") {			
+					//if (cml.parent() && 
+					//	cml.parent().parent().parent().name() == "RendererData") {			
 						if ( cml[i].toString().search(FileManager.cmlType) > -1 )
 							ppInclude(cml[i], cml[i].toString());					
-						else if ( cml[i].toString().search(FileManager.mediaTypes) > -1 )
+						else if ( cml[i].toString().search(FileManager.mediaPreloadTypes) > -1 )
 							ppMedia(cml[i], cml[i].toString());
-					}	
+					//}	
 					continue;
 				}
 				
@@ -269,8 +269,7 @@ package com.gestureworks.cml.core
 		{
 			if (debug) trace("0:  RenderKit found" );
 			var path:String;
-			if (cml.Renderer != undefined && cml.RendererData == undefined && 
-				cml.Renderer.@dataPath != undefined) {
+			if (cml.Renderer != undefined  && cml.Renderer.@dataPath != undefined) {
 				path = cml.Renderer.@dataPath;
 				
 				if (!FileManager.isCML(path)) return;
@@ -312,7 +311,7 @@ package com.gestureworks.cml.core
 			else
 				path = cml.@src;
 			
-			if (!FileManager.isMedia(path)) return;				
+			if (!FileManager.isPreloadMedia(path)) return;				
 				
 			if (paths["Media"].indexOf(path) == -1)
 				paths["Media"].push(path);
@@ -385,7 +384,7 @@ package com.gestureworks.cml.core
 		 * @param	properties
 		 */
 		public static function loopCML(cml:XMLList, parent:*= null, properties:*= null):void
-		{			
+		{
 			var node:XML;			
 			var tag:String;
 			var attr:String;
@@ -440,12 +439,7 @@ package com.gestureworks.cml.core
 				else obj.id = tag;
 				
 				
-					
-				// add to master object list
-				CMLObjectList.instance.append(obj.id, obj);				
-				
-				
-				
+
 				// unique object identifier
 				obj.cmlIndex = CMLObjectList.instance.length-1;	
 				
@@ -458,23 +452,22 @@ package com.gestureworks.cml.core
 				
 				
 				 //target render data
-				if (properties){			
+				if (properties) {
 					obj.propertyStates[0]["id"] = obj.id;									
 					for (var key:* in obj.propertyStates[0]) {		
 						for each (var val:* in properties.*) {
 							var str:String = obj.propertyStates[0][key];
-							var eval:Boolean = false;
 							
 							// filter value for expression delimiter "{}"
 							if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
 								// remove whitepsace and {} characters
 								var regExp:RegExp = /[\s\r\n{}]*/gim;
 								str = str.replace(regExp, '');
-								eval = true;
 							}	
 							
 							if (str == val.name().toString()) {
-								eval = false;
+								if (key == "id")
+									obj.id = val;									
 								obj.propertyStates[0][key] = val;
 							}							
 						}
@@ -482,7 +475,10 @@ package com.gestureworks.cml.core
 				}				
 
 				
-				
+				// add to master object list
+				CMLObjectList.instance.append(obj.id, obj);	
+		
+					
 				if (parent is (IContainer))
 					parent.childToList(obj.id, obj);
 				
@@ -495,20 +491,6 @@ package com.gestureworks.cml.core
 					
 			}
 		}		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
 		
 		
 		
@@ -525,17 +507,20 @@ package com.gestureworks.cml.core
 			var dataRootTag:String;
 			
 			var tmp:XMLList;
-			
+				
 			for (var q:int; q < renderKit.Renderer.length(); q++) {
-
+								
 				if (renderKit.Renderer.@dataPath == undefined) {
 					rendererData = renderKit.RendererData;
-				}
+				}				
 				else {
 					tmp = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)));
 					rendererData = tmp.RenderKit.RendererData;
 				}
 				
+				if (rendererData.Include != undefined) {
+					rendererData = XMLList(FileManager.fileList.getKey(String(rendererData.Include.@src)));
+				}
 				
 				if (renderKit.Renderer.@dataRootTag == undefined) {
 					renderList = rendererData.*;
@@ -549,7 +534,13 @@ package com.gestureworks.cml.core
 				for (var i:int = 0; i < renderList.length(); i++) {
 					cmlRenderer = new XMLList(renderKit.Renderer[q].*);
 					
-					for each (var node:XML in cmlRenderer) {						
+					for each (var node:* in cmlRenderer) {
+						
+						if (node.name() == "Include") {
+							node = XML(FileManager.fileList.getKey(String(node.@src)));
+							node = XMLList(node.children());
+						}
+	
 						var properties:XMLList = XMLList(renderList[i]);	
 						loopCML(XMLList(node), parent, properties);
 					}
