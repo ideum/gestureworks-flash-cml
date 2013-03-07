@@ -47,6 +47,8 @@
 		private var selected:Sprite;
 		//private var selected:Graphic;
 		private var radius:Number;
+		private var labelList:Array;
+		private var downStates:Array;
 		
 		/**
 		 * RadioButton Constructor. Allows users to define a group of radio buttons by passing a comma delimited string containing
@@ -116,8 +118,11 @@
 				for (var j:int = 0; j < _graphicsArray.length; j++) 
 				{
 					grabStates = _graphicsArray[j].split(":");
-					_graphicsArray[j] = grabStates[0];
-					downStates.push(grabStates[1]);
+					//trace("Grab states:", grabStates);
+					if (grabStates.length == 2){
+						_graphicsArray[j] = grabStates[0];
+						downStates.push(grabStates[1]);
+					}
 				}
 				grabStates = null;
 				for (var i:int = 0; i < _graphicsArray.length; i++) 
@@ -532,14 +537,39 @@
 		private var _radioButtons:Dictionary = new Dictionary();
 		public function get radioButtons():Dictionary { return _radioButtons; }
 		
+		private var _selectedLabel:String;
 		/**
 		 * The currently selected label
 		 */
-		private var _selectedLabel:String;
-		
 		public function get selectedLabel():String { return _selectedLabel; }
-		private var labelList:Array;
-		private var downStates:Array;
+		
+		public function selectButton(s:String):void {
+			
+			if (_graphicsArray) {
+				for (var i:int = 0; i < _graphicsArray.length; i++) 
+				{
+					if (_graphicsArray[i].name != s) {
+						if (downStates.length > 0 && i < downStates.length) {
+							_graphicsArray[i].alpha = 0;
+						} else {
+							_graphicsArray[i].alpha = 0.5;
+						}
+					}
+					else {
+						_graphicsArray[i].alpha = 1;
+					}
+				}
+			}
+			else 
+			{
+				for (var j:int = 0; j < numChildren; j++) {
+					if (selected && getChildAt(j).name == s) {
+						Sprite(getChildAt(j)).addChild(selected);
+						_selectedLabel = getChildAt(j).name;
+					}
+				}
+			}
+		}
 		
 		/**
 		 * Handles the event indicating a radio button is selected 
@@ -584,7 +614,7 @@
 					button.addChild(selected);
 					_selectedLabel = button.name;
 				}
-				trace(_selectedLabel);
+				//trace(_selectedLabel);
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));		
 			}
 		}	
