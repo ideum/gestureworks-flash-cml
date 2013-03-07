@@ -38,7 +38,28 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void {}
+		public function init():void 
+		{
+			if (src.length) {
+			
+				if (src.search(imageTypes) >= 0)
+				{
+					dictionary[src] = new Image;
+					dictionary[src].loadComplete();				
+				}	
+				else if (src.search(videoTypes) >= 0)
+				{	
+					dictionary[src] = new Video;
+					dictionary[src].addEventListener(Event.COMPLETE, onComplete);				
+				}
+				else if (src.search(mp3Types) >= 0)
+				{	
+					dictionary[src] = new MP3;
+					dictionary[src].addEventListener(Event.COMPLETE, onComplete);				
+				}			
+			}
+			
+		}
 
 		
 		/**
@@ -175,17 +196,17 @@ package com.gestureworks.cml.element
 		{
 			if (file.search(imageTypes) >= 0)
  			{
-				dictionary[file] = new ImageElement;
+				dictionary[file] = new Image;
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}	
 			else if (file.search(videoTypes) >= 0)
 			{	
-				dictionary[file] = new VideoElement;
+				dictionary[file] = new Video;
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
 			else if (file.search(mp3Types) >= 0)
 			{	
-				dictionary[file] = new MP3Element;
+				dictionary[file] = new MP3;
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
 			else
@@ -276,15 +297,7 @@ package com.gestureworks.cml.element
 				dictionary[currentFile].seek(offset);
 		}
 		
-		
-		/**
-		 * This is called by the CML parser. Do not override this method.
-		 */		
-		override public function postparseCML(cml:XMLList):void 
-		{
-			if (this.propertyStates[0]["src"])
-				open(this.propertyStates[0]["src"]);
-		}		
+	
 		
 	}
 }

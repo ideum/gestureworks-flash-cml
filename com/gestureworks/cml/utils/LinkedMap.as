@@ -61,7 +61,6 @@ package com.gestureworks.cml.utils
 		 */		
 		public function get key():* { return keys.getIndex(currentIndex);  }
 	
-		private var _currentKey:*;
 		/**
 		 * Returns the current key
 		 */
@@ -75,7 +74,6 @@ package com.gestureworks.cml.utils
 		 */
 		public function get value():* { return values.getIndex(currentIndex); }		
 		
-		private var _currentValue:*;
 		/**
 		 * Returns the current value
 		 */
@@ -85,7 +83,6 @@ package com.gestureworks.cml.utils
 	
 		
 		
-		private var _length:int = 0;
 		/**
 		 * Returns the length of the LinkedMap
 		 */

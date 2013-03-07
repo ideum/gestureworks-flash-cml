@@ -15,7 +15,7 @@ package com.gestureworks.cml.element
 	public class SWF extends ElementFactory
 	{
 		private var asset:*;
-		private var _class:Class;
+		private var __class:Class;
 		
 		/**
 		 * Constructor
@@ -46,20 +46,27 @@ package com.gestureworks.cml.element
 				throw new Error("swf " + _src +  " failed to load");
 		}
 		
-		private var _classRef:String;
 		/**
 		 * classRef loads a swf library class
 		 * must be pre-loaded through the library kit
 		 */
-		public function get classRef():String { return _classRef; }
-		public function set classRef(value:String):void 
+		public function get classRef():String { return ref; }
+		public function set classRef(value:String):void { ref = value; }
+		
+		
+		private var _ref:String;
+		/**
+		 * ref loads a swf library class
+		 * must be pre-loaded through the library kit
+		 */
+		public function get ref():String { return _ref; }
+		public function set ref(value:String):void 
 		{ 
-			_classRef = value; 			
-			_class = getDefinitionByName(_classRef) as Class;
-			asset = new _class
+			_ref = value; 			
+			__class = getDefinitionByName(_ref) as Class;
+			asset = new __class;
 			addChild(asset);
-			//color = _color;
-		}
+		}		
 		
 		private var _color:Number;
 		/**
@@ -83,7 +90,7 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			asset = null;
-            _class = null;
+            __class = null;
 		}
 		
 	}
