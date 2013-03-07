@@ -298,8 +298,8 @@ package com.gestureworks.cml.components
 			
 			loadPercent = loadText.clone();
 			loadPercent.addEventListener(Event.ENTER_FRAME, function loadNext(e:Event):void {
-				docks[0].preloadClones();
-				docks[1].preloadClones();
+				for each(var dock:Dock in docks)
+					dock.preloadClones();
 				if (loadScrnComplete)
 					loadPercent.removeEventListener(Event.ENTER_FRAME, loadNext);
 			});
