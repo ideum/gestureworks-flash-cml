@@ -61,6 +61,9 @@ package com.gestureworks.cml.components
 			if (!back && albums[1])
 				back = albums[1];
 									
+			if (album && searchChildren(RadioButtons)) {
+				album.addEventListener(StateEvent.CHANGE, onStateEvent);
+			}
 			super.init();
 		}
 		
@@ -164,7 +167,13 @@ package com.gestureworks.cml.components
 			if (event.value == "forward")
 				album.next();
 			else if (event.value == "back")
-				album.previous();			
+				album.previous();	
+			else if (event.property == "albumState") {
+				var indices:RadioButtons = searchChildren(RadioButtons);
+				if (indices) {
+					indices.selectButton(Album(album).currentSnapPoint.toString());
+				}
+			}
 		}
 
 		/**
