@@ -132,7 +132,7 @@ package com.gestureworks.cml.components
 			fronts = [];
 			fronts = String(value).split(",");
 			if (fronts.length > 1) {
-				for (var i:int = 0; i < backs.length; i++) 
+				for (var i:int = 0; i < fronts.length; i++) 
 				{
 					fronts[i] = searchChildren(fronts[i]);
 				}
