@@ -630,8 +630,10 @@ package com.gestureworks.cml.core
 			else if ( node.(name() == "Gesture").length() ) {
 				tmp = XMLList(<GestureList />);
 				tmp.appendChild(XMLList(node.(name() == "Gesture")));
-			}				
-			obj.makeGestureList(tmp);
+			}
+			
+			if (tmp && tmp.length)
+				obj.makeGestureList(tmp);
 			
 			return node;
 		}		
