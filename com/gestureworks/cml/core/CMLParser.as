@@ -368,20 +368,7 @@ package com.gestureworks.cml.core
 			if (debug) trace("\n" + dash(XMLList(cml)) + "cml");	
 			
 			loopCML(cml.children(), cmlDisplay);
-			loadCSS();
-			
-			if (debug) trace("\n\n++ Process Complete ++");
-	
-			if (debug) {
-				trace("\n\n++ Print CMLObjectList ++");
-				printObjectList();				
-			}			
-			
-			if (debug) trace("\n\n++ Dispatch CMLParser.COMPLETE event ++");				
-			dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
-					
-			if (debug)
-				trace('\n\n========================== CML parser complete ===============================\n');					
+			loadCSS();			
 		}
 		
 	
@@ -515,7 +502,7 @@ package com.gestureworks.cml.core
 		{
 			if (debug) trace("\n\n++ Loading RenderKit ++");
 		
-			var rendererData:XMLList;
+			var rendererData:XMLList = new XMLList;
 			var renderList:XMLList;	
 			var cmlRenderer:XMLList;
 			var dataRootTag:String;
@@ -524,9 +511,10 @@ package com.gestureworks.cml.core
 				
 			for (var q:int; q < renderKit.Renderer.length(); q++) {
 								
-				if (renderKit.Renderer.@dataPath == undefined) {
+				if (renderKit.Renderer.@dataPath == undefined)
 					rendererData = renderKit.RendererData;
-				}				
+				else
+					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath))).RenderKit.RendererData;
 				
 				if (rendererData.Include != undefined) {
 					var j:int;
@@ -539,14 +527,10 @@ package com.gestureworks.cml.core
 						else
 							tmp.appendChild(node);
 					}
+					rendererData = tmp;
 				}
-				else {
-					tmp = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)));
-					tmp = tmp.RenderKit.RendererData;
-				}
+
 				
-				
-				rendererData = tmp;
 				
 				if (renderKit.Renderer.@dataRootTag == undefined) {
 					renderList = rendererData.*;
@@ -959,7 +943,20 @@ package com.gestureworks.cml.core
 			if (debug)
 				trace("\n\n++ Call object's displayComplete() method ++");				
 			
-			DisplayManager.instance.displayComplete();												
+			DisplayManager.instance.displayComplete();	
+			
+			if (debug) trace("\n\n++ Process Complete ++");
+	
+			if (debug) {
+				trace("\n\n++ Print CMLObjectList ++");
+				printObjectList();				
+			}			
+			
+			if (debug) trace("\n\n++ Dispatch CMLParser.COMPLETE event ++");				
+			dispatchEvent(new Event(CMLParser.COMPLETE, true, true));	
+					
+			if (debug)
+				trace('\n\n========================== CML parser complete ===============================\n');					
 		}			
 		
 		
