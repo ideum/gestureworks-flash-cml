@@ -167,16 +167,23 @@ package com.gestureworks.cml.element
 		
 
 		private var previews:Array = [];
-		private var srcCnt:int = 0;
 		
 		// srcMap // 
 		
 		private function addSrc(src:String, clone:Component):void
-		{			
+		{	
+			if (srcMap[clone])  //remove previous references
+			{
+				var prevSrc:String = srcMap[clone];
+				var preview:TouchContainer = srcMap[prevSrc]["preview"];
+				delete srcMap[clone];
+				delete srcMap[preview];
+				delete srcMap[prevSrc];
+			}
+			
 			srcMap[src] = new Dictionary();
 			srcMap[src]["clone"] = clone;			
 			srcMap[clone] = src;
-			srcCnt++;
 		}
 	
 		private function addPreview(clone:Component, preview:TouchContainer):void
@@ -192,7 +199,6 @@ package com.gestureworks.cml.element
 		private function removeSrc(src:String):void
 		{
 			var k:*;
-			//removeByKey(src);	
 			if (!srcMap[src]) return;
 			delete srcMap[src]["clone"];
 			delete srcMap[src]["preview"];
@@ -202,7 +208,6 @@ package com.gestureworks.cml.element
 			}
 			
 			delete srcMap[src];
-			srcCnt--;
 		}
 	
 		private function removeByKey(key:String):void
@@ -266,82 +271,72 @@ package com.gestureworks.cml.element
 		
 		private function resolveExp(res:*):void
 		{			
+			var obj:Object = cloneMap.value.key;
+			var prop:String = cloneMap.value.value;
+			var exp:* = obj["propertyStates"][0][prop];
+			var src:String = res[exp];
+			
+			if (srcMap[src]) {	
+				addPreview(srcMap[src]["clone"], getPreview(srcMap[src]["clone"]));
+				onCloneLoad();
+			}
+			else {
+				nextClone(res);
+			}
+				
+		}
+		
+		private function nextClone(res:*):void
+		{
+			var clone:Component = cloneMap.key;
 			var obj:Object;
 			var prop:String;
 			var exp:*;
 			var src:String;
 			
-			var loader:* = null;			
-			var found:Boolean = false;
+			if (clone.visible)
+				onCloneChange(null, clone);
 			
-			if (!cloneMap.hasNext())
-				cloneMap.index = -1;
+			var keys:Array = cloneMap.value.getKeyArray();
+			var values:Array = cloneMap.value.getValueArray();
 			
-			while (cloneMap.hasNext()) {
-				cloneMap.next();	
+			for (var i:int = 0; i < keys.length; i++)
+			{
+				obj = keys[i];
+				prop = values[i];
+				exp = obj["propertyStates"][0][prop];
 				
-				trace(cloneMap.key, cloneMap.value);
+				StateUtils.loadState(obj, 0, true);
 				
-				var keys:Array = cloneMap.value.getKeyArray();				
-				var values:Array = cloneMap.value.getValueArray();
-			
-				for (var i:int = 0; i < keys.length; i++) {
-					obj = keys[i];
-					prop = values[i];
-					exp = obj["propertyStates"][0][prop];
-							
-					if ( srcMap[res[exp]]) {	
-						if (obj[prop] == res[exp])
-						{
-							src = res[exp];
-							found = true;
-							break;
-						}
-						else
-						{
-							onCloneChange(null,cloneMap.key);							
-						}
+				if (exp in res)
+				{
+					try {
+						obj[prop] = null;						
+					}
+					catch (e:Error) {
+						obj[prop] = "";
 					}
 					
-					StateUtils.loadState(obj, 0, true);
-					if (exp in res) {	
-						try {
-							obj[prop] = null;
+					if (res[exp]) {
+						obj[prop] = res[exp];
+						if (prop == "src") {
+							src = obj[prop];
+							processSrc(src, obj);
+							
+							if (cloneMap.hasNext())
+								cloneMap.next();
+							else
+								cloneMap.reset();
 						}
-						catch(e:Error) {
-							obj[prop] = "";
-						}
-						
-						if (res[exp]) {
-							obj[prop] = res[exp];
-							if (prop == "src") {
-								src = obj[prop];
-								loader = obj;
-							}
-						}	
 					}
 				}
-				
-				if (loader || found)
-					break;				
-			}//while
-			
-			
-			if (found) {
-				addPreview(srcMap[src]["clone"], getPreview(srcMap[src]["clone"]));
-				onCloneLoad();
 			}
-			else if (loader) {
-				processSrc(src, loader);
-			}
-				
-		}	
+		}
 		
 		private function processSrc(src:String, obj:Object):void
 		{
 			var clone:* = cloneMap.key;
 			
-			removeSrc(src);
 			addSrc(src, clone); 							
 			obj.close();
 			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);
@@ -515,15 +510,6 @@ package com.gestureworks.cml.element
 				isLoading = false;
 				dockText[1].text = "No objects found. Please search again.";
 			}
-			
-			
-				
-			
-			cloneMap.index = srcCnt - 1;
-				
-			//else
-			//	cloneMap.index = selection.length - 2;
-			//	cloneMap.index = selection.length - 2;
 				
 			loadClone();
 		}
