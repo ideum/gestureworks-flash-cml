@@ -26,6 +26,8 @@ package com.gestureworks.cml.element
 		private var frameCount:int = 0;
 		public var buttonArray:Array = [];
 		public var slider:Slider;
+		
+		private var _layoutComplete:Boolean = false;
  
 		/**
 		 * Constructor
@@ -113,7 +115,8 @@ package com.gestureworks.cml.element
 					childList.removeIndex(i);
 			}
 			
-			updateLayout(this.width, this.height);	
+			if (!_layoutComplete)
+				updateLayout(this.width, this.height);	
 			addEventListener(StateEvent.CHANGE, onStateEvent);
 		}
 		
@@ -329,6 +332,7 @@ package com.gestureworks.cml.element
 			}
 			
 			i = 0;
+			_layoutComplete = true;
 		}
 	}
 }
