@@ -381,7 +381,6 @@ package com.gestureworks.cml.element
 		protected function onDialChange(e:StateEvent):void 
 		{
 			cancelLoading();
-			album.clear();
 			
 			var index:int = dials.indexOf(e.target);
 			
@@ -446,6 +445,8 @@ package com.gestureworks.cml.element
 		private function query(e:KeyboardEvent=null):void
 		{
 			isLoading = true;
+			album.clear();
+			previews = [];
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
 			//var searchString:String = "ca_object_labels.name:Yellow Flower";
@@ -470,7 +471,6 @@ package com.gestureworks.cml.element
 			//}			
 			
 			
-			album.clear();	
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
 			dockText[1].visible = true;
@@ -618,8 +618,6 @@ package com.gestureworks.cml.element
 			if (flickrQuery && flickrQuery.pages > 1) {
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
 			}
-		
-			album.clear();
 			
 			if (flickrQuery && flickrQuery.pages > 1) {
 				if (flickrQuery.pageNumber > 1) {
@@ -709,13 +707,11 @@ package com.gestureworks.cml.element
 				}
 				else if (e.value.contains(_nextArrow)) {
 					if (flickrQuery) {
-						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 						flickrQuery.nextPage();
 					} // else if something else...
 				} else if (e.value.contains(_previousArrow)) {
 					if (flickrQuery) {
-						album.clear();
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 						flickrQuery.previousPage();
 					} // else if something else...This should probably be replaced with a method search instead of hard coding.
