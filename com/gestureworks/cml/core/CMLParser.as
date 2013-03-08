@@ -395,7 +395,7 @@ package com.gestureworks.cml.core
 				tag = node.name();	
 				if (debug) trace(dash(XMLList(node)) + tag + "");
 				
-				
+
 				
 				if (tag == "Include") {
 					if (FileManager.hasFile(node.@src)) {
@@ -411,10 +411,14 @@ package com.gestureworks.cml.core
 
 				}
 				else if (tag == "RenderKit") {
-					loadRenderer(cml, parent);
+					if (properties) {
+						var tmp:XML = expRenderer(node, parent, properties);
+						if (tmp) node = tmp;
+					}
+					loadRenderer(node, parent);	
 					continue;
 				}
-				else if (tag == "DebugKit" || tag == "Rendererer" || tag == "RendererData"  || tag == "Filter" || tag == "Gesture" || tag == "GestureList"
+				else if (tag == "DebugKit" || tag == "RendererData" || tag == "Filter" || tag == "Gesture" || tag == "GestureList"
 					|| tag == "LibraryKit" || tag == "Library" || tag == "LayoutKit" || tag == "Layout" )
 					continue;
 				
@@ -452,30 +456,30 @@ package com.gestureworks.cml.core
 				obj.postparseCML(XMLList(node));
 				
 				
-				
 				 //target render data
 				if (properties) {
-					obj.propertyStates[0]["id"] = obj.id;									
-					for (var key:* in obj.propertyStates[0]) {		
-						for each (var val:* in properties.*) {
-							var str:String = obj.propertyStates[0][key];
-							
-							// filter value for expression delimiter "{}"
-							if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
-								// remove whitepsace and {} characters
-								var regExp:RegExp = /[\s\r\n{}]*/gim;
-								str = str.replace(regExp, '');
-							}	
-							
-							if (str == val.name().toString()) {
-								if (key == "id")
-									obj.id = val;									
-								obj.propertyStates[0][key] = val;
-							}							
+					if (obj) { //normal
+						for (var key:* in obj.propertyStates[0]) {		
+							for each (var val:* in properties.*) {
+								var str:String = obj.propertyStates[0][key];
+								
+								// filter value for expression delimiter "{}"
+								if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
+									// remove whitepsace and {} characters
+									var regExp:RegExp = /[\s\r\n{}]*/gim;
+									str = str.replace(regExp, '');
+								}	
+								
+								if (str == val.name().toString()) {
+									if (key == "id")
+										obj.id = val;									
+									obj.propertyStates[0][key] = val;
+								}							
+							}
 						}
-					}						
-				}				
-
+					}
+				}	
+				
 				
 				// add to master object list
 				CMLObjectList.instance.append(obj.id, obj);	
@@ -486,15 +490,54 @@ package com.gestureworks.cml.core
 				
 				else if (parent == cmlDisplay && obj is DisplayObject)
 					cmlDisplay.addChild(obj);					
-				
+
+					
 				//recursion
-				if (returned.length() > 0)
+				if (returned && returned.length())
 					loopCML(returned, obj, properties);
 					
 			}
 		}		
 		
 		
+		
+		public static function expRenderer(node:*, parent:*, properties:*):XML
+		{
+			var returned:XML = XML(node);
+			
+			var tmp:*;
+			var renderer:XMLList = node.*;
+			var regExp:RegExp = /[\s\r\n{}]*/gim;
+			
+			for (var i:int = 0; i < renderer.length(); i++) {
+				tmp = renderer[i];
+			
+				for each (var atr:XML in tmp.@*) {		
+					for each (var val:* in properties.*) {
+						var str:String = atr;
+						
+						// filter value for expression delimiter "{}"
+						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
+							// remove whitepsace and {} characters
+							str = str.replace(regExp, '');
+						}	
+						
+						if (str == "panel-path")
+							trace(str, atr, atr.name() );
+							
+						
+						if (str == val.name().toString()) {	
+							tmp.@[String(atr.name())] = val;							
+							returned = <RenderKit />;
+							returned.appendChild(XML(tmp));
+							return returned;
+						}							
+					}
+				}							
+			}
+			
+			return returned;
+		}
 		
 
 		
@@ -506,15 +549,20 @@ package com.gestureworks.cml.core
 			var renderList:XMLList;	
 			var cmlRenderer:XMLList;
 			var dataRootTag:String;
-			
+			var dataPathExp:String;
 			var tmp:XMLList;
+			var regExp:RegExp = /[\s\r\n{}]*/gim;
 				
 			for (var q:int; q < renderKit.Renderer.length(); q++) {
-								
+				
 				if (renderKit.Renderer.@dataPath == undefined)
 					rendererData = renderKit.RendererData;
-				else
-					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath))).RenderKit.RendererData;
+				else {
+					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)))
+					if (rendererData.RenderKit == undefined) // makes RenderKit and Renderer optional on dataPath files
+						rendererData = XMLList(<cml><RenderKit><RendererData>{rendererData.*}</RendererData></RenderKit></cml>);					
+					rendererData = rendererData.RenderKit.RendererData;
+				}
 				
 				if (rendererData.Include != undefined) {
 					var j:int;
@@ -556,7 +604,7 @@ package com.gestureworks.cml.core
 					}
 				}
 			}
-			
+				
 		}			
 		
 		
