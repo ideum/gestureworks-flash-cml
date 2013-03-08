@@ -188,7 +188,11 @@ package com.gestureworks.cml.element
 	
 		private function addPreview(clone:Component, preview:TouchContainer):void
 		{	
-			var src:String = srcMap[clone];			
+			var src:String = srcMap[clone];	
+			var oldPrev:TouchContainer = srcMap[src]["preview"];
+			if (oldPrev)
+				delete srcMap[oldPrev];
+			
 			srcMap[src]["preview"] = preview;			
 			srcMap[preview] = src;			
 			
