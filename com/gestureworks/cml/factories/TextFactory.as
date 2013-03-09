@@ -178,7 +178,8 @@ package com.gestureworks.cml.factories
 		override public function set htmlText(value:String):void
 		{
 			super.htmlText = value;		
-			verticalAlign = _verticalAlign;			
+			verticalAlign = _verticalAlign;
+			updateTextFormat();
 		}
 		
 		private var _type:String = "input";
@@ -194,7 +195,8 @@ package com.gestureworks.cml.factories
 			if (_type == "input")
 				super.type = TextFieldType.INPUT;
 			else
-				super.type = TextFieldType.DYNAMIC;			
+				super.type = TextFieldType.DYNAMIC;
+			updateTextFormat();	
 		}
 		
 		private var _text:String;
@@ -206,6 +208,7 @@ package com.gestureworks.cml.factories
 		{
 			super.text = value;			
 			verticalAlign = _verticalAlign;
+			updateTextFormat();
 		}
 		
 
@@ -261,7 +264,8 @@ package com.gestureworks.cml.factories
 		override public function set textColor(value:uint):void 
 		{
 			_textColor = value;
-			color = value;			
+			color = value;
+			updateTextFormat();
 		}			
 		
 		private var _textFormatColor:uint = 0x000000;
@@ -275,6 +279,7 @@ package com.gestureworks.cml.factories
 		{
 			_textFormatColor = value;
 			color = value;
+			updateTextFormat();
 		}
 		
 		private var _fontSize:Number = 15;
@@ -300,7 +305,7 @@ package com.gestureworks.cml.factories
 		{
 			_textSize = value;
 			fontSize = value;
-	
+			updateTextFormat();
 		}
 		
 		private var _font:String = "OpenSansRegular";
@@ -515,7 +520,7 @@ package com.gestureworks.cml.factories
 				trace("Hi, this is your scrollable text box speaking here. My width right now is:", this.width, "And my height is:", this.height);
 			}
 			
-			super.text = this.text;
+			//super.htmlText = this.text;
 		}
 		
 		//////////////

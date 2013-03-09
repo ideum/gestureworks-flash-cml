@@ -413,9 +413,12 @@ package com.gestureworks.cml.core
 				else if (tag == "RenderKit") {
 					if (properties) {
 						var tmp:XML = expRenderer(node, parent, properties);
-						if (tmp) node = tmp;
+						if (tmp) 
+							loadRenderer(tmp, parent);
+						else 
+							loadRenderer(node, parent);	
 					}
-					loadRenderer(node, parent);	
+					else loadRenderer(node, parent);	
 					continue;
 				}
 				else if (tag == "DebugKit" || tag == "RendererData" || tag == "Filter" || tag == "Gesture" || tag == "GestureList"
@@ -503,6 +506,7 @@ package com.gestureworks.cml.core
 		
 		public static function expRenderer(node:*, parent:*, properties:*):XML
 		{
+			var node:XML = node.copy();
 			var returned:XML = XML(node);
 			
 			var tmp:*;
@@ -521,11 +525,7 @@ package com.gestureworks.cml.core
 							// remove whitepsace and {} characters
 							str = str.replace(regExp, '');
 						}	
-						
-						if (str == "panel-path")
-							trace(str, atr, atr.name() );
 							
-						
 						if (str == val.name().toString()) {	
 							tmp.@[String(atr.name())] = val;							
 							returned = <RenderKit />;
@@ -592,15 +592,15 @@ package com.gestureworks.cml.core
 				for (var i:int = 0; i < renderList.length(); i++) {
 					cmlRenderer = new XMLList(renderKit.Renderer[q].*);
 					
-					for each (var node:* in cmlRenderer) {
+					for each (var n:* in cmlRenderer) {
 						
-						if (node.name() == "Include") {
-							node = XML(FileManager.fileList.getKey(String(node.@src)));
-							node = XMLList(node.children());
+						if (n.name() == "Include") {
+							n = XML(FileManager.fileList.getKey(String(n.@src)));
+							n = XMLList(n.children());
 						}
 	
 						var properties:XMLList = XMLList(renderList[i]);	
-						loopCML(XMLList(node), parent, properties);
+						loopCML(XMLList(n), parent, properties);
 					}
 				}
 			}

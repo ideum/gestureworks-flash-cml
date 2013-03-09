@@ -1,20 +1,13 @@
 package com.gestureworks.cml.utils 
 {
-	import com.gestureworks.cml.components.ImageViewer;
-	import com.gestureworks.cml.element.Button;
-	import com.gestureworks.cml.element.GestureList;
-	import com.gestureworks.cml.element.TouchContainer;
-	import com.gestureworks.cml.interfaces.IContainer;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
-	import flash.events.Event;
 	
 	/**
 	 * The CloneUtils utility creates and returns a copy of an object.
@@ -42,8 +35,7 @@ package com.gestureworks.cml.utils
 		 * Constructor
 		 */
 		public function CloneUtils():void { }
-		
-		
+	
 		/**
 		 * Returns a clone from the source parameter
 		 * @param	source
@@ -51,9 +43,6 @@ package com.gestureworks.cml.utils
 		 */
 		public static function clone(source:*, parent:DisplayObjectContainer=null, pExclusions:Vector.<String>=null):* 
 		{
-			
-			//trace(pExclusions);
-			//trace(source);
 			var cloneObj:*;
 			var childClone:DisplayObject;
 							
@@ -190,18 +179,14 @@ package com.gestureworks.cml.utils
 			}
 		}
 		
-		public static function copyPropertyStates(source:*, destination:*):void {
-			
+		public static function copyPropertyStates(source:*, destination:*):void {			
 			destination.propertyStates = [];
 			
-			for (var i:int = 0; i < source.propertyStates.length; i++) 
-			{
+			for (var i:int = 0; i < source.propertyStates.length; i++) {
 				destination.propertyStates[i] = new Dictionary();
 				
-				for (var item:String in source.propertyStates[i]) 
-				{
-					//trace("item:", item, i);
-					destination.propertyStates[i][item] = source.propertyStates[i][item];
+				for (var item:String in source.propertyStates[i]) {					
+					destination.propertyStates[i][item] = source.propertyStates[i][item];					
 				}
 			}
 		}
