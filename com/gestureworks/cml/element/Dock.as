@@ -167,6 +167,7 @@ package com.gestureworks.cml.element
 		
 
 		private var previews:Array = [];
+		private var locked:Array = [];
 		
 		// srcMap // 
 		
@@ -196,8 +197,11 @@ package com.gestureworks.cml.element
 			srcMap[src]["preview"] = preview;			
 			srcMap[preview] = src;			
 			
-			if(previews.indexOf(preview) == -1)
+			if (previews.indexOf(preview) == -1)
+			{
 				previews.push(preview);
+				locked.push(cloneMap.getKeyArray().indexOf(clone));
+			}
 		}
 		
 		private function removeSrc(src:String):void
@@ -290,8 +294,41 @@ package com.gestureworks.cml.element
 				
 		}
 		
+		private function incrementCloneMap():void
+		{
+			if (cloneMap.hasNext())
+				cloneMap.next();
+			else
+				cloneMap.reset();
+		}
+		
+		private function availableClone():void
+		{
+			unlockedClone();
+			var unavailable:int = locked.length;
+			var clone:Component = cloneMap.key;
+						
+			while (clone.visible)
+			{
+				incrementCloneMap();
+				if (unavailable == maxClones)
+					break;
+				if (locked.indexOf(cloneMap.index) != -1)
+					continue;
+				clone = cloneMap.key;
+				unavailable++;
+			}			
+		}
+		
+		private function unlockedClone():void
+		{
+			while (locked.indexOf(cloneMap.index) != -1)
+				incrementCloneMap();
+		}
+		
 		private function nextClone(res:*):void
 		{
+			availableClone();
 			var clone:Component = cloneMap.key;
 			var obj:Object;
 			var prop:String;
@@ -326,11 +363,6 @@ package com.gestureworks.cml.element
 						if (prop == "src") {
 							src = obj[prop];
 							processSrc(src, obj);
-							
-							if (cloneMap.hasNext())
-								cloneMap.next();
-							else
-								cloneMap.reset();
 						}
 					}
 				}
@@ -447,6 +479,7 @@ package com.gestureworks.cml.element
 			isLoading = true;
 			album.clear();
 			previews = [];
+			locked = [];
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
 			//var searchString:String = "ca_object_labels.name:Yellow Flower";
@@ -500,6 +533,7 @@ package com.gestureworks.cml.element
 			
 			album.clear();
 			previews = [];
+			locked = [];
 			
 			loadCnt = 0;
 			result = flickrQuery.resultPhotos;
@@ -649,7 +683,7 @@ package com.gestureworks.cml.element
 			
 			for each (preview in previews) {
 				src = srcMap[preview];
-				if (srcMap[src]["clone"].visible)	
+				if (src && srcMap[src]["clone"].visible)	
 					album.select(preview);	
 			}			
 		}
