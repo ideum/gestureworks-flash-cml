@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.cml.managers.FileManager;
 	import flash.events.*;
 	import flash.utils.*;
 	 
@@ -40,24 +41,8 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void 
 		{
-			if (src.length) {
-			
-				if (src.search(imageTypes) >= 0)
-				{
-					dictionary[src] = new Image;
-					dictionary[src].loadComplete();				
-				}	
-				else if (src.search(videoTypes) >= 0)
-				{	
-					dictionary[src] = new Video;
-					dictionary[src].addEventListener(Event.COMPLETE, onComplete);				
-				}
-				else if (src.search(mp3Types) >= 0)
-				{	
-					dictionary[src] = new MP3;
-					dictionary[src].addEventListener(Event.COMPLETE, onComplete);				
-				}			
-			}
+			if (src.length)
+				open(src);
 			
 		}
 
@@ -197,26 +182,38 @@ package com.gestureworks.cml.element
 			if (file.search(imageTypes) >= 0)
  			{
 				dictionary[file] = new Image;
-				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
+				dictionary[file].src = src;
+				if (dictionary[file].hasOwnProperty("width") && _width != 0)	dictionary[file].width = _width;
+				if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
+				if (dictionary[file].hasOwnProperty("loop"))					dictionary[file].loop = loop;
+				if (dictionary[file].hasOwnProperty("autoplay"))				dictionary[file].autoplay = autoplay;
+				
+				if ( FileManager.fileList.hasKey(file) ) {
+					dictionary[file].loadComplete();
+				}
+				else {
+					dictionary[file].open();					
+					dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
+				}
 			}	
 			else if (file.search(videoTypes) >= 0)
 			{	
 				dictionary[file] = new Video;
+				dictionary[file].src = src;
+				dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
 			else if (file.search(mp3Types) >= 0)
 			{	
 				dictionary[file] = new MP3;
+				dictionary[file].src = src;				
+				dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
 			else
 				throw new Error("Media type is not supported: " + file);
 			
-			if (dictionary[file].hasOwnProperty("width") && _width != 0)	dictionary[file].width = _width;
-			if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
-			if (dictionary[file].hasOwnProperty("loop"))					dictionary[file].loop = loop;
-			if (dictionary[file].hasOwnProperty("autoplay"))				dictionary[file].autoplay = autoplay;
-			if (dictionary[file].hasOwnProperty("open"))					dictionary[file].open(file);						
+					
 			
 			addChild(dictionary[file]);			
 			currentFile = file;	
