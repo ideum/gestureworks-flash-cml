@@ -334,27 +334,26 @@ package com.gestureworks.cml.components
 			
 			if (menu)
 			{
-				menu.updateLayout(width, height);
-				
-				if (menu.autoHide) {
-					if (GestureWorks.activeTUIO){
-						this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-						this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-						this.addEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
-					}
-					else if	(GestureWorks.supportsTouch){
-						this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-						this.addEventListener(TouchEvent.TOUCH_END, onUp);
-						this.addEventListener(TouchEvent.TOUCH_OUT, onUp);
-						}
-					else{	
-						this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-						this.addEventListener(MouseEvent.MOUSE_UP, onUp);
-						this.addEventListener(MouseEvent.MOUSE_OUT, onUp);
-					}				
-				}	
-				
+				menu.updateLayout(width, height);	
 			}
+			
+			if ( timeout || (menu && menu.autoHide) ) {
+				if (GestureWorks.activeTUIO){
+					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
+					this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
+					this.addEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
+				}
+				else if	(GestureWorks.supportsTouch){
+					this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
+					this.addEventListener(TouchEvent.TOUCH_END, onUp);
+					this.addEventListener(TouchEvent.TOUCH_OUT, onUp);
+					}
+				else{	
+					this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+					this.addEventListener(MouseEvent.MOUSE_UP, onUp);
+					this.addEventListener(MouseEvent.MOUSE_OUT, onUp);
+				}				
+			}				
 			
 			if (textFields && autoTextLayout)
 			{
