@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.StateUtils;
 	import com.modestmaps.geo.Location;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -26,6 +27,15 @@ package com.gestureworks.cml.element
 		{
 			super();
 		}
+
+		
+
+		public var compX:Number = 0;
+		public var compY:Number = 0;
+		public var compResetOnOpen:Boolean = false;
+		public var compResetOnClose:Boolean = false;
+		public var compCenterToStage:Boolean = false;
+		public var compAbsPos:Boolean = false;		
 		
 		private var _tether:Boolean = true;
 		/**
@@ -121,64 +131,94 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onComponentState(e:StateEvent):void {
-			if (e.value == "close") {
+			if (e.value == "close" || e.value == "timeout") {
 				_component.visible = false;
 				if (tetherSprite)
 					tetherSprite.visible = false;
+					
+				if (compResetOnClose) {
+					StateUtils.loadState(_component, 0, false);	
+					if (_component["front"] && _component["front"]["reset"]())
+						_component["reset"]();
+				}						
 			}
 		}
-		
+	
 		private function onHotspot(e:StateEvent):void {
 			if (_component) {
-				var tempPoint:Point = localToGlobal(new Point(x1, y1));
-				
-				var x1:Number = tempPoint.x;
-				var y1:Number = tempPoint.y;
+									
+				if (compResetOnOpen) {
+					StateUtils.loadState(_component, 0, false);	
+					if (_component["front"] && _component["front"]["reset"]())
+						_component["reset"]();
+				}					
 				
 				_component.visible = !_component.visible;
+
+				
 				if (_tether && tetherSprite)
-					tetherSprite.visible = _component.visible;
-				
-				var offsetX:Number = 0;
-				var offsetY:Number = 0;
-				
-				for (var i:Number = 0; i < numChildren; i++) {
-					if (getChildAt(i) is Button) {
-						if (getChildAt(i).width > offsetX)
-							offsetX = getChildAt(i).width;
-						if (getChildAt(i).height > offsetY)
-							offsetY = getChildAt(i).height;
+					tetherSprite.visible = _component.visible;	
+					
+					
+				if (compCenterToStage) {
+					_component.x = (stage.stageWidth - _component.width * _component.scaleX) / 2;
+					_component.y = (stage.stageHeight - _component.height * _component.scaleY) / 2;
+				}
+				else if (!compAbsPos) {	
+					var tempPoint:Point = localToGlobal(new Point(x1, y1));
+					
+					var x1:Number = tempPoint.x;
+					var y1:Number = tempPoint.y;
+
+					var offsetX:Number = 0;
+					var offsetY:Number = 0;
+					
+					for (var i:Number = 0; i < numChildren; i++) {
+						if (getChildAt(i) is Button) {
+							if (getChildAt(i).width > offsetX)
+								offsetX = getChildAt(i).width;
+							if (getChildAt(i).height > offsetY)
+								offsetY = getChildAt(i).height;
+						}
+					}
+					//var point:Point = new Point(this.x, this.y);
+					//point = localToGlobal(point);
+					_component.x = x1;
+					_component.x += offsetX;
+					if (_component.x + _component.width > stage.stageWidth) {
+						_component.x = x1 - _component.width;
+						//_component.x -= offsetX;
+					}
+					
+					
+					if (y1 + _component.height < stage.stageHeight) {
+						_component.y = y1;
+					} else if (y1 - _component.height + offsetY > 0) { 
+						_component.y = y1 - _component.height + offsetY; 
+					} else {
+						var diffY:Number = 0;
+						if (y1 + _component.height > stage.stageHeight) {
+							diffY = (y1 + _component.height - stage.stageHeight);
+							_component.y = y1 - diffY;
+						} else if (y1 - _component.height + offsetY < 0) {
+							diffY = (y1 - _component.height + offsetY) * -1;
+							_component.y = y1 - _component.height + offsetY + diffY;
+						}
 					}
 				}
-				//var point:Point = new Point(this.x, this.y);
-				//point = localToGlobal(point);
-				_component.x = x1;
-				_component.x += offsetX;
-				if (_component.x + _component.width > stage.stageWidth) {
-					_component.x = x1 - _component.width;
-					//_component.x -= offsetX;
-				}
+
 				
-				
-				if (y1 + _component.height < stage.stageHeight) {
-					_component.y = y1;
-				} else if (y1 - _component.height + offsetY > 0) { 
-					_component.y = y1 - _component.height + offsetY; 
-				} else {
-					var diffY:Number = 0;
-					if (y1 + _component.height > stage.stageHeight) {
-						diffY = (y1 + _component.height - stage.stageHeight);
-						_component.y = y1 - diffY;
-					} else if (y1 - _component.height + offsetY < 0) {
-						diffY = (y1 - _component.height + offsetY) * -1;
-						_component.y = y1 - _component.height + offsetY + diffY;
-					}
-				}
+				if (compX) _component.x += compX;
+				if (compY) _component.y += compY;
 				
 				//trace("Setting component:", _component.x, _component.y);
 				_component.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "hotspot", "visible", true));
 			}
 		}
+		
+
+		
+		
 		
 		private function onEnterFrame(e:Event):void {
 			if (!_tether || !_component) return;
