@@ -561,7 +561,7 @@ package com.gestureworks.cml.element
 								// snapHigh[nDex];
 								//var nTarget:Number = baseHeight + groupHeight;
 								twirlIcons[ndex].rotation = (90 * (snapLow[ndex] / tabs[ndex].y)) + 90;
-								trace(twirlIcons[ndex].rotation);
+								//trace(twirlIcons[ndex].rotation);
 							}
 							else if (l == 0 && twirlIndicator)
 								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
