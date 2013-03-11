@@ -90,7 +90,7 @@ package com.gestureworks.cml.core
 			var cssStr:String = "";
 			if (cml.@css != undefined)
 				cssStr = cml.@css;			
-			if (cssStr.length > 0)
+			if (cssStr.length)
 				CMLParser.cssFile = updatePath(cssStr);
 			
 			
@@ -250,7 +250,7 @@ package com.gestureworks.cml.core
 		{			
 			var path:String;
 			
-			if (str.length > 0)
+			if (str.length)
 				path = str;			
 			else {
 				if (cml.@src != undefined)
@@ -273,6 +273,8 @@ package com.gestureworks.cml.core
 			var path:String;
 			if (cml.Renderer != undefined  && cml.Renderer.@dataPath != undefined) {
 				path = cml.Renderer.@dataPath;
+				
+				path = updatePath(path);	
 				
 				if (!FileManager.isCML(path)) return;
 				
@@ -308,11 +310,13 @@ package com.gestureworks.cml.core
 		{	
 			var path:String; 
 			
-			if (str.length > 0)
+			if (str.length)
 				path = str;
 			else
 				path = cml.@src;
 			
+			path = updatePath(path);	
+				
 			if (!FileManager.isPreloadMedia(path)) return;				
 				
 			if (paths["Media"].indexOf(path) == -1)
@@ -334,11 +338,11 @@ package com.gestureworks.cml.core
 		
 		private static function updatePath(path:String):String 
 		{
-			if (relativePaths && rootDirectory.length > 0){	
+			if (relativePaths && rootDirectory.length){	
 				path = rootDirectory.concat(path);
 				path = relToAbsPath(path);
 			}
-			else if (rootDirectory.length > 0)
+			else if (rootDirectory.length)
 				path = rootDirectory.concat(path);
 				
 			return path;
@@ -641,7 +645,7 @@ package com.gestureworks.cml.core
 				}
 			}			
 			
-			if (filterArray.length > 0)
+			if (filterArray.length)
 				obj.filters = filterArray;
 			
 			return node;
@@ -677,7 +681,7 @@ package com.gestureworks.cml.core
 		{		
 			if (debug) trace("\n\n++ Search for main CSS file ++");					
 				
-			if (cssFile && cssFile.length > 0) {
+			if (cssFile && cssFile.length) {
 				if (debug) {
 					trace("CSS file found... loading: ", cssFile);;				
 					CSSManager.instance.debug = true;
@@ -806,7 +810,7 @@ package com.gestureworks.cml.core
 						attrValue = rootDirectory.concat(attrValue);
 						attrValue = relToAbsPath(attrValue);	
 					}
-					else if (rootDirectory.length > 0) {	
+					else if (rootDirectory.length) {	
 						attrValue = rootDirectory.concat(attrValue);
 					}					
 				}
@@ -867,7 +871,8 @@ package com.gestureworks.cml.core
 				else if (newValue == "false")
 					newValue = false
 					
-				if (obj[propertyName] != newValue && String(newValue).charAt(0) != "{") {
+				//if (obj[propertyName] != newValue && String(newValue).charAt(0) != "{") {
+				if (String(newValue).charAt(0) != "{") {
 					obj[propertyName] = newValue;
 				}
 				
