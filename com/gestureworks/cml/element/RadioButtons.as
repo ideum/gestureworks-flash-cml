@@ -65,6 +65,9 @@
 			}
 		}   
 		
+		public var absOffset:Boolean = false;
+
+		
 		/**
 		 * Initializes the configuration and display of the RadioButtons
 		 */
@@ -259,11 +262,12 @@
 				{
 					min = lastLabel.textWidth + (lastLabel.textWidth * 0.1) > button.width ? lastLabel.textWidth + (lastLabel.textWidth * 0.1) : button.width;
 					offset = _horizontalOffset > min ? _horizontalOffset : min;
-					//offset = _horizontalOffset;
+					if (absOffset) offset = _horizontalOffset;
 					button.x = lastLabel.x + offset;
 				}
 			}
 		}
+		
 		
 		private function drawPageButtons(side:String):void {
 			radius = _fontSize/2;
