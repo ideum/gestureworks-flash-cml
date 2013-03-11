@@ -61,8 +61,7 @@ package com.gestureworks.cml.element
 		
 		private var _dimension:String;
 		private var _axis:String;	
-		private var _dragGesture:String = "n-drag-inertia";
-		
+		private var _dragGesture:String = "n-drag-inertia";		
 		private var snapPoints:Array;
 		private var albumMask:Graphic;
 		private var snapTween:ITween;
@@ -814,6 +813,12 @@ package com.gestureworks.cml.element
 				snap(null, snapPoints[num]);
 			}
 		}
+
+		
+		public function reset():void {
+			snapTo(0);
+		}
+		
 		
 		/**
 		 * Disables the drag if the touch moves outside of the album
