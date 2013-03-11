@@ -54,15 +54,15 @@ package com.gestureworks.cml.element
 			addChildAt(background, 0);
 			background.init();
 			
+			snapLow = [];
+			snapHigh = [];
+			
 			var tabHeight:Number;
 			
 			for (var i:int = 0; i < contents.length; i++)
 			{
 				tabs[i] = createTab();
 				
-				if (i != 0)
-					tabs[i].y = tabs[i-1].height * i;
-
 
 				tabs[i].gestureList = { "n-tap":true, "n-drag-inertia":true };
 				tabs[i].gestureEvents = true;
@@ -71,11 +71,19 @@ package com.gestureworks.cml.element
 				tabs[i].addEventListener(GWGestureEvent.RELEASE, onRelease);
 				tabs[i].gestureReleaseInertia = false;
 					
-				
-				
-				contents[i].y = (i * tabs[i].height) + tabs[i].height;
+				//contents[i].y = (i * tabs[i].height) + tabs[i].height;
 				
 				addChild(tabs[i]);
+				
+				if (i == 0)
+					tabs[i].y = 0;
+				else if (i > 0)
+					tabs[i].y = tabs[i - 1].height + tabs[i - 1].y;
+					
+				snapLow.push(tabs[i].y);
+				snapHigh.push(tabs[i].y + tabs[i].height + height);
+				
+				contents[i].y = (tabs[i].height + tabs[i].y);
 			
 				if (_labelsArray){
 					if (i < _labelsArray.length){
@@ -111,7 +119,8 @@ package com.gestureworks.cml.element
 			if (twirlIndicator)
 				twirlIcons[twirlIcons.length - 1].rotation = 180;
 				
-			background.height = height + tabHeight * (tabs.length - 1);
+			background.height = snapHigh[snapHigh.length - 1] + tabs[tabs.length - 1].height;
+			trace(background.height);
 			
 			cMask = new Graphic;
 			cMask.shape = "rectangle";
@@ -309,6 +318,8 @@ package com.gestureworks.cml.element
 		private var cTab:TouchContainer;
 		private var down:Boolean;
 		private var twirlIcons:Array = [];
+		private var snapHigh:Array;
+		private var snapLow:Array;
 		
 		private function onTap(e:GWGestureEvent):void 
 		{
@@ -331,14 +342,31 @@ package com.gestureworks.cml.element
 				}
 			}
 			
+			var futureSpace:Number = tabs[_current].y + tabs[_current].height + height;
+			
 			for (i = _current + 1; i < tabs.length; i++) {
-				tweenArray.push(BetweenAS3.to(tabs[i], { y: background.height - (tabs.length - i) * tabs[i].height }, 0.3));
-				tweenArray.push(BetweenAS3.to(contents[i], { y: (background.height - (tabs.length - i) * tabs[i].height) + tabs[i].height }, 0.3));
+				/*if (i == _current + 1) {
+					tweenArray.push(BetweenAS3.to(tabs[i], { y: tabs[i-1].y + tabs[i-1].height + height }, 0.3));
+					tweenArray.push(BetweenAS3.to(contents[i], { y: (tabs[i-1].y + tabs[i-1].height + height + tabs[i].height) }, 0.3));
+				} else {
+					tweenArray.push(BetweenAS3.to(tabs[i], { y: background.height - (tabs.length - i) * tabs[i].height }, 0.3));
+					tweenArray.push(BetweenAS3.to(contents[i], { y: (background.height - (tabs.length - i) * tabs[i].height) }, 0.3));
+				}*/
+				
+				/*if (i == _current + 1) {
+					tweenArray.push(BetweenAS3.to(tabs[i], { y: futureSpace }, 0.3));
+					tweenArray.push(BetweenAS3.to(contents[i], { y: futureSpace + tabs[i].height }, 0.3));
+				} else {
+					tweenArray.push(BetweenAS3.to(tabs[i], { y: tabs[i - 1].y + futureSpace + tabs[i - 1].height }, 0.3));
+					tweenArray.push(BetweenAS3.to(contents[i], { y: tabs[i - 1].y + futureSpace + tabs[i - 1].height + tabs[i].height }, 0.3));
+				}*/
+				tweenArray.push(BetweenAS3.to(tabs[i], { y: snapHigh[i] }, 0.3));
+				tweenArray.push(BetweenAS3.to(contents[i], { y: snapHigh[i] + tabs[i].height }, 0.3));
 			}
 			
 			for (i = 1; i <= _current; i++) {
-				tweenArray.push(BetweenAS3.to(tabs[i], { y:(i) * tabs[i].height }, 0.3));
-				tweenArray.push(BetweenAS3.to(contents[i], { y:((i) * tabs[i].height) + tabs[i].height }, 0.3));
+				tweenArray.push(BetweenAS3.to(tabs[i], { y:snapLow[i] }, 0.3));
+				tweenArray.push(BetweenAS3.to(contents[i], { y:snapLow[i] + tabs[i].height }, 0.3));
 			}	
 			
 			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
@@ -380,7 +408,7 @@ package com.gestureworks.cml.element
 			tab.gradientAlphas = _gradientAlphas;
 			tab.gradientColors = _gradientColors;
 			tab.gradientRatios = _gradientRatios;
-			tab.width = width ;
+			tab.width = width;
 			if (autoLayout)
 				tab.height = label.height * 2;
 			else
@@ -442,8 +470,16 @@ package com.gestureworks.cml.element
 			}
 			
 			var dragGroup:Array = [];
-			for (var j:int = 1; j < tabs.length; j++) {
+		/*	for (var j:int = 1; j < tabs.length; j++) {
 				if ( tabs[j].y == j * tabs[j].height || tabs[j].y == background.height - ((tabs.length - j) * tabs[j].height)) {
+					continue;
+				} else {
+					dragGroup.push(tabs[j]);
+				}
+			}*/
+			
+			for (var j:int = 1; j < tabs.length; j++) {
+				if ( tabs[j].y == snapLow[j] || tabs[j].y == snapHigh[j]) {
 					continue;
 				} else {
 					dragGroup.push(tabs[j]);
@@ -460,9 +496,19 @@ package com.gestureworks.cml.element
 			if (down){
 				for (i = _current; i < tabs.length; i++) {
 					
-					if (tabs[i].y + e.value.drag_dy > background.height - (tabs[i].height * (tabs.length - i))) {
+					/*if (tabs[i].y + e.value.drag_dy > background.height - (tabs[i].height * (tabs.length - i))) {
 						tabs[i].y = background.height - (tabs[i].height * (tabs.length - i));
 						contents[i].y = tabs[i].height + tabs[i].y;
+						
+					}	
+					else {
+						tabs[i].y += e.value.drag_dy;
+						contents[i].y += e.value.drag_dy;
+					}*/
+					
+					if (tabs[i].y + e.value.drag_dy > snapHigh[i]) {
+						tabs[i].y = snapHigh[i];
+						contents[i].y = tabs[i].height + snapHigh[i];
 						
 					}	
 					else {
@@ -477,23 +523,23 @@ package com.gestureworks.cml.element
 							//trace("K:", k);
 							var index:Number = tabs.indexOf(dragGroup[k]);
 							if (k == dragGroup.length - 1 && twirlIndicator) // Last element in the group that was open before, getting closed now.
-								twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (background.height - (tabs[index].height * (tabs.length - index)))));
+								twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / snapHigh[index]));
 							else if (k == 0 && twirlIndicator)
-								twirlIcons[index - 1].rotation = (90 * (tabs[index].y / (background.height - (tabs[index].height * (tabs.length - index))))) + 90;
+								twirlIcons[index - 1].rotation = (90 * (tabs[index].y / snapHigh[index])) + 90;
 						}
 					}
 					else if (i - 1 == _current - 1 && dragGroup.length == 1 && twirlIndicator) {
-						twirlIcons[i - 1].rotation = (90 * (tabs[i].y / (background.height - (tabs[i].height * (tabs.length - i))))) + 90;
-						twirlIcons[i].rotation = 180 - (90 * (tabs[i].y / (background.height - (tabs[i].height * (tabs.length - i)))));
+						twirlIcons[i - 1].rotation = (90 * (tabs[i].y / snapHigh[i])) + 90;
+						twirlIcons[i].rotation = 180 - (90 * (tabs[i].y / snapHigh[i]));
 					}
 				}
 			}
 			else {
 				for (i = 1; i <= _current; i++) {
 					
-					if (tabs[i].y + e.value.drag_dy < tabs[i].height * i) {
-						tabs[i].y = tabs[i].height * i;
-						contents[i].y = tabs[i].height + tabs[i].y;
+					if (tabs[i].y + e.value.drag_dy < snapLow[i]) {
+						tabs[i].y = snapLow[i];
+						contents[i].y = tabs[i].height + snapLow[i];
 					}
 					else {
 						tabs[i].y += e.value.drag_dy;
@@ -505,14 +551,17 @@ package com.gestureworks.cml.element
 						{
 							var ndex:Number = tabs.indexOf(dragGroup[l]);
 							
-							if (l == dragGroup.length - 1 && twirlIndicator) { // Last element in the group that was open before, getting opened now.
+							if (l == dragGroup.length - 1 && twirlIndicator) { // Last element in the group that was closed before, getting opened now.
 								//twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (height - (tabs[index].height * (index)))));
 								var zIndex:Number = tabs.indexOf(dragGroup[0]);
 								zIndex -= 1;
-								var baseHeight:Number = tabs[zIndex].y + tabs[zIndex].height;
-								var groupHeight:Number = tabs[ndex].height * (dragGroup.length - 1);
-								var nTarget:Number = baseHeight + groupHeight;
-								twirlIcons[ndex].rotation = (90 * (nTarget / tabs[ndex].y)) + 90;
+								//var baseHeight:Number = tabs[zIndex].y + tabs[zIndex].height;
+								// snapLow[zIndex] + tabs[zIndex].height;
+								//var groupHeight:Number = tabs[ndex].height * (dragGroup.length - 1);
+								// snapHigh[nDex];
+								//var nTarget:Number = baseHeight + groupHeight;
+								twirlIcons[ndex].rotation = (90 * (snapLow[ndex] / tabs[ndex].y)) + 90;
+								trace(twirlIcons[ndex].rotation);
 							}
 							else if (l == 0 && twirlIndicator)
 								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
@@ -523,8 +572,8 @@ package com.gestureworks.cml.element
 						var offset:Number = tabs[n].y + tabs[n].height;
 						var target:Number = height - tabs[current].height;
 						var tempY:Number = tabs[current].y - offset;
-						twirlIcons[n].rotation = 90 * (tempY / target) + 90;
-						twirlIcons[current].rotation = 180 - (90 * (tempY / target));
+						twirlIcons[n].rotation = 90 * ((tabs[current].y - snapLow[current]) / (snapHigh[current] - snapLow[current])) + 90;
+						twirlIcons[current].rotation = 180 - (90 * ((tabs[current].y  - snapLow[current]) / (snapHigh[current] - snapLow[current])));
 					}
 				}
 			}
@@ -543,7 +592,7 @@ package com.gestureworks.cml.element
 			// Fill a group with all tabs so they all snap the same direction on release.
 			var dragGroup:Array = [];
 			for (var j:int = 1; j < tabs.length; j++) {
-				if ( tabs[j].y == j * tabs[j].height || tabs[j].y == background.height - ((tabs.length - j) * tabs[j].height)) {
+				if ( tabs[j].y == snapLow[j] || tabs[j].y == snapHigh[j]) {
 					continue;
 				} else {
 					dragGroup.push(tabs[j]);
@@ -560,15 +609,17 @@ package com.gestureworks.cml.element
 			var targetIndex:Number = tabs.indexOf(e.target)
 			
 			// Check the target's snapping direction, and make everything in the dragGroup follow that;
-			if (e.target.y < (tabs[targetIndex].height * (targetIndex - 1)) + (height / 2)) {
+			if (e.target.y < (tabs[targetIndex].height + snapLow[targetIndex] + (height / 2))) {
 				for (var k:int = 0; k < dragGroup.length; k++) 
 				{
 					// Grab index of the dragGroup member in the actual list of tabs.
 					var cNum:Number = tabs.indexOf(dragGroup[k]);
 					
 					// up?
-					tweenArray.push(BetweenAS3.to(tabs[cNum], { y:(cNum) * tabs[cNum].height }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[cNum], { y:((cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
+					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y:(cNum) * tabs[cNum].height }, 0.3));
+					//tweenArray.push(BetweenAS3.to(contents[cNum], { y:((cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
+					tweenArray.push(BetweenAS3.to(tabs[cNum], { y: snapLow[cNum] }, 0.3));
+					tweenArray.push(BetweenAS3.to(contents[cNum], { y:snapLow[cNum] + tabs[cNum].height }, 0.3));
 				}
 				
 				
@@ -586,8 +637,11 @@ package com.gestureworks.cml.element
 					var cNum:Number = tabs.indexOf(dragGroup[i]);
 					
 					// Down?
-					tweenArray.push(BetweenAS3.to(tabs[cNum], { y: background.height - (tabs.length - cNum) * tabs[cNum].height }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[cNum], { y: (background.height - (tabs.length - cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
+					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y: background.height - (tabs.length - cNum) * tabs[cNum].height }, 0.3));
+					//tweenArray.push(BetweenAS3.to(contents[cNum], { y: (background.height - (tabs.length - cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
+					
+					tweenArray.push(BetweenAS3.to(tabs[cNum], { y: snapHigh[cNum] }, 0.3));
+					tweenArray.push(BetweenAS3.to(contents[cNum], { y: snapHigh[cNum] + tabs[cNum].height }, 0.3));
 				}
 				
 				// if a || ba
