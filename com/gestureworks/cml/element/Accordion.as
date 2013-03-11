@@ -322,10 +322,13 @@ package com.gestureworks.cml.element
 			for (var i:int = 0; i < tabs.length; i++) {
 				if (e.target == tabs[i]) {
 					_current = i;
-					tweenArray.push(BetweenAS3.to(twirlIcons[current], { rotation:180 }, 0.3));
+					if (twirlIndicator)
+						tweenArray.push(BetweenAS3.to(twirlIcons[current], { rotation:180 }, 0.3));
 				}
-				else
-					tweenArray.push(BetweenAS3.to(twirlIcons[i], { rotation:90 }, 0.3));
+				else {
+					if (twirlIndicator)
+						tweenArray.push(BetweenAS3.to(twirlIcons[i], { rotation:90 }, 0.3));
+				}
 			}
 			
 			for (i = _current + 1; i < tabs.length; i++) {
@@ -473,13 +476,13 @@ package com.gestureworks.cml.element
 						{
 							//trace("K:", k);
 							var index:Number = tabs.indexOf(dragGroup[k]);
-							if (k == dragGroup.length - 1) // Last element in the group that was open before, getting closed now.
+							if (k == dragGroup.length - 1 && twirlIndicator) // Last element in the group that was open before, getting closed now.
 								twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (background.height - (tabs[index].height * (tabs.length - index)))));
-							else if (k == 0)
+							else if (k == 0 && twirlIndicator)
 								twirlIcons[index - 1].rotation = (90 * (tabs[index].y / (background.height - (tabs[index].height * (tabs.length - index))))) + 90;
 						}
 					}
-					else if (i - 1 == _current - 1 && dragGroup.length == 1) {
+					else if (i - 1 == _current - 1 && dragGroup.length == 1 && twirlIndicator) {
 						twirlIcons[i - 1].rotation = (90 * (tabs[i].y / (background.height - (tabs[i].height * (tabs.length - i))))) + 90;
 						twirlIcons[i].rotation = 180 - (90 * (tabs[i].y / (background.height - (tabs[i].height * (tabs.length - i)))));
 					}
@@ -502,7 +505,7 @@ package com.gestureworks.cml.element
 						{
 							var ndex:Number = tabs.indexOf(dragGroup[l]);
 							
-							if (l == dragGroup.length - 1) { // Last element in the group that was open before, getting opened now.
+							if (l == dragGroup.length - 1 && twirlIndicator) { // Last element in the group that was open before, getting opened now.
 								//twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (height - (tabs[index].height * (index)))));
 								var zIndex:Number = tabs.indexOf(dragGroup[0]);
 								zIndex -= 1;
@@ -511,11 +514,11 @@ package com.gestureworks.cml.element
 								var nTarget:Number = baseHeight + groupHeight;
 								twirlIcons[ndex].rotation = (90 * (nTarget / tabs[ndex].y)) + 90;
 							}
-							else if (l == 0)
+							else if (l == 0 && twirlIndicator)
 								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
 						}
 					}
-					else if (dragGroup.length == 1) {
+					else if (dragGroup.length == 1 && twirlIndicator) {
 						var n:Number = _current - 1;
 						var offset:Number = tabs[n].y + tabs[n].height;
 						var target:Number = height - tabs[current].height;
@@ -570,7 +573,7 @@ package com.gestureworks.cml.element
 				
 				
 				// if ab || B
-				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
+				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1] && twirlIndicator) {
 					//Rotate the item preceding the dragGroup to closed.
 					tweenArray.push(BetweenAS3.to(twirlIcons[outIndex - 1], { rotation:90 }, 0.3));
 					//Rotate the item ending the dragGroup to open.
@@ -588,7 +591,7 @@ package com.gestureworks.cml.element
 				}
 				
 				// if a || ba
-				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
+				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1] && twirlIndicator) {
 					// Rotate the item preceding all the dragGroup items to open.
 					tweenArray.push(BetweenAS3.to(twirlIcons[outIndex - 1], { rotation:180 }, 0.3));
 					//Rotate the item ending the dragGroup to closed.
