@@ -499,10 +499,12 @@ package com.gestureworks.cml.factories
 		{
 			defaultTextFormat = textFormat;
 			
+			if(b && b.bitmapData) {
+				b.bitmapData.dispose();
+				this.visible = true;
+			}
+					
 			if (textBitmap) {
-				
-				if(b && b.bitmapData)
-					b.bitmapData.dispose();
 							
 				b = DisplayUtils.toBitmap(this);
 				
@@ -520,7 +522,7 @@ package com.gestureworks.cml.factories
 				trace("Hi, this is your scrollable text box speaking here. My width right now is:", this.width, "And my height is:", this.height);
 			}
 			
-			//super.htmlText = this.text;
+			super.text = this.text;			
 		}
 		
 		//////////////
