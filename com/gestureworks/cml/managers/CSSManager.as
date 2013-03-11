@@ -128,6 +128,7 @@ package com.gestureworks.cml.managers
 											properties[property] = true;
 											
 										CMLObjectList.instance.getIndex(j)[property] = properties[property];
+										CMLObjectList.instance.getIndex(j)["propertyStates"][0][property] = properties[property];
 									}	
 								}
 							}
