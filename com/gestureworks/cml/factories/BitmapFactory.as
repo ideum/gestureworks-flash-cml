@@ -298,9 +298,9 @@ package com.gestureworks.cml.factories
 				var imageSrc:String;
 				
 				if (src)
-					imageSrc = propertyStates[0]["src"];
-				else
 					imageSrc = src;
+				else
+					imageSrc = propertyStates[0]["src"];
 					
 				if (!FileManager.fileList.hasKey(imageSrc))
 					return;
