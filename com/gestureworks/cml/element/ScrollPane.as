@@ -10,10 +10,12 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TouchEvent;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import com.gestureworks.cml.utils.CloneUtils;
@@ -47,6 +49,7 @@ package com.gestureworks.cml.element
 		private var oldY:Number;
 		private var oldX:Number;
 		
+		//public var _content:*;
 		public var _content:*;
 		
 		private var loaded:Boolean = false;
@@ -163,7 +166,7 @@ package com.gestureworks.cml.element
 					clone._mask = clone.getChildAt(i) as Graphic;
 				}
 				else if (clone.getChildAt(i).name == _content.name) {
-					clone._content = clone.getChildAt(i);
+					clone._content = clone.getChildAt(i) as TouchSprite;
 				}
 			}
 			
@@ -238,8 +241,16 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			_content = getChildAt(0);
+			//_hit = new TouchContainer();
+			//_hit.touchChildren = true;
+			//_hit.clusterBubbling = true;
+			//_hit.targetParent = true
+			//_hit.disableNativeTransform = true;
+			//_hit.gestureList = { "n-drag":true, "n-scale":true };
 			
+			_content = getChildAt(0);
+			//_content.addEventListener(StateEvent.CHANGE, onStateEvent);
+			_hit.addChild(_content);
 			// If one bar is set but not the other, set the other to match.
 			if (_verticalScroll && !_horizontalScroll) {
 				_horizontalScroll = new ScrollBar();
@@ -339,7 +350,7 @@ package com.gestureworks.cml.element
 					_hitBox.y -= _paneStrokeMargin / 2;
 				}
 				if(!(_hit.contains(_hitBox)))
-					_hit.addChild(_hitBox);
+					_hit.addChildAt(_hitBox,0);
 				//_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				//_hit.addEventListener(GWGestureEvent.SCALE, onScale);
 			}
@@ -355,18 +366,17 @@ package com.gestureworks.cml.element
 		
 		public function createEvents():void {
 			if (_hit) {
-				if (contains(_horizontalScroll) || contains(_verticalScroll))
+				if (contains(_horizontalScroll) || contains(_verticalScroll)) 
 					_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
-				_hit.addEventListener(GWGestureEvent.MANIPULATE, onManipulate);
-				_hit.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				//_hit.addEventListener(GWGestureEvent.MANIPULATE, onManipulate);
+				_hitBox.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				//_hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDown, true);
 			}
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
-		}
-		
-			
+		}	
 		
 		public function updateLayout(inWidth:Number, inHeight:Number):void {
 			
@@ -432,6 +442,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onScroll(e:StateEvent):void {
+			//trace("StateEvent:", e.value);
 			if (e.target == _verticalScroll) {
 				_content.y = _verticalMovement * e.value * -1;
 			} else if (e.target == _horizontalScroll) {
@@ -447,7 +458,7 @@ package com.gestureworks.cml.element
 		public var invertDrag:Boolean = false;
 		
 		private function onDrag(e:GWGestureEvent):void {
-			e.stopImmediatePropagation();
+			//e.stopImmediatePropagation();
 			
 			var newPos:Number;
 			
