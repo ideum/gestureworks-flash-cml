@@ -16,14 +16,12 @@ package com.gestureworks.cml.element
 	 * @see MP3
 	 * @see WAV
 	 */	 
-	public class Media extends TouchContainer
 	{
 		private var imageTypes:RegExp;
 		private var videoTypes:RegExp;
 		private var mp3Types:RegExp;
 		private var dictionary:Dictionary;
 		private var currentFile:String;
-		private var playButton:Button;
 		
 		/**
 		 * Constructor
@@ -34,21 +32,19 @@ package com.gestureworks.cml.element
 			dictionary = new Dictionary(true);
 			imageTypes = /^.*\.(png|gif|jpg)$/i;  
 			videoTypes = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
-			mp3Types = /^.*\.(mp3)$/i;	
+			mp3Types = /^.*\.(mp3)$/i;			
 		}
 
 		/**
 		 * Initialisation method
 		 */
-		override public function init():void 
+		public function init():void 
 		{
-			super.init();
-			
-			playButton = searchChildren(Button);				
-			
 			if (src.length)
-				open(src);	
+				open(src);
+			
 		}
+
 		
 		/**
 		 * Dispose method
@@ -182,6 +178,8 @@ package com.gestureworks.cml.element
 		 */		
 		public function open(file:String):void 
 		{
+			currentFile = file;	
+
 			if (file.search(imageTypes) >= 0)
  			{
 				dictionary[file] = new Image;
@@ -196,7 +194,9 @@ package com.gestureworks.cml.element
 					addChild(dictionary[file]);			
 					currentFile = file;	
 					dictionary[file].loadComplete();
-					return;
+					width = dictionary[file].width;
+					height = dictionary[file].height;
+					onComplete();
 				}
 				else {
 					dictionary[file].open();					
@@ -208,9 +208,7 @@ package com.gestureworks.cml.element
 				dictionary[file] = new Video;
 				dictionary[file].src = src;
 				dictionary[file].open();
-				dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
-				if (playButton) dictionary[file].addChild(playButton);
-				dictionary[file].init();
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
 			else if (file.search(mp3Types) >= 0)
 			{	
@@ -225,11 +223,10 @@ package com.gestureworks.cml.element
 					
 			
 			addChild(dictionary[file]);			
-			currentFile = file;	
 		}
 		
 		
-		private function onComplete(event:Event):void
+		private function onComplete(event:Event=null):void
 		{
 			this.dispatchEvent(new Event(Event.COMPLETE));
 		}
