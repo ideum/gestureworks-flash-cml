@@ -149,7 +149,7 @@ package com.gestureworks.cml.element
 		 * Returns a reference to the current media object
 		 * @default null
 		 */			
-		public function get current():String {return dictionary[currentFile];}
+		public function get current():* {return dictionary[currentFile];}
 
 		
 		private var _resample:Boolean = false;

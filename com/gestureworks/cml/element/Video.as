@@ -172,10 +172,11 @@ package com.gestureworks.cml.element
 		 * Sets the src property and loads the video
 		 * @param file
 		 */		
-		public function open(file:String):void
-		{
-			src = file;
-			load();
+		public function open(file:String=null):void
+		{			
+			src = file ? file: src;
+			if(src)
+				load();
 		}
 
 		
