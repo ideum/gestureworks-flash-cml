@@ -49,7 +49,7 @@ package com.gestureworks.cml.factories
 			textFormat.size = fontSize;
 			antiAliasType = AntiAliasType.ADVANCED;
 			blendMode = BlendMode.LAYER;
-			embedFonts = true;			
+			embedFonts = true;					
 		}
 		
 		
@@ -169,6 +169,33 @@ package com.gestureworks.cml.factories
 		/////////////////////////////////
 		// TEXT 
 		////////////////////////////////		
+		
+		private var _gridFitType:String;
+		/**
+		 * The type of grid fitting used for this text field. This property applies only if the flash.text.AntiAliasType property of the text field is set to flash.text.AntiAliasType.ADVANCED.
+		 * The type of grid fitting used determines whether Flash Player forces strong horizontal and vertical lines to fit to a pixel or subpixel grid, or not at all.
+		 * You can use the following string values: subpixel, pixel, none.
+		 */
+		override public function get gridFitType():String{return _gridFitType;}
+		override public function set gridFitType(value:String):void
+		{
+			_gridFitType = value;
+						
+			switch (value) 
+            {
+                case "subpixel":
+					super.gridFitType = GridFitType.SUBPIXEL;
+                    break;
+                case "pixel":
+					super.gridFitType = GridFitType.PIXEL;
+                    break;
+                case "none":
+                    super.gridFitType = GridFitType.NONE;
+                    break;
+            }
+			
+			updateTextFormat();			
+		}	
 		
 		private var _htmlText:String = null;
 		/**
