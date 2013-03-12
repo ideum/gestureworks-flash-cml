@@ -16,12 +16,14 @@ package com.gestureworks.cml.element
 	 * @see MP3
 	 * @see WAV
 	 */	 
+	public class Media extends TouchContainer
 	{
 		private var imageTypes:RegExp;
 		private var videoTypes:RegExp;
 		private var mp3Types:RegExp;
 		private var dictionary:Dictionary;
 		private var currentFile:String;
+		private var playButton:Button;
 		
 		/**
 		 * Constructor
@@ -38,11 +40,14 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void 
+		override public function init():void 
 		{
-			if (src.length)
-				open(src);
+			super.init();
 			
+			playButton = searchChildren(Button);				
+			
+			if (src.length)
+				open(src);	
 		}
 
 		
@@ -208,7 +213,9 @@ package com.gestureworks.cml.element
 				dictionary[file] = new Video;
 				dictionary[file].src = src;
 				dictionary[file].open();
-				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
+				if (playButton) dictionary[file].addChild(playButton);
+				dictionary[file].init();
 			}
 			else if (file.search(mp3Types) >= 0)
 			{	
@@ -219,10 +226,8 @@ package com.gestureworks.cml.element
 			}
 			else
 				throw new Error("Media type is not supported: " + file);
-			
-					
-			
-			addChild(dictionary[file]);			
+						
+			addChild(dictionary[file]);	
 		}
 		
 		
