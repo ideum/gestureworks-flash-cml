@@ -128,6 +128,8 @@ package com.gestureworks.cml.element
 			if (down) listenDown();
 			if (over) listenOver();
 			
+			if (tap) listenTap();
+			
 			//initaialize exclusive touch listeners
 			if (touchDown) listenTouchDown();
 			if (touchOver) listenTouchOver();
@@ -378,6 +380,25 @@ package com.gestureworks.cml.element
 			}												
 		}			
 		
+		private var _tap:*;
+		/**
+		 * Sets the button state association with tap event.
+		 */
+		public function get tap():* { return _tap; }
+		public function set tap(value:*):void {
+			if (!value) return;
+			
+			if (value is DisplayObject) {
+				_tap = value;
+				addChild(_tap);
+				buttonStates.push(_tap);
+			}
+			else {
+				value = value.toString();
+				_tap = childList.getKey(value);
+				buttonStates.push(_tap);
+			}
+		}
 		
 		////////////////////////////////////////////////////
 		/// TOUCH STATES
@@ -733,6 +754,17 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));		
 		}
 		
+		protected function onTap(event:*):void
+		{	
+			if (debug)
+				trace("tap");
+			
+			if (dispatchDict["tap"])
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["tap"], true, true));	
+			else if (dispatchDefault)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "tap", true, true));		
+		}
+		
 		/**
 		 * Enables ore disables mouse down events
 		 * @param	listen  adds mouse listener if true, removes if false
@@ -767,7 +799,15 @@ package com.gestureworks.cml.element
 		private function listenMouseOut(listen:Boolean = true):void
 		{
 			addListener(MouseEvent.MOUSE_OUT, onMouseOut, listen, hit);														
-		}		
+		}
+		
+		/**
+		 * Listen for tap
+		 * @param	event
+		 */
+		private function listenTap(listen:Boolean = true):void {
+			addListener(TouchEvent.TOUCH_TAP, onTap, listen, hit);
+		}
 				
 
 		////////////////////////////////////////////////////
@@ -1275,6 +1315,10 @@ package com.gestureworks.cml.element
 						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
 					else
 						addListener(MouseEvent.MOUSE_OUT, onToggle, listen);
+					break;
+				case "tap":
+					addListener(TouchEvent.TOUCH_TAP, onTap, listen);
+					// TO-DO: Switch over to GWTouch.
 					break;
 				default:
 					break;
