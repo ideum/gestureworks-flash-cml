@@ -16,13 +16,14 @@ package com.gestureworks.cml.element
 	 * @see MP3
 	 * @see WAV
 	 */	 
-	public class Media extends ElementFactory
+	public class Media extends TouchContainer
 	{
 		private var imageTypes:RegExp;
 		private var videoTypes:RegExp;
 		private var mp3Types:RegExp;
 		private var dictionary:Dictionary;
 		private var currentFile:String;
+		private var playButton:Button;
 		
 		/**
 		 * Constructor
@@ -33,19 +34,21 @@ package com.gestureworks.cml.element
 			dictionary = new Dictionary(true);
 			imageTypes = /^.*\.(png|gif|jpg)$/i;  
 			videoTypes = /^.*\.(mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;			
-			mp3Types = /^.*\.(mp3)$/i;			
+			mp3Types = /^.*\.(mp3)$/i;	
 		}
 
 		/**
 		 * Initialisation method
 		 */
-		public function init():void 
+		override public function init():void 
 		{
-			if (src.length)
-				open(src);
+			super.init();
 			
+			playButton = searchChildren(Button);				
+			
+			if (src.length)
+				open(src);	
 		}
-
 		
 		/**
 		 * Dispose method
@@ -201,7 +204,9 @@ package com.gestureworks.cml.element
 				dictionary[file] = new Video;
 				dictionary[file].src = src;
 				dictionary[file].open();
-				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
+				dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
+				if (playButton) dictionary[file].addChild(playButton);
+				dictionary[file].init();
 			}
 			else if (file.search(mp3Types) >= 0)
 			{	

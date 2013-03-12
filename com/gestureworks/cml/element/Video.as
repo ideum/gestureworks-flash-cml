@@ -24,7 +24,7 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 */
 
-	public class Video extends ElementFactory
+	public class Video extends TouchContainer
 	{
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;
@@ -34,6 +34,7 @@ package com.gestureworks.cml.element
 		private var positionTimer:Timer;
 		private var progressTimer:Timer;
 		private var sizeLoaded:Boolean = false;
+		private var playButton:Button;
 		
 		/**
 		 * Constructor
@@ -62,6 +63,7 @@ package com.gestureworks.cml.element
 		{
 			_width = value;
 			if (video) video.width = value;
+			if (playButton) playButton.x = width / 2 - playButton.width / 2;				
 		}
 		
 		private var _height:Number = 0;
@@ -73,6 +75,7 @@ package com.gestureworks.cml.element
 		{
 			_height = value;
 			if (video) video.height = value;
+			if (playButton) playButton.y = height / 2 - playButton.height / 2;
 		}		
 		
 		private var _autoLoad:Boolean = true;
@@ -160,9 +163,31 @@ package com.gestureworks.cml.element
 		 * sets video playing status
 		 */	
 		public function get isPlaying():Boolean { return _isPlaying; }
+		
+		private var _playButtonState:String = "down";
+		/**
+		 * Specifies the button state to execute the play operation
+		 * @default down
+		 */
+		public function get playButtonState():String { return _playButtonState; }
+		public function set playButtonState(s:String):void
+		{
+			_playButtonState = s;
+		}
    		
 	
-		public function init():void {
+		override public function init():void 
+		{
+			super.init();
+			
+			playButton = searchChildren(Button);
+			if (playButton) {
+				mouseChildren = true;
+				playButton.addEventListener(StateEvent.CHANGE, play);
+				playButton.x = width / 2 - playButton.width / 2;
+				playButton.y = height / 2 - playButton.height / 2;
+				hideButton(false);
+			}
 		}
 		
 		/// PUBLIC METHODS ///
@@ -229,9 +254,9 @@ package com.gestureworks.cml.element
 		/**
 		 * Plays the video from the beginning
 		 */		
-		public function play():void
-		{
-		
+		public function play(e:StateEvent=null):void
+		{			
+			if (e && e.value != playButtonState) return;
 			netStream.seek(0);				
 			netStream.resume();
 			netStream.play(src);
@@ -240,6 +265,7 @@ package com.gestureworks.cml.element
 			_position = 0;
 			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
 			positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
+			hideButton();
 		}
 		
 		/**
@@ -249,6 +275,7 @@ package com.gestureworks.cml.element
 		{
 			netStream.resume();
 			positionTimer.start();
+			hideButton();
 	   	}
 		
 		/**
@@ -258,6 +285,7 @@ package com.gestureworks.cml.element
 		{
 			netStream.pause();
 			positionTimer.stop();
+			hideButton(false);
 		}
 		
 		/**
@@ -270,6 +298,7 @@ package com.gestureworks.cml.element
 			positionTimer.stop();	
 			positionTimer.reset();
 			_position = 0;
+			hideButton(false);
 		}
 		
 		/**
@@ -459,7 +488,23 @@ package com.gestureworks.cml.element
 			else stop();
 			
 			// Dispatch event for playlist here.
-		}		
+		}	
+		
+		private function hideButton(hide:Boolean = true):void
+		{
+			if (!playButton) return;
+			
+			if (hide)
+				playButton.visible = false;
+			else
+			{
+				playButton.visible = true;
+				
+				//move to top
+				if (getChildIndex(playButton) != numChildren - 1)
+					addChild(playButton);
+			}
+		}
 		
 		/**
 		 * Dispose methods and remove listeners

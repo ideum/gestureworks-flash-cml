@@ -286,7 +286,7 @@ package com.gestureworks.cml.factories
 		{
 			for (var i:int = 0; i < childList.length; i++) 
 			{
-				if (childList.getIndex(i).id == dimensionsTo)
+				if (childList.getIndex(i).hasOwnProperty("id") && childList.getIndex(i).id == dimensionsTo)
 				{
 					this.width = childList.getIndex(i).width;
 					this.height = childList.getIndex(i).height;
