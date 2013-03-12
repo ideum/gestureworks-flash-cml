@@ -509,8 +509,9 @@
 			_selectedColor = value;
 			if (selected) {
 				//selected.color = _selectedColor;
+				selected.graphics.clear();
 				selected.graphics.beginFill(_selectedColor, 1);
-				selected.graphics.drawCircle(selected.x, selected.y, radius * _selectedFillRatio);
+				selected.graphics.drawCircle(radius, radius, radius * _selectedFillRatio);
 				selected.graphics.endFill();
 			}
 		}
