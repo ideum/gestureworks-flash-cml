@@ -192,7 +192,11 @@ package com.gestureworks.cml.element
 				if (dictionary[file].hasOwnProperty("autoplay"))				dictionary[file].autoplay = autoplay;
 				
 				if ( FileManager.fileList.hasKey(file) ) {
+					dictionary[file].addEventListener(Event.COMPLETE, onComplete);					
+					addChild(dictionary[file]);			
+					currentFile = file;	
 					dictionary[file].loadComplete();
+					return;
 				}
 				else {
 					dictionary[file].open();					
