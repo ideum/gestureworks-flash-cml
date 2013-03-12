@@ -73,6 +73,8 @@
 		 */
 		public function init ():void
 		{		
+			if (!_labels && !_graphicReps) return;
+			
 			draw();
 			
 			if (GestureWorks.activeTUIO) 
