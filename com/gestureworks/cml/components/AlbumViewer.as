@@ -60,6 +60,20 @@ package com.gestureworks.cml.components
 				front = album;
 			if (!back && albums[1])
 				back = albums[1];
+			if (!pageButtons)
+				pageButtons = searchChildren(RadioButtons);
+				
+			if (pageButtons) {
+				RadioButtons(pageButtons).labels = "";
+				var t:Number = Album(album).belt.numChildren;
+				for (var i:Number = 0; i < t; i++) {
+					if (i != t-1)
+						RadioButtons(pageButtons).labels += Number(i).toString() + ",";
+					else
+						RadioButtons(pageButtons).labels += Number(i).toString();
+				}
+				RadioButtons(pageButtons).init();
+			}
 									
 			if (album && searchChildren(RadioButtons)) {
 				album.addEventListener(StateEvent.CHANGE, onStateEvent);
@@ -90,6 +104,24 @@ package com.gestureworks.cml.components
 				_album = value;
 			else 
 				_album = searchChildren(value);					
+		}
+		
+		
+		
+		private var _pageButtons:*;
+		/**
+		 * Sets the page buttons element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */
+		public function get pageButtons():* { return _pageButtons; }
+		public function set pageButtons(value:*):void {
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_pageButtons = value;
+			else
+				_pageButtons = searchChildren(value);
 		}
 		
 		private var _linkAlbums:Boolean = false;		
@@ -147,6 +179,8 @@ package com.gestureworks.cml.components
 		 */
 		override protected function updateLayout(event:*=null):void 
 		{
+			
+			
 			// update width and height to the size of the album, if not already specified
 			if (!width && album)
 				width = album.width;
