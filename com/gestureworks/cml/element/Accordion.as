@@ -78,13 +78,14 @@ package com.gestureworks.cml.element
 				if (i == 0)
 					tabs[i].y = 0;
 				else if (i > 0)
-					tabs[i].y = tabs[i - 1].height + tabs[i - 1].y;
+					tabs[i].y = tabs[i - 1].height + tabs[i - 1].y - 1;
 					
 				snapLow.push(tabs[i].y);
 				snapHigh.push(tabs[i].y + tabs[i].height + height);
 				
-				contents[i].y = (tabs[i].height + tabs[i].y);
-			
+				contents[i].y = (tabs[i].height + tabs[i].y - 4);
+				trace(contents[i].y);
+				trace("------");
 				if (_labelsArray){
 					if (i < _labelsArray.length){
 						var label:Text = new Text();
@@ -120,7 +121,7 @@ package com.gestureworks.cml.element
 				twirlIcons[twirlIcons.length - 1].rotation = 180;
 				
 			background.height = snapHigh[snapHigh.length - 1] + tabs[tabs.length - 1].height;
-			trace(background.height);
+			//trace(background.height);
 			
 			cMask = new Graphic;
 			cMask.shape = "rectangle";
@@ -345,28 +346,13 @@ package com.gestureworks.cml.element
 			var futureSpace:Number = tabs[_current].y + tabs[_current].height + height;
 			
 			for (i = _current + 1; i < tabs.length; i++) {
-				/*if (i == _current + 1) {
-					tweenArray.push(BetweenAS3.to(tabs[i], { y: tabs[i-1].y + tabs[i-1].height + height }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[i], { y: (tabs[i-1].y + tabs[i-1].height + height + tabs[i].height) }, 0.3));
-				} else {
-					tweenArray.push(BetweenAS3.to(tabs[i], { y: background.height - (tabs.length - i) * tabs[i].height }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[i], { y: (background.height - (tabs.length - i) * tabs[i].height) }, 0.3));
-				}*/
-				
-				/*if (i == _current + 1) {
-					tweenArray.push(BetweenAS3.to(tabs[i], { y: futureSpace }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[i], { y: futureSpace + tabs[i].height }, 0.3));
-				} else {
-					tweenArray.push(BetweenAS3.to(tabs[i], { y: tabs[i - 1].y + futureSpace + tabs[i - 1].height }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[i], { y: tabs[i - 1].y + futureSpace + tabs[i - 1].height + tabs[i].height }, 0.3));
-				}*/
 				tweenArray.push(BetweenAS3.to(tabs[i], { y: snapHigh[i] }, 0.3));
-				tweenArray.push(BetweenAS3.to(contents[i], { y: snapHigh[i] + tabs[i].height }, 0.3));
+				tweenArray.push(BetweenAS3.to(contents[i], { y: snapHigh[i] + tabs[i].height - 4}, 0.3));
 			}
 			
 			for (i = 1; i <= _current; i++) {
 				tweenArray.push(BetweenAS3.to(tabs[i], { y:snapLow[i] }, 0.3));
-				tweenArray.push(BetweenAS3.to(contents[i], { y:snapLow[i] + tabs[i].height }, 0.3));
+				tweenArray.push(BetweenAS3.to(contents[i], { y:snapLow[i] + tabs[i].height - 4}, 0.3));
 			}	
 			
 			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
@@ -381,13 +367,13 @@ package com.gestureworks.cml.element
 			}
 			var i:int = 0;
 			for (i = _current + 1; i < tabs.length; i++) {
-				tabs[i].y = background.height - (tabs.length - i) * tabs[i].height;
-				contents[i].y = (background.height - (tabs.length - i) * tabs[i].height) + tabs[i].height;
+				tabs[i].y = snapHigh[i];
+				contents[i].y = tabs[i].y + tabs[i].height - 3;
 			}
 			
 			for (i = 1; i <= _current; i++) {
-				tabs[i].y = i * tabs[i].height;
-				contents[i].y = (i * tabs[i].height) + tabs[i].height;
+				tabs[i].y = snapLow[i];
+				contents[i].y = tabs[i].height + tabs[i].y - 3;
 			}	
 		}
 
@@ -508,12 +494,12 @@ package com.gestureworks.cml.element
 					
 					if (tabs[i].y + e.value.drag_dy > snapHigh[i]) {
 						tabs[i].y = snapHigh[i];
-						contents[i].y = tabs[i].height + snapHigh[i];
+						contents[i].y = tabs[i].height + snapHigh[i] - 3;
 						
 					}	
 					else {
 						tabs[i].y += e.value.drag_dy;
-						contents[i].y += e.value.drag_dy;
+						contents[i].y = tabs[i].y + tabs[i].height - 3;
 					}
 					
 					if (dragGroup.length > 1) {
@@ -539,11 +525,11 @@ package com.gestureworks.cml.element
 					
 					if (tabs[i].y + e.value.drag_dy < snapLow[i]) {
 						tabs[i].y = snapLow[i];
-						contents[i].y = tabs[i].height + snapLow[i];
+						contents[i].y = tabs[i].height + snapLow[i] - 3;
 					}
 					else {
 						tabs[i].y += e.value.drag_dy;
-						contents[i].y += e.value.drag_dy;
+						contents[i].y = tabs[i].y + tabs[i].height - 3;
 					}
 					
 					if (dragGroup.length > 1){
