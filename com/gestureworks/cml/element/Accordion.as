@@ -250,7 +250,7 @@ package com.gestureworks.cml.element
 						Text(_labelsArray[i]).text = pa[i];
 					}
 					else
-						throw(new Error("Cannot create new items on already initialized menu.");
+						throw(new Error("Cannot create new items on already initialized menu."));
 				}
 			}
 		}
