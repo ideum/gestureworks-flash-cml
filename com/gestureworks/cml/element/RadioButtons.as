@@ -73,7 +73,7 @@
 		 */
 		public function init ():void
 		{		
-			if (!_labels && !_graphicReps) return;
+			if (!_labels) return;
 			
 			draw();
 			
