@@ -84,8 +84,6 @@ package com.gestureworks.cml.element
 				snapHigh.push(tabs[i].y + tabs[i].height + height);
 				
 				contents[i].y = (tabs[i].height + tabs[i].y - 4);
-				trace(contents[i].y);
-				trace("------");
 				if (_labelsArray){
 					if (i < _labelsArray.length){
 						var label:Text = new Text();
@@ -106,6 +104,7 @@ package com.gestureworks.cml.element
 							if (twirlIndicator)
 								label.x = fontSize + (paddingLeft * 2);
 						}
+						_labelsArray[i] = label;
 					}
 				}
 				
@@ -241,7 +240,19 @@ package com.gestureworks.cml.element
 		public function get labels():String { return _labels; }
 		public function set labels(value:String):void {
 			_labels = value;
-			_labelsArray = _labels.split(",");
+			if(!_labelsArray || _labelsArray.length < 1)
+				_labelsArray = _labels.split(",");
+			else {
+				var pa:Array = _labels.split(",");
+				for (var i:int = 0; i < pa.length; i++) 
+				{
+					if (i < _labelsArray.length) {
+						Text(_labelsArray[i]).text = pa[i];
+					}
+					else
+						throw(new Error("Cannot create new items on already initialized menu.");
+				}
+			}
 		}
 		
 		private var _font:String = "OpenSansRegular";
