@@ -370,7 +370,7 @@ package com.gestureworks.cml.element
 					_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
 				//_hit.addEventListener(GWGestureEvent.MANIPULATE, onManipulate);
-				_hitBox.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				_hit.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 				//_hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDown, true);
 			}
 			
@@ -433,6 +433,10 @@ package com.gestureworks.cml.element
 				if (contains(_horizontalScroll) || contains(_verticalScroll)) {
 					if (_hit)
 						_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
+				}
+				else {
+					if (_hit)
+						_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
 				}
 			}
 			else {
