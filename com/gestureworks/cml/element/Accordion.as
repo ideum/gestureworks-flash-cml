@@ -247,6 +247,8 @@ package com.gestureworks.cml.element
 				for (var i:int = 0; i < pa.length; i++) 
 				{
 					if (i < _labelsArray.length) {
+						_labelsArray[i].font = _ font;
+						_labelsArray[i].fontColor = _fontColor;
 						Text(_labelsArray[i]).text = pa[i];
 					}
 					else
