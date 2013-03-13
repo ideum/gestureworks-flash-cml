@@ -132,6 +132,7 @@ package com.gestureworks.cml.element
 			addChild(cMask);
 			
 			this.mask = cMask;
+			_current = tabs.length - 1;
 		}
 		
 		
@@ -362,19 +363,27 @@ package com.gestureworks.cml.element
 		
 		public function select(index:Number):void {
 						
-			if (index > 0 && index < tabs.length) {
+			if (index > -1 && index < tabs.length) {
 				_current = index;
+				
 			}
 			var i:int = 0;
 			for (i = _current + 1; i < tabs.length; i++) {
 				tabs[i].y = snapHigh[i];
 				contents[i].y = tabs[i].y + tabs[i].height - 3;
+				if (twirlIndicator)
+					twirlIcons[i].rotation = 90;
 			}
 			
 			for (i = 1; i <= _current; i++) {
 				tabs[i].y = snapLow[i];
-				contents[i].y = tabs[i].height + tabs[i].y - 3;
+				contents[i].y = snapLow[i] + tabs[i].height - 3;
+				if (twirlIndicator)
+					twirlIcons[i].rotation = 90;
 			}	
+			
+			if (twirlIndicator)
+				twirlIcons[_current].rotation = 180;
 		}
 
 		private function createTab():TouchSprite
