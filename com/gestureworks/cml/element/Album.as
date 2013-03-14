@@ -290,6 +290,9 @@ package com.gestureworks.cml.element
 			super.rotationY = value;
 		}	
 		
+		/**
+		 * Returns the index of the current snap point
+		 */
 		public function get currentSnapPoint():Number {
 			var d:Number = horizontal ? belt.x : belt.y;
 			for (var i:int = 0; i < snapPoints.length; i++) {
@@ -299,6 +302,16 @@ package com.gestureworks.cml.element
 			}
 			//trace(d);
 			return snapIndex;
+		}
+		
+		/**
+		 * Returns the object at the current stap point
+		 * @param	point
+		 * @return
+		 */
+		public function objectAtSnapPoint(point:int):*
+		{
+			return belt.getChildAt(point + 1);  //add one to exclude background
 		}
 		
 		/**
@@ -690,7 +703,8 @@ package com.gestureworks.cml.element
 			snapTween = BetweenAS3.tween(belt, destination, null, .4, Exponential.easeOut);
 			snapTween.onUpdate = publishState;
 			snapTween.play();
-		}
+			snapTween.onComplete = currentObject;
+		}		
 		
 		/**
 		 * Determines which child is closest to the album origin and moves each child the direction and distance
@@ -732,6 +746,15 @@ package com.gestureworks.cml.element
 			loopSnapTween.onUpdate = publishState;
 			loopSnapTween.play();
 		}
+		
+		/**
+		 * Dispatch an event on snap complete with the object at the current snap point
+		 */
+		private function currentObject():void
+		{
+			var obj:* = objectAtSnapPoint(currentSnapPoint);
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", obj, true));
+		}		
 		
 		/**
 		 * Determines the snap point closest to the current belt location
@@ -956,6 +979,8 @@ package com.gestureworks.cml.element
 				queueNext();
 			if (edge3 > boundary2)
 				tailToHead();
+				
+			currentObject();
 		}
 	
 		/**
