@@ -49,7 +49,7 @@
 	 * @author Josh
 	 * @see Panoramic
 	 */
-	public class Model extends Container
+	public class Model extends TouchContainer
 	{	
 		//Touch container
 		private var modelTouch:TouchContainer;
@@ -118,6 +118,7 @@
 		private var bitmapMaterial:TextureMaterial;
 		private var loader:Loader;
 		private var counter:Number = 0;
+		private var model_Z:Number = 0;
 		
 		override public function displayComplete():void {
 			super.displayComplete();
@@ -127,8 +128,9 @@
 		/**
 		 * Global initialise function
 		 */
-		private function init():void
+		override public function init():void
 		{
+			super.init();
 			while (this.numChildren > 0) {
 				
 				if (this.getChildAt(0) is TouchContainer) {
@@ -172,7 +174,7 @@
 			cameraController = new HoverController(camera, null, 0, 0, 1000);
 			
 			view.addSourceURL("srcview/index.html");
-			modelTouch.addChild(view);
+			addChild(view);
 			
 			myContainer = new ObjectContainer3D();
 			view.scene.addChild(myContainer);
@@ -248,9 +250,9 @@
 			GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onEnterFrame);
 			//TODO: add scale and drag.
 			
-			modelTouch.addEventListener(GWGestureEvent.DRAG, dragHandler);
-			modelTouch.addEventListener(GWGestureEvent.TILT, tiltHandler);
-			modelTouch.addEventListener(GWGestureEvent.ROTATE, rotateHandler);
+			addEventListener(GWGestureEvent.DRAG, dragHandler);
+			addEventListener(GWGestureEvent.TILT, tiltHandler);
+			addEventListener(GWGestureEvent.SCALE, scaleHandler);
 			
 			stage.addEventListener(Event.RESIZE, onResize);
 			onResize();
@@ -265,6 +267,14 @@
 				
 				myContainer.x = model_X;
 				myContainer.y = model_Y;
+				//trace(myContainer.z);
+				//myContainer.z += model_Z;
+				//camera.z = model_Z;
+				//model_Z += 0.001;
+				//model.geometry.scale(model_Z);
+				myContainer.scaleX = model_Z;
+				myContainer.scaleY = model_Z;
+				myContainer.scaleZ = model_Z;
 				
 				myContainer.rotationY = modelYaw;
 				myContainer.rotationX = modelPitch;
@@ -285,13 +295,15 @@
 				
 				model = event.asset as Mesh;
 				model.geometry.scale(scale);
-				
+				//model_Z = scale;
 				model.name = "Model " + counter;
 				counter++;
 				
 				initMaterials(model);
 				
 				myContainer.addChild(model);
+				model_Z = myContainer.scaleX;
+				
 				//trace(model.name);
 			}
 		}
@@ -300,17 +312,20 @@
 		 * Tilt listener for touch
 		 */
 		private function tiltHandler(e:GWGestureEvent):void {
+			//trace("Tilting");
 			modelYaw += e.value.tilt_dx * 50;
 			modelPitch += e.value.tilt_dy * 50;
 		}
 		
-		private function rotateHandler(e:GWGestureEvent):void {
-			modelRoll += e.value.rotate_dtheta;
-		}
-		
 		private function dragHandler(e:GWGestureEvent):void {
+			//trace("Dragging");
 			model_X -= e.value.drag_dx;
 			model_Y -= e.value.drag_dy;
+		}
+		
+		private function scaleHandler(e:GWGestureEvent):void {
+			trace("Scaling");
+			model_Z += e.value.scale_dsx;
 		}
 		
 		/**
