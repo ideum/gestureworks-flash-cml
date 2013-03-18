@@ -1,6 +1,7 @@
 package com.gestureworks.cml.utils
 {	
-	import com.gestureworks.cml.element.Key;
+	import flash.utils.flash_proxy;
+	import flash.utils.Proxy;
 	/**
 	 * The LinkedMap utility is a data structure that creates an ordered
 	 * map that can store duplicate keys. It has a built-in two-way iterator, 
@@ -27,7 +28,7 @@ package com.gestureworks.cml.utils
 	 * @author Ideum
 	 * @see List
 	 */
-	public class LinkedMap
+	public class LinkedMap extends Proxy
 	{
 		private var keys:List;
 		private var values:List;
@@ -387,6 +388,32 @@ package com.gestureworks.cml.utils
 			return values.getIndex(currentIndex);
 		}
 		
+
 		
+		override flash_proxy function deleteProperty(name:*):Boolean {
+			return delete values[name];
+		}
+
+		override flash_proxy function getProperty(name:*):* {
+			return values[name];
+		}
+
+		override flash_proxy function hasProperty(name:*):Boolean {
+			return name in values;
+		}
+
+		override flash_proxy function nextNameIndex(index:int):int {
+			if (index >= values.length)
+				return 0;
+			return index + 1;
+		}
+
+		override flash_proxy function nextName(index:int):String {
+			return String(index - 1);
+		}
+
+		override flash_proxy function nextValue(index:int):* {
+			return values[index - 1];
+		}			
 	}
 }

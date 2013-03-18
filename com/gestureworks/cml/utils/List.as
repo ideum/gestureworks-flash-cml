@@ -2,7 +2,9 @@ package com.gestureworks.cml.utils
 {
 	import com.gestureworks.cml.interfaces.IList;
 	import com.gestureworks.cml.interfaces.IListIterator;
-	
+	import flash.utils.flash_proxy;
+	import flash.utils.Proxy;
+
 	/**
 	 * The List utility is a data structure that creates an ordered
 	 * list, has a built-in two-way iterator, and contains many 
@@ -28,7 +30,7 @@ package com.gestureworks.cml.utils
 	 * @author Ideum
 	 * @see LinkedMap
 	 */
-	public class List implements IList, IListIterator 
+	public class List extends Proxy implements IList, IListIterator 
 	{
 		/**
 		 * Stores the vector of items
@@ -288,5 +290,32 @@ package com.gestureworks.cml.utils
 		}
 	
 	
+		
+
+		override flash_proxy function deleteProperty(name:*):Boolean {
+			return delete vector[name];
+		}
+
+		override flash_proxy function getProperty(name:*):* {
+			return vector[name];
+		}
+
+		override flash_proxy function hasProperty(name:*):Boolean {
+			return name in vector;
+		}
+
+		override flash_proxy function nextNameIndex(index:int):int {
+			if (index >= vector.length)
+				return 0;
+			return index + 1;
+		}
+
+		override flash_proxy function nextName(index:int):String {
+			return String(index - 1);
+		}
+
+		override flash_proxy function nextValue(index:int):* {
+			return vector[index - 1];
+		}		
 	}
 }
