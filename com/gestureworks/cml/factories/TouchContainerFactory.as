@@ -167,6 +167,7 @@ package com.gestureworks.cml.factories
 		public function set className(value:String):void
 		{
 			_className = value;
+			_class_ = value;
 		}			
 		
 		/**
@@ -202,10 +203,11 @@ package com.gestureworks.cml.factories
 		/**
 		 * Object's css class; 
 		 */			
-		public function get class_():String {return _class_;}
+		public function get class_():String {return _className;}
 		public function set class_(value:String):void 
 		{ 
 			_class_ = value; 
+			_className = value;
 		}			
 		
 		
