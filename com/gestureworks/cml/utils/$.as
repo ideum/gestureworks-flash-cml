@@ -1,7 +1,10 @@
 package com.gestureworks.cml.utils 
 {
-	public function $(... args):CMLQuery 
-	{
-		return CMLQuery.create(args[0], args[1]);
-	}
+	import com.gestureworks.cml.utils.as3Query;
+	
+		public function $(... args):* 
+		{
+			return as3Query.create(args[0], args[1]);
+		}
+
 }
