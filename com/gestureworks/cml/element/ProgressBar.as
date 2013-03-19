@@ -206,7 +206,9 @@ package com.gestureworks.cml.element
 		private function seek():void
 		{
 			if (source is Video) {
-				source.seek(bar.width / width);
+				source.seek((bar.width / width) * 100);
+				if(source.isPlaying)
+					source.resume();
 			}
 		}
 	}
