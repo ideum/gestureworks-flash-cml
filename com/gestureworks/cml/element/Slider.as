@@ -36,9 +36,20 @@ package com.gestureworks.cml.element
 		{
 			super();
 			//touchKnob = new TouchSprite;
-		}				
+		}	
 		
+		override public function set width(value:Number):void 
+		{
+			super.width = value;
+			if (rail) rail.width = value;
+		}
 		
+		override public function set height(value:Number):void 
+		{
+			super.height = value;
+			if (rail) rail.height = value;
+		}		
+				
 		private var _hit:*;
 		/**
 		 * Sets the slider's hit area
@@ -54,8 +65,7 @@ package com.gestureworks.cml.element
 				_hit = CMLObjectList.instance.getId(value);
 			}
 		}
-		
-		
+				
 		private var _rail:*;
 		/**
 		 * Sets the slider's rail element
@@ -70,9 +80,12 @@ package com.gestureworks.cml.element
 				_rail = searchChildren(value);
 				_rail = CMLObjectList.instance.getId(value);
 			}
-			trace("WTF setting rail", _rail, value);
-		}			
-		
+			
+			if (_rail) {
+				width = rail.width;
+				height = rail.height;
+			}
+		}					
 
 		private var _knob:*;
 		/**
@@ -89,7 +102,52 @@ package com.gestureworks.cml.element
 				_knob = CMLObjectList.instance.getId(value);
 			}
 		}
-			
+		
+		private var _railColor:uint = 0x000000;
+		/**
+		 * Color of default rail
+		 */
+		public function get railColor():uint { return _railColor; }
+		public function set railColor(c:uint):void
+		{
+			_railColor = c;
+		}
+		
+		private var _railAlpha:uint = 1;
+		/**
+		 * Alpha of default rail
+		 */
+		public function get railAlpha():Number { return _railAlpha; }
+		public function set railAlpha(a:Number):void {
+			_railAlpha = a;
+		}
+		
+		private var _knobColor:uint = 0xDDDDDD;
+		/**
+		 * Color of default knob
+		 */
+		public function get knobColor():uint { return _knobColor; }
+		public function set knobColor(c:uint):void {
+			_knobColor = c;
+		}
+		
+		private var _knobRadius:Number;
+		/**
+		 * Radius of default knob
+		 */
+		public function get knobRadius():Number { return _knobRadius; }
+		public function set knobRadius(r:Number):void {
+			_knobRadius = r;
+		}
+		
+		/**
+		 * Convenience orientation flag
+		 * @return true if horizontal, false otherwise
+		 */
+		public function isHorizontal():Boolean
+		{
+			return orientation == "horizontal";
+		}
 		
 		private var _orientation:String = "horizontal";
 		/**
@@ -185,79 +243,7 @@ package com.gestureworks.cml.element
 		 */		
 		public function get value():Number { return _value; }
 		
-		// public methods//
-		
-		/**
-		 * CML initialization callback
-		 */
-		override public function displayComplete():void
-		{
-			//this.width = rail.width;
-			
-			if (!rail){
-				throw new Error("rail must be set");
-			}
-			if (!hit)
-				throw new Error("hit must be set");
-			if (!knob)
-				throw new Error("knob must be set");	
-			
-			
-			if (mouseEnabled) {
-				
-				touchKnob = new TouchContainer;
-				touchKnob.mouseChildren = false;
-				touchKnob.disableAffineTransform = true;
-				touchKnob.disableNativeTransform = true;	
-				touchKnob.gestureEvents = true;
-				touchKnob.gestureList = { "n-drag-inertia": true };
-				touchKnob.gestureReleaseInertia = gestureReleaseInertia;
-				
-				createEvents();
-				
-				touchKnob.addChild(knob);
-				addChild(touchKnob);					
-			}
-			
-			
-			if (orientation == "horizontal")
-			{
-				knobOffset = knob.width / 2;
-				minPos = rail.x - knobOffset;				
-				maxPos = rail.x + rail.width - knobOffset;
-				knob.x = minPos;				
-			}
-			else if (orientation == "vertical")
-			{
-				knobOffset = knob.height/2;
-				minPos = rail.y - knobOffset;
-				maxPos = rail.y + rail.height - knobOffset;	
-				knob.y = minPos;					
-			}
-			
-						
-			if (discrete)
-			{				
-				stepknobPositions = [];
-				var i:int;
-								
-				if (orientation == "horizontal")
-				{				
-					for (i = 0; i < steps; i++) 
-					{					
-						stepknobPositions[i] = (rail.width / (steps - 1)) * i;	
-					}
-				}
-				else if (orientation == "vertical")
-				{
-					for (i = 0; i < steps; i++) 
-					{
-						stepknobPositions[i] = (rail.height / (steps-1)) * i;
-					}
-				}				
-			}
-		}
-		
+		// public methods//		
 		public function createEvents():void {
 			trace("Creating events for:", this.id);
 			if (GestureWorks.activeTUIO)
@@ -267,12 +253,15 @@ package com.gestureworks.cml.element
 			else
 				hit.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 			
-			touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
-			if (gestureReleaseInertia)
-			  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-			else{
-				touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
-				hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+			if (touchKnob)
+			{
+				touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
+				if (gestureReleaseInertia)
+				  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				else{
+					touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
+					hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+				}
 			}
 		}
 		
@@ -281,19 +270,126 @@ package com.gestureworks.cml.element
 		 */
 		public function reset():void
 		{
-			if (orientation == "horizontal")			
+			if (isHorizontal())			
 				touchKnob.x = knobOffset;
-			else if (orientation == "vertical")
+			else 
 				touchKnob.y = knobOffset;			
 		}
+		
 		
 		/**
 		 * Initializes the slider object
 		 */
 		public function init():void
-		{
-			displayComplete();	
+		{	
+			setupUI();
+			createEvents();
+			
+			if (knob)
+			{
+				if (mouseEnabled) {
+					
+					touchKnob = new TouchContainer;
+					touchKnob.mouseChildren = false;
+					touchKnob.disableAffineTransform = true;
+					touchKnob.disableNativeTransform = true;	
+					touchKnob.gestureEvents = true;
+					touchKnob.gestureList = { "n-drag-inertia": true };
+					touchKnob.gestureReleaseInertia = gestureReleaseInertia;
+					
+					touchKnob.addChild(knob);
+					addChild(touchKnob);					
+				}
+				
+				
+				if (isHorizontal())
+				{
+					knobOffset = knob.width / 2;
+					minPos = rail.x - knobOffset;				
+					maxPos = rail.x + rail.width - knobOffset;
+					knob.x = minPos;
+					knob.y = rail.height / 2 - knob.height / 2;
+				}
+				else 
+				{
+					knobOffset = knob.height/2;
+					minPos = rail.y - knobOffset;
+					maxPos = rail.y + rail.height - knobOffset;	
+					knob.y = minPos;					
+					knob.x = rail.width / 2 - knob.width / 2;
+				}
+			}
+								
+			if (discrete)
+			{				
+				stepknobPositions = [];
+				var i:int;
+								
+				if (isHorizontal())
+				{				
+					for (i = 0; i < steps; i++) 
+					{					
+						stepknobPositions[i] = (rail.width / (steps - 1)) * i;	
+					}
+				}
+				else
+				{
+					for (i = 0; i < steps; i++) 
+					{
+						stepknobPositions[i] = (rail.height / (steps-1)) * i;
+					}
+				}				
+			}		
+		}
 		
+		/**
+		 * Generates default elements
+		 */
+		protected function setupUI():void
+		{
+			if (!width)
+				width = isHorizontal() ? 500: 20;
+			if (!height)
+				height = isHorizontal() ? 20: 500;
+				
+			if (!rail)
+			{
+				var railGraphic:Graphic = new Graphic();
+				railGraphic.shape = "rectangle";
+				railGraphic.width = isHorizontal() ? width: height;
+				railGraphic.height = isHorizontal() ? height: width;
+				railGraphic.lineStroke = 1;
+				railGraphic.color = railColor;
+				railGraphic.alpha = railAlpha;
+				railGraphic.lineColor = 0x333333;
+				addChild(railGraphic);
+				rail = DisplayObject(railGraphic);
+			}
+			
+			if (!hit)
+			{
+				var hitGraphic:Graphic = railGraphic.clone();
+				hitGraphic.alpha = 0;
+				addChild(hitGraphic);
+				hit = DisplayObject(hitGraphic);
+			}
+			
+			if (!knob && defaultKnob)
+				knob = defaultKnob;
+		}	
+		
+		/**
+		 * Provides default knob graphic when one is not provided. External to allow subclasses to bypass knob requirement. 
+		 */
+		protected function get defaultKnob():DisplayObject {
+			var knobGraphic:Graphic = new Graphic();
+			knobGraphic.shape = "circle";
+			knobGraphic.radius = knobRadius ? knobRadius : isHorizontal() ? hit.height / 2 : hit.width / 2;
+			knobGraphic.lineStroke = 2;
+			knobGraphic.color = knobColor;
+			knobGraphic.lineColor = 0x666666;
+			addChild(knobGraphic);
+			return  DisplayObject(knobGraphic);				
 		}
 		
 		/**
@@ -317,10 +413,10 @@ package com.gestureworks.cml.element
 		
 		// private event handlers //
 		
-		private function onDownHit(event:*):void
+		protected function onDownHit(event:*):void
 		{			
 			var num:Number;
-			trace("On down hit:", event.localX, event.localY);
+			//trace("On down hit:", event.localX, event.localY);
 			
 			if (orientation == "horizontal")		
 				num = event.localX;
@@ -350,7 +446,7 @@ package com.gestureworks.cml.element
 		}	
 	
 		
-		private function onDrag(event:GWGestureEvent):void
+		protected function onDrag(event:GWGestureEvent):void
 		{
 			if (debug)			
 				trace("drag");			

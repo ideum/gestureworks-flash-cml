@@ -115,6 +115,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Drawer; Drawer;
 	import com.gestureworks.cml.element.Dock; Dock;	
 	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
+	import com.gestureworks.cml.element.ProgressBar; ProgressBar;	
 	
 	
 	// deprecated
