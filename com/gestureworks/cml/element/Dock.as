@@ -404,6 +404,8 @@ package com.gestureworks.cml.element
 		
 		public function connect():void
 		{
+			if (gateway == "flickr") 
+				return;
 			connection = new NetConnection;
 			connection.connect(gateway);				
 			responder = new Responder(onResult, onFault);	
