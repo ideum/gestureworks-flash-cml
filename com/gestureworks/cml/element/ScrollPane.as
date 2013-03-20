@@ -167,10 +167,12 @@ package com.gestureworks.cml.element
 				}
 				else if (clone.getChildAt(i).name == _content.name) {
 					clone._content = clone.getChildAt(i) as TouchSprite;
+					if (clone._mask && clone._content)
+						clone._content.mask = clone._mask;
 				}
 			}
 			
-			clone._content.mask = clone._mask;
+			//clone._content.mask = clone._mask;
 			
 			clone.init();
 			clone.createEvents();
