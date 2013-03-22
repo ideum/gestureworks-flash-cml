@@ -70,6 +70,22 @@ package  com.gestureworks.cml.components
 			_linkSlideshows = l;
 		}
 		
+		private var _pageButtons:*;
+		/**
+		 * Sets the page buttons element.
+		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
+		 * Regardless of how this set, a corresponding display object is always returned.
+		 */
+		public function get pageButtons():* { return _pageButtons; }
+		public function set pageButtons(value:*):void {
+			if (!value) return;
+			
+			if (value is DisplayObject)
+				_pageButtons = value;
+			else
+				_pageButtons = searchChildren(value);
+		}
+		
 		/**
 		 * Initialization function
 		 */
@@ -84,6 +100,21 @@ package  com.gestureworks.cml.components
 				front = slideshow;
 			if (!back && slideshows[1])
 				back = slideshows[1];
+			if (!pageButtons)
+				pageButtons = searchChildren(RadioButtons);
+				
+			if (pageButtons) {
+				RadioButtons(pageButtons).labels = "";
+				var t:Number = slideshow.numChildren;
+				for (var i:Number = 0; i < t; i++) {
+					if (i != t-1)
+						RadioButtons(pageButtons).labels += Number(i).toString() + ",";
+					else
+						RadioButtons(pageButtons).labels += Number(i).toString();
+				}
+				if (RadioButtons(pageButtons).labels != "" && RadioButtons(pageButtons).labels)
+					RadioButtons(pageButtons).init();
+			}
 				
 			synchSlideshows();
 			
@@ -180,6 +211,20 @@ package  com.gestureworks.cml.components
 			}
 			else if (event.value == "loaded" && slideshow)
 				updateLayout();
+			else if (event.property == "slideshowState") {
+				var indices:RadioButtons = searchChildren(RadioButtons);
+				if (indices) {
+					indices.selectButton(Slideshow(slideshow).currentIndex.toString());
+				}
+			}
+			else if (event.property == "selectedLabel") {
+				if (!isNaN(Number(event.value))) {
+					var index:Number = Number(event.value);
+					slideshow.snapTo(index)
+					if (linkSlideshows)
+						back.snapTo(index);
+				}
+			}
 		}
 		
 		/**
