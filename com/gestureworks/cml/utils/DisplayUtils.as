@@ -85,21 +85,28 @@ package com.gestureworks.cml.utils
 		/**
 		 *  Returns all children of a specific type from a container.
 		 *   
-		 * 	@param container Container to remove from
-		 *  @param the type of children to remove
+		 * 	@param container Container 
+		 *  @param the type of children 
 		 */
-		public static function getAllChildrenByType(container:DisplayObjectContainer, type:Class):Array
+		public static function getAllChildrenByType(container:DisplayObjectContainer, type:Class, recursive:Boolean=false):Array
 		{
 			var children:Array = [];
-			for (var i:int = 0; i < container.numChildren; i++)
-			{
-				if(container.getChildAt(i) is type)
-				{
-					children.push(container.getChildAt(i));
+			
+			recursiveSearch(container, type, recursive)
+			
+			function recursiveSearch(container:DisplayObjectContainer, type:Class, recursive:Boolean):void {
+				for (var i:int = 0; i < container.numChildren; i++) {
+					if (container.getChildAt(i) is type)
+						children.push(container.getChildAt(i));
+					if (recursive && container.getChildAt(i) is DisplayObjectContainer && DisplayObjectContainer(container.getChildAt(i)).numChildren > 0)
+						recursiveSearch(container.getChildAt(i), type, recursive);
 				}
 			}
+
 			return children;
-		}		
+		}
+				
+		
 		
 		/**
 		 *   Returns all children of a container
