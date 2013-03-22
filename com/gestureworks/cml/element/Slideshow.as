@@ -121,7 +121,7 @@ package com.gestureworks.cml.element
 			
 			var arr:Array = childList.getValueArray();
 			for (var j:int = 0; j < arr.length; j++) {
-				slideshowItems.append(arr[i]); 
+				slideshowItems.append(arr[j]); 
 			}
 			
 			for (var i:Number = slideshowItems.length; i > 0; i--) {
@@ -208,6 +208,29 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Goes to the next slide without restarting playback or changing play direction.
+		 */
+		public function next():void {
+			showNext();
+		}
+		
+		/**
+		 * Goes to the previous slide without restarting playback or changing play direction.
+		 */
+		public function previous():void {
+			showPrev();
+		}
+		
+		public function snapTo(index:Number):void {
+			
+			if (slideshowItems.hasIndex(index) && index != _currentIndex) {
+				fadeout(_currentIndex);
+				fadein(index);
+			}
+			_currentIndex = index;
+		}
+		
+		/**
 		 * timer event
 		 * @param	event
 		 */
@@ -252,6 +275,7 @@ package com.gestureworks.cml.element
 					removeChild(slideshowItems.getIndex(index));
 				}
 				tween = null;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideshowState", this, true));
 			}				
 		}
 		
@@ -293,7 +317,8 @@ package com.gestureworks.cml.element
 				fadeout(last);
 				fadein (_currentIndex);
 			}
-			else { fadeout(last); }
+			else { 
+				fadeout(last); }
 		}
 		
 		protected function showPrev():void {
