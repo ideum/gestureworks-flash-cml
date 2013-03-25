@@ -73,7 +73,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Defines the button state
 		 */
-		public var state:Boolean = false;
+		public var toggleState:Boolean = false;
 		
 		private var _backgroundColor:uint = 0xFFFFFF;
 		
@@ -446,12 +446,12 @@ package com.gestureworks.cml.element
 			if ((event.value.drag_dx + button.x) > maxButtonPos)
 			{
 				button.x = maxButtonPos;
-				state = true;
+				toggleState = true;
 			}
 			else if ((event.value.drag_dx + button.x) < minButtonPos)
 			{
 				button.x = minButtonPos;
-				state = false;
+				toggleState = false;
 			}
 			else
 			{
@@ -464,28 +464,28 @@ package com.gestureworks.cml.element
 			if (button.x < button.width)
 			{
 				button.x = maxButtonPos; 
-				state = true;
+				toggleState = true;
 			}
 			else
 			{
 				button.x = minButtonPos;
-				state = false;
+				toggleState = false;
 			}
-		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", state));
+		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", toggleState));
 		}
 		
 		private function onEnd(event:* = null):void
 		{
 			if (button.x + button.width/2 >= (background.width/2)){
 				button.x = maxButtonPos;
-				state = true;
+				toggleState = true;
 			}	
 			else {
 				button.x = minButtonPos;
-				state = false;
+				toggleState = false;
 			}
 				
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", state));				
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", toggleState));				
 		}
 		
 	
