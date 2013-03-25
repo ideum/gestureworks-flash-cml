@@ -271,6 +271,7 @@ package com.gestureworks.cml.core
 		{
 			if (debug) trace("0:  RenderKit found" );
 			var path:String;
+					
 			if (cml.Renderer != undefined  && cml.Renderer.@dataPath != undefined) {
 				path = cml.Renderer.@dataPath;
 				
@@ -370,13 +371,12 @@ package com.gestureworks.cml.core
 		{
 			if (debug) trace("\n\n++ Process Begin ++");	
 			if (debug) trace("\n" + dash(XMLList(cml)) + "cml");	
-			
+						
 			loopCML(cml.children(), cmlDisplay);
 			loadCSS();			
 		}
 		
 	
-		
 	
 							
 		/**
@@ -385,7 +385,7 @@ package com.gestureworks.cml.core
 		 * @param	parent
 		 * @param	properties
 		 */
-		public static function loopCML(cml:XMLList, parent:*= null, properties:*= null):void
+		public static function loopCML(cml:XMLList, parent:*= null):void
 		{
 			var node:XML;			
 			var tag:String;
@@ -398,8 +398,6 @@ package com.gestureworks.cml.core
 			for each (node in cml) {
 				tag = node.name();	
 				if (debug) trace(dash(XMLList(node)) + tag + "");
-				
-
 				
 				if (tag == "Include") {
 					if (FileManager.hasFile(node.@src)) {
@@ -415,22 +413,15 @@ package com.gestureworks.cml.core
 
 				}
 				else if (tag == "RenderKit") {
-					if (properties) {
-						var tmp:XML = expRenderer(node, parent, properties);
-						if (tmp) 
-							loadRenderer(tmp, parent);
-						else 
-							loadRenderer(node, parent);	
-					}
-					else loadRenderer(node, parent);	
+					loopCML(pRenderKit(XML(node)), parent);
 					continue;
 				}
-				else if (tag == "DebugKit" || tag == "RendererData" || tag == "Filter" || tag == "Gesture" || tag == "GestureList"
-					|| tag == "LibraryKit" || tag == "Library" || tag == "LayoutKit" || tag == "Layout" )
-					continue;
 				
-
-			
+				else if (tag == "DebugKit" || tag == "RendererData" || tag == "Filter" || tag == "Gesture" 
+					|| tag == "GestureList" || tag == "LibraryKit" || tag == "Library" || tag == "LayoutKit" 
+					|| tag == "Layout" || tag == "State")
+					continue;
+							
 				
 				obj = createObject(tag);	
 	
@@ -463,30 +454,11 @@ package com.gestureworks.cml.core
 				obj.postparseCML(XMLList(node));
 				
 				
-				 //target render data
-				if (properties) {
-					if (obj) { //normal
-						for (var key:* in obj.propertyStates[0]) {		
-							for each (var val:* in properties.*) {
-								var str:String = obj.propertyStates[0][key];
-								
-								// filter value for expression delimiter "{}"
-								if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
-									// remove whitepsace and {} characters
-									var regExp:RegExp = /[\s\r\n{}]*/gim;
-									str = str.replace(regExp, '');
-								}	
-								
-								if (str == val.name().toString()) {
-									if (key == "id")
-										obj.id = val;									
-									obj.propertyStates[0][key] = val;
-								}							
-							}
-						}
-					}
-				}	
 				
+				//target state tag
+				StateUtils.parseCML(obj, XMLList(node));
+				
+
 				
 				// add to master object list
 				CMLObjectList.instance.append(obj.id, obj);	
@@ -501,62 +473,25 @@ package com.gestureworks.cml.core
 					
 				//recursion
 				if (returned && returned.length())
-					loopCML(returned, obj, properties);
+					loopCML(returned, obj);
 					
 			}
 		}		
 		
 		
-		
-		public static function expRenderer(node:*, parent:*, properties:*):XML
-		{
-			var node:XML = node.copy();
-			var returned:XML = XML(node);
-			
-			var tmp:*;
-			var renderer:XMLList = node.*;
-			var regExp:RegExp = /[\s\r\n{}]*/gim;
-			
-			for (var i:int = 0; i < renderer.length(); i++) {
-				tmp = renderer[i];
-			
-				for each (var atr:XML in tmp.@*) {		
-					for each (var val:* in properties.*) {
-						var str:String = atr;
-						
-						// filter value for expression delimiter "{}"
-						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
-							// remove whitepsace and {} characters
-							str = str.replace(regExp, '');
-						}	
-							
-						if (str == val.name().toString()) {	
-							tmp.@[String(atr.name())] = val;							
-							returned = <RenderKit />;
-							returned.appendChild(XML(tmp));
-							return returned;
-						}							
-					}
-				}							
-			}
-			
-			return returned;
-		}
-		
-
-		
-		public static function loadRenderer(renderKit:*, parent:*):void
-		{
+		private static function pRenderKit(renderKit:XML):XMLList
+		{						
 			if (debug) trace("\n\n++ Loading RenderKit ++");
-		
+			var regExp:RegExp = /[\s\r\n{}]*/gim;		
 			var rendererData:XMLList = new XMLList;
 			var renderList:XMLList;	
 			var cmlRenderer:XMLList;
 			var dataRootTag:String;
 			var dataPathExp:String;
 			var tmp:XMLList;
-			var regExp:RegExp = /[\s\r\n{}]*/gim;
-				
+			var ret:XMLList = new XMLList;
+
+
 			for (var q:int; q < renderKit.Renderer.length(); q++) {
 				
 				if (renderKit.Renderer.@dataPath == undefined)
@@ -594,30 +529,85 @@ package com.gestureworks.cml.core
 				
 				
 				for (var i:int = 0; i < renderList.length(); i++) {
-					cmlRenderer = new XMLList(renderKit.Renderer[q].*);
-					
-					for each (var n:* in cmlRenderer) {
-						
-						if (n.name() == "Include") {
-							n = XML(FileManager.fileList.getKey(String(n.@src)));
-							n = XMLList(n.children());
-						}
-	
-						var properties:XMLList = XMLList(renderList[i]);	
-						loopCML(XMLList(n), parent, properties);
-					}
+					cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
+					loopRenderer(XMLList(renderList[i]), cmlRenderer);
+					ret += XMLList(cmlRenderer);
 				}
 			}
+					
+			return ret;
+		}
+		
+		
+		private static function loopRenderer(renderList:XMLList, cmlRenderer:XMLList):void
+		{			
+			var str:String;
+			var val:*;
+			
+			
+			for (var i:int = 0; i < cmlRenderer.length(); i++) 
+			{
+				if (cmlRenderer[i].name() == "Include") {
+					cmlRenderer[i] = XMLList(FileManager.fileList.getKey(String(cmlRenderer[i].@src))).copy();
+					cmlRenderer[i] = XMLList(cmlRenderer[i].children());
+				}
+			}
+		
 				
-		}			
+			
+			for each (var node:* in cmlRenderer) {
+				
+				if (node.name()) {
+					//if (node.name() == "RenderKit") continue;
+					str = node.name().toString();
+				}
+				
+				for each (var val:* in renderList.*) {
+					
+					if (node.text()) {
+						
+						str = node.text().toString();
+					
+						// filter value for expression delimiter "{}"
+						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
+							// remove whitepsace and {} characters
+							var regExp:RegExp = /[\s\r\n{}]*/gim;
+							str = str.replace(regExp, '');
+						}	
+												
+						if (str == val.name().toString()) {									
+							node.setChildren(XMLList(val.*));
+						}
+					
+					}
+					
+					for each (var attrVal:* in node.@*) {
+						
+						var attr:* = attrVal.name();							
+						var str:String = String(attrVal);
+						
+						// filter value for expression delimiter "{}"
+						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
+							// remove whitepsace and {} characters
+							var regExp:RegExp = /[\s\r\n{}]*/gim;
+							str = str.replace(regExp, '');
+						}	
+						
+						if ( str == String(val.name()) ) {									
+							node.@[attr] = val;
+						}					
+					}
+				
+				}	
+				
+				
+				if (node.*.length())
+					loopRenderer(renderList, node.*);				
+				
+			}						
+		}
 		
-		
-		
-		
-		
-		
-		
-		
+	
 		private static function parseFilter(obj:*, node:XMLList):XMLList
 		{
 			var attrName:String;
@@ -891,70 +881,70 @@ package com.gestureworks.cml.core
 				
 				
 		/**
-		 * Filters properties amd resolves expression attributes
-		 * @param	propertyName
-		 * @param	propertyValue
-		 * @param	propertyStates
-		 * @param	state
-		 * @return
+		 * Resolves expression attributes
 		 */
-		public static function filterProperty(propertyName:String, propertyValue:*, propertyStates:*, state:*):*
-		{				
-			propertyValue = propertyStates[state][propertyName].toString();			
+		public static function resolveAttrs(obj:Object):void
+		{
+			if (!("state" in obj)) return;
 			
-			// filter value for expression delimiter "{}"
-			if (propertyValue.charAt(0) == "{") {				
-				if ((propertyValue.charAt(propertyValue.length - 1) == "}")) {
+			var i:int;
+			var prop:String;
+			var val:String;
+			var st:Dictionary;
+			var selector:String;
+			var pp:String;
+			
+			for each (st in obj.state) {
+				for  (prop in st) {					
+					val = st[prop]; 
+					
+					if ( val.charAt(0) != "{" ) continue;
+					
 					// remove whitepsace and {} characters
 					var regExp:RegExp = /[\s\r\n{}]*/gim;
-					propertyValue = propertyValue.replace(regExp, '');
+					val = val.replace(regExp, '');
 									
 					// split last period 					
-					var arr:Array = propertyValue.split(".");			
+					var arr:Array = val.split(".");			
 					
 					if (arr.length > 1) {				
-						var str1:String = "";
-						var str2:String = "";
+						 selector = "";
+						 pp = "";
 					
-						for (var i:int = 0; i < arr.length; i++) 
-						{
+						for (var i:int = 0; i < arr.length; i++) {
 							if (i < arr.length-1)
-								str1 += "." + arr[i];
+								selector += "." + arr[i];
 							else
-								str2 = arr[i];
+								pp = arr[i];
 						}
 						
-						if (str1.charAt(0) == ".")
-							str1 = str1.slice(1);					
-						
-						var last:int = -1;
-						for (var j:int = 0; j < CMLObjectList.instance.length; j++) {	
-							if (CMLObjectList.instance.getIndex(j).propertyStates[state][str2])
-								return CMLObjectList.instance.getIndex(j).propertyStates[state][str2];
-							
-						}
-											
-						throw new Error("Malformed expression attribute. A valid id and property must be given");	
-						
-						// assign value from master cml list
-						// get value from property states instead of object to remove time factors							
-						return CMLObjectList.instance.getKey(str1).propertyStates[state][str2];
-					}
-					
-					else 
-						throw new Error("Malformed expression attribute. A valid id and property must be given");
-				}
-				
-				else 
-					throw new Error("Malformed expression attribute. The delimiter character: {  must be followed by the: }  character");
-			}			
-							
-			return propertyStates[state][propertyName];			
-		}
-		
-		
+						if (selector.charAt(0) == ".")
+							selector = selector.slice(1);					
 
-		
+						if ( (pp.charAt(pp.length -1) == ")" ) &&
+							 (pp.charAt(pp.length -2) == "(") ) {
+								 
+								obj[prop] = document.querySelector(selector)[pp.slice(0, pp.length-2)]();
+						}
+							
+						else if (pp in obj) {
+							if (("searchChildren" in obj) && (obj.searchChildren(val)))
+								obj[prop] = obj.searchChildren(selector)[pp];
+							else
+								obj[prop] = document.querySelector(selector)[pp];
+						}
+
+					}	
+					
+					else {
+						if (("searchChildren" in obj) && (obj.searchChildren(val)))
+							obj[prop] = obj.searchChildren(val);
+						else if ( document.querySelector(val) )
+							obj[prop] = document.querySelector(val);
+					}
+				}
+			}
+		}
 		
 		
 		
@@ -964,7 +954,8 @@ package com.gestureworks.cml.core
 		 * The final parsing control function
 		 */
 		private static function loadDisplay():void
-		{
+		{				
+			
 			if (debug) {
 				trace("\n\n Apply CML property values\n");	
 				trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", "cmlIndex", "type", "id", "class", "property", "value"));						
@@ -972,22 +963,36 @@ package com.gestureworks.cml.core
 			}				
 				
 			DisplayManager.instance.updateCMLProperties();
+		
+			
+			if (debug) {
+				trace("\n\n Resolve Expression Attributes\n");					
+			}			
+			
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) {				
+				resolveAttrs(CMLObjectList.instance.getIndex(i));
+			}			
+			
 			
 			if (debug)
 				trace("\n\n++ Call loadComplete() to awaiting objects ++");				
 			
 			DisplayManager.instance.loadComplete();	
 			
+			
 			if (debug)
 				trace("\n\n++ Activate touch... apply GestureList to TouchContainers ++");				
 			
 			DisplayManager.instance.activateTouch();				
 			
+			
 			if (debug)
 				trace("\n\n++ Add child display objects to parents... make objects visible ++");				
 			
+				
 			DisplayManager.instance.addCMLChildren();
-						
+				
+			
 			if (debug)
 				trace("\n\n++ Layout Containers... set dimensions to child ++");				
 			
