@@ -21,8 +21,9 @@ package com.gestureworks.cml.factories
 		public function ObjectFactory() 
 		{
 			super();
-			propertyStates = [];
-			propertyStates[0] = new Dictionary(false);
+			state = [];
+			state[0] = new Dictionary(false);
+			propertyStates = state;
 		}	
 		
 		/**
@@ -30,13 +31,18 @@ package com.gestureworks.cml.factories
 		 */
 		public function dispose():void 
 		{ 			
+			state = null;
 			propertyStates = null;
 		}
 		
 		/**
-		 * defines property states array
+		 * property states array
 		 */
+		public var state:Array;
+		
+		[Deprecated(replacement="state")]		
 		public var propertyStates:Array;
+		
 		
 		private var _cmlIndex:int;
 		/**

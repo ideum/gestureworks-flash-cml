@@ -1,5 +1,6 @@
 package com.gestureworks.cml.factories
 {	
+	import com.gestureworks.cml.element.TouchContainer;
 	import flash.display.Sprite;
 	import flash.events.AsyncErrorEvent;
 	import flash.events.Event;
@@ -23,7 +24,7 @@ package com.gestureworks.cml.factories
 	 * @see com.gestureworks.cml.factories.TLF
 	 * @see com.gestureworks.cml.factories.ElementFactory
 	 */	 
-	public class VideoFactory extends ElementFactory
+	public class VideoFactory extends TouchContainer
 	{
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;

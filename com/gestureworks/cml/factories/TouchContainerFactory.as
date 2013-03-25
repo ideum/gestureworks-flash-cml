@@ -28,17 +28,14 @@ package com.gestureworks.cml.factories
 		{
 			super();
 			mouseChildren = true; // required for touchevents to pass into children
-			
-			propertyStates = [];
-			propertyStates[0] = new Dictionary(false);			
-			
+			state = [];
+			state[0] = new Dictionary(false);
+			propertyStates = state;	
 			_childList = new ChildList;			
-			
 			addEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);
-			//alpha = 1;
 		}
 				
-		
+
 		
 		//////////////////////////////////////////////////////////////
 		// IOBJECT
@@ -58,7 +55,7 @@ package com.gestureworks.cml.factories
 					child["dispose"]();
 				removeChildAt(i);
 			}
-		
+			state = null; 
 			propertyStates = null;
 			_childList = null; 
 			layout = null;
@@ -67,9 +64,13 @@ package com.gestureworks.cml.factories
 			removeEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);			
 		}
 		
+		
 		/**
-		 * defines array for propertyStates of childlist
+		 * property states array
 		 */
+		public var state:Array;
+		
+		[Deprecated(replacement="state")]		
 		public var propertyStates:Array;
 		
 		
@@ -354,11 +355,11 @@ package com.gestureworks.cml.factories
 			this.gestureList = cmlGestureList;
 			
 			for (var j:String in gestureList) {
-				trace("gesture:",this.id, j+":"+gestureList[j]);
+				//trace("gesture:",this.id, j+":"+gestureList[j]);
 			}
 		}
-				
-
+		
+		
 		
 		//////////////////////////////////////////////////////////////
 		// outline

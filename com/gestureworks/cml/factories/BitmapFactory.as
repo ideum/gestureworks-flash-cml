@@ -1,5 +1,6 @@
 package com.gestureworks.cml.factories 
 {	
+	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
@@ -17,7 +18,7 @@ package com.gestureworks.cml.factories
 	 * @see com.gestureworks.cml.factories.ElementFactory
 	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	 	
-	public class BitmapFactory extends ElementFactory
+	public class BitmapFactory extends TouchContainer
 	{		
 		// image file loader
 		protected var img:IMGLoader;

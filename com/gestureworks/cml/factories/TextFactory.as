@@ -41,8 +41,9 @@ package com.gestureworks.cml.factories
 		{
 			super();
 			
-			propertyStates = [];
-			propertyStates[0] = new Dictionary(false);
+			state = [];
+			state[0] = new Dictionary(false);
+			propertyStates = state;
 
 			textFormat.font = "OpenSansRegular";
 			textFormat.color = color;
@@ -64,11 +65,16 @@ package com.gestureworks.cml.factories
 		{
 			textFormat = null;
 			propertyStates = null;
+			state = null;
 		}
 		
+		
 		/**
-		 * array for property states
+		 * property states array
 		 */
+		public var state:Array;
+		
+		[Deprecated(replacement="state")]		
 		public var propertyStates:Array;
 		
 		
@@ -138,16 +144,7 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		private var _className:String;
-		/**
-		 * specify the class name 
-		 */
-		public function get className():String { return _className ; }
-		public function set className(value:String):void
-		{
-			_className = value;
-			
-		}
+		
 		
 		
 		/////////////////////////////////
@@ -164,7 +161,16 @@ package com.gestureworks.cml.factories
 			_class_ = value; 
 		}	
 		
-	
+		private var _className:String;
+		/**
+		 * sets the class name of displayobject
+		 */
+		public function get className():String { return _className ; }
+		public function set className(value:String):void
+		{
+			_className = value;
+			_class_ = value;
+		}	
 		
 		/////////////////////////////////
 		// TEXT 

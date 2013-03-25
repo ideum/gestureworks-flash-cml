@@ -1,5 +1,6 @@
 package com.gestureworks.cml.factories 
 {	
+	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import flash.display.CapsStyle;
 	import flash.display.GradientType;
@@ -18,7 +19,7 @@ package com.gestureworks.cml.factories
 	 * @see com.gestureworks.cml.factories.ElementFactory
 	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	
-	public class GraphicFactory extends ElementFactory
+	public class GraphicFactory extends TouchContainer
 	{
 		/**
 		 * Constructor
