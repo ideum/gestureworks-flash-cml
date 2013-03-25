@@ -49,7 +49,6 @@ package com.gestureworks.cml.element
 		private var oldY:Number;
 		private var oldX:Number;
 		
-		//public var _content:*;
 		public var _content:*;
 		
 		private var loaded:Boolean = false;
@@ -252,7 +251,7 @@ package com.gestureworks.cml.element
 			
 			_content = getChildAt(0);
 			//_content.addEventListener(StateEvent.CHANGE, onStateEvent);
-			_hit.addChild(_content);
+			//_hit.addChild(_content);
 			// If one bar is set but not the other, set the other to match.
 			if (_verticalScroll && !_horizontalScroll) {
 				_horizontalScroll = new ScrollBar();
@@ -371,14 +370,12 @@ package com.gestureworks.cml.element
 				if (contains(_horizontalScroll) || contains(_verticalScroll)) 
 					_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 				_hit.addEventListener(GWGestureEvent.SCALE, onScale);
-				//_hit.addEventListener(GWGestureEvent.MANIPULATE, onManipulate);
 				_hit.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-				//_hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDown, true);
 			}
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
-		}	
+		}
 		
 		public function updateLayout(inWidth:Number, inHeight:Number):void {
 			
