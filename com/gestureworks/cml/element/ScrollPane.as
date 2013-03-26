@@ -235,7 +235,8 @@ package com.gestureworks.cml.element
 				}
 				else if (getChildAt(i) is TouchContainer) {
 					_hit = getChildAt(i) as TouchContainer;
-					addChild(_hit);
+					//addChild(_hit);
+					addChildAt(_hit, 0);
 					_hit.disableNativeTransform = true;
 					removeChildAt(i);
 					i--;
@@ -251,7 +252,8 @@ package com.gestureworks.cml.element
 			
 			_content = getChildAt(0);
 			//_content.addEventListener(StateEvent.CHANGE, onStateEvent);
-			//_hit.addChild(_content);
+			if (_hit && _content)
+				_hit.addChild(_content);
 			// If one bar is set but not the other, set the other to match.
 			if (_verticalScroll && !_horizontalScroll) {
 				_horizontalScroll = new ScrollBar();
