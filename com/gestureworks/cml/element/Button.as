@@ -1239,6 +1239,10 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", "toggle", true, true));	
 		}
 		
+		public function runToggle():void {
+			onToggle(null);
+		}
+		
 		/**
 		 * Enables ore disables touch/mouse events
 		 * @param	listen  adds touch/mouse listener if true, removes if false
