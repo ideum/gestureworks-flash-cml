@@ -235,8 +235,8 @@ package com.gestureworks.cml.element
 				}
 				else if (getChildAt(i) is TouchContainer) {
 					_hit = getChildAt(i) as TouchContainer;
-					//addChild(_hit);
-					addChildAt(_hit, 0);
+					addChild(_hit);
+					//addChildAt(_hit, 0);
 					_hit.disableNativeTransform = true;
 					removeChildAt(i);
 					i--;
