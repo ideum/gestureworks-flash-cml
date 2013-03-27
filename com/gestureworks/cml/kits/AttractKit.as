@@ -76,6 +76,24 @@ package com.gestureworks.cml.kits
 		public function set tweenFades(value:Boolean):void {
 			_tweenFades = value;
 		}
+		
+		private var _tweenTime:Number = 1;
+		/**
+		 * The duration of the tween in seconds
+		 */
+		public function get tweenTime():Number { return _tweenTime; }
+		public function set tweenTime(value:Number):void {
+			_tweenTime = value;
+		}
+		
+		private var _attractState:Boolean;
+		/**
+		 * The current attract state (false = closed, true = open)
+		 */
+		public function get attractState():Boolean { return _attractState; }
+		public function set attractState(value:Boolean):void {
+			_attractState = value;
+		}		
 
 		/**
 		 * CML callback initialisation
@@ -148,16 +166,23 @@ package com.gestureworks.cml.kits
 			timer.start();
 			if (tweenFades) {
 				// fade out.
-				TweenMax.to(this, 0.5, { alpha:0, onComplete:visFunction } );
-				function visFunction():void { visible = false; }
+				TweenMax.to(this, tweenTime, { alpha:0, onComplete:visFunction } );
 				
 			} else {
 				visible = false;
 			}
-			parent.setChildIndex(this, 0);
+		
 			if (stage)
 				stage.addEventListener(TouchEvent.TOUCH_MOVE, resetTimer);
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", "close"));
+		
+			attractState = false;	
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
+		}
+		
+		
+		private function visFunction():void { 
+			//parent.setChildIndex(this, 0);
+			visible = false; 
 		}
 		
 		private function resetTimer(e:TouchEvent):void {
@@ -182,15 +207,16 @@ package com.gestureworks.cml.kits
 			if (tweenFades) {
 				// fade in.
 				visible = true;
-				TweenMax.to(this, 0.5, { alpha:1 } );
+				TweenMax.to(this, tweenTime, { alpha:1 } );
 			} else {
 				alpha = 1;
 				visible = true;
 			}
 			
 			parent.setChildIndex(this, parent.numChildren - 1);
-			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", "open"));
+		
+			attractState = true;	
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
 		}
 		
 		private function checkChildren(target:DisplayObjectContainer, method:String):void {
