@@ -4,14 +4,13 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
+	import com.greensock.easing.Elastic;
+	import com.greensock.TweenLite;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.filters.*;
 	import flash.geom.*;
 	import flash.utils.*;
-	import org.libspark.betweenas3.*;
-	import org.libspark.betweenas3.easing.*;
-	import org.libspark.betweenas3.tweens.*;
 	import org.tuio.*;
 
 	/**
@@ -714,8 +713,8 @@ package com.gestureworks.cml.element
 				timer.reset();
 				
 				if (tweener) {
-					tweener.stop();
-					tweener.onComplete = null;
+					tweener.kill();
+					tweener.eventCallback("onComplete");
 				}
 				this.x += event.value.drag_dx;
 				this.y += event.value.drag_dy;
@@ -734,8 +733,8 @@ package com.gestureworks.cml.element
 			{
 				timer.reset();
 				if (tweener){
-					tweener.stop();
-					tweener.onComplete = null;
+					tweener.kill();
+					tweener.eventCallback("onComplete");
 				}
 			}
     	}
@@ -788,7 +787,7 @@ package com.gestureworks.cml.element
 			
 		}
 		
-		private var tweener:ITween;
+		private var tweener:TweenLite;
 		private var timer:Timer;
 		
 		/**
@@ -798,9 +797,8 @@ package com.gestureworks.cml.element
 		{
 			if (attractMode)
 			{
-				tweener = BetweenAS3.tween(this, {x: NumberUtils.randomNumber(0, (stage.stageWidth - orbRadius)), y: NumberUtils.randomNumber(0, (stage.stageHeight - orbRadius))}, null, 40, Elastic.easeOut);
+				tweener = TweenLite.to(this, 40, { x: NumberUtils.randomNumber(0, (stage.stageWidth - orbRadius)), y: NumberUtils.randomNumber(0, (stage.stageHeight - orbRadius)), ease:Elastic.easeOut, onComplete:tween } );
 				tweener.play();
-				tweener.onComplete = tween;
 			}
 		}
 		

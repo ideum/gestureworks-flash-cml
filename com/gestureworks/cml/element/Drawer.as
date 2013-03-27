@@ -1,10 +1,10 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.events.GWGestureEvent;
+	import com.greensock.easing.Expo;
+	import com.greensock.TimelineLite;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.easing.Exponential;
-	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
 	 * The <code>Drawer</code> is a container that animates down to conceal its contents (closed state) and animates up to
@@ -42,8 +42,8 @@ package com.gestureworks.cml.element
 		private var isOpen:Boolean = false;		
 		private var contentHolder:Container;
 		private var contentMask:Graphic;
-		private var upTween:ITweenGroup;
-		private var downTween:ITweenGroup;
+		private var upTween:TimelineLite;
+		private var downTween:TimelineLite;
 
 		
 		/**
@@ -498,22 +498,26 @@ package com.gestureworks.cml.element
 		private function generateTweens():void
 		{			
 			var upTweens:Array = new Array();
-			upTweens.push(BetweenAS3.tween(handle, { y:0 }, null, .3, Exponential.easeOut));
-			upTweens.push(BetweenAS3.tween(contentHolder, { y:handle.height }, null, .3, Exponential.easeOut));
+			upTweens.push(TweenLite.to(handle, .3, { y:-100, ease:Expo.easeOut } ));
+			upTweens.push(TweenLite.to(contentHolder, .3, { y:handle.height, ease:Expo.easeOut } ));
 			if (leftHandle)
-				upTweens.push(BetweenAS3.tween(leftHandle, { y:handle.height }, null, .3, Exponential.easeOut));
+				upTweens.push(TweenLite.to(leftHandle, .3, {y:handle.height, ease:Expo.easeOut}));
 			if (rightHandle)
-				upTweens.push(BetweenAS3.tween(rightHandle, { y:handle.height }, null, .3, Exponential.easeOut));				
-			upTween = BetweenAS3.parallel.apply(null, upTweens);
+				upTweens.push(TweenLite.to(rightHandle, .3, {y:handle.height, ease:Expo.easeOut}));				
+			upTween = new TimelineLite();
+			upTween.appendMultiple(upTweens);
+			upTween.stop();
 			
 			var downTweens:Array = new Array();
-			downTweens.push(BetweenAS3.tween(handle, { y:contentHolder.height +1}, null, .3, Exponential.easeOut));
-			downTweens.push(BetweenAS3.tween(contentHolder, { y:contentHolder.height + handle.height +1 }, null, .3, Exponential.easeOut));
+			downTweens.push(TweenLite.to(handle, .3, {y:contentHolder.height , ease:Expo.easeOut}));
+			downTweens.push(TweenLite.to(contentHolder, .3, {y:contentHolder.height + handle.height , ease:Expo.easeOut}));
 			if (leftHandle)
-				downTweens.push(BetweenAS3.tween(leftHandle, { y:contentHolder.height + handle.height + 1 }, null, .3, Exponential.easeOut));
+				downTweens.push(TweenLite.to(leftHandle, .3, {y:contentHolder.height + handle.height , ease:Expo.easeOut}));
 			if (rightHandle)
-				downTweens.push(BetweenAS3.tween(rightHandle, { y:contentHolder.height + handle.height + 1 }, null, .3, Exponential.easeOut));				
-			downTween = BetweenAS3.parallel.apply(null, downTweens);
+				downTweens.push(TweenLite.to(rightHandle, .3, {y:contentHolder.height + handle.height , ease:Expo.easeOut}));				
+			downTween = new TimelineLite({onComplete: handleTransition});
+			downTween.appendMultiple(downTweens);
+			downTween.stop();
 		}
 		
 		/**
@@ -561,7 +565,7 @@ package com.gestureworks.cml.element
 			downTween.stop();
 			leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
 			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
-			upTween.play();
+			upTween.restart();
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.addEventListener(GWGestureEvent.TAP, close);	
 		}
@@ -576,8 +580,7 @@ package com.gestureworks.cml.element
 			handle.visible = true;
 			leftHandle.searchChildren(Graphic).topLeftRadius = 0;
 			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
-			downTween.play();
-			downTween.onComplete = handleTransition;
+			downTween.restart();
 			handle.removeEventListener(GWGestureEvent.TAP, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
 		}

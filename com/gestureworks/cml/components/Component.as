@@ -10,6 +10,9 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.greensock.plugins.GlowFilterPlugin;
+	import com.greensock.plugins.TweenPlugin;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
@@ -17,10 +20,9 @@ package com.gestureworks.cml.components
 	import flash.events.TouchEvent;
 	import flash.geom.Matrix;
 	import flash.utils.Timer;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
-	
+
+
 	/**
 	 * The Component manages a group of elements to create a high-level interactive touch container.
 	 * 
@@ -46,7 +48,7 @@ package com.gestureworks.cml.components
 		public var textFields:Array;	
 		public var fontArray:Array = new Array();
 		private var timer:Timer;
-		private var tween:ITween;
+		private var tween:TweenLite;
 		private var _activity:Boolean = false;
 		
 		/**
@@ -55,6 +57,7 @@ package com.gestureworks.cml.components
 		public function Component() 
 		{
 			super();
+			TweenPlugin.activate([GlowFilterPlugin]);
 		}
 		
 		/**
@@ -430,8 +433,8 @@ package com.gestureworks.cml.components
 				menu.visible = true;
 				menu.startTimer();
 			}
-			if(tween && tween.isPlaying){
-				tween.stop();
+			if(tween && tween._active){
+				tween.kill();
 				this.alpha = 1;
 			}						
 		}
@@ -452,8 +455,8 @@ package com.gestureworks.cml.components
 				restartTimer();
 			}
 			
-			if(tween && tween.isPlaying){
-				tween.stop();
+			if(tween && tween._active){
+				tween.kill;
 				this.alpha = 1;
 			}			
 		}
@@ -634,29 +637,28 @@ package com.gestureworks.cml.components
 		
 		public function fadeIn(dur:Number=250):void
 		{
-			if (tween && tween.isPlaying)
+			if (tween && tween._active)
 				return;
 				
-			tween = BetweenAS3.tween(this, { alpha:1 }, null, dur);
+			tween = TweenLite.to(this, dur, { alpha:1 } );
 			tween.play();
 		}
 		
 
 		public function fadeOut(dur:Number=250):void
 		{
-			if (tween && tween.isPlaying)
+			if (tween && tween._active)
 				return;
 				
-			tween = BetweenAS3.tween(this, { alpha:0 }, null, dur);
-			tween.play();
-			tween.onComplete = function():void { 
+			tween = TweenLite.to(this, dur, { alpha:0, onComplete:function():void { 
 					visible = false;
 					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
-				};
+				}} );
+			tween.play();
 		}			
 		
 
-		private var glowTween:ITween;
+		private var glowTween:TweenLite;
 		private var scrollPanes:Array;
 		public var backs:Array;
 		public var fronts:Array;
@@ -664,47 +666,47 @@ package com.gestureworks.cml.components
 		
 		public function glowIn(dur:Number=1):void
 		{
-			if (glowTween && glowTween.isPlaying)
+			if (glowTween && glowTween._active)
 				return;
 				
-				glowTween = BetweenAS3.tween(this, {
-					_glowFilter: {
+			glowTween = TweenLite.fromTo(this, dur, {
+					glowFilter: {
+						color: 0xFFFFFF,
 						blurX: 25,
-						blurY: 25, 
-						color: glowColor
+						blurY: 25
 					}
 				},{
-					_glowFilter: {
+					glowFilter: {
+						color: 0xFFFFFF,
 						blurX: 0,
-						blurY: 0, 
-						color: glowColor
+						blurY: 0
 					}
-				},
-				dur);
+				});
 				
-				glowTween.play();
+			glowTween.play();
 		}
 		
 		public function glowPulse():void
 		{
 			glowIn();
-			glowTween.onComplete = glowOut;
+			glowTween.eventCallback("onComplete", glowOut);
 		}
 		
 		
 
 		public function glowOut(dur:Number=1):void
 		{
-			if (glowTween && glowTween.isPlaying)
+			if (glowTween && glowTween._active)
 				return;			
-			
-			glowTween = BetweenAS3.tween(this, {
+		
+			glowTween = TweenLite.to(this, dur, {
 				_glowFilter: {
 					blurX: 0,
 					blurY: 0, 
-					color: glowColor
+					color: 0xFFFFFF
 				}
-			},null, dur);
+			});
+			
 			glowTween.play();		
 		}			
 		

@@ -10,15 +10,13 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
+	import com.greensock.easing.Expo;
+	import com.greensock.TweenLite;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
 	import flash.utils.*;
-	import org.libspark.betweenas3.*;
-	import org.libspark.betweenas3.core.tweens.*;
-	import org.libspark.betweenas3.easing.*;
-	import org.libspark.betweenas3.tweens.*;
 	import org.tuio.*;
 	
 	
@@ -581,9 +579,8 @@ package com.gestureworks.cml.components
 				
 				if (animateIn)
 				{
-					tweens[newComponent] = BetweenAS3.tween(newComponent, { x:stage.stageWidth/2, y:stage.stageHeight/2 }, null, 4, Exponential.easeOut)
-					tweens[newComponent].onComplete = onTweenEnd;
-					tweens[newComponent].play();
+					tweens[newComponent] = TweenLite.to(newComponent, 4, { x:stage.stageWidth / 2, y:stage.stageHeight / 2, ease:Expo.easeOut, onComplete:onTweenEnd } ); 
+					tweens[newComponent].play();	
 				}
 			}
 			
@@ -651,14 +648,14 @@ package com.gestureworks.cml.components
 			
 		private function fadein(obj:DisplayObject, duration:Number=.25):void
 		{
-			var tween:ITween = BetweenAS3.tween(obj, { alpha:1 }, { alpha:0 }, duration);
+			var tween:TweenLite = TweenLite.fromTo(obj, duration, { alpha:0 }, { alpha:1 } );
 			tween.play();
 		}
 		
 
 		private function fadeout(obj:DisplayObject, duration:Number=.25):void
 		{
-			var tween:ITween = BetweenAS3.tween(obj, { alpha:1 }, { alpha:0 }, duration);
+			var tween:TweenLite = TweenLite.fromTo(obj, duration, { alpha:1 }, { alpha:0 } );
 			tween.play();
 		}		
 		

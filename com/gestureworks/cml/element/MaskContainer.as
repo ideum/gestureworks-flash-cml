@@ -4,9 +4,8 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
+	import com.greensock.TweenLite;
 	import flash.geom.Matrix;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.tweens.ITween;
 	
 	/**
 	 * The MaskContainer element takes in one or multiple images and applies a mask designated in CML to all images in its child list.
@@ -326,9 +325,9 @@ package com.gestureworks.cml.element
 		}
 		
 		public function reset():void {
-			var mTween:ITween = BetweenAS3.tween(_touchScreen, { x:_maskX, y:_maskY, rotation:_maskRotation, scale:1, alpha:1 }, null, 0.5);
+			var mTween:TweenLite = TweenLite.to(_touchScreen, 0.5, { x:_maskX, y:_maskY, rotation:_maskRotation, scale:1, alpha:1 } );
 			mTween.play();
-			var oTween:ITween = BetweenAS3.tween(graphicArray.selectIndex(_counter), { alpha:1 }, null, 0.5);
+			var oTween:TweenLite = TweenLite.to(graphicArray.selectIndex(_counter), 0.5, { alpha:1 } );
 			oTween.play();
 		}
 		

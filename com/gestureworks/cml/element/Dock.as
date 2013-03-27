@@ -7,15 +7,12 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
+	import com.greensock.TweenLite;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
 	import flash.utils.*;
-	import org.libspark.betweenas3.*;
-	import org.libspark.betweenas3.core.tweens.*;
-	import org.libspark.betweenas3.easing.*;
-	import org.libspark.betweenas3.tweens.*;
 	import org.tuio.*;
 	
 	public class Dock extends Drawer
@@ -947,15 +944,15 @@ package com.gestureworks.cml.element
 			
 		private function fadein(obj:DisplayObject, duration:Number=.25):void
 		{
-			var tween:ITween = BetweenAS3.tween(obj, { alpha:1 }, { alpha:0 }, duration);
+			var tween:TweenLite = TweenLite.fromTo(obj, duration, { alpha:0 }, { alpha:1 } );
 			tween.play();
 		}
 		
 
 		private function fadeout(obj:DisplayObject, duration:Number=.25):void
 		{
-			var tween:ITween = BetweenAS3.tween(obj, { alpha:1 }, { alpha:0 }, duration);
-			tween.play();
+			var tween:TweenLite = TweenLite.fromTo(obj, duration, { alpha:1 }, { alpha:0 } );
+			tween.play();			
 		}	
 		
 		/**

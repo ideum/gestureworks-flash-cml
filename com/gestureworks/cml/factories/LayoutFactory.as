@@ -1,14 +1,15 @@
 package com.gestureworks.cml.factories 
 {
 	import com.gestureworks.cml.interfaces.ILayout;
+	import com.greensock.easing.Ease;
+	import com.greensock.plugins.TransformMatrixPlugin;
+	import com.greensock.plugins.TweenPlugin;
+	import com.greensock.TimelineLite;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
 	import flash.utils.getDefinitionByName;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.core.easing.IEasing;
-	import org.libspark.betweenas3.easing.Exponential;
-	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/** 
 	 * The LayoutFactory is the base class for all Layouts.
@@ -23,7 +24,7 @@ package com.gestureworks.cml.factories
 	public class LayoutFactory extends ObjectFactory implements ILayout
 	{
 		protected var childTransformations:Array;
-		private var layoutTween:ITweenGroup;
+		private var layoutTween:TimelineLite;
 		private var tweenedObjects:Array;
 		
 		/**
@@ -33,6 +34,7 @@ package com.gestureworks.cml.factories
 		{
 			super();
 			childTransformations = new Array();
+			TweenPlugin.activate([TransformMatrixPlugin]); 
 		}
 		
 		private var _originX:Number = 0;		
@@ -201,29 +203,24 @@ package com.gestureworks.cml.factories
 			_tweenTime = t;
 		}
 
-		private var _easing:IEasing = Exponential.easeOut;
+		private var _easing:Ease;
 		/**
-		 * Specifies the easing equation. Argument must be an IEasing instance or a String defining the IEasing class
-		 * either by property syntax or class name (e.g. Exponential.easeOut or ExponentialEaseOut). 
+		 * Specifies the easing equation. Argument must be an Ease instance or a String defining the Ease class
+		 * either by property syntax or class name (e.g. Expo.easeOut or ExpoOut). 
 		 */
 		public function get easing():* { return _easing; }
 		public function set easing(e:*):void
 		{
-			if (!(e is IEasing))
+			if (!(e is Ease))
 			{   
-				var value:String = e.toString();
-				if (value.indexOf("Linear") != -1)
-					value = "EaseNone";
-				else if (value.indexOf(".") != -1)
-				{
-					var chars:String = value.substr(value.indexOf("."), 2);
-					value = value.replace(chars, chars.substr(1).toUpperCase());
-				}
+				var value:String = e.toString();				
+				if (value.indexOf(".ease") != -1)
+					value = value.replace(".ease", "");
 				
-				var easingType:Class = getDefinitionByName("org.libspark.betweenas3.core.easing." + value) as Class;
+				var easingType:Class = getDefinitionByName("com.greensock.easing." + value) as Class;
 				e = new easingType();
 			}
-			if (e is IEasing)
+			if (e is Ease)
 				_easing = e;
 		}
 		
@@ -293,11 +290,11 @@ package com.gestureworks.cml.factories
 			var tIndex:int = 0;
 			
 			if (tween)
-			{
-				if (layoutTween && layoutTween.isPlaying)
+			{				
+				if (layoutTween && layoutTween.progress())
 				{
-					layoutTween.onUpdate = onUpdate;
-					layoutTween.onComplete = onComplete;
+					layoutTween.eventCallback("onUpdate", onUpdate);
+					layoutTween.eventCallback("onComplete", onComplete);
 					return;
 				}
 				
@@ -316,17 +313,17 @@ package com.gestureworks.cml.factories
 							rotateTransform(transformation, degreesToRadians(rotation));
 						if (!isNaN(scale))
 							scaleTransform(transformation, scale);
-							
-						childTweens.push(BetweenAS3.tween(child, { transform: getMatrixObj(transformation), alpha:alpha }, null, tweenTime / 1000, easing));
+						childTweens.push(TweenLite.to(child, tweenTime / 1000, {transformMatrix: getMatrixObj(transformation), alpha:alpha, ease: easing}));
 						tweenedObjects.push(child);
 					}
 					
 					tIndex++;
 				}
-				layoutTween = BetweenAS3.parallel.apply(null, childTweens);
-				layoutTween.onUpdate = onUpdate;
-				layoutTween.onComplete = onComplete;				
+				
+				layoutTween = new TimelineLite( { onComplete:onComplete, onUpdate:onUpdate } );
+				layoutTween.appendMultiple(childTweens);
 				layoutTween.play();
+				
 			}
 			else
 			{
@@ -364,20 +361,17 @@ package com.gestureworks.cml.factories
 		}
 		
 		/**
-		 * Stops the tweening of the provided child if corresponding tween is playing. If a child
-		 * is not provided, the group tween is stopped.
-		 * @param	child  the object to stop 
+		 * Kills the tweening of the provided child. If a child is not provided, the group tween is killed.
+		 * @param	child  
 		 */
-		public function stopTween(child:*=null):void
+		public function killTween(child:*=null):void
 		{
-			if (layoutTween && layoutTween.isPlaying)
+			if (layoutTween)
 			{
 				if(!child)
-					layoutTween.stop();
+					layoutTween.kill();
 				else
-				{ //TODO: need to investigate BetweenAS3 to figure out how to stop an indidual tween from a group tween
-					layoutTween.getTweenAt(tweenedObjects.indexOf(child)).stop();
-				}
+					layoutTween.kill(null, child);
 			}
 		}
 		
@@ -485,13 +479,13 @@ package com.gestureworks.cml.factories
 		}
 		
 		/**
-		 * Converts transformation matrix to BetweenAS3 syntax
+		 * Converts transformation matrix to TweenMax syntax
 		 * @param	mtx  transformation matrix
 		 * @return  tween matrix
 		 */
 		protected static function getMatrixObj(mtx:Matrix):Object
         {
-            return { matrix: { a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty }};
+			return { a:mtx.a, b:mtx.b, c:mtx.c, d:mtx.d, tx:mtx.tx, ty:mtx.ty };
         }
 		
 		/**

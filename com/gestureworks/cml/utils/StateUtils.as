@@ -1,18 +1,20 @@
 package com.gestureworks.cml.utils 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.greensock.plugins.ColorTransformPlugin;
+	import com.greensock.plugins.TweenPlugin;
+	import com.greensock.TimelineLite;
+	import com.greensock.TweenLite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.tweens.ITween;
-	import org.libspark.betweenas3.tweens.ITweenGroup;
 	import flash.utils.describeType;
 	import flash.display.DisplayObjectContainer;
-		
+
+	TweenPlugin.activate([ColorTransformPlugin]);
+	
 	public class StateUtils 
-	{
-		
+	{		
 		/**
 		 * Writes cml state to object state
 		 * @param	obj 
@@ -97,43 +99,32 @@ package com.gestureworks.cml.utils
 				newValue = obj.propertyStates[state][propertyName];
 				if (obj[propertyName] != newValue) {
 					
-					if (propertyName != "$x" && propertyName != "$y" && 
-						propertyName != "_x" && propertyName != "_y") {				
+					if (propertyName != "$x" && propertyName != "$y" && propertyName != "_x" && propertyName != "_y") {				
 						
-							if (propertyName.toLowerCase().search("color") > -1) {
-							rgb = ColorUtils.rgbSubtract(newValue, obj[propertyName]);
-							tweenArray.push(BetweenAS3.tween(obj, { transform: { 
-								colorTransform: {
-									redOffset: rgb[0],
-									greenOffset: rgb[1],
-									blueOffset: rgb[2]
-								}
-							}}, null, 1));
-							
-							tweenArray[tweenArray.length - 1].onComplete = function():void { obj.color = newValue };
+						if (propertyName.toLowerCase().search("color") > -1) {
+							rgb = ColorUtils.rgbSubtract(newValue, obj[propertyName]);							
+							tweenArray.push(TweenLite.to(obj, 1, {colorTransform:{redOffset:rgb[0], greenOffset:rgb[1], blueOffset:rgb[2]}, onComplete:function():void { obj.color = newValue }}));							
 						}
 						else tweenArray.push(
-							BetweenAS3.tween(obj, { (propertyName.valueOf()):( Number(newValue)) }, null, tweenTime));
-					}
+							TweenLite.to(obj, tweenTime, {(propertyName.valueOf):(Number(newValue)) } ));
+						}
 					
 					else noTweenDict[propertyName] = newValue;
 				}
 			}
 			
-			var tweens:ITweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
-			tweens.play();
-			tweens.onComplete = function():void { 
-				for (var p:String in noTweenDict) {
-					obj[p] = noTweenDict[p];
-				}
-				
+				var tweens:TimelineLite = new TimelineLite({onComplete:function():void { 
+					for (var p:String in noTweenDict) {
+						obj[p] = noTweenDict[p];
+				}}});
+				tweens.appendMultiple(tweenArray);
+				tweens.play();
+					
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, null, null, "tweenComplete"));
 			}
 	
 			
 			
-			
-		}
 		
 	
 		// IEventDispatcher

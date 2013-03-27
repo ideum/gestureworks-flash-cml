@@ -4,13 +4,12 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
+	import com.greensock.TimelineLite;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.TouchEvent;
 	import flash.geom.ColorTransform;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.tweens.ITween;
-	import org.libspark.betweenas3.tweens.ITweenGroup;
 	
 	/**
 	 * ...
@@ -343,34 +342,34 @@ package com.gestureworks.cml.element
 			
 			var num:int = 0;
 			var tweenArray:Array = [];
-			var tweenGroup:ITweenGroup;
+			var tweenGroup:TimelineLite;
 						
 			for (var i:int = 0; i < tabs.length; i++) {
 				if (e.target == tabs[i]) {
 					_current = i;
 					if (twirlIndicator)
-						tweenArray.push(BetweenAS3.to(twirlIcons[current], { rotation:180 }, 0.3));
+						tweenArray.push(TweenLite.to(twirlIcons[current], 0.3, {rotation:180}));
 				}
 				else {
 					if (twirlIndicator)
-						tweenArray.push(BetweenAS3.to(twirlIcons[i], { rotation:90 }, 0.3));
+						tweenArray.push(TweenLite.to(twirlIcons[i], 0.3, {rotation:90}));
 				}
 			}
 			
 			var futureSpace:Number = tabs[_current].y + tabs[_current].height + height;
 			
 			for (i = _current + 1; i < tabs.length; i++) {
-				tweenArray.push(BetweenAS3.to(tabs[i], { y: snapHigh[i] }, 0.3));
-				tweenArray.push(BetweenAS3.to(contents[i], { y: snapHigh[i] + tabs[i].height - 4}, 0.3));
+				tweenArray.push(TweenLite.to(tabs[i], 0.3, {y:snapHigh[i]}));
+				tweenArray.push(TweenLite.to(contents[i], 0.3, {y:snapHigh[i] + tabs[i].height-4}));
 			}
 			
 			for (i = 1; i <= _current; i++) {
-				tweenArray.push(BetweenAS3.to(tabs[i], { y:snapLow[i] }, 0.3));
-				tweenArray.push(BetweenAS3.to(contents[i], { y:snapLow[i] + tabs[i].height - 4}, 0.3));
+				tweenArray.push(TweenLite.to(tabs[i], 0.3, { y:snapLow[i] }));
+				tweenArray.push(TweenLite.to(contents[i], 0.3,{ y:snapLow[i] + tabs[i].height - 4}));
 			}	
 			
-			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
-			tweenGroup.onComplete = function():void { isTweening = false };
+			tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false }} );
+			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();			
 		}
 		
@@ -613,7 +612,7 @@ package com.gestureworks.cml.element
 			var endIndex:Number = tabs.indexOf(dragGroup[dragGroup.length - 1]);
 			
 			var tweenArray:Array = [];
-			var tweenGroup:ITweenGroup;
+			var tweenGroup:TimelineLite;
 			var targetIndex:Number = tabs.indexOf(e.target)
 			
 			// Check the target's snapping direction, and make everything in the dragGroup follow that;
@@ -626,17 +625,17 @@ package com.gestureworks.cml.element
 					// up?
 					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y:(cNum) * tabs[cNum].height }, 0.3));
 					//tweenArray.push(BetweenAS3.to(contents[cNum], { y:((cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
-					tweenArray.push(BetweenAS3.to(tabs[cNum], { y: snapLow[cNum] }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[cNum], { y:snapLow[cNum] + tabs[cNum].height }, 0.3));
+					tweenArray.push(TweenLite.to(tabs[cNum], 0.3, { y: snapLow[cNum] }));
+					tweenArray.push(TweenLite.to(contents[cNum], 0.3, { y:snapLow[cNum] + tabs[cNum].height }));
 				}
 				
 				
 				// if ab || B
 				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1] && twirlIndicator) {
 					//Rotate the item preceding the dragGroup to closed.
-					tweenArray.push(BetweenAS3.to(twirlIcons[outIndex - 1], { rotation:90 }, 0.3));
+					tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:90}));
 					//Rotate the item ending the dragGroup to open.
-					tweenArray.push(BetweenAS3.to(twirlIcons[endIndex], { rotation:180 }, 0.3));
+					tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:180}));
 				}
 				
 			} else {
@@ -648,22 +647,22 @@ package com.gestureworks.cml.element
 					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y: background.height - (tabs.length - cNum) * tabs[cNum].height }, 0.3));
 					//tweenArray.push(BetweenAS3.to(contents[cNum], { y: (background.height - (tabs.length - cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
 					
-					tweenArray.push(BetweenAS3.to(tabs[cNum], { y: snapHigh[cNum] }, 0.3));
-					tweenArray.push(BetweenAS3.to(contents[cNum], { y: snapHigh[cNum] + tabs[cNum].height }, 0.3));
+					tweenArray.push(TweenLite.to(tabs[cNum], 0.3, { y: snapHigh[cNum] }));
+					tweenArray.push(TweenLite.to(contents[cNum], 0.3, { y: snapHigh[cNum] + tabs[cNum].height }));
 				}
 				
 				// if a || ba
 				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1] && twirlIndicator) {
 					// Rotate the item preceding all the dragGroup items to open.
-					tweenArray.push(BetweenAS3.to(twirlIcons[outIndex - 1], { rotation:180 }, 0.3));
+					tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:180}));
 					//Rotate the item ending the dragGroup to closed.
-					tweenArray.push(BetweenAS3.to(twirlIcons[endIndex], { rotation:90 }, 0.3));
+					tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:90}));
 				}
 			}
 			
 			
-			tweenGroup = BetweenAS3.parallel.apply(null, tweenArray);
-			tweenGroup.onComplete = function():void { isTweening = false; };
+			tweenGroup = new TimelineLite( { onComplete: function():void { isTweening = false; }} );
+			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();
 		}
 		

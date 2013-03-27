@@ -8,11 +8,10 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import com.gestureworks.core.TouchSprite;
+	import com.greensock.TweenLite;
 	import flash.events.GestureEvent;
 	import flash.events.TouchEvent;
 	import flash.utils.Dictionary;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.tweens.ITween;
 	import org.tuio.TuioTouchEvent;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
@@ -1079,7 +1078,7 @@ package com.gestureworks.cml.element
 				else {
 					//tf.y += diff;
 							
-					var tween:ITween = BetweenAS3.tween(tf, { y:(tf.y+diff) }, null, .25);
+					var tween:TweenLite = TweenLite.to(tf, .25, { y:(tf.y + diff) } );
 					tween.play();					
 				}
 				

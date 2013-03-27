@@ -3,12 +3,9 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.element.Container;
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.utils.Timer;
-	
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.core.tweens.IITween;
-	import org.libspark.betweenas3.tweens.ITween;
 	
 	import flash.events.TimerEvent;
 	import flash.events.Event;
@@ -44,7 +41,7 @@ package com.gestureworks.cml.element
 	public class Slideshow extends Container
 	{
 		private var slideshowItems:List;
-		private var tween:ITween;
+		private var tween:TweenLite;
 		private var moveForward:Boolean = true;
 		private var maxWidth:Number = 0;
 		private var maxHeight:Number = 0;
@@ -262,8 +259,7 @@ package com.gestureworks.cml.element
 			
 			if (slideshowItems.getIndex(index))
 			{
-				tween = BetweenAS3.tween(lastItem, { alpha:0 }, null, fadeDuration/1000);
-				tween.onComplete = onFadeOutEnd;
+				tween = TweenLite.to(lastItem, fadeDuration / 1000, { alpha:0 , onComplete:onFadeOutEnd} );
 				tween.play();
 			}
 			
@@ -291,8 +287,7 @@ package com.gestureworks.cml.element
 			slideshowItems.getIndex(index).visible = true;
 			addChild(slideshowItems.getIndex(index));
 			
-			tween = BetweenAS3.tween(currentItem, { alpha:1 }, null, fadeDuration/1000);
-			tween.onComplete = onFadeInEnd;
+			tween = TweenLite.to(currentItem, fadeDuration / 1000, { alpha:1 , onComplete:onFadeInEnd} );
 			tween.play();
 			
 			function onFadeInEnd():void

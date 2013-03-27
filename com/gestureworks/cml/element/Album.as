@@ -5,15 +5,14 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.greensock.easing.Expo;
+	import com.greensock.TimelineLite;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Rectangle;
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.easing.Exponential;
-	import org.libspark.betweenas3.tweens.ITween;
-	import org.libspark.betweenas3.tweens.ITweenGroup;
 	import org.tuio.TuioTouchEvent;
 	
 	/**
@@ -64,8 +63,8 @@ package com.gestureworks.cml.element
 		private var _dragGesture:String = "n-drag-inertia";		
 		private var snapPoints:Array;
 		private var albumMask:Graphic;
-		private var snapTween:ITween;
-		private var loopSnapTween:ITweenGroup;
+		private var snapTween:TweenLite;
+		private var loopSnapTween:TimelineLite;
 		private var boundary1:Number;
 		private var boundary2:Number;
 		private var released:Boolean = false;
@@ -693,17 +692,20 @@ package com.gestureworks.cml.element
 		 */
 		private function snap(e:*=null, point:Number=NaN):void
 		{	
-			if (snapTween && snapTween.isPlaying)
+			if (snapTween && snapTween._active)
 				return;
 					
 			if (isNaN(point))
-				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);
+				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);				
 				
-			var destination:Object = horizontal ? { x:point } : { y:point };			
-			snapTween = BetweenAS3.tween(belt, destination, null, .4, Exponential.easeOut);
-			snapTween.onUpdate = publishState;
+			var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:currentObject };//horizontal ? { x:point } : { y:point };			
+			if (horizontal)
+				destination["x"] = point;
+			else
+				destination["y"] = point;
+			
+			snapTween = TweenLite.to(belt, .4, destination);
 			snapTween.play();
-			snapTween.onComplete = currentObject;
 		}		
 		
 		/**
@@ -714,7 +716,7 @@ package com.gestureworks.cml.element
 		 */
 		private function loopSnap(e:*= null, distance:Number=0):void
 		{
-			if (loopSnapTween && loopSnapTween.isPlaying) return;			
+			if (loopSnapTween && loopSnapTween.progress()) return;			
 			var childTweens:Array = new Array();
 			var minDiff:Number = Number.MAX_VALUE;
 			
@@ -737,13 +739,12 @@ package com.gestureworks.cml.element
 			//generate a tween for each child
 			for each(child in loopQueue)
 			{
-				var destination:Object = horizontal ? { x:child.x + distance } : { y:child.y + distance };				
-				childTweens.push(BetweenAS3.tween(child, destination, null, .4, Exponential.easeOut));
+				var destination:Object = horizontal ? { x:child.x + distance, ease:Expo.easeOut } : { y:child.y + distance, ease:Expo.easeOut };				
+				childTweens.push(TweenLite.to(child, .4, destination));
 			}
 							
-			loopSnapTween = BetweenAS3.parallel.apply(null, childTweens);
-			loopSnapTween.onComplete = processLoop;
-			loopSnapTween.onUpdate = publishState;
+			loopSnapTween = new TimelineLite( { onComplete:processLoop, onUpdate:publishState } );
+			loopSnapTween.appendMultiple(childTweens);
 			loopSnapTween.play();
 		}
 		
@@ -795,7 +796,7 @@ package com.gestureworks.cml.element
 		{
 			if (loop)
 			{
-				if (loopSnapTween && loopSnapTween.isPlaying) return;
+				if (loopSnapTween && loopSnapTween.progress()) return;
 				loopQueue[0][axis] = -1;
 				processLoop();
 				loopSnap(null, -(this[dimension] + space - 1));				
@@ -815,7 +816,7 @@ package com.gestureworks.cml.element
 		{			
 			if (loop)
 			{		
-				if (loopSnapTween && loopSnapTween.isPlaying) return;
+				if (loopSnapTween && loopSnapTween.progress()) return;
 				loopQueue[0][axis] = 1;
 				processLoop();
 				loopSnap(null, this[dimension] + space - 1)
@@ -989,7 +990,7 @@ package com.gestureworks.cml.element
 		 */
 		private function tailToHead():void
 		{		
-			if (loopSnapTween && loopSnapTween.isPlaying) return;	
+			if (loopSnapTween && loopSnapTween.progress()) return;	
 			
 			var tail:* = loopQueue[loopQueue.length - 1];
 			tail.visible = true;
@@ -1005,7 +1006,7 @@ package com.gestureworks.cml.element
 		 */
 		private function headToTail():void
 		{			
-			if (loopSnapTween && loopSnapTween.isPlaying) return;								
+			if (loopSnapTween && loopSnapTween.progress()) return;								
 			
 			var head:* = loopQueue[0];
 			head.visible = false;

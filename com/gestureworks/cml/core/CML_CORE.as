@@ -116,6 +116,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Dock; Dock;	
 	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
 	import com.gestureworks.cml.element.ProgressBar; ProgressBar;	
+	import com.gestureworks.cml.element.Accordion; Accordion;	
 	
 	
 	// deprecated
@@ -161,20 +162,26 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.filters.Bevel; Bevel;	
 	import com.gestureworks.cml.filters.Blur; Blur;	
 	
-	
+
 	
 	///////////////////////
-	//  BETWEENAS3 
-	//////////////////////
-	import org.libspark.betweenas3.easing.Back; Back;	
-	import org.libspark.betweenas3.easing.Bounce; Bounce;	
-	import org.libspark.betweenas3.easing.Circular; Circular;	
-	import org.libspark.betweenas3.easing.Cubic; Cubic;	
-	import org.libspark.betweenas3.easing.Elastic; Elastic;	
-	import org.libspark.betweenas3.easing.Exponential; Exponential;		
-	import org.libspark.betweenas3.easing.Quadratic; Quadratic;	
-	import org.libspark.betweenas3.easing.Quartic; Quartic;	
-	import org.libspark.betweenas3.easing.Quintic; Quintic;
-	import org.libspark.betweenas3.easing.Sine; Sine;	
+	//  TWEENMAX 
+	//////////////////////	
+	import com.greensock.easing.Back; Back;
+	import com.greensock.easing.Bounce; Bounce;
+	import com.greensock.easing.Circ; Circ;
+	import com.greensock.easing.Cubic; Cubic;
+//	import com.greensock.easing.CustomEase; CustomEase;	
+	import com.greensock.easing.Elastic; Elastic;
+	import com.greensock.easing.Expo; Expo;
+	import com.greensock.easing.Linear; Linear;
+	import com.greensock.easing.Quad; Quad;
+	import com.greensock.easing.Quart; Quart;
+	import com.greensock.easing.Quint; Quint;
+	//import com.greensock.easing.RoughEase; RoughEase;
+	import com.greensock.easing.Sine; Sine;
+	import com.greensock.easing.SlowMo; SlowMo;
+//	import com.greensock.easing.SteppedEase; SteppedEase;
+	import com.greensock.easing.Strong; Strong;
 
 }

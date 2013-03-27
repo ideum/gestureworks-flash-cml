@@ -1,8 +1,6 @@
 package com.gestureworks.cml.element
 {
-	import org.libspark.betweenas3.BetweenAS3;
-	import org.libspark.betweenas3.core.tweens.IITween;
-	import org.libspark.betweenas3.tweens.ITween;
+	import com.greensock.TweenLite;
 	import flash.events.TimerEvent;
 	import flash.events.Event;
 
@@ -17,7 +15,7 @@ package com.gestureworks.cml.element
 	 */	
 	public class ImageSlideshow extends ImageSequence
 	{	
-		private var tween:ITween;
+		private var tween:TweenLite;
 		
 		/**
 		 * Constructor
@@ -104,9 +102,8 @@ package com.gestureworks.cml.element
 			var lastImage:* = getIndex(index);
 			
 			if (hasIndex(index))
-			{
-				tween = BetweenAS3.tween(lastImage, { alpha:0 }, null, fadeDuration/1000);
-				tween.onComplete = onFadeOutEnd;
+			{				
+				tween = TweenLite.to(lastImage, fadeDuration / 1000, { alpha:0, onComplete:onFadeOutEnd } );
 				tween.play();
 			}
 			
@@ -128,8 +125,7 @@ package com.gestureworks.cml.element
 			getIndex(index).alpha = 0;
 			show(index);
 						
-			tween = BetweenAS3.tween(currentImage, { alpha:1 }, null, fadeDuration/1000);
-			tween.onComplete = onFadeInEnd;
+			tween = TweenLite.to(currentImage, fadeDuration / 1000, { alpha:1, onComplete:onFadeInEnd } );
 			tween.play();
 			
 			function onFadeInEnd():void
