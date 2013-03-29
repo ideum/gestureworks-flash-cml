@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {	
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import flash.events.*;
 	import flash.media.*;
 	import flash.net.*;
@@ -158,6 +159,31 @@ package com.gestureworks.cml.element
 		 */	
 		public function get position():Number { return _position; }
 		
+		private var _progressBar:ProgressBar;
+		/**
+		 * Links a progress bar to the video process
+		 */
+		public function get progressBar():* {return _progressBar;}
+		public function set progressBar(pb:*):void {
+			if (!pb) return;
+			
+			if (!(pb is ProgressBar))
+				pb = childList.getKey(pb.toString());
+			if (pb is ProgressBar)
+			{
+				_progressBar = pb;
+				_progressBar.source = this;				
+				mouseChildren = true;
+				
+				if (!_progressBar.width)
+					_progressBar.width = width;
+				if (!_progressBar.height)
+					_progressBar.height = height*.06;
+				if (!_progressBar.y)
+					_progressBar.y = height;
+			}
+		}
+		
 		private var _isPlaying:Boolean = false;
 		/**
 		 * sets video playing status
@@ -175,6 +201,10 @@ package com.gestureworks.cml.element
 			_playButtonState = s;
 		}
    		
+		/**
+		 * Flag central alignment of the play button
+		 */
+		public var centerPlayButton:Boolean = false;
 	
 		override public function init():void 
 		{
@@ -183,11 +213,18 @@ package com.gestureworks.cml.element
 			playButton = searchChildren(Button);
 			if (playButton) {
 				mouseChildren = true;
-				playButton.addEventListener(StateEvent.CHANGE, play);
-				playButton.x = width / 2 - playButton.width / 2;
-				playButton.y = height / 2 - playButton.height / 2;
 				hideButton(false);
+				
+				if(centerPlayButton){				
+					var tempRot:Number = playButton.rotation;				
+					playButton.rotation = 0;
+					playButton.x = width / 2 - playButton.width / 2;
+					playButton.y = height / 2 - playButton.height / 2;				
+					DisplayUtils.rotateAroundCenter(playButton, tempRot);
+				}
 			}
+			
+			progressBar = searchChildren(ProgressBar);
 		}
 		
 		/// PUBLIC METHODS ///
