@@ -13,6 +13,7 @@ package com.gestureworks.cml.core
 	import flash.display.*;
 	import flash.events.*;
 	import flash.utils.*;	
+	import flash.xml.XMLNodeType;
 	
 	/** 
 	 * The CMLParser class parses cml files for run-time object construction 
@@ -564,9 +565,9 @@ package com.gestureworks.cml.core
 				
 				for each (var val:* in renderList.*) {
 					
-					if (node.text()) {
-						
-						str = node.text().toString();
+					if (node.nodeKind() == "text" ) { 
+												
+						str = node.toString();
 					
 						// filter value for expression delimiter "{}"
 						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
@@ -576,7 +577,9 @@ package com.gestureworks.cml.core
 						}	
 												
 						if (str == val.name().toString()) {									
-							node.setChildren(XMLList(val.*));
+							var p : XML = node.parent(); 
+							var childIndex : int = node.childIndex(); 
+							p.children()[childIndex] = String(val.*);
 						}
 					
 					}
