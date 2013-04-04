@@ -16,6 +16,7 @@ package com.gestureworks.cml.element
 	import flashx.textLayout.formats.TextLayoutFormat;
 	import flashx.textLayout.formats.BackgroundColor;
 	import flashx.textLayout.formats.*;
+	import flashx.textLayout.events.StatusChangeEvent;
 
 	/**
 	 * The TLF element provides access to AS3's TLF system within CML. The input is in the form of XML,
@@ -62,6 +63,11 @@ package com.gestureworks.cml.element
 			
 		}
 	
+		
+		private function onChange(e:StatusChangeEvent):void {			
+			textFlow.flowComposer.updateAllControllers();	
+		}
+		
 		/**
 		 * parses cml file
 		 * @param	cml
@@ -160,6 +166,7 @@ package com.gestureworks.cml.element
 			textFlow = TextConverter.importToFlow(value, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
 			textFlow.fontLookup = FontLookup.EMBEDDED_CFF;
 			textFlow.fontFamily = font;	
+			textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
 			updateContainer();
 			initialized=true;
 		}
