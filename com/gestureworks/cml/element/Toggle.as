@@ -192,7 +192,7 @@ package com.gestureworks.cml.element
 			
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchBegin);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				this.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
 			else
 				this.addEventListener(MouseEvent.MOUSE_DOWN, onTouchBegin);

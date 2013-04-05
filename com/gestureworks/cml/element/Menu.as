@@ -64,7 +64,7 @@ package com.gestureworks.cml.element
 			if (autoHide) {
 				if (GestureWorks.activeTUIO)
 					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onClick);
-				else if	(GestureWorks.supportsTouch)
+				else if	(GestureWorks.activeNativeTouch)
 					this.addEventListener(TouchEvent.TOUCH_BEGIN, onClick);
 				else	
 					this.addEventListener(MouseEvent.MOUSE_DOWN, onClick);

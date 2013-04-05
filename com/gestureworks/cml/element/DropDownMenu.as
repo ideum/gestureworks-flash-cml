@@ -207,7 +207,7 @@ package com.gestureworks.cml.element
 			addChild(_menuTitle);
 			
 			//Add event listener for mouseDown/touchDown
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeNativeTouch)
 				_menuTitle.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 			else if (GestureWorks.activeTUIO)
 				_menuTitle.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
@@ -220,7 +220,7 @@ package com.gestureworks.cml.element
 				_menuItemsArray[j] = createMenuItem(menuItemsArray[j]);
 				_menuItemsArray[j].y = _menuTitle.y + (_height * (j + 1));
 				
-				if (GestureWorks.supportsTouch){
+				if (GestureWorks.activeNativeTouch){
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OVER, onOver);
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OUT, onItemOut);
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_END, onItemSelected);
@@ -325,7 +325,7 @@ package com.gestureworks.cml.element
 			
 			this.height = _height * _menuItemsArray.length + _menuTitle.height;
 			
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeNativeTouch)
 				_hit.addEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
 			else if (GestureWorks.activeTUIO)
 				_hit.addEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
@@ -348,7 +348,7 @@ package com.gestureworks.cml.element
 				removeChild(i);
 			}
 			
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeNativeTouch)
 				_hit.removeEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
 			else if (GestureWorks.activeTUIO)
 				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
@@ -362,14 +362,14 @@ package com.gestureworks.cml.element
 		override public function dispose():void {
 			super.dispose();
 			
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeNativeTouch)
 				_hit.removeEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
 			else if (GestureWorks.activeTUIO)
 				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
 			else
 				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
 				
-			if (GestureWorks.supportsTouch)
+			if (GestureWorks.activeNativeTouch)
 					_menuTitle.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 				else if (GestureWorks.activeTUIO)
 					_menuTitle.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
@@ -377,7 +377,7 @@ package com.gestureworks.cml.element
 					_menuTitle.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 					
 			for (var i:Number = 0; i < _menuItemsArray.length; i++) {
-				if (GestureWorks.supportsTouch){
+				if (GestureWorks.activeNativeTouch){
 					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OVER, onOver);
 					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OUT, onItemOut);
 					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_END, onItemSelected);

@@ -120,7 +120,7 @@ package com.gestureworks.cml.element
 			{
 				if (GestureWorks.activeTUIO)
 					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
-				else if (GestureWorks.supportsTouch)
+				else if (GestureWorks.activeNativeTouch)
 					this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
 				else
 					this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
@@ -129,7 +129,7 @@ package com.gestureworks.cml.element
 			{
 				if (GestureWorks.activeTUIO)
 					this.addEventListener(TuioTouchEvent.TOUCH_UP, onToggle);
-				else if (GestureWorks.supportsTouch)
+				else if (GestureWorks.activeNativeTouch)
 					this.addEventListener(TouchEvent.TOUCH_END, onToggle);
 				else
 					this.addEventListener(MouseEvent.MOUSE_UP, onToggle);

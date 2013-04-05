@@ -79,7 +79,7 @@
 			
 			if (GestureWorks.activeTUIO) 
 				this.addEventListener(TuioTouchEvent.TOUCH_DOWN, buttonSelected);
-			else if (GestureWorks.supportsTouch) 
+			else if (GestureWorks.activeNativeTouch) 
 				this.addEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
 			else 
 				this.addEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);

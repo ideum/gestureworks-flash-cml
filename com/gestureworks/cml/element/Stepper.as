@@ -360,7 +360,7 @@ package com.gestureworks.cml.element
 				
 			if (GestureWorks.activeTUIO)
 				this.addEventListener(TuioTouchEvent.TAP, onTap);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				this.addEventListener(TouchEvent.TOUCH_TAP, onTap);
 			else
 				this.addEventListener(MouseEvent.CLICK, onTap);	

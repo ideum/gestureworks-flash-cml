@@ -109,7 +109,7 @@ package com.gestureworks.cml.element
 				addEventListener(TuioTouchEvent.TOUCH_UP, outOfBounds);
 				addEventListener(TuioTouchEvent.TOUCH_OVER, inBounds);               
 			}
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 			{
 				addEventListener(TouchEvent.TOUCH_BEGIN, inBounds);
 				addEventListener(TouchEvent.TOUCH_END, outOfBounds);
@@ -383,7 +383,7 @@ package com.gestureworks.cml.element
 			
 			if (GestureWorks.activeTUIO)			
 				belt.addEventListener(TuioTouchEvent.TOUCH_DOWN, resetDrag);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
 			else
 				belt.addEventListener(MouseEvent.MOUSE_DOWN, resetDrag);			
@@ -874,7 +874,7 @@ package com.gestureworks.cml.element
 			
 			if(GestureWorks.activeTUIO)
 				addEventListener(TuioTouchEvent.TOUCH_OUT, outOfBounds);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				addEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
 			else
 				addEventListener(MouseEvent.MOUSE_OUT, outOfBounds);			

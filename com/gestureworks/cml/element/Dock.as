@@ -769,7 +769,7 @@ package com.gestureworks.cml.element
 			if (autoShuffle) {
 				if (GestureWorks.activeTUIO)
 					obj.addEventListener(TuioTouchEvent.TOUCH_DOWN, moveB);
-				else if (GestureWorks.supportsTouch)
+				else if (GestureWorks.activeNativeTouch)
 					obj.addEventListener(TouchEvent.TOUCH_BEGIN, moveB);
 				else 
 					obj.addEventListener(MouseEvent.MOUSE_DOWN, moveB);	

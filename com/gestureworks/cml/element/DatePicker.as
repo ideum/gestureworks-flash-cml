@@ -270,7 +270,7 @@ package com.gestureworks.cml.element
 				util.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
 				util.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
 			}
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 			{
 				util.addEventListener(TouchEvent.TOUCH_BEGIN, touchHandler);
 				util.addEventListener(TouchEvent.TOUCH_OVER, onOver);

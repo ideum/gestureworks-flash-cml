@@ -1156,7 +1156,7 @@ package com.gestureworks.cml.element
 		{			
 			if (GestureWorks.activeTUIO)
 				addListener(TuioTouchEvent.TOUCH_DOWN, onDown, listen, hit);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				addListener(TouchEvent.TOUCH_BEGIN, onDown, listen, hit);
 			else
 				addListener(MouseEvent.MOUSE_DOWN, onDown, listen, hit);			
@@ -1171,7 +1171,7 @@ package com.gestureworks.cml.element
 		{
 			if (GestureWorks.activeTUIO)
 				addListener(TuioTouchEvent.TOUCH_UP, onUp, listen, hit);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				addListener(TouchEvent.TOUCH_END, onUp, listen, hit);
 			else
 				addListener(MouseEvent.MOUSE_UP, onUp, listen, hit);				
@@ -1185,7 +1185,7 @@ package com.gestureworks.cml.element
 		{
 			if (GestureWorks.activeTUIO)
 				addListener(TuioTouchEvent.TOUCH_OVER, onOver, listen, hit);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				addListener(TouchEvent.TOUCH_OVER, onOver, listen, hit);
 			else
 				addListener(MouseEvent.MOUSE_OVER, onOver, listen, hit);							
@@ -1199,7 +1199,7 @@ package com.gestureworks.cml.element
 		{
 			if (GestureWorks.activeTUIO)
 				addListener(TuioTouchEvent.TOUCH_OUT, onOut, listen, hit);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				addListener(TouchEvent.TOUCH_OUT, onOut, listen, hit);
 			else
 				addListener(MouseEvent.MOUSE_OUT, onOut, listen, hit);										
@@ -1291,7 +1291,7 @@ package com.gestureworks.cml.element
 				case "down":
 					if (GestureWorks.activeTUIO)
 						addListener(TuioTouchEvent.TOUCH_DOWN, onToggle, listen);
-					else if (GestureWorks.supportsTouch)
+					else if (GestureWorks.activeNativeTouch)
 						addListener(TouchEvent.TOUCH_BEGIN, onToggle, listen);
 					else
 						addListener(MouseEvent.MOUSE_DOWN, onToggle, listen);
@@ -1299,7 +1299,7 @@ package com.gestureworks.cml.element
 				case "up":
 					if (GestureWorks.activeTUIO)
 						addListener(TuioTouchEvent.TOUCH_UP, onToggle, listen);
-					else if (GestureWorks.supportsTouch)
+					else if (GestureWorks.activeNativeTouch)
 						addListener(TouchEvent.TOUCH_END, onToggle, listen);
 					else
 						addListener(MouseEvent.MOUSE_UP, onToggle, listen);
@@ -1307,7 +1307,7 @@ package com.gestureworks.cml.element
 				case "over":
 					if (GestureWorks.activeTUIO)
 						addListener(TuioTouchEvent.TOUCH_OVER, onToggle, listen);
-					else if (GestureWorks.supportsTouch)
+					else if (GestureWorks.activeNativeTouch)
 						addListener(TouchEvent.TOUCH_OVER, onToggle, listen);
 					else
 						addListener(MouseEvent.MOUSE_OVER, onToggle, listen);
@@ -1315,7 +1315,7 @@ package com.gestureworks.cml.element
 				case "out":
 					if (GestureWorks.activeTUIO)
 						addListener(TuioTouchEvent.TOUCH_OUT, onToggle, listen);
-					else if (GestureWorks.supportsTouch)
+					else if (GestureWorks.activeNativeTouch)
 						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
 					else
 						addListener(MouseEvent.MOUSE_OUT, onToggle, listen);

@@ -140,7 +140,7 @@ package com.gestureworks.cml.components
 					{
 						if (GestureWorks.activeTUIO)
 							childList.getIndex(i).addEventListener(TuioTouchEvent.TOUCH_DOWN, updateLayout);
-						else if (GestureWorks.supportsTouch)
+						else if (GestureWorks.activeNativeTouch)
 							childList.getIndex(i).addEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
 						else 
 							childList.getIndex(i).addEventListener(MouseEvent.MOUSE_DOWN, updateLayout);	

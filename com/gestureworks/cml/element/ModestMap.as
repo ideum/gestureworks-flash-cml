@@ -233,7 +233,7 @@ package com.gestureworks.cml.element
 		override public function dispose():void {
 			super.dispose();
 			
-			if (GestureWorks.supportsTouch){
+			if (GestureWorks.activeNativeTouch){
 				map.removeEventListener(TuioTouchEvent.DOUBLE_TAP, switchMapProvider);
 				}
 			else if (GestureWorks.activeTUIO){

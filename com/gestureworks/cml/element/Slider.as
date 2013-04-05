@@ -248,7 +248,7 @@ package com.gestureworks.cml.element
 			trace("Creating events for:", this.id);
 			if (GestureWorks.activeTUIO)
 				hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-			else if (GestureWorks.supportsTouch)
+			else if (GestureWorks.activeNativeTouch)
 				hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
 			else
 				hit.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
