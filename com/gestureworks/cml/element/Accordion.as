@@ -22,6 +22,8 @@ package com.gestureworks.cml.element
 		private var _spacing:Number = 5;
 		private var background:Graphic;
 		private var contents:Array = [];
+		public var collapsedHeight:Number = 0;
+		public var totalHeight:Number = 0;
 		
 		
 		public function Accordion() 
@@ -101,7 +103,7 @@ package com.gestureworks.cml.element
 							label.y = paddingTop;
 							label.x = paddingLeft;
 							if (twirlIndicator)
-								label.x = fontSize + (paddingLeft * 2);
+								label.x = twirlIcons[i].x + (twirlIcons[i].width / 2) + paddingLeft;
 						}
 						_labelsArray[i] = label;
 					}
@@ -119,6 +121,8 @@ package com.gestureworks.cml.element
 				twirlIcons[twirlIcons.length - 1].rotation = 180;
 				
 			background.height = snapHigh[snapHigh.length - 1] + tabs[tabs.length - 1].height;
+			totalHeight = background.height;
+			collapsedHeight = snapLow[snapLow.length - 1] + tabs[tabs.length - 1].height;
 			//trace(background.height);
 			
 			cMask = new Graphic;
@@ -320,6 +324,18 @@ package com.gestureworks.cml.element
 			_snapping = value;
 		}
 		
+		private var _twirlIconHeight:Number = 10;
+		/**
+		 * Set the height of the twirl icon if it's turned on.
+		 */
+		public function get twirlIconHeight():Number { return _twirlIconHeight; }
+		public function set twirlIconHeight(value:Number):void {
+			_twirlIconHeight = value;
+		}
+		
+		private var _collapsed:Boolean = false;
+		public function get collapsed():Boolean { return _collapsed; }
+		
 		private var _current:int;
 		public function get current():int { return _current; }
 
@@ -346,9 +362,20 @@ package com.gestureworks.cml.element
 						
 			for (var i:int = 0; i < tabs.length; i++) {
 				if (e.target == tabs[i]) {
-					_current = i;
+					
+					if (_current == i && !_collapsed) {
+						collapseMenu();
+						return;
+					}
+					else
+						_current = i;
+					
 					if (twirlIndicator)
-						tweenArray.push(TweenLite.to(twirlIcons[current], 0.3, {rotation:180}));
+						tweenArray.push(TweenLite.to(twirlIcons[current], 0.3, { rotation:180 } ));
+						
+					if (_collapsed) {
+						collapseMenu();
+					}
 				}
 				else {
 					if (twirlIndicator)
@@ -373,6 +400,89 @@ package com.gestureworks.cml.element
 			tweenGroup.play();			
 		}
 		
+		private function collapseMenu(immediately:Boolean = false):void {
+			var tweenArray:Array = [];
+			var tweenGroup:TimelineLite;
+			var tweenSpeed:Number = 0.3;
+			
+			if (collapsed) {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "opening"));
+				if (!immediately) {
+					tweenArray.push(TweenLite.to(tabs[0], tweenSpeed, { y:snapLow[0] }));
+					tweenArray.push(TweenLite.to(contents[0], tweenSpeed, { y:snapLow[0] + tabs[0].height - 4 }));
+					tweenArray.push(TweenLite.to(tabs[_current], tweenSpeed, { y:snapLow[_current] }));
+					tweenArray.push(TweenLite.to(contents[_current], tweenSpeed, { y:snapLow[_current] + tabs[_current].height - 4  }));
+					tweenArray.push(TweenLite.to(background, tweenSpeed, { height:totalHeight, y:snapLow[0] }));
+				} else {
+					tabs[0].y = snapLow[0];
+					contents[0].y = snapLow[0] + tabs[0].height - 4;
+					tabs[_current].y = snapLow[_current];
+					contents[_current].y = snapLow[_current] + tabs[_current].height - 4;
+					background.height = totalHeight;
+					background.y = snapLow[0];
+				}
+				
+				_collapsed = false;
+				
+				for (i = _current + 1; i < tabs.length; i++) {
+					if (!immediately) {
+						tweenArray.push(TweenLite.to(tabs[i], tweenSpeed, { y: snapHigh[i] }));
+						tweenArray.push(TweenLite.to(contents[i], tweenSpeed, { y: snapHigh[i] + tabs[i].height - 4 }));
+					} else {
+						tabs[i].y = snapHigh[i];
+						contents[i].y = snapHigh[i] + tabs[i].height - 4;
+					}
+				}
+				
+				for (i = 1; i <= _current; i++) {
+					if (!immediately){
+						tweenArray.push(TweenLite.to(tabs[i], tweenSpeed, { y:snapLow[i] }));
+						tweenArray.push(TweenLite.to(contents[i], tweenSpeed, { y:snapLow[i] + tabs[i].height - 4 }));
+					} else {
+						tabs[i].y = snapLow[i];
+						contents[i].y = snapLow[i] + tabs[i].height - 4;
+					}
+				}
+				//return;
+				
+				//_current = cur;
+				
+			}
+			else {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "closing"));
+				
+				if (!immediately) {
+					tweenArray.push(TweenLite.to(twirlIcons[current], tweenSpeed, { rotation:90 }));
+					tweenArray.push(TweenLite.to(background, tweenSpeed, { height:collapsedHeight, y:snapHigh[0] }));
+				} else {
+					twirlIcons[current].rotation = 90;
+					background.height = collapsedHeight;
+					background.y = snapHigh[0];
+				}
+				
+				
+				for (var i:int = 0; i < tabs.length; i++) 
+				{
+					if (!immediately){
+						tweenArray.push(TweenLite.to(tabs[i], tweenSpeed, { y:snapHigh[i] }));
+						tweenArray.push(TweenLite.to(contents[i], tweenSpeed, { y:snapHigh[0] }));
+					} else {
+						tabs[i].y = snapHigh[i];
+						contents[i].y = snapHigh[i];
+					}
+				}
+				_collapsed = true;
+				_current = -1;
+			}
+			
+			if (!immediately){
+				tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false }} );
+				tweenGroup.appendMultiple(tweenArray);
+				tweenGroup.play();
+			}
+			
+		}
+		
 		public function select(index:Number):void {
 						
 			if (index > -1 && index < tabs.length) {
@@ -393,6 +503,14 @@ package com.gestureworks.cml.element
 				if (twirlIndicator)
 					twirlIcons[i].rotation = 90;
 			}	
+			
+			if (collapsed) {
+				tabs[0].y = snapLow[0];
+				contents[0].y = snapLow[0] + tabs[0].height;
+				background.height = totalHeight;
+				background.y = snapLow[0];
+				_collapsed = false;
+			}
 			
 			if (twirlIndicator)
 				twirlIcons[_current].rotation = 180;
@@ -433,29 +551,29 @@ package com.gestureworks.cml.element
 			if (twirlIndicator) {
 				var sp:Sprite = new Sprite();
 				sp.graphics.beginFill(0x000000, 0);
-				sp.graphics.drawCircle(fontSize / 2, fontSize / 2, fontSize / 2);
+				sp.graphics.drawCircle(_twirlIconHeight / 2, _twirlIconHeight / 2, _twirlIconHeight / 2);
 				sp.graphics.endFill();
 				
 				var twirl:Graphic = new Graphic();
 				twirl.shape = "triangle";
-				twirl.height = fontSize;
+				twirl.height = _twirlIconHeight;
 				twirl.fillAlpha = 0;
 				//twirl.color = backgroundColor;
 				//twirl.fill = "color";
 				twirl.lineStroke = _twirlStroke;
 				twirl.lineColor = fontColor;
 				//twirl.rotation = 90;
-				twirl.x -= fontSize / 2;
-				twirl.y -= fontSize / 2;
+				twirl.x -= _twirlIconHeight / 2;
+				twirl.y -= _twirlIconHeight / 2;
 				
 				sp.addChild(twirl);
 				ts.addChild(sp);
 				if (autoLayout) {
-					sp.x = sp.width + (sp.width / 2);
+					sp.x = sp.width;
 					sp.y = sp.height;
 				} else {
-					sp.x = paddingLeft + (fontSize);
-					sp.y = paddingTop + (fontSize * 0.75);
+					sp.x = _twirlIconHeight + paddingLeft;
+					sp.y = paddingTop + (_twirlIconHeight * 1.25);
 				}
 				sp.rotation = 90;
 				twirlIcons.push(sp);
