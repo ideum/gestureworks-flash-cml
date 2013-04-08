@@ -294,6 +294,7 @@ package com.gestureworks.cml.element
 					scrollBtn2.width = this.width;
 					scrollBtn2.height = this.width;
 					scrollBtn2.shape = "rectangle";
+					scrollBtn2.lineStroke = 0;
 					scrollBtn2.y = this.height - scrollBtn2.height;
 				}
 				
@@ -476,7 +477,7 @@ package com.gestureworks.cml.element
 				
 				newPos = clampPos(newPos, "vertical");
 				
-				trace(oldY, newPos, e.value.localY);
+				//trace(oldY, newPos, e.value.localY);
 				
 				// Apply the new position.
 				thumb.y = newPos;
@@ -584,8 +585,10 @@ package com.gestureworks.cml.element
 				}
 			}
 			if (direction == "horizontal") {
-				if (pos < railGraphic.x) thumb.x = railGraphic.x;
-				if (pos > railGraphic.x + movementRail) thumb.x = railGraphic.x + movementRail;
+				if (pos < railGraphic.x) 
+				pos = railGraphic.x;
+				if (pos > railGraphic.x + movementRail) 
+				pos = railGraphic.x + movementRail;
 			}
 			
 			return pos;
