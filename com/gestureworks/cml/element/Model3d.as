@@ -49,7 +49,7 @@
 	 * @author Josh
 	 * @see Panoramic
 	 */
-	public class Model extends TouchContainer
+	public class Model3d extends TouchContainer
 	{	
 		//Touch container
 		private var modelTouch:TouchContainer;
@@ -80,7 +80,7 @@
 		/**
 		 * Constructor
 		 */
-		public function Model()
+		public function Model3d()
 		{
 			//init();
 			super();
