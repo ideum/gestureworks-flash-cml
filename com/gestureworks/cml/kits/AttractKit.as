@@ -144,14 +144,13 @@ package com.gestureworks.cml.kits
 		}		
 		
 		private function cmlinit(e:Event):void {
-			trace("Initializing in attract kit.");
+			//trace("Initializing in attract kit.");
 			CMLParser.instance.removeEventListener(CMLParser.COMPLETE, cmlinit);
 			parent.setChildIndex(this, parent.numChildren - 1);
 		}
 		
 		private function onAttractTouch(e:GWTouchEvent):void {
 			// Do stuff here.
-			trace("blargh.");
 			
 			for (var i:Number = 0; i < numChildren; i++) {
 				if ("stop" in getChildAt(i)) {
