@@ -229,7 +229,7 @@ package com.gestureworks.cml.kits
 					target.getChildAt(i)[method]();
 				}
 				if (target.getChildAt(i) is DisplayObjectContainer)
-					checkChildren(DisplayObjectContainer(getChildAt(i)), method);
+					checkChildren(DisplayObjectContainer(target.getChildAt(i)), method);
 			}
 		}
 	}
