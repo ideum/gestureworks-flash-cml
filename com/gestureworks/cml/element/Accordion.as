@@ -452,7 +452,8 @@ package com.gestureworks.cml.element
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "closing"));
 				
 				if (!immediately) {
-					tweenArray.push(TweenLite.to(twirlIcons[current], tweenSpeed, { rotation:90 }));
+					if (twirlIndicator)
+						tweenArray.push(TweenLite.to(twirlIcons[current], tweenSpeed, { rotation:90 }));
 					tweenArray.push(TweenLite.to(background, tweenSpeed, { height:collapsedHeight, y:snapHigh[0] }));
 				} else {
 					twirlIcons[current].rotation = 90;
