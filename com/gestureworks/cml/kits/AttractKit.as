@@ -92,7 +92,11 @@ package com.gestureworks.cml.kits
 		 */
 		public function get attractState():Boolean { return _attractState; }
 		public function set attractState(value:Boolean):void {
+			
 			_attractState = value;
+			
+			if (_attractState) 
+				onTimer();
 		}		
 
 		/**
@@ -187,10 +191,10 @@ package com.gestureworks.cml.kits
 		private function resetTimer(e:TouchEvent):void {
 			timer.reset();
 			timer.start();
-			trace("Reset timer.");
+			//trace("Reset timer.");
 		}
 		
-		private function onTimer(e:TimerEvent):void {
+		private function onTimer(e:TimerEvent = null):void {
 			timer.stop();
 			
 			for (var i:Number = 0; i < numChildren; i++) {
@@ -214,7 +218,7 @@ package com.gestureworks.cml.kits
 			
 			parent.setChildIndex(this, parent.numChildren - 1);
 		
-			attractState = true;	
+			_attractState = true;	
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
 		}
 		
