@@ -76,7 +76,7 @@ package com.gestureworks.cml.kits
 
 		private var _width:Number = 0;
 		/**
-		 * Specifies the width of the screen
+		 * Specifies the width of the screen. AIR only.
 		 * @default 0 
 		 */		
 		override public function get width():Number {return _width;}
@@ -92,7 +92,7 @@ package com.gestureworks.cml.kits
 		
 		private var _height:Number = 0;
 		/**
-		 * Specifies the width of the screen
+		 * Specifies the width of the screen. AIR only.
 		 * @default 0 
 		 */		
 		override public function get height():Number {return _height;}
@@ -108,22 +108,24 @@ package com.gestureworks.cml.kits
 		
 		private var _color:uint;
 		/**
-		 * Specifies the color of the stage
+		 * Specifies the color of the stage. FlashPlayer 11.0+ only.
 		 * @default 0xFFFFFF 
-		 */		
+		 //*/		
 		public function get color():uint {return _color;}
 		public function set color(value:uint):void 
 		{
 			_color = value;
+			trace(stage);
 			
-			if (stage)
-				stage.color = value;
+			if (stage && "color" in stage) {
+				stage["color"] = value;
+			}
 		}	
 
 		
 		private var _scaleMode:String;
 		/**
-		 *
+		 * Specifies the scale mode for the stage.
 		 */		
 		public function get scaleMode():String {return _scaleMode;}
 		public function set scaleMode(value:String):void 
@@ -143,7 +145,7 @@ package com.gestureworks.cml.kits
 		
 		private var _align:String;
 		/**
-		 *
+		 * Specifies the StageAlign type.
 		 */		
 		public function get align():String {return _align;}
 		public function set align(value:String):void 
