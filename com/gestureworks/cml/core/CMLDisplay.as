@@ -1,6 +1,7 @@
 package com.gestureworks.cml.core
 {	
 	import com.gestureworks.cml.core.*;
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.utils.*;
 	import com.gestureworks.cml.utils.*;
 	import flash.display.*;
@@ -19,23 +20,19 @@ package com.gestureworks.cml.core
 		 * Constructor
 		 */
 		public function CMLDisplay()
-		{
-			if (stage) init();
-			else addEventListener(Event.ADDED_TO_STAGE, init);			
+		{			
 			super();
 		}
 		
 		/**
 		 * initialization method
-		 * @param	e
+		 * @param	cml
 		 */
-		private function init(e:Event = null):void 
+		public function init(cml:XML):void 
 		{	
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			DefaultStage.instance.stage = stage;			
-			CMLParser.init(CMLLoader.settings, this);
-			var p:* = parent;
-			p.writeComplete = true;					
+			DefaultStage.instance.stage = GestureWorks.application.stage;			
+			CMLParser.init(cml, this);			
 		}
 
 	}
