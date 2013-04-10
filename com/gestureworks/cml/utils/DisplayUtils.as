@@ -19,6 +19,24 @@ package com.gestureworks.cml.utils
 		
 		public function DisplayUtils() {}
 			
+		/**
+		 * Recursively traces display list from input container
+		 * @param	container		
+		 * @param	indentString
+		 */		
+		public function traceDisplayList(container:DisplayObjectContainer, indentString:String=""):void 
+		{ 
+			var child:DisplayObject; 
+			for (var i:int=0; i < container.numChildren; i++) 
+			{ 
+				child = container.getChildAt(i); 
+				trace(indentString, child, child.name, i);  
+				if (container.getChildAt(i) is DisplayObjectContainer) 
+				{ 
+					traceDisplayList(DisplayObjectContainer(child), indentString + "    ");
+				} 
+			} 
+		}	
 
 		/**
 		 * Converts display object to bitmap data and return bitmap
