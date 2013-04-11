@@ -111,7 +111,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.OrbMenu; OrbMenu;	
 	import com.gestureworks.cml.element.Button; Button;
 	import com.gestureworks.cml.element.RadioButtons; RadioButtons;	
-	import com.gestureworks.cml.element.Model; Model;
+	import com.gestureworks.cml.element.Model3d; Model3d;
 	import com.gestureworks.cml.element.Drawer; Drawer;
 	import com.gestureworks.cml.element.Dock; Dock;	
 	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
