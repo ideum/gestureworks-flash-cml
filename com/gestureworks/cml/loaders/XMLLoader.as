@@ -112,7 +112,7 @@ package com.gestureworks.cml.loaders
 			_loader.addEventListener(Event.COMPLETE, onComplete);
 			_loader.addEventListener(ProgressEvent.PROGRESS, onProgress);						
 			_loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
-			_loader.load(urlRequest));
+			_loader.load(urlRequest);
 		}		
 		
 
