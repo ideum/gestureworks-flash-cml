@@ -235,7 +235,6 @@ package com.gestureworks.cml.element
 			
 			// end fill
 			graphics.endFill();			
-			dispatchEvent(new Event(Event.COMPLETE));
 		}
 			
 		
