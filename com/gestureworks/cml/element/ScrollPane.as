@@ -123,7 +123,7 @@ package com.gestureworks.cml.element
 		
 		override public function clone():*{
 			
-			var v:Vector.<String> = new < String > ["childList", "_hit", "_hitBox", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ]
+			var v:Vector.<String> = new < String > ["childList", "_hit", "_hitBox", "_verticalScroll", "_horizontalScroll", "_mask" ]
 			var clone:ScrollPane = CloneUtils.clone(this, null, v);
 			
 			if (clone.parent)
@@ -248,8 +248,8 @@ package com.gestureworks.cml.element
 			if (!numChildren) return;
 			_content = getChildAt(0);
 			//_content.addEventListener(StateEvent.CHANGE, onStateEvent);
-			if (_hit && _content)
-				_hit.addChild(_content);
+			//if (_hit && _content)
+				//_hit.addChild(_content);
 			// If one bar is set but not the other, set the other to match.
 			if (_verticalScroll && !_horizontalScroll) {
 				_horizontalScroll = new ScrollBar();
