@@ -134,9 +134,8 @@ package com.gestureworks.cml.element
 
 			var c:Container = childList.getCSSClass("dials", 0);
 			dials = c.searchChildren(Dial, Array)
-			
-			
-			album = searchChildren(MenuAlbum);  //TODO: for testing purposes; need to provide more reliable access to album		
+						
+			album = c.searchChildren(MenuAlbum);  //TODO: for testing purposes; need to provide more reliable access to album		
 			trace(album, dockText, dials);
 			
 			if (!flickrQuery) {
