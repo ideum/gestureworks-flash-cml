@@ -505,7 +505,9 @@ package com.gestureworks.cml.element
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
 			dockText[1].visible = true;
-			var resultTxt:Text = searchChildren("#result_text");
+			
+			var aCon:* = searchChildren("#album-container");
+			var resultTxt:Text = aCon.searchChildren("#result_text");
 			resultTxt.text = "";				
 		}
 		
@@ -857,7 +859,8 @@ package com.gestureworks.cml.element
 			if (e.property == "droppedItem" && dropLocation) {
 				var src:String = srcMap[e.value];
 				selectItem(srcMap[src]["clone"]);
-				searchChildren("#menu1").select(e.value);
+				var aCon:* = searchChildren("#album-container");
+				aCon.searchChildren("#menu1").select(e.value);
 			}
 		}
 				
