@@ -136,7 +136,7 @@ package com.gestureworks.cml.element
 			dials = c.searchChildren(Dial, Array)
 						
 			album = c.searchChildren(MenuAlbum);  //TODO: for testing purposes; need to provide more reliable access to album		
-			trace(album, dockText, dials);
+			//trace(album, dockText, dials);
 			
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
@@ -539,7 +539,9 @@ package com.gestureworks.cml.element
 			dockText[1].text = "searching collection...";
 			dockText[0].visible = true;
 			dockText[1].visible = true;
-			var resultTxt:Text = searchChildren("#result_text");
+			
+			var c:Container = childList.getCSSClass("dials", 0);
+			var resultTxt:Text = c.searchChildren("#result_text");
 			resultTxt.text = "";
 			
 			resultCnt = flickrQuery.resultPhotos.length;
@@ -611,7 +613,8 @@ package com.gestureworks.cml.element
 					addPreview(Component(event.target), getPreview(event.target));
 					
 					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken	
-						event.target.searchChildren(".info_description").htmlText = event.target.image.description;
+						var c:* = event.target.childList.getKey("back2");
+						c.searchChildren(".info_description").htmlText = event.target.image.description;
 					}
 					else 
 						event.target.init();											
@@ -645,7 +648,8 @@ package com.gestureworks.cml.element
 				dockText[i].visible = false;
 			}
 			
-			var resultTxt:Text = searchChildren("#result_text");
+			var c:Container = childList.getCSSClass("dials", 0);
+			var resultTxt:Text = c.searchChildren("#result_text");
 			resultTxt.text = resultCnt + " Results";	
 			if (flickrQuery && flickrQuery.pages > 1) {
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
