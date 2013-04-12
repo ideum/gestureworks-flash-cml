@@ -63,6 +63,7 @@ package com.gestureworks.cml.core
 	/////////////////////
 	//  ELEMENTS   
 	/////////////////////
+	import com.gestureworks.cml.element.Element; Element;			
 	import com.gestureworks.cml.element.Include; Include;			
 	import com.gestureworks.cml.element.Container; Container;
 	import com.gestureworks.cml.element.View; View;
@@ -120,16 +121,16 @@ package com.gestureworks.cml.core
 	
 	
 	// deprecated
-	import com.gestureworks.cml.element.ButtonElement; ButtonElement;			
-	import com.gestureworks.cml.element.TextElement; TextElement;
-	import com.gestureworks.cml.element.SWCElement; SWCElement;		
-	import com.gestureworks.cml.element.SWFElement; SWFElement;	
-	import com.gestureworks.cml.element.FrameElement; FrameElement;
-	import com.gestureworks.cml.element.VideoElement; VideoElement;
-	import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
-	import com.gestureworks.cml.element.ImageElement; ImageElement;
-	import com.gestureworks.cml.element.MediaElement; MediaElement;
-	import com.gestureworks.cml.element.MP3Element; MP3Element;	
+	//import com.gestureworks.cml.element.ButtonElement; ButtonElement;			
+	//import com.gestureworks.cml.element.TextElement; TextElement;
+	//import com.gestureworks.cml.element.SWCElement; SWCElement;		
+	//import com.gestureworks.cml.element.SWFElement; SWFElement;	
+	//import com.gestureworks.cml.element.FrameElement; FrameElement;
+	//import com.gestureworks.cml.element.VideoElement; VideoElement;
+	//import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
+	//import com.gestureworks.cml.element.ImageElement; ImageElement;
+	//import com.gestureworks.cml.element.MediaElement; MediaElement;
+	//import com.gestureworks.cml.element.MP3Element; MP3Element;	
 	
 	
 	

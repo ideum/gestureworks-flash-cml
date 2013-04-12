@@ -122,7 +122,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void {
+		override public function init():void {
 			addEventListener(StateEvent.CHANGE, onHotspot);
 			if (_tether)
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);

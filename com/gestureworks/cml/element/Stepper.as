@@ -313,7 +313,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initializes the configuration and display of Numbers
 		 */
-		public function init():void
+		override public function init():void
 		{
 			displayNum();
 		}

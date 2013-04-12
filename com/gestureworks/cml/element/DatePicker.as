@@ -141,7 +141,7 @@ package com.gestureworks.cml.element
 		 * Initializes the calendar components
 		 * @param	e  ADDED_TO_STAGE event
 		 */
-		public function init():void{
+		override public function init():void{
 			fontColor = _colorSchemeDark ? 0xCCCCCC : 0x333333;
 			bkg = drawRadialBackground(_calendarWidth, _calendarHeight);
 		    addChild(bkg);			

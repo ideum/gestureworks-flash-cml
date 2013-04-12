@@ -87,7 +87,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialization function
 		 */
-		public function init():void
+		override public function init():void
 		{
 			//initialize toggle listener
 			if (toggle)

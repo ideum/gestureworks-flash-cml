@@ -62,6 +62,7 @@ package com.gestureworks.cml.element
 			disableNativeTransform = false;
 		}
 
+		
 		/**
 		 * Initialisation method
 		 */
@@ -161,7 +162,7 @@ package com.gestureworks.cml.element
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):*
 		{		
-			//trace(value is Class);
+			trace(value);
 			var returnVal:* = null;
 			var searchType:String = null;
 			
@@ -220,8 +221,9 @@ package com.gestureworks.cml.element
 			// recursive search through sub-children's childList
 			else 
 			{
-				if (this.childList.getValueArray())
-					loopSearch(this.childList.getValueArray(), value, searchType);
+				var arr:Array = childList.getValueArray()
+				if (arr)
+					loopSearch(arr, value, searchType);
 			}
 			
 			function loopSearch(arr:Array, val:*, sType:String):*
@@ -239,7 +241,9 @@ package com.gestureworks.cml.element
 						if (arr[i].hasOwnProperty("childList"))
 						{	
 							if (sType == "getCSSClass" || sType == "getClass")
-							{	
+							{
+								if (val is Text)
+									trace(val);
 								if (arr[i].childList[sType](val))
 									returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());									
 							}
@@ -300,14 +304,15 @@ package com.gestureworks.cml.element
 			var obj:Object;
 			var layoutId:String;
 			var layoutCnt:int = 0;
-						
+					var attrName:String;
+					var returnNode:XMLList = new XMLList;
+					
 			for each (var item:XML in node.*) 
 			{
 				if (item.name() == "Layout") {
 					
 					obj = CMLParser.instance.createObject(item.@classRef);					
-					var attrName:String;
-					var returnNode:XMLList = new XMLList;
+
 					
 					//apply attributes
 					for each (var attrValue:* in item.@*)
@@ -336,14 +341,17 @@ package com.gestureworks.cml.element
 					//increment index	
 					layoutCnt++;						
 				}
+								
 			}
 			
-			//remove all layout children and continue parsing
+			//remove processed 
 			delete cml["Layout"];			
+			
 			CMLParser.instance.parseCML(this, cml);
 			return cml.*;
 		}		
 
+				
 		/**
 		 * Apply the containers layout
 		 * @param	value

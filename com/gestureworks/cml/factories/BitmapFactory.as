@@ -301,7 +301,7 @@ package com.gestureworks.cml.factories
 				if (src)
 					imageSrc = src;
 				else
-					imageSrc = propertyStates[0]["src"];
+					imageSrc = state[0]["src"];
 					
 				if (!FileManager.fileList.hasKey(imageSrc))
 					return;

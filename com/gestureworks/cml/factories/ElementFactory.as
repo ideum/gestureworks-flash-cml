@@ -29,13 +29,16 @@ package com.gestureworks.cml.factories
 			super();
 			state = [];
 			state[0] = new Dictionary(false);
-			propertyStates = state;
+			this['propertyStates'] = state;
 			super.scaleX = 1;
 			super.scaleY = 1;
 			mouseChildren = true;
 		}			
 		
-
+		/**
+		 * Initialization function
+		 */
+		public function init():void {}
 		
 	
 		////////////////
@@ -57,7 +60,6 @@ package com.gestureworks.cml.factories
 				removeChildAt(i);
 			}
 			state = null;
-			propertyStates = null
 			debugStyle = null;
 		}
 		
@@ -66,7 +68,7 @@ package com.gestureworks.cml.factories
 		 * property states array
 		 */
 		public var state:Array;
-		
+
 		[Deprecated(replacement="state")]		
 		public var propertyStates:Array;
 		

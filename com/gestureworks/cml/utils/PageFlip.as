@@ -88,13 +88,13 @@ package com.gestureworks.cml.utils {
 		 * @param	pw		int indicating the sheet width in pixels.
 		 * @param	ph		int indicating the sheet height in pixels.
 		 * @param	ish		If true, horizontal mode is provided, if false, vertical.
-		 * @param	sens	Number indicating the constraints sensibility. This parametter is a multiplicator for the constraints values. It's intended to prevent some awefull flickering effects. Its possible value is ranged between 0.9 and 1. 0.9 -> when ptd move is free (drag'n'drop), 1 -> when ptd move is progresive (tween when release). At best, you should never swap it from .9 to 1. A progressive incrementation is better. If flickering effects don't disturb you or if your ptd moves is coded, keep this parametter to 1.
+		 * @param	sens	Number indicating the constraints sensibility. This parametter is a multiplicator for the constraints values. It's intended to prevent some awefull flickering effects. Its possible value is ranged between 0.9 and 1. 0.9, when ptd move is free (drag'n'drop), 1, when ptd move is progresive (tween when release). At best, you should never swap it from .9 to 1. A progressive incrementation is better. If flickering effects don't disturb you or if your ptd moves is coded, keep this parametter to 1.
 		 * 
-		 * @return	Object containing:<br />
-		 * 				cPoints:Array - Array of points which describes the flipped part of the sheet. Note that in case of the ptd point is aligned with its original position or if the height of the shape is very small (<1) this array is set to null.<br />
-		 * 				pPoints:Array - Array of points wich describes the fixed part of the sheet.<br />
-		 * 				matrix:Matrix - Transformation matrix for the flipped part of the sheet.<br />
-		 * 				width:Number - Sheet width.<br />
+		 * @return Object containing:<br />
+		 * 				cPoints:Array - Array of points which describes the flipped part of the sheet. Note that in case of the ptd point is aligned with its original position or if the height of the shape is very small (less than 1) this array is set to null.
+		 * 				pPoints:Array - Array of points wich describes the fixed part of the sheet.
+		 * 				matrix:Matrix - Transformation matrix for the flipped part of the sheet.
+		 * 				width:Number - Sheet width.
 		 * 				height:Number - Sheet height.
 		 * 
 		 */

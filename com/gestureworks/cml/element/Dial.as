@@ -631,7 +631,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initializes the configuration and display of dial elements
 		 */
-		public function init():void
+		override public function init():void
 		{
 			displayDial();
 		}

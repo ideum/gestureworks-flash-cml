@@ -52,7 +52,7 @@ package com.gestureworks.cml.managers
 		public function loadCSS(filePath:String):void
 		{
 			file = filePath;
-			CSSLoader.getInstance(file).loadStyle(file);
+			CSSLoader.getInstance(file).load(file);
 			CSSLoader.getInstance(file).addEventListener(CSSLoader.COMPLETE, onCSSLoad);			
 		}
 		

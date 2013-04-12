@@ -71,7 +71,7 @@
 		/**
 		 * Initializes the configuration and display of the RadioButtons
 		 */
-		public function init ():void
+		override public function init ():void
 		{		
 			if (!_labels) return;
 			

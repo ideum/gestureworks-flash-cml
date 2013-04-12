@@ -280,7 +280,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initializes the slider object
 		 */
-		public function init():void
+		override public function init():void
 		{	
 			setupUI();
 			createEvents();

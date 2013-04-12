@@ -137,7 +137,7 @@ package com.gestureworks.cml.element
 			
 			
 			album = searchChildren(MenuAlbum);  //TODO: for testing purposes; need to provide more reliable access to album		
-			//trace(album, dockText, dials);
+			trace(album, dockText, dials);
 			
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);

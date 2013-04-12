@@ -35,7 +35,7 @@ package com.gestureworks.cml.utils
 		/**
 		 * Stores the vector of items
 		 */
-		private var vector:Vector.<*>;
+		private var vector:Vector.<Object>;
 		
 
 		
@@ -44,7 +44,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function List()
 		{
-			vector = new Vector.<*>();
+			vector = new Vector.<Object>();
 		}
 		
 		/**
@@ -202,8 +202,8 @@ package com.gestureworks.cml.utils
 		 */
 		public function remove(index:int):void
 		{			
-			var original:Vector.<*> = vector.slice(); 
-			var temp:Vector.<*> = original.splice(index, 1); 
+			var original:Vector.<Object> = vector.slice(); 
+			var temp:Vector.<Object> = original.splice(index, 1); 
 			temp.shift();
 			original = original.concat(temp); 
 			vector = original;

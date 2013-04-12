@@ -456,7 +456,7 @@ package com.gestureworks.cml.components
 			}
 			
 			if(tween && tween._active){
-				tween.kill;
+				tween.kill();
 				this.alpha = 1;
 			}			
 		}

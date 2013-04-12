@@ -40,7 +40,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialization call
 		 */
-		public function init():void
+		override public function init():void
 		{	
 			for (var j:int = 0; j < numChildren; j++) {
 				contents.push(getChildAt(j));
@@ -734,12 +734,14 @@ package com.gestureworks.cml.element
 			var tweenGroup:TimelineLite;
 			var targetIndex:Number = tabs.indexOf(e.target)
 			
+			var cNum:Number;
+			
 			// Check the target's snapping direction, and make everything in the dragGroup follow that;
 			if (e.target.y < (tabs[targetIndex].height + snapLow[targetIndex] + (height / 2))) {
 				for (var k:int = 0; k < dragGroup.length; k++) 
 				{
 					// Grab index of the dragGroup member in the actual list of tabs.
-					var cNum:Number = tabs.indexOf(dragGroup[k]);
+					cNum = tabs.indexOf(dragGroup[k]);
 					
 					// up?
 					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y:(cNum) * tabs[cNum].height }, 0.3));
@@ -760,7 +762,7 @@ package com.gestureworks.cml.element
 			} else {
 				for (var i:int = 0; i < dragGroup.length; i++) 
 				{
-					var cNum:Number = tabs.indexOf(dragGroup[i]);
+					cNum = tabs.indexOf(dragGroup[i]);
 					
 					// Down?
 					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y: background.height - (tabs.length - cNum) * tabs[cNum].height }, 0.3));

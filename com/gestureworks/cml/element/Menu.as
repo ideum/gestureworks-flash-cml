@@ -107,7 +107,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void {
+		override public function init():void {
 			
 			for (var i:int = 0; i < childList.length; i++) 
 			{
@@ -233,6 +233,7 @@ package com.gestureworks.cml.element
 			margin /= (itemCount - 1);
 			
 			//Experimental code
+			var num:Number
 			
 			if (position == "bottom" || position == "top")	
 			{						
@@ -242,7 +243,7 @@ package com.gestureworks.cml.element
 				for (i = 0; i < childList.length; i++) 
 				{
 					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						var num:Number = getChildIndex(childList.getIndex(i));
+						num = getChildIndex(childList.getIndex(i));
 						// position first button
 						if (num == 0) 
 							getChildAt(num).x = paddingLeft;
@@ -284,7 +285,7 @@ package com.gestureworks.cml.element
 				for (i = 0; i < childList.length; i++) 
 				{
 					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						var num:Number = getChildIndex(childList.getIndex(i));
+						num = getChildIndex(childList.getIndex(i));
 						// position first button
 						if (i == 0) 
 							getChildAt(num).x = paddingLeft;
@@ -312,7 +313,7 @@ package com.gestureworks.cml.element
 				for (i = childList.length - 1; i >= 0; i--) 
 				{
 					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						var num:Number = getChildIndex(childList.getIndex(i));
+						num = getChildIndex(childList.getIndex(i));
 						
 						if (i == childList.length-1) 
 							getChildAt(num).x = containerWidth - getChildAt(num).width - paddingRight;

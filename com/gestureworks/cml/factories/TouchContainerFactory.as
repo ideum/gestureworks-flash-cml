@@ -30,7 +30,7 @@ package com.gestureworks.cml.factories
 			mouseChildren = true; // required for touchevents to pass into children
 			state = [];
 			state[0] = new Dictionary(false);
-			propertyStates = state;	
+			this['propertyStates'] = state;	
 			_childList = new ChildList;			
 			addEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);
 		}
@@ -56,7 +56,6 @@ package com.gestureworks.cml.factories
 				removeChildAt(i);
 			}
 			state = null; 
-			propertyStates = null;
 			_childList = null; 
 			layout = null;
 			cmlGestureList = null;

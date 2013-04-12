@@ -247,7 +247,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initializes the components
 		 */
-		public function init():void
+		override public function init():void
 		{
 			drawContainer();
 			drawHueBar();

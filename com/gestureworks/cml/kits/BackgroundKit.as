@@ -50,7 +50,7 @@ package com.gestureworks.cml.kits
 		/**
 		 * CML callback initialisation
 		 */
-		public function init():void
+		override public function init():void
 		{
 			displayComplete()
 		}		

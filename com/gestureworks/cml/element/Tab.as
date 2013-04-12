@@ -74,7 +74,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialization call
 		 */
-		public function init():void
+		override public function init():void
 		{
 			setupUI();
 		}

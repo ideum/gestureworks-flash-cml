@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 		private var frame:Rectangle;  //the dimensions of the largest object
 		private var beltMouseChildren:Boolean = false;
 		private var snapIndex:Number = 0;
-		
+				
 		/**
 		 * Constructor
 		 */
@@ -310,7 +310,7 @@ package com.gestureworks.cml.element
 		 */
 		public function objectAtSnapPoint(point:int):*
 		{
-			return belt.getChildAt(point + 1);  //add one to exclude background
+			return belt.getChildAt(point);  //add one to exclude background
 		}
 		
 		/**

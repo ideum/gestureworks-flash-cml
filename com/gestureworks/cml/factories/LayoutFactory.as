@@ -288,6 +288,7 @@ package com.gestureworks.cml.factories
 		{
 			var childTweens:Array;
 			var tIndex:int = 0;
+			var transformation:Matrix;
 			
 			if (tween)
 			{				
@@ -308,7 +309,7 @@ package com.gestureworks.cml.factories
 					
 					if (tIndex < childTransformations.length)
 					{
-						var transformation:Matrix = childTransformations[tIndex];						
+						transformation = childTransformations[tIndex];						
 						if (!isNaN(rotation))
 							rotateTransform(transformation, degreesToRadians(rotation));
 						if (!isNaN(scale))
@@ -332,7 +333,7 @@ package com.gestureworks.cml.factories
 					child = container.getChildAt(j);
 					if (!validObject(child)) continue;
 					
-					var transformation:Matrix = childTransformations[tIndex];;
+					transformation = childTransformations[tIndex];;
 					if (!isNaN(rotation))
 						rotateTransform(transformation, degreesToRadians(rotation));
 					if (!isNaN(scale))

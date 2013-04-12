@@ -66,7 +66,7 @@ package com.gestureworks.cml.element
 		 * Initialization function
 		 * @param	event
 		 */
-		public function init(): void
+		override public function init(): void
 		{	
 			generateKeys();
 			setLayout();

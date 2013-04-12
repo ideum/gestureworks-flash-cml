@@ -58,10 +58,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void
-		{
-			
-		}
+		override public function init():void {}
 	
 		
 		private function onChange(e:StatusChangeEvent):void {			
@@ -83,7 +80,7 @@ package com.gestureworks.cml.element
 			for each (var attrValue:* in cml.@*)
 			{
 				attrName = attrValue.name().toString();
-				propertyStates[0][attrName] = attrValue;
+				state[0][attrName] = attrValue;
 			}
 			
 			attrName = null;			

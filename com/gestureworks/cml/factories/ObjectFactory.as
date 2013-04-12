@@ -23,16 +23,15 @@ package com.gestureworks.cml.factories
 			super();
 			state = [];
 			state[0] = new Dictionary(false);
-			propertyStates = state;
+			this['propertyStates'] = state;
 		}	
 		
-		/**
+		/**	
 		 * Dispose method
 		 */
 		public function dispose():void 
 		{ 			
 			state = null;
-			propertyStates = null;
 		}
 		
 		/**

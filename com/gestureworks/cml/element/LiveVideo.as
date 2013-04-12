@@ -111,7 +111,7 @@ package com.gestureworks.cml.element
 		/**
 		* Initializes the configuration and display of live video and audio.
 		*/
-		public function init():void
+		override public function init():void
 		{ 
 		  //Get the default camera for the system	
 		   cam = camera ? camera.getCamera() : null;

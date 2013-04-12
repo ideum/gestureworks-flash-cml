@@ -18,10 +18,7 @@ package com.gestureworks.cml.element
 	import com.greensock.*;
 	
 	/**
-	 * The Page element is designed to take a series of display objects, and arrange them to be sorted through with a "flip" animation for each one.
-	 *
-	 * </codeblock>
-	 * @author ...
+	 * The FlipBook element is designed to take a series of display objects, and arrange them to be sorted through with a "flip" animation for each one.
 	 */
 	public class FlipBook extends TouchContainer
 	{

@@ -90,6 +90,7 @@ import flash.utils.Dictionary;
 			return null;
 		}
 		
+		
 		static public function querySelector( selector:String ):* 
 		{
 			return $(selector)[0];
@@ -112,7 +113,7 @@ import flash.utils.Dictionary;
 			}
 			
 			if (ret) return ret;
-			var t = $(selector);			
+			var t:* = $(selector);			
 			if ( t && t.length ) return t.getArray();
 			return null
 		}	

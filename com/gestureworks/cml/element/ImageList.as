@@ -51,11 +51,11 @@ package com.gestureworks.cml.element
 		 */		
 		override public function postparseCML(cml:XMLList):void 
 		{
-			if (this.propertyStates[0]["src"]) {
+			if (this.state[0]["src"]) {
 				
 				if (preload)
 				{
-					var value:String = this.propertyStates[0]["src"];
+					var value:String = this.state[0]["src"];
 					var rex:RegExp = /[\s\r\n]*/gim;
 					_src = value.replace(rex,'');			
 					var arr:Array = _src.split(",");

@@ -43,7 +43,7 @@ package com.gestureworks.cml.factories
 			
 			state = [];
 			state[0] = new Dictionary(false);
-			propertyStates = state;
+			this['propertyStates'] = state;
 
 			textFormat.font = "OpenSansRegular";
 			textFormat.color = color;
@@ -64,7 +64,6 @@ package com.gestureworks.cml.factories
 		public function dispose():void
 		{
 			textFormat = null;
-			propertyStates = null;
 			state = null;
 		}
 		
@@ -110,7 +109,7 @@ package com.gestureworks.cml.factories
 				CMLParser.attrLoop(this, cml);
 				multiline = true;
 				condenseWhite = true;
-				this.propertyStates[0]["htmlText"] = cml.children();
+				this.state[0]["htmlText"] = cml.children();
 				cml = new XMLList;				
 			}
 	

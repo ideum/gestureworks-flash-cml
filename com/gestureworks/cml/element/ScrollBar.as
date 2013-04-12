@@ -12,12 +12,6 @@ package com.gestureworks.cml.element
 
 	/**
 	 * 
-	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock "> 
-		
-	 *	</codeblock> 
-	 * 
-	 * @author Ideum
 	 */
 	public class ScrollBar extends TouchContainer
 	{

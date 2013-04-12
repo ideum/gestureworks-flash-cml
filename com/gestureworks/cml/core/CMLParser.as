@@ -13,7 +13,6 @@ package com.gestureworks.cml.core
 	import flash.display.*;
 	import flash.events.*;
 	import flash.utils.*;	
-	import flash.xml.XMLNodeType;
 	
 	/** 
 	 * The CMLParser class parses cml files for run-time object construction 
@@ -544,6 +543,7 @@ package com.gestureworks.cml.core
 		{			
 			var str:String;
 			var val:*;
+			var regExp:RegExp = /[\s\r\n{}]*/gim;
 			
 			
 			for (var i:int = 0; i < cmlRenderer.length(); i++) 
@@ -563,7 +563,7 @@ package com.gestureworks.cml.core
 					str = node.name().toString();
 				}
 				
-				for each (var val:* in renderList.*) {
+				for each (val in renderList.*) {
 					
 					if (node.nodeKind() == "text" ) { 
 												
@@ -572,7 +572,6 @@ package com.gestureworks.cml.core
 						// filter value for expression delimiter "{}"
 						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
 							// remove whitepsace and {} characters
-							var regExp:RegExp = /[\s\r\n{}]*/gim;
 							str = str.replace(regExp, '');
 						}	
 												
@@ -587,12 +586,11 @@ package com.gestureworks.cml.core
 					for each (var attrVal:* in node.@*) {
 						
 						var attr:* = attrVal.name();							
-						var str:String = String(attrVal);
+						str = String(attrVal);
 						
 						// filter value for expression delimiter "{}"
 						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
 							// remove whitepsace and {} characters
-							var regExp:RegExp = /[\s\r\n{}]*/gim;
 							str = str.replace(regExp, '');
 						}	
 						
@@ -896,6 +894,7 @@ package com.gestureworks.cml.core
 			var st:Dictionary;
 			var selector:String;
 			var pp:String;
+			var regExp:RegExp = /[\s\r\n{}]*/gim;
 			
 			for each (st in obj.state) {
 				for  (prop in st) {					
@@ -904,7 +903,6 @@ package com.gestureworks.cml.core
 					if ( val.charAt(0) != "{" ) continue;
 					
 					// remove whitepsace and {} characters
-					var regExp:RegExp = /[\s\r\n{}]*/gim;
 					val = val.replace(regExp, '');
 									
 					// split last period 					
@@ -914,7 +912,7 @@ package com.gestureworks.cml.core
 						 selector = "";
 						 pp = "";
 					
-						for (var i:int = 0; i < arr.length; i++) {
+						for (i = 0; i < arr.length; i++) {
 							if (i < arr.length-1)
 								selector += "." + arr[i];
 							else

@@ -22,12 +22,6 @@ package com.gestureworks.cml.element
 		
 	/**
 	 * 
-	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 * 	
-		
-		
-	 * </codeblock>
 	 * @author Ideum
 	 */
 	
@@ -118,7 +112,7 @@ package com.gestureworks.cml.element
 		private var _scrollThickness:Number = 30;
 		/**
 		 * The only styling that can be set for the scroll bars in the scrollPane is their thickness.
-		 * For all other custom styling, a <ScrollBar> item should be added in CML, or through the
+		 * For all other custom styling, a ScrollBar item should be added in CML, or through the
 		 * childToList function in AS3, and the ScrollPane class will automatically pull styles from that.
 		 */
 		public function get scrollThickness():Number { return _scrollThickness; }
@@ -171,10 +165,11 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			//clone._content.mask = clone._mask;
+			if (clone._mask && clone._content)
+				clone._content.mask = clone._mask;
 			
 			clone.init();
-			clone.createEvents();
+			//clone.createEvents();
 			
 			return clone;
 		}
@@ -250,6 +245,7 @@ package com.gestureworks.cml.element
 			//_hit.disableNativeTransform = true;
 			//_hit.gestureList = { "n-drag":true, "n-scale":true };
 			
+			if (!numChildren) return;
 			_content = getChildAt(0);
 			//_content.addEventListener(StateEvent.CHANGE, onStateEvent);
 			if (_hit && _content)
@@ -532,8 +528,8 @@ package com.gestureworks.cml.element
 		
 		private function onComplete(e:GWGestureEvent):void {
 			//Reset the position values so the scrollPane will move cumulatively.
-			oldX = null;
-			oldY = null;
+			oldX = 0;
+			oldY = 0;
 		}
 		
 		private function clampPos(pos:Number, direction:String):Number {

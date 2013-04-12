@@ -151,7 +151,7 @@ package  com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		public function init():void
+		override public function init():void
 		{
 			displayComplete();
 		}
