@@ -19,7 +19,7 @@ package com.gestureworks.cml.element
 	{		
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = [];
-		public var returnFields:Array = [];		
+		private var _returnFields:Array = [];		
 		protected var _searchFieldsArray:Array;
 		public var searchFields:String;
 				
@@ -160,7 +160,14 @@ package com.gestureworks.cml.element
 
 			//preloadClones(maxClones);
 		}
-		
+				
+		public function get returnFields():* {return _returnFields; }
+		public function set returnFields(f:*):void{
+			if(f is XML)
+				f = f.toString().split(",");
+			if(f is Array)
+				_returnFields = f;
+		}
 
 		private var previews:Array = [];
 		private var locked:Array = [];
