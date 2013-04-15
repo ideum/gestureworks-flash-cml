@@ -717,6 +717,7 @@ package com.gestureworks.cml.element
 			}
 			else if (obj.backs && obj.backs.length > 1) {
 				title = obj.searchChildren("title").clone();
+				TouchContainer(title.parent).childList.removeByValue(title); //remove from childList of source parent
 			}
 			
 			title.width = img.width;			
