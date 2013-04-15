@@ -94,7 +94,6 @@
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
 			if (!gigapixel)
 				gigapixel = searchChildren(".gigapixel_element");
-				gigapixel.addEventListener(StateEvent.CHANGE, onStateEvent);
 			if (!menu)
 				menu = searchChildren(".menu_container");
 			if (!frame)
@@ -135,20 +134,9 @@
 		
 		override protected function onStateEvent(event:StateEvent):void
 		{	
-			var info:* = childList.getCSSClass("info_container", 0)
+			super.onStateEvent(event);
 			
-			if (event.value == "info") {
-				if (!info.visible) {
-					info.visible = true;
-					gigapixel.visible = false;
-				}
-				else {
-					info.visible = false;
-					gigapixel.visible = true;
-				}
-			}
-			else if (event.value == "close") 	this.visible = false;
-			else if (event.value == "loaded") {
+			if (event.value == "loaded") {
 				height = gigapixel.height;
 				width = gigapixel.width;
 				gigapixel.removeEventListener(StateEvent.CHANGE, onStateEvent);
