@@ -12,8 +12,9 @@ package com.gestureworks.cml.element
 	import flash.geom.ColorTransform;
 	
 	/**
-	 * ...
-	 * @author 
+	 * The Accordion is an interactive container which holds display objects in a collapsible menu. The Accordion takes a string of labels and a number of children
+	 * to create containers separated by tabs that can be tapped or dragged to be expanded or collapsed.
+	 * @author Ideum
 	 */
 	public class Accordion extends Container 
 	{
