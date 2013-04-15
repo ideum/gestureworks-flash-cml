@@ -231,8 +231,10 @@
 				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
 			}
 			
-			if (_hotspots.length > 0)
+			if (_hotspots.length > 0 && !hasEventListener(Event.ENTER_FRAME)) {
+				trace("Adding event listener in Gigapixel.");
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			}
 			
 			_loaded = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
