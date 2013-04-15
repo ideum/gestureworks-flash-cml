@@ -112,7 +112,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.OrbMenu; OrbMenu;	
 	import com.gestureworks.cml.element.Button; Button;
 	import com.gestureworks.cml.element.RadioButtons; RadioButtons;	
-	import com.gestureworks.cml.element.Model3d; Model3d;
+	import com.gestureworks.cml.element.Model3D; Model3D;
 	import com.gestureworks.cml.element.Drawer; Drawer;
 	import com.gestureworks.cml.element.Dock; Dock;	
 	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
@@ -121,16 +121,16 @@ package com.gestureworks.cml.core
 	
 	
 	// deprecated
-	//import com.gestureworks.cml.element.ButtonElement; ButtonElement;			
-	//import com.gestureworks.cml.element.TextElement; TextElement;
-	//import com.gestureworks.cml.element.SWCElement; SWCElement;		
-	//import com.gestureworks.cml.element.SWFElement; SWFElement;	
-	//import com.gestureworks.cml.element.FrameElement; FrameElement;
-	//import com.gestureworks.cml.element.VideoElement; VideoElement;
-	//import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
-	//import com.gestureworks.cml.element.ImageElement; ImageElement;
-	//import com.gestureworks.cml.element.MediaElement; MediaElement;
-	//import com.gestureworks.cml.element.MP3Element; MP3Element;	
+	import com.gestureworks.cml.element.ButtonElement; ButtonElement;			
+	import com.gestureworks.cml.element.TextElement; TextElement;
+	import com.gestureworks.cml.element.SWCElement; SWCElement;		
+	import com.gestureworks.cml.element.SWFElement; SWFElement;	
+	import com.gestureworks.cml.element.FrameElement; FrameElement;
+	import com.gestureworks.cml.element.VideoElement; VideoElement;
+	import com.gestureworks.cml.element.GraphicElement; GraphicElement;	
+	import com.gestureworks.cml.element.ImageElement; ImageElement;
+	import com.gestureworks.cml.element.MediaElement; MediaElement;
+	import com.gestureworks.cml.element.MP3Element; MP3Element;	
 	
 	
 	
@@ -140,6 +140,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.kits.LayoutKit; LayoutKit;		
 	import com.gestureworks.cml.kits.BackgroundKit; BackgroundKit;		
 	import com.gestureworks.cml.kits.StageKit; StageKit;
+	import com.gestureworks.cml.kits.AttractKit; AttractKit;
 	
 	
 	
