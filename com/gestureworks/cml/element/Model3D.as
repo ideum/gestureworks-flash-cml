@@ -18,7 +18,6 @@
 	import away3d.materials.methods.*;
 	import away3d.utils.*;
 	import flash.net.URLRequest;
-	
 	import flash.display.*;
 	import flash.events.*;
 	import flash.utils.*;
@@ -38,7 +37,8 @@
 	
 	
 	/**
-	 * 
+	 * The Model3d class takes in a 3d file (.OBJ, or .3ds), and loads it in. Tilt gestures can be used to rotate the model in 3D space, and regular drag and scale gestures
+	 * can be used to drag and scale it on the screen. .MTL files are optional when loading an OBJ.
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
@@ -186,7 +186,8 @@
 		private function initLights():void
 		{
 			light = new DirectionalLight();
-			light.z = -1;
+			//light.z = 1;
+			light.direction = new Vector3D( 0, 0, -1);
 			light.color = 0xffddbb;
 			light.ambient = 1;
 			lightPicker = new StaticLightPicker([light]);
@@ -199,29 +200,34 @@
 		 */
 		private function initMaterials(mod:Mesh):void
 		{
-			//trace("Loading materials");
+			var mats:Array;
 			if (_material) {
-				
-				loader = new Loader();
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onMaterial);
-				loader.load(new URLRequest(_material));
-				
-				function onMaterial(e:Event):void {
-					var bitmap:Bitmap = Bitmap(loader.content);
-					var bitmapData:BitmapData = bitmap.bitmapData;
-					bitmapMaterial = new TextureMaterial(Cast.bitmapTexture(bitmapData));
-					mod.material = bitmapMaterial;
+				mats = _material.split(".");
+				if (mats[1] != "mtl") {
+					loader = new Loader();
+					loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onMaterial);
+					loader.load(new URLRequest(_material));
+					
+					function onMaterial(e:Event):void {
+						var bitmap:Bitmap = Bitmap(loader.content);
+						var bitmapData:BitmapData = bitmap.bitmapData;
+						bitmapMaterial = new TextureMaterial(Cast.bitmapTexture(bitmapData));
+						mod.material = bitmapMaterial;
+					}
+					
 				}
-				
-			}
-			else {
-				colorMaterial = new ColorMaterial(_color);
-				colorMaterial.shadowMethod = new FilteredShadowMapMethod(light);
-				colorMaterial.lightPicker = lightPicker;
-				colorMaterial.specular = 0.5;
-				
-				for each (var m:SubMesh in mod.subMeshes){
-					m.material = colorMaterial;
+				else if (mats[1] == "mtl") {
+					AssetLibrary.load( new URLRequest(_material));
+				}
+				else {
+					colorMaterial = new ColorMaterial(_color);
+					colorMaterial.shadowMethod = new FilteredShadowMapMethod(light);
+					colorMaterial.lightPicker = lightPicker;
+					colorMaterial.specular = 0.5;
+					
+					for each (var m:SubMesh in mod.subMeshes){
+						m.material = colorMaterial;
+					}
 				}
 			}
 			
@@ -297,6 +303,7 @@
 				model.geometry.scale(scale);
 				//model_Z = scale;
 				model.name = "Model " + counter;
+				//model.castsShadows = true;
 				counter++;
 				
 				initMaterials(model);
@@ -306,13 +313,35 @@
 				
 				//trace(model.name);
 			}
+			else if (event.asset.assetType == AssetType.MATERIAL) {
+				//model.material = event.asset as MaterialBase;
+				var tex:*;
+				if (event.asset is TextureMaterial)
+					tex = event.asset as TextureMaterial;
+				else if (event.asset is ColorMaterial)
+					tex = event.asset as ColorMaterial;
+				//var tex:ColorMaterial = event.asset as ColorMaterial;
+				
+				tex.specular = 0.5;
+				tex.lightPicker = lightPicker;
+				//tex.gloss = 30;
+				tex.shadowMethod = new FilteredShadowMapMethod(light);
+				
+				/*if (model){
+					for each (var m:SubMesh in model.subMeshes){
+						m.material = tex;
+					}
+				}*/
+				//model.material = tex;
+				//var tex:MaterialBase = event.asset as MaterialBase;
+			}
 		}
 		
 		/**
 		 * Tilt listener for touch
 		 */
 		private function tiltHandler(e:GWGestureEvent):void {
-			//trace("Tilting");
+			trace("Tilting");
 			modelYaw += e.value.tilt_dx * 50;
 			modelPitch += e.value.tilt_dy * 50;
 		}
