@@ -439,9 +439,7 @@ package com.gestureworks.cml.element
 				else if (orientation == "vertical")
 					knob.y = stepknobPositions[index] - knobOffset;
 			}
-			
-			trace("knob:", knob.x, knob.y, rail.x, rail.y, event.localX, event.localY);
-			
+						
 			updateValues();
 		}	
 	
@@ -552,10 +550,6 @@ package com.gestureworks.cml.element
 				trace("knobPosition:", _knobPosition);
 				trace("value:", _value)				
 			}
-			
-			trace("id:", this.id);
-				trace("knobPosition:", _knobPosition);
-				trace("value:", _value)	
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value, true));			
 		}

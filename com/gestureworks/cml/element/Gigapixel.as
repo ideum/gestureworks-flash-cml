@@ -228,11 +228,9 @@
 				var point:Point = image.sceneToLocal(new Point(_hotspots[i].sceneX, _hotspots[i].sceneY));
 				_hotspots[i].x = point.x;
 				_hotspots[i].y = point.y;
-				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
 			}
 			
 			if (_hotspots.length > 0 && !hasEventListener(Event.ENTER_FRAME)) {
-				trace("Adding event listener in Gigapixel.");
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
 			
@@ -247,7 +245,6 @@
 				var point:Point = image.sceneToLocal(new Point(_hotspots[i].sceneX, _hotspots[i].sceneY));
 				_hotspots[i].x = point.x;
 				_hotspots[i].y = point.y;
-				//trace("Adding hotspot:", i, hotspots[i].x, hotspots[i].y);
 			}
 		}
 		

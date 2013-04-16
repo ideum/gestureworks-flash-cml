@@ -148,7 +148,6 @@ package com.gestureworks.cml.element
 			dials = c.searchChildren(Dial, Array)
 						
 			album = c.searchChildren(MenuAlbum);  //TODO: for testing purposes; need to provide more reliable access to album		
-			//trace(album, dockText, dials);
 			
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
@@ -1129,7 +1128,6 @@ package com.gestureworks.cml.element
 					
 					dial2Text = dial2Text.substr(0, dial2Text.length-1);
 					dial3Text = dial3Text.substr(0, dial3Text.length-1);
-					trace("DIAL 2: "+dial2Text + "\n\n\n\nDIAL 3: " + dial3Text);	
 											
 					dials[1].text = dial2Text;
 					dials[1].filterDial = dials[0];

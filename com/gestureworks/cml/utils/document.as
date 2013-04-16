@@ -118,34 +118,5 @@ import flash.utils.Dictionary;
 			return null
 		}	
 		
-
-		/*
-		static private var idList:Dictionary = new Dictionary( false );
-
-		static internal function registerId( id:String, obj:DisplayObject ):void {
-			idList[ id ] = obj;
-		}
-
-		static internal function unregisterId( id:String ):void {
-			if( idList.hasOwnProperty( id ))
-				delete idList[ id ];
-		}
-		
-		
-		static public function getElementById( id:String, elem:DisplayObject = null ):* 
-		{	
-			
-			
-			var ret:DisplayObject = idList[ id ];
-			if ( !elem ) 
-				return ret;
-			else if( elem is DisplayObjectContainer 
-				&& DisplayObjectContainer(elem).contains(ret) )
-					return ret;
-			else
-				return null;
-		}	
-		*/
-		
 	}	
 }

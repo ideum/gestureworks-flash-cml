@@ -341,19 +341,16 @@
 		 * Tilt listener for touch
 		 */
 		private function tiltHandler(e:GWGestureEvent):void {
-			trace("Tilting");
 			modelYaw += e.value.tilt_dx * 50;
 			modelPitch += e.value.tilt_dy * 50;
 		}
 		
 		private function dragHandler(e:GWGestureEvent):void {
-			//trace("Dragging");
 			model_X -= e.value.drag_dx;
 			model_Y -= e.value.drag_dy;
 		}
 		
 		private function scaleHandler(e:GWGestureEvent):void {
-			trace("Scaling");
 			model_Z += e.value.scale_dsx;
 		}
 		
