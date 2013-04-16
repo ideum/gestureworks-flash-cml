@@ -644,7 +644,7 @@ package com.gestureworks.cml.element
 			matrix.createGradientBox(width, height, gradientRotation, gradientX, gradientY);
 			
 			background.graphics.clear();
-			background.graphics.lineStyle(backgroundLineStoke, backgroundAlpha);
+			background.graphics.lineStyle(backgroundLineStoke, selectedTextColor, backgroundAlpha);
 			background.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
 			background.graphics.drawRect(0, 0, width, height);
 			
