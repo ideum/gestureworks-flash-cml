@@ -506,8 +506,6 @@ package com.gestureworks.cml.element
 		{
 			isLoading = true;
 			album.clear();
-			previews = [];
-			locked = [];
 			
 			//var searchString:String = "ca_objects.work_description:This is a yellow flower man";
 			//var searchString:String = "ca_object_labels.name:Yellow Flower";
@@ -524,7 +522,7 @@ package com.gestureworks.cml.element
 			// etc -- see collective access
 		
 			//if (!e || e.keyCode == 13) {
-			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "medium");				
+			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "large");				
 				//connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
 				//connection.call("./AMFTest.getalldata", responder, entry.text);
@@ -589,6 +587,9 @@ package com.gestureworks.cml.element
 		
 		private function onResult(res:Object):void
 		{
+			album.clear();
+			previews = [];
+			locked = [];			
 			result = res;
 			resultCnt = 0;		
 			loadCnt = 0;		
@@ -939,7 +940,7 @@ package com.gestureworks.cml.element
 		
 		private function cancelLoading():void
 		{
-			if (isLoading)
+			if (isLoading && flickrQuery)
 			{
 				for each(var clone:Component in cloneMap.getKeyArray())
 					clone.removeEventListener(StateEvent.CHANGE, onCloneLoad);
