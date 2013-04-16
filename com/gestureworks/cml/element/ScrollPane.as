@@ -21,7 +21,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.CloneUtils;
 		
 	/**
-	 * 
+	 * The ScrollPane creates a masked viewing area of a display object and dynamically updates two scrollbars as that content is optionally dragged or scaled inside the viewing area.
 	 * @author Ideum
 	 */
 	
