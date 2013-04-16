@@ -15,6 +15,12 @@ package com.gestureworks.cml.element
 	import flash.utils.*;
 	import org.tuio.*;
 	
+	/**
+	 * Designed for the database version of the <code>CollectionViewer</code>, the <code>Dock</code> is a retractable control station intended to guide users through 
+	 * database query construction by vertically spinning a set of dials populated with predefined search terms. Each dial change submits a new query, as a combination 
+	 * of aligned dial terms, and can produce visual result set representations in its menu album. The album can be horizontally scrolled and images can be loaded to 
+	 * stage by either tapping a result or dragging a result to the stage. 
+	 */
 	public class Dock extends Drawer
 	{		
 		public var loadCnt:int = 0;
@@ -89,6 +95,9 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _previousArrow:*;
+		/**
+		 * An optional way to set a custom graphic for multiple pages of results. Setting this will remove it from the childList to be placed inside the menu album.
+		 */		
 		public function get previousArrow():* { return _previousArrow; }
 		public function set previousArrow(value:String):void {
 			_previousArrow = searchChildren(value);
@@ -99,6 +108,9 @@ package com.gestureworks.cml.element
 		private var serverTimer:Timer;
 		
 		private var _serverTimeOut:Number = 30;
+		/**
+		 * The amout of time allotted for server connection or query results
+		 */
 		public function get serverTimeOut():Number { return _serverTimeOut; }
 		public function set serverTimeOut(t:Number):void
 		{
@@ -160,7 +172,10 @@ package com.gestureworks.cml.element
 
 			//preloadClones(maxClones);
 		}
-				
+			
+		/**
+		 * 
+		 */
 		public function get returnFields():* {return _returnFields; }
 		public function set returnFields(f:*):void{
 			if(f is XML)
@@ -242,6 +257,9 @@ package com.gestureworks.cml.element
 		// preload // 
 		private var loadIndex:int = 0;
 		
+		/**
+		 * Preloads the maxClones value of template clones
+		 */
 		public function preloadClones():void
 		{			
 			if (loadIndex == maxClones) return;
@@ -405,6 +423,9 @@ package com.gestureworks.cml.element
 			placeHolders[_placeHolderIndex].lineColor = 0x000000;			
 		}				
 		
+		/**
+		 * Connect to a database
+		 */
 		public function connect():void
 		{
 			if (gateway == "flickr") 
@@ -414,7 +435,10 @@ package com.gestureworks.cml.element
 			responder = new Responder(onResult, onFault);	
 		}
 		
-		// get search terms from dial and submit query
+		/**
+		 * Submit query based on aligned dial search terms
+		 * @param	e  dial change state event
+		 */
 		protected function onDialChange(e:StateEvent):void 
 		{
 			cancelLoading();
@@ -877,6 +901,10 @@ package com.gestureworks.cml.element
 			moveBelowDock(e.currentTarget as DisplayObject);
 		}
 		
+		/**
+		 * Moves the specified display object beneath the dock in the display list
+		 * @param	obj
+		 */
 		public function moveBelowDock(obj:DisplayObject):void 
 		{
 			//TODO: Fix rigid structure
@@ -886,7 +914,6 @@ package com.gestureworks.cml.element
 				parent.setChildIndex(obj, (parent.getChildIndex(this)-2));			
 		}
 		
-
 		
 		private function onCloneChange(e:StateEvent, target:*=null):void
 		{					
