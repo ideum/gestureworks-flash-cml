@@ -11,7 +11,11 @@ package com.gestureworks.cml.element
 	import flash.geom.Matrix;
 
 	/**
+	 * The ScrollBar creates an interactive scroll bar. Given a corresponding content measurement, the scroll bar shows a thumb scaled to the difference between the content
+	 * and actual scroll size. The ScrollBar then dispatches position events when moved.
 	 * 
+	 * See also: ScrollPane
+	 * @author Joshua
 	 */
 	public class ScrollBar extends TouchContainer
 	{
