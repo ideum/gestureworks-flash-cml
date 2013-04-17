@@ -204,7 +204,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Flag central alignment of the play button
 		 */
-		public var centerPlayButton:Boolean = false;
+		public var centerPlayButton:Boolean = true;
 	
 		override public function init():void 
 		{
@@ -214,6 +214,8 @@ package com.gestureworks.cml.element
 			if (playButton) {
 				mouseChildren = true;
 				hideButton(false);
+				
+				playButton.addEventListener(StateEvent.CHANGE, play);
 				
 				if(centerPlayButton){				
 					var tempRot:Number = playButton.rotation;				
@@ -513,9 +515,9 @@ package com.gestureworks.cml.element
 		{			
 			_position = netStream.time / _duration;
 	
-			if (debug)
-				trace(_position); 
-		
+			/*if (debug)
+				trace(_position);*/ 
+			//trace("Dispatching event in video.");
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
 		
