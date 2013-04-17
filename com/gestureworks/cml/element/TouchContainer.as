@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.cml.utils.SoundUtils;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
@@ -112,6 +113,14 @@ package com.gestureworks.cml.element
 			childList.getKey(key).visible = false;
 		}		
 	
+		private var _sound:String;
+		public function get sound():String { return _sound; }
+		public function set sound(value:String):void {
+			_sound = value;
+			if (_sound) {
+				SoundUtils.attachSound(this, _sound);
+			}
+		}
 		
 		private var _scale:Number = 1;
 		/**
@@ -423,7 +432,9 @@ package com.gestureworks.cml.element
 		override public function dispose():void 
 		{
 			super.dispose();
-			layoutList = null;			
+			layoutList = null;		
+			if (sound)
+				SoundUtils.deleteSound(this);
 		}
 		
 
