@@ -5,6 +5,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.utils.Timer;
 	
 	import flash.events.TimerEvent;
@@ -220,6 +221,10 @@ package com.gestureworks.cml.element
 		
 		public function snapTo(index:Number):void {
 			
+			for (var i:int = 0; i < numChildren; i++) {
+				stopCheck(getChildAt(i));
+			}
+			
 			if (slideshowItems.hasIndex(index) && index != _currentIndex) {
 				fadeout(_currentIndex);
 				fadein(index);
@@ -302,6 +307,9 @@ package com.gestureworks.cml.element
 			last = _currentIndex;
 			_currentIndex++;
 			////trace("Last:", last, "Current: ", _currentIndex);
+			for (var i:int = 0; i < numChildren; i++) {
+				stopCheck(getChildAt(i));
+			}
 			
 			if (slideshowItems.hasIndex(_currentIndex)) {
 				fadeout(last);
@@ -321,6 +329,10 @@ package com.gestureworks.cml.element
 			last = _currentIndex;
 			_currentIndex--;
 			
+			for (var i:int = 0; i < numChildren; i++) {
+				stopCheck(getChildAt(i));
+			}
+			
 			if (slideshowItems.hasIndex(_currentIndex)) {
 				
 				fadeout(last);
@@ -338,7 +350,21 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		private function stopCheck(obj:DisplayObject):void {
+			if ("stop" in obj)
+				obj["stop"]();
+			
+			if (obj is DisplayObjectContainer && DisplayObjectContainer(obj).numChildren > 0) {
+				for (var i:int = 0; i < DisplayObjectContainer(obj).numChildren; i++)
+					stopCheck(DisplayObjectContainer(obj).getChildAt(i));
+			}
+		}
+		
 		protected function reset():void {
+			
+			for (var i:int = 0; i < numChildren; i++) {
+				stopCheck(getChildAt(i));
+			}
 			
 			if (slideshowItems.hasIndex(_currentIndex) && currentIndex > 0) {
 				fadeout(_currentIndex);
