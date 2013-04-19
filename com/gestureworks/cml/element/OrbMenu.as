@@ -750,13 +750,13 @@ package com.gestureworks.cml.element
 				setTime();
 			}
 			
-			//init();
-			 displayOrb();
-			
 			 if (!buttons)
 			 {
-			 buttons = childList.getValueArray();
+				buttons = searchChildren(Button, Array);
 			 }
+			 
+			 //init();
+			 displayOrb();
 			
 					
 			height = 135;
