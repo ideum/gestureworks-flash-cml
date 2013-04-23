@@ -18,6 +18,8 @@ package com.gestureworks.cml.factories
 {	
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.cml.loaders.MP3Loader;
+	import com.gestureworks.cml.managers.FileManager;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.media.*;
@@ -36,7 +38,8 @@ package com.gestureworks.cml.factories
 	public class MP3Factory extends ObjectFactory
 	{
 		//audio	
-		public var sound:Sound;
+		public var soundData:Sound;
+		private var soundLoader:MP3Loader;
 		public var channel:SoundChannel;
 		protected var soundTrans:SoundTransform;
 		protected var Position:uint;		
@@ -152,7 +155,15 @@ package com.gestureworks.cml.factories
 		public function init():void
 		{
 			//if (preload)
-				load();
+				//load();
+			soundData = new Sound();
+			soundLoader = new MP3Loader();
+			channel = new SoundChannel();
+			soundTrans = new SoundTransform();
+				
+			if (preload && FileManager.fileList.hasKey(_src)) {
+				soundLoaded();
+			}
 		}
 		
 		/**
@@ -172,7 +183,7 @@ package com.gestureworks.cml.factories
 				channel = null;
 			}
 			if (soundTrans) soundTrans = null;
-			if (sound) sound = null;
+			if (soundData) soundData = null;
 			//if (parent) parent.removeChild(this);
 		}
 		
@@ -206,7 +217,7 @@ package com.gestureworks.cml.factories
 		{
 			if (!_isPlaying) 
 			{	
-				channel = sound.play(0, 0, soundTrans);
+				channel = soundData.play(0, 0, soundTrans);
 				channel.addEventListener(Event.SOUND_COMPLETE, soundComplete);
 				_isPlaying = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
@@ -220,7 +231,7 @@ package com.gestureworks.cml.factories
 		{
 			if (!_isPlaying) 
 			{				
-				channel = sound.play(Position, 0, soundTrans);
+				channel = soundData.play(Position, 0, soundTrans);
 				channel.addEventListener(Event.SOUND_COMPLETE, soundComplete);
 				_isPlaying = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
@@ -258,7 +269,7 @@ package com.gestureworks.cml.factories
 		public function seek(pos:Number):void
 		{
 			pause();
-			Position = (pos / 100) * sound.length;
+			Position = (pos / 100) * soundData.length;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , Position));
 		}
 	
@@ -266,29 +277,57 @@ package com.gestureworks.cml.factories
 		protected function load():void
 		{
 			//audio
-			sound = new Sound();
-			channel = new SoundChannel();
-			soundTrans = new SoundTransform();
-			sound.addEventListener(Event.COMPLETE, soundLoaded);
+			
+			
+			soundLoader.addEventListener(MP3Loader.COMPLETE, soundLoaded);
+			//soundData.addEventListener(Event.COMPLETE, soundLoaded);
+			
+			
+		}
+		
+		protected function soundLoaded(event:Event=null):void 
+		{    
+			
 			
 			//audio
 			volume = _volume;
 			pan = 0.0;
 			loop = true
-			sound.load(new URLRequest(_src));			
+			//soundData.load(new URLRequest(_src));	
+			//soundLoader.load(new URLRequest(_src));
+			soundLoader.load(_src);
 			soundTrans.volume = _volume;
 			soundTrans.pan = _pan;
 			_isPlaying = false;
 			Position = 0;
+			//soundData.removeEventListener(Event.COMPLETE, soundLoaded);
+			//if (preload && autoplay) play();
 			
-			if (autoplay && !preload) play();
-							
-		}
-		
-		private function soundLoaded(event:Event):void 
-		{    
-			sound.removeEventListener(Event.COMPLETE, soundLoaded);
-			if (preload && autoplay) play();
+			if (soundLoader)
+			{
+				soundLoader.removeEventListener(MP3Loader.COMPLETE, soundLoaded);
+				soundData = soundLoader.loader;
+				//fileData = img.loader;
+				//img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
+				//img.removeEventListener(StateEvent.CHANGE, onPercentLoad);
+			}
+			else
+			{
+				var soundSrc:String;
+				
+				if (src)
+					soundSrc = src;
+				else
+					soundSrc = state[0]["src"];
+					
+				if (!FileManager.fileList.hasKey(soundSrc))
+					return;
+					
+				soundData = (FileManager.fileList.getKey(soundSrc)) as Sound;			
+			}
+			
+			//trace("Do I have soundData?", soundData);
+			if (autoplay) play();
 		}
 		
 		protected function soundComplete(event:Event):void
