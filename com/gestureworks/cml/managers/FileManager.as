@@ -39,9 +39,10 @@ package com.gestureworks.cml.managers
 		public static var swfType:RegExp = /^.*\.(swf)$/i;
 		public static var swcType:RegExp = /^.*\.(swc)$/i;
 		public static var cmlType:RegExp = /^.*\.(cml)$/i;
+		public static var mp3Type:RegExp = /^.*\.(mp3)$/i;
 		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
-		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
-		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg)$/i;
+		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|m4v|3gpp|mov|flv|f4v)$/i;
+		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg|mp3)$/i;
 		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
 
@@ -189,6 +190,12 @@ package com.gestureworks.cml.managers
 				else if (file.search(mediaPreloadTypes) >= 0) {
 					loader = new IMGLoader;
 					loader.addEventListener(IMGLoader.COMPLETE, onFileLoaded);	
+					loader.load(file);						
+				}
+				
+				else if (file.search(mp3Type) >= 0) {
+					loader = new MP3Loader;
+					loader.addEventListener(MP3Loader.COMPLETE, onFileLoaded);	
 					loader.load(file);						
 				}
 				else {
