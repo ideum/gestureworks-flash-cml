@@ -16,6 +16,7 @@
 
 package com.gestureworks.cml.factories 
 {	
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
 	import flash.display.*;
 	import flash.events.*;
@@ -32,11 +33,11 @@ package com.gestureworks.cml.factories
 	 * @see com.gestureworks.cml.factories.ElementFactory
 	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	
-	public class MP3Factory extends ElementFactory
+	public class MP3Factory extends ObjectFactory
 	{
 		//audio	
-		protected var sound:Sound;
-		protected var channel:SoundChannel;
+		public var sound:Sound;
+		public var channel:SoundChannel;
 		protected var soundTrans:SoundTransform;
 		protected var Position:uint;		
 		
@@ -148,11 +149,7 @@ package com.gestureworks.cml.factories
 		 */
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
-		override public function displayComplete():void {
-			init();
-		}
-		
-		override public function init():void
+		public function init():void
 		{
 			if (preload)
 				load();
@@ -176,7 +173,7 @@ package com.gestureworks.cml.factories
 			}
 			if (soundTrans) soundTrans = null;
 			if (sound) sound = null;
-			if (parent) parent.removeChild(this);
+			//if (parent) parent.removeChild(this);
 		}
 		
 		/// PUBLIC METHODS ///
@@ -212,6 +209,7 @@ package com.gestureworks.cml.factories
 				channel = sound.play(0, 0, soundTrans);
 				channel.addEventListener(Event.SOUND_COMPLETE, soundComplete);
 				_isPlaying = true;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 			}
 		}
 		
@@ -225,6 +223,7 @@ package com.gestureworks.cml.factories
 				channel = sound.play(Position, 0, soundTrans);
 				channel.addEventListener(Event.SOUND_COMPLETE, soundComplete);
 				_isPlaying = true;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 			}
 		}
 		
@@ -236,7 +235,8 @@ package com.gestureworks.cml.factories
 			channel.stop();
 			channel.removeEventListener(Event.SOUND_COMPLETE, soundComplete);
 			Position = channel.position;
-			_isPlaying = false
+			_isPlaying = false;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 		}
 		
 		/**
@@ -247,7 +247,8 @@ package com.gestureworks.cml.factories
 			channel.stop();
 			channel.removeEventListener(Event.SOUND_COMPLETE, soundComplete);
 			Position = 0
-			_isPlaying = false
+			_isPlaying = false;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 		}
 		
 		/**
@@ -258,6 +259,7 @@ package com.gestureworks.cml.factories
 		{
 			pause();
 			Position = (pos / 100) * sound.length;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , Position));
 		}
 	
 		/// PRIVATE METHODS ///	
