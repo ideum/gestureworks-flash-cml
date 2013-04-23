@@ -151,7 +151,7 @@ package com.gestureworks.cml.factories
 		
 		public function init():void
 		{
-			if (preload)
+			//if (preload)
 				load();
 		}
 		
@@ -281,13 +281,14 @@ package com.gestureworks.cml.factories
 			_isPlaying = false;
 			Position = 0;
 			
-			if (autoplay) play();
+			if (autoplay && !preload) play();
 							
 		}
 		
 		private function soundLoaded(event:Event):void 
 		{    
 			sound.removeEventListener(Event.COMPLETE, soundLoaded);
+			if (preload && autoplay) play();
 		}
 		
 		protected function soundComplete(event:Event):void
