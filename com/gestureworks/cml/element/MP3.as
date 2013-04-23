@@ -32,8 +32,14 @@ package com.gestureworks.cml.element
 	 *
 	 * </codeblock>
 	 */		
-	public class MP3 extends MP3Factory
+	public class MP3 extends ElementFactory
 	{
+		private var _mp3:MP3Factory = new MP3Factory();
+		/**
+		 * Exposes read-only access for the mp3 factory element.
+		 */
+		public function get mp3():MP3Factory { return _mp3; }
+		
 		// audio	
 		//private var sound:Sound;
 		//private var channel:SoundChannel;
@@ -58,6 +64,16 @@ package com.gestureworks.cml.element
 		public function MP3()
 		{
 			super();
+		}
+		
+		private var _src:String;
+		/**
+		 * Sets the source of the mp3.
+		 */
+		public function get src():String { return _src; }
+		public function set src(value:String):void {
+			_src = value;
+			_mp3.src = _src;
 		}
 		
 		private var _backgroundColor:uint = 0x333333;
@@ -111,6 +127,78 @@ package com.gestureworks.cml.element
 		{
 			_display = value;
 		}	
+		
+		public function get isPlaying():Boolean { return _mp3.isPlaying; }
+		
+		
+		
+//{ region MP3Factory properties
+		/**
+		 * @deprecated use preload instead.
+		 */
+		[Deprecated(replacement = "preload")]
+		public function get autoLoad():Boolean { return _preload; }
+		public function set autoLoad(value:Boolean):void 
+		{ 
+			_preload = value;
+			_mp3.preload = _preload; 
+		}
+		
+		private var _preload:Boolean = true;
+		/**
+		 * Indicates whether the mp3 file is loaded when the src property is set
+		 */	
+		public function get preload():Boolean { return _preload; }
+		public function set preload(value:Boolean):void {
+			_preload = value;
+			_mp3.preload = _preload;
+		}
+		
+		private var _autoplay:Boolean = false;
+		/**
+		 * Indicates whether the mp3 file plays upon load
+		 */	
+		public function get autoplay():Boolean { return _autoplay; }
+		public function set autoplay(value:Boolean):void 
+		{	
+			_autoplay = value;
+			_mp3.autoplay = _autoplay;
+		}
+
+		private var _loop:Boolean = false;
+		/**
+		 * Mp3 loop play
+		 */
+		public function get loop():Boolean { return _loop; }
+		public function set loop(value:Boolean):void 
+		{ 
+			_loop = value;
+			_mp3.loop = _loop; 
+		}
+		
+		private var _volume:Number = 1;
+		/**
+		 * Sets the volume
+		 */	
+		public function get volume():Number {return _volume;}		
+		public function set volume(value:Number):void
+		{
+			_volume = value;
+			_mp3.volume = _volume;
+		}
+		
+		private var _pan:Number = 0;
+		/**
+		 * Sets the pan
+		 */	
+		public function get pan():Number {return _pan;}				
+		public function set pan(value:Number):void
+		{
+			_pan = value;
+			_mp3.pan = _pan;
+		}
+		
+//} endregion
 		
 
 //{ region ID3 properties
@@ -187,7 +275,7 @@ package com.gestureworks.cml.element
 			}
 			
 			if (_id3) {
-				sound.removeEventListener(Event.ID3, id3Handler);
+				_mp3.removeEventListener(Event.ID3, id3Handler);
 				_id3 = null;
 			}
 			if (bytes) bytes = null;
@@ -209,78 +297,79 @@ package com.gestureworks.cml.element
 		override public function init():void
 		{
 			super.init();
-			//load();
+			load();
+			//_mp3.init();
 		}
 
 		/**
 		 * Closes mp3 
 		 */	
-		override public function close():void 
+		public function close():void 
 		{
-			super.close();
+			_mp3.close();
 			timer.stop();
 		}		
 		
 		/**
 		 * Plays from the beginning
 		 */		
-		override public function play():void
+		public function play():void
 		{
-			super.play();
+			_mp3.play();
 			
-			if (isPlaying) 
-			{	
-				timer.start();
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
-			}
+			//if (isPlaying) 
+			//{	
+				//timer.start();
+				//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
+			//}
 		
 		}
 				
 		/**
 		 * Resumes playback from paused position
 		 */			
-		override public function resume():void
+		public function resume():void
 		{
-			super.resume();
+			_mp3.resume();
 			
-			if (isPlaying) 
-			{				
-				timer.start();
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
-			}
+			//if (isPlaying) 
+			//{				
+				//timer.start();
+				//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
+			//}
 		}
 		
 		/**
 		 * Pauses playback
 		 */			
-		override public function pause():void
+		public function pause():void
 		{
-			super.pause();
+			_mp3.pause();
 			
-			timer.stop();
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
+			//timer.stop();
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 		}
 		
 		/**
 		 * Pauses playback and returns to the beginning
 		 */			
-		override public function stop():void
+		public function stop():void
 		{
-			super.stop();
+			_mp3.stop();
 			
-			timer.stop();
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
+			//timer.stop();
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 		}
 		
-		override public function seek(pos:Number):void
+		public function seek(pos:Number):void
 		{
-			super.seek(pos);
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , Position));
+			_mp3.seek(pos);
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , Position));
 		}
 		
 		// private methods //
 		
-		override protected function load():void
+		protected function load():void
 		{	
 			loading = true;;
 			
@@ -323,43 +412,51 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			//ID3 metadata
-			//sound.addEventListener(Event.ID3, id3Handler);
-			
 			//update timer
 			timer = new Timer(10);
 			timer.addEventListener(TimerEvent.TIMER, updateDisplay);
 			
-			super.load();
-			
 			//ID3 metadata
-			sound.addEventListener(Event.ID3, id3Handler);
+			_mp3.addEventListener(Event.ID3, id3Handler);
+			
+			_mp3.addEventListener(StateEvent.CHANGE, playbackHandler);
+			
+			_mp3.init();
 		}		
 		
+		private function playbackHandler(e:StateEvent):void {
+			switch(e.property) {
+				case "isPlaying":
+					if (isPlaying)
+						timer.start();
+					else
+						timer.stop();
+					break;
+					
+				case "Position":
+					// Do something about position?
+					break;
+			}
+		}
 	
 		//update timer
 		public function get time():String
 		{
 			return _timerFormated;
 		}
-	
 		
-		private function soundLoaded(event:Event):void 
-		{    
-			sound.removeEventListener(Event.COMPLETE, soundLoaded);
-		}
-		
-		override protected function soundComplete(event:Event):void
+		private function soundComplete(event:Event):void
 		{
 			timer.stop();
-			super.soundComplete(event);
+			//super.soundComplete(event);
 		}
 		
 		//graphic
 		private function draw():void 
 		{
+			//trace("drawing");
 			var origin:Number = height * .5;
-			sound.extract(bytes, 2048, (channel.position*44.1));
+			_mp3.sound.extract(bytes, 2048, (_mp3.channel.position*44.1));
 			bytes.position = 0;
 			
 			var i:int = 0;
@@ -381,7 +478,7 @@ package com.gestureworks.cml.element
 		//id3 metadata method
 		private function id3Handler(event:Event):void 
 		{
-			_id3 = sound.id3;
+			_id3 = _mp3.sound.id3;
 			if (_id3.songName) _id3Title = id3.songName;
 			if (_id3.artist) _id3Author = id3.artist;
 			if (_id3.album) _id3Album = id3.album;
@@ -393,11 +490,11 @@ package com.gestureworks.cml.element
 		//timer methods
 		private function updateDisplay(event:TimerEvent):void
 		{
-			var string:String=formatTime(channel.position);
+			var string:String=formatTime(_mp3.channel.position);
 			sendUpdate(string);
 			
-			var timePos:Number = channel.position / 1000;
-			timePos = timePos / (sound.length / 1000);
+			var timePos:Number = _mp3.channel.position / 1000;
+			timePos = timePos / (_mp3.sound.length / 1000);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", timePos));
 			
 			if (display == "waveform") 		
