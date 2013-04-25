@@ -615,7 +615,8 @@ package com.gestureworks.cml.components
 						
 			if (tweens[target.parent])
 			{
-				tweens[target.parent].stop();
+				//tweens[target.parent].stop();
+				tweens[target.parent].kill();
 				tweens[target.parent] = null;
 				delete tweens[target.parent];
 			}
