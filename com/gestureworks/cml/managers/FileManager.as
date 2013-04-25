@@ -188,16 +188,18 @@ package com.gestureworks.cml.managers
 				}
 				
 				else if (file.search(mediaPreloadTypes) >= 0) {
-					loader = new IMGLoader;
-					loader.addEventListener(IMGLoader.COMPLETE, onFileLoaded);	
-					loader.load(file);						
+					if (file.search(mp3Type) >= 0) {
+						loader = new MP3Loader;
+						loader.addEventListener(MP3Loader.COMPLETE, onFileLoaded);	
+						loader.load(file);						
+					} else {
+						loader = new IMGLoader;
+						loader.addEventListener(IMGLoader.COMPLETE, onFileLoaded);	
+						loader.load(file);	
+					}
 				}
 				
-				else if (file.search(mp3Type) >= 0) {
-					loader = new MP3Loader;
-					loader.addEventListener(MP3Loader.COMPLETE, onFileLoaded);	
-					loader.load(file);						
-				}
+				//else 
 				else {
 					dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, null, null, false, false));						
 				}				
