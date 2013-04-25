@@ -1,6 +1,8 @@
 package com.gestureworks.cml.utils 
 {
 	import com.gestureworks.cml.element.MP3;
+	import com.gestureworks.cml.element.Sound;
+	import com.gestureworks.cml.managers.SoundManager;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.TouchEvent;
 	import flash.utils.Dictionary;
@@ -20,42 +22,42 @@ package com.gestureworks.cml.utils
 			
 		}
 		
-		public static function attachSound(obj:Object, src:String):void {
+		/**
+		 * Writes cml to object sound.
+		 * @param	obj
+		 * @param	cml
+		 */
+		public static function parseCML(target:Object, cml:XMLList):void
+		{
+			if (!("sound" in target)) 
+				return;
+		
+			var name:String;
+			var val:*;
+			var i:int;			
 			
-			if (dictionary[obj]) {
-				//deleteSound(obj);
-				//obj.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-				//MP3(dictionary[obj]).dispose();
-				//dictionary[obj] = null;
+			for each (var node:XML in cml.*) {
+				if (node.name() == "Sound") {
+					
+					var sound:Sound = new Sound();
+					for each (val in node.@*) {
+						name = val.name();
+						trace(name, val);
+						if (val == "true") val = true;
+						if (val == "false") val = false;	
+						//obj.state[obj.state.length - 1][name]  = val;
+						sound[name] = val;
+						sound.autoplay = false;
+					}
+					
+					//sound.init();
+					
+					// Add sound and parent to manager.
+					SoundManager.attachSound(target, sound);
+				}	
 			}
-			
-			var wav:MP3 = new MP3();
-			wav.src = src;
-			wav.autoplay = false;
-			wav.loop = false;
-			wav.display = "none";
-			
-			//obj.addChild(wav);
-			
-			wav.init();
-			
-			dictionary[obj] = wav;
-			
-			//if (!(obj.hasEventListener(TouchEvent.TOUCH_BEGIN)))
-				obj.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
 		}
 		
-		private static function onDown(e:TouchEvent):void {
-			trace("On down in Sound Utils.", e.target, dictionary[e.target]);
-			MP3(dictionary[e.target]).play();
-		}
-		
-		public static function deleteSound(obj:Object):void {
-			obj.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			MP3(dictionary[obj]).dispose();
-			dictionary[obj] = null;
-			delete dictionary[obj];
-		}
 	}
 
 }
