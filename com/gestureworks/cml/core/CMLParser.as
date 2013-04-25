@@ -404,11 +404,16 @@ package com.gestureworks.cml.core
 				if (debug) trace(dash(XMLList(node)) + tag + "");
 				
 				if (tag == "Include") {
-					if (FileManager.hasFile(node.@src)) {
-						if (node.@src != undefined)
-							node = XML(FileManager.fileList.getKey(String(node.@src)));
-						else if (node.@cml != undefined) //deprecate
-							node = XML(FileManager.fileList.getKey(String(node.@src)));
+					var path:String;
+					if (node.@src != undefined) {
+						path = updatePath(node.@src);
+					}
+					else if (node.@cml != undefined) { // Deprecated
+						path = updatePath(node.@cml);
+					}
+					
+					if (FileManager.hasFile(path)) {
+						node = XML(FileManager.fileList.getKey(path));
 					
 						tag = node.name();
 						loopCML(node.*, parent);
