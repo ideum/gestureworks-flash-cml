@@ -251,7 +251,8 @@ package com.gestureworks.cml.core
 			var path:String;
 			
 			if (str.length)
-				path = str;			
+				path = str;		
+				
 			else {
 				if (cml.@src != undefined)
 					path = cml.@src;
@@ -260,7 +261,10 @@ package com.gestureworks.cml.core
 				else throw new Error("Include statement must contain the 'src' attribute");
 			}	
 			
-			if (!FileManager.isCML(path)) return;
+			if (!FileManager.isCML(path)) 
+				return;
+			
+			path = updatePath(path);
 			
 			if (paths["Include"].indexOf(path) == -1)
 				paths["Include"].push(path);
@@ -419,7 +423,7 @@ package com.gestureworks.cml.core
 				
 				else if (tag == "DebugKit" || tag == "RendererData" || tag == "Filter" || tag == "Gesture" 
 					|| tag == "GestureList" || tag == "LibraryKit" || tag == "Library" || tag == "LayoutKit" 
-					|| tag == "Layout" || tag == "State")
+					|| tag == "Layout" || tag == "State" || tag == "Sound")
 					continue;
 							
 				
@@ -458,6 +462,7 @@ package com.gestureworks.cml.core
 				//target state tag
 				StateUtils.parseCML(obj, XMLList(node));
 				
+				SoundUtils.parseCML(obj, XMLList(node));
 
 				
 				// add to master object list
@@ -724,7 +729,9 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
+				trace(obj);
 				obj = searchPackages(tag, CML_CORE.CML_CORE_PACKAGES);
+				trace(obj);
 
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");
@@ -757,7 +764,7 @@ package com.gestureworks.cml.core
 					obj = new as3class();
 					break;
 				}
-				catch (e:Error){}	
+				catch (e:Error) {}	
 			}
 			
 			return obj;
