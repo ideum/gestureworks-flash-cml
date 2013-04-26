@@ -198,11 +198,7 @@ package com.gestureworks.cml.components
 		{
 			super.onStateEvent(event);
 			
-			if (event.value == "forward")
-				album.next();
-			else if (event.value == "back")
-				album.previous();	
-			else if (event.property == "albumState") {
+			if (event.property == "albumState") {
 				var indices:RadioButtons = searchChildren(RadioButtons);
 				if (indices) {
 					indices.selectButton(Album(album).currentSnapPoint.toString());
