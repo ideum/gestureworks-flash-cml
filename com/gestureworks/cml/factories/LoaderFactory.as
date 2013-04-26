@@ -1,8 +1,10 @@
 package com.gestureworks.cml.factories 
 {
 	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.managers.FileManager;
 	import flash.display.*;
 	import flash.events.*;
+	import flash.media.Sound;
 	import flash.net.*;
 	
 	/**
@@ -72,6 +74,17 @@ package com.gestureworks.cml.factories
 			_src = url;
 			urlRequest = new URLRequest(url);
 			
+			if (_src.search(FileManager.mp3Type) >= 0) {
+				// Load MP3.
+				trace("Source:", _src, FileManager.mp3Type);
+				
+				_loader = new Sound()
+				_loader.addEventListener(Event.COMPLETE, onComplete);
+				_loader.load(urlRequest);
+				
+				return;
+			}
+			
 			_loader = new Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);						
@@ -95,6 +108,11 @@ package com.gestureworks.cml.factories
 		protected function onComplete(e:Event):void
 		{
 			_isLoaded = true;
+			if (_loader is Sound) {
+				_loader.removeEventListener(Event.COMPLETE, onComplete);
+				trace("Sound loaded.");
+				return;
+			}
 			_loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onProgress);							
 			_loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);	
