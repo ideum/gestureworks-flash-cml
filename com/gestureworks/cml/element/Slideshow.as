@@ -139,6 +139,8 @@ package com.gestureworks.cml.element
 			
 			showNext();
 			//init();
+			if (autoplay)
+				play();
 		}
 		
 		/**
