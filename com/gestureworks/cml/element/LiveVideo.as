@@ -34,8 +34,8 @@ package com.gestureworks.cml.element
 		public function LiveVideo() 
 		{
 			video = new flash.media.Video();
-			addChild(video);
-			load();
+			//addChild(video);
+			//load();
 		}
 		
 		/**
@@ -113,6 +113,8 @@ package com.gestureworks.cml.element
 		*/
 		override public function init():void
 		{ 
+			load();
+			
 		  //Get the default camera for the system	
 		   cam = camera ? camera.getCamera() : null;
 		  
@@ -168,6 +170,9 @@ package com.gestureworks.cml.element
 		 */ 
 		private function load():void
 		{
+			//video = new flash.media.Video();
+			addChild(video);
+			
 		 netConnection = new NetConnection;
 		 netConnection.connect(null);
 		 netstream = new NetStream(netConnection);
