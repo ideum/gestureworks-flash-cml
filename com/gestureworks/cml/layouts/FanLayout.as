@@ -142,7 +142,7 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;			
-				translateTransform(matrix, originX - (child.width * child.scale), originY);
+				translateTransform(matrix, originX - child.width, originY);
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);
 				nextAngle += angle;
@@ -163,7 +163,7 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 				
 				var matrix:Matrix = child.transform.matrix;
-				translateTransform(matrix, originX, originY + (child.height * child.scale));
+				translateTransform(matrix, originX, originY - child.height);
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);
 				nextAngle += angle;
@@ -184,7 +184,7 @@ package com.gestureworks.cml.layouts
 				if (!validObject(child)) continue;
 					
 				var matrix:Matrix = child.transform.matrix;
-				translateTransform(matrix, originX - (child.width * child.scale), originY - (child.height * child.scale));
+				translateTransform(matrix, originX - child.width, originY - child.height);
 				matrix = pointRotateMatrix(nextAngle, originX, originY, matrix);
 				childTransformations.push(matrix);
 				nextAngle += angle;
