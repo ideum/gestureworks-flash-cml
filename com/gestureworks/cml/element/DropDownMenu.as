@@ -63,6 +63,8 @@ package com.gestureworks.cml.element
 			super();
 		}
 		
+		public function get open():Boolean { return _open; }
+		
 		private var _title:String = "Menu Title";
 		/**
 		 * The menu's title that will always be visible.
@@ -196,6 +198,7 @@ package com.gestureworks.cml.element
 					}
 				}
 				removeChild(iField);
+				iField.visible = false;
 			}
 			
 			//Create hit box based on width and number of items
@@ -219,6 +222,8 @@ package com.gestureworks.cml.element
 				
 				_menuItemsArray[j] = createMenuItem(menuItemsArray[j]);
 				_menuItemsArray[j].y = _menuTitle.y + (_height * (j + 1));
+				addChild(_menuItemsArray[j]);
+				_menuItemsArray[j].visible = false;
 				
 				if (GestureWorks.activeNativeTouch){
 					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OVER, onOver);
@@ -280,7 +285,7 @@ package com.gestureworks.cml.element
 			return menuElement;
 		}
 		
-		private function onDownHit(event:*):void {
+		public function onDownHit(event:*=null):void {
 			if (!_open) {
 				showMenu();
 			}
@@ -308,7 +313,7 @@ package com.gestureworks.cml.element
 			hideMenu();
 		}
 		
-		private function showMenu():void {
+		public function showMenu(noDispatch:Boolean = false):void {
 			//Show menu here.
 			_open = true;
 			_menuTitle.backgroundColor = _color;
@@ -319,7 +324,23 @@ package com.gestureworks.cml.element
 			for each (var i:Text in _menuItemsArray) {
 				i.backgroundColor = _color;
 				i.color = _fill;
-				addChild(i);
+				i.visible = true;
+				if (GestureWorks.supportsTouch){
+					i.addEventListener(TouchEvent.TOUCH_OVER, onOver);
+					i.addEventListener(TouchEvent.TOUCH_OUT, onItemOut);
+					i.addEventListener(TouchEvent.TOUCH_END, onItemSelected);
+				}
+				else if (GestureWorks.activeTUIO){
+					i.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+					i.addEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
+					i.addEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
+				}
+				else {
+					i.addEventListener(MouseEvent.MOUSE_OVER, onOver);
+					i.addEventListener(MouseEvent.MOUSE_OUT, onItemOut);
+					i.addEventListener(MouseEvent.MOUSE_UP, onItemSelected);
+				}
+				//_menuItemsArray[i].visible = true;
 				
 			}
 			
@@ -331,9 +352,12 @@ package com.gestureworks.cml.element
 				_hit.addEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
 			else
 				_hit.addEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
+			
+			if(!noDispatch)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "menu", "open", true));
 		}
 		
-		private function hideMenu():void {
+		public function hideMenu(noDispatch:Boolean = false):void {
 			//Hide menu here.
 			_open = false;
 			
@@ -344,8 +368,24 @@ package com.gestureworks.cml.element
 			
 			if (_menuMarker)	triangle.color = _color;
 			
-			for each (var i:Text in _menuItemsArray) {
-				removeChild(i);
+			for (var i:Number = 0; i < _menuItemsArray.length; i++) {
+				//removeChild(i);
+				_menuItemsArray[i].visible = false;
+				if (GestureWorks.supportsTouch){
+					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OVER, onOver);
+					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OUT, onItemOut);
+					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_END, onItemSelected);
+				}
+				else if (GestureWorks.activeTUIO){
+					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
+					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
+					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
+				}
+				else {
+					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OVER, onOver);
+					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OUT, onItemOut);
+					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_UP, onItemSelected);
+				}
 			}
 			
 			if (GestureWorks.activeNativeTouch)
@@ -354,6 +394,9 @@ package com.gestureworks.cml.element
 				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
 			else
 				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
+			
+			if(!noDispatch)
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "menu", "close", true));
 		}
 		
 		/**
