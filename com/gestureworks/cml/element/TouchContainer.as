@@ -118,7 +118,7 @@ package com.gestureworks.cml.element
 		public function set sound(value:String):void {
 			_sound = value;
 			if (_sound) {
-				SoundUtils.attachSound(this, _sound);
+				//SoundUtils.attachSound(this, _sound);
 			}
 		}
 		
@@ -433,8 +433,8 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			layoutList = null;		
-			if (sound)
-				SoundUtils.deleteSound(this);
+			//if (sound)
+				//SoundUtils.deleteSound(this);
 		}
 		
 
