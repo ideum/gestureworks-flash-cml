@@ -87,7 +87,9 @@ package com.gestureworks.cml.factories
 		 * Mp3 loop play
 		 */
 		public function get loop():Boolean { return _loop; }
-		public function set loop(value:Boolean):void { _loop = value; }		
+		public function set loop(value:Boolean):void { 
+			_loop = value; 
+		}		
 		
 		private var _src:String;
 			/**
@@ -157,7 +159,7 @@ package com.gestureworks.cml.factories
 			//if (preload)
 				//load();
 			soundData = new Sound();
-			soundLoader = new MP3Loader();
+			
 			channel = new SoundChannel();
 			soundTrans = new SoundTransform();
 				
@@ -277,12 +279,12 @@ package com.gestureworks.cml.factories
 		protected function load():void
 		{
 			//audio
-			
+			soundLoader = new MP3Loader();
 			
 			soundLoader.addEventListener(MP3Loader.COMPLETE, soundLoaded);
 			//soundData.addEventListener(Event.COMPLETE, soundLoaded);
 			
-			
+			soundLoader.load(_src);
 		}
 		
 		protected function soundLoaded(event:Event=null):void 
@@ -292,10 +294,8 @@ package com.gestureworks.cml.factories
 			//audio
 			volume = _volume;
 			pan = 0.0;
-			loop = true
 			//soundData.load(new URLRequest(_src));	
 			//soundLoader.load(new URLRequest(_src));
-			soundLoader.load(_src);
 			soundTrans.volume = _volume;
 			soundTrans.pan = _pan;
 			_isPlaying = false;
@@ -334,7 +334,8 @@ package com.gestureworks.cml.factories
 		{
 			pause();
 			Position = 0;
-			if (_loop == 'on') play();
+			if (_loop) play();
+			else _isPlaying = false;
 		}
 	}
 }
