@@ -456,7 +456,7 @@ package com.gestureworks.cml.element
 		{
 			//trace("drawing");
 			var origin:Number = height * .5;
-			_mp3.sound.extract(bytes, 2048, (_mp3.channel.position*44.1));
+			_mp3.soundData.extract(bytes, 2048, (_mp3.channel.position*44.1));
 			bytes.position = 0;
 			
 			var i:int = 0;
@@ -478,7 +478,7 @@ package com.gestureworks.cml.element
 		//id3 metadata method
 		private function id3Handler(event:Event):void 
 		{
-			_id3 = _mp3.sound.id3;
+			_id3 = _mp3.soundData.id3;
 			if (_id3.songName) _id3Title = id3.songName;
 			if (_id3.artist) _id3Author = id3.artist;
 			if (_id3.album) _id3Album = id3.album;
@@ -494,7 +494,7 @@ package com.gestureworks.cml.element
 			sendUpdate(string);
 			
 			var timePos:Number = _mp3.channel.position / 1000;
-			timePos = timePos / (_mp3.sound.length / 1000);
+			timePos = timePos / (_mp3.soundData.length / 1000);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", timePos));
 			
 			if (display == "waveform") 		
