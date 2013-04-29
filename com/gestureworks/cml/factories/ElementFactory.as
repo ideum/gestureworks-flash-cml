@@ -84,7 +84,6 @@ package com.gestureworks.cml.factories
 		}
 		
 		
-		
 		private var _cmlIndex:int;
 		/**
 		 * sets the cml index
@@ -141,7 +140,7 @@ package com.gestureworks.cml.factories
 		
 		private var _height:Number = 0;
 		/**
-		 * Sets width of the display object in pixels
+		 * Sets height of the display object in pixels
 		 * @default 0
 		 */		
 		override public function get height():Number{return _height;}
