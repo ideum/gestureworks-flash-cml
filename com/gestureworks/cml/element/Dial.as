@@ -661,17 +661,17 @@ package com.gestureworks.cml.element
 				background.filters = filtersArray;
 			
 			leftTriangle.graphics.clear();
-			leftTriangle.graphics.beginFill(leftTriangleColor, leftTriangleAlpha);
-			leftTriangle.graphics.moveTo(2, (height / 2) - (height * 0.05));
-			leftTriangle.graphics.lineTo(20, height / 2);
-			leftTriangle.graphics.lineTo(2, (height / 2) + (height * 0.05));
+			leftTriangle.graphics.beginFill(0xff0000, leftTriangleAlpha);
+			leftTriangle.graphics.moveTo(-1, (height / 2) - (height * 0.075));
+			leftTriangle.graphics.lineTo(27, height / 2);
+			leftTriangle.graphics.lineTo(-1, (height / 2) + (height * 0.075));
 			leftTriangle.graphics.endFill();
 			
 			rightTriangle.graphics.clear();
-			rightTriangle.graphics.beginFill(rightTriangleColor, rightTriangleAlpha);
-			rightTriangle.graphics.moveTo(width, (height / 2) - (height * 0.05));
-			rightTriangle.graphics.lineTo(width - 20, height / 2);
-			rightTriangle.graphics.lineTo(width, (height / 2) + (height * 0.05));
+			rightTriangle.graphics.beginFill(0xff0000, rightTriangleAlpha);
+			rightTriangle.graphics.moveTo(width, (height / 2) - (height * 0.075));
+			rightTriangle.graphics.lineTo(width - 27, height / 2);
+			rightTriangle.graphics.lineTo(width, (height / 2) + (height * 0.075));
 			rightTriangle.graphics.endFill();
 			
 			centerLine.graphics.clear();
