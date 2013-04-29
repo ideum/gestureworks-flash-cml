@@ -182,8 +182,6 @@ package  com.gestureworks.cml.components
 		{	
 			super.onStateEvent(event);
 			
-			//trace("EVENT", event.value);
-			
 			if (event.value == "close" && slideshow){
 				slideshow.stop();
 				if (linkSlideshows)
