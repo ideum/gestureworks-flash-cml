@@ -73,10 +73,10 @@ package com.gestureworks.cml.components
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
 			if (!mp3)
 				mp3 = searchChildren(".mp3_element");
-			if (!menu)
+			/*if (!menu)
 				menu = searchChildren(".menu_container");
 			if (!frame)
-				frame = searchChildren(".frame_element");
+				frame = searchChildren(".frame_element");*/
 			if (!front)
 				front = searchChildren(".image_container");
 			if (!back)
