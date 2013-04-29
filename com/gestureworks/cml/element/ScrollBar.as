@@ -184,6 +184,15 @@ package com.gestureworks.cml.element
 			_shape = value;
 		}
 		
+		private var _railShape:String = "rectangle";
+		/**
+		 * Sets the shape of the rail grpahic, either "rectangle" or "roundRectangle".
+		 */
+		public function get railShape():String { return _railShape; }
+		public function set railShape(value:String):void {
+			_railShape = value;
+		}
+		
 		private var _cornerHeight:Number = 10;
 		/**
 		 * Sets part of the corner radius for the ellipse used to round the rectangle of the thumb. Shape must be "roundRectangle" for this to be used.
@@ -271,7 +280,7 @@ package com.gestureworks.cml.element
 				railGraphic.height = this.height;
 				railGraphic.width = this.width;
 				railGraphic.lineStroke = 0;
-				railGraphic.shape = "rectangle";
+				railGraphic.shape = _railShape;
 			}
 			
 			// Create and position buttons based upon either orientation.
@@ -375,6 +384,11 @@ package com.gestureworks.cml.element
 			if (_shape == "roundRectangle") {
 				thumb.cornerHeight = _cornerHeight;
 				thumb.cornerWidth = _cornerWidth;
+			}
+			
+			if (_railShape == "roundRectangle") {
+				railGraphic.cornerHeight = _cornerHeight;
+				railGraphic.cornerWidth = _cornerWidth;
 			}
 			
 			//Set thumb colors.
@@ -746,6 +760,14 @@ package com.gestureworks.cml.element
 			railGraphic = null;
 		}
 		
+		public function reset():void {
+			if (_orientation == "vertical"){
+				thumb.y = railGraphic.y;
+			}
+			else if (_orientation == "horizontal") {
+				thumb.x = railGraphic.x;
+			}
+		}
 
 	}
 }
