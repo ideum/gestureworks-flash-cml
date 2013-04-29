@@ -249,8 +249,8 @@ package com.gestureworks.cml.element
 			if (!numChildren) return;
 			_content = getChildAt(0);
 			//_content.addEventListener(StateEvent.CHANGE, onStateEvent);
-			//if (_hit && _content)
-				//_hit.addChild(_content);
+			if (_hit && _content)
+				_hit.addChild(_content);
 			// If one bar is set but not the other, set the other to match.
 			if (_verticalScroll && !_horizontalScroll) {
 				_horizontalScroll = new ScrollBar();
@@ -441,6 +441,16 @@ package com.gestureworks.cml.element
 				if (_hit)
 					_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			}
+		}
+		
+		public function reset():void {
+			if (_verticalScroll)
+				_verticalScroll.reset();
+			if (_horizontalScroll)
+				_horizontalScroll.reset();
+				
+			_content.x = 0;
+			_content.y = 0;
 		}
 		
 		private function onScroll(e:StateEvent):void {
