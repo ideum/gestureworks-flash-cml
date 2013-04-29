@@ -34,7 +34,6 @@ package com.gestureworks.cml.element
 		public var movementRail:Number;
 		
 		
-		
 		/**
 		 * Constructor
 		 */
@@ -232,6 +231,16 @@ package com.gestureworks.cml.element
 			_contentWidth = value;
 		}
 		
+		private var _thumbMin:Number = 30;
+		/**
+		 * The minimum size the thumb of the scroll bar can reach.
+		 * @default 30
+		 */
+		public function get thumbMin():Number { return _thumbMin; }
+		public function set thumbMin(value:Number):void {
+			_thumbMin = value;
+		}
+		
 		/**
 		 * CML display callback Initialisation
 		 */
@@ -372,12 +381,18 @@ package com.gestureworks.cml.element
 				thumb.width = this.width;
 				thumb.height = (this.height / contentHeight) * railGraphic.height;
 				movementRail = railGraphic.height - thumb.height;
+				if (thumb.height < _thumbMin) {
+					thumb.height = _thumbMin;
+				}
 				thumb.y = railGraphic.y;
 			}
 			else if (_orientation == "horizontal") {
 				thumb.height = this.height;
 				thumb.width = (this.width / contentWidth) * railGraphic.width;
 				movementRail = railGraphic.width - thumb.width;
+				if (thumb.width < _thumbMin) {
+					thumb.width = _thumbMin;
+				}
 				thumb.x = railGraphic.x;
 			}
 			
@@ -411,10 +426,94 @@ package com.gestureworks.cml.element
 			thumbTouch.addEventListener(GWGestureEvent.DRAG, onDrag);
 			
 			if (parent && parent is ScrollPane && !parent["_hit"]) {
-				thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-				thumbTouch.addEventListener(GWGestureEvent.RELEASE, onRelease);
+				//thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+				//thumbTouch.addEventListener(GWGestureEvent.RELEASE, onRelease);
 			}
-			thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);			
+			thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);	
+			railTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onRailTouch);
+		}
+		
+		private function onRailTouch(e:GWTouchEvent):void 
+		{
+			switch(_orientation) {
+				case "vertical":
+					if (e.localY > thumb.y) {
+						thumb.y += movementRail * 0.1;
+						clampThumb();
+						if (thumb.y < e.localY) {
+							if(_buttonVisible)
+								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+							else
+								scrollPosition = thumb.y / movementRail;
+						}
+						else if (thumb.y > e.localY) {
+							thumb.y = e.localY;
+							clampThumb();
+							if(_buttonVisible)
+								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+							else
+								scrollPosition = thumb.y / movementRail;
+						}
+					}
+					else if (e.localY < thumb.y) {
+						thumb.y -= movementRail * 0.1;
+						clampThumb();
+						if (thumb.y > e.localY) {
+							if(_buttonVisible)
+								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+							else
+								scrollPosition = thumb.y / movementRail;
+						}
+						else if (thumb.y < e.localY) {
+							thumb.y = e.localY;
+							clampThumb();
+							if(_buttonVisible)
+								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+							else
+								scrollPosition = thumb.y / movementRail;
+						}
+					}
+					break;
+					
+				case "horizontal":
+					if (e.localX > thumb.x) {
+						thumb.x += movementRail * 0.1;
+						clampThumb();
+						if (thumb.x < e.localX) {
+							if(_buttonVisible)
+								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+							else
+								scrollPosition = thumb.x / movementRail;
+						}
+						else if (thumb.x > e.localX) {
+							thumb.x = e.localX;
+							clampThumb();
+							if(_buttonVisible)
+								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+							else
+								scrollPosition = thumb.x / movementRail;
+						}
+					}
+					else if (e.localX < thumb.x) {
+						thumb.x -= movementRail * 0.1;
+						clampThumb();
+						if (thumb.x > e.localX) {
+							if(_buttonVisible)
+								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+							else
+								scrollPosition = thumb.x / movementRail;
+						}
+						else if (thumb.x < e.localX) {
+							thumb.x = e.localX;
+							clampThumb();
+							if(_buttonVisible)
+								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+							else
+								scrollPosition = thumb.x / movementRail;
+						}
+					}
+					break;
+			}
 		}
 		
 		private function onTap1(e:GWGestureEvent):void {
@@ -459,8 +558,6 @@ package com.gestureworks.cml.element
 		
 		private function onDrag(e:GWGestureEvent):void {		
 			e.stopImmediatePropagation();
-			
-			
 			
 			if(_orientation == "vertical") {
 				// Check the new position won't be further than the limits, and if so, clamp it.
@@ -536,45 +633,6 @@ package com.gestureworks.cml.element
 				else
 					scrollPosition = thumb.x / movementRail;
 			}			
-			
-			/*
-			if(_orientation == "vertical") {
-				thumb.y += e.value.drag_dy;
-				clampThumb();
-				// Dispatch the scroll position.
-				if (buttonVisible)
-					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
-				else
-					scrollPosition = thumb.y / movementRail;
-			}
-			else if (_orientation == "horizontal") {
-				thumb.x += e.value.drag_dx;
-				clampThumb();
-				// Dispatch the scroll position.
-				if (buttonVisible)
-					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
-				else
-					scrollPosition = thumb.x / movementRail;
-			}
-			*/
-		}
-		
-		
-		
-		private function onBegin(e:GWTouchEvent):void {	
-			var p1:TouchContainer = parent as TouchContainer;
-			var p2:TouchContainer = p1.parent as TouchContainer;	
-			p2.disableNativeTransform = true;			
-		}
-		
-		private function onRelease(e:GWGestureEvent):void {
-			var p1:TouchContainer = parent as TouchContainer;
-			var p2:TouchContainer = p1.parent as TouchContainer;
-	
-			p1.cO.pointArray.length = 0;
-			p2.cO.pointArray.length = 0;
-			p2.disableNativeTransform = false;
-						
 		}
 	
 		private var oldX:Number = 0;
@@ -592,15 +650,15 @@ package com.gestureworks.cml.element
 				if (pos < railGraphic.y) {
 					pos = railGraphic.y;
 				}
-				if (pos > (railGraphic.y + movementRail)) {
-					pos = railGraphic.y + movementRail;
+				if (pos + thumb.height > (railGraphic.y + railGraphic.height)) {
+					pos = railGraphic.y + railGraphic.height - thumb.height;
 				}
 			}
 			if (direction == "horizontal") {
 				if (pos < railGraphic.x) 
 				pos = railGraphic.x;
-				if (pos > railGraphic.x + movementRail) 
-				pos = railGraphic.x + movementRail;
+				if (pos + thumb.width > railGraphic.x + railGraphic.width) 
+				pos = railGraphic.x + railGraphic.width - thumb.width;
 			}
 			
 			return pos;
@@ -615,14 +673,16 @@ package com.gestureworks.cml.element
 					thumb.y = railGraphic.y;
 					////trace("Clamping rail min.");
 				}
-				if (thumb.y > (railGraphic.y + movementRail)) {
-					thumb.y = railGraphic.y + movementRail;
+				if (thumb.y + thumb.height > (railGraphic.y + railGraphic.height)) {
+					thumb.y = railGraphic.y + railGraphic.height - thumb.height;
 					////trace("Clamping rail max");
 				}
 			}
 			if (_orientation == "horizontal") {
-				if (thumb.x < railGraphic.x) thumb.x = railGraphic.x;
-				if (thumb.x > railGraphic.x + movementRail) thumb.x = railGraphic.x + movementRail;
+				if (thumb.x < railGraphic.x) 
+					thumb.x = railGraphic.x;
+				if (thumb.x + thumb.width > railGraphic.x + railGraphic.width) 
+					thumb.x = railGraphic.x + railGraphic.width - thumb.width;
 			}
 		}
 		
@@ -672,6 +732,11 @@ package com.gestureworks.cml.element
 				thumb.width = width;
 				thumb.height = (height / contentHeight) * railGraphic.height;
 				movementRail = railGraphic.height - thumb.height;
+				
+				if (thumb.height < _thumbMin) {
+					thumb.height = _thumbMin;
+				}
+				
 				if (buttonVisible) {
 					railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
 				}
@@ -685,6 +750,11 @@ package com.gestureworks.cml.element
 				thumb.width = (width / contentWidth) * railGraphic.width;
 				
 				movementRail = railGraphic.width - thumb.width;
+				
+				if (thumb.width < _thumbMin) {
+					thumb.width = _thumbMin;
+				}
+				
 				//thumb.x = railGraphic.x;
 			}
 		}
@@ -763,9 +833,19 @@ package com.gestureworks.cml.element
 		public function reset():void {
 			if (_orientation == "vertical"){
 				thumb.y = railGraphic.y;
+				
+				if (buttonVisible)
+					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+				else
+					scrollPosition = thumb.y / movementRail;
 			}
 			else if (_orientation == "horizontal") {
 				thumb.x = railGraphic.x;
+				
+				if (buttonVisible)
+					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+				else
+					scrollPosition = thumb.x / movementRail;
 			}
 		}
 
