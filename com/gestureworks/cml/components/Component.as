@@ -222,8 +222,7 @@ package com.gestureworks.cml.components
 				_frame = value;
 			else
 				_frame = searchChildren(value);				
-		}			
-
+		}		
 		
 		private var _hideFrontOnFlip:Boolean = false;
 		/**
@@ -535,6 +534,12 @@ package com.gestureworks.cml.components
 					} else { _side = "back"; }
 				}
 				
+				if (scrollPanes) {
+					for (var l:int = 0; l < scrollPanes.length; l++) {
+						ScrollPane(scrollPanes[l]).reset();
+					}
+				}
+				
 				if (front && hideFrontOnFlip && fronts.length == 1)
 				{
 					if (!front.visible) { 
@@ -626,7 +631,13 @@ package com.gestureworks.cml.components
 				menu.reset();
 			if (timer)
 				restartTimer();
-				
+			
+			if (scrollPanes) {
+				for (var i:int = 0; i < scrollPanes.length; i++ ) {
+					ScrollPane(scrollPanes[i]).reset();
+				}
+			}
+			
 			//reset gestureList to clear inertia cache
 			if (gestureList)
 			{
