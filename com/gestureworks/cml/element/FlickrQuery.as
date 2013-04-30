@@ -132,9 +132,16 @@ package  com.gestureworks.cml.element
 		private var checkTags:Array;
 		public var pageNumber:int = 1;
 		/**
-		 * Read-only property indicating total results returned.
+		 * Read-only property indicating total results per page returned.
 		 */
 		public function get results():Number { return _results; }
+		
+		private var _total:int = 0;
+		/**
+		 * Read-only property to get the total number of results available to a search (regardless of per page limitations)
+		 */
+		public function get total():int { return _total; }
+		
 		
 		/**
 		 * CML display callback Initialisation
@@ -144,7 +151,6 @@ package  com.gestureworks.cml.element
 			
 			service = new FlickrService(_API_KEY);
 			service.addEventListener(FlickrResultEvent.PHOTOS_SEARCH, onSearchComplete);
-			//service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", 100, 100, "date-posted-desc", _group_id);
 		}
 		
 		
@@ -166,8 +172,9 @@ package  com.gestureworks.cml.element
 			var pList:Photos = new Photos(service);
 			
 			_pages = e.data.photos.pages;
+			_total = e.data.total;
 			resultPhotos = e.data.photos.photos;
-			//trace("ResultPhotos info:", resultPhotos.length);
+			trace("ResultPhotos info:", resultPhotos.length);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 			
 		}
