@@ -23,6 +23,8 @@ package com.gestureworks.cml.element
 	 */
 	public class Dock extends Drawer
 	{		
+		private var TOTAL_RESULTS:int = 0;
+		
 		public var loadCnt:int = 0;
 		public var searchTerms:Array = [];
 		private var _returnFields:Array = [];		
@@ -151,6 +153,12 @@ package com.gestureworks.cml.element
 			
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
+				
+				if (flickrQuery && flickrQuery.photosetid != "") {
+					flickrQuery.init();
+					flickrQuery.addEventListener(StateEvent.CHANGE, flickrSetup);
+					flickrQuery.flickrSetInfo();
+				}
 			}
 			
 			addEventListener(StateEvent.CHANGE, selection);
@@ -170,6 +178,30 @@ package com.gestureworks.cml.element
 			cloneMap = new LinkedMap(false);
 
 			//preloadClones(maxClones);
+		}
+		
+		private function flickrSetup(e:StateEvent):void 
+		{
+			flickrQuery.removeEventListener(StateEvent.CHANGE, flickrSetup);
+			TOTAL_RESULTS = flickrQuery.total;
+			dockText[1].text = "Use the dials to make a selection. Tap on the thumbnails to load them onto the table.\n" + TOTAL_RESULTS + " items in Collection."
+			// TO-DO: retrieve info description of FlickrGroup;
+			//var container:Container = searchChildren(
+			var aCon:Container = searchChildren("#album-container");
+			if (aCon)
+				var bCon:Container = aCon.searchChildren("#info-pane");
+			if (bCon){
+				var infoText:* = bCon.searchChildren("#info-text");
+				
+				if (!infoText) return;
+				infoText.htmlText = flickrQuery.setDescription;
+				
+				if (infoText.parent is ScrollPane)
+					ScrollPane(infoText.parent).updateLayout(infoText.parent.width, infoText.parent.height);
+					
+				trace(infoText);
+			}
+			return;
 		}
 			
 		/**
@@ -431,7 +463,12 @@ package com.gestureworks.cml.element
 				return;
 			connection = new NetConnection;
 			connection.connect(gateway);				
-			responder = new Responder(onResult, onFault);	
+			//responder = new Responder(onResult, onFault);
+			
+			// Get the total results of the Collective Access collection. firstResult() will set up the appropriate responder.
+			responder = new Responder(firstResult, onFault);
+			//connection.call("./ObjectSearchTest.search_choose_return", responder);
+			connection.call("./ObjectSearchTest.search_choose_return", responder, "", returnFields, "large");
 		}
 		
 		/**
@@ -584,6 +621,16 @@ package com.gestureworks.cml.element
 			loadClone();
 		}
 		
+		private function firstResult(res:Object):void {
+			TOTAL_RESULTS = 0;
+			result = res;
+			for (var n:* in result) {
+				TOTAL_RESULTS++;
+			}
+			
+			dockText[1].text = "Use the dials to make a selection. Tap on the thumbnails to load them onto the table.\n" + TOTAL_RESULTS + " items in Collection."
+			responder = new Responder(onResult, onFault);
+		}
 		
 		private function onResult(res:Object):void
 		{
@@ -648,6 +695,7 @@ package com.gestureworks.cml.element
 					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken	
 						var c:* = event.target.childList.getKey("back2");
 						c.searchChildren(".info_description").htmlText = event.target.image.description;
+						c.init();
 					}
 					else 
 						event.target.init();											
@@ -683,7 +731,10 @@ package com.gestureworks.cml.element
 			
 			var c:Container = childList.getCSSClass("dials", 0);
 			var resultTxt:Text = c.searchChildren("#result_text");
-			resultTxt.text = resultCnt + " Results";	
+			if (TOTAL_RESULTS != 0)
+				resultTxt.text = resultCnt + " Results. " + TOTAL_RESULTS + " in Collection.";	
+			else 
+				resultTxt.text = resultCnt + " Results.";
 			if (flickrQuery && flickrQuery.pages > 1) {
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
 			}
@@ -787,17 +838,23 @@ package com.gestureworks.cml.element
 					} // else if something else...This should probably be replaced with a method search instead of hard coding.
 				}
 			}
+			else if (e.property == "buttonState" && e.value == "info") {
+				var aCon:* = searchChildren("#album-container");
+				var bCon:Container = aCon.searchChildren("#info-pane");
+				if (bCon)
+					bCon.visible = !bCon.visible;
+			}
 		}
 		
 		private function selectItem(obj:*):void
 		{					
 			// if object is already on the stage
-			if (obj.visible) {
+			/*if (obj.visible) {
 				obj.onUp();					
 				//obj.glowPulse();
 				moveBelowDock(obj);				
 				return;				
-			}
+			}*/
 										
 			var location:Graphic = placeHolders[placeHolderIndex];								
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
@@ -1014,7 +1071,8 @@ package com.gestureworks.cml.element
 		 */
 		private function searchTermFiltering():void
 		{
-			if (!searchTermFilters || !flickrQuery) return;
+			if (!searchTermFilters || !flickrQuery) 
+				return;
 		
 			//verify lists are unfiltered
 			for each(var dial:Dial in dials)
@@ -1028,6 +1086,8 @@ package com.gestureworks.cml.element
 			}
 			
 			filteringInProcess = true;
+			
+			TOTAL_RESULTS = 0;
 			
 			//create temporary load screen
 			var top:Boolean = position == "top";
@@ -1156,7 +1216,9 @@ package com.gestureworks.cml.element
 				var tags:Array = query.tags.split(",");
 				
 				if (resultCnt)
-				{					
+				{				
+					TOTAL_RESULTS += query.total;
+					trace("total so far:", TOTAL_RESULTS);
 					if (!dial2Filters[tags[1]])
 						dial2Filters[tags[1]] = new Array();			
 					if (dial2Filters[tags[1]].indexOf(tags[0]) < 0)
