@@ -69,6 +69,15 @@ package  com.gestureworks.cml.element
 			_group_id = value;
 		}
 		
+		private var _photosetid:String = "";
+		/**
+		 * Photoset id is used to return every photo in a photoset. This does not run on search, it needs to be used with the flickrSet() method to retrieve results.
+		 */
+		public function get photosetid():String { return _photosetid; }
+		public function set photosetid(value:String):void {
+			_photosetid = value;
+		}
+		
 		private var _tags:String = "";
 		/**
 		 * A comma separated list of tags to search for.
@@ -142,6 +151,12 @@ package  com.gestureworks.cml.element
 		 */
 		public function get total():int { return _total; }
 		
+		private var _setDescription:String = "";
+		/**
+		 * Read only property that returns the description of a set after set info is returned.
+		 */
+		public function get setDescription():String { return _setDescription; }
+		
 		
 		/**
 		 * CML display callback Initialisation
@@ -166,6 +181,18 @@ package  com.gestureworks.cml.element
 			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, 1, "date-posted-desc");
 		}
 		
+		public function flickrSet():void {
+			service.addEventListener(FlickrResultEvent.PHOTOSETS_GET_PHOTOS, onSetComplete);
+			trace("Getting photoset info.");
+			service.photosets.getPhotos(_photosetid);
+		}
+		
+		public function flickrSetInfo():void {
+			
+			service.addEventListener(FlickrResultEvent.PHOTOSETS_GET_INFO, onSetInfoComplete);
+			service.photosets.getInfo(_photosetid);
+		}
+		
 		private function onSearchComplete(e:FlickrResultEvent):void {
 			//trace("Search complete");
 			
@@ -177,6 +204,24 @@ package  com.gestureworks.cml.element
 			trace("ResultPhotos info:", resultPhotos.length);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 			
+		}
+		
+		private function onSetComplete(e:FlickrResultEvent):void {
+			service.removeEventListener(FlickrResultEvent.PHOTOSETS_GET_PHOTOS, onSetComplete);
+			//trace(e.data);
+			resultPhotos = e.data.photoset.photos;
+			//trace("ResultPhotos info:", resultPhotos.length);
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
+		}
+		
+		private function onSetInfoComplete(e:FlickrResultEvent):void {
+			service.removeEventListener(FlickrResultEvent.PHOTOSETS_GET_INFO, onSetInfoComplete);
+			
+			// TO DO: Add field or way to get set info.
+			//trace(e.data);
+			_total = e.data.photoSet.photoCount;
+			_setDescription = e.data.photoSet.description;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrInfoResult"));
 		}
 		
 		// Update photo page.
