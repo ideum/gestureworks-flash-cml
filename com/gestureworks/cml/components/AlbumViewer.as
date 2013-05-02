@@ -195,15 +195,27 @@ package com.gestureworks.cml.components
 		 * @param	event
 		 */
 		override protected function onStateEvent(event:StateEvent):void 
-		{
-			super.onStateEvent(event);
-			
+		{			
 			if (event.property == "albumState") {
 				var indices:RadioButtons = searchChildren(RadioButtons);
 				if (indices) {
 					indices.selectButton(Album(album).currentSnapPoint.toString());
 				}
 			}
+			else if (event.value == "forward") {
+				if (side == "back" && back is Album)
+					back.next();
+				else
+					album.next();
+			}
+			else if (event.value == "back") {
+				if (side == "back" && back is Album)
+					back.previous();
+				else
+					album.previous();
+			}
+			else
+				super.onStateEvent(event);			
 		}
 
 		/**

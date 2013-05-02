@@ -522,6 +522,7 @@ package com.gestureworks.cml.components
 					}
 					else { 
 						back.visible = false;
+						_side = "front";
 					}
 				}
 				else if (backs && backs.length > 1) {
@@ -582,6 +583,7 @@ package com.gestureworks.cml.components
 			else if (event.value == "forward") {
 				for (var m:int = 0; m < numChildren; m++) 
 				{
+					trace(this);
 					if ("next" in getChildAt(m)) {
 						getChildAt(m)["next"]();
 					}
