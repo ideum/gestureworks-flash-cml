@@ -294,7 +294,6 @@
 		 */
 		override public function dispose():void
 		{
-			super.dispose();
 			scaleConstraint = null;
 			
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -309,6 +308,8 @@
 				//image.dispose();
 				image = null;
 			}	
+			
+			super.dispose();
 		}
 	}
 }
