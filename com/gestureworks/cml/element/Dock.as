@@ -74,7 +74,10 @@ package com.gestureworks.cml.element
 
 		public var pos:String;
 
-		
+		// Pagination
+		private var resultsDict:Array;
+		private var currentPage:int;
+		private var pageCount:int;
 		
 		/**
 		 * Constructor
@@ -154,10 +157,17 @@ package com.gestureworks.cml.element
 			if (!flickrQuery) {
 				flickrQuery = searchChildren(FlickrQuery);
 				
-				if (flickrQuery && flickrQuery.photosetid != "") {
+				if (flickrQuery) {
 					flickrQuery.init();
-					flickrQuery.addEventListener(StateEvent.CHANGE, flickrSetup);
-					flickrQuery.flickrSetInfo();
+				
+					if (_resultsPerPage)
+						flickrQuery.resultsPerPage = _resultsPerPage;
+					
+					if (flickrQuery.photosetid != "") {
+						
+						flickrQuery.addEventListener(StateEvent.CHANGE, flickrSetup);
+						flickrQuery.flickrSetInfo();
+					}
 				}
 			}
 			
@@ -213,6 +223,16 @@ package com.gestureworks.cml.element
 				f = f.toString().split(",");
 			if(f is Array)
 				_returnFields = f;
+		}
+		
+		private var _resultsPerPage:int;
+		/**
+		 * Sets the results for pagination. If left unset, CollectiveAccess will return any and all results for a search. FlickrQuery will default to whatever
+		 * amount it has set (default for FlickrQuery: 12), otherwise the resultsPerPage property is definitive whether FlickrQuery or CollectiveAccess is used.
+		 */
+		public function get resultsPerPage():int { return _resultsPerPage; }
+		public function set resultsPerPage(value:int):void {
+			_resultsPerPage = value;
 		}
 
 		private var previews:Array = [];
@@ -287,6 +307,7 @@ package com.gestureworks.cml.element
 		
 		// preload // 
 		private var loadIndex:int = 0;
+		
 		
 		/**
 		 * Preloads the maxClones value of template clones
@@ -641,10 +662,32 @@ package com.gestureworks.cml.element
 			resultCnt = 0;		
 			loadCnt = 0;		
 			
+			//resultsDict = new Dictionary();
+			
 			for (var n:* in result) {
 				resultCnt++;	
 			}
-						
+			
+			// If resultCnt is higher than the results per page...
+			// create an array for each "page" returned. Associate
+			// those arrays with a dictionary of indices or some such
+			// thing.
+			
+			if (_resultsPerPage) {
+				pageCount = Math.ceil(resultCnt / resultsPerPage);
+				
+				if (pageCount > 1 && !flickrQuery) {
+					resultsDict = [];
+					
+					for (var i:int = 0; i < pageCount; i++) {
+						resultsDict.push(processPages(i));	
+					}
+					
+					currentPage = 0;
+					result = resultsDict[currentPage];
+				}
+			}
+			
 			if (!resultCnt) {
 				isLoading = false;
 				dockText[1].text = "No objects found. Please search again.";
@@ -658,6 +701,18 @@ package com.gestureworks.cml.element
 			loadClone();			
 		}
 
+		private function processPages(page:int):Array {
+			var pageContent:Array = new Array();
+			//var pageContent:Object = new Object();
+			//trace(i);
+			for (var i:int = page * resultsPerPage; i < _resultsPerPage + (page * _resultsPerPage); i++) {
+				trace(i);
+				pageContent.push(result[i]);
+				//pageContent[i] = result[i];
+			}
+			trace("PageContent:", pageContent);
+			return pageContent;
+		}
 		
 		private function onFault(fault:Object):void
 		{
@@ -678,7 +733,7 @@ package com.gestureworks.cml.element
 				num = resultCnt;
 			
 			for (var i:int = loadCnt; i < num; i++) {
-				resolveExp(result[i]);					
+				resolveExp(result[i]);
 			}
 		}
 		
@@ -701,13 +756,14 @@ package com.gestureworks.cml.element
 						event.target.init();											
 				}
 				
+				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;			
 				loadCnt++;
 				
-				if (loadCnt >= resultCnt)
+				if (loadCnt >= resultCnt || loadCnt >= _resultsPerPage)
 					loadEnd();
 				else if ( (loadCnt % maxLoad) == 0 )
-					loadClone();				
+					loadClone();
 			}						
 		}						
 		
@@ -731,12 +787,17 @@ package com.gestureworks.cml.element
 			
 			var c:Container = childList.getCSSClass("dials", 0);
 			var resultTxt:Text = c.searchChildren("#result_text");
-			if (TOTAL_RESULTS != 0)
+			if (TOTAL_RESULTS != 0) {
 				resultTxt.text = resultCnt + " Results. " + TOTAL_RESULTS + " in Collection.";	
-			else 
+			}
+			else {
 				resultTxt.text = resultCnt + " Results.";
+			}
 			if (flickrQuery && flickrQuery.pages > 1) {
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
+			}
+			else if (resultsDict.length > 1) {
+				resultTxt.text += " (Page " + (currentPage + 1) + " of " + pageCount + ")";
 			}
 			
 			if (flickrQuery && flickrQuery.pages > 1) {
@@ -745,6 +806,10 @@ package com.gestureworks.cml.element
 						album.addChild(_previousArrow);
 					// else...auto-generate one?
 				}
+			}
+			else if (resultsDict && resultsDict.length > 1 && currentPage > 0) {
+				if (_previousArrow) 
+					album.addChild(_previousArrow);
 			}
 			
 			
@@ -762,6 +827,10 @@ package com.gestureworks.cml.element
 					if (_nextArrow) album.addChild(_nextArrow);
 					// else...auto-generate one?
 				}
+			}
+			else if (resultsDict && resultsDict.length > 1 && currentPage < resultsDict.length - 1) {
+				if (_nextArrow) 
+					album.addChild(_nextArrow);
 			}
 			
 			album.margin = 15;
@@ -831,11 +900,17 @@ package com.gestureworks.cml.element
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 						flickrQuery.nextPage();
 					} // else if something else...
+					else {
+						nextDBpage();
+					}
 				} else if (e.value.contains(_previousArrow)) {
 					if (flickrQuery) {
 						flickrQuery.addEventListener(StateEvent.CHANGE, onQueryLoad);
 						flickrQuery.previousPage();
 					} // else if something else...This should probably be replaced with a method search instead of hard coding.
+					else {
+						previousDBpage();
+					}
 				}
 			}
 			else if (e.property == "buttonState" && e.value == "info") {
@@ -849,12 +924,12 @@ package com.gestureworks.cml.element
 		private function selectItem(obj:*):void
 		{					
 			// if object is already on the stage
-			/*if (obj.visible) {
+			if (obj.visible) {
 				obj.onUp();					
 				//obj.glowPulse();
 				moveBelowDock(obj);				
 				return;				
-			}*/
+			}
 										
 			var location:Graphic = placeHolders[placeHolderIndex];								
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
@@ -901,6 +976,34 @@ package com.gestureworks.cml.element
 			obj.visible = true;				
 			
 			placeHolderIndex++;						
+		}
+		
+		private function nextDBpage():void {
+			trace("Going to next page.");
+			currentPage++;
+			
+			album.clear();
+			previews = [];
+			locked = [];			
+			result = resultsDict[currentPage];
+			//resultCnt = 0;		
+			loadCnt = 0;	
+			
+			loadClone();	
+		}
+		
+		private function previousDBpage():void {
+			trace("going to previous page.");
+			currentPage--;
+			
+			album.clear();
+			previews = [];
+			locked = [];			
+			result = resultsDict[currentPage];
+			//resultCnt = 0;		
+			loadCnt = 0;	
+			
+			loadClone();
 		}
 		
 		private function searchExp(obj:*, target:*):void {					
