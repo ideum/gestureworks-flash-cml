@@ -716,7 +716,7 @@ package com.gestureworks.cml.element
 		 */
 		private function loopSnap(e:*= null, distance:Number=0):void
 		{
-			if (loopSnapTween && loopSnapTween.progress()) return;			
+			if (loopSnapTween && loopSnapTween._active) return;			
 			var childTweens:Array = new Array();
 			var minDiff:Number = Number.MAX_VALUE;
 			
@@ -796,7 +796,7 @@ package com.gestureworks.cml.element
 		{
 			if (loop)
 			{
-				if (loopSnapTween && loopSnapTween.progress()) return;
+				if (loopSnapTween && loopSnapTween._active) return;
 				loopQueue[0][axis] = -1;
 				processLoop();
 				loopSnap(null, -(this[dimension] + space - 1));				
@@ -816,7 +816,7 @@ package com.gestureworks.cml.element
 		{			
 			if (loop)
 			{		
-				if (loopSnapTween && loopSnapTween.progress()) return;
+				if (loopSnapTween && loopSnapTween._active) return;
 				loopQueue[0][axis] = 1;
 				processLoop();
 				loopSnap(null, this[dimension] + space - 1)
@@ -1003,7 +1003,7 @@ package com.gestureworks.cml.element
 		 */
 		private function tailToHead():void
 		{		
-			if (loopSnapTween && loopSnapTween.progress()) return;	
+			if (loopSnapTween && loopSnapTween._active) return;	
 			
 			var tail:* = loopQueue[loopQueue.length - 1];
 			tail.visible = true;
@@ -1019,7 +1019,7 @@ package com.gestureworks.cml.element
 		 */
 		private function headToTail():void
 		{			
-			if (loopSnapTween && loopSnapTween.progress()) return;								
+			if (loopSnapTween && loopSnapTween._active) return;								
 			
 			var head:* = loopQueue[0];
 			head.visible = false;
