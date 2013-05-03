@@ -18,8 +18,8 @@ package  com.gestureworks.cml.element
 	public class MenuAlbum extends Album
 	{
 		
-		private var _initialAlpha:Number = .4;
-		private var _selectedAlpha:Number = 1;
+		private var _initialAlpha:Number = 1;
+		private var _selectedAlpha:Number = .4;
 		private var _selectedItem:*;
 		
 		private var dragClones:Dictionary = new Dictionary();
