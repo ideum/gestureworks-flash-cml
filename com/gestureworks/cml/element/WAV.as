@@ -46,7 +46,7 @@ package com.gestureworks.cml.element
 	public class WAV extends ElementFactory
 	{
 		private var urlLoader:URLLoader;
-		private var sound:Sound;
+		private var sound:flash.media.Sound;
 		private var channel:SoundChannel;
 		private var soundTrans:SoundTransform;
 		private var Position:uint;		
@@ -548,7 +548,7 @@ package com.gestureworks.cml.element
 		{
 			loading = true;;
 			
-			sound = new Sound();
+			sound = new flash.media.Sound();
 			channel = new SoundChannel();
 			soundTrans = new SoundTransform();
 			//sound.addEventListener(Event.COMPLETE, soundLoaded);
