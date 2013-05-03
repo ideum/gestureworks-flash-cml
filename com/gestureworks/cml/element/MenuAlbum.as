@@ -27,6 +27,9 @@ package  com.gestureworks.cml.element
 		private var dock:Dock;
 		private var inAlbumBounds:Boolean = true;
 		
+		private var selectedTexts:Array = [];
+		private var _selectedString:String = "ACTIVE";
+		
 		public function MenuAlbum() 
 		{
 			super();
@@ -104,7 +107,8 @@ package  com.gestureworks.cml.element
 			super.init();
 			configureItems();
 			collectionViewer = DisplayUtils.getParentType(CollectionViewer,this);
-			dock = DisplayUtils.getParentType(Dock,this);
+			dock = DisplayUtils.getParentType(Dock, this);
+			
 		}
 		
 		/**
@@ -112,6 +116,8 @@ package  com.gestureworks.cml.element
 		 */
 		private function configureItems():void
 		{
+			//if (_selectedString != "")
+			
 			for (var i:int = 1; i < belt.numChildren; i++)
 			{
 				var ts:TouchSprite = TouchSprite(belt.getChildAt(i));
@@ -120,7 +126,19 @@ package  com.gestureworks.cml.element
 				ts.gestureList = { "n-tap":true, "n-drag":true};
 				ts.addEventListener(GWGestureEvent.TAP, selection);	
 				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
-				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);				
+				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
+				
+				var selectedText:Text = new Text();
+				selectedText.autoSize = "left";
+				selectedText.text = _selectedString;
+				selectedText.color = 0xffffff;
+				selectedText.font = "OpenSansBold";
+				selectedText.visible = false;
+				selectedText.fontSize = 24;
+				ts.addChild(selectedText);
+				selectedText.x = (ts.width / 2) - (selectedText.width / 2);
+				selectedText.y = (ts.height / 2) - (selectedText.height);
+				selectedTexts[i] = selectedText;
 			}
 		}
 		
@@ -135,6 +153,7 @@ package  com.gestureworks.cml.element
 		{			
 			_selectedItem = e.target;	
 			select(_selectedItem);
+			Text(selectedTexts[belt.getChildIndex(_selectedItem)]).visible = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));			
 		}
 		
@@ -144,6 +163,7 @@ package  com.gestureworks.cml.element
 				return;
 							
 			obj.alpha = selectedAlpha;
+			//selectedTexts[getChildIndex(obj)].visible = true;
 			selections.append(obj);			
 		}
 				
@@ -152,7 +172,8 @@ package  com.gestureworks.cml.element
 			var index:int = selections.search(obj);
 			
 			if (index >= 0) {
-				selections.getIndex(index).alpha = initialAlpha;			
+				selections.getIndex(index).alpha = initialAlpha;
+				Text(selectedTexts[belt.getChildIndex(selections.getIndex(index))]).visible = false;
 				selections.remove(index);
 			}
 		}
