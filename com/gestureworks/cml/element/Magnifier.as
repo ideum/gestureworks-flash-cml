@@ -170,7 +170,7 @@ package com.gestureworks.cml.element
 		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void {
-			super.displayComplete();
+			//super.displayComplete();
 			
 			mouseChildren = false;
 			disableNativeTransform = true;
