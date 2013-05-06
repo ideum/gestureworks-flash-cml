@@ -8,6 +8,7 @@ package  com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
+	import flash.display.DisplayObject;
 	import flash.events.TouchEvent;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
@@ -71,6 +72,29 @@ package  com.gestureworks.cml.element
 			_selectedAlpha = a;
 		}	
 		
+		private var _forwardButton:*;
+		/**
+		 * The display object for the forward button.
+		 */
+		public function get forwardButton():* { return _forwardButton; }
+		public function set forwardButton(value:*):void {
+			if (!value) return;
+			
+			_forwardButton = value;
+		}
+		
+		private var _backButton:*;
+		private var targetIndex:int;
+		/**
+		 * The display object for the forward button.
+		 */
+		public function get backButton():* { return _backButton; }
+		public function set backButton(value:*):void {
+			if (!value) return;
+			
+			_backButton = value;
+		}
+		
 		/**
 		 * The selected display object
 		 */
@@ -128,6 +152,15 @@ package  com.gestureworks.cml.element
 				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
 				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
 				
+				//if (ts.id && ts.id == "forward-btn") {
+					//trace("page button");
+				//}
+				
+				if (forwardButton && ts.contains(forwardButton))
+					continue;
+				else if (backButton && ts.contains(backButton))
+					continue;
+				
 				var selectedText:Text = new Text();
 				selectedText.autoSize = "left";
 				selectedText.text = _selectedString;
@@ -153,6 +186,15 @@ package  com.gestureworks.cml.element
 		{			
 			_selectedItem = e.target;	
 			select(_selectedItem);
+			if (forwardButton && _selectedItem.contains(forwardButton)) {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));
+				return;
+			}
+			else if (backButton && _selectedItem.contains(backButton)) {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));
+				return;
+			}
+			
 			Text(selectedTexts[belt.getChildIndex(_selectedItem)]).visible = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));			
 		}
@@ -193,6 +235,8 @@ package  com.gestureworks.cml.element
 			if (inAlbumBounds && (yPercentage >= 1 || yPercentage < .7))
 				return;
 				
+			targetIndex = belt.getChildIndex(DisplayObject(e.target));
+				
 			var dragClone:*;
 			if (dragClones[e.target])
 				dragClone = dragClones[e.target];
@@ -228,8 +272,10 @@ package  com.gestureworks.cml.element
 			
 			if (dragClone)
 			{
-				if(!inDockBounds(dragClone))
+				if (!inDockBounds(dragClone)) {
+					Text(selectedTexts[targetIndex]).visible = true;
 					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "droppedItem", e.target, true));			
+				}
 				
 				delete dragClones[e.target];
 				dragClone.dispose();
