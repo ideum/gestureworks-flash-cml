@@ -425,10 +425,6 @@ package com.gestureworks.cml.element
 			}			
 			thumbTouch.addEventListener(GWGestureEvent.DRAG, onDrag);
 			
-			if (parent && parent is ScrollPane && !parent["_hit"]) {
-				//thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-				//thumbTouch.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			}
 			thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);	
 			railTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onRailTouch);
 		}
