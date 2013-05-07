@@ -125,6 +125,36 @@ package com.gestureworks.cml.element
 			_scrollThickness = value;
 		}
 		
+		private var _scrollOnPane:Boolean = true;
+		/**
+		 * Set whether or not the pane can be scrolled on.
+		 * @default true
+		 */
+		public function get scrollOnPane():Boolean { return _scrollOnPane; }
+		public function set scrollOnPane(value:Boolean):void {
+			_scrollOnPane = value;
+		}
+		
+		private var _scaleOnPane:Boolean = true;
+		/**
+		 * Set whether or not the pane can be scaled on if the gesture is available.
+		 * @default true
+		 */
+		public function get scaleOnPane():Boolean { return _scaleOnPane; }
+		public function set scaleOnPane(value:Boolean):void {
+			_scaleOnPane = value;
+		}
+		
+		private var _multiFingerScroll:Boolean = false;
+		/**
+		 * Set single finger drag, multi-finger scroll functionality. If true, the pane will only be scrolled on two fingers or more.
+		 * @default false
+		 */
+		public function get multiFingerScroll():Boolean { return _multiFingerScroll; }
+		public function set multiFingerScroll(value:Boolean):void {
+			_multiFingerScroll = value;
+		}
+		
 		public function get content():* { return _content; }
 		
 		
@@ -193,34 +223,8 @@ package com.gestureworks.cml.element
 			this.addChild(_mask);
 			this.content.mask = _mask;
 			this.createEvents();
-			/*if (_content) {
-				if ("clone" in content)
-					clone._content = _content["clone"]();
-			}*/
 			
 			clone.init();
-			
-			/*if (_verticalScroll)
-				clone._verticalScroll = _verticalScroll.clone();
-			
-			if (_horizontalScroll)
-				clone._horizontalScroll = _horizontalScroll.clone();
-			
-			if (_mask)
-				clone._mask = _mask.clone();
-				
-			if (_content) {
-				if ("clone" in content)
-					clone._content = _content["clone"]();
-			}
-			
-			//clone._content.mask = clone._mask;
-			this.content.mask = _mask;
-			//clone.init();
-			clone._content.mask = clone._mask;
-			clone.createEvents();
-			
-			this.createEvents();*/
 			
 			return clone;
 		}
@@ -385,6 +389,7 @@ package com.gestureworks.cml.element
 				this.addEventListener(GWGestureEvent.DRAG, onDrag);
 			this.addEventListener(GWGestureEvent.SCALE, onScale);
 			this.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+			this.addEventListener(GWGestureEvent.ROTATE, onRotate);
 			
 			this._verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			this._horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
@@ -477,6 +482,26 @@ package com.gestureworks.cml.element
 		
 		private function onDrag(e:GWGestureEvent):void {
 			//e.stopImmediatePropagation();
+			if (!scrollOnPane) {
+				if (this.parent) {
+					//this.parent.dispatchEvent(e);
+					passTouchUp();
+					//trace("Target:", e.target);
+					return;
+				}
+			}
+			
+			if (multiFingerScroll && e.value.n < 2 && this.parent) {
+				passTouchUp();
+				return;
+			}
+			
+			function passTouchUp():void {
+				TouchContainer(parent).x += e.value.drag_dx;
+				TouchContainer(parent).y += e.value.drag_dy;
+			}
+			
+			trace(e);
 			
 			var newPos:Number;
 			
@@ -565,6 +590,18 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onScale(e:GWGestureEvent):void {
+			
+			if (!scaleOnPane) {
+				if (this.parent) {
+					//this.parent.dispatchEvent(e);
+					TouchContainer(parent).disableAffineTransform = false;
+					TouchContainer(parent).$scaleX += e.value.scale_dsx;
+					TouchContainer(parent).$scaleY += e.value.scale_dsy;
+					trace("Scaling:");
+					return;
+				}
+			}
+			
 			var xShift:Number = e.value.localX - _content.x;
 			var yShift:Number = e.value.localY - _content.y;
 			//_content.scale += e.value.scale_dsx + e.value.scale_dsy;
@@ -609,6 +646,17 @@ package com.gestureworks.cml.element
 			} else {
 				removeEventListener(GWGestureEvent.DRAG, onDrag);
 				//_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
+			}
+		}
+		
+		private function onRotate(e:GWGestureEvent):void {
+			if (!scrollOnPane) {
+				if (this.parent) {
+					//this.parent.dispatchEvent(e);
+					TouchContainer(parent).rotation += e.value.rotate_dtheta;
+					//trace("Target:", e.target);
+					return;
+				}
 			}
 		}
 	}
