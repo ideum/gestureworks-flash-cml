@@ -199,9 +199,11 @@ package com.gestureworks.cml.components
 			}
 			clone.displayComplete();				
 			
-			for (var i:int = 0; i < clone.textFields.length; i++) {					
-				clone.textFields[i].x = textFields[i].x;
-				clone.textFields[i].y = textFields[i].y;
+			for (var i:int = 0; i < clone.textFields.length; i++) {	
+				if (i < textFields.length){
+					clone.textFields[i].x = textFields[i].x;
+					clone.textFields[i].y = textFields[i].y;
+				}
 			}
 
 			return clone;
