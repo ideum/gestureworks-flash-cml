@@ -359,6 +359,17 @@ package com.gestureworks.cml.components
 			
 			if (textFields && autoTextLayout)
 			{
+				for (var i:int = 0; i < textFields.length; i++) {
+					for (var n:int = 0; n < textFields.length; n++) {
+						if (n == i) continue;
+						else if (textFields[i].name == textFields[n].name) {
+							textFields.splice(n, 1);
+							//i--;
+							n--;
+						}
+					}
+				}
+				
 				for (var i:int = 0; i < textFields.length; i++) 
 				{					
 					textFields[i].x = textFields[i].paddingLeft;
@@ -412,7 +423,7 @@ package com.gestureworks.cml.components
 				sp.height -= menu.getChildAt(0).height + menu.paddingBottom + t.paddingBottom;
 			}
 			
-			//sp.updateLayout(t.width, t.height);
+			sp.updateLayout(sp.width, sp.height);
 		}
 		
 		/**
@@ -738,7 +749,9 @@ package com.gestureworks.cml.components
 		{	
 			var clone:Component = CloneUtils.clone(this, this.parent, cloneExclusions);
 			
-			CloneUtils.copyChildList(this, clone);			
+			CloneUtils.copyChildList(this, clone);		
+			trace(this.childList, clone.childList);
+			trace("_----------------_");
 			
 			if (front)
 				clone.front = String(front.id);
