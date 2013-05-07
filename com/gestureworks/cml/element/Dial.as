@@ -185,12 +185,12 @@ package com.gestureworks.cml.element
 		/**
 		 * Defines the left triangle of background
 		 */
-		public var leftTriangle:Sprite = new Sprite();
+		public var leftTriangle:Graphic = new Graphic();
 		
 		/**
 		 * Defines the right triangle of background
 		 */
-		public var rightTriangle:Sprite = new Sprite();
+		public var rightTriangle:Graphic = new Graphic();
 		
 		/**
 		 * Defines the center line of background
@@ -487,6 +487,21 @@ package com.gestureworks.cml.element
 			_leftTriangleAlpha = value;
 		}
 		
+		private var _leftTriangleScale = 1;
+		/**
+		 * Sets the scale of the left triangle
+		 * @default 1
+		 */
+		public function get leftTriangleScale():Number 
+		{
+			return _leftTriangleScale;
+		}
+		
+		public function set leftTriangleScale(value:Number):void
+		{
+			_leftTriangleScale = value;
+		}
+		
 		private var _rightTriangleColor:Number = 0x303030;
 		
 		/**
@@ -517,6 +532,22 @@ package com.gestureworks.cml.element
 		public function set rightTriangleAlpha(value:Number):void
 		{
 			_rightTriangleAlpha = value;
+		}
+		
+		private var _rightTriangleScale:Number = 1;
+		
+		/**
+		 * Sets the scale of the right triangle
+		 * @default 1
+		 */
+		public function get rightTriangleScale():Number 
+		{
+			return _rightTriangleScale;
+		}
+		
+		public function set rightTriangleScale(value:Number):void
+		{
+			_rightTriangleScale = value;
 		}
 		
 		private var _centerLineLineStoke:Number = 1;
@@ -660,19 +691,25 @@ package com.gestureworks.cml.element
 			if(background.filters.length < 1)
 				background.filters = filtersArray;
 			
-			leftTriangle.graphics.clear();
-			leftTriangle.graphics.beginFill(leftTriangleColor, leftTriangleAlpha);
-			leftTriangle.graphics.moveTo(-1, (height / 2) - (height * 0.075));
-			leftTriangle.graphics.lineTo(27, height / 2);
-			leftTriangle.graphics.lineTo(-1, (height / 2) + (height * 0.075));
-			leftTriangle.graphics.endFill();
+			leftTriangle.shape = "triangle";
+			leftTriangle.height = 27;			
+			leftTriangle.scale = leftTriangleScale;			
+			DisplayUtils.rotateAroundCenter(leftTriangle, 90);			
+			leftTriangle.color = leftTriangleColor;
+			leftTriangle.alpha = leftTriangleAlpha;
+			leftTriangle.lineStroke = 0;
+			leftTriangle.x = leftTriangle.height * leftTriangle.scale;
+			leftTriangle.y = height / 2 - leftTriangle.height * leftTriangle.scale / 2;
 			
-			rightTriangle.graphics.clear();
-			rightTriangle.graphics.beginFill(rightTriangleColor, rightTriangleAlpha);
-			rightTriangle.graphics.moveTo(width, (height / 2) - (height * 0.075));
-			rightTriangle.graphics.lineTo(width - 27, height / 2);
-			rightTriangle.graphics.lineTo(width, (height / 2) + (height * 0.075));
-			rightTriangle.graphics.endFill();
+			rightTriangle.shape = "triangle";
+			rightTriangle.height = 27;			
+			rightTriangle.scale = rightTriangleScale;			
+			DisplayUtils.rotateAroundCenter(rightTriangle, -90);			
+			rightTriangle.color = rightTriangleColor;
+			rightTriangle.alpha = rightTriangleAlpha;
+			rightTriangle.lineStroke = 0;
+			rightTriangle.x = width - rightTriangle.height * rightTriangle.scale;
+			rightTriangle.y = height / 2 + rightTriangle.height*rightTriangle.scale / 2;			
 			
 			centerLine.graphics.clear();
 			centerLine.graphics.lineStyle(centerLineLineStoke, centerLineOutlineColor, centerLineOutlineAlpha);
