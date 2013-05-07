@@ -797,10 +797,10 @@ package com.gestureworks.cml.element
 			var c:Container = childList.getCSSClass("dials", 0);
 			var resultTxt:Text = c.searchChildren("#result_text");
 			if (TOTAL_RESULTS != 0) {
-				resultTxt.text = resultCnt + " Results. " + TOTAL_RESULTS + " in Collection.";	
+				resultTxt.text = resultCnt + " Results, " + TOTAL_RESULTS + " in Collection";	
 			}
 			else {
-				resultTxt.text = resultCnt + " Results.";
+				resultTxt.text = resultCnt + " Results";
 			}
 			if (flickrQuery && flickrQuery.pages > 1) {
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
