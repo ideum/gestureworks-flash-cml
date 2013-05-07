@@ -394,12 +394,12 @@ package com.gestureworks.cml.element
 			if (useRightHandle && ! rightHandle)			
 				rightHandle = getDefaultHandle("right");
 				
-			handle.gestureList = { "n-tap":true };
+			handle.gestureList = { "n-tap":true, "n-flick":true };
 			handle.width = handleWidth;
 			handle.height = handleHeight			
 			
-			if (leftHandle) leftHandle.gestureList = { "n-tap":true };
-			if (rightHandle) rightHandle.gestureList = { "n-tap":true };
+			if (leftHandle) leftHandle.gestureList = { "n-tap":true, "n-flick":true };
+			if (rightHandle) rightHandle.gestureList = { "n-tap":true, "n-flick":true };
 					
 			addLabel();
 		}
@@ -531,23 +531,27 @@ package com.gestureworks.cml.element
 				handle.y = contentHolder.height + 1;
 				contentHolder.y = contentHolder.height + handle.height + 1;
 				handle.addEventListener(GWGestureEvent.TAP, open); 
+				handle.addEventListener(GWGestureEvent.FLICK, open);
 			}
 			else
 			{
 				isOpen = true;
 				handle.addEventListener(GWGestureEvent.TAP, close); 
+				handle.addEventListener(GWGestureEvent.FLICK, close);
 			}
 			
 			if (leftHandle)
 			{
 				leftHandle.y = contentHolder.y;
 				leftHandle.addEventListener(GWGestureEvent.TAP, close);
+				leftHandle.addEventListener(GWGestureEvent.FLICK, close);
 			}
 			if (rightHandle)
 			{
 				rightHandle.y = contentHolder.y;
 				rightHandle.x = contentHolder.x + contentHolder.width;
 				rightHandle.addEventListener(GWGestureEvent.TAP, close);
+				rightHandle.addEventListener(GWGestureEvent.FLICK, close);
 			}			
 			
 			handle.visible = !isOpen;
@@ -567,7 +571,9 @@ package com.gestureworks.cml.element
 			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
 			upTween.restart();
 			handle.removeEventListener(GWGestureEvent.TAP, open);
+			handle.removeEventListener(GWGestureEvent.FLICK, open);
 			handle.addEventListener(GWGestureEvent.TAP, close);	
+			handle.addEventListener(GWGestureEvent.FLICK, close);	
 		}
 
 		/**
@@ -582,7 +588,9 @@ package com.gestureworks.cml.element
 			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
 			downTween.restart();
 			handle.removeEventListener(GWGestureEvent.TAP, close);
+			handle.removeEventListener(GWGestureEvent.FLICK, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
+			handle.addEventListener(GWGestureEvent.FLICK, open);	
 		}
 		
 		/**
