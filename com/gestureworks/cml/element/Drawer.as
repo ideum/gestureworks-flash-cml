@@ -564,9 +564,9 @@ package com.gestureworks.cml.element
 		 * @param	e  the tap event
 		 */
 		private function open(e:GWGestureEvent):void
-		{		
+		{	
+			if (downTween._active) return;
 			handleTransition();
-			downTween.stop();
 			leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
 			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
 			upTween.restart();
@@ -582,7 +582,7 @@ package com.gestureworks.cml.element
 		 */		
 		private function close(e:GWGestureEvent):void
 		{			
-			upTween.stop();
+			if (upTween._active) return;
 			handle.visible = true;
 			leftHandle.searchChildren(Graphic).topLeftRadius = 0;
 			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
