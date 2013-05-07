@@ -174,20 +174,33 @@ package com.gestureworks.cml.element
 		}*/
 		
 		override public function clone():*{
-			
-			var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ]
+			this.removeChild(_mask);
+			this.removeEvents();
+			var v:Vector.<String> = cloneExclusions;
+			//var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ];
+			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
+			trace(v);
 			var clone:ScrollPane = CloneUtils.clone(this, null, v);
 			
 			CloneUtils.copyChildList(this, clone);	
+			trace("Clone:", clone);
 			
 			if (clone.parent)
 				clone.parent.addChild(clone);
 			else
 				this.parent.addChild(clone);
 			
-			//this.content.mask = _mask;
+			this.addChild(_mask);
+			this.content.mask = _mask;
+			this.createEvents();
+			/*if (_content) {
+				if ("clone" in content)
+					clone._content = _content["clone"]();
+			}*/
 			
-			if (_verticalScroll)
+			clone.init();
+			
+			/*if (_verticalScroll)
 				clone._verticalScroll = _verticalScroll.clone();
 			
 			if (_horizontalScroll)
@@ -207,7 +220,7 @@ package com.gestureworks.cml.element
 			clone._content.mask = clone._mask;
 			clone.createEvents();
 			
-			this.createEvents();
+			this.createEvents();*/
 			
 			return clone;
 		}
@@ -369,12 +382,23 @@ package com.gestureworks.cml.element
 		public function createEvents():void {
 			
 			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
-				addEventListener(GWGestureEvent.DRAG, onDrag);
-			addEventListener(GWGestureEvent.SCALE, onScale);
-			addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				this.addEventListener(GWGestureEvent.DRAG, onDrag);
+			this.addEventListener(GWGestureEvent.SCALE, onScale);
+			this.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 			
-			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
-			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			this._verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			this._horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+		}
+		
+		public function removeEvents():void {
+			
+			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
+				this.removeEventListener(GWGestureEvent.DRAG, onDrag);
+			this.removeEventListener(GWGestureEvent.SCALE, onScale);
+			this.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
+			
+			this._verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
+			this._horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 		}
 		
 		public function updateLayout(inWidth:Number, inHeight:Number):void {
