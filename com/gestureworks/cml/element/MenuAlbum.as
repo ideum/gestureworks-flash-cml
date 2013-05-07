@@ -29,7 +29,7 @@ package  com.gestureworks.cml.element
 		private var inAlbumBounds:Boolean = true;
 		
 		private var selectedTexts:Array = [];
-		private var _selectedString:String = "ACTIVE";
+		private var _selectedString:String = "ON STAGE";
 		
 		public function MenuAlbum() 
 		{
