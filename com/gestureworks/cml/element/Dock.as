@@ -935,7 +935,7 @@ package com.gestureworks.cml.element
 					}
 				}
 			}
-			else if (e.property == "buttonState" && e.value == "info") {
+			else if (e.property == "toggle" && e.value == "info") {
 				var aCon:* = searchChildren("#album-container");
 				var bCon:Container = aCon.searchChildren("#info-pane");
 				if (bCon)
