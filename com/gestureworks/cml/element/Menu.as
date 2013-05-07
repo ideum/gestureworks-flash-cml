@@ -310,12 +310,12 @@ package com.gestureworks.cml.element
 			{																
 				// position buttons		
 				
-				for (i = childList.length - 1; i >= 0; i--) 
+				for (i = numChildren - 1; i >= 0; i--) 
 				{
 					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
 						num = getChildIndex(childList.getIndex(i));
 						
-						if (i == childList.length-1) 
+						if (i == numChildren-1) 
 							getChildAt(num).x = containerWidth - getChildAt(num).width - paddingRight;
 							
 						// position the rest
