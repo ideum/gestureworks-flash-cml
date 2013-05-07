@@ -1,14 +1,12 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.cml.factories.*;
-	import com.gestureworks.core.TouchSprite;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
-	import flash.events.*;
 	import flash.display.*;
-	import flash.geom.Matrix;
+	import flash.events.*;
 
 	/**
 	 * The ScrollBar creates an interactive scroll bar. Given a corresponding content measurement, the scroll bar shows a thumb scaled to the difference between the content
@@ -424,9 +422,20 @@ package com.gestureworks.cml.element
 				touchBtn2.addEventListener(GWGestureEvent.TAP, onTap2);
 			}			
 			thumbTouch.addEventListener(GWGestureEvent.DRAG, onDrag);
-			
+			thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onDragBegin);
 			thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);	
 			railTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onRailTouch);
+		}
+		
+		private function onDragBegin(e:GWTouchEvent):void {
+			
+			//
+			if (this.parent) {
+				if ("gestureList" in parent) {
+					parentList = parent["gestureList"];
+					parent["gestureList"] = null;
+				}
+			}
 		}
 		
 		private function onRailTouch(e:GWTouchEvent):void 
@@ -633,11 +642,18 @@ package com.gestureworks.cml.element
 	
 		private var oldX:Number = 0;
 		private var oldY:Number = 0;
+		private var parentList:Object;
 		
 		private function onComplete(e:GWGestureEvent):void {
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
+			
+			if (this.parent) {
+				if ("gestureList" in parent) {
+					parent["gestureList"] = parentList;
+				}
+			}
 		}
 		
 		
@@ -766,7 +782,7 @@ package com.gestureworks.cml.element
 			
 			if (clone.parent)
 				clone.parent.addChild(clone);
-			else
+			else if (this.parent)
 				this.parent.addChild(clone);
 			
 			for (var i:Number = 0; i < clone.numChildren; i++) {
