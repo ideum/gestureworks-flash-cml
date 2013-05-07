@@ -160,8 +160,10 @@ package com.gestureworks.cml.element
 				if (flickrQuery) {
 					flickrQuery.init();
 				
-					if (_resultsPerPage)
+					if (_resultsPerPage > 0)
 						flickrQuery.resultsPerPage = _resultsPerPage;
+					else // This is to avoid conflict with CollectiveAccess pagination. 
+						_resultsPerPage = flickrQuery.resultsPerPage;
 					
 					if (flickrQuery.photosetid != "") {
 						
@@ -225,7 +227,7 @@ package com.gestureworks.cml.element
 				_returnFields = f;
 		}
 		
-		private var _resultsPerPage:int;
+		private var _resultsPerPage:int = 0;
 		/**
 		 * Sets the results for pagination. If left unset, CollectiveAccess will return any and all results for a search. FlickrQuery will default to whatever
 		 * amount it has set (default for FlickrQuery: 12), otherwise the resultsPerPage property is definitive whether FlickrQuery or CollectiveAccess is used.
@@ -318,6 +320,7 @@ package com.gestureworks.cml.element
 			
 			var clone:Component;
 			clone = templates[0].clone();
+			//trace("Preparing to append clone:", clone);
 			cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
 			loadIndex++;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));
@@ -325,8 +328,10 @@ package com.gestureworks.cml.element
 		
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 
 		{	
-			if (!("propertyStates" in obj)) return lm;
-						
+			if (!("propertyStates" in obj)) 
+				return lm;
+			
+			//trace("Preloading expressions of object:", obj);
 			// Iterate through the properties of the object to find {values}
 			for (var s:String in obj.propertyStates[0]) {
 				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
@@ -338,6 +343,7 @@ package com.gestureworks.cml.element
 						lm.prepend(obj, s);
 					else
 						lm.append(obj, s);
+					//trace("Preloading expressions:", obj, s);
 				}
 			}
 			
@@ -356,6 +362,9 @@ package com.gestureworks.cml.element
 			var prop:String = cloneMap.value.value;
 			var exp:* = obj["propertyStates"][0][prop];
 			var src:String = res[exp];
+			
+			if ("updateLayout" in obj)
+				obj["updateLayout"]();
 			
 			if (srcMap[src]) {	
 				addPreview(srcMap[src]["clone"], getPreview(srcMap[src]["clone"]));
@@ -660,9 +669,10 @@ package com.gestureworks.cml.element
 			locked = [];			
 			result = res;
 			resultCnt = 0;		
-			loadCnt = 0;		
+			loadCnt = 0;
+			currentPage = 0;
 			
-			//resultsDict = new Dictionary();
+			resultsDict = [];
 			
 			for (var n:* in result) {
 				resultCnt++;	
@@ -673,7 +683,7 @@ package com.gestureworks.cml.element
 			// those arrays with a dictionary of indices or some such
 			// thing.
 			
-			if (_resultsPerPage) {
+			if (_resultsPerPage > 0) {
 				pageCount = Math.ceil(resultCnt / resultsPerPage);
 				
 				if (pageCount > 1 && !flickrQuery) {
@@ -756,7 +766,6 @@ package com.gestureworks.cml.element
 						event.target.init();											
 				}
 				
-				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;			
 				loadCnt++;
 				
@@ -796,20 +805,26 @@ package com.gestureworks.cml.element
 			if (flickrQuery && flickrQuery.pages > 1) {
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
 			}
-			else if (resultsDict.length > 1) {
+			else if (resultsDict && resultsDict.length > 1) {
 				resultTxt.text += " (Page " + (currentPage + 1) + " of " + pageCount + ")";
 			}
 			
 			if (flickrQuery && flickrQuery.pages > 1) {
 				if (flickrQuery.pageNumber > 1) {
-					if (_previousArrow) 
-						album.addChild(_previousArrow);
+					if (_previousArrow) {
+						if(!album.contains(_previousArrow))
+							album.addChild(_previousArrow);
+						album.backButton = _previousArrow;
+					}
 					// else...auto-generate one?
 				}
 			}
 			else if (resultsDict && resultsDict.length > 1 && currentPage > 0) {
-				if (_previousArrow) 
-					album.addChild(_previousArrow);
+				if (_previousArrow) {
+					if(!album.contains(_previousArrow))
+						album.addChild(_previousArrow);
+					album.backButton = _previousArrow;
+				}
 			}
 			
 			
@@ -824,13 +839,20 @@ package com.gestureworks.cml.element
 			if (flickrQuery && flickrQuery.pages > 1) {
 				// Add a next arrow.
 				if (flickrQuery.pageNumber < flickrQuery.pages) {
-					if (_nextArrow) album.addChild(_nextArrow);
+					if (_nextArrow) {
+						if (!album.contains(_nextArrow))
+							album.addChild(_nextArrow);
+						album.forwardButton = _nextArrow;
+					}
 					// else...auto-generate one?
 				}
 			}
 			else if (resultsDict && resultsDict.length > 1 && currentPage < resultsDict.length - 1) {
-				if (_nextArrow) 
-					album.addChild(_nextArrow);
+				if (_nextArrow) {
+					if (!album.contains(_nextArrow))
+						album.addChild(_nextArrow);
+					album.forwardButton = _nextArrow;
+				}
 			}
 			
 			album.margin = 15;
