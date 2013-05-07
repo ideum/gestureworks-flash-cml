@@ -62,6 +62,8 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void {
 			_width = value;
 			super.width = value;
+			//if (loaded)
+				//updateLayout(width, height);
 		}
 		
 		private var _height:Number = 0;
@@ -72,6 +74,8 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void {
 			_height = value;
 			super.height = value;
+			//if (loaded)
+				//updateLayout(width, height);
 		}
 		
 		private var _paneStroke:Number = 1;
@@ -124,10 +128,12 @@ package com.gestureworks.cml.element
 		public function get content():* { return _content; }
 		
 		
-		override public function clone():*{
+		/*override public function clone():*{
 			
 			var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask" ]
 			var clone:ScrollPane = CloneUtils.clone(this, null, v);
+			
+			CloneUtils.copyChildList(this, clone);	
 			
 			if (clone.parent)
 				clone.parent.addChild(clone);
@@ -141,18 +147,18 @@ package com.gestureworks.cml.element
 				if (clone.getChildAt(i).name == _verticalScroll.name) {
 					clone._verticalScroll = clone.getChildAt(i) as ScrollBar;
 					//clone._verticalScroll.loaded = true;
-					clone._verticalScroll.init();
+					//clone._verticalScroll.init();
 				}
 				else if (clone.getChildAt(i).name == _horizontalScroll.name) {
 					clone._horizontalScroll = clone.getChildAt(i) as ScrollBar;
 					//clone._horizontalScroll.loaded = true;
-					clone._horizontalScroll.init();
+					//clone._horizontalScroll.init();
 				}
 				else if (clone.getChildAt(i).name == _mask.name) {
 					clone._mask = clone.getChildAt(i) as Graphic;
 				}
 				else if (clone.getChildAt(i).name == _content.name) {
-					clone._content = clone.getChildAt(i) as TouchSprite;
+					clone._content = clone.getChildAt(i);
 					if (clone._mask && clone._content)
 						clone._content.mask = clone._mask;
 				}
@@ -163,6 +169,45 @@ package com.gestureworks.cml.element
 			
 			clone.init();
 			//clone.createEvents();
+			
+			return clone;
+		}*/
+		
+		override public function clone():*{
+			
+			var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ]
+			var clone:ScrollPane = CloneUtils.clone(this, null, v);
+			
+			CloneUtils.copyChildList(this, clone);	
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
+			
+			//this.content.mask = _mask;
+			
+			if (_verticalScroll)
+				clone._verticalScroll = _verticalScroll.clone();
+			
+			if (_horizontalScroll)
+				clone._horizontalScroll = _horizontalScroll.clone();
+			
+			if (_mask)
+				clone._mask = _mask.clone();
+				
+			if (_content) {
+				if ("clone" in content)
+					clone._content = _content["clone"]();
+			}
+			
+			//clone._content.mask = clone._mask;
+			this.content.mask = _mask;
+			//clone.init();
+			clone._content.mask = clone._mask;
+			clone.createEvents();
+			
+			this.createEvents();
 			
 			return clone;
 		}
@@ -213,11 +258,13 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			for (var j:int = 0; j < numChildren; j++) {
-				if (getChildAt(j) is ScrollBar || getChildAt(j) is GestureList)
-					continue;
-				else 
-					_content = getChildAt(j);
+			if (!_content){
+				for (var j:int = 0; j < numChildren; j++) {
+					if (getChildAt(j) is ScrollBar || getChildAt(j) is GestureList || getChildAt(j) == _mask)
+						continue;
+					else 
+						_content = getChildAt(j);
+				}
 			}
 			
 			// If one bar is set but not the other, set the other to match.
