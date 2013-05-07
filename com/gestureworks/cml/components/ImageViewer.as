@@ -143,7 +143,7 @@ package com.gestureworks.cml.components
 		
 		override public function clone():* 
 		{	
-			cloneExclusions.push("backs");
+			cloneExclusions.push("backs", "textFields");
 			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);		
 				
 			//CloneUtils.copyChildList(this, clone);	// commented out b/c it was duplicating childlist (2012/2/6)
@@ -199,13 +199,37 @@ package com.gestureworks.cml.components
 			}
 			clone.displayComplete();				
 			
-			for (var i:int = 0; i < clone.textFields.length; i++) {	
-				if (i < textFields.length){
-					clone.textFields[i].x = textFields[i].x;
-					clone.textFields[i].y = textFields[i].y;
-				}
-			}
+			/*for (var i:int = 0; i < clone.textFields.length; i++) {	
+				trace("i", i);
+				for (var n:int = 0; n < clone.numChildren; n++) 
+				{
+					if (textFields[i].name == clone.getChildAt(n).name) {
+						clone.textFields[i] = clone.getChildAt(n).name;
+						if (i > 1 && clone.textFields[i] == clone.textFields[i - 1])
+							clone.textFields.splice(i, 1);
+					}
+				}*/
+				
+				//if (i < textFields.length){
+					//clone.textFields[i].x = textFields[i].x;
+					//clone.textFields[i].y = textFields[i].y;
+				//}
+			//}
+			// Hack to get around text field cloning bug:
+			//for (var i:int = 0; i < clone.textFields.length; i++) {
+				//for (var n:int = 0; n < clone.textFields.length; n++) {
+					//if (n == i) continue;
+					//else if (clone.textFields[i].name == clone.textFields[n].name) {
+						//clone.textFields.splice(n, 1);
+						//i--;
+						//n--;
+					//}
+				//}
+			//}
+				
 
+			//clone.updateLayout();	
+			
 			return clone;
 		}			
 	}
