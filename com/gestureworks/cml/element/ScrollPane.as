@@ -486,7 +486,6 @@ package com.gestureworks.cml.element
 			if (this.parent) {
 				if ("clusterBubbling" in parent) {
 					if (parent["clusterBubbling"] == true) {
-						//trace("Cluster bubbling in parent.");
 						return;
 					}
 				}
@@ -495,15 +494,13 @@ package com.gestureworks.cml.element
 			
 			if (!scrollOnPane) {
 				if (this.parent) {
-					//this.parent.dispatchEvent(e);
-					//passTouchUp();
-					//trace("Target:", e.target);
+					passTouchUp();
 					return;
 				}
 			}
 			
 			if (multiFingerScroll && e.value.n < 2 && this.parent) {
-				//passTouchUp();
+				passTouchUp();
 				return;
 			}
 			
