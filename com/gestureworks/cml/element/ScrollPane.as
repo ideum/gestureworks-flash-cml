@@ -386,13 +386,13 @@ package com.gestureworks.cml.element
 		public function createEvents():void {
 			
 			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
-				this.addEventListener(GWGestureEvent.DRAG, onDrag);
-			this.addEventListener(GWGestureEvent.SCALE, onScale);
-			this.addEventListener(GWGestureEvent.COMPLETE, onComplete);
-			this.addEventListener(GWGestureEvent.ROTATE, onRotate);
+				addEventListener(GWGestureEvent.DRAG, onDrag);
+			addEventListener(GWGestureEvent.SCALE, onScale);
+			addEventListener(GWGestureEvent.COMPLETE, onComplete);
+			//addEventListener(GWGestureEvent.ROTATE, onRotate);
 			
-			this._verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
-			this._horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 		}
 		
 		public function removeEvents():void {
@@ -482,17 +482,28 @@ package com.gestureworks.cml.element
 		
 		private function onDrag(e:GWGestureEvent):void {
 			//e.stopImmediatePropagation();
+			
+			if (this.parent) {
+				if ("clusterBubbling" in parent) {
+					if (parent["clusterBubbling"] == true) {
+						//trace("Cluster bubbling in parent.");
+						return;
+					}
+				}
+				
+			}
+			
 			if (!scrollOnPane) {
 				if (this.parent) {
 					//this.parent.dispatchEvent(e);
-					passTouchUp();
+					//passTouchUp();
 					//trace("Target:", e.target);
 					return;
 				}
 			}
 			
 			if (multiFingerScroll && e.value.n < 2 && this.parent) {
-				passTouchUp();
+				//passTouchUp();
 				return;
 			}
 			
@@ -501,7 +512,7 @@ package com.gestureworks.cml.element
 				TouchContainer(parent).y += e.value.drag_dy;
 			}
 			
-			trace(e);
+			//trace(e);
 			
 			var newPos:Number;
 			
@@ -593,11 +604,21 @@ package com.gestureworks.cml.element
 			
 			if (!scaleOnPane) {
 				if (this.parent) {
-					//this.parent.dispatchEvent(e);
-					TouchContainer(parent).disableAffineTransform = false;
-					TouchContainer(parent).$scaleX += e.value.scale_dsx;
-					TouchContainer(parent).$scaleY += e.value.scale_dsy;
-					trace("Scaling:");
+					// This needs to be checked out for any future usefulness, since clusterBubbling is the only 
+					// way to make this remotely function as intended, and that has nothing to do with this method.
+					
+					
+					/*//this.parent.dispatchEvent(e);
+					TouchSprite(parent).disableAffineTransform = false;
+					TouchSprite(parent).$scaleX += e.value.scale_dsx;
+					TouchSprite(parent).$scaleY += e.value.scale_dsy;
+					//TouchSprite(parent).
+					e.target.$scaleX += e.value.scale_dsx;
+					e.target.$scaleY += e.value.scale_dsy;
+					TouchSprite(parent).$scaleX = e.target.$scaleX;
+					TouchSprite(parent).$scaleY = e.target.$scaleY;
+					trace("Scaling:", e.target);
+					trace("CurrentTar:", e.currentTarget);*/
 					return;
 				}
 			}
