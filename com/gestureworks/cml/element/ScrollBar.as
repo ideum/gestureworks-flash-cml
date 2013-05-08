@@ -3,6 +3,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.*;
@@ -428,13 +429,26 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onDragBegin(e:GWTouchEvent):void {
-			
+			trace("Beginning.");
 			//
 			if (this.parent) {
-				if ("gestureList" in parent) {
-					parentList = parent["gestureList"];
-					parent["gestureList"] = null;
+				var p:* = parent;
+				if ("disableNativeTransform" in p) {
+					//p["disableNativeTransform"] = true;
 				}
+				if (p.parent) {
+					var p2:* = p.parent;
+					if ("gestureList" in p2) {
+						//parentList = p2["gestureList"];
+						//p2["gestureList"] = null;
+						TouchSprite(p2).disableNativeTransform = true;
+					}
+					
+					if ("disableNativeTransform" in p2) {
+						p2["disableNativeTransform"] = true;
+					}
+				}
+				
 			}
 		}
 		
@@ -649,10 +663,27 @@ package com.gestureworks.cml.element
 			oldX = 0;
 			oldY = 0;
 			
+			trace("Completing.");
+			
 			if (this.parent) {
-				if ("gestureList" in parent) {
-					parent["gestureList"] = parentList;
+				var p:* = parent;
+				if ("disableNativeTransform" in p) {
+					//p["disableNativeTransform"] = false;
 				}
+				
+				if (p.parent) {
+					var p2:* = p.parent;
+					if ("gestureList" in p2) {
+						//parentList = p2["gestureList"];
+						//p2["gestureList"] = parentList;
+						
+					}
+					
+					if ("disableNativeTransform" in p2) {
+						p2["disableNativeTransform"] = false;
+					}
+				}
+				
 			}
 		}
 		
