@@ -429,21 +429,11 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onDragBegin(e:GWTouchEvent):void {
-			trace("Beginning.");
 			//
 			if (this.parent) {
 				var p:* = parent;
-				if ("disableNativeTransform" in p) {
-					//p["disableNativeTransform"] = true;
-				}
 				if (p.parent) {
 					var p2:* = p.parent;
-					if ("gestureList" in p2) {
-						//parentList = p2["gestureList"];
-						//p2["gestureList"] = null;
-						TouchSprite(p2).disableNativeTransform = true;
-					}
-					
 					if ("disableNativeTransform" in p2) {
 						p2["disableNativeTransform"] = true;
 					}
