@@ -234,8 +234,7 @@
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
 			
-			_loaded = true;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
+			
 		}
 		
 		private function onEnterFrame(e:Event):void {
@@ -275,6 +274,9 @@
 				panTo(_viewportX, image.viewportY, true);
 			else if (_viewportY && !_viewportX)
 				panTo(image.viewportX, _viewportY, true);
+				
+			_loaded = true;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
 		}
 		
 		private function flipHotspots(onOff:Boolean):void {
