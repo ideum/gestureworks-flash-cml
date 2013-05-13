@@ -97,7 +97,18 @@ package com.gestureworks.cml.core
 			// set parent display
 			cmlDisplay = parent as DisplayObjectContainer;
 			
-
+			if (cml.PreloaderKit != undefined) {
+				var preloader:XML =  <cml/>
+				preloader.appendChild(XML(cml.PreloaderKit).copy());
+				
+				cmlData = preloader;
+				
+				preprocess(XMLList(preloader));
+				
+				preloader = XML(cml.PreloaderKit).copy();
+				delete cml["PreloaderKit"];
+			}
+			cmlData = cml;
 			// preprocess
 			preprocess(XMLList(cml));
 		}			
@@ -156,7 +167,9 @@ package com.gestureworks.cml.core
 				if (debug && tag == "cml") trace("");
 				if (debug) trace(dash(XMLList(cml[i])) + tag + "");
 				
-				if (tag == "Include")
+				if (tag == "PreloaderKit")
+					ppPreloaderKit(cml[i]);
+				else if (tag == "Include")
 					ppInclude(cml[i]);				
 				else if (tag == "RenderKit")
 					ppRenderKit(cml[i]);
@@ -244,6 +257,15 @@ package com.gestureworks.cml.core
 				}
 			}
 			processPaths(paths[state]);			
+		}
+		
+		private static function ppPreloaderKit(cml:XML):void 
+		{
+			trace("In the pre-process loop for a preloader kit.");
+			if (cml.name() != "PreloaderKit") 
+				return;
+			//createObject(cml.name());
+			trace("I'm not quite sure what's going on.");
 		}
 		
 		private static function ppInclude(cml:XML, str:String=""):void 
@@ -685,7 +707,7 @@ package com.gestureworks.cml.core
 			if (cssFile && cssFile.length) {
 				if (debug) {
 					trace("CSS file found... loading: ", cssFile);;				
-					CSSManager.instance.debug = true;
+					CSSManager.instance.debug = false;
 				}
 				CSSManager.instance.addEventListener(FileEvent.CSS_LOADED, onCSSLoaded)					
 				CSSManager.instance.loadCSS(cssFile);
