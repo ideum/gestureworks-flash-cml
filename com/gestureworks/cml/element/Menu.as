@@ -240,10 +240,11 @@ package com.gestureworks.cml.element
 				// Find the margin.
 				
 				// position all but last buttons			
-				for (i = 0; i < childList.length; i++) 
+				for (i = 0; i < numChildren; i++) 
 				{
-					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						num = getChildIndex(childList.getIndex(i));
+					//if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
+						//num = getChildIndex(childList.getIndex(i));
+						num = i;
 						// position first button
 						if (num == 0) 
 							getChildAt(num).x = paddingLeft;
@@ -256,13 +257,28 @@ package com.gestureworks.cml.element
 							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;		
 						else if (position == "top")
 							getChildAt(num).y = paddingTop;
-					}
+					//}
 				}
 				
 				
 				// position last button, if more than one
-				if (childList.length > 1 && childList.getIndex(childList.length - 1) is DisplayObject)  {
+				/*if (childList.length > 1 && childList.getIndex(childList.length - 1) is DisplayObject)  {
 					var num2:Number = getChildIndex(childList.getIndex(childList.length - 1));
+					if (getChildAt(num2) is Button || getChildAt(num2) is Slider) {
+						getChildAt(num2).x = containerWidth - paddingRight - getChildAt(num2).width;	
+						
+						// position y
+						if (position == "bottom")
+							getChildAt(num2).y = containerHeight - getChildAt(num2).height - paddingBottom;				
+						
+						else if (position == "top")
+							getChildAt(num2).y = paddingTop;
+					}
+					
+				}*/
+				
+				if (numChildren > 1 && getChildAt(numChildren - 1) is DisplayObject)  {
+					var num2:Number = numChildren - 1;
 					if (getChildAt(num2) is Button || getChildAt(num2) is Slider) {
 						getChildAt(num2).x = containerWidth - paddingRight - getChildAt(num2).width;	
 						
