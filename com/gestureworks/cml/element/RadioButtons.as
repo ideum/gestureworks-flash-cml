@@ -622,8 +622,8 @@
 					_selectedLabel = button.name;
 				}
 				//trace(_selectedLabel);
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));		
 			}
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));			
 		}	
 		
 		private function compareChildren(target:*, comparison:*):Boolean {
