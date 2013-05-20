@@ -314,7 +314,17 @@ package com.gestureworks.cml.element
 			return childList.getIndex(index);
 		}
 		
-	
+		/**
+		 * returns the child element by id
+		 * @param	key
+		 * @return
+		 */
+		public function getElementById(id:String):*
+		{
+			return childList.getKey(id);
+		}
+		
+		
 		
 		/**
 		 * This method does a depth first search of childLists. Search parameter can be a simple CSS selector 
