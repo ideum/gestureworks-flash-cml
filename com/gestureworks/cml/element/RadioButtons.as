@@ -592,9 +592,9 @@
 				return;
 			}
 			
-			if (event.target is Sprite)
+			if (event.target is DisplayObject)
 			{
-				var button:Sprite = Sprite(event.target);
+				var button:DisplayObject = DisplayObject(event.target);
 				if (_graphicsArray) {
 					for (var i:int = 0; i < _graphicsArray.length; i++) 
 					{
@@ -618,12 +618,14 @@
 				}
 				else if (selected && button.name != selected.name)
 				{
-					button.addChild(selected);
+					
+					DisplayObjectContainer(button).addChild(selected);
 					_selectedLabel = button.name;
 				}
 				//trace(_selectedLabel);
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 			}
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));			
+						
 		}	
 		
 		private function compareChildren(target:*, comparison:*):Boolean {
