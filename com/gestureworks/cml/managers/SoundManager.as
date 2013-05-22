@@ -25,7 +25,6 @@ package com.gestureworks.cml.managers
 				arr = soundMap.getKey(target);
 				arr.push(sound);
 				//Array(soundMap.getKey(target)).push(sound);
-				trace("Fffff.", arr);
 			}
 			else {
 				arr.push(sound);
@@ -40,6 +39,37 @@ package com.gestureworks.cml.managers
 			sound.init();
 			
 			createEvents(sound);
+		}
+		
+		/**
+		 * Allows access to externally play a sound. The default sound is the first sound that was added by CML, but the user
+		 * may supply a soundIndex to target a specific sound.
+		 * @param	target
+		 * @param	soundIndex
+		 */
+		public static function play(target:Object, soundIndex:int = 0) {
+			if (soundMap.hasKey(target)) {
+				var arr:Array = soundMap.getKey(target);
+				Sound(arr[soundIndex]).play();
+			}
+		}
+		
+		/**
+		 * Allows access to externally stop all sounds that are playing, or stop a target sound
+		 * @param	target
+		 * @param	soundIndex
+		 */
+		public static function stop(target:Object, soundIndex:int = 0, stopAll:Boolean = false) {
+			if (soundMap.hasKey(target)) {
+				var arr:Array = soundMap.getKey(target);
+				if (!stopAll)
+					Sound(arr[soundIndex]).stop();
+				else {
+					for (var i:int = 0; i < arr.length; i++) {
+						Sound(arr[i]).stop();
+					}
+				}
+			}
 		}
 		
 		private static function createEvents(sound:Sound):void {
