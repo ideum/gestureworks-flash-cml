@@ -56,7 +56,8 @@ package com.gestureworks.cml.element
 		private var _loopQueue:Array;
 		private var _belt:TouchContainer;
 		private var _backgroundColor:uint = 0x000000;
-		private var _snapping:Boolean = true;	
+		private var _snapping:Boolean = true;
+		private var _snapOffset:Number = 0;
 		
 		private var _dimension:String;
 		private var _axis:String;	
@@ -151,6 +152,15 @@ package com.gestureworks.cml.element
 		public function set margin(m:Number):void
 		{
 			_margin = m;
+		}
+		
+		/**
+		 * The offset from the album's origin to snap the belt to.  
+		 * @default 0
+		 */
+		public function get snapOffset():Number { return _snapOffset; }
+		public function set snapOffset(s:Number):void {
+			_snapOffset = s;
 		}
 		
 		/**
@@ -728,10 +738,10 @@ package com.gestureworks.cml.element
 				{
 					if (!child.visible) continue;
 					
-					if (Math.abs(child[axis]) < minDiff)
+					if (Math.abs(child[axis] - snapOffset) < minDiff)
 					{
-						minDiff = Math.abs(child[axis]);
-						distance = -child[axis];
+						minDiff = Math.abs(child[axis] - snapOffset);
+						distance = -(child[axis] - snapOffset);
 					}				
 				}
 			}
