@@ -336,6 +336,8 @@ package com.gestureworks.cml.factories
 			Position = 0;
 			if (_loop) play();
 			else _isPlaying = false;
+			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Complete" , "complete"));
 		}
 	}
 }
