@@ -1,10 +1,12 @@
 package com.gestureworks.cml.managers 
 {
 	import com.gestureworks.cml.element.Sound;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.LinkedMap;
 	import flash.utils.Dictionary;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
+	import flash.events.EventDispatcher;
 	/**
 	 * The sound manager only handles Sound elements attached to CML display objects for the purposes of accessibility. It does not handle regular MP3
 	 * or WAV elements.
@@ -50,7 +52,15 @@ package com.gestureworks.cml.managers
 		public static function play(target:Object, soundIndex:int = 0) {
 			if (soundMap.hasKey(target)) {
 				var arr:Array = soundMap.getKey(target);
+				Sound(arr[soundIndex]).addEventListener(StateEvent.CHANGE, onComplete);
 				Sound(arr[soundIndex]).play();
+			}
+			
+			function onComplete(e:StateEvent):void {
+				if (e.value == "complete") {
+					var dispatch:EventDispatcher = new EventDispatcher();
+					dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "complete"));
+				}
 			}
 		}
 		
@@ -115,6 +125,13 @@ package com.gestureworks.cml.managers
 		private static function onSoundTouchEvent(e:GWTouchEvent):void {
 			
 			var arr:Array = soundMap.getKey(e.target);
+			
+			if (arr == null){
+				arr = findParent(e.target);
+				if (!arr)
+					return;
+			}
+			
 			if (arr.length > 2) {
 				Sound(arr[0]).play();
 				return;
@@ -133,6 +150,23 @@ package com.gestureworks.cml.managers
 						sound.stop();
 					}
 				}
+			}
+		}
+		
+		private static function findParent(obj:*):Array {
+			var arr:Array;
+			if (obj.parent) {
+				arr = soundMap.getKey(obj.parent);
+				if (arr) {
+					return arr;
+				}
+				else {
+					arr = findParent(obj.parent);
+					return arr;
+				}
+			}
+			else {
+				return null;
 			}
 		}
 		
