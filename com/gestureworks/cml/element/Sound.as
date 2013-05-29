@@ -53,6 +53,17 @@ package com.gestureworks.cml.element
 				_target = value;
 		}
 		
+		private var _stopOnRelease:Boolean = false;
+		/**
+		 * This is a special property to set the sound file to stop on release. Looping will automatically cause a sound file to stop on release,
+		 * this variable will allow specification for long sound files to stop when the user releases. Don't set this to 'true' for sounds that are
+		 * supposed to play on "up".
+		 */
+		public function get stopOnRelease():Boolean { return _stopOnRelease; }
+		public function set stopOnRelease(value:Boolean):void {
+			_stopOnRelease = value;
+		}
+		
 		override public function init():void {
 			super.init();
 		}
