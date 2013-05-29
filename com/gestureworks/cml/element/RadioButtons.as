@@ -618,8 +618,17 @@
 				}
 				else if (selected && button.name != selected.name)
 				{
-					
-					DisplayObjectContainer(button).addChild(selected);
+					if (button is DisplayObjectContainer)
+						DisplayObjectContainer(button).addChild(selected);
+					else if (button is Text) {
+						for (var s:String in _textElements) {
+							trace("goddamnit:", s, _textElements[s], button, button == _textElements[s]);
+							if (_textElements[s] == button) {
+								button = _radioButtons[s];
+								DisplayObjectContainer(button).addChild(selected);
+							}
+						}
+					}
 					_selectedLabel = button.name;
 				}
 				//trace(_selectedLabel);
