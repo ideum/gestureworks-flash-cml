@@ -402,9 +402,6 @@ package com.gestureworks.cml.factories
 			updateTextFormat();			
 		}
 		
-		
-		
-		
 	
 		// layout properties
 		
@@ -551,11 +548,11 @@ package com.gestureworks.cml.factories
 			}
 			if (scrollable) {
 				this.scrollRect = new Rectangle(0, 0, this.width, this.height);
-				trace("Hi, this is your scrollable text box speaking here. My width right now is:", this.width, "And my height is:", this.height);
 			}
 			
 			super.text = this.text;			
 		}
+		
 		
 		//////////////
 		//  IClone  
