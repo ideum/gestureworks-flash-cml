@@ -24,7 +24,7 @@ package com.gestureworks.cml.utils
 		 * @param	container		
 		 * @param	indentString
 		 */		
-		public function traceDisplayList(container:DisplayObjectContainer, indentString:String=""):void 
+		public static function traceDisplayList(container:DisplayObjectContainer, indentString:String=""):void 
 		{ 
 			var child:DisplayObject; 
 			for (var i:int=0; i < container.numChildren; i++) 
