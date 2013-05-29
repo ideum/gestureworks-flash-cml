@@ -1,6 +1,7 @@
 package com.gestureworks.cml.managers 
 {
 	import com.gestureworks.cml.element.Sound;
+	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.LinkedMap;
 	import flash.utils.Dictionary;
@@ -18,6 +19,11 @@ package com.gestureworks.cml.managers
 		private static var targetToSound:Dictionary = new Dictionary();
 		private static var soundToTarget:Dictionary = new Dictionary();
 		private static var soundMap:LinkedMap = new LinkedMap();
+		
+		private static var releaseSounds:Array = [];
+		
+		private static var soundPlaying:Boolean = false;
+		static public var dispatch:EventDispatcher = new EventDispatcher();
 		
 		public static function attachSound(target:Object, sound:Sound):void {
 			
@@ -49,19 +55,15 @@ package com.gestureworks.cml.managers
 		 * @param	target
 		 * @param	soundIndex
 		 */
-		public static function play(target:Object, soundIndex:int = 0) {
+		public static function play(target:Object, soundIndex:int = 0):void {
+			//if (soundPlaying) return;
+			
 			if (soundMap.hasKey(target)) {
 				var arr:Array = soundMap.getKey(target);
-				Sound(arr[soundIndex]).addEventListener(StateEvent.CHANGE, onComplete);
 				Sound(arr[soundIndex]).play();
+				soundPlaying = true;
 			}
 			
-			function onComplete(e:StateEvent):void {
-				if (e.value == "complete") {
-					var dispatch:EventDispatcher = new EventDispatcher();
-					dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "complete"));
-				}
-			}
 		}
 		
 		/**
@@ -72,17 +74,24 @@ package com.gestureworks.cml.managers
 		public static function stop(target:Object, soundIndex:int = 0, stopAll:Boolean = false) {
 			if (soundMap.hasKey(target)) {
 				var arr:Array = soundMap.getKey(target);
-				if (!stopAll)
+				if (!stopAll) {
+					soundPlaying = false;
 					Sound(arr[soundIndex]).stop();
+					dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "stopped"));
+				}
 				else {
 					for (var i:int = 0; i < arr.length; i++) {
+						soundPlaying = false;
 						Sound(arr[i]).stop();
+						dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "stopped"));
 					}
 				}
 			}
 		}
 		
 		private static function createEvents(sound:Sound):void {
+			
+			sound.addEventListener(StateEvent.CHANGE, onComplete);
 			
 			sound.target.addEventListener(GWGestureEvent.DRAG, onSoundEvent);
 			sound.target.addEventListener(GWGestureEvent.ROTATE, onSoundEvent);
@@ -118,13 +127,30 @@ package com.gestureworks.cml.managers
 				}
 			}
 			
-			if (!sound.target.hasEventListener(GWTouchEvent.TOUCH_END))
+			if (!sound.target.hasEventListener(GWTouchEvent.TOUCH_END)) {
+				releaseSounds.push(sound);
 				sound.target.addEventListener(GWTouchEvent.TOUCH_END, onSoundTouchEvent);
+			}
 		}
 		
 		private static function onSoundTouchEvent(e:GWTouchEvent):void {
+			var arr:Array;
 			
-			var arr:Array = soundMap.getKey(e.target);
+			if (e.target is TouchContainer) {
+				var tc:TouchContainer = e.target as TouchContainer;
+				for (var l:int = 0; l < tc.numChildren; l++) 
+				{
+					if (tc.getChildAt(l).hitTestPoint(e.stageX, e.stageY)) {
+						if (soundMap.hasKey(tc.getChildAt(l))) {
+							arr = soundMap.getKey(tc.getChildAt(l));
+						}
+					}					
+				}
+			}
+			
+			if (arr == null)
+				arr = soundMap.getKey(e.target);
+			//trace("e.target:", e.target);
 			
 			if (arr == null){
 				arr = findParent(e.target);
@@ -132,22 +158,43 @@ package com.gestureworks.cml.managers
 					return;
 			}
 			
-			if (arr.length > 2) {
-				Sound(arr[0]).play();
+			triggerSound(arr, e);
+		}	
+		
+		private static function triggerSound(soundMapArray:Array, e:GWTouchEvent):void {
+			
+			if (soundMapArray.length > 2) {
+				Sound(soundMapArray[0]).play();
+				soundPlaying = true;
 				return;
 			}
 			
-			for (var i:int = 0; i < arr.length; i++) {
-				var sound:Sound = arr[i];
+			for (var i:int = 0; i < soundMapArray.length; i++) {
+				var sound:Sound = soundMapArray[i];
 				
 				for (var j:int = 0; j < sound.triggerArray.length; j++){
 					if (sound.triggerArray[j] == "down" && e.type == GWTouchEvent.TOUCH_BEGIN || 
 						sound.triggerArray[j] == "up" && e.type == GWTouchEvent.TOUCH_END || 
 						sound.triggerArray[j] == "out" && e.type == GWTouchEvent.TOUCH_OUT) {
 						sound.play();
+						soundPlaying = true;
+					}
+					else if (e.type == GWTouchEvent.TOUCH_END && sound.loop) {
+						soundPlaying = false;
+						sound.stop();
+						dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "stopped"));
+					}
+					else if (e.type == GWTouchEvent.TOUCH_END && sound.stopOnRelease) {
+						soundPlaying = false;
+						sound.stop();
+						dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "stopped"));
 					}
 					else if (e.type == GWTouchEvent.TOUCH_END) {
-						sound.stop();
+						for (var k:int = 0; k < releaseSounds.length; k++) 
+						{
+							Sound(releaseSounds[k]).stop();
+							dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "stopped"));
+						}
 					}
 				}
 			}
@@ -172,9 +219,28 @@ package com.gestureworks.cml.managers
 		
 		private static function onSoundEvent(e:GWGestureEvent):void {
 			//trace("e.type:", e.type);
-			var arr:Array = soundMap.getKey(e.target);
+			
+			var arr:Array
+			
+			if (e.target is TouchContainer) {
+				var tc:TouchContainer = e.target as TouchContainer;
+				for (var l:int = 0; l < tc.numChildren; l++) 
+				{
+					if (tc.getChildAt(l).hitTestPoint(e.value.stageX, e.value.stageY)) {
+						if (soundMap.hasKey(tc.getChildAt(l))) {
+							arr = soundMap.getKey(tc.getChildAt(l));
+						}
+					}					
+				}
+			}
+			
+			if (arr == null) {
+				arr = soundMap.getKey(e.target);
+			}
+			
 			if (arr.length > 2) {
 				Sound(arr[0]).play();
+				soundPlaying = true;
 				return;
 			}
 			
@@ -184,6 +250,7 @@ package com.gestureworks.cml.managers
 				for (var j:int = 0; j < sound.triggerArray.length; j++){
 					if (sound.triggerArray[j] == e.value.id) {
 						sound.play();
+						soundPlaying = true;
 					}
 				}
 			}
@@ -239,6 +306,15 @@ package com.gestureworks.cml.managers
 			
 			if (sound.target.hasEventListener(GWTouchEvent.TOUCH_END))
 				sound.target.removeEventListener(GWTouchEvent.TOUCH_END, onSoundTouchEvent);
+		}
+		
+		private static function onComplete(e:StateEvent):void {
+			if (e.value == "complete") {
+				if (!e.target.loop)
+					soundPlaying = false;
+				//dispatch = new EventDispatcher();
+				dispatch.dispatchEvent(new StateEvent(StateEvent.CHANGE, "SoundManager", "Complete", "complete"));
+			}
 		}
 	}
 
