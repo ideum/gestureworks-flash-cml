@@ -56,6 +56,7 @@ package com.gestureworks.cml.element
 		private var _loopQueue:Array;
 		private var _belt:TouchContainer;
 		private var _backgroundColor:uint = 0x000000;
+		private var _backgroundAlpha:Number = 1;
 		private var _snapping:Boolean = true;
 		private var _snapOffset:Number = 0;
 		
@@ -256,6 +257,15 @@ package com.gestureworks.cml.element
 		public function set backgroundColor(c:uint):void
 		{
 			_backgroundColor = c;
+		}
+		
+		/**
+		 * The alpha of the ablum's background
+		 */
+		public function get backgroundAlpha():Number { return _backgroundAlpha; }
+		public function set backgroundAlpha(a:Number):void 
+		{
+			_backgroundAlpha = a;
 		}
 		
 		/**
@@ -600,6 +610,7 @@ package com.gestureworks.cml.element
 				{
 					var slide:Graphic = new Graphic();
 					slide.shape = "rectangle";
+					slide.fillAlpha = backgroundAlpha;					
 					slide.color = backgroundColor;
 					slide.lineStroke = 0;
 					slide.width = frame.width;
@@ -642,6 +653,7 @@ package com.gestureworks.cml.element
 			g.width = belt.width;
 			g.height = belt.height;
 			g.color = backgroundColor;
+			g.fillAlpha = backgroundAlpha;
 			g.lineStroke = 0;
 			
 			var background:TouchSprite = new TouchSprite();
