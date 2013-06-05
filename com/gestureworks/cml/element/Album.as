@@ -330,7 +330,7 @@ package com.gestureworks.cml.element
 		 */
 		public function objectAtSnapPoint(point:int):*
 		{
-			return belt.getChildAt(point);  //add one to exclude background
+			return belt.getChildAt(point+1);  //add one to exclude background
 		}
 		
 		/**
