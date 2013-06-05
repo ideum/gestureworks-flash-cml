@@ -146,10 +146,10 @@ package com.gestureworks.cml.element
 	
 		private function onHotspot(e:StateEvent):void {
 			if (_component) {
-									
+				
 				if (compResetOnOpen) {
 					StateUtils.loadState(_component, 0, false);	
-					if (_component["front"] && _component["front"]["reset"]())
+					if ("front" in _component && _component["front"]["reset"]())
 						_component["reset"]();
 				}					
 				
