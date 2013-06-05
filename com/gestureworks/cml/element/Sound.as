@@ -16,7 +16,7 @@ package com.gestureworks.cml.element
 	{
 		
 		private var loaded:Boolean = false;
-		private var dispatch:String = "down";
+		//private var dispatch:String = "down";
 		private var _triggerArray:Array;
 		
 		public function Sound() 
@@ -34,8 +34,11 @@ package com.gestureworks.cml.element
 		public function get trigger():String { return _trigger; }
 		public function set trigger(value:String):void {
 			_trigger = value;
+			trace("Setting trigger:", _trigger);
 			
 			_triggerArray = _trigger.split(",");
+			if (_triggerArray.length < 1)
+				_triggerArray.push(_trigger);
 		}
 		
 		public function get triggerArray():Array { return _triggerArray; }
@@ -62,6 +65,16 @@ package com.gestureworks.cml.element
 		public function get stopOnRelease():Boolean { return _stopOnRelease; }
 		public function set stopOnRelease(value:Boolean):void {
 			_stopOnRelease = value;
+		}
+		
+		private var _eventlessNotification:Boolean = false;
+		/**
+		 * This is a property for setting if the sound has no specific gesture or event attached to it, so it will be processed into the SoundManager's
+		 * dictionary but will not interfere with other events.
+		 */
+		public function get eventlessNotification():Boolean { return _eventlessNotification; }
+		public function set eventlessNotification(value:Boolean):void {
+			_eventlessNotification = value;
 		}
 		
 		override public function init():void {
