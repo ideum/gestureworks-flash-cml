@@ -199,7 +199,7 @@ package com.gestureworks.cml.components
 			if (event.property == "albumState") {
 				var indices:RadioButtons = searchChildren(RadioButtons);
 				if (indices) {
-					indices.selectButton(Album(album).currentSnapPoint.toString());
+					indices.selectButton(Album(album).currentIndex.toString());
 				}
 			}
 			else if (event.value == "forward") {

@@ -74,6 +74,7 @@ package com.gestureworks.cml.element
 		private var frame:Rectangle;  //the dimensions of the largest object
 		private var beltMouseChildren:Boolean = false;
 		private var snapIndex:Number = 0;
+		private var initLoopOrder:Array;		
 				
 		/**
 		 * Constructor
@@ -312,14 +313,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Returns the index of the current snap point
 		 */
-		public function get currentSnapPoint():Number {
-			var d:Number = horizontal ? belt.x : belt.y;
-			for (var i:int = 0; i < snapPoints.length; i++) {
-				if (snapPoints[i] + (belt.width * 0.1) > d && d > snapPoints[i] - (belt.width * 0.1)) {
-					snapIndex = i;
-				}
-			}
-			//trace(d);
+		public function get currentIndex():Number {
 			return snapIndex;
 		}
 		
@@ -550,6 +544,8 @@ package com.gestureworks.cml.element
 					snapPoints.push( -belt.getChildAt(i)[axis]);					
 				}
 			}
+			
+			trace(snapPoints);
 		}
 		
 		/**
@@ -628,7 +624,11 @@ package com.gestureworks.cml.element
 				var child:DisplayObject = belt.getChildAt(i);
 				child.visible = child[axis] > this[dimension] ? false : true;
 				loopQueue.push(child);
-			}			
+			}
+			if (loopQueue) {
+				initLoopOrder = new Array();
+				initLoopOrder = initLoopOrder.concat(loopQueue);
+			}
 		}
 		
 		/**
@@ -719,7 +719,8 @@ package com.gestureworks.cml.element
 					
 			if (isNaN(point))
 				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);				
-				
+			
+			snapIndex = snapPoints.indexOf(point);
 			var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:currentObject };//horizontal ? { x:point } : { y:point };			
 			if (horizontal)
 				destination["x"] = point;
@@ -754,10 +755,11 @@ package com.gestureworks.cml.element
 					{
 						minDiff = Math.abs(child[axis] - snapOffset);
 						distance = -(child[axis] - snapOffset);
+						snapIndex = initLoopOrder.indexOf(child);
 					}				
 				}
-			}
-						
+			}	
+
 			//generate a tween for each child
 			for each(child in loopQueue)
 			{
@@ -765,7 +767,7 @@ package com.gestureworks.cml.element
 				childTweens.push(TweenLite.to(child, .4, destination));
 			}
 							
-			loopSnapTween = new TimelineLite( { onComplete:processLoop, onUpdate:publishState } );
+			loopSnapTween = new TimelineLite( { onComplete:loopSnapComplete, onUpdate:publishState } );
 			loopSnapTween.appendMultiple(childTweens);
 			loopSnapTween.play();
 		}
@@ -775,7 +777,7 @@ package com.gestureworks.cml.element
 		 */
 		private function currentObject():void
 		{
-			var obj:* = objectAtSnapPoint(currentSnapPoint);
+			var obj:* = objectAtSnapPoint(snapIndex);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", obj, true));
 		}		
 		
@@ -1015,7 +1017,14 @@ package com.gestureworks.cml.element
 				queueNext();
 			if (edge3 > boundary2)
 				tailToHead();
-				
+		}
+		
+		/**
+		 * Updates current object 
+		 */
+		private function loopSnapComplete():void
+		{
+			processLoop();
 			currentObject();
 		}
 	
