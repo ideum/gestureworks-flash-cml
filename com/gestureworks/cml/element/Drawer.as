@@ -5,6 +5,8 @@ package com.gestureworks.cml.element
 	import com.greensock.TimelineLite;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	/**
 	 * The <code>Drawer</code> is a container that animates down to conceal its contents (closed state) and animates up to
@@ -44,6 +46,7 @@ package com.gestureworks.cml.element
 		private var contentMask:Graphic;
 		private var upTween:TimelineLite;
 		private var downTween:TimelineLite;
+		private var timer:Timer;
 
 		
 		/**
@@ -83,7 +86,11 @@ package com.gestureworks.cml.element
 				contentMask.height = height;
 				addUIComponent(contentMask);
 				mask = contentMask;
-			}				
+			}	
+			
+			//threshold timer to allow tweening to process
+			timer = new Timer(500);
+			timer.addEventListener(TimerEvent.TIMER, thresholdCheck);
 		}
 		
 		/**
@@ -565,7 +572,7 @@ package com.gestureworks.cml.element
 		 */
 		private function open(e:GWGestureEvent):void
 		{	
-			if (downTween._active || upTween._active) return;
+			if (!tweenThreshold()) return;
 			handleTransition();
 			leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
 			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
@@ -582,7 +589,7 @@ package com.gestureworks.cml.element
 		 */		
 		private function close(e:GWGestureEvent):void
 		{			
-			if (upTween._active || downTween._active) return;
+			if (!tweenThreshold()) return;
 			handle.visible = true;
 			leftHandle.searchChildren(Graphic).topLeftRadius = 0;
 			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
@@ -591,6 +598,25 @@ package com.gestureworks.cml.element
 			handle.removeEventListener(GWGestureEvent.FLICK, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
 			handle.addEventListener(GWGestureEvent.FLICK, open);	
+		}
+		
+		/**
+		 * Locks tweening until threshold expires
+		 * @return
+		 */
+		private function tweenThreshold():Boolean {
+			if (timer.running)
+				return false;
+			timer.start();
+			return true;
+		}
+		
+		/**
+		 * Tween threshold expired so unlock tweening
+		 * @param	e
+		 */
+		private function thresholdCheck(e:TimerEvent):void {
+			timer.stop();
 		}
 		
 		/**
