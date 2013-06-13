@@ -283,7 +283,6 @@ package com.gestureworks.cml.element
 		override public function init():void
 		{	
 			setupUI();
-			createEvents();
 			
 			if (knob)
 			{
@@ -339,7 +338,9 @@ package com.gestureworks.cml.element
 						stepknobPositions[i] = (rail.height / (steps-1)) * i;
 					}
 				}				
-			}		
+			}
+			
+			createEvents();			
 		}
 		
 		/**
@@ -388,7 +389,6 @@ package com.gestureworks.cml.element
 			knobGraphic.lineStroke = 2;
 			knobGraphic.color = knobColor;
 			knobGraphic.lineColor = 0x666666;
-			addChild(knobGraphic);
 			return  DisplayObject(knobGraphic);				
 		}
 		

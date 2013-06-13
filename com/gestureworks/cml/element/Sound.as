@@ -34,7 +34,6 @@ package com.gestureworks.cml.element
 		public function get trigger():String { return _trigger; }
 		public function set trigger(value:String):void {
 			_trigger = value;
-			trace("Setting trigger:", _trigger);
 			
 			_triggerArray = _trigger.split(",");
 			if (_triggerArray.length < 1)
@@ -75,6 +74,19 @@ package com.gestureworks.cml.element
 		public function get eventlessNotification():Boolean { return _eventlessNotification; }
 		public function set eventlessNotification(value:Boolean):void {
 			_eventlessNotification = value;
+		}
+		
+		private var _importance:int = 0;
+		/**
+		 * This property determines the sound's play heirarchy in reference to other sounds. If the sound's heirarchy is lower than a sound that's currently 
+		 * playing, it will not play. If the sound's heirarchy is the same as a sound that is currently playing, they will play at the same time, and if it is 
+		 * higher, than the other sound will be stopped for this sound to play. Setting importance to a negative number will exclude the sound from the comparison
+		 * so it will always play without interrupting any other sounds. So -1 should be used for a background sound that always plays.
+		 * @default 0
+		 */
+		public function get importance():int { return _importance; }
+		public function set importance(value:int):void {
+			_importance = value;
 		}
 		
 		override public function init():void {
