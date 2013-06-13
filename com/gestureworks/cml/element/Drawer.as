@@ -565,7 +565,7 @@ package com.gestureworks.cml.element
 		 */
 		private function open(e:GWGestureEvent):void
 		{	
-			if (downTween._active) return;
+			if (downTween._active || upTween._active) return;
 			handleTransition();
 			leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
 			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
@@ -582,7 +582,7 @@ package com.gestureworks.cml.element
 		 */		
 		private function close(e:GWGestureEvent):void
 		{			
-			if (upTween._active) return;
+			if (upTween._active || downTween._active) return;
 			handle.visible = true;
 			leftHandle.searchChildren(Graphic).topLeftRadius = 0;
 			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
