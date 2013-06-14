@@ -57,7 +57,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.GigapixelViewer; GigapixelViewer;
 	import com.gestureworks.cml.components.LiveVideoViewer; LiveVideoViewer;
 	import com.gestureworks.cml.components.SlideshowViewer; SlideshowViewer;
-	
+	import com.gestureworks.cml.components.FlipBookViewer; FlipBookViewer;
 	
 	
 	/////////////////////
