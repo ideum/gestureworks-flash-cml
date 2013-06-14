@@ -401,7 +401,7 @@ package com.gestureworks.cml.element
 			tweenGroup.play();			
 		}
 		
-		private function collapseMenu(immediately:Boolean = false):void {
+		public function collapseMenu(immediately:Boolean = false):void {
 			var tweenArray:Array = [];
 			var tweenGroup:TimelineLite;
 			var tweenSpeed:Number = 0.3;
@@ -753,11 +753,13 @@ package com.gestureworks.cml.element
 				
 				
 				// if ab || B
-				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1] && twirlIndicator) {
-					//Rotate the item preceding the dragGroup to closed.
-					tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:90}));
-					//Rotate the item ending the dragGroup to open.
-					tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:180}));
+				if (twirlIndicator) {
+					if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
+						//Rotate the item preceding the dragGroup to closed.
+						tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:90}));
+						//Rotate the item ending the dragGroup to open.
+						tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:180}));
+					}
 				}
 				
 			} else {
@@ -774,11 +776,13 @@ package com.gestureworks.cml.element
 				}
 				
 				// if a || ba
-				if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1] && twirlIndicator) {
-					// Rotate the item preceding all the dragGroup items to open.
-					tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:180}));
-					//Rotate the item ending the dragGroup to closed.
-					tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:90}));
+				if (twirlIndicator){
+					if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
+						// Rotate the item preceding all the dragGroup items to open.
+						tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:180}));
+						//Rotate the item ending the dragGroup to closed.
+						tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:90}));
+					}
 				}
 			}
 			

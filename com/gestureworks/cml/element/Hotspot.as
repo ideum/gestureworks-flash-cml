@@ -146,10 +146,10 @@ package com.gestureworks.cml.element
 	
 		private function onHotspot(e:StateEvent):void {
 			if (_component) {
-									
+				
 				if (compResetOnOpen) {
 					StateUtils.loadState(_component, 0, false);	
-					if (_component["front"] && _component["front"]["reset"]())
+					if ("front" in _component && _component["front"]["reset"]())
 						_component["reset"]();
 				}					
 				
@@ -208,8 +208,8 @@ package com.gestureworks.cml.element
 				}
 
 				
-				if (compX) _component.x += compX;
-				if (compY) _component.y += compY;
+				if (compX) _component.x = compX;
+				if (compY) _component.y = compY;
 				
 				//trace("Setting component:", _component.x, _component.y);
 				_component.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "hotspot", "visible", true));

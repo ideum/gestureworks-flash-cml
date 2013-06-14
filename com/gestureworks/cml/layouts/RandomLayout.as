@@ -254,10 +254,9 @@ package com.gestureworks.cml.layouts
 			{
 				child = container.getChildAt(i);
 				if (!validObject(child)) continue;
-				
 				matrix = child.transform.matrix;
+				rotateTransform(matrix, degreesToRadians(randomMinMax(minRot, maxRot)));												
 				translateTransform(matrix, randomMinMax(minX, maxX), randomMinMax(minY, maxY));
-				rotateTransform(matrix, degreesToRadians(randomMinMax(minRot, maxRot)));
 				childTransformations.push(matrix);	
 			}			
 		}	

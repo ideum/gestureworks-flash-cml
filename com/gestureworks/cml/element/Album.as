@@ -56,6 +56,7 @@ package com.gestureworks.cml.element
 		private var _loopQueue:Array;
 		private var _belt:TouchContainer;
 		private var _backgroundColor:uint = 0x000000;
+		private var _backgroundAlpha:Number = 1;
 		private var _snapping:Boolean = true;
 		private var _snapOffset:Number = 0;
 		
@@ -73,6 +74,7 @@ package com.gestureworks.cml.element
 		private var frame:Rectangle;  //the dimensions of the largest object
 		private var beltMouseChildren:Boolean = false;
 		private var snapIndex:Number = 0;
+		private var initLoopOrder:Array;		
 				
 		/**
 		 * Constructor
@@ -259,6 +261,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * The alpha of the ablum's background
+		 */
+		public function get backgroundAlpha():Number { return _backgroundAlpha; }
+		public function set backgroundAlpha(a:Number):void 
+		{
+			_backgroundAlpha = a;
+		}
+		
+		/**
 		 * The album element is intended for a ListLayout only. The layout axis can be
 		 * set by the "horizontal" attribute and the spacing can be adjusted through the
 		 * "margin" attribute. 
@@ -302,14 +313,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Returns the index of the current snap point
 		 */
-		public function get currentSnapPoint():Number {
-			var d:Number = horizontal ? belt.x : belt.y;
-			for (var i:int = 0; i < snapPoints.length; i++) {
-				if (snapPoints[i] + (belt.width * 0.1) > d && d > snapPoints[i] - (belt.width * 0.1)) {
-					snapIndex = i;
-				}
-			}
-			//trace(d);
+		public function get currentIndex():Number {
 			return snapIndex;
 		}
 		
@@ -320,7 +324,7 @@ package com.gestureworks.cml.element
 		 */
 		public function objectAtSnapPoint(point:int):*
 		{
-			return belt.getChildAt(point);  //add one to exclude background
+			return belt.getChildAt(point+1);  //add one to exclude background
 		}
 		
 		/**
@@ -540,6 +544,8 @@ package com.gestureworks.cml.element
 					snapPoints.push( -belt.getChildAt(i)[axis]);					
 				}
 			}
+			
+			trace(snapPoints);
 		}
 		
 		/**
@@ -600,6 +606,7 @@ package com.gestureworks.cml.element
 				{
 					var slide:Graphic = new Graphic();
 					slide.shape = "rectangle";
+					slide.fillAlpha = backgroundAlpha;					
 					slide.color = backgroundColor;
 					slide.lineStroke = 0;
 					slide.width = frame.width;
@@ -617,7 +624,11 @@ package com.gestureworks.cml.element
 				var child:DisplayObject = belt.getChildAt(i);
 				child.visible = child[axis] > this[dimension] ? false : true;
 				loopQueue.push(child);
-			}			
+			}
+			if (loopQueue) {
+				initLoopOrder = new Array();
+				initLoopOrder = initLoopOrder.concat(loopQueue);
+			}
 		}
 		
 		/**
@@ -642,6 +653,7 @@ package com.gestureworks.cml.element
 			g.width = belt.width;
 			g.height = belt.height;
 			g.color = backgroundColor;
+			g.fillAlpha = backgroundAlpha;
 			g.lineStroke = 0;
 			
 			var background:TouchSprite = new TouchSprite();
@@ -707,7 +719,8 @@ package com.gestureworks.cml.element
 					
 			if (isNaN(point))
 				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);				
-				
+			
+			snapIndex = snapPoints.indexOf(point);
 			var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:currentObject };//horizontal ? { x:point } : { y:point };			
 			if (horizontal)
 				destination["x"] = point;
@@ -742,10 +755,11 @@ package com.gestureworks.cml.element
 					{
 						minDiff = Math.abs(child[axis] - snapOffset);
 						distance = -(child[axis] - snapOffset);
+						snapIndex = initLoopOrder.indexOf(child);
 					}				
 				}
-			}
-						
+			}	
+
 			//generate a tween for each child
 			for each(child in loopQueue)
 			{
@@ -753,7 +767,7 @@ package com.gestureworks.cml.element
 				childTweens.push(TweenLite.to(child, .4, destination));
 			}
 							
-			loopSnapTween = new TimelineLite( { onComplete:processLoop, onUpdate:publishState } );
+			loopSnapTween = new TimelineLite( { onComplete:loopSnapComplete, onUpdate:publishState } );
 			loopSnapTween.appendMultiple(childTweens);
 			loopSnapTween.play();
 		}
@@ -763,7 +777,7 @@ package com.gestureworks.cml.element
 		 */
 		private function currentObject():void
 		{
-			var obj:* = objectAtSnapPoint(currentSnapPoint);
+			var obj:* = objectAtSnapPoint(snapIndex);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", obj, true));
 		}		
 		
@@ -1003,7 +1017,14 @@ package com.gestureworks.cml.element
 				queueNext();
 			if (edge3 > boundary2)
 				tailToHead();
-				
+		}
+		
+		/**
+		 * Updates current object 
+		 */
+		private function loopSnapComplete():void
+		{
+			processLoop();
 			currentObject();
 		}
 	
