@@ -74,7 +74,8 @@ package com.gestureworks.cml.element
 		private var frame:Rectangle;  //the dimensions of the largest object
 		private var beltMouseChildren:Boolean = false;
 		private var snapIndex:Number = 0;
-		private var initLoopOrder:Array;		
+		private var initLoopOrder:Array;	
+		private var _currentObject:*;
 				
 		/**
 		 * Constructor
@@ -123,6 +124,10 @@ package com.gestureworks.cml.element
 				addEventListener(MouseEvent.MOUSE_DOWN, inBounds);
 				addEventListener(MouseEvent.MOUSE_UP, outOfBounds);
 				addEventListener(MouseEvent.MOUSE_OVER, inBounds);				
+			}
+			
+			if (snapOffset){
+				if (loop) loopSnap(null, snapOffset);
 			}
 		}
 		
@@ -308,7 +313,14 @@ package com.gestureworks.cml.element
 		{
 			dragAngle = value;
 			super.rotationY = value;
-		}	
+		}
+		
+		/**
+		 * Returns the current object
+		 */
+		public function get currentObject():*{
+			return _currentObject;
+		}
 		
 		/**
 		 * Returns the index of the current snap point
@@ -414,7 +426,8 @@ package com.gestureworks.cml.element
 			setBeltBackground();
 			storeSnapPoints();
 			setBoundaries();
-			addUIComponent(belt);			
+			addUIComponent(belt);
+			_currentObject = belt.getChildAt(1);
 		}
 						
 		/**
@@ -721,7 +734,7 @@ package com.gestureworks.cml.element
 				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);				
 			
 			snapIndex = snapPoints.indexOf(point);
-			var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:currentObject };//horizontal ? { x:point } : { y:point };			
+			var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:dispatchCurrentObject };//horizontal ? { x:point } : { y:point };			
 			if (horizontal)
 				destination["x"] = point;
 			else
@@ -769,16 +782,16 @@ package com.gestureworks.cml.element
 							
 			loopSnapTween = new TimelineLite( { onComplete:loopSnapComplete, onUpdate:publishState } );
 			loopSnapTween.appendMultiple(childTweens);
-			loopSnapTween.play();
+			loopSnapTween.play();					
 		}
 		
 		/**
 		 * Dispatch an event on snap complete with the object at the current snap point
 		 */
-		private function currentObject():void
+		private function dispatchCurrentObject():void
 		{
-			var obj:* = objectAtSnapPoint(snapIndex);
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", obj, true));
+			_currentObject = objectAtSnapPoint(snapIndex);
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", _currentObject, true));
 		}		
 		
 		/**
@@ -823,7 +836,7 @@ package com.gestureworks.cml.element
 				if (loopSnapTween && loopSnapTween._active) return;
 				loopQueue[0][axis] = -1;
 				processLoop();
-				loopSnap(null, -(this[dimension] + space - 1));				
+				loopSnap(null, -(this[dimension] + snapOffset + space - 1));				
 			}
 			else
 			{
@@ -843,7 +856,7 @@ package com.gestureworks.cml.element
 				if (loopSnapTween && loopSnapTween._active) return;
 				loopQueue[0][axis] = 1;
 				processLoop();
-				loopSnap(null, this[dimension] + space - 1)
+				loopSnap(null, this[dimension] + snapOffset + space - 1)
 			}
 			else
 			{
@@ -853,21 +866,31 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Snap to a specific child index
+		 * @param	num
+		 */
 		public function snapTo(num:Number):void {
-			if (num < 0 || num > snapPoints.length - 1) {
-				return;
+			if (loop && num >=0 && num < initLoopOrder.length) {
+				//var searchObj:* = initLoopOrder[num];
+				//var qIndex:int = loopQueue.indexOf(searchObj);
+				//var s1:Array = loopQueue.slice(0,qIndex);
+				//var s2:Array = loopQueue.slice(qIndex);
+				//_loopQueue = s2.concat(s1);
+				//trace(s1,s2);
 			}
-			else {
+			else if(!loop && num >=0 && num < snapPoints.length) {
 				snap(null, snapPoints[num]);
 			}
 		}
 
-		
+		/**
+		 * Reset to initial state
+		 */
 		public function reset():void {
 			snapTo(0);
 		}
-		
-		
+				
 		/**
 		 * Disables the drag if the touch moves outside of the album
 		 * @param	e
@@ -1025,7 +1048,7 @@ package com.gestureworks.cml.element
 		private function loopSnapComplete():void
 		{
 			processLoop();
-			currentObject();
+			dispatchCurrentObject();
 		}
 	
 		/**

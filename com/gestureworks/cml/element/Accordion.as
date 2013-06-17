@@ -478,7 +478,7 @@ package com.gestureworks.cml.element
 			}
 			
 			if (!immediately){
-				tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false }} );
+				tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); } } );
 				tweenGroup.appendMultiple(tweenArray);
 				tweenGroup.play();
 			}
@@ -787,7 +787,7 @@ package com.gestureworks.cml.element
 			}
 			
 			
-			tweenGroup = new TimelineLite( { onComplete: function():void { isTweening = false; }} );
+			tweenGroup = new TimelineLite( { onComplete: function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); }} );
 			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();
 		}
