@@ -396,7 +396,7 @@ package com.gestureworks.cml.element
 				tweenArray.push(TweenLite.to(contents[i], 0.3,{ y:snapLow[i] + tabs[i].height - 4}));
 			}	
 			
-			tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false }} );
+			tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); }} );
 			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();			
 		}
@@ -467,7 +467,7 @@ package com.gestureworks.cml.element
 				{
 					if (!immediately){
 						tweenArray.push(TweenLite.to(tabs[i], tweenSpeed, { y:snapHigh[i] }));
-						tweenArray.push(TweenLite.to(contents[i], tweenSpeed, { y:snapHigh[0] }));
+						tweenArray.push(TweenLite.to(contents[i], tweenSpeed, { y:snapHigh[i] }));
 					} else {
 						tabs[i].y = snapHigh[i];
 						contents[i].y = snapHigh[i];
@@ -499,7 +499,7 @@ package com.gestureworks.cml.element
 					twirlIcons[i].rotation = 90;
 			}
 			
-			for (i = 1; i <= _current; i++) {
+			for (i = 0; i <= _current; i++) {
 				tabs[i].y = snapLow[i];
 				contents[i].y = snapLow[i] + tabs[i].height - 3;
 				if (twirlIndicator)
@@ -589,6 +589,7 @@ package com.gestureworks.cml.element
 		
 		private function onDrag(e:GWGestureEvent):void
 		{
+			if (isTweening) return;
 			
 			for (var i:int = 0; i < tabs.length; i++) {
 				if (e.target == tabs[i]) {
@@ -597,41 +598,43 @@ package com.gestureworks.cml.element
 			}
 			
 			var dragGroup:Array = [];
-		/*	for (var j:int = 1; j < tabs.length; j++) {
-				if ( tabs[j].y == j * tabs[j].height || tabs[j].y == background.height - ((tabs.length - j) * tabs[j].height)) {
-					continue;
-				} else {
-					dragGroup.push(tabs[j]);
-				}
-			}*/
 			
-			for (var j:int = 1; j < tabs.length; j++) {
-				if ( tabs[j].y == snapLow[j] || tabs[j].y == snapHigh[j]) {
+			if (_collapsed) {
+				if (dragGroup.indexOf(tabs[0]) < 0)
+					dragGroup.push(tabs[0]);
+				//trace("Collapsed drag group:", dragGroup);
+			}
+			
+			for (var j:int = 0; j < tabs.length; j++) {
+				// Math.floor is being used because due to the specific spacing and reliance on tweening to place tabs,
+				// slight decimal errors in positioning can occur so it's best to try and round them down at least one way
+				// or another.
+				if ( Math.floor(tabs[j].y) == Math.floor(snapLow[j]) || Math.floor(tabs[j].y) == Math.floor(snapHigh[j])) {
 					continue;
 				} else {
-					dragGroup.push(tabs[j]);
+					if (dragGroup.indexOf(tabs[j]) < 0) {
+						dragGroup.push(tabs[j]);
+					}
+					
 				}
 			}
 			
-			if (_current == 0) return;
+			//if (_current == 0) return;
 			
 			down = false;
 			if (e.value.drag_dy > 0) 
 				down = true;
 			
 			
-			if (down){
+			if (down) {
+				if (_current == 0) {
+					background.height -= e.value.drag_dy;
+					background.y += e.value.drag_dy;
+					if (background.height < collapsedHeight) {
+						background.height = collapsedHeight;
+					}
+				}
 				for (i = _current; i < tabs.length; i++) {
-					
-					/*if (tabs[i].y + e.value.drag_dy > background.height - (tabs[i].height * (tabs.length - i))) {
-						tabs[i].y = background.height - (tabs[i].height * (tabs.length - i));
-						contents[i].y = tabs[i].height + tabs[i].y;
-						
-					}	
-					else {
-						tabs[i].y += e.value.drag_dy;
-						contents[i].y += e.value.drag_dy;
-					}*/
 					
 					if (tabs[i].y + e.value.drag_dy > snapHigh[i]) {
 						tabs[i].y = snapHigh[i];
@@ -662,7 +665,15 @@ package com.gestureworks.cml.element
 				}
 			}
 			else {
-				for (i = 1; i <= _current; i++) {
+				if (_collapsed) {
+					background.height += e.value.drag_dy;
+					background.y -= e.value.drag_dy;
+					if (background.height > height) {
+						background.height = height;
+					}
+				}
+				
+				for (i = 0; i <= _current; i++) {
 					
 					if (tabs[i].y + e.value.drag_dy < snapLow[i]) {
 						tabs[i].y = snapLow[i];
@@ -678,15 +689,11 @@ package com.gestureworks.cml.element
 						{
 							var ndex:Number = tabs.indexOf(dragGroup[l]);
 							
-							if (l == dragGroup.length - 1 && twirlIndicator) { // Last element in the group that was closed before, getting opened now.
-								//twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / (height - (tabs[index].height * (index)))));
+							if (l == dragGroup.length - 1 && twirlIndicator) { 
+								// Last element in the group that was closed before, getting opened now.
+								
 								var zIndex:Number = tabs.indexOf(dragGroup[0]);
 								zIndex -= 1;
-								//var baseHeight:Number = tabs[zIndex].y + tabs[zIndex].height;
-								// snapLow[zIndex] + tabs[zIndex].height;
-								//var groupHeight:Number = tabs[ndex].height * (dragGroup.length - 1);
-								// snapHigh[nDex];
-								//var nTarget:Number = baseHeight + groupHeight;
 								twirlIcons[ndex].rotation = (90 * (snapLow[ndex] / tabs[ndex].y)) + 90;
 								//trace(twirlIcons[ndex].rotation);
 							}
@@ -694,14 +701,14 @@ package com.gestureworks.cml.element
 								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
 						}
 					}
-					else if (dragGroup.length == 1 && twirlIndicator) {
+					/*else if (dragGroup.length == 1 && twirlIndicator) {
 						var n:Number = _current - 1;
 						var offset:Number = tabs[n].y + tabs[n].height;
 						var target:Number = height - tabs[current].height;
 						var tempY:Number = tabs[current].y - offset;
 						twirlIcons[n].rotation = 90 * ((tabs[current].y - snapLow[current]) / (snapHigh[current] - snapLow[current])) + 90;
 						twirlIcons[current].rotation = 180 - (90 * ((tabs[current].y  - snapLow[current]) / (snapHigh[current] - snapLow[current])));
-					}
+					}*/
 				}
 			}
 			
@@ -713,13 +720,15 @@ package com.gestureworks.cml.element
 		private function onRelease(e:GWGestureEvent):void {
 			//tabs[i].gestureReleaseInertia = false;
 			if (isTweening) return;
-			else (isTweening = true)
+			else (isTweening = true);
 			
 			// Find each tab that's been pulled away from either rest point
 			// Fill a group with all tabs so they all snap the same direction on release.
 			var dragGroup:Array = [];
-			for (var j:int = 1; j < tabs.length; j++) {
-				if ( tabs[j].y == snapLow[j] || tabs[j].y == snapHigh[j]) {
+			for (var j:int = 0; j < tabs.length; j++) {
+				// Math.floor is being used because due to the specific spacing and reliance on tweening to place tabs,
+				// slight decimal errors in positioning can occur so it's best to try and round them down.
+				if ( Math.floor(tabs[j].y) == Math.floor(snapLow[j]) || Math.floor(tabs[j].y) == Math.floor(snapHigh[j])) {
 					continue;
 				} else {
 					dragGroup.push(tabs[j]);
@@ -739,14 +748,18 @@ package com.gestureworks.cml.element
 			
 			// Check the target's snapping direction, and make everything in the dragGroup follow that;
 			if (e.target.y < (tabs[targetIndex].height + snapLow[targetIndex] + (height / 2))) {
+				
+				if (_collapsed) {
+					// Reset the background if dragged open.
+					tweenArray.push(TweenLite.to(background, 0.3, { y:0, height:totalHeight } ));
+				}
+				
 				for (var k:int = 0; k < dragGroup.length; k++) 
 				{
 					// Grab index of the dragGroup member in the actual list of tabs.
 					cNum = tabs.indexOf(dragGroup[k]);
 					
-					// up?
-					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y:(cNum) * tabs[cNum].height }, 0.3));
-					//tweenArray.push(BetweenAS3.to(contents[cNum], { y:((cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
+					// up
 					tweenArray.push(TweenLite.to(tabs[cNum], 0.3, { y: snapLow[cNum] }));
 					tweenArray.push(TweenLite.to(contents[cNum], 0.3, { y:snapLow[cNum] + tabs[cNum].height }));
 				}
@@ -762,15 +775,19 @@ package com.gestureworks.cml.element
 					}
 				}
 				
+				_collapsed = false;
 			} else {
+				
+				if (_current == 0) {
+					// If current is 0, and the tweening direction is down, tween the background.
+					tweenArray.push(TweenLite.to(background, 0.3, { y:snapHigh[0], height:collapsedHeight } ));
+				}
+				
 				for (var i:int = 0; i < dragGroup.length; i++) 
 				{
 					cNum = tabs.indexOf(dragGroup[i]);
 					
-					// Down?
-					//tweenArray.push(BetweenAS3.to(tabs[cNum], { y: background.height - (tabs.length - cNum) * tabs[cNum].height }, 0.3));
-					//tweenArray.push(BetweenAS3.to(contents[cNum], { y: (background.height - (tabs.length - cNum) * tabs[cNum].height) + tabs[cNum].height }, 0.3));
-					
+					// Down
 					tweenArray.push(TweenLite.to(tabs[cNum], 0.3, { y: snapHigh[cNum] }));
 					tweenArray.push(TweenLite.to(contents[cNum], 0.3, { y: snapHigh[cNum] + tabs[cNum].height }));
 				}
@@ -784,6 +801,15 @@ package com.gestureworks.cml.element
 						tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:90}));
 					}
 				}
+				
+				if (_current == 0) {
+					_collapsed = true;
+					_current = -1;
+				}
+				else {
+					_collapsed = false;
+				}
+				//trace("Collapsed");
 			}
 			
 			
