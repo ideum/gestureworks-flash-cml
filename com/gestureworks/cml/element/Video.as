@@ -391,6 +391,7 @@ package com.gestureworks.cml.element
 					 end();
 				     _isPlaying = false;
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "ended", true));
 					 break;
 				case "NetStream.Pause.Notify":
 					 _isPlaying = false;
