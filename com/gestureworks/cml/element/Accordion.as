@@ -808,7 +808,9 @@ package com.gestureworks.cml.element
 				}
 				else {
 					_collapsed = false;
+					_current--;
 				}
+				
 				//trace("Collapsed");
 			}
 			

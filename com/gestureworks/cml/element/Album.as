@@ -126,8 +126,11 @@ package com.gestureworks.cml.element
 				addEventListener(MouseEvent.MOUSE_OVER, inBounds);				
 			}
 			
-			if (snapOffset){
-				if (loop) loopSnap(null, snapOffset);
+			if (snapOffset) {
+				if(loop)
+					loopSnap(null, snapOffset);
+				else
+					belt[axis] = snapOffset;
 			}
 		}
 		
@@ -536,13 +539,20 @@ package com.gestureworks.cml.element
 		private function storeSnapPoints():void
 		{
 			snapPoints = new Array;	
-			var limit:Number = belt[dimension] - this[dimension] < 0 ? 0 : belt[dimension] - this[dimension];
+			var offset:int = snapOffset ? snapOffset : 0;
+			
+			var limit:Number = belt[dimension] - this[dimension] < offset ? offset : belt[dimension] - this[dimension];
+			if (!loop)
+				trace(loop);
 			
 			if (centerContent)
 			{
-				for (var i:int = 0; i <= limit; i = i + frame[dimension] + space)
+				for (var i:int = offset; i <= limit; i = i + frame[dimension] + space)
 				{
-					snapPoints.push( -i);
+					if (i == offset)
+						snapPoints.push(offset);
+					else
+						snapPoints.push( -i);
 				}
 			}
 			else
@@ -567,7 +577,7 @@ package com.gestureworks.cml.element
 		 */
 		private function setBoundaries():void
 		{
-			var half:Number = frame[dimension] / 2;
+			var half:Number = (frame[dimension] / 2);
 			
 			if (loop)
 			{

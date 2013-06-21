@@ -6,7 +6,9 @@ package com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
+	import com.gestureworks.managers.TouchManager;
 	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.display.GradientType;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -38,6 +40,7 @@ package com.gestureworks.cml.element
 		private var forward:Boolean = true;
 		private var tweening:Boolean = false;
 		private var trackPoint:Point = new Point(0, 0);
+		private var pageToTurn:int = 0;
 		
 		private var pageContent:Array = new Array();
 		private var shadows:Array = new Array();
@@ -49,7 +52,6 @@ package com.gestureworks.cml.element
 		private var shadow2:Sprite;
 		private var staticShadow:TouchSprite;
 		private var staticShadow2:TouchSprite;
-		
 		
 		private var _pw:Number = 0;
 		private var _ph:Number = 0;
@@ -167,6 +169,7 @@ package com.gestureworks.cml.element
 				if (j % 2) {
 					trace("ID ordering:", pageContent[j].id);
 					addChild(pageContent[j]);
+					pageContent[j].addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 				}
 			}
 			
@@ -198,21 +201,45 @@ package com.gestureworks.cml.element
 			// No need to define the middle further, I suppose. ^This is the center point between upper and lower.
 			
 			//addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin, false);
+			
 			addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 			addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 		}
 		
 		private function onStateEvent(e:StateEvent):void {
-			trace("E.value:", e.value);
+			//trace("E.value:", e.value);
 		}
 		
 		private function onBegin(e:*):void {
 			//trace(e.localX, e.localY);
 			if (tweening) return;
+			trace("e.target onBegin:", e.target);
+			// This is to allow button and other events to occur. When the page is not being turned, this is true so 
+			// child items that have touch can be accessed, like buttons.
+			this.touchChildren = false;
+			
+			shape.visible = true;
+			for (var i:int = 0; i < pageContent.length; i++) 
+			{
+				if ("stop" in pageContent[i]) {
+					pageContent[i]["stop"]();
+				}
+			}
+			
+			
+			
+			if (e.target != this) {
+				//var te:TouchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true, false, e.touchPointID, true, e.localX, e.localY, e.sizeX, e.sizeY, 
+				//e.pressure, e.relatedObject, false, false, false);
+				//te.target = this;
+				var localPoint:Point = this.globalToLocal(new Point(e.stageX, e.stageY));
+				this.dispatchEvent(new TouchEvent(e.type, e.bubbles, e.cancelable, e.touchPointID, e.isPrimaryTouchPoint, localPoint.x, localPoint.y, e.sizeX, e.sizeY, e.pressure, 
+				e.relatedObject, false, false, false));
+				return;
+			}
 			
 			trackPoint = flipPoint(e.target, e.localX, e.localY, this);
-			
 			//trace("Trackpoint:", trackPoint);
 			
 			if (trackPoint.x < _pw * 2 && trackPoint.x > R_UPPERCORNER.x && _currentPage + 1 < pageContent.length) {
@@ -267,50 +294,55 @@ package com.gestureworks.cml.element
 			}
 			else {
 				currentCorner = null;
+				this.touchChildren = true;
 				return;
 			}
 			
+			
+			
 			if (!hasEventListener(GWGestureEvent.COMPLETE))
 				addEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
-			if (trackPoint && currentCorner)
+			if (trackPoint && currentCorner && !hasEventListener(GWGestureEvent.DRAG))
 				addEventListener(GWGestureEvent.DRAG, onPointMove);
 			
 			// Set up the bitmap data.
 			if (forward && _currentPage + 1 < pageContent.length) {
+				pageToTurn = _currentPage;
 				bmpD1 = new BitmapData(_pw, _ph);
 				bmpD1.draw(pageContent[_currentPage]);
 				bmpD2 = new BitmapData(_pw, _ph);
 				bmpD2.draw(pageContent[_currentPage + 1]);
 			} else if (!forward) {
-				_currentPage -= 2;
-				if (_currentPage < 0)
-					_currentPage = 0;
+				pageToTurn = _currentPage - 2;
+				if (pageToTurn < 0)
+					pageToTurn = 0;
 				bmpD1 = new BitmapData(_pw, _ph);
-				bmpD1.draw(pageContent[_currentPage]);
+				bmpD1.draw(pageContent[pageToTurn]);
 				bmpD2 = new BitmapData(_pw, _ph);
-				bmpD2.draw(pageContent[_currentPage + 1]);
+				bmpD2.draw(pageContent[pageToTurn + 1]);
 				
 			}
 		}
 		
 		private function onPointMove(e:GWGestureEvent):void {
 			shape.graphics.clear();
-			
+			setChildIndex(shape, numChildren - 1);
+			//trace("e.target onPOintMove", e.target, e.value.localX, e.value.localY, e.value.stageX, e.value.stageY);
 			// Make current page invisible somehow.
 			if (forward) {
-				pageContent[_currentPage].visible = false;
+				pageContent[pageToTurn].visible = false;
 				//shadows[_currentPage].visible = false;
 			}
 			else {
-				pageContent[_currentPage + 1].visible = false;
+				pageContent[pageToTurn + 1].visible = false;
 			}
 			
-			if (_currentPage + 1 < pageContent.length) {
-				setChildIndex(shape, getChildIndex(pageContent[_currentPage + 1]));
+			if (pageToTurn + 1 < pageContent.length) {
+				setChildIndex(shape, getChildIndex(pageContent[pageToTurn + 1]));
 				
-				if (getChildIndex(shadow2) < getChildIndex(pageContent[_currentPage + 1])) {
-					setChildIndex(shadow, getChildIndex(pageContent[_currentPage + 1]));
-					setChildIndex(shadow2, getChildIndex(pageContent[_currentPage + 1]));
+				if (getChildIndex(shadow2) < getChildIndex(pageContent[pageToTurn + 1])) {
+					setChildIndex(shadow, getChildIndex(pageContent[pageToTurn + 1]));
+					setChildIndex(shadow2, getChildIndex(pageContent[pageToTurn + 1]));
 				}
 			}
 			
@@ -327,12 +359,16 @@ package com.gestureworks.cml.element
 			// to keep consistent on release since the computeFlip steps through and alters the point it's given.
 			trackPoint = flipPoint(e.target, e.value.localX, e.value.localY, shape);
 			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "flipping"));
 		}
 		
 		private function onTouchEnd(e:*):void {
 			
 			removeEventListener(GWGestureEvent.DRAG, onPointMove);
 			removeEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
+			
+			this.touchChildren = true;
+			if (!currentCorner) return;
 			
 			var duration:Number = 0.5;
 			tweening = true;
@@ -359,12 +395,17 @@ package com.gestureworks.cml.element
 			PageFlip.drawBitmapSheet(obj, shape, bmpD1, bmpD2);
 			placeShadow(obj.cPoints);
 			
-			if (trackPoint.x == _pw) {
-				trace("Complete?");
-				updatePages(false);
+			if (forward) {
+				if (trackPoint.x == _pw)
+					updatePages(false);
+				else if (trackPoint.x == -_pw)
+					updatePages(true);
 			}
-			else if (trackPoint.x == -_pw) {
-				updatePages(true);
+			else if (!forward) {
+				if (trackPoint.x == _pw)
+					updatePages(true);
+				else if (trackPoint.x == -_pw)
+					updatePages(false);
 			}
 		}
 		
@@ -469,23 +510,42 @@ package com.gestureworks.cml.element
 		
 		private function updatePages(c:Boolean):void {
 			var complete:Boolean = c;
+			shape.graphics.clear();
+			shape.visible = false;
+			shadow.graphics.clear();
+			shadow2.graphics.clear();
+			//removeChild(shape);
+			// Flip this back so users can access nested items such as buttons.
+			this.touchChildren = true;
+			
 			
 			if (forward && complete) {
 				pageContent[_currentPage + 1].visible = true;
 				shadows[_currentPage + 1].visible = true;
 				_currentPage += 2;
-				setChildIndex(shape, getChildIndex(pageContent[_currentPage]) - 1);
+				//setChildIndex(shape, getChildIndex(pageContent[_currentPage]) - 1);
+				setChildIndex(shape, 0);
 			}
-			else if (!forward && complete)
-				_currentPage += 2;
+			else if (!forward && complete) {
+				_currentPage -= 2;
+				if (_currentPage < 0)
+					_currentPage = 0;
+			}
 			else if (!forward && !complete) {
+				if (_currentPage > 0) {
+					pageContent[_currentPage - 1].visible = true;
+					shadows[_currentPage - 1].visible = true;
+				}
 				
 			}
-			trace("Current page:", _currentPage);
-			pageContent[_currentPage].visible = true;
-			shadows[_currentPage].visible = true;
+			
+			if(_currentPage < pageContent.length){
+				pageContent[_currentPage].visible = true;
+				shadows[_currentPage].visible = true;
+			}
 			
 			tweening = false;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "complete"));
 		}
 		
 		private function decreasePages():void {

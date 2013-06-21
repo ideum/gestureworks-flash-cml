@@ -41,7 +41,9 @@ package com.gestureworks.cml.element
 		private var _useLeftHandle:Boolean = false;
 		private var _useRightHandle:Boolean = false;
 		
-		private var isOpen:Boolean = false;		
+		private var _isOpen:Boolean = false;	
+		public function get isOpen():Boolean { return _isOpen; }
+		
 		private var contentHolder:Container;
 		private var contentMask:Graphic;
 		private var upTween:TimelineLite;
@@ -534,7 +536,7 @@ package com.gestureworks.cml.element
 		{		
 			if (!initializeOpen)
 			{
-				isOpen = false;				
+				_isOpen = false;				
 				handle.y = contentHolder.height + 1;
 				contentHolder.y = contentHolder.height + handle.height + 1;
 				handle.addEventListener(GWGestureEvent.TAP, open); 
@@ -542,7 +544,7 @@ package com.gestureworks.cml.element
 			}
 			else
 			{
-				isOpen = true;
+				_isOpen = true;
 				handle.addEventListener(GWGestureEvent.TAP, close); 
 				handle.addEventListener(GWGestureEvent.FLICK, close);
 			}
@@ -561,16 +563,16 @@ package com.gestureworks.cml.element
 				rightHandle.addEventListener(GWGestureEvent.FLICK, close);
 			}			
 			
-			handle.visible = !isOpen;
-			if (leftHandle) leftHandle.visible = isOpen;
-			if (rightHandle) rightHandle.visible = isOpen;
+			handle.visible = !_isOpen;
+			if (leftHandle) leftHandle.visible = _isOpen;
+			if (rightHandle) rightHandle.visible = _isOpen;
 		}
 		
 		/**
 		 * Plays the up tween, registers the close listener, and removes the open listener
 		 * @param	e  the tap event
 		 */
-		private function open(e:GWGestureEvent):void
+		public function open(e:GWGestureEvent = null):void
 		{	
 			if (!tweenThreshold()) return;
 			handleTransition();
@@ -587,7 +589,7 @@ package com.gestureworks.cml.element
 		 * Plays the down tween, registers the open listener, and removes the close listener
 		 * @param	e  the tap event
 		 */		
-		private function close(e:GWGestureEvent):void
+		public function close(e:GWGestureEvent = null):void
 		{			
 			if (!tweenThreshold()) return;
 			handle.visible = true;
@@ -624,13 +626,13 @@ package com.gestureworks.cml.element
 		 */
 		private function handleTransition():void
 		{
-			isOpen = !isOpen;
+			_isOpen = !_isOpen;
 			if (useLeftHandle || useRightHandle)
-				handle.visible = !isOpen;
+				handle.visible = !_isOpen;
 			if (leftHandle)
-				leftHandle.visible = isOpen;
+				leftHandle.visible = _isOpen;
 			if (rightHandle)
-				rightHandle.visible = isOpen;
+				rightHandle.visible = _isOpen;
 		}
 		
 		/**

@@ -176,7 +176,7 @@ package com.gestureworks.cml.element
 			disableNativeTransform = true;
 			disableAffineTransform = true;
 			gestureEvents = true;
-			gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
+			//gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
 			
 			readyBitmaps();
 			

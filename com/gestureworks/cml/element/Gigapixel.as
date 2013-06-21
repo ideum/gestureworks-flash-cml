@@ -43,7 +43,7 @@
 		private var _clickZoomInFactor:Number = 1.7
 		private var _scaleZoomFactor:Number = 1.4
     	public var smoothPanning:Boolean = true;
-		private var image:MultiScaleImage
+		public var image:MultiScaleImage
     	private var sceneNavigator:SceneNavigator
     	private var scaleConstraint:ScaleConstraint;
 		private var _hotspots:Array = [];
