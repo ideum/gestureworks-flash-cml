@@ -292,7 +292,7 @@ package com.gestureworks.cml.factories
 			
 			if (tween)
 			{				
-				if (layoutTween && layoutTween.progress())
+				if (layoutTween && layoutTween._active)
 				{
 					layoutTween.eventCallback("onUpdate", onUpdate);
 					layoutTween.eventCallback("onComplete", onComplete);
