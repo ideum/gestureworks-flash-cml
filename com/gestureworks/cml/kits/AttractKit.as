@@ -155,6 +155,7 @@ package com.gestureworks.cml.kits
 		
 		private function onAttractTouch(e:GWTouchEvent):void {
 			// Do stuff here.
+			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onAttractTouch);
 			
 			for (var i:Number = 0; i < numChildren; i++) {
 				if ("stop" in getChildAt(i)) {
@@ -219,6 +220,7 @@ package com.gestureworks.cml.kits
 			parent.setChildIndex(this, parent.numChildren - 1);
 		
 			_attractState = true;	
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, onAttractTouch);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
 		}
 		

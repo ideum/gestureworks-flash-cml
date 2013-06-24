@@ -1,23 +1,20 @@
 package com.gestureworks.cml.element 
 {
+	import com.gestureworks.cml.components.FlipBookViewer;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.cml.utils.PageFlip;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.GWTouchEvent;
-	import com.gestureworks.managers.TouchManager;
+	import com.greensock.*;
 	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
 	import flash.display.GradientType;
 	import flash.display.Shape;
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
+	import flash.filters.DropShadowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import org.tuio.TuioTouchEvent;
-	import com.greensock.*;
 	
 	/**
 	 * The FlipBook element is designed to take a series of display objects, and arrange them to be sorted through with a "flip" animation for each one.
@@ -39,19 +36,21 @@ package com.gestureworks.cml.element
 		private var currentCorner:Point = new Point(1, 0);
 		private var forward:Boolean = true;
 		private var tweening:Boolean = false;
+		private var cornerFlashing:Boolean = false;
+		private var isPageDragging:Boolean = false;
 		private var trackPoint:Point = new Point(0, 0);
+		private var idToTrack:int = 0;
 		private var pageToTurn:int = 0;
 		
 		private var pageContent:Array = new Array();
 		private var shadows:Array = new Array();
+		private var pageCorners:Array = new Array();
 		
 		private var shape:Shape;
 		private var bmpD1:BitmapData;
 		private var bmpD2:BitmapData;
 		private var shadow:Sprite;
 		private var shadow2:Sprite;
-		private var staticShadow:TouchSprite;
-		private var staticShadow2:TouchSprite;
 		
 		private var _pw:Number = 0;
 		private var _ph:Number = 0;
@@ -92,6 +91,69 @@ package com.gestureworks.cml.element
 			_backgroundColor = value;
 		}
 		
+		private var _singlePageView:Boolean = false;
+		/**
+		 * Sets whether the flipbook is a spread (like a book), or a single page
+		 */
+		public function get singlePageView():Boolean { return _singlePageView; }
+		public function set singlePageView(value:Boolean):void {
+			_singlePageView = value;
+		}
+		
+		private var _cornerIndicators:Boolean = false;
+		/**
+		 * Sets whether or not to show cornerIndicators
+		 */
+		public function get cornerIndicators():Boolean { return _cornerIndicators; }
+		public function set cornerIndicators(value:Boolean):void {
+			_cornerIndicators = value;
+		}
+		
+		private var _indicatorColor:uint = 0xff0000;
+		/**
+		 * Sets the color of the corner indicators
+		 */
+		public function get indicatorColor():uint { return _indicatorColor; }
+		public function set indicatorColor(value:uint):void {
+			_indicatorColor = value;
+		}
+		
+		private var _indicatorAlpha:Number = 0.5;
+		/**
+		 * Sets the highest alpha of the corner indicators
+		 */
+		public function get indicatorAlpha():Number { return _indicatorAlpha; }
+		public function set indicatorAlpha(value:Number):void {
+			_indicatorAlpha = value;
+		}
+		
+		private var _cornerGlow:Boolean = false;
+		/**
+		 * Sets whether or not there is a glow with the corner indicators
+		 */
+		public function get cornerGlow():Boolean { return _cornerGlow; }
+		public function set cornerGlow(value:Boolean):void {
+			_cornerGlow = value;
+		}
+		
+		private var _cornerGlowColor:uint = 0xffff00;
+		/**
+		 * Sets the corner glow color
+		 */
+		public function get cornerGlowColor():uint { return _cornerGlowColor; }
+		public function set cornerGlowColor(value:uint):void {
+			_cornerGlowColor = value;
+		}
+		
+		private var _transformParent:Boolean = false;
+		/**
+		 * A variation of targetParent, this is to inform the flipbook to target the parent for native transformations
+		 */
+		public function get transformParent():Boolean { return _transformParent; }
+		public function set transformParent(value:Boolean):void {
+			_transformParent = value;
+		}
+		
 		private var _currentPage:Number = 0;
 		/**
 		 * Retrieves the current page. The page returned is the page on the right, not the left, and counting starts from 0, not 1.
@@ -99,7 +161,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get currentPage():Number { return _currentPage; }
 		
-		// public methods //
+		//{ region Initialization
 		
 		/**
 		 * Initialization method
@@ -139,6 +201,7 @@ package com.gestureworks.cml.element
 				shadows.push(pageShadow);
 				var m:Matrix = new Matrix();
 				m.createGradientBox(100, _ph);
+				
 				// If it's odd numbered content (keep in mind, odd/even will be reversed in the array order)
 				// make sure to position it to the right so it's the "right" page.
 				if ( !(i % 2)) {
@@ -146,10 +209,19 @@ package com.gestureworks.cml.element
 					trace("Actually, odd numbered content.");
 					pageContent[i].x = _pw;
 					pageShadow.graphics.beginGradientFill(GradientType.LINEAR, new Array(0x000000, 0x000000), new Array(0.25, 0), new Array(0, 255), m);
-					//pageShadow.graphics.beginFill(0xffffff);
 					pageShadow.graphics.drawRect(0, 0, 100, _ph);
 					pageShadow.graphics.endFill();
-					pageContent[i].addChild(pageShadow);
+					
+					if (!_singlePageView)
+						pageContent[i].addChild(pageShadow);
+					
+					if (cornerIndicators) {
+						var rightCorner:Sprite = createRightCorner();
+						rightCorner.y = _ph;
+						rightCorner.x = _pw;
+						pageContent[i].addChild(rightCorner);
+						pageCorners[i]= rightCorner;
+					}
 				}
 				else {
 					// If it's even numbered content, it will start on the left, no repositioning needed,
@@ -160,8 +232,17 @@ package com.gestureworks.cml.element
 					//pageShadow.graphics.beginFill(0xffffff);
 					pageShadow.graphics.drawRect(0, 0, 100, _ph);
 					pageShadow.graphics.endFill();
-					pageContent[i].addChild(pageShadow);
+					
+					if (!_singlePageView)
+						pageContent[i].addChild(pageShadow);
 					pageShadow.x = _pw - 100;
+					
+					if (cornerIndicators) {
+						var leftCorner:Sprite = createLeftCorner();
+						leftCorner.y = _ph;
+						pageContent[i].addChild(leftCorner);
+						pageCorners[i] = leftCorner;
+					}
 				}
 			}
 			
@@ -169,7 +250,7 @@ package com.gestureworks.cml.element
 				if (j % 2) {
 					trace("ID ordering:", pageContent[j].id);
 					addChild(pageContent[j]);
-					pageContent[j].addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+					//pageContent[j].addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 				}
 			}
 			
@@ -207,19 +288,86 @@ package com.gestureworks.cml.element
 			
 		}
 		
+		private function createLeftCorner():Sprite 
+		{
+			var sprite:Sprite = new Sprite();
+			var base:Number = _pw * 0.2;
+			var height:Number = _ph * 0.2;
+			
+			sprite.graphics.lineStyle(1, _indicatorColor, 1);
+			sprite.graphics.beginFill(_indicatorColor, 1);
+			sprite.graphics.lineTo(0, -height);
+			sprite.graphics.lineTo(base, 0);
+			sprite.graphics.lineTo(0,0);
+			sprite.graphics.endFill();
+			sprite.alpha = 0;
+			
+			if (_cornerGlow){
+				var blur:int = 8;
+				var cornerShadow:DropShadowFilter = new DropShadowFilter();
+				cornerShadow.distance = 4;
+				cornerShadow.angle = 135;
+				cornerShadow.blurX = blur;
+				cornerShadow.blurY = blur;
+				cornerShadow.color = _cornerGlowColor;
+				cornerShadow.strength = 0.5;
+				
+				sprite.filters = [cornerShadow];
+			}
+			
+			return sprite;
+		}
+		
+		private function createRightCorner():Sprite 
+		{
+			var sprite:Sprite = new Sprite();
+			var base:Number = _pw * 0.2;
+			var height:Number = _ph * 0.2;
+			
+			sprite.graphics.lineStyle(1, _indicatorColor, 1);
+			sprite.graphics.beginFill(_indicatorColor, 1);
+			sprite.graphics.lineTo(-base, 0);
+			sprite.graphics.lineTo(0, -height);
+			sprite.graphics.lineTo(0,0);
+			sprite.graphics.endFill();
+			sprite.alpha = 0;
+			
+			
+			if (_cornerGlow){
+				var blur:int = 8;
+				var cornerShadow:DropShadowFilter = new DropShadowFilter();
+				cornerShadow.distance = 4;
+				cornerShadow.angle = 45;
+				cornerShadow.blurX = blur;
+				cornerShadow.blurY = blur;
+				cornerShadow.color = _cornerGlowColor;
+				cornerShadow.strength = 0.5;
+				
+				sprite.filters = [cornerShadow];
+			}
+			return sprite;
+		}
+		
+		//} endregion
+		
 		private function onStateEvent(e:StateEvent):void {
 			//trace("E.value:", e.value);
 		}
 		
+		//{ region TouchEvent begin
+		
 		private function onBegin(e:*):void {
-			//trace(e.localX, e.localY);
-			if (tweening) return;
-			trace("e.target onBegin:", e.target);
+			
+			if (tweening || isPageDragging) return;
+			
+			//trace("onBegin:", e);
+			
 			// This is to allow button and other events to occur. When the page is not being turned, this is true so 
 			// child items that have touch can be accessed, like buttons.
 			this.touchChildren = false;
 			
 			shape.visible = true;
+			
 			for (var i:int = 0; i < pageContent.length; i++) 
 			{
 				if ("stop" in pageContent[i]) {
@@ -227,21 +375,120 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			
-			
 			if (e.target != this) {
-				//var te:TouchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true, false, e.touchPointID, true, e.localX, e.localY, e.sizeX, e.sizeY, 
-				//e.pressure, e.relatedObject, false, false, false);
-				//te.target = this;
-				var localPoint:Point = this.globalToLocal(new Point(e.stageX, e.stageY));
+				
+				var localPoint:Point = flipPoint(e.target, e.localX, e.localY, this);
 				this.dispatchEvent(new TouchEvent(e.type, e.bubbles, e.cancelable, e.touchPointID, e.isPrimaryTouchPoint, localPoint.x, localPoint.y, e.sizeX, e.sizeY, e.pressure, 
-				e.relatedObject, false, false, false));
+					e.relatedObject, false, false, false));
 				return;
+				
 			}
 			
 			trackPoint = flipPoint(e.target, e.localX, e.localY, this);
 			//trace("Trackpoint:", trackPoint);
 			
+			// Have our trackPoint, check if it's in a corner.
+			checkCurrentCorner();
+			
+			if (currentCorner) {
+				// Track the id of the touchPoint that triggered the right corner.
+				idToTrack = e.touchPointID;
+				
+				// Dump unnecessary listeners.
+				if (hasEventListener(GWGestureEvent.SCALE))
+					removeEventListener(GWGestureEvent.SCALE, onRegularScale);
+				if (hasEventListener(GWGestureEvent.DRAG))
+					removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
+				if (hasEventListener(GWGestureEvent.ROTATE))
+					removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
+				if (hasEventListener(GWGestureEvent.COMPLETE))
+					removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete)
+			}
+			else {
+				
+				this.touchChildren = true;
+				
+				if (!hasEventListener(GWGestureEvent.SCALE))
+					addEventListener(GWGestureEvent.SCALE, onRegularScale);
+				if (!hasEventListener(GWGestureEvent.DRAG))
+					addEventListener(GWGestureEvent.DRAG, onRegularDrag);
+				if (!hasEventListener(GWGestureEvent.ROTATE))
+					addEventListener(GWGestureEvent.ROTATE, onRegularRotate);
+				if (!hasEventListener(GWGestureEvent.COMPLETE))
+					addEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
+				
+				if (_cornerIndicators)
+					flashPageCorners();
+				//removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+				return;
+			}
+			
+			
+			if (!hasEventListener(GWGestureEvent.COMPLETE))
+				addEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
+			if (trackPoint && currentCorner && !hasEventListener(GWGestureEvent.DRAG))
+				addEventListener(GWGestureEvent.DRAG, onPointMove);
+			
+			// Set up the bitmap data.
+			if (forward && _currentPage + 1 < pageContent.length) {
+				pageToTurn = _currentPage;
+				bmpD1 = new BitmapData(_pw, _ph);
+				bmpD1.draw(pageContent[_currentPage]);
+				bmpD2 = new BitmapData(_pw, _ph);
+				bmpD2.draw(pageContent[_currentPage + 1]);
+			} else if (!forward) {
+				pageToTurn = _currentPage - 2;
+				if (pageToTurn < 0)
+					pageToTurn = 0;
+				bmpD1 = new BitmapData(_pw, _ph);
+				bmpD1.draw(pageContent[pageToTurn]);
+				bmpD2 = new BitmapData(_pw, _ph);
+				bmpD2.draw(pageContent[pageToTurn + 1]);
+				
+			}
+		}
+		
+		private function flashPageCorners():void 
+		{
+			if (cornerFlashing) return;
+			
+			if (_currentPage == 0) {
+				// First page, only show right flash.
+				var tween:TweenMax = new TweenMax(pageCorners[_currentPage], 0.5, { alpha:_indicatorAlpha, onComplete:reverse, 
+													onReverseComplete:function():void { cornerFlashing = false;} } );
+				cornerFlashing = true;
+				
+				function reverse():void {
+					tween.reverse();
+				}
+			}
+			else if (_currentPage >= pageContent.length - 1) {
+				// If it's the last page we can't flip any more, only show left flash.
+				var tween:TweenMax = new TweenMax(pageCorners[_currentPage-1], 0.5, { alpha:_indicatorAlpha, onComplete:reverse2, 
+													onReverseComplete:function():void { cornerFlashing = false;} } );
+				cornerFlashing = true;
+				
+				function reverse2():void {
+					tween.reverse();
+				}
+			}
+			else {
+				var tweens:Array = [];
+				var timeline:TimelineLite = new TimelineLite({onComplete:multiReverse, onReverseComplete:function():void { cornerFlashing = false;}});
+				tweens.push(new TweenMax(pageCorners[_currentPage], 0.5, { alpha: _indicatorAlpha } ));
+				tweens.push(new TweenMax(pageCorners[_currentPage - 1], 0.5, { alpha: _indicatorAlpha } ));
+				timeline.appendMultiple(tweens);
+				timeline.play();
+				cornerFlashing = true;
+				
+				function multiReverse():void {
+					timeline.reverse();
+				}
+			}
+		}
+		
+		private function checkCurrentCorner():void 
+		{
 			if (trackPoint.x < _pw * 2 && trackPoint.x > R_UPPERCORNER.x && _currentPage + 1 < pageContent.length) {
 				if (trackPoint.y < R_UPPERCORNER.y && trackPoint.y > -1) {
 					trace("I've found the upper RIGHT corner!");
@@ -294,40 +541,62 @@ package com.gestureworks.cml.element
 			}
 			else {
 				currentCorner = null;
-				this.touchChildren = true;
-				return;
-			}
-			
-			
-			
-			if (!hasEventListener(GWGestureEvent.COMPLETE))
-				addEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
-			if (trackPoint && currentCorner && !hasEventListener(GWGestureEvent.DRAG))
-				addEventListener(GWGestureEvent.DRAG, onPointMove);
-			
-			// Set up the bitmap data.
-			if (forward && _currentPage + 1 < pageContent.length) {
-				pageToTurn = _currentPage;
-				bmpD1 = new BitmapData(_pw, _ph);
-				bmpD1.draw(pageContent[_currentPage]);
-				bmpD2 = new BitmapData(_pw, _ph);
-				bmpD2.draw(pageContent[_currentPage + 1]);
-			} else if (!forward) {
-				pageToTurn = _currentPage - 2;
-				if (pageToTurn < 0)
-					pageToTurn = 0;
-				bmpD1 = new BitmapData(_pw, _ph);
-				bmpD1.draw(pageContent[pageToTurn]);
-				bmpD2 = new BitmapData(_pw, _ph);
-				bmpD2.draw(pageContent[pageToTurn + 1]);
-				
 			}
 		}
 		
+		//} endregion
+		
+		//{ region standard transformations 
+		
+		private function onRegularComplete(e:GWGestureEvent):void 
+		{
+			touchChildren = true;
+			
+			removeEventListener(GWGestureEvent.SCALE, onRegularScale);
+			removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
+			removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
+			removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
+			
+			//addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+		}
+		
+		protected function onRegularRotate(e:GWGestureEvent):void 
+		{
+			touchChildren = false;
+			if (_transformParent && this.parent) {
+				DisplayUtils.rotateAroundPoint(this.parent, e.value.rotate_dtheta, e.value.stageX, e.value.stageY);
+			}
+		}
+		
+		protected function onRegularDrag(e:GWGestureEvent):void 
+		{
+			touchChildren = false;
+			//trace("On regular drag.", e.target);
+			if (_transformParent && this.parent){
+				this.parent.x += e.value.drag_dx;
+				this.parent.y += e.value.drag_dy;
+			}
+		}
+		
+		protected function onRegularScale(e:GWGestureEvent):void 
+		{
+			touchChildren = false;
+			//trace("On regular scale", e.target);
+			if (_transformParent && this.parent) {
+				DisplayUtils.scaleFromPoint(this.parent, e.value.scale_dsx, e.value.scale_dsy, e.value.stageX, e.value.stageY);
+			}
+			
+		}
+		
+		//} endregion
+		
+		
 		private function onPointMove(e:GWGestureEvent):void {
+			isPageDragging = true;
+			
 			shape.graphics.clear();
 			setChildIndex(shape, numChildren - 1);
-			//trace("e.target onPOintMove", e.target, e.value.localX, e.value.localY, e.value.stageX, e.value.stageY);
+			
 			// Make current page invisible somehow.
 			if (forward) {
 				pageContent[pageToTurn].visible = false;
@@ -346,8 +615,25 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			trackPoint = flipPoint(e.target, e.value.localX, e.value.localY, shape);
-			//trace("Dragging!", trackPoint);
+			// Original
+			//trackPoint = flipPoint(e.target, e.value.localX, e.value.localY, shape);
+			// New
+			var pointToTrack:Point; 
+			var objToTrack:*;
+			for (var j:int = 0; j < this.pointArray.length; j++) 
+			{
+				if (pointArray[j].touchPointID == idToTrack) {
+					pointToTrack = new Point(pointArray[j].x, pointArray[j].y); // Store the point in a separate point so computeFlip doesn't alter it.
+				}
+			}
+			
+			if (!pointToTrack) {
+				// else if no point to track, the point has been released, it's time to force the animation complete.
+				onTouchEnd(e);
+				return;
+			}
+			// Flip the pointToTrack, which is in stageX/Y values to local.
+			trackPoint = shape.globalToLocal(pointToTrack);
 			
 			obj = PageFlip.computeFlip(trackPoint, currentCorner, _pw, _ph, true, 1);
 			if (!obj.cPoints || obj.cPoints.length < 3) return;
@@ -357,7 +643,10 @@ package com.gestureworks.cml.element
 			
 			// Repeat the flip point to restore original event values. This is to stabilize the Y value
 			// to keep consistent on release since the computeFlip steps through and alters the point it's given.
-			trackPoint = flipPoint(e.target, e.value.localX, e.value.localY, shape);
+			// Original
+			//trackPoint = flipPoint(e.target, e.value.localX, e.value.localY, shape);
+			// New
+			trackPoint = shape.globalToLocal(pointToTrack);
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "flipping"));
 		}
@@ -366,6 +655,9 @@ package com.gestureworks.cml.element
 			
 			removeEventListener(GWGestureEvent.DRAG, onPointMove);
 			removeEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
+			
+			isPageDragging = false;
+			idToTrack = 0;
 			
 			this.touchChildren = true;
 			if (!currentCorner) return;
@@ -514,7 +806,7 @@ package com.gestureworks.cml.element
 			shape.visible = false;
 			shadow.graphics.clear();
 			shadow2.graphics.clear();
-			//removeChild(shape);
+			
 			// Flip this back so users can access nested items such as buttons.
 			this.touchChildren = true;
 			
@@ -534,22 +826,115 @@ package com.gestureworks.cml.element
 			else if (!forward && !complete) {
 				if (_currentPage > 0) {
 					pageContent[_currentPage - 1].visible = true;
-					shadows[_currentPage - 1].visible = true;
+					if (!_singlePageView)
+						shadows[_currentPage - 1].visible = true;
 				}
 				
 			}
 			
 			if(_currentPage < pageContent.length){
 				pageContent[_currentPage].visible = true;
-				shadows[_currentPage].visible = true;
+				if (!_singlePageView)
+					shadows[_currentPage].visible = true;
 			}
 			
+			if (_currentPage == 0) {
+				OPEN = false;
+			}
+			
+			trace("Current page.", _currentPage);
+			currentCorner = null;
 			tweening = false;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "complete"));
 		}
 		
-		private function decreasePages():void {
+		public function reset():void {
 			
+			if (tweening || cornerFlashing) {
+				TweenMax.killAll();
+				tweening = false;
+				cornerFlashing = false;
+			}
+			
+			shape.graphics.clear();
+			shadow.graphics.clear();
+			shadow2.graphics.clear();
+			
+			this.touchChildren = true;
+			
+			// reset events
+			removeEventListener(GWGestureEvent.DRAG, onPointMove);
+			removeEventListener(GWGestureEvent.RELEASE, onTouchEnd);
+			
+			removeEventListener(GWGestureEvent.SCALE, onRegularScale);
+			removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
+			removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
+			removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
+			
+			for (var i:int = 0; i < pageContent.length; i++) {
+				
+				// Turn left sided pages invisible (odd numbered in the array, they'll have a remainder for i % 2)
+				// Turn right sided pages visible
+				if ( i % 2)
+					pageContent[i].visible = false;
+				else
+					pageContent[i].visible = true;
+				
+				if (!_singlePageView && shadows[i]) {
+					shadows[i].visible = true;
+				}
+				
+				if (pageCorners[i]) {
+					pageCorners[i].alpha = 0;
+				}
+			}
+			
+			_currentPage = 0;
+			pageContent[_currentPage].visible = true;
+			if (!_singlePageView) {
+				shadows[_currentPage].visible = true;
+			}
+			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "reset"));
+		}
+		
+		override public function dispose():void {
+			while (this.numChildren > 0) {
+				removeChildAt(0);
+			}
+			
+			if (tweening) {
+				TweenMax.killAll();
+			}
+			
+			pageContent = [];
+			pageCorners = [];
+			shadows = [];
+			
+			removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			removeEventListener(GWGestureEvent.DRAG, onPointMove);
+			removeEventListener(GWGestureEvent.RELEASE, onTouchEnd);
+			
+			removeEventListener(GWGestureEvent.SCALE, onRegularScale);
+			removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
+			removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
+			removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
+			
+			shape.graphics.clear();
+			shape = null;
+			shadow.graphics.clear();
+			shadow = null;
+			shadow2.graphics.clear();
+			shadow2 = null;
+			
+			bmpD1.dispose();
+			bmpD2.dispose();
+			bmpD1 = null;
+			bmpD2 = null;
+			
+			obj = null;
+			
+			super.dispose();
 		}
 		
 		/**

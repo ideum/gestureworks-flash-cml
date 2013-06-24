@@ -539,11 +539,8 @@ package com.gestureworks.cml.element
 		private function storeSnapPoints():void
 		{
 			snapPoints = new Array;	
-			var offset:int = snapOffset ? snapOffset : 0;
-			
+			var offset:int = snapOffset ? snapOffset : 0;			
 			var limit:Number = belt[dimension] - this[dimension] < offset ? offset : belt[dimension] - this[dimension];
-			if (!loop)
-				trace(loop);
 			
 			if (centerContent)
 			{

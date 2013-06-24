@@ -243,6 +243,32 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
+		 * Scales an object by the amount given from a point given.
+		 * @param	obj			The object to scale
+		 * @param	scaleX		The amount to scale its X-dimensions by
+		 * @param	scaleY		The amount to scale its Y-dimensions by
+		 * @param	pointX		The x coordinate of the point to scale from
+		 * @param	pointY		The y coordinate of the point to scale from
+		 */
+		public static function scaleFromPoint(obj:*, scaleX:Number, scaleY:Number, pointX:Number, pointY:Number):void {
+			// Get the difference between the point given and the actual position of the content is.
+			var x_diff:Number = pointX - obj.x;
+			var y_diff:Number = pointY - obj.y;
+			
+			// Multiply the vector values by the scale.
+			x_diff *= scaleX;
+			y_diff *= scaleY;
+			
+			// Scale the object
+			obj.scaleX += scaleX;
+			obj.scaleY += scaleY;
+			
+			// Reposition by the products of the scaled vectors
+			obj.x -= x_diff;
+			obj.y -= y_diff;
+		}
+		
+		/**
 		 * Returns the center point of the object
 		 * @param	obj  the object 
 		 * @return  the object's center point

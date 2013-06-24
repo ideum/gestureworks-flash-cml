@@ -391,7 +391,7 @@ package com.gestureworks.cml.element
 				tweenArray.push(TweenLite.to(contents[i], 0.3, {y:snapHigh[i] + tabs[i].height-4}));
 			}
 			
-			for (i = 1; i <= _current; i++) {
+			for (i = 0; i <= _current; i++) {
 				tweenArray.push(TweenLite.to(tabs[i], 0.3, { y:snapLow[i] }));
 				tweenArray.push(TweenLite.to(contents[i], 0.3,{ y:snapLow[i] + tabs[i].height - 4}));
 			}	
@@ -435,7 +435,7 @@ package com.gestureworks.cml.element
 					}
 				}
 				
-				for (i = 1; i <= _current; i++) {
+				for (i = 0; i <= _current; i++) {
 					if (!immediately){
 						tweenArray.push(TweenLite.to(tabs[i], tweenSpeed, { y:snapLow[i] }));
 						tweenArray.push(TweenLite.to(contents[i], tweenSpeed, { y:snapLow[i] + tabs[i].height - 4 }));
@@ -457,7 +457,8 @@ package com.gestureworks.cml.element
 						tweenArray.push(TweenLite.to(twirlIcons[current], tweenSpeed, { rotation:90 }));
 					tweenArray.push(TweenLite.to(background, tweenSpeed, { height:collapsedHeight, y:snapHigh[0] }));
 				} else {
-					twirlIcons[current].rotation = 90;
+					if (twirlIndicator)
+						twirlIcons[current].rotation = 90;
 					background.height = collapsedHeight;
 					background.y = snapHigh[0];
 				}
@@ -701,14 +702,6 @@ package com.gestureworks.cml.element
 								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
 						}
 					}
-					/*else if (dragGroup.length == 1 && twirlIndicator) {
-						var n:Number = _current - 1;
-						var offset:Number = tabs[n].y + tabs[n].height;
-						var target:Number = height - tabs[current].height;
-						var tempY:Number = tabs[current].y - offset;
-						twirlIcons[n].rotation = 90 * ((tabs[current].y - snapLow[current]) / (snapHigh[current] - snapLow[current])) + 90;
-						twirlIcons[current].rotation = 180 - (90 * ((tabs[current].y  - snapLow[current]) / (snapHigh[current] - snapLow[current])));
-					}*/
 				}
 			}
 			
@@ -728,12 +721,18 @@ package com.gestureworks.cml.element
 			for (var j:int = 0; j < tabs.length; j++) {
 				// Math.floor is being used because due to the specific spacing and reliance on tweening to place tabs,
 				// slight decimal errors in positioning can occur so it's best to try and round them down.
-				if ( Math.floor(tabs[j].y) == Math.floor(snapLow[j]) || Math.floor(tabs[j].y) == Math.floor(snapHigh[j])) {
+				if ( Math.floor(tabs[j].y) <= Math.floor(snapLow[j] + 3) || Math.floor(tabs[j].y) >= Math.floor(snapHigh[j]) - 3) {
 					continue;
 				} else {
 					dragGroup.push(tabs[j]);
 				}
 			}
+			
+			if (dragGroup.length < 1) {
+				isTweening = false;
+				return;
+			}
+			trace("dragGroup after:", dragGroup);
 			
 			//trace("Target index:", dragGroup.indexOf(e.target));
 			
@@ -776,7 +775,8 @@ package com.gestureworks.cml.element
 				}
 				
 				_collapsed = false;
-			} else {
+			} else if (e.target.y > (tabs[targetIndex].height + snapLow[targetIndex] + (height / 2)) && 
+			e.target.y < snapHigh[_current] - 5) {
 				
 				if (_current == 0) {
 					// If current is 0, and the tweening direction is down, tween the background.
@@ -786,7 +786,6 @@ package com.gestureworks.cml.element
 				for (var i:int = 0; i < dragGroup.length; i++) 
 				{
 					cNum = tabs.indexOf(dragGroup[i]);
-					
 					// Down
 					tweenArray.push(TweenLite.to(tabs[cNum], 0.3, { y: snapHigh[cNum] }));
 					tweenArray.push(TweenLite.to(contents[cNum], 0.3, { y: snapHigh[cNum] + tabs[cNum].height }));
@@ -814,8 +813,8 @@ package com.gestureworks.cml.element
 				//trace("Collapsed");
 			}
 			
-			
-			tweenGroup = new TimelineLite( { onComplete: function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); }} );
+			tweenGroup = new TimelineLite( { onComplete: function():void { 
+				isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); }} );
 			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();
 		}
