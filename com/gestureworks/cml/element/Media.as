@@ -59,9 +59,9 @@ package com.gestureworks.cml.element
 					dictionary[file].addEventListener(Event.COMPLETE, onComplete);					
 					addChild(dictionary[file]);			
 					currentFile = file;	
-					dictionary[file].loadComplete();
-					width = dictionary[file].width;
-					height = dictionary[file].height;
+					dictionary[file].loadComplete();					
+					width = width ? width : dictionary[file].width;
+					height = height ? height : dictionary[file].height;
 					onComplete();
 				}
 				else {
