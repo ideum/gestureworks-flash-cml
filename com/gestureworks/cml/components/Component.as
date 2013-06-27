@@ -271,8 +271,16 @@ package com.gestureworks.cml.components
 		 * Specifies the currently displayed side
 		 * @default "front"
 		 */
-		protected function get side():String { return _side; }		
+		protected function get side():String { return _side; }	
+		
+		/**
+		 * Current state of interaction
+		 */
 		public function get activity():Boolean { return _activity; }
+		public function set activity(a:Boolean):void {
+			_activity = a;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "activity", _activity));
+		}
 				
 		/**
 		 * Manages the timer and dispatches a state event
@@ -284,7 +292,7 @@ package com.gestureworks.cml.components
 				restartTimer();
 			else if (!value)
 			{
-				_activity = value;
+				activity = value;
 				if(timer)
 					timer.stop();
 			}
@@ -339,7 +347,7 @@ package com.gestureworks.cml.components
 				menu.updateLayout(width, height);	
 			}
 			
-			if ( timeout || (menu && menu.autoHide) ) {
+			//if ( timeout || (menu && menu.autoHide) ) {
 				if (GestureWorks.activeTUIO){
 					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
 					this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
@@ -355,7 +363,7 @@ package com.gestureworks.cml.components
 					this.addEventListener(MouseEvent.MOUSE_UP, onUp);
 					this.addEventListener(MouseEvent.MOUSE_OUT, onUp);
 				}				
-			}				
+			//}				
 			
 			if (textFields && autoTextLayout)
 			{
@@ -434,7 +442,7 @@ package com.gestureworks.cml.components
 		public function onDown(event:* = null):void
 		{
 			if (event) {
-				_activity = visible;
+				activity = visible;
 			}
 			if (timer) {
 				timer.stop();
@@ -456,7 +464,7 @@ package com.gestureworks.cml.components
 		public function onUp(event:* = null):void
 		{
 			if (event) {
-				_activity = false;
+				activity = false;
 			}
 			if (menu)
 				menu.mouseChildren = true;
@@ -473,7 +481,7 @@ package com.gestureworks.cml.components
 		
 		public function noActivity(e:GWGestureEvent):void
 		{
-			_activity = false;
+			activity = false;
 		}
 		
 		private var textCount:Number = 4;
