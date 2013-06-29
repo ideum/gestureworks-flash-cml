@@ -365,10 +365,6 @@ package com.gestureworks.cml.element
 		{
 			while (belt.numChildren > 0) {
 				while(DisplayObjectContainer(belt.getChildAt(0)).numChildren > 0){
-					if ("close" in DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)) 
-						DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)["close"]();
-					/*if ("dispose" in DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)) 
-						DisplayObjectContainer(belt.getChildAt(0)).getChildAt(0)["dispose"];*/
 					DisplayObjectContainer(belt.getChildAt(0)).removeChildAt(0);
 				}
 				belt.removeChildAt(0);
@@ -383,6 +379,13 @@ package com.gestureworks.cml.element
 			}
 			frame.width = 0;
 			frame.height = 0;
+						
+			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
+			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
+			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
+			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
+			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
+			belt.removeEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
 		}
 			
 		/**
@@ -430,7 +433,7 @@ package com.gestureworks.cml.element
 			storeSnapPoints();
 			setBoundaries();
 			addUIComponent(belt);
-			_currentObject = belt.numChildren > 1 ? belt.getChildAt(1) : null;
+			_currentObject = belt.getChildAt(1);
 		}
 						
 		/**
@@ -565,7 +568,7 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			trace(snapPoints);
+			//trace(snapPoints);
 		}
 		
 		/**
@@ -574,8 +577,7 @@ package com.gestureworks.cml.element
 		 */
 		private function setBoundaries():void
 		{
-			var half:Number = (frame[dimension] / 2);
-			
+			var half:Number = snapOffset ? (frame[dimension] / 2) + snapOffset : (frame[dimension] / 2);
 			if (loop)
 			{
 				boundary1 = 0;				

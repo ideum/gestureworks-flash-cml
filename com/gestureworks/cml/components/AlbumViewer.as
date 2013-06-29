@@ -65,7 +65,7 @@ package com.gestureworks.cml.components
 				
 			if (pageButtons) {
 				RadioButtons(pageButtons).labels = "";
-				var t:Number = Album(album).belt.numChildren;
+				var t:Number = Album(album).belt.numChildren-1; //exclude background
 				for (var i:Number = 0; i < t; i++) {
 					if (i != t-1)
 						RadioButtons(pageButtons).labels += Number(i).toString() + ",";
