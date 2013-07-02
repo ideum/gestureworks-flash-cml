@@ -379,6 +379,7 @@ package com.gestureworks.cml.element
 			}
 			frame.width = 0;
 			frame.height = 0;
+			snapIndex = 0;
 						
 			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
 			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
