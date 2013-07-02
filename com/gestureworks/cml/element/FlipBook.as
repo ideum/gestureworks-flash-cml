@@ -65,6 +65,8 @@ package com.gestureworks.cml.element
 			super();
 		}	
 		
+		//{ region properties
+		
 		/**
 		 * The width is overridden. Any width given is assumed to be the "page" width for the desired content.
 		 * The actual width of this container will be twice whatever is input.
@@ -154,12 +156,27 @@ package com.gestureworks.cml.element
 			_transformParent = value;
 		}
 		
+		private var _hitAreaSize:Number = 0.4;
+		/**
+		 * The a percentage based on page-width that will determine how wide the hit area in the corners and edges will be. For example, 
+		 * for a 200 px wide page (thus a 400 px wide Flipbook), a value of 0.2 will create an area 40 pixels wide x 40 pixels tall in the corners for hit,
+		 * and 20 pixels wide along the edges between the corners. This property is set on initialization and changing it aftewards will not change the hit 
+		 * area size.
+		 */
+		public function get hitAreaSize():Number { return _hitAreaSize; }
+		public function set hitAreaSize(value:Number):void {
+			_hitAreaSize = value;
+		}
+		
+		
 		private var _currentPage:Number = 0;
 		/**
 		 * Retrieves the current page. The page returned is the page on the right, not the left, and counting starts from 0, not 1.
 		 * So if the _currentPage is 2, the page on the right is page 3 and the page on the left is page 2.
 		 */
 		public function get currentPage():Number { return _currentPage; }
+		
+		//} endregion
 		
 		//{ region Initialization
 		
@@ -206,7 +223,7 @@ package com.gestureworks.cml.element
 				// make sure to position it to the right so it's the "right" page.
 				if ( !(i % 2)) {
 					addChild(pageContent[i]);
-					trace("Actually, odd numbered content.");
+					//trace("Actually, odd numbered content.");
 					pageContent[i].x = _pw;
 					pageShadow.graphics.beginGradientFill(GradientType.LINEAR, new Array(0x000000, 0x000000), new Array(0.25, 0), new Array(0, 255), m);
 					pageShadow.graphics.drawRect(0, 0, 100, _ph);
@@ -248,7 +265,7 @@ package com.gestureworks.cml.element
 			
 			for (var j:Number = 0; j < pageContent.length; j++) {
 				if (j % 2) {
-					trace("ID ordering:", pageContent[j].id);
+					//trace("ID ordering:", pageContent[j].id);
 					addChild(pageContent[j]);
 					//pageContent[j].addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 				}
@@ -272,31 +289,31 @@ package com.gestureworks.cml.element
 			addChild(shadow2);
 			addChild(shadow);
 			
-			L_UPPERCORNER = new Point(_pw * 0.2, _pw * 0.2);
-			L_LOWERCORNER = new Point(_pw * 0.2, _ph - (_pw * 0.2));
-			L_MIDDLE = new Point( _pw * 0.1, (_ph - (L_UPPERCORNER.y * 2)) / 2 + L_UPPERCORNER.y);
+			L_UPPERCORNER = new Point(_pw * _hitAreaSize, _pw * _hitAreaSize);
+			L_LOWERCORNER = new Point(_pw * _hitAreaSize, _ph - (_pw * _hitAreaSize));
+			L_MIDDLE = new Point( _pw * (_hitAreaSize/2), (_ph - (L_UPPERCORNER.y * 2)) / 2 + L_UPPERCORNER.y);
 			
-			R_UPPERCORNER = new Point((_pw * 2) - (_pw * 0.2), (_pw * 0.2));
-			R_LOWERCORNER = new Point((_pw * 2) - (_pw * 0.2), _ph - (_pw * 0.2));
-			R_MIDDLE = new Point((_pw * 2) - (_pw * 0.1), (_ph - (R_UPPERCORNER.y * 2)) / 2 + R_UPPERCORNER.y)
+			R_UPPERCORNER = new Point((_pw * 2) - (_pw * _hitAreaSize), (_pw * _hitAreaSize));
+			R_LOWERCORNER = new Point((_pw * 2) - (_pw * _hitAreaSize), _ph - (_pw * _hitAreaSize));
+			R_MIDDLE = new Point((_pw * 2) - (_pw * (_hitAreaSize/2)), (_ph - (R_UPPERCORNER.y * 2)) / 2 + R_UPPERCORNER.y)
 			// No need to define the middle further, I suppose. ^This is the center point between upper and lower.
 			
 			//addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin, false);
 			
 			addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
-			addEventListener(StateEvent.CHANGE, onStateEvent);
+			//addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 		}
 		
 		private function createLeftCorner():Sprite 
 		{
 			var sprite:Sprite = new Sprite();
-			var base:Number = _pw * 0.2;
-			var height:Number = _ph * 0.2;
+			var base:Number = _pw * _hitAreaSize;
+			//var height:Number = _ph * 0.2;
 			
 			sprite.graphics.lineStyle(1, _indicatorColor, 1);
 			sprite.graphics.beginFill(_indicatorColor, 1);
-			sprite.graphics.lineTo(0, -height);
+			sprite.graphics.lineTo(0, -base);
 			sprite.graphics.lineTo(base, 0);
 			sprite.graphics.lineTo(0,0);
 			sprite.graphics.endFill();
@@ -321,13 +338,13 @@ package com.gestureworks.cml.element
 		private function createRightCorner():Sprite 
 		{
 			var sprite:Sprite = new Sprite();
-			var base:Number = _pw * 0.2;
-			var height:Number = _ph * 0.2;
+			var base:Number = _pw * _hitAreaSize;
+			//var height:Number = _ph * 0.2;
 			
 			sprite.graphics.lineStyle(1, _indicatorColor, 1);
 			sprite.graphics.beginFill(_indicatorColor, 1);
 			sprite.graphics.lineTo(-base, 0);
-			sprite.graphics.lineTo(0, -height);
+			sprite.graphics.lineTo(0, -base);
 			sprite.graphics.lineTo(0,0);
 			sprite.graphics.endFill();
 			sprite.alpha = 0;
@@ -360,7 +377,7 @@ package com.gestureworks.cml.element
 			
 			if (tweening || isPageDragging) return;
 			
-			//trace("onBegin:", e);
+			//trace("onBegin:", e.target);
 			
 			// This is to allow button and other events to occur. When the page is not being turned, this is true so 
 			// child items that have touch can be accessed, like buttons.
@@ -377,15 +394,17 @@ package com.gestureworks.cml.element
 			
 			if (e.target != this) {
 				
-				var localPoint:Point = flipPoint(e.target, e.localX, e.localY, this);
+				//var localPoint:Point = flipPoint(e.target, e.localX, e.localY, this);
+				var localPoint:Point = this.globalToLocal(new Point(e.stageX, e.stageY));
 				this.dispatchEvent(new TouchEvent(e.type, e.bubbles, e.cancelable, e.touchPointID, e.isPrimaryTouchPoint, localPoint.x, localPoint.y, e.sizeX, e.sizeY, e.pressure, 
 					e.relatedObject, false, false, false));
 				return;
 				
 			}
 			
-			trackPoint = flipPoint(e.target, e.localX, e.localY, this);
-			//trace("Trackpoint:", trackPoint);
+			//trackPoint = flipPoint(e.target, e.localX, e.localY, this);
+			trackPoint = this.globalToLocal(new Point(e.stageX, e.stageY));
+			//trace("Trackpoint on begin:", trackPoint, e.target, this);
 			
 			// Have our trackPoint, check if it's in a corner.
 			checkCurrentCorner();
@@ -393,6 +412,7 @@ package com.gestureworks.cml.element
 			if (currentCorner) {
 				// Track the id of the touchPoint that triggered the right corner.
 				idToTrack = e.touchPointID;
+				trackPoint.x -= _pw;
 				
 				// Dump unnecessary listeners.
 				if (hasEventListener(GWGestureEvent.SCALE))
@@ -491,17 +511,17 @@ package com.gestureworks.cml.element
 		{
 			if (trackPoint.x < _pw * 2 && trackPoint.x > R_UPPERCORNER.x && _currentPage + 1 < pageContent.length) {
 				if (trackPoint.y < R_UPPERCORNER.y && trackPoint.y > -1) {
-					trace("I've found the upper RIGHT corner!");
+					//trace("I've found the upper RIGHT corner!");
 					currentCorner = new Point(1, 0);
 					forward = true;
 				}
 				else if (trackPoint.y < _ph && trackPoint.y > R_LOWERCORNER.y) {
-					trace("I've found the lower RIGHT corner!");
+					//trace("I've found the lower RIGHT corner!");
 					currentCorner = new Point(1, 1);
 					forward = true;
 				}
 				
-				else if (trackPoint.x < _pw * 2 && trackPoint.x > R_MIDDLE.x) {
+				/*else if (trackPoint.x < _pw * 2 && trackPoint.x > R_MIDDLE.x) {
 					if (trackPoint.y < R_MIDDLE.y) {
 						trace("Found upper middle.");
 						currentCorner = new Point(1, 0);
@@ -512,21 +532,21 @@ package com.gestureworks.cml.element
 						currentCorner = new Point(1, 1);
 						forward = true;
 					}
-				}
+				}*/
 			}
 			else if (OPEN && trackPoint.x < L_UPPERCORNER.x && trackPoint.x > 0) {
 				if (trackPoint.y < L_UPPERCORNER.y && trackPoint.y > -1) {
-					trace("I've found the upper LEFT corner!");
+					//trace("I've found the upper LEFT corner!");
 					currentCorner = new Point(1, 0);
 					forward = false;
 				}
 				else if (trackPoint.y < _ph && trackPoint.y > L_LOWERCORNER.y) {
-					trace("I've found the lower LEFT corner!");
+					//trace("I've found the lower LEFT corner!");
 					currentCorner = new Point(1, 1);
 					forward = false;
 				}
 				
-				else if (trackPoint.x < L_MIDDLE.x && trackPoint.x > 0) {
+				/*else if (trackPoint.x < L_MIDDLE.x && trackPoint.x > 0) {
 					if (trackPoint.y < L_MIDDLE.y) {
 						trace("Found upper LEFT middle.");
 						currentCorner = new Point(1, 0);
@@ -537,7 +557,7 @@ package com.gestureworks.cml.element
 						currentCorner = new Point(1, 1);
 						forward = false;
 					}
-				}
+				}*/
 			}
 			else {
 				currentCorner = null;
@@ -551,6 +571,11 @@ package com.gestureworks.cml.element
 		private function onRegularComplete(e:GWGestureEvent):void 
 		{
 			touchChildren = true;
+			
+			this.pointArray.length = 0;
+			if (this.parent && this.parent is TouchSprite){
+				TouchSprite(this.parent).pointArray.length = 0;
+			}
 			
 			removeEventListener(GWGestureEvent.SCALE, onRegularScale);
 			removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
@@ -635,6 +660,7 @@ package com.gestureworks.cml.element
 			// Flip the pointToTrack, which is in stageX/Y values to local.
 			trackPoint = shape.globalToLocal(pointToTrack);
 			
+			if (!trackPoint || !currentCorner || !_pw || !_ph) return;
 			obj = PageFlip.computeFlip(trackPoint, currentCorner, _pw, _ph, true, 1);
 			if (!obj.cPoints || obj.cPoints.length < 3) return;
 			
@@ -655,6 +681,11 @@ package com.gestureworks.cml.element
 			
 			removeEventListener(GWGestureEvent.DRAG, onPointMove);
 			removeEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
+			
+			if (this.parent && this.parent is TouchSprite){
+				TouchSprite(this.parent).pointArray.length = 0;
+			}
+			this.pointArray.length = 0;
 			
 			isPageDragging = false;
 			idToTrack = 0;
@@ -810,7 +841,6 @@ package com.gestureworks.cml.element
 			// Flip this back so users can access nested items such as buttons.
 			this.touchChildren = true;
 			
-			
 			if (forward && complete) {
 				pageContent[_currentPage + 1].visible = true;
 				shadows[_currentPage + 1].visible = true;
@@ -842,7 +872,7 @@ package com.gestureworks.cml.element
 				OPEN = false;
 			}
 			
-			trace("Current page.", _currentPage);
+			//trace("Current page.", _currentPage);
 			currentCorner = null;
 			tweening = false;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "complete"));

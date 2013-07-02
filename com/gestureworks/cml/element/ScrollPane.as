@@ -8,6 +8,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.TouchSprite;
@@ -385,11 +386,18 @@ package com.gestureworks.cml.element
 		
 		public function createEvents():void {
 			
-			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
+			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
 				addEventListener(GWGestureEvent.DRAG, onDrag);
+				content.addEventListener(GWGestureEvent.DRAG, onDrag);
+			}
 			addEventListener(GWGestureEvent.SCALE, onScale);
+			content.addEventListener(GWGestureEvent.SCALE, onScale);
+			
 			addEventListener(GWGestureEvent.COMPLETE, onComplete);
-			//addEventListener(GWGestureEvent.ROTATE, onRotate);
+			content.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+			
+			addEventListener(GWGestureEvent.ROTATE, onRotate);
+			content.addEventListener(GWGestureEvent.ROTATE, onRotate);
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
@@ -447,6 +455,7 @@ package com.gestureworks.cml.element
 			if ( _horizontalScroll || _verticalScroll) {
 				if (contains(_horizontalScroll) || contains(_verticalScroll)) {
 					addEventListener(GWGestureEvent.DRAG, onDrag);
+					content.addEventListener(GWGestureEvent.DRAG, onDrag);
 				}
 				else {
 					removeEventListener(GWGestureEvent.DRAG, onDrag);
@@ -491,8 +500,9 @@ package com.gestureworks.cml.element
 				}
 				
 			}
-			
+			trace("E.target in !scrollOnPane:", e.target);
 			if (!scrollOnPane) {
+				
 				if (this.parent) {
 					passTouchUp();
 					return;
@@ -597,25 +607,13 @@ package com.gestureworks.cml.element
 			return pos;
 		}
 		
-		private function onScale(e:GWGestureEvent):void {
+		protected function onScale(e:GWGestureEvent):void {
 			
-			if (!scaleOnPane) {
+			if (scaleOnPane) {
 				if (this.parent) {
-					// This needs to be checked out for any future usefulness, since clusterBubbling is the only 
-					// way to make this remotely function as intended, and that has nothing to do with this method.
 					
+					DisplayUtils.scaleFromPoint(this.parent, e.value.scale_dsx, e.value.scale_dsy, e.value.stageX, e.value.stageY);
 					
-					/*//this.parent.dispatchEvent(e);
-					TouchSprite(parent).disableAffineTransform = false;
-					TouchSprite(parent).$scaleX += e.value.scale_dsx;
-					TouchSprite(parent).$scaleY += e.value.scale_dsy;
-					//TouchSprite(parent).
-					e.target.$scaleX += e.value.scale_dsx;
-					e.target.$scaleY += e.value.scale_dsy;
-					TouchSprite(parent).$scaleX = e.target.$scaleX;
-					TouchSprite(parent).$scaleY = e.target.$scaleY;
-					trace("Scaling:", e.target);
-					trace("CurrentTar:", e.currentTarget);*/
 					return;
 				}
 			}
@@ -671,7 +669,8 @@ package com.gestureworks.cml.element
 			if (!scrollOnPane) {
 				if (this.parent) {
 					//this.parent.dispatchEvent(e);
-					TouchContainer(parent).rotation += e.value.rotate_dtheta;
+					//TouchContainer(parent).rotation += e.value.rotate_dtheta;
+					DisplayUtils.rotateAroundPoint(this.parent, e.value.rotate_dtheta, e.value.stageX, e.value.stageY);
 					//trace("Target:", e.target);
 					return;
 				}
