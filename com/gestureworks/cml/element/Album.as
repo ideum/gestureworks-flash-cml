@@ -13,6 +13,7 @@ package com.gestureworks.cml.element
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 	import org.tuio.TuioTouchEvent;
 	
 	/**
@@ -76,6 +77,7 @@ package com.gestureworks.cml.element
 		private var snapIndex:Number = 0;
 		private var initLoopOrder:Array;	
 		private var _currentObject:*;
+		private var loopClones:Dictionary = new Dictionary();
 				
 		/**
 		 * Constructor
@@ -87,6 +89,7 @@ package com.gestureworks.cml.element
 			albumMask.shape = "rectangle";	
 			frame = new Rectangle(0, 0, 0, 0);  
 			_belt = new TouchContainer();
+			loopClones = new Dictionary();
 		}
 				
 		/**
@@ -1098,9 +1101,17 @@ package com.gestureworks.cml.element
 		 * the album. 
 		 */
 		private function queueNext():void
-		{
+		{			
 			for (var i:int = 0; i < loopQueue.length; i++)
 			{
+				//var head:* = loopQueue[0];
+				//var tail:* = loopQueue[loopQueue.length - 1];				
+				//if (head.visible){
+					//var clone:* = head.clone();
+					//loopClones[head] = clone;
+					//clone[axis] = tail[axis] + tail[dimension] + space;
+					//loopQueue.push(clone);
+				//}
 				if (!loopQueue[i].visible)
 				{
 					loopQueue[i].visible = true;
