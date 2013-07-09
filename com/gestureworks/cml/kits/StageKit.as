@@ -2,6 +2,7 @@ package com.gestureworks.cml.kits
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.utils.FrameRate;
 	import flash.display.*;
 	import flash.events.*;
 
@@ -176,7 +177,15 @@ package com.gestureworks.cml.kits
 		{
 			_frameRate = value;
 			if (stage) stage.frameRate = value;
-		}		
+		}
+		
+		private var _displayFrameRate:Boolean = false;
+		
+		public function get displayFrameRate():Boolean { return _displayFrameRate; }
+		public function set displayFrameRate(d:Boolean):void {
+			_displayFrameRate = d;
+			if (stage) stage.addChild(new FrameRate());
+		}
 				
 	}	
 }
