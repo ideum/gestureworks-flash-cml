@@ -1,9 +1,6 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.factories.ElementFactory;
-	import com.gestureworks.cml.utils.DisplayUtils;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	
 	import flash.display.Sprite;
 	import flash.text.engine.*;
@@ -44,10 +41,8 @@ package com.gestureworks.cml.element
 		private var configuration:Configuration;
 		private var textFlow:TextFlow;
 		private var container:ContainerController;
-		private var initialized:Boolean = false;
-		private var bmd:BitmapData;
-		private var b:Bitmap;
-
+		private var initialized:Boolean=false;
+		
 		/**
 		 * Constructor
 		 */
@@ -151,15 +146,6 @@ package com.gestureworks.cml.element
 			if (initialized) updateContainer();
 		}
 		
-		private var _tlfBitmap:Boolean;
-		/**
-		 * Sets whether the TLF is left to scale as vector or gets locked as a bitmap.
-		 */
-		public function get tlfBitmap():Boolean { return _tlfBitmap; }
-		public function set tlfBitmap(t:Boolean):void {
-			_tlfBitmap = t;
-		}
-		
 		/**
 		 * Input must be prefixed with AS3's namespace:
 		 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
@@ -180,7 +166,7 @@ package com.gestureworks.cml.element
 			textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
 			updateContainer();
 			initialized=true;
-		}				
+		}
 		
 		private function updateContainer():void
 		{			
@@ -195,25 +181,6 @@ package com.gestureworks.cml.element
 				textFlow.flowComposer.addController(container);		
 				textFlow.flowComposer.updateAllControllers();	
 			}
-			
-			if(b && b.bitmapData) {
-				b.bitmapData.dispose();
-				this.visible = true;
-			}
-					
-			if (tlfBitmap) {
-
-				b = DisplayUtils.toBitmap(this);
-				
-				if (this.parent) {
-					if (parent.contains(b))
-						parent.removeChild(b);
-					this.visible = false;
-					b.x = this.x;
-					b.y = this.y;
-					parent.addChild(b);
-				}
-			}			
 		}
 		
 		/**
