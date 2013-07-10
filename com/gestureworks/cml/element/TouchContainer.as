@@ -1,7 +1,10 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.cml.utils.SoundUtils;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
@@ -51,6 +54,8 @@ package com.gestureworks.cml.element
 	public class TouchContainer extends TouchContainerFactory
 	{	
 		public var layoutList:Dictionary = new Dictionary(true);
+		private var b:Bitmap;
+		private var store:Array;
 		
 		/**
 		 * Constructor
@@ -69,7 +74,7 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-
+			contentToBitmap();
 		}
 		
 		override public function displayComplete():void 
@@ -358,8 +363,22 @@ package com.gestureworks.cml.element
 			
 			CMLParser.instance.parseCML(this, cml);
 			return cml.*;
-		}		
-
+		}
+		
+		private function contentToBitmap():void {
+			if(b && b.bitmapData) {
+				b.bitmapData.dispose();
+				this.visible = true;
+			}
+					
+			if (toBitmap) {
+				b = DisplayUtils.toBitmap(this);					
+				b.x = this.x;
+				b.y = this.y;
+				store = DisplayUtils.removeAllChildren(this);
+				addChild(b);
+			}
+		}
 				
 		/**
 		 * Apply the containers layout
@@ -411,6 +430,13 @@ package com.gestureworks.cml.element
 			}
 			
 			return super.addChild(child);
+		}
+		
+		private var _toBitmap:Boolean = false;
+		
+		public function get toBitmap():Boolean { return _toBitmap; }
+		public function set toBitmap(b:Boolean):void {
+			_toBitmap = b;
 		}
 		
 		/**
