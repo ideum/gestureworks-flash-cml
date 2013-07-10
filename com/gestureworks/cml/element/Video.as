@@ -297,7 +297,7 @@ package com.gestureworks.cml.element
 		{			
 			if (e && e.value != playButtonState) return;
 			netStream.seek(0);				
-			netStream.resume();
+			//netStream.resume();
 			netStream.play(src);
 			positionTimer.reset();
 			positionTimer.start();
