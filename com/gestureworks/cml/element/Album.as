@@ -561,7 +561,7 @@ package com.gestureworks.cml.element
 			}
 			else
 			{
-				for (i = 0; i < belt.numChildren; i++)
+				for (i = 1; i < belt.numChildren; i++)
 				{
 					if (belt.getChildAt(i)[axis] > limit)
 					{
