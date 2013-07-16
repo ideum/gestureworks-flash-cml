@@ -50,6 +50,7 @@ package com.gestureworks.cml.element
 	{
 		private var _selectedIndex:int = -1;
 		private var _backgroundColor:uint = 0x424141;
+		private var _backgroundAlpha:Number = 1;
 		private var _spacing:Number = 5;
 		
 		private var background:Graphic;
@@ -129,6 +130,20 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * The alpha of the background graphic element
+		 * @default 1.0
+		 */
+		public function get backgroundAlpha():Number { return _backgroundAlpha; }
+		public function set backgroundAlpha(value:Number):void
+		{
+			_backgroundAlpha = value;
+			if (background)
+			{
+				background.alpha = _backgroundAlpha;
+			}
+		}		
+		
+		/**
 		 * The spacing between each tab
 		 * @default 5
 		 */
@@ -149,6 +164,7 @@ package com.gestureworks.cml.element
 			background.shape = "rectangle";
 			background.width = width;
 			background.height = height;
+			background.alpha = backgroundAlpha;
 			addChild(background);	
 			
 			for (var i:int = this.numChildren - 1; i >= 0; i--)
