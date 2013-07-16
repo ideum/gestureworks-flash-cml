@@ -62,6 +62,43 @@ package com.gestureworks.cml.element
 			init();
 		}
 		
+		
+		private var _width:Number = 100;
+		/**
+		 * Sets width of the display object in pixels
+		 * @default 100
+		 */
+		override public function get width():Number{return _width;}
+		override public function set width(value:Number):void
+		{
+			_width = value;
+		}
+		
+		
+		private var _height:Number = 100;
+		/**
+		 * Sets height of the display object in pixels
+		 * @default 100
+		 */		
+		override public function get height():Number{return _height;}
+		override public function set height(value:Number):void
+		{
+			_height = value;
+		}			
+		
+		
+		private var _backgroundLineAlpha:Number = 1.0;
+		/**
+		 * Sets alpha of the background line 
+		 * @default 100
+		 */		
+		public function get backgroundLineAlpha():Number{return _backgroundLineAlpha;}
+		public function set backgroundLineAlpha(value:Number):void
+		{
+			_backgroundLineAlpha = value;
+			draw();
+		}			
+		
 		/**
 		 * Defines the square background
 		 */
@@ -153,6 +190,7 @@ package com.gestureworks.cml.element
 		
 		public function set toggleColor(value:uint):void
 		{
+						
 			_toggleColor = value;
 			draw();
 		}
@@ -172,19 +210,21 @@ package com.gestureworks.cml.element
 		
 		public function draw():void
 		{
-			
-			background.graphics.lineStyle(backgroundLineStoke, backgroundLineColor);
+			background.graphics.clear();
+			if (backgroundLineStoke) 
+				background.graphics.lineStyle(backgroundLineStoke, backgroundLineColor, backgroundLineAlpha);
 			background.graphics.beginFill(backgroundColor);
-			background.graphics.drawRect(50, 50, 100, 100);
+			background.graphics.drawRect(0, 0, _width, _height);
 			background.graphics.endFill();
 			
 			addChild(background);
 			
-			toggleGraphic.graphics.lineStyle(toggleLineStoke, toggleColor);
-			toggleGraphic.graphics.moveTo(50, 150);
-			toggleGraphic.graphics.lineTo(150, 50);
-			toggleGraphic.graphics.moveTo(50, 50);
-			toggleGraphic.graphics.lineTo(150, 150);
+			toggleGraphic.graphics.clear();
+			toggleGraphic.graphics.lineStyle(toggleLineStoke, _toggleColor);
+			toggleGraphic.graphics.moveTo(0, _height);
+			toggleGraphic.graphics.lineTo(_width, 0);
+			toggleGraphic.graphics.moveTo(0, 0);
+			toggleGraphic.graphics.lineTo(_width, _height);
 			
 			toggleGraphic.visible = false
 			addChild(toggleGraphic);
