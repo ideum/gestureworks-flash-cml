@@ -78,11 +78,6 @@ package com.gestureworks.cml.kits
 		 */
 		override public function init():void
 		{
-			trace("Starting preloader.");
-			
-			trace(_currentNumberDisplay);
-			trace("___________________");
-			
 			FileManager.addEventListener(FileEvent.FILE_LOADED, onFileLoaded);
 		}
 		

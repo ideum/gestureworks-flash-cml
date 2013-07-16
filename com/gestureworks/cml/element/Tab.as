@@ -280,6 +280,7 @@ package com.gestureworks.cml.element
 			tabGE.width = text.width;
 			tabGE.height = text.height;
 			tabGE.x = tabX;
+						
 			tabGE.fill = "gradient";
 			tabGE.gradientWidth = tabWidth;
 			tabGE.gradientHeight = tabWidth;

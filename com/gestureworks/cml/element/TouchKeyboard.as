@@ -460,12 +460,10 @@ package com.gestureworks.cml.element
 		private function upArrow():void
 		{			
 			//caret = currentTF.caretIndex;
-			////trace(caret);
 			//var text:String = currentTF.text;
 			//var lastNL:int = text.lastIndexOf("\r");
 			//var upCaret:int = text.substring(lastNL, caret).length;
 			//caret = text.substring(0, lastNL).lastIndexOf("\r") + upCaret;
-			////trace(caret);
 		}
 		
 		/**

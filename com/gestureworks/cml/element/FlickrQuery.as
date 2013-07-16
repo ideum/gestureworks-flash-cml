@@ -183,7 +183,6 @@ package  com.gestureworks.cml.element
 		
 		public function flickrSet():void {
 			service.addEventListener(FlickrResultEvent.PHOTOSETS_GET_PHOTOS, onSetComplete);
-			trace("Getting photoset info.");
 			service.photosets.getPhotos(_photosetid);
 		}
 		
@@ -193,24 +192,19 @@ package  com.gestureworks.cml.element
 			service.photosets.getInfo(_photosetid);
 		}
 		
-		private function onSearchComplete(e:FlickrResultEvent):void {
-			//trace("Search complete");
-			
+		private function onSearchComplete(e:FlickrResultEvent):void {			
 			var pList:Photos = new Photos(service);
 			
 			_pages = e.data.photos.pages;
 			_total = e.data.total;
 			resultPhotos = e.data.photos.photos;
-			trace("ResultPhotos info:", resultPhotos.length);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 			
 		}
 		
 		private function onSetComplete(e:FlickrResultEvent):void {
 			service.removeEventListener(FlickrResultEvent.PHOTOSETS_GET_PHOTOS, onSetComplete);
-			//trace(e.data);
 			resultPhotos = e.data.photoset.photos;
-			//trace("ResultPhotos info:", resultPhotos.length);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
 		}
 		
@@ -218,7 +212,6 @@ package  com.gestureworks.cml.element
 			service.removeEventListener(FlickrResultEvent.PHOTOSETS_GET_INFO, onSetInfoComplete);
 			
 			// TO DO: Add field or way to get set info.
-			//trace(e.data);
 			_total = e.data.photoSet.photoCount;
 			_setDescription = e.data.photoSet.description;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrInfoResult"));

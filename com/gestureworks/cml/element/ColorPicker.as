@@ -36,7 +36,7 @@ package com.gestureworks.cml.element
 
 		function colorSelected(event:StateEvent):void
 		{
-			//trace(event.value);
+			trace(event.value);
 		}		
 	 * </codeblock>
 	 * 

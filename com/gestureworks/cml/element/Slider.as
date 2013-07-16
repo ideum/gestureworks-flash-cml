@@ -245,7 +245,6 @@ package com.gestureworks.cml.element
 		
 		// public methods//		
 		public function createEvents():void {
-			trace("Creating events for:", this.id);
 			if (GestureWorks.activeTUIO)
 				hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
 			else if (GestureWorks.activeNativeTouch)
@@ -416,7 +415,6 @@ package com.gestureworks.cml.element
 		protected function onDownHit(event:*):void
 		{			
 			var num:Number;
-			//trace("On down hit:", event.localX, event.localY);
 			
 			if (orientation == "horizontal")		
 				num = event.localX;

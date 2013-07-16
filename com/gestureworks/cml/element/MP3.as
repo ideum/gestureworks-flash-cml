@@ -454,7 +454,6 @@ package com.gestureworks.cml.element
 		//graphic
 		private function draw():void 
 		{
-			//trace("drawing");
 			var origin:Number = height * .5;
 			_mp3.soundData.extract(bytes, 2048, (_mp3.channel.position*44.1));
 			bytes.position = 0;

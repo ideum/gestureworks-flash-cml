@@ -210,11 +210,9 @@ package com.gestureworks.cml.element
 			var v:Vector.<String> = cloneExclusions;
 			//var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ];
 			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
-			trace(v);
 			var clone:ScrollPane = CloneUtils.clone(this, null, v);
 			
 			CloneUtils.copyChildList(this, clone);	
-			trace("Clone:", clone);
 			
 			if (clone.parent)
 				clone.parent.addChild(clone);
@@ -474,7 +472,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onScroll(e:StateEvent):void {
-			//trace("StateEvent:", e.value);
 			if (e.target == _verticalScroll) {
 				_content.y = _verticalMovement * e.value * -1;
 			} else if (e.target == _horizontalScroll) {
@@ -518,14 +515,11 @@ package com.gestureworks.cml.element
 				TouchContainer(parent).x += e.value.drag_dx;
 				TouchContainer(parent).y += e.value.drag_dy;
 			}
-			
-			//trace(e);
-			
+						
 			var newPos:Number;
 			
 			if (_vertical) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
-				//trace("Vertical dragging");
 				newPos = _content.y;
 				
 				if (!oldY) {
@@ -671,7 +665,6 @@ package com.gestureworks.cml.element
 					//this.parent.dispatchEvent(e);
 					//TouchContainer(parent).rotation += e.value.rotate_dtheta;
 					DisplayUtils.rotateAroundPoint(this.parent, e.value.rotate_dtheta, e.value.stageX, e.value.stageY);
-					//trace("Target:", e.target);
 					return;
 				}
 			}

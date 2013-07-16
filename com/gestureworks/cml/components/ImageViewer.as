@@ -200,7 +200,6 @@ package com.gestureworks.cml.components
 			clone.displayComplete();				
 			
 			/*for (var i:int = 0; i < clone.textFields.length; i++) {	
-				trace("i", i);
 				for (var n:int = 0; n < clone.numChildren; n++) 
 				{
 					if (textFields[i].name == clone.getChildAt(n).name) {

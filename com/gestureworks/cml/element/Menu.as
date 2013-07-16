@@ -161,7 +161,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onStateEvent(e:StateEvent):void {
-			//trace("Button event caught.");
 			for (var i:int = 0; i < numChildren; i++) 
 			{
 				if(getChildAt(i) is Button) {

@@ -124,7 +124,6 @@ package com.gestureworks.cml.element
 			background.height = snapHigh[snapHigh.length - 1] + tabs[tabs.length - 1].height;
 			totalHeight = background.height;
 			collapsedHeight = snapLow[snapLow.length - 1] + tabs[tabs.length - 1].height;
-			//trace(background.height);
 			
 			cMask = new Graphic;
 			cMask.shape = "rectangle";
@@ -603,7 +602,6 @@ package com.gestureworks.cml.element
 			if (_collapsed) {
 				if (dragGroup.indexOf(tabs[0]) < 0)
 					dragGroup.push(tabs[0]);
-				//trace("Collapsed drag group:", dragGroup);
 			}
 			
 			for (var j:int = 0; j < tabs.length; j++) {
@@ -648,10 +646,8 @@ package com.gestureworks.cml.element
 					}
 					
 					if (dragGroup.length > 1) {
-						//trace("Drag grouping");
 						for (var k:int = dragGroup.length - 1; k > -1; k--) 
 						{
-							//trace("K:", k);
 							var index:Number = tabs.indexOf(dragGroup[k]);
 							if (k == dragGroup.length - 1 && twirlIndicator) // Last element in the group that was open before, getting closed now.
 								twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / snapHigh[index]));
@@ -696,7 +692,6 @@ package com.gestureworks.cml.element
 								var zIndex:Number = tabs.indexOf(dragGroup[0]);
 								zIndex -= 1;
 								twirlIcons[ndex].rotation = (90 * (snapLow[ndex] / tabs[ndex].y)) + 90;
-								//trace(twirlIcons[ndex].rotation);
 							}
 							else if (l == 0 && twirlIndicator)
 								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
@@ -732,9 +727,6 @@ package com.gestureworks.cml.element
 				isTweening = false;
 				return;
 			}
-			trace("dragGroup after:", dragGroup);
-			
-			//trace("Target index:", dragGroup.indexOf(e.target));
 			
 			var outIndex:Number = tabs.indexOf(dragGroup[0]);
 			var endIndex:Number = tabs.indexOf(dragGroup[dragGroup.length - 1]);
@@ -808,9 +800,7 @@ package com.gestureworks.cml.element
 				else {
 					_collapsed = false;
 					_current--;
-				}
-				
-				//trace("Collapsed");
+				}				
 			}
 			
 			tweenGroup = new TimelineLite( { onComplete: function():void { 

@@ -570,9 +570,7 @@ package com.gestureworks.cml.element
 					}					
 					snapPoints.push( -belt.getChildAt(i)[axis]);					
 				}
-			}
-			
-			//trace(snapPoints);
+			}			
 		}
 		
 		/**
@@ -890,7 +888,6 @@ package com.gestureworks.cml.element
 				//var s1:Array = loopQueue.slice(0,qIndex);
 				//var s2:Array = loopQueue.slice(qIndex);
 				//_loopQueue = s2.concat(s1);
-				//trace(s1,s2);
 			}
 			else if(!loop && num >=0 && num < snapPoints.length) {
 				snap(null, snapPoints[num]);

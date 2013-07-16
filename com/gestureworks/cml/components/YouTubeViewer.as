@@ -120,7 +120,6 @@ package  com.gestureworks.cml.components
 			else if (event.value == "pause" && video)
 				video.pause();		
 			else if (event.property == "position" && video) {
-				//trace("Position event.");
 				if (menu) {
 					if (menu.slider && YouTube(video).isPlaying) {
 						Slider(menu.slider).input(event.value * 100);
@@ -131,7 +130,6 @@ package  com.gestureworks.cml.components
 				video.pause();
 				seekTo = event.value;
 				//video.seek(seekTo, false);
-				//trace("Seekto:", seekTo);
 				addEventListener(GWTouchEvent.TOUCH_END, onRelease);
 			}
 		}

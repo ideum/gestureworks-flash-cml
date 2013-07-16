@@ -174,7 +174,6 @@
 					_hotspots.push(this.getChildAt(0));
 				}
 				removeChildAt(0);
-				//trace("Clearing markers to put them back later.");
 			}
 			
 			/*if (image)

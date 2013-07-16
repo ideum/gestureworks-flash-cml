@@ -1172,7 +1172,6 @@ package com.gestureworks.cml.element
 		
 		public function clear():void {
 			while (textContainer.numChildren > 0) {
-				//trace(textContainer.getChildAt(0));
 				textContainer.removeChildAt(0);
 			}
 		}

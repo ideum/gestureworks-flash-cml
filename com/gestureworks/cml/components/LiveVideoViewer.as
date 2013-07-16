@@ -51,14 +51,12 @@ package com.gestureworks.cml.components
 		public function get liveVideo():* {return _liveVideo}
 		public function set liveVideo(value:*):void 
 		{
-		
 			if (!value) return;
 			
 			if (value is DisplayObject)
 				_liveVideo = value;
 			else 
 				_liveVideo = searchChildren(value);	
-					//trace("liveVideo:" +_liveVideo);
 		}			
 		
 		/**

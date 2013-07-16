@@ -123,7 +123,6 @@ package com.gestureworks.cml.element
 			}
 			
 			for (var i:Number = slideshowItems.length; i > 0; i--) {
-				////trace("Removing item: " + slideshowItems.getIndex(i) + ", " + i);
 				if (getChildAt(slideshowItems.getIndex(i)).width > maxWidth) {
 					maxWidth = getChildAt(slideshowItems.getIndex(i)).width;
 					this.width = maxWidth;
@@ -273,7 +272,6 @@ package com.gestureworks.cml.element
 			function onFadeOutEnd():void
 			{
 				lastItem.visible = false;
-				////trace(lastItem.parent);
 				if (contains(slideshowItems.getIndex(index))){
 					removeChild(slideshowItems.getIndex(index));
 				}
@@ -308,7 +306,6 @@ package com.gestureworks.cml.element
 			var last:int;
 			last = _currentIndex;
 			_currentIndex++;
-			////trace("Last:", last, "Current: ", _currentIndex);
 			for (var i:int = 0; i < numChildren; i++) {
 				stopCheck(getChildAt(i));
 			}

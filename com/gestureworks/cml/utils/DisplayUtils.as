@@ -62,9 +62,9 @@ package com.gestureworks.cml.utils
 		 * s.addChild(new Shape());
 		 * s.addChild(new MovieClip());
 		 * s.addChild(new Sprite());
-		 * //trace(s.numChildren); // 4
+		 * trace(s.numChildren); // 4
 		 * removeAllChildrenByType(s, Shape);
-		 * //trace(s.numChildren); // 2
+		 * trace(s.numChildren); // 2
 		 * </listing>
 		 *   
 		 * 	@param container Container to remove from

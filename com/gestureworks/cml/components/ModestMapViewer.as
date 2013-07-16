@@ -72,7 +72,6 @@ package com.gestureworks.cml.components
 			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
 			if (!map){
 				map = searchChildren(".map_element");
-				//trace("Adding map event listener.");
 				map.addEventListener(StateEvent.CHANGE, onStateEvent);
 			}
 			if (!menu)

@@ -116,7 +116,6 @@ package com.gestureworks.cml.kits
 		public function set color(value:uint):void 
 		{
 			_color = value;
-			trace(stage);
 			
 			if (stage && "color" in stage) {
 				stage["color"] = value;
