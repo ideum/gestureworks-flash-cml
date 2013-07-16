@@ -6,8 +6,8 @@ package com.gestureworks.cml.utils
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 
 		var t:TimeStamp = new TimeStamp();
-		//trace(t.getDateTime());
-		//trace(t.getHrsMinSec());
+		trace(t.getDateTime());
+		trace(t.getHrsMinSec());
 	 
 	 * </codeblock>
 	 * 

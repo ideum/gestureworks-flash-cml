@@ -148,7 +148,6 @@ package com.gestureworks.cml.kits
 		}		
 		
 		private function cmlinit(e:Event):void {
-			//trace("Initializing in attract kit.");
 			CMLParser.instance.removeEventListener(CMLParser.COMPLETE, cmlinit);
 			parent.setChildIndex(this, parent.numChildren - 1);
 		}
@@ -192,7 +191,6 @@ package com.gestureworks.cml.kits
 		private function resetTimer(e:TouchEvent):void {
 			timer.reset();
 			timer.start();
-			//trace("Reset timer.");
 		}
 		
 		private function onTimer(e:TimerEvent = null):void {

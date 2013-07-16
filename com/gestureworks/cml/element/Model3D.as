@@ -134,7 +134,6 @@
 			while (this.numChildren > 0) {
 				
 				if (this.getChildAt(0) is TouchContainer) {
-					//trace("TouchContainer found", modelTouch);
 					modelTouch = TouchContainer(this.getChildAt(0));
 				}
 				
@@ -273,7 +272,6 @@
 				
 				myContainer.x = model_X;
 				myContainer.y = model_Y;
-				//trace(myContainer.z);
 				//myContainer.z += model_Z;
 				//camera.z = model_Z;
 				//model_Z += 0.001;
@@ -294,9 +292,7 @@
 		 * Listener function for asset complete event on loader
 		 */
 		private function onAssetComplete(event:AssetEvent):void
-		{
-			
-			//trace("Asset complete");
+		{			
 			if (event.asset.assetType == AssetType.MESH) {
 				
 				model = event.asset as Mesh;
@@ -309,9 +305,7 @@
 				initMaterials(model);
 				
 				myContainer.addChild(model);
-				model_Z = myContainer.scaleX;
-				
-				//trace(model.name);
+				model_Z = myContainer.scaleX;				
 			}
 			else if (event.asset.assetType == AssetType.MATERIAL) {
 				//model.material = event.asset as MaterialBase;

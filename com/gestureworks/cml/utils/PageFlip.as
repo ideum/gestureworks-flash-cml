@@ -146,10 +146,8 @@ package com.gestureworks.cml.utils {
 			// ditstance 
 			// it allows you to have a valid position for ptd.
 			// the limit is the diagonal of the sheet here
-			//trace("Point limit one:");
 			limitPoint(ptd,pt1,(pw*pw+ph*ph)*sens);
 			// the limit is about the opposite fixed point
-			//trace("Point limit two:");
 			limitPoint(ptd,pt2,(pw*pw)*sens);
 
 			// first fliped point
@@ -348,13 +346,11 @@ package com.gestureworks.cml.utils {
 		 * @private
 		 */
 		private static function limitPoint(ptd:Point,pt:Point,dsquare:Number):void{
-			//trace("Point in:", ptd);
 			var theta:Number;
 			var lim:Number;
 
 			var dy:Number=ptd.y-pt.y;
 			var dx:Number=ptd.x-pt.x;
-			//trace("Point out:", ptd);
 			var dis:Number=dx*dx+dy*dy;
 
 			// we save some times using square

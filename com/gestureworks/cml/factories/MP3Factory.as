@@ -326,7 +326,6 @@ package com.gestureworks.cml.factories
 				soundData = (FileManager.fileList.getKey(soundSrc)) as Sound;			
 			}
 			
-			//trace("Do I have soundData?", soundData);
 			if (autoplay) play();
 		}
 		

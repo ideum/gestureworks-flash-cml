@@ -35,7 +35,7 @@ package com.gestureworks.cml.element
 		
 		
 		function onItemSelected(e:StateEvent):void {
-			//trace("OnItemSelected", e.value);
+			trace("OnItemSelected", e.value);
 		}
 
 	 * </codeblock>

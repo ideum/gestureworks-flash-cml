@@ -152,10 +152,6 @@ package  com.gestureworks.cml.element
 				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
 				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
 				
-				//if (ts.id && ts.id == "forward-btn") {
-					//trace("page button");
-				//}
-				
 				if (forwardButton && ts.contains(forwardButton))
 					continue;
 				else if (backButton && ts.contains(backButton))

@@ -245,14 +245,6 @@ package com.gestureworks.cml.element
 				else
 					childToList(child.name, child);
 			}
-
-			if (this == child) {
-				
-				trace(this.id, this);
-				trace(child["id"], this);
-				
-				trace("fjlds");
-			}	
 			
 			return super.addChild(child);
 		}
@@ -333,7 +325,6 @@ package com.gestureworks.cml.element
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):*
 		{		
-			//trace(value is Class);
 			var returnVal:* = null;
 			var searchType:String = null;
 			

@@ -523,7 +523,6 @@ package com.gestureworks.cml.components
 		
 		protected function onStateEvent(event:StateEvent):void
 		{
-			//trace(event);
 			if (event.value == "fontSize")
 			{
 				textSize();
@@ -602,7 +601,6 @@ package com.gestureworks.cml.components
 			else if (event.value == "forward") {
 				for (var m:int = 0; m < numChildren; m++) 
 				{
-					trace(this);
 					if ("next" in getChildAt(m)) {
 						getChildAt(m)["next"]();
 					}
@@ -758,8 +756,6 @@ package com.gestureworks.cml.components
 			var clone:Component = CloneUtils.clone(this, this.parent, cloneExclusions);
 			
 			CloneUtils.copyChildList(this, clone);		
-			trace(this.childList, clone.childList);
-			trace("_----------------_");
 			
 			if (front)
 				clone.front = String(front.id);

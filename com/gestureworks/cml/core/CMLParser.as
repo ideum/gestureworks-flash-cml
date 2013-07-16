@@ -261,11 +261,9 @@ package com.gestureworks.cml.core
 		
 		private static function ppPreloaderKit(cml:XML):void 
 		{
-			trace("In the pre-process loop for a preloader kit.");
 			if (cml.name() != "PreloaderKit") 
 				return;
 			//createObject(cml.name());
-			trace("I'm not quite sure what's going on.");
 		}
 		
 		private static function ppInclude(cml:XML, str:String=""):void 
@@ -756,9 +754,7 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				trace(obj);
 				obj = searchPackages(tag, CML_CORE.CML_CORE_PACKAGES);
-				trace(obj);
 
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");

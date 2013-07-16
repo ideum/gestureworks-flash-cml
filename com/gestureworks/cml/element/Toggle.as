@@ -32,7 +32,7 @@ package com.gestureworks.cml.element
 	
 	   function onToggle(event:StateEvent):void
 	   {
-		  //trace("toggle text", event.value);
+		  trace("toggle text", event.value);
 
 		  if (event.value == "true")
 			  txt.visible = true;

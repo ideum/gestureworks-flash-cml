@@ -176,7 +176,6 @@ package com.gestureworks.cml.element
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):*
 		{		
-			//trace(value);
 			var returnVal:* = null;
 			var searchType:String = null;
 			
@@ -256,8 +255,6 @@ package com.gestureworks.cml.element
 						{	
 							if (sType == "getCSSClass" || sType == "getClass")
 							{
-								if (val is Text)
-									trace(val);
 								if (arr[i].childList[sType](val))
 									returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());									
 							}

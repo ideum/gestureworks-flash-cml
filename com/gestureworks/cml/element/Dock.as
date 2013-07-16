@@ -209,9 +209,7 @@ package com.gestureworks.cml.element
 				infoText.htmlText = flickrQuery.setDescription;
 				
 				if (infoText.parent is ScrollPane)
-					ScrollPane(infoText.parent).updateLayout(infoText.parent.width, infoText.parent.height);
-					
-				trace(infoText);
+					ScrollPane(infoText.parent).updateLayout(infoText.parent.width, infoText.parent.height);					
 			}
 			return;
 		}
@@ -320,7 +318,6 @@ package com.gestureworks.cml.element
 			
 			var clone:Component;
 			clone = templates[0].clone();
-			//trace("Preparing to append clone:", clone);
 			cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
 			loadIndex++;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));
@@ -331,7 +328,6 @@ package com.gestureworks.cml.element
 			if (!("propertyStates" in obj)) 
 				return lm;
 			
-			//trace("Preloading expressions of object:", obj);
 			// Iterate through the properties of the object to find {values}
 			for (var s:String in obj.propertyStates[0]) {
 				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
@@ -343,7 +339,6 @@ package com.gestureworks.cml.element
 						lm.prepend(obj, s);
 					else
 						lm.append(obj, s);
-					//trace("Preloading expressions:", obj, s);
 				}
 			}
 			
@@ -531,7 +526,6 @@ package com.gestureworks.cml.element
 			else if (flickrQuery) {
 				flickrQuery.tags = "";
 				flickrQuery.text = "";
-				//trace("Flickr test:", Object(flickrQuery).hasOwnProperty(_searchFieldsArray[index]), _searchFieldsArray[index]);
 				for (var i:int = 0; i < 3; i++) {
 					if (_searchFieldsArray[i] == "text" ) {
 						// Do something with text.
@@ -713,14 +707,9 @@ package com.gestureworks.cml.element
 
 		private function processPages(page:int):Array {
 			var pageContent:Array = new Array();
-			//var pageContent:Object = new Object();
-			//trace(i);
 			for (var i:int = page * resultsPerPage; i < _resultsPerPage + (page * _resultsPerPage); i++) {
-				trace(i);
 				pageContent.push(result[i]);
-				//pageContent[i] = result[i];
 			}
-			trace("PageContent:", pageContent);
 			return pageContent;
 		}
 		
@@ -1001,7 +990,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function nextDBpage():void {
-			trace("Going to next page.");
 			currentPage++;
 			
 			album.clear();
@@ -1015,7 +1003,6 @@ package com.gestureworks.cml.element
 		}
 		
 		private function previousDBpage():void {
-			trace("going to previous page.");
 			currentPage--;
 			
 			album.clear();
@@ -1343,7 +1330,6 @@ package com.gestureworks.cml.element
 				if (resultCnt)
 				{				
 					TOTAL_RESULTS += query.total;
-					trace("total so far:", TOTAL_RESULTS);
 					if (!dial2Filters[tags[1]])
 						dial2Filters[tags[1]] = new Array();			
 					if (dial2Filters[tags[1]].indexOf(tags[0]) < 0)

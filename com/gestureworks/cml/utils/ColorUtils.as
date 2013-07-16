@@ -313,7 +313,6 @@ package com.gestureworks.cml.utils
         private static function convertChannelToHexStr(hex:uint):String {
             if (hex > 255){
                 hex = 255;
-                //trace("hex val overloaded");
             }
             
             var hexStr:String = hex.toString(16);

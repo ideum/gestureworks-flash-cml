@@ -211,7 +211,6 @@ package com.gestureworks.cml.element
 				if (compX) _component.x = compX;
 				if (compY) _component.y = compY;
 				
-				//trace("Setting component:", _component.x, _component.y);
 				_component.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "hotspot", "visible", true));
 			}
 		}
@@ -236,10 +235,7 @@ package com.gestureworks.cml.element
 				var point:Point = globalToLocal(new Point(_component.x, _component.y));
 				tetherSprite.graphics.lineTo(point.x, point.y);
 			}
-			//addChild(tether);
-			
-			//trace("Component:", _component.x, _component.y);
-			
+			//addChild(tether);			
 		}
 		
 		override public function dispose():void {

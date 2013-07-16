@@ -336,10 +336,9 @@ package com.gestureworks.cml.factories
 			{
 				_duration = meta.duration;
 				
-				if (debug)
-				{
-					//trace("video file: " + src);					
-					//trace("video duration: " + meta.duration);
+				if (debug) {
+					trace("video file: " + src);					
+					trace("video duration: " + meta.duration);
 				}	
 			}
 			

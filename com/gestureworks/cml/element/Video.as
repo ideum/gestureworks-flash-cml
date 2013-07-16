@@ -515,10 +515,6 @@ package com.gestureworks.cml.element
 		private function onPosition(event:TimerEvent):void
 		{			
 			_position = netStream.time / _duration;
-	
-			/*if (debug)
-				trace(_position);*/ 
-			//trace("Dispatching event in video.");
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
 		

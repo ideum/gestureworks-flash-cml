@@ -75,9 +75,7 @@ package com.gestureworks.cml.factories
 			urlRequest = new URLRequest(url);
 			
 			if (_src.search(FileManager.mp3Type) >= 0) {
-				// Load MP3.
-				trace("Source:", _src, FileManager.mp3Type);
-				
+				// Load MP3.				
 				_loader = new Sound()
 				_loader.addEventListener(Event.COMPLETE, onComplete);
 				_loader.load(urlRequest);
@@ -110,7 +108,6 @@ package com.gestureworks.cml.factories
 			_isLoaded = true;
 			if (_loader is Sound) {
 				_loader.removeEventListener(Event.COMPLETE, onComplete);
-				trace("Sound loaded.");
 				return;
 			}
 			_loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);

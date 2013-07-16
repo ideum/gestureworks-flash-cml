@@ -122,11 +122,9 @@ package com.gestureworks.cml.element
 			trace("unable to locate camera");
 		  else
 		   {
-		   //trace("Found camera: " + cam.name);
 		   cam.addEventListener(StatusEvent.STATUS, statusHandler);
 		   //attaches camera to video.
            video.attachCamera(cam);
-		   //netstream.attachCamera(cam);
 		   }
    
 		   //Get the default microphone for the system	
@@ -135,14 +133,13 @@ package com.gestureworks.cml.element
 		   
 		   if (mic == null)
 		   {
-			//trace("unable to locate mic");   
+			trace("unable to locate mic");   
 		   }
 		   else
 		   {
 			   mic.setLoopBack(true);
 			   mic.setUseEchoSuppression(true);
 			   netstream.attachAudio(mic);
-			  //video.attachNetStream(netstream);
 			   mic.addEventListener(ActivityEvent.ACTIVITY, testMic);
 		  }
 		}
@@ -184,7 +181,7 @@ package com.gestureworks.cml.element
 		 */
 		public function testMic(event:ActivityEvent):void
 		{
-		 //trace("mic");
+			trace("mic");
 		}
 		
 		/**
@@ -192,7 +189,7 @@ package com.gestureworks.cml.element
 		 */
 		public function stop():void
 		{
-		 //trace("livevideostop");
+			trace("livevideostop");
 		}
 		
 		/**

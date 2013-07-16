@@ -42,7 +42,6 @@ package com.gestureworks.cml.utils
 					var sound:Sound = new Sound();
 					for each (val in node.@*) {
 						name = val.name();
-						trace(name, val);
 						if (val == "true") val = true;
 						if (val == "false") val = false;	
 						//obj.state[obj.state.length - 1][name]  = val;

@@ -570,7 +570,6 @@ package com.gestureworks.cml.element
 			
 			if(_orientation == "vertical") {
 				// Check the new position won't be further than the limits, and if so, clamp it.
-				//trace("Vertical dragging");
 				//newPos = _content.y;
 				
 				if (!oldY) {
@@ -594,18 +593,13 @@ package com.gestureworks.cml.element
 				// Now clamp and apply differential.
 				
 				newPos = clampPos(newPos, "vertical");
-				
-				//trace(oldY, newPos, e.value.localY);
-				
+								
 				// Apply the new position.
 				thumb.y = newPos;
 				if (buttonVisible)
 					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
 				else
 					scrollPosition = thumb.y / movementRail;
-					
-					
-				//trace(e.value.localY, thumb.y);
 			}			
 			
 			if (_orientation == "horizontal") {
@@ -652,9 +646,7 @@ package com.gestureworks.cml.element
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
-			
-			trace("Completing.");
-			
+						
 			if (this.parent) {
 				var p:* = parent;
 				if ("disableNativeTransform" in p) {
@@ -704,11 +696,9 @@ package com.gestureworks.cml.element
 			if (_orientation == "vertical"){
 				if (thumb.y < railGraphic.y) {
 					thumb.y = railGraphic.y;
-					////trace("Clamping rail min.");
 				}
 				if (thumb.y + thumb.height > (railGraphic.y + railGraphic.height)) {
 					thumb.y = railGraphic.y + railGraphic.height - thumb.height;
-					////trace("Clamping rail max");
 				}
 			}
 			if (_orientation == "horizontal") {

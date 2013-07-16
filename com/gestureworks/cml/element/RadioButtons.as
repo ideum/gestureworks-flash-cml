@@ -33,7 +33,7 @@
 		
 		function testRBSelect(event:StateEvent):void
 		{
-			//trace(event.value);
+			trace(event.value);
 		}	
 
 	 * </codeblock>
@@ -100,7 +100,6 @@
 		public override function displayComplete():void
 		{
 			super.displayComplete();
-			//trace(_graphicReps);
 			init();
 		}		
 		
@@ -123,7 +122,6 @@
 				for (var j:int = 0; j < _graphicsArray.length; j++) 
 				{
 					grabStates = _graphicsArray[j].split(":");
-					//trace("Grab states:", grabStates);
 					if (grabStates.length == 2){
 						_graphicsArray[j] = grabStates[0];
 						downStates.push(grabStates[1]);
@@ -622,7 +620,6 @@
 						DisplayObjectContainer(button).addChild(selected);
 					else if (button is Text) {
 						for (var s:String in _textElements) {
-							trace("goddamnit:", s, _textElements[s], button, button == _textElements[s]);
 							if (_textElements[s] == button) {
 								button = _radioButtons[s];
 								DisplayObjectContainer(button).addChild(selected);
@@ -631,7 +628,6 @@
 					}
 					_selectedLabel = button.name;
 				}
-				//trace(_selectedLabel);
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 			}
 						
