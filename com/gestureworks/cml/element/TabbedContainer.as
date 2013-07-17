@@ -178,17 +178,21 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		
 		/**
 		 * Updates the selected state of the target tab element
 		 * @param	e the touch event
 		 */
 		private function selectTab(e:TouchEvent):void
 		{
+			e.stopPropagation(); // added to allow nested tabbed containers
+			
 			var tab:Tab;
 			if (e.target is Tab)
 				tab = Tab(e.target);
 			else
 				tab = DisplayUtils.getParentType(Tab, e.target);				
+	
 			addTab(tab);
 		}	
 		
