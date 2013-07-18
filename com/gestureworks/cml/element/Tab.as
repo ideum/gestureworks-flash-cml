@@ -45,8 +45,10 @@ package com.gestureworks.cml.element
 		private var _tabHeight:Number;
 		private var _tabLeftRadius:Number;
 		private var _tabRightRadius:Number;
-		private var _displayLeftRadius:Number;
-		private var _displayRightRadius:Number
+		private var _displayTopLeftRadius:Number;
+		private var _displayTopRightRadius:Number
+		private var _displayBottomLeftRadius:Number;
+		private var _displayBottomRightRadius:Number
 		
 		private var contentContainer:Container;
 		private var displayBkg:Graphic;
@@ -234,23 +236,55 @@ package com.gestureworks.cml.element
 		{
 			_tabRightRadius = r;
 		}
-		
+
 		/**
 		 * The radius of the upper left corner of the display in pixels
 		 */
-		public function get displayLeftRadius():Number { return _displayLeftRadius; }
-		public function set displayLeftRadius(r:Number):void
+		public function get displayTopLeftRadius():Number { return _displayTopLeftRadius; }
+		public function set displayTopLeftRadius(r:Number):void
 		{
-			_displayLeftRadius = r;
+			_displayTopLeftRadius = r;
 		}
 		
 		/**
 		 * The radius of the upper right corner of the display in pixels
 		 */
-		public function get displayRightRadius():Number { return _displayRightRadius; }
+		public function get displayTopRightRadius():Number { return _displayTopRightRadius; }
+		public function set displayTopRightRadius(r:Number):void
+		{
+			_displayTopRightRadius = r;
+		}
+	
+		/**
+		 * The radius of the lower left corner of the display in pixels
+		 */
+		public function get displayBottomLeftRadius():Number { return _displayBottomLeftRadius; }
+		public function set displayBottomLeftRadius(r:Number):void
+		{
+			_displayBottomLeftRadius = r;
+		}
+		
+		/**
+		 * The radius of the lower right corner of the display in pixels
+		 */
+		public function get displayBottomRightRadius():Number { return _displayBottomRightRadius; }
+		public function set displayBottomRightRadius(r:Number):void
+		{
+			_displayBottomRightRadius = r;
+		}		
+				
+		[Deprecated(replacement="displayTopLeftRadius")]	
+		public function get displayLeftRadius():Number { return _displayTopLeftRadius; }
+		public function set displayLeftRadius(r:Number):void
+		{
+			displayTopLeftRadius = r;
+		}
+		
+		[Deprecated(replacement="displayTopRightRadius")]	
+		public function get displayRightRadius():Number { return _displayTopRightRadius; }
 		public function set displayRightRadius(r:Number):void
 		{
-			_displayRightRadius = r;
+			displayTopRightRadius = r;
 		}		
 		
 		/**
@@ -300,8 +334,12 @@ package com.gestureworks.cml.element
 			displayBkg.lineStroke = 0;
 			displayBkg.color = displayColor;
 			displayBkg.shape = "roundRectangleComplex";
-			displayBkg.topLeftRadius = displayLeftRadius ? displayLeftRadius : 0;
-			displayBkg.topRightRadius = displayRightRadius ? displayRightRadius : 0;
+			
+			displayBkg.topLeftRadius = displayTopLeftRadius ? displayTopLeftRadius : 0;
+			displayBkg.topRightRadius = displayTopRightRadius ? displayTopRightRadius : 0;
+			displayBkg.bottomLeftRadius = displayBottomLeftRadius ? displayBottomLeftRadius : 0;
+			displayBkg.bottomRightRadius = displayBottomRightRadius ? displayBottomRightRadius : 0;			
+			
 			displayBkg.width = contentContainer.width;
 			displayBkg.height = contentContainer.height;
 			displayBkg.y = tabGE.height - 1;
