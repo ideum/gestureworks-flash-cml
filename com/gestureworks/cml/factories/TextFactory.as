@@ -105,7 +105,7 @@ package com.gestureworks.cml.factories
 		public function parseCML(cml:XMLList):XMLList
 		{
 			// if TextElement has child, then interpret as htmlText
-			if (String(cml).length > 0) {
+			if (String(cml).length > 0 && cml["State"] == undefined) {
 				CMLParser.attrLoop(this, cml);
 				multiline = true;
 				condenseWhite = true;
