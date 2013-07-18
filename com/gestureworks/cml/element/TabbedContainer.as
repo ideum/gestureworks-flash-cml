@@ -196,7 +196,17 @@ package com.gestureworks.cml.element
 	
 			addTab(tab);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "selectedIndex", selectedIndex)); 
-		}	
+		}
+		
+		
+		/**
+		 * Updates the selected state of the target tab element by index
+		 * @param	e the touch event
+		 */
+		public function selectTabByIndex(index:int):void
+		{
+			addTab(tabs[index]);
+		}			
 		
 		/**
 		 * Adds a new tab to the container and/or gives focus to the selected tab.
