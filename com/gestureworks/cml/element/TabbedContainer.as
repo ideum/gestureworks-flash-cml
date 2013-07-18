@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import flash.events.TouchEvent;
 	import flash.geom.ColorTransform;
@@ -194,6 +195,7 @@ package com.gestureworks.cml.element
 				tab = DisplayUtils.getParentType(Tab, e.target);				
 	
 			addTab(tab);
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "selectedIndex", selectedIndex)); 
 		}	
 		
 		/**
