@@ -53,7 +53,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get scrollPosition():Number { return _scrollPosition; }
 		public function set scrollPosition(value:Number):void {
-			_scrollPosition = value;
+			_scrollPosition = value;			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _scrollPosition, true));
 		}
 		
@@ -379,10 +379,10 @@ package com.gestureworks.cml.element
 			if (_orientation == "vertical"){
 				thumb.width = this.width;
 				thumb.height = (this.height / contentHeight) * railGraphic.height;
-				movementRail = railGraphic.height - thumb.height;
 				if (thumb.height < _thumbMin) {
 					thumb.height = _thumbMin;
 				}
+				movementRail = railGraphic.height - thumb.height;
 				thumb.y = railGraphic.y;
 			}
 			else if (_orientation == "horizontal") {
