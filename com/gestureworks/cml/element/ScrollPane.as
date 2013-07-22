@@ -427,11 +427,11 @@ package com.gestureworks.cml.element
 		
 		private function onDrag(e:GWGestureEvent):void {
 						
-			if (_verticalScroll && _verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
 				_verticalScroll.onDrag(e);
 				return;
 			}
-			else if (_horizontalScroll && _horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+			else if (_horizontalScroll && contains(_horizontalScroll) && _horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
 				_horizontalScroll.onDrag(e);
 				return;
 			}
@@ -468,7 +468,7 @@ package com.gestureworks.cml.element
 			var newXPos:Number;
 			var newYPos:Number;
 			
-			if (_verticalScroll) {
+			if (contains(_verticalScroll)) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newYPos = _content.y;
 				
@@ -497,7 +497,7 @@ package com.gestureworks.cml.element
 				_verticalScroll.thumbPosition = -newYPos / _verticalMovement;
 			}
 			
-			if (_horizontalScroll) {
+			if (contains(_horizontalScroll)) {
 				
 				newXPos = _content.x;
 				
