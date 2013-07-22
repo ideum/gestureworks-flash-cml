@@ -437,8 +437,7 @@ package com.gestureworks.cml.element
 		//{ region Gesture events
 		
 		private function onDragBegin(e:GWTouchEvent):void {
-			//
-			trace("On begin in scroll bar.");
+			
 			if (this.parent) {
 				var p:* = parent;
 				if (p.parent) {
@@ -453,7 +452,7 @@ package com.gestureworks.cml.element
 		
 		private function onRailTouch(e:GWTouchEvent):void 
 		{
-			trace("On rail touch in scroll bar.");
+			
 			switch(_orientation) {
 				case "vertical":
 					if (e.localY > thumb.y) {
@@ -540,7 +539,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onTap1(e:GWGestureEvent):void {
-			trace("On tap 1 in scroll bar.");
+			
 			switch(_orientation) {
 				case "vertical":
 					thumb.y -= movementRail * 0.1;
@@ -560,7 +559,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onTap2(e:GWGestureEvent):void {
-			trace("On tap 2 in scroll bar.");
+			
 			// Check the orientation, and add a set amount of movement in that direction.
 			switch(_orientation) {
 				case "vertical":
@@ -588,7 +587,7 @@ package com.gestureworks.cml.element
 		
 		public function onDrag(e:GWGestureEvent):void {		
 			e.stopImmediatePropagation();
-			trace("On drag in scroll bar.", e.target, e.value.localX, e.value.localY);
+			
 			if(_orientation == "vertical") {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				//newPos = _content.y;
@@ -666,7 +665,7 @@ package com.gestureworks.cml.element
 			oldX = 0;
 			oldY = 0;
 			//newPos = 0;
-						trace("On complete in scroll bar.");
+			
 			if (this.parent) {
 				var p:* = parent;
 				if ("disableNativeTransform" in p) {
