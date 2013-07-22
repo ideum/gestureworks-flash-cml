@@ -365,9 +365,10 @@ package com.gestureworks.cml.components
 				}				
 			//}				
 			
+			var i:int;
 			if (textFields && autoTextLayout)
 			{
-				for (var i:int = 0; i < textFields.length; i++) {
+				for (i=0; i < textFields.length; i++) {
 					for (var n:int = 0; n < textFields.length; n++) {
 						if (n == i) continue;
 						else if (textFields[i].name == textFields[n].name) {
@@ -378,7 +379,7 @@ package com.gestureworks.cml.components
 					}
 				}
 				
-				for (var i:int = 0; i < textFields.length; i++) 
+				for (i=0; i < textFields.length; i++) 
 				{					
 					textFields[i].x = textFields[i].paddingLeft;
 					Text(textFields[i]).fontSize = Text(textFields[i]).fontSize;
