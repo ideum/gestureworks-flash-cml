@@ -1,25 +1,15 @@
 package com.gestureworks.cml.element
 {
-	import away3d.bounds.NullBounds;
-	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
-	import com.gestureworks.cml.utils.DisplayUtils;
-	import com.gestureworks.cml.utils.List;
-	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.core.TouchSprite;
-	import com.gestureworks.events.GWGestureEvent;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
+	import com.gestureworks.cml.utils.*;
+	import com.gestureworks.events.*;
 	import flash.events.TouchEvent;
-	import flash.geom.Point;
-	import flash.utils.Dictionary;
-	import com.gestureworks.cml.utils.CloneUtils;
 		
 	/**
 	 * The ScrollPane creates a masked viewing area of a display object and dynamically updates two scrollbars as that content is optionally dragged or scaled inside the viewing area.
@@ -50,8 +40,7 @@ package com.gestureworks.cml.element
 		
 		public function ScrollPane()
 		{
-			super();
-			
+			super();			
 			disableNativeTransform = true;
 		}	
 		
@@ -159,56 +148,10 @@ package com.gestureworks.cml.element
 		public function get content():* { return _content; }
 		
 		
-		/*override public function clone():*{
-			
-			var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask" ]
-			var clone:ScrollPane = CloneUtils.clone(this, null, v);
-			
-			CloneUtils.copyChildList(this, clone);	
-			
-			if (clone.parent)
-				clone.parent.addChild(clone);
-			else
-				this.parent.addChild(clone);
-			
-			this._content.mask = _mask;
-			
-			for (var i:Number = 0; i < clone.numChildren; i++) {
-				
-				if (clone.getChildAt(i).name == _verticalScroll.name) {
-					clone._verticalScroll = clone.getChildAt(i) as ScrollBar;
-					//clone._verticalScroll.loaded = true;
-					//clone._verticalScroll.init();
-				}
-				else if (clone.getChildAt(i).name == _horizontalScroll.name) {
-					clone._horizontalScroll = clone.getChildAt(i) as ScrollBar;
-					//clone._horizontalScroll.loaded = true;
-					//clone._horizontalScroll.init();
-				}
-				else if (clone.getChildAt(i).name == _mask.name) {
-					clone._mask = clone.getChildAt(i) as Graphic;
-				}
-				else if (clone.getChildAt(i).name == _content.name) {
-					clone._content = clone.getChildAt(i);
-					if (clone._mask && clone._content)
-						clone._content.mask = clone._mask;
-				}
-			}
-			
-			if (clone._mask && clone._content)
-				clone._content.mask = clone._mask;
-			
-			clone.init();
-			//clone.createEvents();
-			
-			return clone;
-		}*/
-		
 		override public function clone():*{
 			this.removeChild(_mask);
 			this.removeEvents();
 			var v:Vector.<String> = cloneExclusions;
-			//var v:Vector.<String> = new < String > ["childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content" ];
 			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
 			var clone:ScrollPane = CloneUtils.clone(this, null, v);
 			
@@ -252,7 +195,6 @@ package com.gestureworks.cml.element
 		}
 		
 		override public function init():void {
-
 			// Check the child list. 
 			// Iterate through each item, getting position, width, and height.
 			// Check if total items width are larger than the container.
@@ -352,7 +294,6 @@ package com.gestureworks.cml.element
 				_mask.width = width;
 				_mask.height = height;
 				addChild(_mask);
-				//_content.mask = _mask;
 			}
 			_content.mask = _mask;
 			
@@ -400,6 +341,9 @@ package com.gestureworks.cml.element
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 		}
+		
+
+		
 		
 		public function removeEvents():void {
 			
@@ -487,19 +431,23 @@ package com.gestureworks.cml.element
 		public var invertDrag:Boolean = false;
 		
 		private function onDrag(e:GWGestureEvent):void {
-			//e.stopImmediatePropagation();
-			
+						
+			if (_verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+				_verticalScroll.onDrag(e);
+				return;
+			}
+		
+				
 			if (this.parent) {
 				if ("clusterBubbling" in parent) {
 					if (parent["clusterBubbling"] == true) {
 						return;
 					}
 				}
-				
 			}
-			trace("E.target in !scrollOnPane:", e.target);
+			
+			
 			if (!scrollOnPane) {
-				
 				if (this.parent) {
 					passTouchUp();
 					return;
@@ -518,7 +466,7 @@ package com.gestureworks.cml.element
 						
 			var newPos:Number;
 			
-			if (_vertical) {
+			if (_verticalScroll) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newPos = _content.y;
 				
@@ -528,9 +476,9 @@ package com.gestureworks.cml.element
 				}
 				else if (oldY) {
 					if (!invertDrag)
-						newPos += e.value.localY - oldY;
-					else
 						newPos -= e.value.localY - oldY;
+					else
+						newPos += e.value.localY - oldY;
 					oldY = e.value.localY;
 				}
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -547,7 +495,7 @@ package com.gestureworks.cml.element
 				_verticalScroll.thumbPosition = -newPos / _verticalMovement;
 			}
 			
-			if (_horizontal) {
+			if (0) {
 				
 				newPos = _content.x;
 				
