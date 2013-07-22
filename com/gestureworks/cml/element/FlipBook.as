@@ -42,7 +42,7 @@ package com.gestureworks.cml.element
 		private var idToTrack:int = 0;
 		private var pageToTurn:int = 0;
 		
-		private var pageContent:Array = new Array();
+		protected var pageContent:Array = new Array();
 		private var shadows:Array = new Array();
 		private var pageCorners:Array = new Array();
 		
@@ -223,6 +223,7 @@ package com.gestureworks.cml.element
 				// make sure to position it to the right so it's the "right" page.
 				if ( !(i % 2)) {
 					addChild(pageContent[i]);
+					//trace("Actually, odd numbered content.");
 					pageContent[i].x = _pw;
 					pageShadow.graphics.beginGradientFill(GradientType.LINEAR, new Array(0x000000, 0x000000), new Array(0.25, 0), new Array(0, 255), m);
 					pageShadow.graphics.drawRect(0, 0, 100, _ph);
@@ -265,7 +266,6 @@ package com.gestureworks.cml.element
 			for (var j:Number = 0; j < pageContent.length; j++) {
 				if (j % 2) {
 					addChild(pageContent[j]);
-					//pageContent[j].addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 				}
 			}
 			
@@ -296,8 +296,6 @@ package com.gestureworks.cml.element
 			R_MIDDLE = new Point((_pw * 2) - (_pw * (_hitAreaSize/2)), (_ph - (R_UPPERCORNER.y * 2)) / 2 + R_UPPERCORNER.y)
 			// No need to define the middle further, I suppose. ^This is the center point between upper and lower.
 			
-			//addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin, false);
-			
 			addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 			//addEventListener(StateEvent.CHANGE, onStateEvent);
 			
@@ -307,7 +305,6 @@ package com.gestureworks.cml.element
 		{
 			var sprite:Sprite = new Sprite();
 			var base:Number = _pw * _hitAreaSize;
-			//var height:Number = _ph * 0.2;
 			
 			sprite.graphics.lineStyle(1, _indicatorColor, 1);
 			sprite.graphics.beginFill(_indicatorColor, 1);
@@ -337,7 +334,6 @@ package com.gestureworks.cml.element
 		{
 			var sprite:Sprite = new Sprite();
 			var base:Number = _pw * _hitAreaSize;
-			//var height:Number = _ph * 0.2;
 			
 			sprite.graphics.lineStyle(1, _indicatorColor, 1);
 			sprite.graphics.beginFill(_indicatorColor, 1);
@@ -366,6 +362,7 @@ package com.gestureworks.cml.element
 		//} endregion
 		
 		private function onStateEvent(e:StateEvent):void {
+			//trace("E.value:", e.value);
 		}
 		
 		//{ region TouchEvent begin
@@ -373,7 +370,9 @@ package com.gestureworks.cml.element
 		private function onBegin(e:*):void {
 			
 			if (tweening || isPageDragging) return;
-						
+			
+			//trace("onBegin:", e.target);
+			
 			// This is to allow button and other events to occur. When the page is not being turned, this is true so 
 			// child items that have touch can be accessed, like buttons.
 			this.touchChildren = false;
@@ -409,14 +408,7 @@ package com.gestureworks.cml.element
 				trackPoint.x -= _pw;
 				
 				// Dump unnecessary listeners.
-				if (hasEventListener(GWGestureEvent.SCALE))
-					removeEventListener(GWGestureEvent.SCALE, onRegularScale);
-				if (hasEventListener(GWGestureEvent.DRAG))
-					removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
-				if (hasEventListener(GWGestureEvent.ROTATE))
-					removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
-				if (hasEventListener(GWGestureEvent.COMPLETE))
-					removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete)
+				clearStandardEvents();
 			}
 			else {
 				
@@ -505,14 +497,16 @@ package com.gestureworks.cml.element
 		{
 			if (trackPoint.x < _pw * 2 && trackPoint.x > R_UPPERCORNER.x && _currentPage + 1 < pageContent.length) {
 				if (trackPoint.y < R_UPPERCORNER.y && trackPoint.y > -1) {
+					//trace("I've found the upper RIGHT corner!");
 					currentCorner = new Point(1, 0);
 					forward = true;
 				}
 				else if (trackPoint.y < _ph && trackPoint.y > R_LOWERCORNER.y) {
+					//trace("I've found the lower RIGHT corner!");
 					currentCorner = new Point(1, 1);
 					forward = true;
 				}
-				
+				// How to find middle - Keep in, this will be useful once we're ready to use the middle as a hit area.
 				/*else if (trackPoint.x < _pw * 2 && trackPoint.x > R_MIDDLE.x) {
 					if (trackPoint.y < R_MIDDLE.y) {
 						trace("Found upper middle.");
@@ -528,14 +522,16 @@ package com.gestureworks.cml.element
 			}
 			else if (OPEN && trackPoint.x < L_UPPERCORNER.x && trackPoint.x > 0) {
 				if (trackPoint.y < L_UPPERCORNER.y && trackPoint.y > -1) {
+					//trace("I've found the upper LEFT corner!");
 					currentCorner = new Point(1, 0);
 					forward = false;
 				}
 				else if (trackPoint.y < _ph && trackPoint.y > L_LOWERCORNER.y) {
+					//trace("I've found the lower LEFT corner!");
 					currentCorner = new Point(1, 1);
 					forward = false;
 				}
-				
+				// How to find middle - Keep in, this will be useful once we're ready to use the middle as a hit area.
 				/*else if (trackPoint.x < L_MIDDLE.x && trackPoint.x > 0) {
 					if (trackPoint.y < L_MIDDLE.y) {
 						trace("Found upper LEFT middle.");
@@ -558,7 +554,7 @@ package com.gestureworks.cml.element
 		
 		//{ region standard transformations 
 		
-		private function onRegularComplete(e:GWGestureEvent):void 
+		protected function onRegularComplete(e:GWGestureEvent):void 
 		{
 			touchChildren = true;
 			
@@ -586,6 +582,7 @@ package com.gestureworks.cml.element
 		protected function onRegularDrag(e:GWGestureEvent):void 
 		{
 			touchChildren = false;
+			//trace("On regular drag.", e.target);
 			if (_transformParent && this.parent){
 				this.parent.x += e.value.drag_dx;
 				this.parent.y += e.value.drag_dy;
@@ -595,6 +592,7 @@ package com.gestureworks.cml.element
 		protected function onRegularScale(e:GWGestureEvent):void 
 		{
 			touchChildren = false;
+			//trace("On regular scale", e.target);
 			if (_transformParent && this.parent) {
 				DisplayUtils.scaleFromPoint(this.parent, e.value.scale_dsx, e.value.scale_dsy, e.value.stageX, e.value.stageY);
 			}
@@ -605,7 +603,10 @@ package com.gestureworks.cml.element
 		
 		
 		private function onPointMove(e:GWGestureEvent):void {
+			//removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
+			clearStandardEvents();
 			isPageDragging = true;
+			//trace("Page is dragging.");
 			
 			shape.graphics.clear();
 			setChildIndex(shape, numChildren - 1);
@@ -613,6 +614,7 @@ package com.gestureworks.cml.element
 			// Make current page invisible somehow.
 			if (forward) {
 				pageContent[pageToTurn].visible = false;
+				//trace("Removing page visibility.");
 				//shadows[_currentPage].visible = false;
 			}
 			else {
@@ -666,7 +668,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onTouchEnd(e:*):void {
-			
+			//addEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
 			removeEventListener(GWGestureEvent.DRAG, onPointMove);
 			removeEventListener(GWGestureEvent.COMPLETE, onTouchEnd);
 			
@@ -686,7 +688,7 @@ package com.gestureworks.cml.element
 			if (trackPoint.x < 0) {
 				duration = (trackPoint.x + _pw) / _pw * 0.5;
 				OPEN = true;
-				//TweenMax.to(trackPoint, duration, { x: -_pw, y:currentCorner.y * _ph, onUpdate:tweenUpdate, onComplete:updatePages(true) } );
+				
 				TweenMax.to(trackPoint, duration, { x: -_pw, y:currentCorner.y * _ph, onUpdate:tweenUpdate } );
 			}
 			else {
@@ -694,8 +696,8 @@ package com.gestureworks.cml.element
 				duration = (duration / _pw) * 0.5;
 				if (_currentPage == 0)
 					OPEN = false;
-				//TweenMax.to(trackPoint, duration, { x: _pw, y:currentCorner.y * _ph, onUpdate:tweenUpdate, onComplete:updatePages(false) } );
-				TweenMax.to(trackPoint, duration, { x: _pw, y:currentCorner.y * _ph, onUpdate:tweenUpdate } );
+				
+					TweenMax.to(trackPoint, duration, { x: _pw, y:currentCorner.y * _ph, onUpdate:tweenUpdate } );
 			}
 		}
 		
@@ -750,7 +752,7 @@ package com.gestureworks.cml.element
 			m.createGradientBox(100, _ph);
 		
 			m.rotate(tan);
-			//var sPoint:Point = new Point(lastX, 0);
+			
 			sPoint = flipPoint(shape, sPoint.x, sPoint.y, this);
 			m.tx = sPoint.x;
 			m.ty = sPoint.y;
@@ -828,12 +830,12 @@ package com.gestureworks.cml.element
 			
 			// Flip this back so users can access nested items such as buttons.
 			this.touchChildren = true;
-			
+			//trace("Forward:", forward, "& complete:", complete);
 			if (forward && complete) {
 				pageContent[_currentPage + 1].visible = true;
 				shadows[_currentPage + 1].visible = true;
 				_currentPage += 2;
-				//setChildIndex(shape, getChildIndex(pageContent[_currentPage]) - 1);
+				
 				setChildIndex(shape, 0);
 			}
 			else if (!forward && complete) {
@@ -860,6 +862,7 @@ package com.gestureworks.cml.element
 				OPEN = false;
 			}
 			
+			//trace("Current page.", _currentPage);
 			currentCorner = null;
 			tweening = false;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "complete"));
@@ -913,6 +916,19 @@ package com.gestureworks.cml.element
 			}
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "reset"));
+		}
+		
+		
+		private function clearStandardEvents():void 
+		{
+			if (hasEventListener(GWGestureEvent.SCALE))
+				removeEventListener(GWGestureEvent.SCALE, onRegularScale);
+			if (hasEventListener(GWGestureEvent.DRAG))
+				removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
+			if (hasEventListener(GWGestureEvent.ROTATE))
+				removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
+			if (hasEventListener(GWGestureEvent.COMPLETE))
+				removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
 		}
 		
 		override public function dispose():void {
