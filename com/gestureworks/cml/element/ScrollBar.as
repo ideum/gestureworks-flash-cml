@@ -565,7 +565,7 @@ package com.gestureworks.cml.element
 		public var invertDrag:Boolean = false;
 		private var newPos:Number = 0;
 		
-		private function onDrag(e:GWGestureEvent):void {		
+		public function onDrag(e:GWGestureEvent):void {		
 			e.stopImmediatePropagation();
 			
 			if(_orientation == "vertical") {
