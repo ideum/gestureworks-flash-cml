@@ -77,7 +77,11 @@ package com.gestureworks.cml.element
 					thumb.x = movementRail * value;
 			}
 			clampThumb();
+			newXPos = thumb.x;
+			newYPos = thumb.y;
 		}
+		
+		//{ region Properties
 		
 		private var _width:Number = 0;
 		override public function get width():Number { return _width; }
@@ -239,6 +243,8 @@ package com.gestureworks.cml.element
 		public function set thumbMin(value:Number):void {
 			_thumbMin = value;
 		}
+		
+		//} endregion
 		
 		/**
 		 * CML display callback Initialisation
@@ -428,8 +434,11 @@ package com.gestureworks.cml.element
 			railTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onRailTouch);
 		}
 		
+		//{ region Gesture events
+		
 		private function onDragBegin(e:GWTouchEvent):void {
 			//
+			trace("On begin in scroll bar.");
 			if (this.parent) {
 				var p:* = parent;
 				if (p.parent) {
@@ -444,6 +453,7 @@ package com.gestureworks.cml.element
 		
 		private function onRailTouch(e:GWTouchEvent):void 
 		{
+			trace("On rail touch in scroll bar.");
 			switch(_orientation) {
 				case "vertical":
 					if (e.localY > thumb.y) {
@@ -482,6 +492,8 @@ package com.gestureworks.cml.element
 								scrollPosition = thumb.y / movementRail;
 						}
 					}
+					
+					newYPos = thumb.y;
 					break;
 					
 				case "horizontal":
@@ -521,29 +533,34 @@ package com.gestureworks.cml.element
 								scrollPosition = thumb.x / movementRail;
 						}
 					}
+					
+					newXPos = thumb.x;
 					break;
 			}
 		}
 		
 		private function onTap1(e:GWGestureEvent):void {
+			trace("On tap 1 in scroll bar.");
 			switch(_orientation) {
 				case "vertical":
 					thumb.y -= movementRail * 0.1;
 					clampThumb();
 					// Dispatch position event.
 					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+					newYPos = thumb.y;
 					break;
 				case "horizontal":
 					thumb.x -= movementRail * 0.1;
 					clampThumb();
 					// Dispatch position event.
 					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+					newXPos = thumb.x;
 					break;
 			}
 		}
 		
 		private function onTap2(e:GWGestureEvent):void {
-			
+			trace("On tap 2 in scroll bar.");
 			// Check the orientation, and add a set amount of movement in that direction.
 			switch(_orientation) {
 				case "vertical":
@@ -551,6 +568,7 @@ package com.gestureworks.cml.element
 					clampThumb();
 					// Dispatch position event.
 					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+					newYPos = thumb.y;
 					break;
 				case "horizontal":
 					thumb.x += movementRail * 0.1;
@@ -558,16 +576,19 @@ package com.gestureworks.cml.element
 					clampThumb();
 					// Dispatch position event.
 					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
+					newXPos = thumb.x;
 					break;
 			}
 		}
 		
 		public var invertDrag:Boolean = false;
 		private var newPos:Number = 0;
+		private var newXPos:Number = 0;
+		private var newYPos:Number = 0;
 		
 		public function onDrag(e:GWGestureEvent):void {		
 			e.stopImmediatePropagation();
-			
+			trace("On drag in scroll bar.", e.target, e.value.localX, e.value.localY);
 			if(_orientation == "vertical") {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				//newPos = _content.y;
@@ -577,13 +598,11 @@ package com.gestureworks.cml.element
 				}
 				else if (oldY) {
 					if (!invertDrag)
-						newPos += e.value.localY - oldY;
+						newYPos += e.value.localY - oldY;
 					else
-						newPos -= e.value.localY - oldY;
+						newYPos -= e.value.localY - oldY;
 					oldY = e.value.localY;
 				}
-				
-				
 				
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 				// Get the localY of the previous gesture call
@@ -592,10 +611,10 @@ package com.gestureworks.cml.element
 				// Assign old localY to current localY.
 				// Now clamp and apply differential.
 				
-				newPos = clampPos(newPos, "vertical");
+				newYPos = clampPos(newYPos, "vertical");
 								
 				// Apply the new position.
-				thumb.y = newPos;
+				thumb.y = newYPos;
 				if (buttonVisible)
 					scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
 				else
@@ -612,9 +631,9 @@ package com.gestureworks.cml.element
 				}
 				else if (oldX) {
 					if (invertDrag)
-						newPos -= e.value.localX  - oldX;
+						newXPos -= e.value.localX  - oldX;
 					else
-						newPos += e.value.localX - oldX;
+						newXPos += e.value.localX - oldX;
 						
 					oldX = e.value.localX;
 				}
@@ -626,11 +645,11 @@ package com.gestureworks.cml.element
 				// Assign old localX to current localX.
 				// Now clamp and apply differential.
 				
-				newPos = clampPos(newPos, "horizontal");
+				newXPos = clampPos(newXPos, "horizontal");
 				
 				
 				// Apply the new position.
-				thumb.x = newPos;
+				thumb.x = newXPos;
 				if (buttonVisible)
 					scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
 				else
@@ -646,7 +665,8 @@ package com.gestureworks.cml.element
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
-						
+			//newPos = 0;
+						trace("On complete in scroll bar.");
 			if (this.parent) {
 				var p:* = parent;
 				if ("disableNativeTransform" in p) {
@@ -669,6 +689,10 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		//} endregion
+		
+		
+		//{ region Utility
 		
 		private function clampPos(pos:Number, direction:String):Number {			
 			if (direction == "vertical"){
@@ -708,6 +732,11 @@ package com.gestureworks.cml.element
 					thumb.x = railGraphic.x + railGraphic.width - thumb.width;
 			}
 		}
+		
+		//} endregion
+		
+		
+		//{ region resizing
 		
 		private function resizeGraphics():void {
 			
@@ -781,6 +810,8 @@ package com.gestureworks.cml.element
 				//thumb.x = railGraphic.x;
 			}
 		}
+		
+		//} endregion
 		
 		override public function clone():*{
 			//clone.displayComplete();

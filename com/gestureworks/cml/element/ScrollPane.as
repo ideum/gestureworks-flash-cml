@@ -423,17 +423,16 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function onManipulate(e:GWGestureEvent):void {
-			//onDrag(e);
-			//onScale(e);
-		}
-		
 		public var invertDrag:Boolean = false;
 		
 		private function onDrag(e:GWGestureEvent):void {
 						
-			if (_verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+			if (_verticalScroll && _verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
 				_verticalScroll.onDrag(e);
+				return;
+			}
+			else if (_horizontalScroll && _horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+				_horizontalScroll.onDrag(e);
 				return;
 			}
 		
@@ -464,11 +463,14 @@ package com.gestureworks.cml.element
 				TouchContainer(parent).y += e.value.drag_dy;
 			}
 						
-			var newPos:Number;
+			//var newPos:Number;
+			
+			var newXPos:Number;
+			var newYPos:Number;
 			
 			if (_verticalScroll) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
-				newPos = _content.y;
+				newYPos = _content.y;
 				
 				if (!oldY) {
 					oldY = e.value.localY;
@@ -476,9 +478,9 @@ package com.gestureworks.cml.element
 				}
 				else if (oldY) {
 					if (!invertDrag)
-						newPos -= e.value.localY - oldY;
+						newYPos -= e.value.localY - oldY;
 					else
-						newPos += e.value.localY - oldY;
+						newYPos += e.value.localY - oldY;
 					oldY = e.value.localY;
 				}
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -488,16 +490,16 @@ package com.gestureworks.cml.element
 				// Assign old localY to current localY.
 				// Now clamp and apply differential.
 				
-				newPos = clampPos(newPos, "vertical");
+				newYPos = clampPos(newYPos, "vertical");
 				
 				// Apply the new position.
-				_content.y = newPos;
-				_verticalScroll.thumbPosition = -newPos / _verticalMovement;
+				_content.y = newYPos;
+				_verticalScroll.thumbPosition = -newYPos / _verticalMovement;
 			}
 			
-			if (0) {
+			if (_horizontalScroll) {
 				
-				newPos = _content.x;
+				newXPos = _content.x;
 				
 				if (!oldX) {
 					oldX = e.value.localX;
@@ -505,9 +507,9 @@ package com.gestureworks.cml.element
 				}
 				else if (oldX) {
 					if (!invertDrag)
-						newPos -= e.value.localX  - oldX;
+						newXPos -= e.value.localX  - oldX;
 					else
-						newPos += e.value.localX - oldX;
+						newXPos += e.value.localX - oldX;
 						
 					oldX = e.value.localX;
 				}
@@ -519,12 +521,12 @@ package com.gestureworks.cml.element
 				// Assign old localX to current localX.
 				// Now clamp and apply differential.
 				
-				newPos = clampPos(newPos, "horizontal");
+				newXPos = clampPos(newXPos, "horizontal");
 				
 				
 				// Apply the new position.
-				_content.x = newPos;
-				_horizontalScroll.thumbPosition = -newPos / _horizontalMovement;
+				_content.x = newXPos;
+				_horizontalScroll.thumbPosition = -newXPos / _horizontalMovement;
 			}
 		}
 		
