@@ -18,7 +18,7 @@ package com.gestureworks.cml.element
 	 */
 	public class Hotspot extends Container
 	{
-		private var tetherSprite:Sprite;
+		protected var tetherSprite:Sprite;
 		
 		/**
 		 * Constructor
@@ -144,7 +144,7 @@ package com.gestureworks.cml.element
 			}
 		}
 	
-		private function onHotspot(e:StateEvent):void {
+		protected function onHotspot(e:StateEvent):void {
 			if (_component) {
 				
 				if (compResetOnOpen) {
@@ -219,7 +219,7 @@ package com.gestureworks.cml.element
 		
 		
 		
-		private function onEnterFrame(e:Event):void {
+		protected function onEnterFrame(e:Event):void {
 			if (!_tether || !_component) return;
 			
 			if (!tetherSprite) {
@@ -235,7 +235,7 @@ package com.gestureworks.cml.element
 				var point:Point = globalToLocal(new Point(_component.x, _component.y));
 				tetherSprite.graphics.lineTo(point.x, point.y);
 			}
-			//addChild(tether);			
+			
 		}
 		
 		override public function dispose():void {
