@@ -304,6 +304,8 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded"));
 		}
 		
+		//{ region graphic creation
+		
 		private function createVertical():void {
 			_verticalScroll = new ScrollBar();
 			_verticalScroll.height = _horizontalScroll.width;
@@ -322,6 +324,11 @@ package com.gestureworks.cml.element
 			if (_verticalScroll.thumbFill)
 				_horizontalScroll.thumbFill = _verticalScroll.thumbFill;
 		}
+		
+		//} endregion
+		
+		
+		//{ region event addition and removal
 		
 		public function createEvents():void {
 			
@@ -342,9 +349,6 @@ package com.gestureworks.cml.element
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 		}
 		
-
-		
-		
 		public function removeEvents():void {
 			
 			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
@@ -355,6 +359,8 @@ package com.gestureworks.cml.element
 			this._verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 			this._horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 		}
+		
+		//} endregion
 		
 		public function updateLayout(inWidth:Number, inHeight:Number):void {
 			
@@ -427,12 +433,14 @@ package com.gestureworks.cml.element
 		
 		private function onDrag(e:GWGestureEvent):void {
 						
-			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
-				_verticalScroll.onDrag(e);
+			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+				if (_verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
+					_verticalScroll.onDrag(e);
 				return;
 			}
 			else if (_horizontalScroll && contains(_horizontalScroll) && _horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
-				_horizontalScroll.onDrag(e);
+				if (_horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
+					_horizontalScroll.onDrag(e);
 				return;
 			}
 		
