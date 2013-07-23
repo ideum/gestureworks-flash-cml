@@ -42,7 +42,7 @@
 	 * @see Button
 	 * @see DropDownMenu
 	 */
-	public class RadioButtons extends Container 	 
+	public class RadioButtons extends TouchContainer 	 
 	{		
 		private var selected:Sprite;
 		//private var selected:Graphic;
@@ -63,6 +63,8 @@
 				_labels = labels;
 				init();
 			}
+			
+			mouseChildren = true;
 		}   
 		
 		public var absOffset:Boolean = false;
@@ -737,9 +739,7 @@
 			 selected = null;
 			_textElements = null;
 			_radioButtons = null;
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, buttonSelected);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
+			removeEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
 			
 		}
 	}
