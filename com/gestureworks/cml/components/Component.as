@@ -10,6 +10,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.plugins.GlowFilterPlugin;
 	import com.greensock.plugins.TweenPlugin;
 	import com.greensock.TweenLite;
@@ -347,23 +348,9 @@ package com.gestureworks.cml.components
 				menu.updateLayout(width, height);	
 			}
 			
-			//if ( timeout || (menu && menu.autoHide) ) {
-				if (GestureWorks.activeTUIO){
-					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);
-					this.addEventListener(TuioTouchEvent.TOUCH_UP, onUp);
-					this.addEventListener(TuioTouchEvent.TOUCH_OUT, onUp);
-				}
-				else if	(GestureWorks.activeNativeTouch){
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-					this.addEventListener(TouchEvent.TOUCH_END, onUp);
-					this.addEventListener(TouchEvent.TOUCH_OUT, onUp);
-					}
-				else{	
-					this.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-					this.addEventListener(MouseEvent.MOUSE_UP, onUp);
-					this.addEventListener(MouseEvent.MOUSE_OUT, onUp);
-				}				
-			//}				
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, onDown);
+			addEventListener(GWTouchEvent.TOUCH_END, onUp);
+			addEventListener(GWTouchEvent.TOUCH_OUT, onUp);
 			
 			var i:int;
 			if (textFields && autoTextLayout)
