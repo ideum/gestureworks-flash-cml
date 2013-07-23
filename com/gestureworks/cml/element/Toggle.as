@@ -42,7 +42,7 @@ package com.gestureworks.cml.element
 	 *
 	 * </codeblock>
 	 */
-	public class Toggle extends ElementFactory
+	public class Toggle extends TouchContainer
 	{
 		
 		/**
