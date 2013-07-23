@@ -77,12 +77,7 @@
 			
 			draw();
 			
-			if (GestureWorks.activeTUIO) 
-				this.addEventListener(TuioTouchEvent.TOUCH_DOWN, buttonSelected);
-			else if (GestureWorks.activeNativeTouch) 
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
-			else 
-				this.addEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
 			
 			if (_graphicsArray && _graphicsArray.length > 0) {
 				_selectedLabel = _graphicsArray[0].name;
