@@ -266,9 +266,7 @@ package com.gestureworks.cml.element
 			super.dispose();
 			background = null;
             toggleGraphic = null;
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchBegin);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onTouchBegin);
+			this.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onTouchBegin);
 		}
 	
 	}
