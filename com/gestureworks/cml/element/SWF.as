@@ -28,7 +28,14 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		override public function init():void {}
+		override public function init():void 
+		{
+			var colorTransform:ColorTransform = new ColorTransform();
+			colorTransform.color = _color;
+			if (asset)
+				asset.transform.colorTransform = colorTransform;
+			colorTransform = null;
+		}
 		
 		
 		private var _src:String = "";
@@ -82,6 +89,7 @@ package com.gestureworks.cml.element
 				asset.transform.colorTransform = colorTransform;
 			colorTransform = null;
 		}
+		
 		
 		/**
 		 * Dispose method
