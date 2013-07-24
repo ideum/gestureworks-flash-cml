@@ -317,9 +317,10 @@ package com.gestureworks.cml.factories
 
 			if (width && height)
 			{
-				if ((width != fileData.width) && (height != fileData.height))
-				{
+				if (width != fileData.width) {
 					percentX = width / fileData.width;
+				}
+				if (height != fileData.height) {
 					percentY = height / fileData.height;
 				}
 			}
