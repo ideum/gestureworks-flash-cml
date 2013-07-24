@@ -14,15 +14,15 @@ package com.gestureworks.cml.kits
 	import com.greensock.easing.*;
 	
 	/**
-	 * The BackgroundKit resizes its children to the center of the stage.
+	 * The AttractKit creates an attract screen that is removed during touch and displayed after a timout period.
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 
-		var bg:BackgroundKit = new BackgroundKit;
-		bg.addChild(img1);
-		bg.addChild(img2);
-		bg.init();
-		bg.addChild();
+		var a:AttractKit = new AttractKit;
+		a.addChild(img1);
+		a.addChild(img2);
+		a.init();
+		a.addChild();
 		
 	 * </codeblock>
 	 * 
@@ -99,6 +99,17 @@ package com.gestureworks.cml.kits
 				onTimer();
 		}		
 
+		
+		private var _center:Boolean = true;
+		/**
+		 * Sets whether or not to center chidren
+		 */
+		public function get center():Boolean { return _center; }
+		public function set center(value:Boolean):void {
+			_center = value;
+		}
+		
+		
 		/**
 		 * CML callback initialisation
 		 */
@@ -117,7 +128,7 @@ package com.gestureworks.cml.kits
 			
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, onAttractTouch);
 			
-			updateLayout();
+			if (center) updateLayout();
 			
 			timer = new Timer(timeout);
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
@@ -153,8 +164,6 @@ package com.gestureworks.cml.kits
 		}
 		
 		private function onAttractTouch(e:GWTouchEvent):void {
-			// Do stuff here.
-			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onAttractTouch);
 			
 			for (var i:Number = 0; i < numChildren; i++) {
 				if ("stop" in getChildAt(i)) {
@@ -184,7 +193,6 @@ package com.gestureworks.cml.kits
 		
 		
 		private function visFunction():void { 
-			//parent.setChildIndex(this, 0);
 			visible = false; 
 		}
 		
@@ -218,7 +226,6 @@ package com.gestureworks.cml.kits
 			parent.setChildIndex(this, parent.numChildren - 1);
 		
 			_attractState = true;	
-			addEventListener(GWTouchEvent.TOUCH_BEGIN, onAttractTouch);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
 		}
 		
