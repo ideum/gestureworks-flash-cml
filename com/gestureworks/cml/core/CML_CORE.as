@@ -1,5 +1,6 @@
 package com.gestureworks.cml.core 
 {
+	import com.gestureworks.cml.managers.FontManager;
 	/** 
 	 * The CML_CORE class is the registry file for classes that are capable of
 	 * being load by the CML Parser.
@@ -36,7 +37,10 @@ package com.gestureworks.cml.core
 			"com.gestureworks.cml.kits.",
 			"com.gestureworks.cml.layouts.",
 			"com.gestureworks.cml.menus."
-		]		
+		];
+		
+		// loads default open sans TLF fonts
+		public var fontManager:FontManager = new FontManager;
 	}
 	
 	

@@ -42,7 +42,7 @@
 	 * @see Button
 	 * @see DropDownMenu
 	 */
-	public class RadioButtons extends Container 	 
+	public class RadioButtons extends TouchContainer 	 
 	{		
 		private var selected:Sprite;
 		//private var selected:Graphic;
@@ -63,6 +63,8 @@
 				_labels = labels;
 				init();
 			}
+			
+			mouseChildren = true;
 		}   
 		
 		public var absOffset:Boolean = false;
@@ -77,12 +79,7 @@
 			
 			draw();
 			
-			if (GestureWorks.activeTUIO) 
-				this.addEventListener(TuioTouchEvent.TOUCH_DOWN, buttonSelected);
-			else if (GestureWorks.activeNativeTouch) 
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
-			else 
-				this.addEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
 			
 			if (_graphicsArray && _graphicsArray.length > 0) {
 				_selectedLabel = _graphicsArray[0].name;
@@ -742,9 +739,7 @@
 			 selected = null;
 			_textElements = null;
 			_radioButtons = null;
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, buttonSelected);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, buttonSelected);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, buttonSelected);
+			removeEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
 			
 		}
 	}

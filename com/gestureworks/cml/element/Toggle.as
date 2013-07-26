@@ -3,6 +3,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.core.GestureWorks;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
@@ -97,7 +98,21 @@ package com.gestureworks.cml.element
 		{
 			_backgroundLineAlpha = value;
 			draw();
-		}			
+		}
+		
+		private var _value:Boolean = false;
+		/**
+		 * Sets the current toggle state
+		 * @default false
+		 */		
+		public function get value():Boolean{return toggleGraphic.visible;}
+		public function set value(value:Boolean):void
+		{
+			_value = value;
+			toggleGraphic.visible = value;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", value));			
+		}
+	
 		
 		/**
 		 * Defines the square background
@@ -188,6 +203,8 @@ package com.gestureworks.cml.element
 			return _toggleColor;
 		}
 		
+		
+		
 		public function set toggleColor(value:uint):void
 		{
 						
@@ -201,7 +218,8 @@ package com.gestureworks.cml.element
 		override public function init():void
 		{
 			draw();
-		
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, onTouchBegin);
+			toggleGraphic.visible = _value;	
 		}
 		
 		/**
@@ -227,26 +245,17 @@ package com.gestureworks.cml.element
 			toggleGraphic.graphics.lineTo(_width, _height);
 			
 			toggleGraphic.visible = false
-			addChild(toggleGraphic);
-	
-			
-			if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchBegin);
-			else if (GestureWorks.activeNativeTouch)
-				this.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			else
-				this.addEventListener(MouseEvent.MOUSE_DOWN, onTouchBegin);
-		
+			addChild(toggleGraphic);		
 		}
 		
 		/**
 		 * Visibility of x graphic in background 
 		 */
 		
-		private function onTouchBegin(event:TouchEvent):void
+		private function onTouchBegin(event:GWTouchEvent):void
 		{
 			toggleGraphic.visible = !toggleGraphic.visible;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", toggleGraphic.visible));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", value));			
 		}
 		
 		/**
@@ -257,9 +266,7 @@ package com.gestureworks.cml.element
 			super.dispose();
 			background = null;
             toggleGraphic = null;
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onTouchBegin);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onTouchBegin);
+			this.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onTouchBegin);
 		}
 	
 	}
