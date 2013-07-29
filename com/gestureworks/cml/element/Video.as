@@ -43,6 +43,7 @@ package com.gestureworks.cml.element
 		public function Video()
 		{
 		  positionTimer = new Timer(20);
+		  mouseChildren = true;
 		}
 		
 		private var _debug:Boolean=false;

@@ -32,7 +32,7 @@ package com.gestureworks.cml.element
 	 *
 	 * </codeblock>
 	 */		
-	public class MP3 extends ElementFactory
+	public class MP3 extends TouchContainer
 	{
 		private var _mp3:MP3Factory = new MP3Factory();
 		/**
@@ -64,6 +64,7 @@ package com.gestureworks.cml.element
 		public function MP3()
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		private var _src:String;

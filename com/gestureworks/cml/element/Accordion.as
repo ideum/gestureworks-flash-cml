@@ -16,7 +16,7 @@ package com.gestureworks.cml.element
 	 * to create containers separated by tabs that can be tapped or dragged to be expanded or collapsed.
 	 * @author Ideum
 	 */
-	public class Accordion extends Container 
+	public class Accordion extends TouchContainer 
 	{
 		private var _selectedIndex:int = -1;
 		private var _backgroundColor:uint = 0x424141;
@@ -30,6 +30,7 @@ package com.gestureworks.cml.element
 		public function Accordion() 
 		{
 			super();
+			mouseChildren = true;
 			//width = 500;
 			//height = 375;	
 			//background = new Graphic();			

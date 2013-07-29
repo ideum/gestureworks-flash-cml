@@ -15,7 +15,7 @@ package com.gestureworks.cml.element
 	 * @see Slideshow
 	 */	
 	
-	public class ImageList extends ElementFactory
+	public class ImageList extends Element
 	{
 		private var image:Image;		
 		private var list:List;

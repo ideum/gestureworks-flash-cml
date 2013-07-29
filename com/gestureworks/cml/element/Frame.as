@@ -25,7 +25,7 @@ package com.gestureworks.cml.element
 	 *
 	 * @author Ideum
 	 */
-	public class Frame extends GraphicFactory
+	public class Frame extends Graphic
 	{
 		/**
 		 * Constructor

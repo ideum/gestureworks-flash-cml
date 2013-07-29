@@ -21,7 +21,7 @@ package com.gestureworks.cml.element
 	 * @see OrbMenu
 	 * @see DropDownMenu
 	 */
-	public class Menu extends Container 
+	public class Menu extends TouchContainer 
 	{
 		private var frameCount:int = 0;
 		public var buttonArray:Array = [];
@@ -35,6 +35,7 @@ package com.gestureworks.cml.element
 		public function Menu() 
 		{
 			super();
+			mouseChildren = true;
 		}
 
 		/**

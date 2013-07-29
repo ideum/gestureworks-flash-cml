@@ -30,7 +30,7 @@ package com.gestureworks.cml.element
 	 * @author Shaun
 	 * @see TabbedContainer
 	 */
-	public class Tab extends Container
+	public class Tab extends TouchContainer
 	{
 		private var _title:String = "";
 		private var _displayColor:uint = 0x000000;
@@ -63,6 +63,7 @@ package com.gestureworks.cml.element
 		public function Tab() 
 		{
 			super();
+			mouseChildren = true;
 			width = 462;
 			height = 423;
 

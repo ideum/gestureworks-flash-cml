@@ -36,7 +36,7 @@ package com.gestureworks.cml.element
 	 * @author Shaun
 	 * @see Key
 	 */
-	public class TouchKeyboard extends Container
+	public class TouchKeyboard extends TouchContainer
 	{	
 		private var _output:TextField;
 		private var _bkgPadding:Number;		
@@ -56,6 +56,7 @@ package com.gestureworks.cml.element
 		public function TouchKeyboard() 
 		{
 			super();
+			mouseChildren = true;
 			keys = new Dictionary();
 			keySpacing = 10;
 			bkgPadding = 50;

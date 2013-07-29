@@ -61,6 +61,7 @@ package com.gestureworks.cml.element
 		 */
 		public function DropDownMenu():void {
 			super();
+			mouseChildren = true;
 		}
 		
 		public function get open():Boolean { return _open; }

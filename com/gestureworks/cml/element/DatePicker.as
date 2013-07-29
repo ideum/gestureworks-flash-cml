@@ -36,8 +36,8 @@ package com.gestureworks.cml.element
 	 * @author Shaun
 	 * @see ColorPicker
 	 */
-	public class DatePicker extends ElementFactory{ 
-	
+	public class DatePicker extends TouchContainer
+	{ 
 		private var todayDate:Date = new Date();	// contains Date of Today
 		private var xDate:Date = new Date();		// contains currently selected date
 		private var monthArray:Array;		
@@ -59,6 +59,7 @@ package com.gestureworks.cml.element
 		 */				
 		public function DatePicker() {
 			super();
+			mouseChildren = true;
 			init();
 		}
 		

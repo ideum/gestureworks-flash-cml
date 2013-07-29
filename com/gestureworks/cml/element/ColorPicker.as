@@ -43,7 +43,7 @@ package com.gestureworks.cml.element
 	 * @author Shaun
 	 * @see DatePicker
 	 */
-	public class ColorPicker extends ElementFactory
+	public class ColorPicker extends TouchContainer
 	{
 		
 		/**
@@ -204,6 +204,7 @@ package com.gestureworks.cml.element
 		public function ColorPicker() 
 		{
 			super();
+			mouseChildren = true;
 			init();			
 		}
 		

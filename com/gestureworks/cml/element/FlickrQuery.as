@@ -23,7 +23,7 @@ package  com.gestureworks.cml.element
 	 * @author josh
 	 * @see YouTube
 	 */
-	public class FlickrQuery extends ElementFactory
+	public class FlickrQuery extends Element
 	{
 		private var service:FlickrService;
 		public var resultPhotos:Array;

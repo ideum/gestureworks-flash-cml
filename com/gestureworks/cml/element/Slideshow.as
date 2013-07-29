@@ -39,7 +39,7 @@ package com.gestureworks.cml.element
 	 * @author josh
 	 * @see Container
 	 */
-	public class Slideshow extends Container
+	public class Slideshow extends TouchContainer
 	{
 		private var slideshowItems:List;
 		private var tween:TweenLite;
@@ -56,6 +56,7 @@ package com.gestureworks.cml.element
 			super();
 			slideshowItems = new List();
 			timer = new Timer(1000);
+			mouseChildren = true;
 		}
 		
 		private var _fadeDuration:Number = 250;
