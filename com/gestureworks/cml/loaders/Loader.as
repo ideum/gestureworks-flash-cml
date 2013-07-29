@@ -1,4 +1,4 @@
-package com.gestureworks.cml.factories 
+package com.gestureworks.cml.loaders 
 {
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.managers.FileManager;
@@ -12,7 +12,7 @@ package com.gestureworks.cml.factories
 	 * 
 	 * @author Charles
 	 */
-	public class LoaderFactory extends EventDispatcher
+	public class Loader extends EventDispatcher
 	{
 		protected var urlRequest:URLRequest;
 		

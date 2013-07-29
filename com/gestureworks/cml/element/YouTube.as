@@ -31,7 +31,7 @@ package  com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class YouTube extends ElementFactory
+	public class YouTube extends TouchContainer
 	{
 		private const YTDOMAIN:String = "http://www.youtube.com";
 		private const YTAPI:String = "http://www.youtube.com/apiplayer?version=3";
@@ -50,7 +50,7 @@ package  com.gestureworks.cml.element
 		public function YouTube() 
 		{
 			super();
-			
+			mouseChildren = true;
 			Security.allowDomain(YTDOMAIN);
 		}
 		

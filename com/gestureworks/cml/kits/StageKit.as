@@ -23,6 +23,7 @@ package com.gestureworks.cml.kits
 		public function StageKit() 
 		{
 			super();
+			mouseChildren = true;			
 			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		

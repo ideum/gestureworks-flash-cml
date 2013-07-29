@@ -20,7 +20,7 @@ package com.gestureworks.cml.kits
 	 * @author Ideum
 	 * @see Container
 	 */
-	public class BackgroundKit extends Container
+	public class BackgroundKit extends TouchContainer
 	{
 		/**
 		 * Constructor
@@ -28,6 +28,7 @@ package com.gestureworks.cml.kits
 		public function BackgroundKit() 
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		/**

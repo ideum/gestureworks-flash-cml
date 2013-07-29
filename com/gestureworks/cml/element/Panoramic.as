@@ -117,7 +117,7 @@
 	 * @author Josh
 	 * @see Gigapixel
 	 */
-	public class Panoramic extends Container
+	public class Panoramic extends TouchContainer
 	{	
 		private var panoramicTouch:TouchContainer;
 		private var faceNum:int = 0;

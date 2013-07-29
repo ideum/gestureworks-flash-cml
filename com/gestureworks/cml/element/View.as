@@ -25,6 +25,7 @@ package com.gestureworks.cml.element
 		public function View() 
 		{
 			super();
+			mouseChildren = true
 			if (stage) addedToStage();
 			else addEventListener(Event.ADDED_TO_STAGE, addedToStage);				
 		}

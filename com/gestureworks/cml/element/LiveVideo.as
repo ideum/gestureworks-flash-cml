@@ -25,7 +25,7 @@ package com.gestureworks.cml.element
 	 * @author Uma and shaun
 	 */
 	
-	public class LiveVideo extends Container
+	public class LiveVideo extends TouchContainer
 	{
 	
 	/**
@@ -34,8 +34,7 @@ package com.gestureworks.cml.element
 		public function LiveVideo() 
 		{
 			video = new flash.media.Video();
-			//addChild(video);
-			//load();
+			mouseChildren = true;
 		}
 		
 		/**

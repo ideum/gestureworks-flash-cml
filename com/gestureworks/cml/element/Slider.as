@@ -20,7 +20,7 @@ package com.gestureworks.cml.element
 	 * @see ScrollBar
 	 */
 	
-	public class Slider extends Container 
+	public class Slider extends TouchContainer 
 	{
 		private var debug:Boolean = false;				
 		private var knobOffset:Number = 0;
@@ -35,7 +35,7 @@ package com.gestureworks.cml.element
 		public function Slider() 
 		{
 			super();
-			//touchKnob = new TouchSprite;
+			mouseChildren = true;
 		}	
 		
 		override public function set width(value:Number):void 

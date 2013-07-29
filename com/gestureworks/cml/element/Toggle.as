@@ -52,6 +52,7 @@ package com.gestureworks.cml.element
 		public function Toggle()
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		/**

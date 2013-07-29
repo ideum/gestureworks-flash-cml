@@ -10,82 +10,15 @@ package com.gestureworks.cml.element
 	
 
 	/**
-	 * Dispatched when a microphone reports its status.
-	 * @eventType	flash.events.StatusEvent.STATUS
-	 */
-	[Event(name="status", type="flash.events.StatusEvent")] 
-
-	/**
-	 * Dispatched when the microphone has sound data in the buffer.
-	 * @eventType	flash.events.SampleDataEvent.SAMPLE_DATA
-	 */
-	[Event(name="sampleData", type="flash.events.SampleDataEvent")] 
-
-	/**
-	 * Dispatched when a microphone starts or stops recording due to detected silence.
-	 * @eventType	flash.events.ActivityEvent.ACTIVITY
-	 */
-	[Event(name="activity", type="flash.events.ActivityEvent")] 
-
-	/**
-	 * Use the Microphone class to monitor or capture audio from a microphone.
-	 * 
-	 *   <p class="- topic/p ">
-	 * To get a reference to a Microphone instance, use the <codeph class="+ topic/ph pr-d/codeph ">Microphone.getMicrophone()</codeph> method 
-	 * or the <codeph class="+ topic/ph pr-d/codeph ">Microphone.getEnhancedMicrophone()</codeph> method. An enhanced microphone instance can 
-	 * perform acoustic echo cancellation. Use acoustic echo cancellation to create real-time audio/video applications
-	 * that don't require headsets. 
-	 * </p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Create a real-time chat application</b></p><p class="- topic/p ">To create a real-time chat application, capture audio and send it to Flash Media Server.
-	 * Use the NetConnection and NetStream classes to send the audio stream to Flash Media Server. 
-	 * Flash Media Server can broadcast the audio to other clients.
-	 * To create a chat application that doesn't require headsets, use acoustic echo
-	 * cancellation. Acoustic echo cancellation prevents the feedback loop that occurs when audio enters a microphone, 
-	 * travels out the speakers, and enters the microphone again. To use acoustic echo cancellation, call 
-	 * the <codeph class="+ topic/ph pr-d/codeph ">Microphone.getEnhancedMicrophone()</codeph> method to get a reference to a Microphone instance.
-	 * Set <codeph class="+ topic/ph pr-d/codeph ">Microphone.enhancedOptions</codeph> to an instance of the <codeph class="+ topic/ph pr-d/codeph ">MicrophoneEnhancedOptions</codeph> class to 
-	 * configure settings.</p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Play microphone audio locally</b></p><p class="- topic/p ">Call the Microphone <codeph class="+ topic/ph pr-d/codeph ">setLoopback()</codeph> method to route the microphone audio directly to
-	 * the local computer or device audio output. Uncontrolled audio feedback is an inherent danger and is likely
-	 * to occur whenever the audio output can be picked up by the microphone input. The 
-	 * <codeph class="+ topic/ph pr-d/codeph ">setUseEchoSuppression()</codeph> method can reduce, but not eliminate, the risk of feedback
-	 * amplification.</p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Capture microphone audio for local recording or processing</b></p><p class="- topic/p ">To capture microphone audio, listen for the <codeph class="+ topic/ph pr-d/codeph ">sampleData</codeph> events dispatched by a
-	 * Microphone instance. The SampleDataEvent object dispatched for this event contains the audio data.</p><p class="- topic/p ">For information about capturing video, see the Camera class.</p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Runtime microphone support</b></p><p class="- topic/p ">The Microphone class is not supported in Flash Player running in a mobile browser.</p><p class="- topic/p "><i class="+ topic/ph hi-d/i ">AIR profile support:</i> The Microphone class is supported 
-	 * on desktop operating systems, but it is not supported on all mobile devices.
-	 * It is not supported on AIR for TV devices.  See 
-	 * <xref href="http://help.adobe.com/en_US/air/build/WS144092a96ffef7cc16ddeea2126bb46b82f-8000.html" class="- topic/xref ">
-	 * AIR Profile Support</xref> for more information regarding API support across multiple profiles.</p><p class="- topic/p ">You can test for support at run time using the <codeph class="+ topic/ph pr-d/codeph ">Microphone.isSupported</codeph> property.
-	 * Note that for AIR for TV devices, <codeph class="+ topic/ph pr-d/codeph ">Microphone.isSupported</codeph> is <codeph class="+ topic/ph pr-d/codeph ">true</codeph> but
-	 * <codeph class="+ topic/ph pr-d/codeph ">Microphone.getMicrophone()</codeph> always returns <codeph class="+ topic/ph pr-d/codeph ">null</codeph>.</p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Privacy controls</b></p><p class="- topic/p ">
-	 * Flash Player displays a Privacy dialog
-	 * box that lets the user choose whether to allow or deny access to
-	 * the microphone. Your application window size must be at least 215 x 138
-	 * pixels, the minimum size required to display the dialog box, or access is denied automatically.
-	 * </p><p class="- topic/p ">Content running in the AIR application sandbox does not need permission to access the microphone
-	 * and no dialog is displayed. AIR content running outside the application sandbox does require permission
-	 * and the Privacy dialog is displayed.</p>
-	 * 
-	 *   EXAMPLE:
-	 * 
-	 *   The following example captures sound using echo suppression from a microphone after the 
-	 * user allows access to their computer's microphone. 
-	 * The <codeph class="+ topic/ph pr-d/codeph ">Security.showSettings()</codeph> method displays the Flash Player dialog box, which requests
-	 * permission to access the user's microphone. The call to <codeph class="+ topic/ph pr-d/codeph ">setLoopBack(true)</codeph> reroutes
-	 * input to the local speaker, so you can hear the sound while you run the example.
-	 * 
-	 *   <p class="- topic/p ">Two listeners listen for <codeph class="+ topic/ph pr-d/codeph ">activity</codeph> and 
-	 * <codeph class="+ topic/ph pr-d/codeph ">status</codeph> events.  The <codeph class="+ topic/ph pr-d/codeph ">activity</codeph> event is dispatched at the
-	 * start and end (if any) of the session and is captured by the <codeph class="+ topic/ph pr-d/codeph ">activityHandler()</codeph>
-	 * method, which traces information on the event.  The <codeph class="+ topic/ph pr-d/codeph ">status</codeph> event is dispatched if
-	 * the attached microphone object reports any status information; it is captured and traced using
-	 * the <codeph class="+ topic/ph pr-d/codeph ">statusHandler()</codeph> method.</p><p class="- topic/p "><b class="+ topic/ph hi-d/b ">Note:</b> A microphone must be attached to your computer for this example
-	 * to work correctly.</p><codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 * 
-	 *   package {
+	 *   
+	 * CML wrapper for AS3 micrphone class
+	 * package {
 	 * import flash.display.Sprite;
 	 * import flash.events.*;
 	 * import flash.media.Microphone;
 	 * import flash.system.Security;
 	 * 
-	 *   public class MicrophoneExample extends Sprite {
+	 * public class MicrophoneExample extends Sprite {
 	 * public function MicrophoneExample() {
 	 * var mic:Microphone = Microphone.getMicrophone();
 	 * Security.showSettings("2");

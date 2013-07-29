@@ -21,7 +21,7 @@ package com.gestureworks.cml.kits
 	 * @author Ideum
 	 * @see Container
 	 */
-	public class PreloaderKit extends Container
+	public class PreloaderKit extends TouchContainer
 	{
 		private var _filesToLoad:int = FileManager.fileCount;
 		private var _filesLoaded:int = 0;
@@ -33,6 +33,7 @@ package com.gestureworks.cml.kits
 		public function PreloaderKit() 
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		private var _currentNumberDisplay:*;

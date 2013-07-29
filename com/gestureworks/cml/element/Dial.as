@@ -148,7 +148,7 @@ package com.gestureworks.cml.element
 	 * @see OrbMenu
 	 */
 	   
-	public class Dial extends ElementFactory
+	public class Dial extends TouchContainer
 	{
 		private var touchSprite:TouchSprite;
 		private var textFieldArray:Array;		
@@ -166,6 +166,7 @@ package com.gestureworks.cml.element
 		public function Dial():void
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		/**

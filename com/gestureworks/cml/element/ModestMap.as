@@ -34,7 +34,7 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class ModestMap extends Container
+	public class ModestMap extends TouchContainer
 	{
 		private var map:TweenMap;
 		
@@ -63,6 +63,7 @@ package com.gestureworks.cml.element
 		{
 			super();
 			mapMarkers = new Array();
+			mouseChildren = true;
 		}
 		
 		private var _mapProvider:IMapProvider;
