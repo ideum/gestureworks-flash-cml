@@ -1,7 +1,6 @@
 package  com.gestureworks.cml.element
 {
 	import com.adobe.webapis.flickr.methodgroups.Photos;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.events.StateEvent;
 	import flash.display.Bitmap;
 	import flash.display.Loader;
@@ -23,7 +22,7 @@ package  com.gestureworks.cml.element
 	 * @author josh
 	 * @see YouTube
 	 */
-	public class FlickrQuery extends ElementFactory
+	public class FlickrQuery extends TouchContainer
 	{
 		private var service:FlickrService;
 		public var resultPhotos:Array;
@@ -36,7 +35,7 @@ package  com.gestureworks.cml.element
 		public function FlickrQuery() 
 		{
 			super();
-			
+			mouseChildren = true;
 			Security.loadPolicyFile("http://farm1.static.flickr.com/crossdomain.xml");
 			Security.loadPolicyFile("http://farm2.static.flickr.com/crossdomain.xml");
 			Security.loadPolicyFile("http://farm3.static.flickr.com/crossdomain.xml");

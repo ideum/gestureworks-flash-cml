@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.ElementFactory;
 	import flash.geom.ColorTransform;
 	import flash.utils.getDefinitionByName;
 	
@@ -20,7 +19,7 @@ package com.gestureworks.cml.element
 	 * @author Ideum
 	 * @see SWF
 	 */
-	public class SWC extends ElementFactory
+	public class SWC extends TouchContainer
 	{
 		private var asset:*;
 		private var _class:Class;
@@ -31,6 +30,7 @@ package com.gestureworks.cml.element
 		public function SWC()
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		/**

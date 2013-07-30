@@ -1,7 +1,5 @@
 package com.gestureworks.cml.element
-{
-	import com.gestureworks.cml.factories.ElementFactory;
-	
+{	
 	import flash.display.Sprite;
 	import flash.text.engine.*;
 	
@@ -35,7 +33,7 @@ package com.gestureworks.cml.element
 	 * @see flashx.textLayout.elements.TextFlow;
 	 */	
 	
-	public class TLF extends ElementFactory
+	public class TLF extends TouchContainer
 	{	
 		private var textFormat:TextLayoutFormat;
 		private var configuration:Configuration;
@@ -53,6 +51,7 @@ package com.gestureworks.cml.element
 			configuration = new Configuration;
 			configuration.textFlowInitialFormat = textFormat;
 			textFlow = new TextFlow;
+			mouseChildren = false;
 		}	
 		
 		/**

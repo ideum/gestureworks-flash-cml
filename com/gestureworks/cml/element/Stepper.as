@@ -97,7 +97,7 @@ package com.gestureworks.cml.element
 	 * @author Uma
 	 * @see Slider
 	 */
-	public class Stepper extends ElementFactory
+	public class Stepper extends TouchContainer
 	{
 		/**
 		 * Constructor
@@ -105,6 +105,7 @@ package com.gestureworks.cml.element
 		public function Stepper()
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		/**

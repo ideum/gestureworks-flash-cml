@@ -1,7 +1,6 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.Image;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.utils.List;
 	import flash.events.Event;
 	import com.gestureworks.cml.managers.FileManager;
@@ -15,7 +14,7 @@ package com.gestureworks.cml.element
 	 * @see Slideshow
 	 */	
 	
-	public class ImageList extends ElementFactory
+	public class ImageList extends TouchContainer
 	{
 		private var image:Image;		
 		private var list:List;
@@ -33,6 +32,7 @@ package com.gestureworks.cml.element
 		public function ImageList() 
 		{
 			list = new List;
+			mouseChildren = true;
 		}
 		
 		/**

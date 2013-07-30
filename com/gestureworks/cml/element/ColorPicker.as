@@ -2,7 +2,6 @@ package com.gestureworks.cml.element
 {
 	import com.codeazur.utils.HexUtils;
 	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.events.Event;
 	import flash.events.TouchEvent;
@@ -43,7 +42,7 @@ package com.gestureworks.cml.element
 	 * @author Shaun
 	 * @see DatePicker
 	 */
-	public class ColorPicker extends ElementFactory
+	public class ColorPicker extends TouchContainer
 	{
 		
 		/**
@@ -204,6 +203,7 @@ package com.gestureworks.cml.element
 		public function ColorPicker() 
 		{
 			super();
+			mouseChildren = true;
 			init();			
 		}
 		

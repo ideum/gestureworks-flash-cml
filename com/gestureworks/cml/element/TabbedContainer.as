@@ -47,7 +47,7 @@ package com.gestureworks.cml.element
 	 * @see Tab
 	 * @see Container
 	 */
-	public class TabbedContainer extends Container
+	public class TabbedContainer extends TouchContainer
 	{
 		private var _selectedIndex:int = -1;
 		private var _backgroundColor:uint = 0x424141;
@@ -56,6 +56,7 @@ package com.gestureworks.cml.element
 		
 		private var background:Graphic;
 		private var tabs:Array;	
+			
 		
 		/**
 		 * Constructor
@@ -63,6 +64,7 @@ package com.gestureworks.cml.element
 		public function TabbedContainer() 
 		{
 			super();
+			mouseChildren = true;
 			tabs = new Array();
 			width = 500;
 			height = 420;

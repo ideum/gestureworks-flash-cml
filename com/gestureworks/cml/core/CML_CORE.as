@@ -68,7 +68,6 @@ package com.gestureworks.cml.core
 	/////////////////////
 	//  ELEMENTS   
 	/////////////////////
-	import com.gestureworks.cml.element.Element; Element;			
 	import com.gestureworks.cml.element.Include; Include;			
 	import com.gestureworks.cml.element.Container; Container;
 	import com.gestureworks.cml.element.View; View;

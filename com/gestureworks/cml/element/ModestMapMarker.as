@@ -9,7 +9,7 @@ package com.gestureworks.cml.element
 	 * @author josh
 	 * @see ModestMap
 	 */
-	public class ModestMapMarker extends Container
+	public class ModestMapMarker extends TouchContainer
 	{
 		/**
 		 * Constructor
@@ -17,6 +17,7 @@ package com.gestureworks.cml.element
 		public function ModestMapMarker() 
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		private var _longitude:Number;

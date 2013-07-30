@@ -56,7 +56,7 @@ package com.gestureworks.cml.element
 		public var maxLoad:int = 1;
 	
 		public var amountToShow:int = -1;
-		public var autoShuffle:int = -1;
+		//public var autoShuffle:int = -1;
 		public var templates:Array = [];		
 
 		public var album:MenuAlbum;

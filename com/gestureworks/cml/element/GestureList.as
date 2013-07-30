@@ -1,6 +1,6 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.factories.ElementFactory;
+	import com.gestureworks.cml.core.CMLObject;
 	
 	/**
 	 * The GestureList class allows you to create a group of 
@@ -17,7 +17,7 @@ package com.gestureworks.cml.element
 	 * @see Gesture
 	 * @see TouchContainer
 	 */
-	public class GestureList extends ElementFactory
+	public class GestureList extends TouchContainer
 	{
 		/**
 		 * Constructor
@@ -27,12 +27,12 @@ package com.gestureworks.cml.element
 			super();			
 		}
 		
-		private var _gestureList:XMLList;
+		private var _gestureList:Object;
 		/**
 		 * sets the gesture list
 		 */
-		public function get gestureList():XMLList{return _gestureList;}
-		public function set gestureList(value:XMLList):void
+		override public function get gestureList():Object{return _gestureList;}
+		override public function set gestureList(value:Object):void
 		{
 			if (value == null) {
 				_gestureList = null;

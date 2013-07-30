@@ -819,7 +819,7 @@ package com.gestureworks.cml.element
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the touch down event
 		 */		
-		protected function onTouchDown(event:*):void
+		protected function onTouchBegin(event:*):void
 		{	
 			if (debug)
 				trace("touchDown");
@@ -962,9 +962,9 @@ package com.gestureworks.cml.element
 		private function listenTouchDown(listen:Boolean = true):void
 		{
 			if (GestureWorks.activeTUIO)
-				addListener(TuioTouchEvent.TOUCH_DOWN, onTouchDown, listen, hit);
+				addListener(TuioTouchEvent.TOUCH_DOWN, onTouchBegin, listen, hit);
 			else 
-				addListener(TouchEvent.TOUCH_BEGIN, onTouchDown, listen, hit);			
+				addListener(TouchEvent.TOUCH_BEGIN, onTouchBegin, listen, hit);			
 		}
 
 		/**

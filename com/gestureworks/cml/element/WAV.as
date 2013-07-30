@@ -43,7 +43,7 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author josh
 	 */
-	public class WAV extends ElementFactory
+	public class WAV extends TouchContainer
 	{
 		private var urlLoader:URLLoader;
 		private var sound:flash.media.Sound;
@@ -77,6 +77,7 @@ package com.gestureworks.cml.element
 		public function WAV() 
 		{
 			super();
+			mouseChildren = true;
 			//propertyDefaults();
 			_averageGain = new Array();
 		}

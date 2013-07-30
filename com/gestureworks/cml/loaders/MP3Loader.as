@@ -1,8 +1,7 @@
 package com.gestureworks.cml.loaders 
 {
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.factories.*;
-	import flash.display.*;
+	import com.gestureworks.cml.loaders.*;
 	import flash.events.*;
 	import flash.net.*;
 	
@@ -11,7 +10,7 @@ package com.gestureworks.cml.loaders
 	 * 
 	 * 
 	 */
-	public class MP3Loader extends LoaderFactory
+	public class MP3Loader extends Loader
 	{		
 		/**
 		 * Constructor

@@ -20,7 +20,7 @@ package com.gestureworks.cml.element
 	 * @see ScrollBar
 	 */
 	
-	public class Slider extends Container 
+	public class Slider extends TouchContainer 
 	{
 		private var debug:Boolean = false;				
 		private var knobOffset:Number = 0;
@@ -35,7 +35,7 @@ package com.gestureworks.cml.element
 		public function Slider() 
 		{
 			super();
-			//touchKnob = new TouchSprite;
+			mouseChildren = true;
 		}	
 		
 		override public function set width(value:Number):void 
@@ -209,15 +209,14 @@ package com.gestureworks.cml.element
 		}				
 		
 		
-		private var _gestureReleaseInertia:Boolean = false;
 		/**
 		 * Turns gestureReleaseInertia off and on
 		 * @default false
 		 */		
-		public function get gestureReleaseInertia():Boolean {return _gestureReleaseInertia;}
-		public function set gestureReleaseInertia(value:Boolean):void
+		override public function get gestureReleaseInertia():Boolean {return super.gestureReleaseInertia;}
+		override public function set gestureReleaseInertia(value:Boolean):void
 		{
-			_gestureReleaseInertia = value;
+			super.gestureReleaseInertia = value;
 			if (touchKnob)
 				touchKnob.gestureReleaseInertia = value;
 		}		

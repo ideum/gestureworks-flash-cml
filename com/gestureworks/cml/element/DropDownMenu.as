@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.element.Text;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
@@ -44,7 +43,7 @@ package com.gestureworks.cml.element
 	 * @see Menu
 	 * @see OrbMenu
 	 */
-	public class DropDownMenu extends ElementFactory
+	public class DropDownMenu extends TouchContainer
 	{
 		private var _open:Boolean = false;
 		private var _currentSelection:String;
@@ -61,6 +60,7 @@ package com.gestureworks.cml.element
 		 */
 		public function DropDownMenu():void {
 			super();
+			mouseChildren = true;
 		}
 		
 		public function get open():Boolean { return _open; }

@@ -67,7 +67,7 @@ package com.gestureworks.cml.layouts
 	 * @see com.gestureworks.cml.factories.LayoutFactory
 	 * @see com.gestureworks.cml.element.Container
      */
-    public class GridLayout extends LayoutFactory 
+    public class GridLayout extends Layout
     {      
 		/**
 		 * Constructor

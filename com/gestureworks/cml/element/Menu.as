@@ -21,7 +21,7 @@ package com.gestureworks.cml.element
 	 * @see OrbMenu
 	 * @see DropDownMenu
 	 */
-	public class Menu extends Container 
+	public class Menu extends TouchContainer 
 	{
 		private var frameCount:int = 0;
 		public var buttonArray:Array = [];
@@ -35,6 +35,7 @@ package com.gestureworks.cml.element
 		public function Menu() 
 		{
 			super();
+			mouseChildren = true;
 		}
 
 		/**
@@ -82,15 +83,15 @@ package com.gestureworks.cml.element
 			_autoHideTime = value; 
 		}
 		
-		private var _position:String = "bottom";
+		private var _position:Number = 2500;
 		/**
 		 * Specifies the position alogorithm of the menu. 
 		 * This includes the position of the buttons with in the menu.
 		 * The button must be a child of the menu.
 		 * @default bottom
 		 */	 		
-		override public function get position():String { return _position; }
-		override public function set position(value:String):void 
+		override public function get position():* { return _position; }
+		override public function set position(value:*):void 
 		{ 
 			_position = value; 
 		}		
