@@ -58,7 +58,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Constructor
 		 */		
-		public function TouchContainerFactory()
+		public function TouchContainer()
 		{
 			super();
 			mouseChildren = true; // required for touchevents to pass into children
@@ -66,7 +66,6 @@ package com.gestureworks.cml.element
 			state[0] = new Dictionary(false);
 			this['propertyStates'] = state;	
 			_childList = new ChildList;			
-			addEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);
 			mouseChildren = false;
 			disableAffineTransform = false; 
 			disableNativeTransform = false;			
@@ -90,7 +89,7 @@ package com.gestureworks.cml.element
 		 * This is the root destructor intended to be called by overriding dispose functions. 
 		 */
 		public function dispose():void 		
-		{
+		{			
 			for (var i:int = numChildren - 1; i >= 0; i--)
 			{
 				var child:Object = getChildAt(i);
@@ -101,9 +100,8 @@ package com.gestureworks.cml.element
 			state = null; 
 			_childList = null; 
 			layout = null;
+			layoutList = null;							
 			cmlGestureList = null;
-			
-			removeEventListener(GWTransformEvent.T_SCALE, scaleTransformHandler);			
 		}
 		
 		
@@ -136,17 +134,6 @@ package com.gestureworks.cml.element
 			_cmlIndex = value;
 		}	
 		
-		/**
-		 * parses cml file
-		 * @param	cml
-		 * @return
-		 */
-		public function parseCML(cml:XMLList):XMLList
-		{
-			var obj:XMLList = CMLParser.instance.parseCML(this, cml);			
-			//cmlGestureList = makeGestureList(cml.GestureList);			
-			return obj;
-		}
 		
 		/**
 		 * postparse method
@@ -508,7 +495,7 @@ package com.gestureworks.cml.element
 			{
 				if (childList.getIndex(i).hasOwnProperty("updateProperties")) 
 					childList.getIndex(i).updateProperties();
-			]
+			}
 		}
 		
 
@@ -739,7 +726,7 @@ package com.gestureworks.cml.element
 		 * @param	cml
 		 * @return
 		 */
-		override public function parseCML(cml:XMLList):XMLList
+		public function parseCML(cml:XMLList):XMLList
 		{
 			//cmlGestureList = makeGestureList(cml.GestureList);			
 			
@@ -807,6 +794,8 @@ package com.gestureworks.cml.element
 				store = DisplayUtils.removeAllChildren(this);
 				addChild(b);
 			}
+			
+
 		}
 				
 		/**
@@ -879,36 +868,6 @@ package com.gestureworks.cml.element
 			
 			return clone;
 		}			
-		
-		
-		/**
-		 * Dispose method
-		 */
-		override public function dispose():void 
-		{
-			super.dispose();
-			layoutList = null;		
-			//if (sound)
-				//SoundUtils.deleteSound(this);
-		}
-		
-		
-		private var dropShadowfilter:DropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);		
-		private var _dropShadow:Boolean = false;
-		/**
-		 * Sets the drop shadow effect
-		 * @default false
-		 */
-		public function get dropShadow():Boolean { return _dropShadow; }		
-		public function set dropShadow(value:Boolean):void 
-		{ 			
-			if (value)
-				this.filters.push(dropShadowfilter);
-			else	
-				this.filters = [];
-				
-			_dropShadow = value;
-		}		
-		
+
 	}
 }

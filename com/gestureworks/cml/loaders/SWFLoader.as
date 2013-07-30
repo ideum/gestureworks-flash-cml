@@ -1,6 +1,6 @@
 package com.gestureworks.cml.loaders
 {
-	import com.gestureworks.cml.factories.*;
+	import com.gestureworks.cml.loaders.*;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.net.*;
@@ -13,7 +13,7 @@ package com.gestureworks.cml.loaders
 	 * @author Charles
 	 * @see com.gestureworks.element.SWF
 	 */
-	public class SWFLoader extends LoaderFactory
+	public class SWFLoader extends com.gestureworks.cml.loaders.Loader
 	{ 		
 		/**
 		 * Constructor
@@ -30,11 +30,11 @@ package com.gestureworks.cml.loaders
 		 * @param	url
 		 */
 		override public function load(url:String):void
-		{
+		{ 
 			_src = url;
 			urlRequest = new URLRequest(url);
 							
-			_loader = new Loader();
+			_loader = new com.gestureworks.cml.loaders.Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);						
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);

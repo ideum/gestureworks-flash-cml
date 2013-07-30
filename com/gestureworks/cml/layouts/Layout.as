@@ -31,7 +31,7 @@ package com.gestureworks.cml.layouts
 		/**
 		 * Constructor
 		 */
-		public function LayoutFactory() 
+		public function Layout() 
 		{
 			super();
 			childTransformations = new Array();

@@ -1,6 +1,6 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.factories.ObjectFactory;	
+	import com.gestureworks.cml.core.CMLObject;
 	
 	/**
 	 * The Gesture class allows you to create gestures in CML.
@@ -16,7 +16,7 @@ package com.gestureworks.cml.element
 	 * @see GestureList
 	 * @see TouchContainer
 	 */
-	public class Gesture extends ObjectFactory 
+	public class Gesture extends CMLObject 
 	{
 		/**
 		 * Constructor

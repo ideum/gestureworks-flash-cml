@@ -44,7 +44,7 @@ package com.gestureworks.cml.element
 	 * @see Menu
 	 * @see OrbMenu
 	 */
-	public class DropDownMenu extends ElementFactory
+	public class DropDownMenu extends TouchContainer
 	{
 		private var _open:Boolean = false;
 		private var _currentSelection:String;

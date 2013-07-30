@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.factories.ObjectFactory;
 	import flash.events.EventDispatcher;
@@ -89,7 +90,7 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author Ideum
 	 */
-	public final class Camera extends ObjectFactory
+	public final class Camera extends CMLObject
 	{
 		private var cam:flash.media.Camera;
 		

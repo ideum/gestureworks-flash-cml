@@ -1,4 +1,4 @@
-package com.gestureworks.cml.factories 
+package com.gestureworks.cml.element 
 {	
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
@@ -39,7 +39,7 @@ package com.gestureworks.cml.factories
 		/**
 		 * Constructor
 		 */
-		public function BitmapFactory() 
+		public function Image() 
 		{
 			super();	
 			mouseChildren = false;

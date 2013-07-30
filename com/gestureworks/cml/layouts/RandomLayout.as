@@ -1,6 +1,5 @@
 package com.gestureworks.cml.layouts 
 {
-	import com.gestureworks.cml.factories.LayoutFactory;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
@@ -63,7 +62,7 @@ package com.gestureworks.cml.layouts
 	 * @see RandomLayout
 	 * @see LayoutFactory
 	 */
-	public class RandomLayout extends LayoutFactory
+	public class RandomLayout extends Layout
 	{
 		/**
 		 * Constructor

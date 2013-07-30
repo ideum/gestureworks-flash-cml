@@ -1,8 +1,7 @@
 package com.gestureworks.cml.loaders 
 {
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.factories.*;
-	import flash.display.*;
+	import com.gestureworks.cml.loaders.*;
 	import flash.events.*;
 	import flash.net.*;
 	
@@ -12,7 +11,7 @@ package com.gestureworks.cml.loaders
 	 * @author Charles
 	 * @see com.gestureworks.element.Image
 	 */
-	public class IMGLoader extends LoaderFactory
+	public class IMGLoader extends Loader
 	{		
 		/**
 		 * Constructor

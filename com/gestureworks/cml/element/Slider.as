@@ -209,15 +209,14 @@ package com.gestureworks.cml.element
 		}				
 		
 		
-		private var _gestureReleaseInertia:Boolean = false;
 		/**
 		 * Turns gestureReleaseInertia off and on
 		 * @default false
 		 */		
-		public function get gestureReleaseInertia():Boolean {return _gestureReleaseInertia;}
-		public function set gestureReleaseInertia(value:Boolean):void
+		override public function get gestureReleaseInertia():Boolean {return super.gestureReleaseInertia;}
+		override public function set gestureReleaseInertia(value:Boolean):void
 		{
-			_gestureReleaseInertia = value;
+			super.gestureReleaseInertia = value;
 			if (touchKnob)
 				touchKnob.gestureReleaseInertia = value;
 		}		

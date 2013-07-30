@@ -71,7 +71,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Returns clone of self
 		 */
-		override public function clone():* 
+		public function clone():* 
 		{ 
 			var clone:Text = CloneUtils.clone(this, this.parent);
 			clone.updateTextFormat();
@@ -582,15 +582,6 @@ package com.gestureworks.cml.element
 			super.text = this.text;			
 		}
 		
-		
-		//////////////
-		//  IClone  
-		//////////////		
-		
-		/**
-		 * Returns clone of self
-		 */
-		public function clone():* { return new Object };
 				
 		
 	}
