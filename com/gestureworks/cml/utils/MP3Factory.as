@@ -14,8 +14,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.gestureworks.cml.factories 
+package com.gestureworks.cml.utils 
 {	
+	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.loaders.MP3Loader;
@@ -35,7 +36,7 @@ package com.gestureworks.cml.factories
 	 * @see com.gestureworks.cml.factories.ElementFactory
 	 * @see com.gestureworks.cml.factories.ObjectFactory
 	 */	
-	public class MP3Factory extends ObjectFactory
+	public class MP3Factory extends CMLObject
 	{
 		//audio	
 		public var soundData:Sound;
