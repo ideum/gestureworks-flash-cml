@@ -12,7 +12,7 @@ package com.gestureworks.cml.element
 	 * 
 	 * @author josh
 	 */
-	public class Sound extends MP3Factory
+	public class Sound extends MP3
 	{
 		
 		private var loaded:Boolean = false;
@@ -93,7 +93,7 @@ package com.gestureworks.cml.element
 			super.init();
 		}
 		
-		override protected function soundLoaded(e:Event=null):void {
+		protected function soundLoaded(e:Event=null):void {
 			loaded = true;
 			super.soundLoaded(e);
 		}

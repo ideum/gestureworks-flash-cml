@@ -3,6 +3,7 @@
 //
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.factories.ObjectFactory;
 	import flash.events.EventDispatcher;
 	import flash.media.Microphone;
@@ -45,7 +46,7 @@ package com.gestureworks.cml.element
 	 * @see Camera
 	 * @see LiveVideo
 	 */
-	public final class Microphone extends ObjectFactory
+	public final class Microphone extends CMLObject
 	{
 		/**
 		 * The amount of sound the microphone is detecting. Values range from 

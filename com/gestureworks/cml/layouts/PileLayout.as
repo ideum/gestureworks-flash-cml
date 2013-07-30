@@ -1,6 +1,5 @@
 package com.gestureworks.cml.layouts 
 {
-	import com.gestureworks.cml.factories.LayoutFactory;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
 	
@@ -67,7 +66,7 @@ package com.gestureworks.cml.layouts
 	 * @see com.gestureworks.cml.factories.LayoutFactory
 	 * @see com.gestureworks.cml.element.Container
 	 */
-	public class PileLayout extends LayoutFactory
+	public class PileLayout extends Layout
 	{
 		
 		/**

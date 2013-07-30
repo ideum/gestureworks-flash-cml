@@ -90,8 +90,8 @@ package com.gestureworks.cml.element
 		 * The button must be a child of the menu.
 		 * @default bottom
 		 */	 		
-		override public function get position():String { return _position; }
-		override public function set position(value:String):void 
+		public function get position():String { return _position; }
+		public function set position(value:String):void 
 		{ 
 			_position = value; 
 		}		

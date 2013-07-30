@@ -819,7 +819,7 @@ package com.gestureworks.cml.element
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the touch down event
 		 */		
-		protected function onTouchDown(event:*):void
+		override public function onTouchDown(event:*):void
 		{	
 			if (debug)
 				trace("touchDown");

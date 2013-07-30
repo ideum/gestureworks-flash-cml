@@ -15,7 +15,7 @@ package com.gestureworks.cml.element
 	 * @see Slideshow
 	 */	
 	
-	public class ImageList extends Element
+	public class ImageList extends TouchContainer
 	{
 		private var image:Image;		
 		private var list:List;
@@ -33,6 +33,7 @@ package com.gestureworks.cml.element
 		public function ImageList() 
 		{
 			list = new List;
+			mouseChildren = true;
 		}
 		
 		/**

@@ -23,7 +23,7 @@ package  com.gestureworks.cml.element
 	 * @author josh
 	 * @see YouTube
 	 */
-	public class FlickrQuery extends Element
+	public class FlickrQuery extends TouchContainer
 	{
 		private var service:FlickrService;
 		public var resultPhotos:Array;
@@ -36,7 +36,7 @@ package  com.gestureworks.cml.element
 		public function FlickrQuery() 
 		{
 			super();
-			
+			mouseChildren = true;
 			Security.loadPolicyFile("http://farm1.static.flickr.com/crossdomain.xml");
 			Security.loadPolicyFile("http://farm2.static.flickr.com/crossdomain.xml");
 			Security.loadPolicyFile("http://farm3.static.flickr.com/crossdomain.xml");

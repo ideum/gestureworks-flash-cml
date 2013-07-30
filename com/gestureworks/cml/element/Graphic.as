@@ -1,4 +1,4 @@
-package com.gestureworks.cml.factories 
+package com.gestureworks.cml.element 
 {	
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.factories.*;
@@ -80,7 +80,7 @@ package com.gestureworks.cml.factories
 		/**
 		 * Graphics drawing method
 		 */
-		override public function updateGraphic():void
+		public function updateGraphic():void
 		{	
 			graphics.clear();
 			
@@ -1221,15 +1221,10 @@ package com.gestureworks.cml.factories
 		 * Copies all of drawing commands from the source Graphics object 
 		 * into the calling Graphics object.
 		 */		
-		public function copyFrom(source:GraphicFactory):void
+		public function copyFrom(source:Graphic):void
 		{
 			graphics.copyFrom(source.graphics);
 		}
-		
-		/**
-		 * Abstract drawing method, meant to be overriden.
-		 */				
-		public function updateGraphic():void { }
 				
 		
 	}

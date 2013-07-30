@@ -29,7 +29,7 @@ package  com.gestureworks.cml.element
 	 * @author josh
 	 * @see YouTube
 	 */
-	public class Flickr extends BitmapFactory
+	public class Flickr extends Image
 	{
 		private var service:FlickrService;
 		

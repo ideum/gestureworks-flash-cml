@@ -19,7 +19,7 @@ package com.gestureworks.cml.utils
 	 * @see com.gestureworks.cml.element.Text
 	 * @see com.gestureworks.cml.element.TLF
 	 */
-	public class CircleText extends ElementFactory
+	public class CircleText extends Sprite
 	{
 		/**
 		 * Constructor
