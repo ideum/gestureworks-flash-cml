@@ -123,7 +123,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
 	import com.gestureworks.cml.element.ProgressBar; ProgressBar;	
 	import com.gestureworks.cml.element.Accordion; Accordion;	
-	import com.gestureworks.cml.element.SlideMenu; SlideMenu;
 	
 		
 	/////////////////////
