@@ -1,7 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.MP3Factory;
+	import com.gestureworks.cml.utils.MP3Factory;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObjectContainer;
@@ -12,7 +12,7 @@ package com.gestureworks.cml.element
 	 * 
 	 * @author josh
 	 */
-	public class Sound extends MP3
+	public class Sound extends MP3Factory
 	{
 		
 		private var loaded:Boolean = false;
@@ -93,7 +93,7 @@ package com.gestureworks.cml.element
 			super.init();
 		}
 		
-		protected function soundLoaded(e:Event=null):void {
+		override protected function soundLoaded(e:Event=null):void {
 			loaded = true;
 			super.soundLoaded(e);
 		}
