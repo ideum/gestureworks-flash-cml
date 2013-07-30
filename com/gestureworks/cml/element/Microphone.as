@@ -4,7 +4,6 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.core.CMLObject;
-	import com.gestureworks.cml.factories.ObjectFactory;
 	import flash.events.EventDispatcher;
 	import flash.media.Microphone;
 	import flash.media.SoundTransform;

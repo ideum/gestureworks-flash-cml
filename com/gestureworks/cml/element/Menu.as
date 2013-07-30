@@ -83,15 +83,15 @@ package com.gestureworks.cml.element
 			_autoHideTime = value; 
 		}
 		
-		private var _position:String = "bottom";
+		private var _position:Number = 2500;
 		/**
 		 * Specifies the position alogorithm of the menu. 
 		 * This includes the position of the buttons with in the menu.
 		 * The button must be a child of the menu.
 		 * @default bottom
 		 */	 		
-		public function get position():String { return _position; }
-		public function set position(value:String):void 
+		override public function get position():* { return _position; }
+		override public function set position(value:*):void 
 		{ 
 			_position = value; 
 		}		

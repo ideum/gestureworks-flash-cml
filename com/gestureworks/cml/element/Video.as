@@ -158,7 +158,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Playhead position in ms
 		 */	
-		public function get position():Number { return _position; }
+		override public function get position():* { return _position; }
 		
 		private var _progressBar:ProgressBar;
 		/**

@@ -1,7 +1,6 @@
 ﻿package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import flash.events.*;
 	import flash.geom.*;
 	import org.openzoom.flash.components.MultiScaleImage;

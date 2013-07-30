@@ -2,7 +2,6 @@ package com.gestureworks.cml.element
 {
 	import com.codeazur.utils.HexUtils;
 	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.events.Event;
 	import flash.events.TouchEvent;

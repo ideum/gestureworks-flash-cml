@@ -25,7 +25,6 @@
 	import com.gestureworks.cml.element.Image;
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWEvent;

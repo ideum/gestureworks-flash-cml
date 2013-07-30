@@ -2,7 +2,7 @@ package com.gestureworks.cml.element
 {	
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.loaders.*;
+	import com.gestureworks.cml.loaders.IMGLoader;
 	import com.gestureworks.cml.managers.*;
 	import flash.display.*;
 	import flash.events.*;
