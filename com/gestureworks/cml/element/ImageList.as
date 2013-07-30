@@ -1,7 +1,6 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.Image;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.utils.List;
 	import flash.events.Event;
 	import com.gestureworks.cml.managers.FileManager;

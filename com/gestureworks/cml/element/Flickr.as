@@ -3,7 +3,6 @@ package  com.gestureworks.cml.element
 	import com.adobe.webapis.flickr.*;
 	import com.adobe.webapis.flickr.events.*;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.BitmapFactory;
 	import com.gestureworks.cml.loaders.IMGLoader;
 	import flash.display.Bitmap;
 	import flash.display.Loader;

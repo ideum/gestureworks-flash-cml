@@ -1,7 +1,6 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.Sprite;

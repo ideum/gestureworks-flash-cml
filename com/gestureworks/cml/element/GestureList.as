@@ -27,12 +27,12 @@ package com.gestureworks.cml.element
 			super();			
 		}
 		
-		private var _gestureList:XMLList;
+		private var _gestureList:Object;
 		/**
 		 * sets the gesture list
 		 */
-		override public function get gestureList():XMLList{return _gestureList;}
-		override public function set gestureList(value:XMLList):void
+		override public function get gestureList():Object{return _gestureList;}
+		override public function set gestureList(value:Object):void
 		{
 			if (value == null) {
 				_gestureList = null;

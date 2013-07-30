@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.factories.GraphicFactory;
 	import com.gestureworks.cml.utils.CloneUtils;
 	
 

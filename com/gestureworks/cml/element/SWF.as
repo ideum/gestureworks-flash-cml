@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.managers.FileManager;
 	import flash.geom.ColorTransform;
 	import flash.utils.getDefinitionByName;

@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element
 {
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.element.Text;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;

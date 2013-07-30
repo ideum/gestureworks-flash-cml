@@ -1,6 +1,5 @@
 package com.gestureworks.cml.element 
 {
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.events.StateEvent;
 	import flash.text.*;
 	import flash.display.*;

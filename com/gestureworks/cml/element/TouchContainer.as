@@ -61,7 +61,6 @@ package com.gestureworks.cml.element
 		public function TouchContainer()
 		{
 			super();
-			mouseChildren = true; // required for touchevents to pass into children
 			state = [];
 			state[0] = new Dictionary(false);
 			this['propertyStates'] = state;	
@@ -102,6 +101,7 @@ package com.gestureworks.cml.element
 			layout = null;
 			layoutList = null;							
 			cmlGestureList = null;
+						
 		}
 		
 		
@@ -188,6 +188,60 @@ package com.gestureworks.cml.element
 			_height = value;
 		}		
 		
+		
+		private var _position:*;
+		/**
+		 * Sets the position 
+		 */
+		public function get position():* {return _position;}
+		public function set position(value:*):void 
+		{
+			_position = value;
+		}
+		
+		private var _paddingLeft:Number=0;
+		/**
+		 * Sets the number of pixels between the component's left border and the left edge of its content area.
+		 * @default 0
+		 */
+		public function get paddingLeft():Number {return _paddingLeft;}
+		public function set paddingLeft(value:Number):void 
+		{
+			_paddingLeft = value;
+		}	
+		
+		private var _paddingRight:Number=0;
+		/**
+		 * Sets the number of pixels between the component's right border and the right edge of its content area.
+		 * @default 0
+		 */
+		public function get paddingRight():Number {return _paddingRight;}
+		public function set paddingRight(value:Number):void 
+		{
+			_paddingRight = value;
+		}	
+		
+		private var _paddingTop:Number=0;
+		/**
+		 * Sets the number of pixels between the container's top border and the top of its content area.
+		 * @default 0
+		 */
+		public function get paddingTop():Number {return _paddingTop;}
+		public function set paddingTop(value:Number):void 
+		{
+			_paddingTop = value;
+		}	
+		
+		private var _paddingBottom:Number=0;
+		/**
+		 * Sets the number of pixels between the container's bottom border and the bottom of its content area.
+		 * @default 0
+		 */
+		public function get paddingBottom():Number {return _paddingBottom;}
+		public function set paddingBottom(value:Number):void 
+		{
+			_paddingBottom = value;
+		}		
 		
 		private var _className:String;
 		/**
