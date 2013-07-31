@@ -1,7 +1,6 @@
 package com.gestureworks.cml.utils
 {
 	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.*;
 	import flash.display.*;
 	import flash.text.TextFormat;

@@ -1,7 +1,6 @@
 package com.gestureworks.cml.layouts 
 {
 	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.interfaces.*;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;

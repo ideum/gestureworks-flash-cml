@@ -18,7 +18,6 @@ package com.gestureworks.cml.utils
 {	
 	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.loaders.MP3Loader;
 	import com.gestureworks.cml.managers.FileManager;
 	import flash.display.*;
