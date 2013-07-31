@@ -1,7 +1,6 @@
 package com.gestureworks.cml.kits 
 {
 	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.utils.FrameRate;
 	import flash.display.*;
 	import flash.events.*;

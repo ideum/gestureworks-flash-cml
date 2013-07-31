@@ -60,7 +60,7 @@ package com.gestureworks.cml.layouts
 	 * @see ListLayout
 	 * @see PileLayout
 	 * @see RandomLayout
-	 * @see LayoutFactory
+	 * @see Layout
 	 */
 	public class RandomLayout extends Layout
 	{

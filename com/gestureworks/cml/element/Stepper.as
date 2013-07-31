@@ -2,7 +2,6 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;

@@ -3,7 +3,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;

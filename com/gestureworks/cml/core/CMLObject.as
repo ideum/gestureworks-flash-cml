@@ -6,12 +6,10 @@ package com.gestureworks.cml.core
 	import flash.utils.Dictionary;
 	
 	/** 
-	 * The ObjectFactory is the base class for all CML Objects.
+	 * The CMLObject is the base class for all CML Objects.
 	 * It is an abstract class that is not meant to be called directly.
 	 *
 	 * @author Ideum
-	 * @see com.gestureworks.cml.factories.ElementFactory
-	 * @see com.gestureworks.cml.factories.GraphicFactory
 	 */	 
 	public class CMLObject extends EventDispatcher implements IObject
 	{
