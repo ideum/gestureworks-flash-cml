@@ -1,10 +1,10 @@
 package com.gestureworks.cml.element
 {	
-	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.element.Container;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.cml.utils.StateUtils;
 	import com.gestureworks.core.GestureWorks;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
@@ -1154,13 +1154,7 @@ package com.gestureworks.cml.element
 		 */			
 		private function listenDown(listen:Boolean = true):void
 		{			
-			if (GestureWorks.activeTUIO)
-				addListener(TuioTouchEvent.TOUCH_DOWN, onDown, listen, hit);
-			else if (GestureWorks.activeNativeTouch)
-				addListener(TouchEvent.TOUCH_BEGIN, onDown, listen, hit);
-			else
-				addListener(MouseEvent.MOUSE_DOWN, onDown, listen, hit);			
-
+			addListener(GWTouchEvent.TOUCH_BEGIN, onDown, listen, hit);
 		}
 		
 		/**
@@ -1168,13 +1162,8 @@ package com.gestureworks.cml.element
 		 * @param	listen  adds touch/mouse listener if true, removes if false
 		 */					
 		private function listenUp(listen:Boolean = true):void
-		{
-			if (GestureWorks.activeTUIO)
-				addListener(TuioTouchEvent.TOUCH_UP, onUp, listen, hit);
-			else if (GestureWorks.activeNativeTouch)
-				addListener(TouchEvent.TOUCH_END, onUp, listen, hit);
-			else
-				addListener(MouseEvent.MOUSE_UP, onUp, listen, hit);				
+		{				
+			addListener(GWTouchEvent.TOUCH_END, onUp, listen, hit);				
 		}
 		
 		/**
@@ -1182,13 +1171,8 @@ package com.gestureworks.cml.element
 		 * @param	listen  adds touch/mouse listener if true, removes if false
 		 */					
 		private function listenOver(listen:Boolean = true):void
-		{
-			if (GestureWorks.activeTUIO)
-				addListener(TuioTouchEvent.TOUCH_OVER, onOver, listen, hit);
-			else if (GestureWorks.activeNativeTouch)
-				addListener(TouchEvent.TOUCH_OVER, onOver, listen, hit);
-			else
-				addListener(MouseEvent.MOUSE_OVER, onOver, listen, hit);							
+		{						
+			addListener(GWTouchEvent.TOUCH_OVER, onOver, listen, hit);				
 		}		
 		
 		/**
@@ -1196,13 +1180,8 @@ package com.gestureworks.cml.element
 		 * @param	listen  adds touch/mouse listener if true, removes if false
 		 */					
 		private function listenOut(listen:Boolean = true):void
-		{
-			if (GestureWorks.activeTUIO)
-				addListener(TuioTouchEvent.TOUCH_OUT, onOut, listen, hit);
-			else if (GestureWorks.activeNativeTouch)
-				addListener(TouchEvent.TOUCH_OUT, onOut, listen, hit);
-			else
-				addListener(MouseEvent.MOUSE_OUT, onOut, listen, hit);										
+		{	
+			addListener(GWTouchEvent.TOUCH_OUT, onOut, listen, hit);
 		}
 			
 		
@@ -1289,36 +1268,16 @@ package com.gestureworks.cml.element
 						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
 					break;	
 				case "down":
-					if (GestureWorks.activeTUIO)
-						addListener(TuioTouchEvent.TOUCH_DOWN, onToggle, listen);
-					else if (GestureWorks.activeNativeTouch)
-						addListener(TouchEvent.TOUCH_BEGIN, onToggle, listen);
-					else
-						addListener(MouseEvent.MOUSE_DOWN, onToggle, listen);
+					addListener(GWTouchEvent.TOUCH_BEGIN, onToggle, listen);
 					break;
 				case "up":
-					if (GestureWorks.activeTUIO)
-						addListener(TuioTouchEvent.TOUCH_UP, onToggle, listen);
-					else if (GestureWorks.activeNativeTouch)
-						addListener(TouchEvent.TOUCH_END, onToggle, listen);
-					else
-						addListener(MouseEvent.MOUSE_UP, onToggle, listen);
+					addListener(GWTouchEvent.TOUCH_END, onToggle, listen);
 					break;
 				case "over":
-					if (GestureWorks.activeTUIO)
-						addListener(TuioTouchEvent.TOUCH_OVER, onToggle, listen);
-					else if (GestureWorks.activeNativeTouch)
-						addListener(TouchEvent.TOUCH_OVER, onToggle, listen);
-					else
-						addListener(MouseEvent.MOUSE_OVER, onToggle, listen);
+					addListener(GWTouchEvent.TOUCH_OVER, onToggle, listen);
 					break;
 				case "out":
-					if (GestureWorks.activeTUIO)
-						addListener(TuioTouchEvent.TOUCH_OUT, onToggle, listen);
-					else if (GestureWorks.activeNativeTouch)
-						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
-					else
-						addListener(MouseEvent.MOUSE_OUT, onToggle, listen);
+					addListener(GWTouchEvent.TOUCH_OUT, onToggle, listen);
 					break;
 				case "tap":
 					addListener(TouchEvent.TOUCH_TAP, onTap, listen);
