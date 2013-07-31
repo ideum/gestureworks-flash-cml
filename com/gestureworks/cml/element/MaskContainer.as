@@ -183,18 +183,9 @@ package com.gestureworks.cml.element
 		 * CML call back Initialisation
 		 */
 		override public function displayComplete():void {
-			//super.displayComplete();
 			
-			//graphicArray.array = childList.getValueArray();
-			
-			for (var i:Number = 0; i < numChildren; i++) {
-				if (getChildAt(i) is TouchContainer) {
-					_touchScreen = getChildAt(i) as TouchContainer;
-					removeChildAt(i);
-					i--;
-				} else {
-					graphicArray.append(getChildAt(i));
-				}
+			for (var i:Number = 0; i < childList.length; i++) {
+				graphicArray.append(getChildAt(i));
 			}
 			
 			createMasks();
