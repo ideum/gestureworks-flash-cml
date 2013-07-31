@@ -50,6 +50,9 @@ package com.gestureworks.cml.utils
 		public function MP3Factory()
 		{
 			super();
+			soundData = new Sound();
+			channel = new SoundChannel();
+			soundTrans = new SoundTransform();			
 		}			
 		
 		/**
@@ -157,10 +160,6 @@ package com.gestureworks.cml.utils
 		{
 			//if (preload)
 				//load();
-			soundData = new Sound();
-			
-			channel = new SoundChannel();
-			soundTrans = new SoundTransform();
 				
 			if (preload && FileManager.fileList.hasKey(_src)) {
 				soundLoaded();
