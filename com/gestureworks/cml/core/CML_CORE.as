@@ -74,9 +74,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Stack; Stack;	
 	import com.gestureworks.cml.element.TLF; TLF;	
 	import com.gestureworks.cml.element.GestureList; GestureList;		
-	import com.gestureworks.cml.element.ImageSlideshow; ImageSlideshow;
-	import com.gestureworks.cml.element.ImageList; ImageList;
-	import com.gestureworks.cml.element.ImageSequence; ImageSequence;
 	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
 	import com.gestureworks.cml.element.Slider; Slider;		
 	import com.gestureworks.cml.element.Gesture; Gesture;
