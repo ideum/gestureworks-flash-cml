@@ -1,16 +1,13 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.element.Button;
-	import com.gestureworks.cml.element.Container
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.cml.utils.LinkedMap;
 	import com.gestureworks.cml.utils.StateUtils;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.display.DisplayObject;
 	import flash.events.*;
-	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * The Menu element constructs a custom menu using nested Buttons(s).
@@ -46,9 +43,7 @@ package com.gestureworks.cml.element
 			super.dispose();
 			buttonArray = null;
 			
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onClick);
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onClick);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onClick);
 			
 			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);
 		}
@@ -62,14 +57,8 @@ package com.gestureworks.cml.element
 		{ 
 			_autoHide = value;
 			
-			if (autoHide) {
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onClick);
-				else if	(GestureWorks.activeNativeTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, onClick);
-				else	
-					this.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
-			}
+			if (autoHide) 
+				addEventListener(GWTouchEvent.TOUCH_BEGIN, onClick);
 		}
 		
 	
