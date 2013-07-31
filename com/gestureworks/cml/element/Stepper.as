@@ -3,15 +3,14 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.*;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.Sprite;
 	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.text.*;
-	import org.tuio.TuioTouchEvent;
 
 	/**
 	 * The Stepper element provides a graphical user interface tool to increment and decrement numbers.
@@ -357,13 +356,8 @@ package com.gestureworks.cml.element
 			ts.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			topSquare.addEventListener(GWGestureEvent.TAP, upArrow);
 			bottomSquare.addEventListener(GWGestureEvent.TAP, downArrow);
-				
-			if (GestureWorks.activeTUIO)
-				this.addEventListener(TuioTouchEvent.TAP, onTap);
-			else if (GestureWorks.activeNativeTouch)
-				this.addEventListener(TouchEvent.TOUCH_TAP, onTap);
-			else
-				this.addEventListener(MouseEvent.CLICK, onTap);	
+
+			addEventListener(GWTouchEvent.TOUCH_TAP, onTap);
 
 			inputTxt.x = 30;
 			inputTxt.y = 10;
@@ -555,9 +549,7 @@ package com.gestureworks.cml.element
 			bottomSquare.removeEventListener(GWGestureEvent.TAP, downArrow);
 			topSquare.removeEventListener(MouseEvent.MOUSE_UP, incrementText);
 			bottomSquare.removeEventListener(MouseEvent.MOUSE_DOWN, decrementText);
-			this.removeEventListener(TuioTouchEvent.TAP, onTap);
-			this.removeEventListener(TouchEvent.TOUCH_TAP, onTap);
-			this.removeEventListener(MouseEvent.CLICK, onTap);	
+			removeEventListener(GWTouchEvent.TOUCH_TAP, onTap);
 		}
 		
 }

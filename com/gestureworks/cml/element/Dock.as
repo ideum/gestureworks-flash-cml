@@ -13,7 +13,6 @@ package com.gestureworks.cml.element
 	import flash.geom.*;
 	import flash.net.*;
 	import flash.utils.*;
-	import org.tuio.*;
 	
 	/**
 	 * Designed for the database version of the <code>CollectionViewer</code>, the <code>Dock</code> is a retractable control station intended to guide users through 
@@ -946,14 +945,8 @@ package com.gestureworks.cml.element
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
 			
 			
-			if (autoShuffle) {
-				if (GestureWorks.activeTUIO)
-					obj.addEventListener(TuioTouchEvent.TOUCH_DOWN, moveB);
-				else if (GestureWorks.activeNativeTouch)
-					obj.addEventListener(TouchEvent.TOUCH_BEGIN, moveB);
-				else 
-					obj.addEventListener(MouseEvent.MOUSE_DOWN, moveB);	
-			}
+			if (autoShuffle) 
+				obj.addEventListener(GWTouchEvent.TOUCH_BEGIN, moveB);
 			
 			//if ("scale" in obj["propertyStates"][0])
 			//	obj.scale = obj["propertyStates"][0]["scale"];

@@ -1,10 +1,9 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.core.GestureWorks;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * The Stack element is a container that gathers its children into a stack, and allows the user to move through the list using a specified user input.
@@ -118,21 +117,11 @@ package com.gestureworks.cml.element
 				
 			else if (toggle == "down")
 			{
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
-				else if (GestureWorks.activeNativeTouch)
-					this.addEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
-				else
-					this.addEventListener(MouseEvent.MOUSE_DOWN, onToggle);
+				this.addEventListener(GWTouchEvent.TOUCH_BEGIN, onToggle);
 			}
 			else if (toggle == "up")
 			{
-				if (GestureWorks.activeTUIO)
-					this.addEventListener(TuioTouchEvent.TOUCH_UP, onToggle);
-				else if (GestureWorks.activeNativeTouch)
-					this.addEventListener(TouchEvent.TOUCH_END, onToggle);
-				else
-					this.addEventListener(MouseEvent.MOUSE_UP, onToggle);
+				this.addEventListener(GWTouchEvent.TOUCH_END, onToggle);
 			}			
 		}		
 			
@@ -162,14 +151,15 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
+			this.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onToggle);
+			this.removeEventListener(GWTouchEvent.TOUCH_END, onToggle);
+			
 			this.removeEventListener(MouseEvent.MOUSE_OVER, onToggle);	
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, onToggle);
 			this.removeEventListener(MouseEvent.MOUSE_UP, onToggle);	
 
 			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
 			this.removeEventListener(TouchEvent.TOUCH_END, onToggle);
-		    this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onToggle);
-		    this.removeEventListener(TuioTouchEvent.TOUCH_UP, onToggle);
 		}
 	}
 }

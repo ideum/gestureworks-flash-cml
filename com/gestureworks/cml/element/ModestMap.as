@@ -227,15 +227,9 @@ package com.gestureworks.cml.element
 		override public function dispose():void {
 			super.dispose();
 			
-			if (GestureWorks.activeNativeTouch){
-				map.removeEventListener(TuioTouchEvent.DOUBLE_TAP, switchMapProvider);
-				}
-			else if (GestureWorks.activeTUIO){
-				map.removeEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				}
-			else {
-				map.removeEventListener(MouseEvent.DOUBLE_CLICK, switchMapProvider);
-				}
+			this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+			map.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+			map.addEventListener(StateEvent.CHANGE, onZoom);			
 			
 			while (this.numChildren > 0) {
 				removeChildAt(0);
