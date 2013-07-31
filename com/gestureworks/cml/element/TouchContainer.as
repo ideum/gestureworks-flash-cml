@@ -428,6 +428,7 @@ package com.gestureworks.cml.element
 		}
 		
 		
+
 		
 		//////////////////////////////////////////////////////////////
 		// outline
@@ -489,46 +490,8 @@ package com.gestureworks.cml.element
 		
 		//////////////////////////////////////////////////////////////
 		
+	
 
-		
-		private var _maxScale:Number = 0;
-		/**
-		* This method is called after class initialization.
-		*/
-		public function get maxScale():Number { return _maxScale; }
-		/**
-		* This method is called after class initialization.
-		*/
-		public function set maxScale(value:Number):void
-		{
-			_maxScale = value;
-		}
-		
-		private var _minScale:Number = 0;
-		/**
-		* This method is called after class initialization.
-		*/
-		public function get minScale():Number { return _minScale; }
-		/**
-		* This method is called after class initialization.
-		*/
-		public function set minScale(value:Number):void
-		{
-			_minScale = value;
-		}
-		
-
-		
-
-		
-		
-		/**
-		* This method is called after class initialization.
-		*/
-		protected function randomMinMax(min:Number, max:Number):Number
-		{
-			return min + (max - min) * Math.random();
-		}
 
 		
 		private function displayEventHandler(event:Event):void
