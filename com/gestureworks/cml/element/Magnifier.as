@@ -26,7 +26,7 @@ package com.gestureworks.cml.element
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	 *
-	    var magnifier:MagnifierElement = new MagnifierElement();
+	    var magnifier:Magnifier = new Magnifier();
 		magnifier.x = 550;
 		magnifier.y = 150;
 		magnifier.radius = 100;
