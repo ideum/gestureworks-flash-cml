@@ -58,7 +58,7 @@ package com.gestureworks.cml.layouts
 	 * @see PileLayout
 	 * @see PointLayout
 	 * @see RandomLayout
-	 * @see com.gestureworks.cml.factories.LayoutFactory
+	 * @see com.gestureworks.cml.layouts.Layout
 	 * @see com.gestureworks.cml.element.Container
 	 */
 	public class FanLayout extends Layout

@@ -13,14 +13,12 @@ package com.gestureworks.cml.layouts
 	import flash.utils.getDefinitionByName;
 	
 	/** 
-	 * The LayoutFactory is the base class for all Layouts.
+	 * The Layout is the base class for all Layouts.
 	 * It is an abstract class that is not meant to be called directly.
 	 *
 	 * @author Charles and Shaun
-	 * @see com.gestureworks.cml.factories.Container
-	 * @see com.gestureworks.cml.factories.TouchContainer
-	 * @see com.gestureworks.cml.factories.ElementFactory
-	 * @see com.gestureworks.cml.factories.ObjectFactory
+	 * @see com.gestureworks.cml.element.Container
+	 * @see com.gestureworks.cml.element.TouchContainer
 	 */	
 	public class Layout extends CMLObject implements ILayout
 	{

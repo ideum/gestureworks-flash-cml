@@ -7,7 +7,6 @@ package com.gestureworks.cml.element
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.Bitmap;
 	import flash.display.PixelSnapping;
@@ -26,7 +25,6 @@ package com.gestureworks.cml.element
 	 *	</codeblock> 
 	 * 
 	 * @author Ideum
-	 * @see com.gestureworks.cml.factories.BitmapFactory
 	 */	  	
 	public class Image extends TouchContainer
 	{		

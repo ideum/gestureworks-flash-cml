@@ -1,7 +1,6 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.factories.ElementFactory;
 	import com.gestureworks.cml.utils.Waveform;
 	import com.adobe.xmp.core.XMPConst;
 	import com.adobe.xmp.core.XMPMeta;

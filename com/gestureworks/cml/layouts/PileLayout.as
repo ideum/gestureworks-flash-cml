@@ -63,7 +63,7 @@ package com.gestureworks.cml.layouts
 	 * @see ListLayout
 	 * @see PointLayout
 	 * @see RandomLayout
-	 * @see com.gestureworks.cml.factories.LayoutFactory
+	 * @see com.gestureworks.cml.layout.Layout
 	 * @see com.gestureworks.cml.element.Container
 	 */
 	public class PileLayout extends Layout

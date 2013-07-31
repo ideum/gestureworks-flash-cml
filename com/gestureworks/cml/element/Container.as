@@ -2,7 +2,6 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.element.*;
-	import com.gestureworks.cml.factories.*;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
