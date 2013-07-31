@@ -507,7 +507,7 @@ package com.gestureworks.cml.element
 		private function generateTweens():void
 		{			
 			var upTweens:Array = new Array();
-			upTweens.push(TweenLite.to(handle, .3, { y:-100, ease:Expo.easeOut } ));
+			upTweens.push(TweenLite.to(handle, .3, { y:0, ease:Expo.easeOut } ));
 			upTweens.push(TweenLite.to(contentHolder, .3, { y:handle.height, ease:Expo.easeOut } ));
 			if (leftHandle)
 				upTweens.push(TweenLite.to(leftHandle, .3, {y:handle.height, ease:Expo.easeOut}));
@@ -563,7 +563,7 @@ package com.gestureworks.cml.element
 				rightHandle.addEventListener(GWGestureEvent.FLICK, close);
 			}			
 			
-			handle.visible = !_isOpen;
+			if(useRightHandle || useLeftHandle) handle.visible = !_isOpen;										
 			if (leftHandle) leftHandle.visible = _isOpen;
 			if (rightHandle) rightHandle.visible = _isOpen;
 		}
@@ -576,8 +576,10 @@ package com.gestureworks.cml.element
 		{	
 			if (!tweenThreshold()) return;
 			handleTransition();
-			leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
-			rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
+			if (leftHandle)
+				leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
+			if(rightHandle)
+				rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
 			upTween.restart();
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.removeEventListener(GWGestureEvent.FLICK, open);
@@ -593,8 +595,10 @@ package com.gestureworks.cml.element
 		{			
 			if (!tweenThreshold()) return;
 			handle.visible = true;
-			leftHandle.searchChildren(Graphic).topLeftRadius = 0;
-			rightHandle.searchChildren(Graphic).topRightRadius = 0;			
+			if(leftHandle)
+				leftHandle.searchChildren(Graphic).topLeftRadius = 0;
+			if(rightHandle)
+				rightHandle.searchChildren(Graphic).topRightRadius = 0;			
 			downTween.restart();
 			handle.removeEventListener(GWGestureEvent.TAP, close);
 			handle.removeEventListener(GWGestureEvent.FLICK, close);
