@@ -428,7 +428,16 @@ package com.gestureworks.cml.element
 		}
 		
 		
-
+		/**
+		 * returns the child element by id
+		 * @param	id
+		 * @return
+		 */
+		public function getElementById(id:String):*
+		{
+			return childList.getKey(id);
+		}		
+		
 		
 		//////////////////////////////////////////////////////////////
 		// outline
