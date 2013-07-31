@@ -2,19 +2,17 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.ListLayout;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.easing.Expo;
 	import com.greensock.TimelineLite;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
-	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * The Album element provides a list of display objects that can be 
@@ -110,24 +108,9 @@ package com.gestureworks.cml.element
 			checkMask();
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isLoaded", true, true));	
 			
-			if (GestureWorks.activeTUIO)
-			{
-				addEventListener(TuioTouchEvent.TOUCH_DOWN, inBounds);
-				addEventListener(TuioTouchEvent.TOUCH_UP, outOfBounds);
-				addEventListener(TuioTouchEvent.TOUCH_OVER, inBounds);               
-			}
-			else if (GestureWorks.activeNativeTouch)
-			{
-				addEventListener(TouchEvent.TOUCH_BEGIN, inBounds);
-				addEventListener(TouchEvent.TOUCH_END, outOfBounds);
-				addEventListener(TouchEvent.TOUCH_ROLL_OVER, inBounds);				
-			}
-			else
-			{
-				addEventListener(MouseEvent.MOUSE_DOWN, inBounds);
-				addEventListener(MouseEvent.MOUSE_UP, outOfBounds);
-				addEventListener(MouseEvent.MOUSE_OVER, inBounds);				
-			}
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, inBounds);
+			addEventListener(GWTouchEvent.TOUCH_END, outOfBounds);
+			addEventListener(GWTouchEvent.TOUCH_ROLL_OVER, inBounds);							
 			
 			if (snapOffset) {
 				if(loop)
@@ -389,7 +372,7 @@ package com.gestureworks.cml.element
 			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
-			belt.removeEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
+			belt.removeEventListener(GWTouchEvent.TOUCH_BEGIN, resetDrag);			
 		}
 			
 		/**
@@ -415,14 +398,8 @@ package com.gestureworks.cml.element
 			//add gesture events
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
-			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			
-			if (GestureWorks.activeTUIO)			
-				belt.addEventListener(TuioTouchEvent.TOUCH_DOWN, resetDrag);
-			else if (GestureWorks.activeNativeTouch)
-				belt.addEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);
-			else
-				belt.addEventListener(MouseEvent.MOUSE_DOWN, resetDrag);			
+			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);				
+			belt.addEventListener(GWTouchEvent.TOUCH_BEGIN, resetDrag);
 			
 			if (snapping)
 			{
@@ -907,12 +884,8 @@ package com.gestureworks.cml.element
 		 */
 		protected function outOfBounds(e:*):void
 		{
-			if (e.type == "touchEnd" || e.type == "mouseOut" || e.type == "org.tuio.TuioTouchEvent.TOUCH_OUT")
-			{	
-				removeEventListener(TuioTouchEvent.TOUCH_OUT, outOfBounds);				
-				removeEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
-				removeEventListener(MouseEvent.MOUSE_OUT, outOfBounds);				
-			}
+			if (e.type=="gwTouchRollOut" || e.type=="gwTouchEnd")			
+				removeEventListener(GWTouchEvent.TOUCH_ROLL_OUT, outOfBounds);
 			else
 			{	
 				var scrollType:Function = horizontal ? scrollH : scrollV;
@@ -927,14 +900,8 @@ package com.gestureworks.cml.element
 		protected function inBounds(e:*):void
 		{
 			var scrollType:Function = horizontal ? scrollH : scrollV;
-			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
-			
-			if(GestureWorks.activeTUIO)
-				addEventListener(TuioTouchEvent.TOUCH_OUT, outOfBounds);
-			else if (GestureWorks.activeNativeTouch)
-				addEventListener(TouchEvent.TOUCH_ROLL_OUT, outOfBounds);
-			else
-				addEventListener(MouseEvent.MOUSE_OUT, outOfBounds);			
+			belt.addEventListener(GWGestureEvent.DRAG, scrollType);			
+			addEventListener(GWTouchEvent.TOUCH_ROLL_OUT, outOfBounds);
 		}
 		
 		/**
@@ -1133,7 +1100,7 @@ package com.gestureworks.cml.element
 			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
-			belt.removeEventListener(TouchEvent.TOUCH_BEGIN, resetDrag);			
+			belt.removeEventListener(GWTouchEvent.TOUCH_BEGIN, resetDrag);			
 			
 			_belt = null;
 			_loopQueue = null;
