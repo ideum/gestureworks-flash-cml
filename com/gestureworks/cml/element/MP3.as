@@ -64,6 +64,8 @@ package com.gestureworks.cml.element
 		{
 			super();
 			mouseChildren = true;
+			width = 400
+			height = 200;
 		}
 		
 		private var _src:String;
@@ -296,11 +298,23 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void
 		{
+			
 			super.init();
 			load();
 			//_mp3.init();
 		}
 
+		/**
+		 * Closes mp3 
+		 */	
+		public function open(file:String=null):void 
+		{
+			if (file) 
+				src = file;
+			if (src)
+				_mp3.open(src);
+		}			
+		
 		/**
 		 * Closes mp3 
 		 */	
@@ -371,7 +385,7 @@ package com.gestureworks.cml.element
 		
 		protected function load():void
 		{	
-			loading = true;;
+			loading = true;
 			
 			if (display == "waveform") 
 			{

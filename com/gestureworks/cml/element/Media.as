@@ -80,7 +80,9 @@ package com.gestureworks.cml.element
 			else if (file.search(mp3Types) >= 0)
 			{	
 				dictionary[file] = new MP3;
-				dictionary[file].src = src;				
+				dictionary[file].src = src;
+				width = width ? width : dictionary[file].width;
+				height = height ? height : dictionary[file].height;				
 				//dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
@@ -95,6 +97,7 @@ package com.gestureworks.cml.element
 			dictionary[file].open();
 			
 			if (dictionary[file] is Video) dictionary[file].init();
+			else if (dictionary[file] is MP3) dictionary[file].init();
 				
 			addChild(dictionary[file]);	
 			
