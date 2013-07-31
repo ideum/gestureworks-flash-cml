@@ -9,7 +9,6 @@ package com.gestureworks.cml.element
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.utils.*;
-	import org.tuio.*;
 	
 	/**
 	 * The Slider element creates s horizontal or vertical slider that reponds touch and mouse input. It also allows for the input 
@@ -244,12 +243,7 @@ package com.gestureworks.cml.element
 		
 		// public methods//		
 		public function createEvents():void {
-			if (GestureWorks.activeTUIO)
-				hit.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-			else if (GestureWorks.activeNativeTouch)
-				hit.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-			else
-				hit.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
+			hit.addEventListener(GWTouchEvent.TOUCH_BEGIN, onDownHit);
 			
 			if (touchKnob)
 			{
@@ -597,9 +591,7 @@ package com.gestureworks.cml.element
 			touchKnob.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
 			touchKnob.removeEventListener(GWTouchEvent.TOUCH_END, onComplete);
 			hit.removeEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
-			hit.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
-			hit.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-			hit.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
+			hit.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onDownHit);
 		}
 		
 		public function updateLayout():void {
