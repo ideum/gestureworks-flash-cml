@@ -1,11 +1,14 @@
 package com.gestureworks.cml.element 
 {
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.easing.Expo;
+	import com.greensock.easing.ExpoOut;
 	import com.greensock.TimelineLite;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.events.TimerEvent;
+	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
 	/**
@@ -40,6 +43,7 @@ package com.gestureworks.cml.element
 		private var _useSideHandles:Boolean = false;
 		private var _useLeftHandle:Boolean = false;
 		private var _useRightHandle:Boolean = false;
+		private var _handleOrientation:String = "top";
 		
 		private var _isOpen:Boolean = false;	
 		public function get isOpen():Boolean { return _isOpen; }
@@ -80,15 +84,24 @@ package com.gestureworks.cml.element
 			generateTweens();
 			initialState();
 			
+			//drawer mask
 			if (applyMask)
 			{
 				contentMask = new Graphic();
 				contentMask.shape = "rectangle";
 				contentMask.width = width;
-				contentMask.height = height;
+				contentMask.height = height;				
 				addUIComponent(contentMask);
 				mask = contentMask;
-			}	
+			}			
+			
+			//contentHolder mask
+			var chmsk:Graphic = new Graphic();
+			chmsk.shape = "rectangle";
+			chmsk.width = contentHolder.width;
+			chmsk.height = contentHolder.height;
+			contentHolder.addChild(chmsk);
+			contentHolder.mask = chmsk;			
 			
 			//threshold timer to allow tweening to process
 			timer = new Timer(500);
@@ -335,17 +348,42 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * The side of the container (top, bottom, right, left) to position the handle. This setting also determines
+		 * the direction the Drawer opens and closes. 
+		 * @default top
+		 */
+		public function get handleOrientation():String { return _handleOrientation; }
+		public function set handleOrientation(h:String):void {
+			_handleOrientation = h;
+		}
+		
+		/**
+		 * Flag indicating handle orientation is either left or right
+		 */
+		public function get horizontalHandle():Boolean {
+			return handleOrientation == "left" || handleOrientation == "right";
+		}
+		
+		/**
 		 * Sets the width of the drawer and drawer's UI components
 		 * @default 500
 		 */
 		override public function set width(value:Number):void 
 		{
 			super.width = value;
-			if (contentMask) contentMask.width = value;
 			contentHolder.width = value;
-			contentHolder.width = leftHandle ? contentHolder.width - leftHandle.width : width;
-			contentHolder.width = rightHandle ? contentHolder.width - rightHandle.width : width;
-			handleWidth = value;
+			
+			if (horizontalHandle) {
+				contentHolder.width = handle ? value - handle.height : value;
+				handleWidth = contentHolder.height;
+			}
+			else {	
+				contentHolder.width = leftHandle ? contentHolder.width - leftHandle.width : width;
+				contentHolder.width = rightHandle ? contentHolder.width - rightHandle.width : width;
+				handleWidth = value;				
+			}
+			
+			if (contentMask) contentMask.width = contentHolder.width;
 		}
 
 		/**
@@ -355,8 +393,16 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void 
 		{
 			super.height = value;
-			if (contentMask) contentMask.height = handle ? value - handle.height : value;
-			contentHolder.height = handle ? value - handle.height : value;
+			
+			if(horizontalHandle){
+				contentHolder.height = leftHandle ? contentHolder.height - leftHandle.width : height;
+				contentHolder.height = rightHandle ? contentHolder.height - leftHandle.width : height;
+			}
+			else{
+				contentHolder.height = handle ? value - handle.height : value;
+			}
+				
+			if (contentMask) contentMask.height = contentHolder.height;
 		}
 		
 		/**
@@ -396,6 +442,10 @@ package com.gestureworks.cml.element
 		 */
 		private function addHandles():void
 		{
+			//update handle dimensions
+			height = height;
+			width = width;			
+			
 			if (!handle)
 				handle = getDefaultHandle();
 			if (useLeftHandle && ! leftHandle)
@@ -505,25 +555,65 @@ package com.gestureworks.cml.element
 		 * Creates the up and down tweens for the drawer components. 
 		 */
 		private function generateTweens():void
-		{			
-			var upTweens:Array = new Array();
-			upTweens.push(TweenLite.to(handle, .3, { y:0, ease:Expo.easeOut } ));
-			upTweens.push(TweenLite.to(contentHolder, .3, { y:handle.height, ease:Expo.easeOut } ));
-			if (leftHandle)
-				upTweens.push(TweenLite.to(leftHandle, .3, {y:handle.height, ease:Expo.easeOut}));
-			if (rightHandle)
-				upTweens.push(TweenLite.to(rightHandle, .3, {y:handle.height, ease:Expo.easeOut}));				
+		{	
+			var upDestination:Dictionary = new Dictionary();
+			var downDestination:Dictionary = new Dictionary();
+			var ease:ExpoOut = Expo.easeOut;
+			
+			var hUp:Object, hDwn:Object;
+			var cUp:Object, cDwn:Object;
+			
+			switch(handleOrientation) {
+				case "left":
+					hUp = { x:0, ease:ease };
+					hDwn = { x:contentHolder.width, ease:ease };
+					cUp = { x:handle.height, ease:ease };
+					cDwn = { x:contentHolder.width + handle.height, ease:ease };							
+					break;
+				case "right":
+					hUp = { x:contentHolder.width+handle.height, ease:ease };
+					hDwn = { x:handle.height, ease:ease };
+					cUp = { x:0, ease:ease };
+					cDwn = { x:-contentHolder.width, ease:ease };								
+					break;
+				case "bottom":
+					hUp = { y:contentHolder.height + handle.height, ease:ease };
+					hDwn = { y:handle.height, ease:ease };
+					cUp = { y:0, ease:ease };
+					cDwn = { y:-contentHolder.height, ease:ease };					
+					break;
+				default:
+					hUp = { y:0, ease:ease };
+					hDwn = { y:contentHolder.height, ease:ease };
+					cUp = { y:handle.height, ease:ease };
+					cDwn = { y:contentHolder.height + handle.height, ease:ease };					
+				break;
+			}
+			
+			upDestination[handle] = hUp;
+			downDestination[handle] = hDwn;			
+			upDestination[contentHolder] = cUp;
+			downDestination[contentHolder] = cDwn;	
+			
+			if (leftHandle) {
+				upDestination[leftHandle] = cUp;
+				downDestination[leftHandle] = cDwn;
+			}
+			if (rightHandle) {
+				upDestination[rightHandle] = cUp;
+				downDestination[rightHandle] = cDwn;
+			}			
+			
+			var upTweens:Array = new Array();				
+			for (var key:* in upDestination)
+				upTweens.push(TweenLite.to(key, .3, upDestination[key]));
 			upTween = new TimelineLite();
 			upTween.appendMultiple(upTweens);
 			upTween.stop();
 			
 			var downTweens:Array = new Array();
-			downTweens.push(TweenLite.to(handle, .3, {y:contentHolder.height , ease:Expo.easeOut}));
-			downTweens.push(TweenLite.to(contentHolder, .3, {y:contentHolder.height + handle.height , ease:Expo.easeOut}));
-			if (leftHandle)
-				downTweens.push(TweenLite.to(leftHandle, .3, {y:contentHolder.height + handle.height , ease:Expo.easeOut}));
-			if (rightHandle)
-				downTweens.push(TweenLite.to(rightHandle, .3, {y:contentHolder.height + handle.height , ease:Expo.easeOut}));				
+			for (key in downDestination)
+				downTweens.push(TweenLite.to(key, .3, downDestination[key]));
 			downTween = new TimelineLite({onComplete: handleTransition});
 			downTween.appendMultiple(downTweens);
 			downTween.stop();
@@ -534,11 +624,10 @@ package com.gestureworks.cml.element
 		 */
 		private function initialState():void
 		{		
+			positionHandle();
 			if (!initializeOpen)
 			{
-				_isOpen = false;				
-				handle.y = contentHolder.height + 1;
-				contentHolder.y = contentHolder.height + handle.height + 1;
+				_isOpen = false;	
 				handle.addEventListener(GWGestureEvent.TAP, open); 
 				handle.addEventListener(GWGestureEvent.FLICK, open);
 			}
@@ -566,6 +655,59 @@ package com.gestureworks.cml.element
 			if(useRightHandle || useLeftHandle) handle.visible = !_isOpen;										
 			if (leftHandle) leftHandle.visible = _isOpen;
 			if (rightHandle) rightHandle.visible = _isOpen;
+		}
+		
+		/**
+		 * Set the orientation and position of each handle
+		 */
+		private function positionHandle():void {
+			if (initializeOpen) {
+				switch(handleOrientation) {
+					case "left":
+						handle.rotation = -90;
+						handle.y = contentHolder.height;
+						contentHolder.y = -handle;
+						contentHolder.x = handle.height;
+						break;
+					case "right":
+						handle.rotation = 90;
+						handle.x = contentHolder.width + handle.height;
+						contentHolder.y = handle.y;
+						break;
+					case "bottom":
+						handle.y = contentHolder.height;
+						DisplayUtils.rotateAroundCenter(handle, 180);
+						contentHolder.y -= handle.height;
+						break;
+					default:
+						break;
+				}				
+			}
+			else{
+				switch(handleOrientation) {
+					case "left":
+						handle.rotation = -90;
+						handle.y = contentHolder.height;
+						handle.x = contentHolder.width;
+						contentHolder.y = -handle;
+						contentHolder.x = contentHolder.width + handle.height;
+						break;
+					case "right":
+						handle.rotation = 90;
+						handle.x = handle.height;
+						contentHolder.y = handle.y;
+						contentHolder.x = -contentHolder.width;
+						break;
+					case "bottom":
+						DisplayUtils.rotateAroundCenter(handle, 180);
+						contentHolder.y = -(contentHolder.height + handle.height);
+						break;
+					default:
+						handle.y = contentHolder.height;
+						contentHolder.y = contentHolder.height + handle.height;						
+						break;
+				}
+			}
 		}
 		
 		/**
