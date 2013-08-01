@@ -39,7 +39,9 @@ package com.gestureworks.cml.element
 	public class TouchKeyboard extends TouchContainer
 	{	
 		private var _output:TextField;
-		private var _bkgPadding:Number;		
+		private var _bkgPadding:Number;	
+		private var _cornerWidth:Number = 2;
+		private var _cornerHeight:Number = 5;
 		private var _keySpacing:Number;
 		private var _background:*;
 		
@@ -115,6 +117,22 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * The width of the ellipse used to draw the rounded background corners
+		 */
+		public function get cornerWidth():Number { return _cornerWidth; }
+		public function set cornerWidth(w:Number):void {
+			_cornerWidth = w;
+		}		
+		
+		/**
+		 * The height of the ellipse used to draw the rounded background corners
+		 */		
+		public function get cornerHeight():Number { return _cornerHeight; }
+		public function set cornerHeight(h:Number):void {
+			_cornerHeight = h;
+		}				
+		
+		/**
 		 * The spacing between the keys
 		 */
 		public function get keySpacing():Number { return _keySpacing; }
@@ -155,7 +173,7 @@ package com.gestureworks.cml.element
 			{
 				background = new Sprite();
 				background.graphics.beginFill(0xCCCCCC, 1);
-				background.graphics.drawRoundRect(0, 0, bkgPadding, bkgPadding,2, 5);
+				background.graphics.drawRoundRect(0, 0, bkgPadding, bkgPadding, cornerWidth, cornerHeight);
 				background.graphics.endFill();				
 			}
 
