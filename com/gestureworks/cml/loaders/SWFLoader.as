@@ -34,7 +34,7 @@ package com.gestureworks.cml.loaders
 			_src = url;
 			urlRequest = new URLRequest(url);
 							
-			_loader = new com.gestureworks.cml.loaders.Loader();
+			_loader = new flash.display.Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);						
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
