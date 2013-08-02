@@ -6,6 +6,8 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.easing.Quad;
 	import com.greensock.TweenMax;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.GradientType;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
@@ -84,6 +86,30 @@ package com.gestureworks.cml.element
 		public function set fontPaddingRight(value:Number):void {
 			_fontPaddingRight = value;
 		}
+		
+		private var _breadcrumbTrail:Boolean = true;
+		/**
+		 * Sets whether or not to leave the last item selected highlighted when returning to the previous menu.
+		 */
+		public function get breadcrumbTrail():Boolean { return _breadcrumbTrail; }
+		public function set breadcrumbTrail(value:Boolean):void {
+			_breadcrumbTrail = value;
+		}
+		
+		private var _arrowIndicator:*;
+		public function get arrowIndicator():* { return _arrowIndicator; }
+		public function set arrowIndicator(value:*):void {
+			if (!value) return;
+			_arrowIndicator = value;
+		}
+		
+		private var _returnIndicator:*;
+		public function get returnIndicator():* { return _returnIndicator; }
+		public function set returnIndicator(value:*):void {
+			if (!value) return;
+			_returnIndicator = value;
+		}
+		
 		//{ region Background properties
 		
 		
@@ -384,6 +410,12 @@ package com.gestureworks.cml.element
 			selectedGradientRatiosArray = _selectedGradientRatios.split(",");
 		}
 		
+		protected var _selectedFontColor:uint = 0x000000;
+		public function get selectedFontColor():uint { return _selectedFontColor; }
+		public function set selectedFontColor(value:uint):void {
+			_selectedFontColor = value;
+		}
+		
 		//} endregion item selected properties
 		
 		//} endregion Item region
@@ -424,6 +456,24 @@ package com.gestureworks.cml.element
 			
 			if (_initialized) {
 				return;
+			}
+			
+			if (_arrowIndicator != undefined) {
+				if (_arrowIndicator is XML)
+					_arrowIndicator = searchChildren(XML(_arrowIndicator).toString());
+				else 
+					_arrowIndicator = searchChildren(_arrowIndicator);
+				if (_arrowIndicator)
+					removeChild(_arrowIndicator);
+			}
+			
+			if (_returnIndicator != undefined) {
+				if (_returnIndicator is XML)
+					_returnIndicator = searchChildren(XML(_returnIndicator).toString());
+				else 
+					_returnIndicator = searchChildren(_returnIndicator);
+				if (_returnIndicator)
+					removeChild(_returnIndicator);
 			}
 			
 			if (parent && parent is SlideMenu) {
@@ -558,45 +608,77 @@ package com.gestureworks.cml.element
 			_item.height = _itemHeight;
 			_item.width = _itemWidth;
 			
-			_item.addChild(_selected);
+			//_item.addChild(_selected);
 			_selected.visible = false;
 			
 			var itemLabel:Text = new Text();
+			var selectedLabel:Text = new Text();
 			
 			itemLabel.width = itemWidth - _itemFontPaddingLeft - _fontPaddingRight;
 			itemLabel.x = _itemFontPaddingLeft;
 			itemLabel.height = itemHeight - _itemFontPaddingTop;
 			itemLabel.y = _itemFontPaddingTop;
 			
+			selectedLabel.width = itemWidth - _itemFontPaddingLeft - _fontPaddingRight;
+			selectedLabel.x = _itemFontPaddingLeft;
+			selectedLabel.height = itemHeight - _itemFontPaddingTop;
+			selectedLabel.y = _itemFontPaddingTop;
+			
 			itemLabel.text = _label;
 			itemLabel.selectable = false;
 			
+			selectedLabel.text = _label;
+			selectedLabel.selectable = false;
+			
 			itemLabel.autoSize = _itemFontAutoSize;
+			selectedLabel.autoSize = _itemFontAutoSize;
 			
 			itemLabel.color = _itemFontColor;
-			itemLabel.fontSize = _itemFontSize;
+			itemLabel.fontSize = _itemFontSize; 
+			
+			selectedLabel.color = _selectedFontColor;
+			selectedLabel.fontSize = _itemFontSize;
 			
 			if (_itemFontAutoSize == "center") {
 				itemLabel.x = (itemWidth / 2) - (itemLabel.width / 2);
+				selectedLabel.x = (itemWidth / 2) - (itemLabel.width / 2);
 			}
 			
 			_item.addChild(itemLabel);
+			_selected.addChild(selectedLabel);
+			_item.addChild(_selected);
+			if (_arrowIndicator is DisplayObject) {
+				_item.addChild(_arrowIndicator);
+				_arrowIndicator.x = _item.width - _arrowIndicator.width - paddingRight;
+				_arrowIndicator.y = (_item.height - _arrowIndicator.height) / 2;
+				trace("Arrow indicator dimensions:", _arrowIndicator.width, _arrowIndicator.height);
+				if (itemFontAutoSize == "right") {
+					itemLabel.width -= _arrowIndicator.width + paddingRight;
+					selectedLabel.width -= _arrowIndicator.width + paddingRight;
+				}
+			}
 			_item.id = label;
 			//addChild(_item);
 		}
 		
 		protected function createBackButton():void {
 			_backButton = new TouchContainer();
-			
-			var radius:Number = (this.height / 2) * 0.7;
-			_backButton.graphics.lineStyle(1.5, 0xffffff);
-			_backButton.graphics.beginFill(0x000000, 1);
-			_backButton.graphics.drawCircle(radius, radius, radius);
-			
+			if (_returnIndicator && _returnIndicator is DisplayObject) {
+				_backButton.addChild(_returnIndicator);
+				_backButton.width = _returnIndicator.width;
+				_backButton.height = _returnIndicator.height;
+			}
+			else {
+				var radius:Number = (this.height / 2) * 0.7;
+				_backButton.graphics.lineStyle(1.5, 0xffffff);
+				_backButton.graphics.beginFill(0x000000, 1);
+				_backButton.graphics.drawCircle(radius, radius, radius);
+				_backButton.width = radius * 2;
+				_backButton.height = radius * 2;
+			}
 			_backButton.gestureList = gestureList;
 			_backButton.addEventListener(GWGestureEvent.TAP, onBackTap);
-			_backButton.width = radius * 2;
-			_backButton.height = radius * 2;
+			
 			if ("id" in parent) {
 				_backButton.id = parent["id"];
 			}
@@ -614,8 +696,6 @@ package com.gestureworks.cml.element
 				var ind:int = _menuItems.indexOf(e.target);
 				
 				if (_menuItems[ind].id in origins) {
-					// Pass along the menu item and the menu that originally created to keep with the styles of its originating tag.
-					//callDownState(Sprite(e.target), origins[_menuItems[ind].id]);
 					callDown(TouchContainer(e.target));
 					
 					_menuItems[ind].addEventListener(GWTouchEvent.TOUCH_END, onItemUp);
@@ -633,10 +713,6 @@ package com.gestureworks.cml.element
 				var ind:int = _menuItems.indexOf(e.target);
 				
 				if (_menuItems[ind].id in origins) {
-					trace("up");
-					// Pass along the menu item and the menu that originally created to keep with the styles of its originating tag.
-					//callUpState(Sprite(e.target), origins[_menuItems[ind].id]);
-					//SlideMenu(origins[_menuItems[ind].id]).callUp();
 					callUp(TouchContainer(e.target));
 					
 					_menuItems[ind].removeEventListener(GWTouchEvent.TOUCH_END, onItemUp);
@@ -652,16 +728,14 @@ package com.gestureworks.cml.element
 			
 			if (e.target.id in _subMenus) {
 				tweening = true;
-				
-				//callDownState(Sprite(e.target), _subMenus[e.target.id]);
 				callDown(TouchContainer(e.target));
 				
 				var tweenXto:Number = this.x - (this.width + _itemSpacing);
 				TweenMax.to(this, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { 
 																			tweening = false; 
-																			dispatchMenuState(e.target.id);  
+																			dispatchMenuState(e.target.id);
+																			if (!_breadcrumbTrail) callUp(TouchContainer(e.target));
 																			} } );
-				//TweenMax.to(maskSprite, 0.5, { x:-tweenXto, ease:Quad.easeInOut } );
 			}
 			else {
 				dispatchMenuState(e.target.id);
@@ -675,8 +749,12 @@ package com.gestureworks.cml.element
 			tweening = true;
 			
 			var tweenXto:Number = parent.x + (this.width + _itemSpacing);
-			TweenMax.to(parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { tweening = false; 
-																		dispatchMenuState(parent["label"]); }} );
+			
+			TweenMax.to(parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { 
+																		tweening = false; 
+																		dispatchMenuState(parent["label"]); 
+																		clearTrail(parent);
+																		}} );
 			
 		}
 		
@@ -702,12 +780,14 @@ package com.gestureworks.cml.element
 					
 					if (childMenu.title) {
 						_subMenus[childMenu.label] = childMenu;
-						addChild(_subMenus[childMenu.label]);
 						childMenu.x = width + itemSpacing;
-						//childMenu.addChild(childMenu.title);
 					}
-					this.addChild(_menuItems[j]);
+					this.addChild(_menuItems[_menuItems.length - 1]);
 				}
+			}
+			
+			for (var s:String in _subMenus) {
+				addChild(_subMenus[s]);
 			}
 			
 			addChild(_title);
@@ -727,6 +807,7 @@ package com.gestureworks.cml.element
 				return;
 				
 			maskSprite = new Sprite();
+			maskSprite.name = "SlideMenu-Mask";
 			maskSprite.graphics.beginFill(0xff00ff, 0);
 			maskSprite.graphics.drawRect(0, 0, width, _totalHeight);
 			maskSprite.graphics.endFill();
@@ -739,7 +820,7 @@ package com.gestureworks.cml.element
 			// Copy properties from parent as long as the child hasn't set them and the parent has.
 			for (var s:String in this.state[0]) {
 				
-				if (!(s in childMenu.state[0])) {
+				if (!(s in childMenu.state[0]) && s!= "arrowIndicator" && s != "id") {
 					childMenu.state[0][s] = this.state[0][s];
 					childMenu[s] = this.state[0][s];
 				}
@@ -760,77 +841,36 @@ package com.gestureworks.cml.element
 		}
 		
 		protected function callDown(target:TouchContainer):void {
-			trace("Down.");
-			//_selected.visible = true;
-			//trace(Sprite(_item).getChildIndex(_selected));
-			target.getChildAt(0).visible = true;
+			target.getChildAt(1).visible = true;
 		}
 		
 		protected function callUp(target:TouchContainer):void {
-			//_selected.visible = false;
-			
-			
-			
-			
-			target.getChildAt(0).visible = false;
-		}
-		
-		protected function callDownState(target:Sprite, template:SlideMenu):void 
-		{
-			
-			// Gradient fill
-			target.graphics.clear();
-			if (template.itemGradientType != "none") {
-				var m:Matrix = new Matrix();
-				m.createGradientBox(template.itemWidth, template.itemHeight, (Math.PI / 180) * 90);
-				target.graphics.beginGradientFill(template.itemGradientType, template.selectedGradientColorArray, template.selectedGradientAlphasArray, template.selectedGradientRatiosArray, m);
-			}
-			// solid fill
-			else {
-				target.graphics.beginFill(template.selectedFill);
-			}
-			
-			target.graphics.lineStyle(template.itemStroke, template.itemStrokeColor);
-			
-			if (template.itemShape == "roundRectangle") {
-				target.graphics.drawRoundRect(0, 0, template.itemWidth, template.itemHeight, template.itemCornerWidth, template.itemCornerHeight)
-			}
-			else {
-				target.graphics.drawRect(0, 0, template.itemWidth, template.itemHeight);
-			}
-			
-			target.graphics.endFill();
-		}
-		
-		protected function callUpState(target:Sprite, template:SlideMenu):void 
-		{
-			
-			// Gradient fill
-			target.graphics.clear();
-			if (template.itemGradientType != "none") {
-				var m:Matrix = new Matrix();
-				m.createGradientBox(template.itemWidth, template.itemHeight, (Math.PI / 180) * 90);
-				target.graphics.beginGradientFill(template.itemGradientType, template.itemGradientColorArray, template.itemGradientAlphasArray, template.itemGradientRatiosArray, m);
-			}
-			// solid fill
-			else {
-				target.graphics.beginFill(template.itemFill);
-			}
-			
-			target.graphics.lineStyle(template.itemStroke, template.itemStrokeColor);
-			
-			if (template.itemShape == "roundRectangle") {
-				target.graphics.drawRoundRect(0, 0, template.itemWidth, template.itemHeight, template.itemCornerWidth, template.itemCornerHeight)
-			}
-			else {
-				target.graphics.drawRect(0, 0, template.itemWidth, template.itemHeight);
-			}
-			
-			target.graphics.endFill();
+			target.getChildAt(1).visible = false;
 		}
 		
 		protected function dispatchMenuState(selectedItem:String):void {
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", selectedItem));
+		}
+		
+		
+		protected function clearTrail(objToClean:DisplayObjectContainer):void 
+		{
+			for (var i:int = 0; i < objToClean.numChildren; i++) {
+				if (objToClean.getChildAt(i) is TouchContainer && !(objToClean.getChildAt(i) is SlideMenu)) {
+					callUp(TouchContainer(objToClean.getChildAt(i)));
+				}
+			}
+		}
+		
+		public function reset():void {
+			clearTrail(this);
+			for (var i:int = 0; i < numChildren; i++) {
+				if (getChildAt(i) is SlideMenu) {
+					clearTrail(SlideMenu(getChildAt(i)));
+					getChildAt(i).x += (this.width + _itemSpacing);
+				}
+			}
+			this.x = 0;
 		}
 		
 		//} endregion Utility
