@@ -730,6 +730,8 @@ package com.gestureworks.cml.element
 				tweening = true;
 				callDown(TouchContainer(e.target));
 				
+				_subMenus[e.target.id].visible = true;
+				
 				var tweenXto:Number = this.x - (this.width + _itemSpacing);
 				TweenMax.to(this, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { 
 																			tweening = false; 
@@ -749,9 +751,12 @@ package com.gestureworks.cml.element
 			tweening = true;
 			
 			var tweenXto:Number = parent.x + (this.width + _itemSpacing);
+			var backLabel:String = this.label;
+			var childMenu:SlideMenu = SlideMenu(parent).subMenus[backLabel];
 			
-			TweenMax.to(parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { 
-																		tweening = false; 
+			TweenMax.to(parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void {
+																		tweening = false;
+																		childMenu.visible = false;
 																		dispatchMenuState(parent["label"]); 
 																		clearTrail(parent);
 																		}} );
@@ -779,6 +784,7 @@ package com.gestureworks.cml.element
 						_totalHeight = childMenu.totalHeight;
 					
 					if (childMenu.title) {
+						childMenu.visible = false;
 						_subMenus[childMenu.label] = childMenu;
 						childMenu.x = width + itemSpacing;
 					}
