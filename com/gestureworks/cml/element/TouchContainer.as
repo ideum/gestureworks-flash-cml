@@ -569,19 +569,7 @@ package com.gestureworks.cml.element
 			if (_sound) {
 				//SoundUtils.attachSound(this, _sound);
 			}
-		}
-		
-		private var _scale:Number = 1;
-		/**
-		 * Scales display object
-		 */	
-		public function get scale():Number{return _scale;}
-		public function set scale(value:Number):void
-		{
-			_scale = value;
-			scaleX = scale;
-			scaleY = scale;
-		}		
+		}	
 		
 		private var _layoutComplete:Function;		
 		/**
