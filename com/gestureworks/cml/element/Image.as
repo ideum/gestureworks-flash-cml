@@ -233,7 +233,7 @@ package com.gestureworks.cml.element
 			_sizeArray = value;
 		}
 		
-		private var _bitmapDataArray:Array;
+		protected var _bitmapDataArray:Array;
 		/**
 		 * stores bitmap data array
 		 */
