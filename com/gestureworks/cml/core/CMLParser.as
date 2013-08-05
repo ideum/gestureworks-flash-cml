@@ -455,18 +455,17 @@ package com.gestureworks.cml.core
 				obj = createObject(tag);	
 	
 				
-				// assign id and class values
-				if (node.@id != undefined) {
+				// assign id
+				if (node.@id != undefined)
 					obj.id = node.@id;
-					if (node.@['class'] != undefined)
-						obj.class_ = node.@['class'];
-				} 
-				else if (node.@['class'] != undefined) {
-					obj.class_ = node.@['class'];
-					obj.id = node.@['class'];
-				} 
-				else obj.id = tag;
+				// id defaults to name
+				else 
+					obj.id = obj.name; 
 				
+				// assign class values
+				if (node.@['class'] != undefined)
+					obj.class_ = node.@['class'];
+					
 				
 
 				// unique object identifier
