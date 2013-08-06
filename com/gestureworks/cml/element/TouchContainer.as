@@ -424,7 +424,12 @@ package com.gestureworks.cml.element
 
 		public function activateTouch():void
 		{
-			this.gestureList = cmlGestureList;
+			// checks if object is empty
+			for (var s:String in cmlGestureList) {
+				this.gestureList = cmlGestureList;
+				break;
+			}
+			
 		}
 		
 		
