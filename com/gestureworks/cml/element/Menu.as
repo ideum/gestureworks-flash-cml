@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 			_autoHideTime = value; 
 		}
 		
-		private var _position:Number = 2500;
+		private var _position:String = "bottom";
 		/**
 		 * Specifies the position alogorithm of the menu. 
 		 * This includes the position of the buttons with in the menu.
