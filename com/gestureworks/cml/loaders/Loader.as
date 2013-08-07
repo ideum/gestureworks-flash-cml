@@ -6,6 +6,8 @@ package com.gestureworks.cml.loaders
 	import flash.events.*;
 	import flash.media.Sound;
 	import flash.net.*;
+	import flash.system.LoaderContext; 
+	import flash.system.ImageDecodingPolicy;
 	
 	/**
 	 * The loader base class.
@@ -20,7 +22,11 @@ package com.gestureworks.cml.loaders
 		/**
 		 * Constructor
 		 */
-		public function Loader() {}
+		public function Loader() 
+		{
+			_loaderContext = new LoaderContext;
+			_loaderContext.imageDecodingPolicy = ImageDecodingPolicy.ON_LOAD;
+		}
 		
 		
 		protected var _loader:*;
@@ -28,6 +34,13 @@ package com.gestureworks.cml.loaders
 		 * Contains the loader
 		 */		
 		public function get loader():* {return _loader;}
+		
+		
+		protected var _loaderContext:LoaderContext;
+		/**
+		 * Contains the loaderContext
+		 */		
+		public function get loaderContext():LoaderContext {return _loaderContext;}		
 		
 		
 		protected var _data:*;
@@ -79,7 +92,6 @@ package com.gestureworks.cml.loaders
 				_loader = new Sound();
 				_loader.addEventListener(Event.COMPLETE, onComplete);
 				_loader.load(urlRequest);
-				
 				return;
 			}
 			
@@ -87,7 +99,7 @@ package com.gestureworks.cml.loaders
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);						
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-			_loader.load(urlRequest);
+			_loader.load(urlRequest, _loaderContext);
 		}		
 		
 		
