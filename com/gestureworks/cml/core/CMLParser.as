@@ -519,7 +519,8 @@ package com.gestureworks.cml.core
 			var dataPathExp:String;
 			var tmp:XMLList;
 			var ret:XMLList = new XMLList;
-
+			var max:int = int.MAX_VALUE;
+			var repeat:int = 1;
 
 			for (var q:int; q < renderKit.Renderer.length(); q++) {
 				
@@ -546,7 +547,11 @@ package com.gestureworks.cml.core
 					rendererData = tmp;
 				}
 
-				
+				if (renderKit.Renderer.@max != undefined)
+					max = renderKit.Renderer.@max;	
+					
+				if (renderKit.Renderer.@repeat != undefined)
+					repeat = renderKit.Renderer.@repeat;						
 				
 				if (renderKit.Renderer.@dataRootTag == undefined) {
 					renderList = rendererData.*;
@@ -556,11 +561,14 @@ package com.gestureworks.cml.core
 					renderList = rendererData.*.(name() == dataRootTag);
 				}	
 				
+				var len:int = (max < renderList.length()) ? max : renderList.length();
 				
-				for (var i:int = 0; i < renderList.length(); i++) {
-					cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
-					loopRenderer(XMLList(renderList[i]), cmlRenderer);
-					ret += XMLList(cmlRenderer);
+				for (var i:int = 0; i < repeat; i++) {
+					for (var j:int = 0; j < len; j++) {
+						cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
+						loopRenderer(XMLList(renderList[j]), cmlRenderer);
+						ret += XMLList(cmlRenderer);
+					}
 				}
 			}
 					
