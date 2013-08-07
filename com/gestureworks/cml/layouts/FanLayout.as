@@ -72,11 +72,11 @@ package com.gestureworks.cml.layouts
 			type = "topLeftOrigin";
 		}	
 		
+		private var _angle:Number = 5;
 		/**
 		 * The angle of rotation
 		 * @default 5
-		 */
-		private var _angle:Number = 5;
+		 */		
 		public function get angle():Number { return _angle; }
 		public function set angle(a:Number):void 
 		{
