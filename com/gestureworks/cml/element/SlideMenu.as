@@ -752,27 +752,12 @@ package com.gestureworks.cml.element
 		private function onTap(e:GWGestureEvent):void 
 		{
 			
-<<<<<<< HEAD
-			if (e.target.id in _subMenus) {
-				tweening = true;
-				callDown(TouchContainer(e.target));
-				
-				_subMenus[e.target.id].visible = true;
-				
-				var tweenXto:Number = this.x - (this.width + _itemSpacing);
-				TweenMax.to(this, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { 
-																			tweening = false; 
-																			dispatchMenuState(e.target.id);
-																			if (!_breadcrumbTrail) callUp(TouchContainer(e.target));
-																			} } );
-=======
 			if (_menuState == _label){
 				for (var i:int = 0; i < _menuItems.length; i++) {
 					if (DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY)) {
 						tweenForward(_menuItems[i], this);
 					}
 				}
->>>>>>> origin/New-Slidemenu
 			}
 			else {
 				
@@ -791,28 +776,6 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-<<<<<<< HEAD
-		protected function onBackTap(e:GWGestureEvent):void 
-		{
-			if (tweening) return;
-			
-			tweening = true;
-			
-			var tweenXto:Number = parent.x + (this.width + _itemSpacing);
-			var backLabel:String = this.label;
-			var childMenu:SlideMenu = SlideMenu(parent).subMenus[backLabel];
-			
-			TweenMax.to(parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void {
-																		tweening = false;
-																		childMenu.visible = false;
-																		dispatchMenuState(parent["label"]); 
-																		clearTrail(parent);
-																		}} );
-			
-		}
-		
-=======
->>>>>>> origin/New-Slidemenu
 		//} endregion Event Handlers
 		
 		//{ region Utility
