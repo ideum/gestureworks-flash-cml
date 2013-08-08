@@ -1,4 +1,4 @@
-package  
+package com.gestureworks.cml.managers 
 {
 	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.cml.events.StateEvent;

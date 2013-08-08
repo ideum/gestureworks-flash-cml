@@ -462,7 +462,12 @@ package com.gestureworks.cml.core
 							
 				
 				obj = createObject(tag);	
-	
+				
+				//save object states
+				if (node.@saveState != undefined) {
+					StateManager.saveObject(obj);
+					delete node.@["saveState"];
+				}					
 				
 				// assign id
 				if (node.@id != undefined)
@@ -571,10 +576,11 @@ package com.gestureworks.cml.core
 				}	
 				
 				var len:int = (max < renderList.length()) ? max : renderList.length();
+				cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
+				processStates(renderList, cmlRenderer);
 				
 				for (var i:int = 0; i < repeat; i++) {
 					for (var j:int = 0; j < len; j++) {
-						cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
 						loopRenderer(XMLList(renderList[j]), cmlRenderer);
 						ret += XMLList(cmlRenderer);
 					}
@@ -654,6 +660,17 @@ package com.gestureworks.cml.core
 			}						
 		}
 		
+		/**
+		 * Save states of all nodes with stateId attribute.
+		 * @param	renderList  render data objects
+		 * @param	cmlRenderer  renderer objects
+		 */
+		private static function processStates(renderList:XMLList, cmlRenderer:XMLList):void {
+			for each(var node:XML in renderList) {
+				if (node.@stateId != undefined)
+					StateManager.saveState(node, cmlRenderer);
+			}
+		}
 	
 		private static function parseFilter(obj:*, node:XMLList):XMLList
 		{
