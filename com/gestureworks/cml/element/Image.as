@@ -2,8 +2,9 @@ package com.gestureworks.cml.element
 {	
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.loaders.IMGLoader;
 	import com.gestureworks.cml.managers.*;
+	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.ImageLoader;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
@@ -29,10 +30,10 @@ package com.gestureworks.cml.element
 	public class Image extends TouchContainer
 	{		
 		// image file loader
-		protected var img:IMGLoader;
+		public var img:ImageLoader;
 		
 		// loaded bitmap data from file
-		private var fileData:Loader;
+		public var fileData:Bitmap;
 		
 		/**
 		 * Constructor
@@ -60,8 +61,8 @@ package com.gestureworks.cml.element
 			sizeArray = null;
 				
    			if (img) {
-				img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
-				img.unloadAndStop();
+				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
+				img.dispose();
 				img = null;
 			}
 			
@@ -261,10 +262,10 @@ package com.gestureworks.cml.element
 		public function open(file:String=null):void
 		{
 			if (file) src = file;
-			img = new IMGLoader;
-			img.load(src);
-			img.addEventListener(IMGLoader.COMPLETE, loadComplete);
-			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
+			img = new ImageLoader(file);
+			img.load();
+			img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
+			img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
 		}	
 		
 		
@@ -321,9 +322,9 @@ package com.gestureworks.cml.element
 		{	
 			if (img)
 			{
-				fileData = img.loader;
-				img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
-				img.removeEventListener(StateEvent.CHANGE, onPercentLoad);
+				fileData = img.rawContent;
+				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
+				img.removeEventListener(LoaderEvent.PROGRESS, onPercentLoad);
 			}
 			else
 			{
@@ -334,10 +335,11 @@ package com.gestureworks.cml.element
 				else
 					imageSrc = state[0]["src"];
 					
-				if (!FileManager.fileList.hasKey(imageSrc))
+				if (!FileManager.hasFile(imageSrc))
 					return;
-					
-				fileData = (FileManager.fileList.getKey(imageSrc)) as flash.display.Loader;			
+				
+				img = ImageLoader(FileManager.media.getLoader(imageSrc));
+				fileData = img.rawContent;		
 			}
 
 			
@@ -379,14 +381,14 @@ package com.gestureworks.cml.element
 				var resizeMatrix:Matrix = new Matrix();		
 				resizeMatrix.scale(percentX, percentY);				
 				_bitmapData = new BitmapData(fileData.width * percentX, fileData.height * percentY, true, 0x000000);
-				_bitmapData.draw(fileData.content, resizeMatrix);
+				_bitmapData.draw(fileData, resizeMatrix);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
 				resizeMatrix = null;
 			}			
 			else
 			{	
 				_bitmapData = new BitmapData(fileData.width, fileData.height, true, 0x000000);
-				_bitmapData.draw(fileData.content);
+				_bitmapData.draw(fileData);
 				_bitmap = new Bitmap(_bitmapData, PixelSnapping.NEVER, true);
 				
 				scaleX *= percentX;
@@ -427,8 +429,7 @@ package com.gestureworks.cml.element
 			// Do this if it loaded itself. If using the preloader, the preloader handles unloading
 			if (img &&  !_bitmapDataCache) 
 			{
-				fileData.unload();
-				fileData.unloadAndStop();
+				img.dispose();
 				fileData = null;
 			}
 			
@@ -582,7 +583,7 @@ package com.gestureworks.cml.element
 					resizeMatrix.scale(reduceX, reduceY);
 					// resize bitmap data
 					bitmapData = new BitmapData(width * reduceX, height * reduceY);
-					bitmapData.draw(fileData.content, resizeMatrix);
+					bitmapData.draw(fileData, resizeMatrix);
 						
 					_bitmap = new Bitmap(bitmapData,PixelSnapping.NEVER,true);
 					_bitmap.smoothing=true;

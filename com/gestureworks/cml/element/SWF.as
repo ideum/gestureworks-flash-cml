@@ -47,8 +47,8 @@ package com.gestureworks.cml.element
 		{
 			_src = value;
 			
-			if (FileManager.instance.fileList.selectKey(_src).loader)
-				addChild(FileManager.instance.fileList.selectKey(_src).loader);
+			if (FileManager.hasFile(_src))
+				addChild(FileManager.swf.getLoader(_src).content);
 			else
 				throw new Error("swf " + _src +  " failed to load");
 		}

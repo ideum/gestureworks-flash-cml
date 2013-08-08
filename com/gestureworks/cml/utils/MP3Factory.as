@@ -18,13 +18,14 @@ package com.gestureworks.cml.utils
 {	
 	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.loaders.MP3Loader;
 	import com.gestureworks.cml.managers.FileManager;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.media.*;
 	import flash.net.*;
 	import flash.utils.*;
+	import com.greensock.loading.MP3Loader;
+	import com.greensock.events.LoaderEvent;
 	
 	/** 
 	 * The MP3Factory is the base class for all MP3s.
@@ -161,7 +162,7 @@ package com.gestureworks.cml.utils
 			//if (preload)
 				//load();
 				
-			if (preload && FileManager.fileList.hasKey(_src)) {
+			if (preload && FileManager.media.getContent(_src)) {
 				soundLoaded();
 			}
 		}
@@ -277,12 +278,12 @@ package com.gestureworks.cml.utils
 		protected function load():void
 		{
 			//audio
-			soundLoader = new MP3Loader();
-			
-			soundLoader.addEventListener(MP3Loader.COMPLETE, soundLoaded);
+			soundLoader = new MP3Loader(_src);
+		
+			soundLoader.addEventListener(LoaderEvent.COMPLETE, soundLoaded);
 			//soundData.addEventListener(Event.COMPLETE, soundLoaded);
 			
-			soundLoader.load(_src);
+			soundLoader.load();
 		}
 		
 		protected function soundLoaded(event:Event=null):void 
@@ -303,8 +304,8 @@ package com.gestureworks.cml.utils
 			
 			if (soundLoader)
 			{
-				soundLoader.removeEventListener(MP3Loader.COMPLETE, soundLoaded);
-				soundData = soundLoader.loader;
+				soundLoader.removeEventListener(LoaderEvent.COMPLETE, soundLoaded);
+				soundData = soundLoader.content;
 				//fileData = img.loader;
 				//img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
 				//img.removeEventListener(StateEvent.CHANGE, onPercentLoad);
@@ -318,10 +319,10 @@ package com.gestureworks.cml.utils
 				else
 					soundSrc = state[0]["src"];
 					
-				if (!FileManager.fileList.hasKey(soundSrc))
+				if (!FileManager.media.getContent(soundSrc))
 					return;
 					
-				soundData = (FileManager.fileList.getKey(soundSrc)) as Sound;			
+				soundData = (FileManager.media.getContent(soundSrc)) as Sound;			
 			}
 			
 			if (autoplay) play();

@@ -6,10 +6,12 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.kits.*;
-	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
+	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.core.LoaderCore;
+	import com.greensock.loading.LoaderMax;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.utils.*;	
@@ -41,7 +43,7 @@ package com.gestureworks.cml.core
 		//public variables
 		public static const COMPLETE:String = "COMPLETE";
 		
-		public static var debug:Boolean = false;			
+		public static var debug:Boolean = true;			
 		
 		public static var rootDirectory:String = "";	
 		public static var relativePaths:Boolean = false;					
@@ -69,6 +71,8 @@ package com.gestureworks.cml.core
 		public static function init(cml:XML, parent:*, properties:*=null):void
 		{
 			if (debug) trace('\n========================== CML Parser Initialized ===============================\n');				
+			
+			FileManager.init();
 			
 			// required for TLF
 			XML.ignoreWhitespace = true;
@@ -152,15 +156,11 @@ package com.gestureworks.cml.core
 			for (i = 0; i < cml.length(); i++) {
 				tag = cml[i].name();
 				
-				if (!tag) {
-					// TODO: Replace -match against RendererData attribute values to more reliably resolve paths
-					//if (cml.parent() && 
-					//	cml.parent().parent().parent().name() == "RendererData") {			
-						if ( cml[i].toString().search(FileManager.cmlType) > -1 )
-							ppInclude(cml[i], cml[i].toString());					
-						else if ( cml[i].toString().search(FileManager.mediaPreloadTypes) > -1 )
-							ppMedia(cml[i], cml[i].toString());
-					//}	
+				if (!tag) {		
+					if ( cml[i].toString().search(FileManager.cmlType) > -1 )
+						ppInclude(cml[i], cml[i].toString());					
+					else if ( cml[i].toString().search(FileManager.mediaPreloadTypes) > -1 )
+						ppMedia(cml[i], cml[i].toString());
 					continue;
 				}
 				
@@ -193,7 +193,8 @@ package com.gestureworks.cml.core
 			
 			for (var i:int = 0; i < p.length; i++) {
 				if (!FileManager.hasFile(p[i])) {
-					FileManager.addToQueue(p[i]);
+					var loader:LoaderCore = FileManager.append(p[i]);
+					loader.addEventListener(LoaderEvent.COMPLETE, fileLoaded);
 					cnt++;
 				}	
 			}
@@ -208,32 +209,41 @@ package com.gestureworks.cml.core
 		
 		private static function startQueue():void 
 		{
-			FileManager.addEventListener(FileEvent.FILE_LOADED, fileLoaded);
-			FileManager.addEventListener(FileEvent.FILES_LOADED, filesLoaded);
-			FileManager.startQueue();			
+			if (state == "Include") {
+				FileManager.cml.addEventListener(LoaderEvent.COMPLETE, filesLoaded);
+				FileManager.cml.load();
+			}
+			else if (state == "Library") {
+				FileManager.swf.addEventListener(LoaderEvent.COMPLETE, filesLoaded);
+				FileManager.swf.load();				
+			}
+			else if (state == "Media") {
+				FileManager.media.addEventListener(LoaderEvent.COMPLETE, filesLoaded);
+				FileManager.media.load();				
+			}			
 		}
 		
-		private static function stopQueue():void 
-		{
-			FileManager.removeEventListener(FileEvent.FILE_LOADED, fileLoaded);
-			FileManager.removeEventListener(FileEvent.FILES_LOADED, filesLoaded);
-			FileManager.stopQueue();			
-		}		
 		
-		private static function fileLoaded(e:FileEvent):void
+		private static function fileLoaded(e:LoaderEvent):void
 		{
-			if (debug) trace("0:" + fileCnt.toString(), "File loaded:", e.path, e.data);
-			data.push(e.data);
+			LoaderCore(e.target).removeEventListener(LoaderEvent.COMPLETE, fileLoaded);
+			if (debug) trace("0:" + fileCnt.toString(), "File loaded:", LoaderCore(e.target).name, LoaderCore(e.target).content);
+			if (state == "Include") data.push(LoaderCore(e.target).content);
 			fileCnt++;
 		}
 		
-		private static function filesLoaded(e:FileEvent):void
+		
+		private static function filesLoaded(e:LoaderEvent):void
 		{
+			LoaderMax(e.target).removeEventListener(LoaderEvent.COMPLETE, fileLoaded); 
 			if (debug) trace("0:*", "Files loaded");			
-			for (var i:int = 0; i < data.length; i++) {
-				preprocessLoop(XMLList(data[i]));
+			
+			if (state == "Include") {
+				for (var i:int = 0; i < data.length; i++) {
+					preprocessLoop(XMLList(data[i]));
+				}
+				data = [];
 			}
-			data = [];
 			processPaths(paths[state]);			
 		}		
 		
@@ -276,8 +286,6 @@ package com.gestureworks.cml.core
 			else {
 				if (cml.@src != undefined)
 					path = cml.@src;
-				else if (cml.@cml != undefined) // deprecate
-					path = cml.@cml;
 				else throw new Error("Include statement must contain the 'src' attribute");
 			}	
 			
@@ -729,7 +737,7 @@ package com.gestureworks.cml.core
 		
 			if (debug) trace("CSS file load complete: ", cssFile);		
 			
-			CSSManager.instance.parseCSS();
+			CSSManager.instance.parseCSS(event.data);
 			loadDisplay();
 		}
 		

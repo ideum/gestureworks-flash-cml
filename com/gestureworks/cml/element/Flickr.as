@@ -3,7 +3,8 @@ package  com.gestureworks.cml.element
 	import com.adobe.webapis.flickr.*;
 	import com.adobe.webapis.flickr.events.*;
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.loaders.IMGLoader;
+	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.ImageLoader;
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.events.Event;
@@ -139,9 +140,9 @@ package  com.gestureworks.cml.element
 		override public function open(file:String=null):void
 		{
 			if (file) url = file;
-			img = new IMGLoader;
-			img.load(url);
-			img.addEventListener(IMGLoader.COMPLETE, loadComplete);
+			img = new ImageLoader(url);
+			img.load(); 
+			img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
 			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
 		}			
 					

@@ -1,15 +1,26 @@
 package com.gestureworks.cml.managers 
 {
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.utils.*;
-	import flash.display.Loader;
+	import com.greensock.loading.core.LoaderCore;
+	import com.greensock.loading.data.SWFLoaderVars;
+	import com.greensock.loading.ImageLoader;
+	import com.greensock.loading.LoaderMax;
+	import com.greensock.loading.MP3Loader;
+	import com.greensock.loading.CSSLoader;
+	import com.greensock.loading.DataLoader;
+	import com.greensock.loading.XMLLoader;
+	import com.greensock.loading.SWFLoader;
+	import com.greensock.loading.BinaryDataLoader;
+	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.VideoLoader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.system.ApplicationDomain;
+	import flash.system.LoaderContext;
 	
 	/**
-	 * The FileManager handles the loading of all external files with 
-	 * exception of CSS files. 
+	 * The FileManager handles the loading of all external files.
 	 * 
 	 * <p>The FileManager is used by the CMLParser to preload 
 	 * external files. It supports the following file types:
@@ -23,6 +34,7 @@ package com.gestureworks.cml.managers
 	 * 	<li>3gpp</li>
 	 * 	<li>mov</li>
 	 * 	<li>flv</li>
+	 *  <li>f4v</li>
 	 * 	<li>swf</li>
 	 * 	<li>cml</li>
 	 * </ul></p> 
@@ -39,23 +51,24 @@ package com.gestureworks.cml.managers
 		public static var swfType:RegExp = /^.*\.(swf)$/i;
 		public static var swcType:RegExp = /^.*\.(swc)$/i;
 		public static var cmlType:RegExp = /^.*\.(cml)$/i;
+		public static var cssType:RegExp = /^.*\.(css)$/i;
 		public static var mp3Type:RegExp = /^.*\.(mp3)$/i;
 		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
 		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|m4v|3gpp|mov|flv|f4v)$/i;
 		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg|mp3)$/i;
 		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
-
-		public function FileManager() { }
-		
-		// legacy support, when FileManager was a singleton
-		private static var _instance:*;
-		public static function get instance():* { 
-			return FileManager;	
-		}
+		public static var cml:LoaderMax = new LoaderMax({name:"cml", onProgress:onProgress, onComplete:onComplete, onError:onError});
+		public static var css:LoaderMax = new LoaderMax( { name:"css", onProgress:onProgress, onComplete:onComplete, onError:onError } );
+		public static var swf:LoaderMax = new LoaderMax({name:"swf", onProgress:onProgress, onComplete:onComplete, onError:onError});		
+		public static var media:LoaderMax = new LoaderMax({name:"media", onProgress:onProgress, onComplete:onComplete, onError:onError});
 		
 		public static var fileList:LinkedMap = new LinkedMap;
-		private static var first:Boolean = true;
+		public static function get fileCount():Number { return fileList.length; }
+		public static function hasFile(file:String):Boolean { return fileList.hasKey(file) }
+		
+		private static var swfLoaderContext:LoaderContext;
+		private static var swfLoaderVars:SWFLoaderVars;
 		
 		/**
 		 * Turns on the debug information
@@ -63,19 +76,20 @@ package com.gestureworks.cml.managers
 		public static var debug:Boolean = false;
 		
 		/**
-		 * The number of files in file list
-		 */
-		public static var fileCount:int;
-		
+		 * 
+		 */		
+		public static function init():void 
+		{
+			swfLoaderContext = new LoaderContext(false);
+			swfLoaderContext.allowCodeImport = true;
+			swfLoaderContext.applicationDomain = ApplicationDomain.currentDomain;	
+			
+			LoaderMax.registerFileType("cml", XMLLoader);
+			LoaderMax.activate([ImageLoader, SWFLoader, XMLLoader, MP3Loader, CSSLoader, DataLoader, BinaryDataLoader, VideoLoader]);
+		}
 		
 		/**
-		 * Indicates whther the file queue has stopped
-		 */
-		public static var stopped:Boolean = false;
-		
-		
-		/**
-		 *  
+		 * Returns true if the given file path is a media type
 		 */
 		public static function isMedia(file:String):Boolean
 		{
@@ -83,7 +97,7 @@ package com.gestureworks.cml.managers
 		}		
 
 		/**
-		 *  
+		 * Returns true if the given file path is a preloaded media type
 		 */		
 		public static function isPreloadMedia(file:String):Boolean
 		{
@@ -91,148 +105,68 @@ package com.gestureworks.cml.managers
 		}	
 		
 		/**
-		 *  
+		 * Returns true if the given file path is a cml type
 		 */
 		public static function isCML(file:String):Boolean
 		{
-			return file.search(fileTypes) != -1;
+			return file.search(cmlType) != -1;
+		}
+		
+		/**
+		 * Returns true if the given file path is a cml type
+		 */
+		public static function isCSS(file:String):Boolean
+		{
+			return file.search(cssType) != -1;
 		}		
 				
-		
-		
-
 		/**
-		 *  
+		 * Returns true if the given file path is a library type
 		 */
 		public static function isLibrary(file:String):Boolean
 		{
 			return file.search(libraryTypes) != -1;
-		}	
-		
-				
-		/**
-		 * 
-		 */
-		public static function hasFile(file:String):Boolean
-		{
-			return fileList.hasKey(file);
 		}		
 		
 		/**
 		 * Appends to file queue
 		 * @param	file - file name
 		 */
-		public static function addToQueue(file:String):void
+		public static function append(file:String):LoaderCore
 		{
-			fileList.append(file, null);
-			fileCount++;			
-		}
-		
-		/**
-		 * Resets file queue
-		 */
-		public static function resetQueue():void
-		{
-			fileList.reset();
-		}	
-		
-		/**
-		 * Starts file queue
-		 */
-		public static function startQueue():void
-		{
-			stopped = false;
-			processFileQueue();
-		}		
-		
-		/**
-		 * Stops file queue
-		 */
-		public static function stopQueue():void
-		{
-			stopped = true;
-		}
-
-		
-		/**
-		 * Processes file queue
-		 */		
-		private static function processFileQueue():void
-		{
-			if (stopped) 
-				return;
-			
-			var file:String;
-			
-			if (first) 
-				file = fileList.key;
-			else if (fileList.hasNext()) {
-				fileList.next();
-				file = fileList.key;
+			var loader:LoaderCore = LoaderMax.parse(file);
+			loader.name = file;
+			if (isCML(file))
+				cml.append(loader);
+			else if (isCSS(file))
+				css.append(loader);
+			else if (isLibrary(file)) {
+				SWFLoader(loader).vars = { context:swfLoaderContext };
+				swf.append(loader);
 			}
-			else 
-				return;
-				
-			var loader:* = null;
+			else if (isPreloadMedia(file))
+				media.append(loader);
 			
-			if (file) {
-				if (file.search(cmlType) >= 0) {
-					CMLLoader.getInstance(file).load(file);
-					CMLLoader.getInstance(file).addEventListener(CMLLoader.COMPLETE, onFileLoaded);
-				}					
-				
-				else if (file.search(swfType) >= 0) {							
-					loader = new SWFLoader;
-					loader.addEventListener(SWFLoader.COMPLETE, onFileLoaded);	
-					loader.load(file);
-				}
-				
-				else if (file.search(mediaPreloadTypes) >= 0) {
-					if (file.search(mp3Type) >= 0) {
-						loader = new MP3Loader;
-						loader.addEventListener(MP3Loader.COMPLETE, onFileLoaded);	
-						loader.load(file);						
-					} else {
-						loader = new IMGLoader;
-						loader.addEventListener(IMGLoader.COMPLETE, onFileLoaded);	
-						loader.load(file);	
-					}
-				}
-				
-				//else 
-				else {
-					dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, null, null, false, false));						
-				}				
-				
-			}
-			first = false;
+			fileList.append(file, loader);	
+			return loader;
 		}
 		
-			
-		/**
-		 * File load complete callback
-		 * @param	event
-		 */			
-		private static function onFileLoaded(e:Event):void
+		
+		public static function onProgress(e:LoaderEvent):void
 		{
-			var file:String = fileList.key;
-
-			if (file.search(FileManager.cmlType) >= 0) {
-				CMLLoader.getInstance(file).removeEventListener(CMLLoader.COMPLETE, onFileLoaded);
-				fileList.replaceKey(file, CMLLoader.getInstance(file).data);
-				dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, fileList.key, fileList.value, false, false));					
-			}		
-			else {
-				fileList.replaceKey(file, e.target.loader);
-				dispatchEvent(new FileEvent(FileEvent.FILE_LOADED, fileList.key, fileList.value, false, false));
-			}
 			
-			if (fileList.hasNext())				
-				processFileQueue();
-			else	
-				dispatchEvent(new FileEvent(FileEvent.FILES_LOADED, null, null, false, false));
 		}
 		
+		public static function onComplete(e:LoaderEvent):void
+		{
+			
+		}
+		
+		public static function onError(e:LoaderEvent):void
+		{
+			
+		}
+				
 		
 		
 		// IEventDispatcher
