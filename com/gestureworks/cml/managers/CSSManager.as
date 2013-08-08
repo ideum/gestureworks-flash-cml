@@ -2,8 +2,9 @@ package com.gestureworks.cml.managers
 {
 	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.events.FileEvent;
-	import com.gestureworks.cml.loaders.CSSLoader;
 	import com.gestureworks.cml.utils.*;
+	import com.greensock.loading.core.LoaderCore;
+	import com.greensock.events.LoaderEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.text.StyleSheet;
@@ -18,6 +19,8 @@ package com.gestureworks.cml.managers
 	 */
 	public class CSSManager extends EventDispatcher
 	{
+		private var loader:LoaderCore;
+		
 		/**
 		 * Sets the file name that css manger process
 		 */
@@ -52,24 +55,24 @@ package com.gestureworks.cml.managers
 		public function loadCSS(filePath:String):void
 		{
 			file = filePath;
-			CSSLoader.getInstance(file).load(file);
-			CSSLoader.getInstance(file).addEventListener(CSSLoader.COMPLETE, onCSSLoad);			
+			loader = FileManager.append(file);
+			loader.addEventListener(LoaderEvent.COMPLETE, onComplete);
+			loader.load();
 		}
 		
 		/**
 		 * CSS load complete handler
 		 * @param	event
 		 */		
-		private function onCSSLoad(event:Event):void
+		private function onComplete(event:LoaderEvent):void
 		{			
-			event.target.removeEventListener(CSSLoader.COMPLETE, onCSSLoad);
-			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED, file, event.target));
+			dispatchEvent(new FileEvent(FileEvent.CSS_LOADED, file, LoaderCore(event.target).content));
 		}
 		
 		/**
 		 * Parses the currently loaded CSS file using the CMLObjectList
 		 */
-		public function parseCSS():void
+		public function parseCSS(styleSheet:StyleSheet):void
 		{
 			if (debug) {
 				trace(StringUtils.printf("\n%4sBegin CSS parsing\n", ""));
@@ -78,7 +81,7 @@ package com.gestureworks.cml.managers
 			}
 			
 			// add styles to objects --------------------------------------			
-			var styleData:StyleSheet = CSSLoader.getInstance(file).data;
+			var styleData:StyleSheet = styleSheet;
 			
 			var IdSelectors:Array = [];
 			var ClassSelectors:Array = [];

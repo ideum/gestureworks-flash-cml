@@ -54,7 +54,7 @@ package com.gestureworks.cml.element
 				dictionary[file].src = src;
 				
 				
-				if ( FileManager.fileList.hasKey(file) ) {
+				if ( FileManager.media.getContent(file) ) {
 					dictionary[file].addEventListener(Event.COMPLETE, onComplete);					
 					addChild(dictionary[file]);			
 					currentFile = file;	
@@ -248,7 +248,7 @@ package com.gestureworks.cml.element
 				dictionary[file].src = src;
 				
 				
-				if ( FileManager.fileList.hasKey(file) ) {
+				if ( FileManager.media.getContent(file) ) {
 					dictionary[file].addEventListener(Event.COMPLETE, onComplete);					
 					addChild(dictionary[file]);			
 					currentFile = file;	

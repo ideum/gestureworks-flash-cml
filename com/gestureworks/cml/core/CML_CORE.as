@@ -147,10 +147,10 @@ package com.gestureworks.cml.core
 	///////////////////////
 	//  Filters 
 	//////////////////////
-	import com.gestureworks.cml.filters.DropShadow; DropShadow;	
-	import com.gestureworks.cml.filters.Glow; Glow;	
-	import com.gestureworks.cml.filters.Bevel; Bevel;	
-	import com.gestureworks.cml.filters.Blur; Blur;	
+	import com.gestureworks.cml.filters.DropShadowFilter; DropShadowFilter;	
+	import com.gestureworks.cml.filters.GlowFilter; GlowFilter;	
+	import com.gestureworks.cml.filters.BevelFilter; BevelFilter;	
+	import com.gestureworks.cml.filters.BlurFilter; BlurFilter;	
 	
 
 	

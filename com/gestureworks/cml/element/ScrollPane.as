@@ -4,7 +4,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.*;
-	import com.gestureworks.cml.loaders.*;
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.events.*;
