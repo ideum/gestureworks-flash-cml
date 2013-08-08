@@ -43,7 +43,7 @@ package com.gestureworks.cml.core
 		//public variables
 		public static const COMPLETE:String = "COMPLETE";
 		
-		public static var debug:Boolean = true;			
+		public static var debug:Boolean = false;			
 		
 		public static var rootDirectory:String = "";	
 		public static var relativePaths:Boolean = false;					
@@ -228,14 +228,15 @@ package com.gestureworks.cml.core
 		{
 			LoaderCore(e.target).removeEventListener(LoaderEvent.COMPLETE, fileLoaded);
 			if (debug) trace("0:" + fileCnt.toString(), "File loaded:", LoaderCore(e.target).name, LoaderCore(e.target).content);
-			if (state == "Include") data.push(LoaderCore(e.target).content);
+			if (state == "Include") 
+			data.push(LoaderCore(e.target).content);
 			fileCnt++;
 		}
 		
 		
 		private static function filesLoaded(e:LoaderEvent):void
 		{
-			LoaderMax(e.target).removeEventListener(LoaderEvent.COMPLETE, fileLoaded); 
+			LoaderMax(e.target).removeEventListener(LoaderEvent.COMPLETE, filesLoaded); 
 			if (debug) trace("0:*", "Files loaded");			
 			
 			if (state == "Include") {
@@ -441,7 +442,7 @@ package com.gestureworks.cml.core
 					}
 					
 					if (FileManager.hasFile(path)) {
-						node = XML(FileManager.fileList.getKey(path));
+						node = XML(FileManager.cml.getLoader(path).content);
 					
 						tag = node.name();
 						loopCML(node.*, parent);
