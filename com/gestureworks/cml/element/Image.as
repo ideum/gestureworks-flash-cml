@@ -262,7 +262,7 @@ package com.gestureworks.cml.element
 		public function open(file:String=null):void
 		{
 			if (file) src = file;
-			img = new ImageLoader(file);
+			img = new ImageLoader(src);
 			img.load();
 			img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
 			img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
