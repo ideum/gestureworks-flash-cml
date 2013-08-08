@@ -1,5 +1,6 @@
 package com.gestureworks.cml.managers 
 {
+	import com.gestureworks.cml.element.Image;
 	import flash.utils.Dictionary;
 	/**
 	 * Manages the storage and loading of object states through the RenderKit. Passing a state to the StateManager, is done by assigning a stateId to 
@@ -49,9 +50,20 @@ package com.gestureworks.cml.managers
 	 */
 	public class StateManager 
 	{		
-		private static var states:Dictionary;
+		private static var _states:Dictionary;
+		private static var _loadedObjects:Array;		
 		private static var attributes:Array;
 		private static var placeholder:int = -1;
+		
+		/**
+		 * Dictionary of object states in the following nested structure: state id-->object-->property-->value.
+		 */
+		public static function get states():Dictionary { return _states; }
+		
+		/**
+		 * Latest updated objects
+		 */
+		public static function get loadedObjects():Array { return _loadedObjects;}
 				
 		/**
 		 * Generates a nested dictionary of state data with the following structure: state id-->object placeholder-->property-->value.
@@ -69,10 +81,10 @@ package com.gestureworks.cml.managers
 				storeAttributes(cmlObjects);
 			}
 			
-			if (!states)
-				states = new Dictionary();	
-			if(!states[stateId])
-				states[stateId] = new Dictionary();
+			if (!_states)
+				_states = new Dictionary();	
+			if(!_states[stateId])
+				_states[stateId] = new Dictionary();
 			
 			for each(stateAttr in stateData.*){
 
@@ -81,12 +93,12 @@ package com.gestureworks.cml.managers
 					//populate states with state attributes matching renderer object attributes
 					if (stateAttr.name() == attr.value) {
 						
-						if (!states[stateId][attr.placeholder])
-							states[stateId][attr.placeholder] = new Dictionary();
-						if (!states[stateId][attr.placeholder][attr.property])
-							states[stateId][attr.placeholder][attr.property] = new Dictionary();
+						if (!_states[stateId][attr.placeholder])
+							_states[stateId][attr.placeholder] = new Dictionary();
+						if (!_states[stateId][attr.placeholder][attr.property])
+							_states[stateId][attr.placeholder][attr.property] = new Dictionary();
 							
-						states[stateId][attr.placeholder][attr.property] = stateAttr.toString();
+						_states[stateId][attr.placeholder][attr.property] = stateAttr.toString();
 					}
 				}
 			}
@@ -104,11 +116,11 @@ package com.gestureworks.cml.managers
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
 			
 			for each(var obj:* in objects) {
-				obj.@saveState = "true";
 				placeholder++;
 				for each(var attr:* in obj.@ * ) {
 					str = attr.toString();
 					if (str.charAt(0) == "{" && str.charAt(str.length -1) == "}") {
+						obj.@saveState = "true";
 						attributes.push({placeholder:placeholder, property:attr.name().toString(), value:str.replace(regExp, '')});
 					}
 				}
@@ -123,10 +135,11 @@ package com.gestureworks.cml.managers
 		 */
 		public static function saveObject(object:*): void {
 			placeholder = -1;
+			attributes = null;
 			var phId:Number;
 			
-			for (var stateId:* in states) {
-				for (var p:* in states[stateId]) {
+			for (var stateId:* in _states) {
+				for (var p:* in _states[stateId]) {
 					
 					//placeholder change
 					if (!isNaN(phId) && p != phId)
@@ -138,18 +151,26 @@ package com.gestureworks.cml.managers
 					}
 					
 					//assign placeholder dictionary to object
-					states[stateId][object] = states[stateId][phId];
+					_states[stateId][object] = _states[stateId][phId];
 					
 					//delete placeholder dictionary
-					delete states[stateId][phId];
+					delete _states[stateId][phId];
 				}
 			}
 		}
 		
+		/**
+		 * Loads applicable objects with provided states.
+		 * @param	stateId
+		 */
 		public static function loadState(stateId:*): void {
-			for (var obj:* in states[stateId]) {
-				for (var prop:* in states[stateId][obj])
-					obj[prop] = states[stateId][obj][prop];
+			if(_states[stateId])
+				_loadedObjects = new Array();
+			for (var obj:* in _states[stateId]) {
+				_loadedObjects.push(obj);
+				for (var prop:* in _states[stateId][obj]){
+					obj[prop] = _states[stateId][obj][prop];
+				}
 			}
 		}
 	}
