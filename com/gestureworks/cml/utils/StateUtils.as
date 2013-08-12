@@ -93,7 +93,7 @@ package com.gestureworks.cml.utils
 		}		
 		
 		/**
-		 * Loades current property values to a provided slot of the object's state array.
+		 * Loads current property values to a provided slot of the object's state array.
 		 * @param	obj 
 		 * @param	state
 		 */
@@ -111,7 +111,7 @@ package com.gestureworks.cml.utils
 		
 		
 		/**
-		 * Loades current property values to a provided slot of the object's state array.
+		 * Loads current property values to a provided slot of the object's state array.
 		 * @param	obj 
 		 * @param	state
 		 */
