@@ -630,12 +630,10 @@ package com.gestureworks.cml.element
 			}
 			
 			// determine search method
-			if (value is Class)
-			{
+			if (value is Class) {				
 				searchType = "getClass";
 			}
-			else
-			{				
+			else if (value is String) {				
 				// determine type and strip the first character
 				if (value.charAt(0) == "#")
 				{
@@ -651,7 +649,10 @@ package com.gestureworks.cml.element
 				{
 					searchType = "getKey";
 				}
-			}				
+			}
+			else {
+				return;
+			}
 			
 			// run first level search
 			if (searchType == "getKey" && this.childList.getKey(value))
