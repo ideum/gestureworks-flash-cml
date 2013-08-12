@@ -48,21 +48,65 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function saveState(obj:Object, state:Number, recursion:Boolean=false):void 
+		public static function saveState(obj:Object, stateIndex:Number, recursion:Boolean=false):void 
 		{	
-			if (!obj.propertyStates[state])
-				obj.propertyStates[state] = new Dictionary(false);
-	
-			CloneUtils.copyData(obj, obj.propertyStates[state]); 
-				
-			if (obj is DisplayObjectContainer && recursion)
-			{
+			if (!obj.state[stateIndex])
+				obj.state[stateIndex] = new Dictionary(false);
+		
+			for (var item:String in obj.state[stateIndex]) {					
+				if (item != "stateId")
+					obj.state[stateIndex][item] = obj[item];	
+			}	
+			
+			if (obj is DisplayObjectContainer && recursion) {
 				for (var i:int = 0; i < obj.numChildren; i++)
-				{
-					StateUtils.saveState(obj.getChildAt(i), state, recursion);		
-				}					
+					StateUtils.saveState(obj.getChildAt(i), stateIndex, recursion);		
 			}
 				
+		}
+
+		
+		/**
+		 * Stores current property values to a provided slot of the object's state array.
+		 * @param	obj 
+		 * @param	state
+		 */
+		public static function saveStateById(obj:Object, stateId:String, recursion:Boolean=false):void 
+		{
+			var i:int;
+			for (i = 0; i < obj.state.length; i++) {
+				if ("stateId" in obj.state[i]) {
+					if (obj.state[i]["stateId"] == stateId) {
+						for (var item:String in obj.state[i]) {			
+							if (item != "stateId")
+								obj.state[i][item] = obj[item];		
+						}
+						break;
+					}	
+				}	
+			}			
+			
+			if (obj is DisplayObjectContainer && recursion) {
+				for (i=0; i < obj.numChildren; i++)
+					StateUtils.saveStateById(obj.getChildAt(i), stateId, recursion);		
+			}
+		}		
+		
+		/**
+		 * Loades current property values to a provided slot of the object's state array.
+		 * @param	obj 
+		 * @param	state
+		 */
+		public static function loadState(obj:Object, stateIndex:Number, recursion:Boolean=false):void 
+		{		
+			if (obj.state[stateIndex])
+				obj.updateProperties(stateIndex);
+			
+			if (obj is DisplayObjectContainer && recursion) {
+				for (var i:int = 0; i < obj.numChildren; i++) {
+					StateUtils.loadState(obj.getChildAt(i), stateIndex, recursion);		
+				}					
+			}				
 		}
 		
 		
@@ -71,18 +115,25 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function loadState(obj:Object, state:Number, recursion:Boolean=false):void 
-		{		
-			if (obj.hasOwnProperty("propertyStates") && obj["propertyStates"] && obj["propertyStates"][state])
-				obj.updateProperties(state);
+		public static function loadStateById(obj:Object, stateId:String, recursion:Boolean=false):void 
+		{
+			var i:int;
+			
+			for (i = 0; i < obj.state.length; i++) {
+				if ("stateId" in obj.state[i]) {
+					if (obj.state[i]["stateId"] == stateId) {
+						obj.updateProperties(i);
+						break;
+					}	
+				}	
+			}
 			
 			if (obj is DisplayObjectContainer && recursion) {
-				for (var i:int = 0; i < obj.numChildren; i++) {
-					StateUtils.loadState(obj.getChildAt(i), state, recursion);		
+				for (i = 0; i < obj.numChildren; i++) {
+					StateUtils.loadStateById(obj.getChildAt(i), stateId, recursion);		
 				}					
 			}				
-		}
-		
+		}		
 		
 		
 		public static function tweenState(obj:*, state:Number, tweenTime:Number=1):void
