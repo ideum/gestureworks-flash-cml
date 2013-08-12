@@ -110,7 +110,6 @@ package com.gestureworks.cml.element
 		{
 			_value = value;
 			toggleGraphic.visible = value;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", value));			
 		}
 	
 		
