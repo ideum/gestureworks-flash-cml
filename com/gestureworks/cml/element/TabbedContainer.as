@@ -226,7 +226,11 @@ package com.gestureworks.cml.element
 				tab.y = 5;
 				tab.width = width - 4;
 				tab.height = height - 7;
-				tab.tabX = nextTabX();
+				if (isNaN(tab.tabX)) 
+					tab.tabX = nextTabX();
+				else 
+					tab.tabX = nextTabX() +tab.tabX;
+					
 				tab.addEventListener(TouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);					
 				tabs.push(tab);
 			}
