@@ -156,7 +156,7 @@ package com.gestureworks.cml.utils
 							if (destination[pName] != source[pName])
 								destination[pName] = source[pName];
 								
-							if (pName == "propertyStates") {
+							if (pName == "state") {
 								copyPropertyStates(source, destination);
 							}
 						}
@@ -179,14 +179,15 @@ package com.gestureworks.cml.utils
 			}
 		}
 		
-		public static function copyPropertyStates(source:*, destination:*):void {			
-			destination.propertyStates = [];
+		public static function copyPropertyStates(source:*, destination:*):void 
+		{			
+			destination.state = [];
 			
-			for (var i:int = 0; i < source.propertyStates.length; i++) {
-				destination.propertyStates[i] = new Dictionary();
+			for (var i:int = 0; i < source.state.length; i++) {
+				destination.state[i] = new Dictionary();
 				
-				for (var item:String in source.propertyStates[i]) {					
-					destination.propertyStates[i][item] = source.propertyStates[i][item];					
+				for (var item:String in source.state[i]) {					
+					destination.state[i][item] = source.state[i][item];					
 				}
 			}
 		}
