@@ -421,7 +421,7 @@ package com.gestureworks.cml.element
 			{
 				obj = keys[i];
 				prop = values[i];
-				exp = obj["propertyStates"][0][prop];
+				exp = obj["state"][0][prop];
 				
 				StateUtils.loadState(obj, 0, true);
 				
