@@ -243,8 +243,8 @@ package com.gestureworks.cml.element
 			toggleGraphic.graphics.lineTo(_width, 0);
 			toggleGraphic.graphics.moveTo(0, 0);
 			toggleGraphic.graphics.lineTo(_width, _height);
+			toggleGraphic.visible = value;	
 			
-			toggleGraphic.visible = false
 			addChild(toggleGraphic);		
 		}
 		
