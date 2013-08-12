@@ -429,7 +429,7 @@ package com.gestureworks.cml.element
 			// Do this if it loaded itself. If using the preloader, the preloader handles unloading
 			if (img &&  !_bitmapDataCache) 
 			{
-				img.dispose();
+				//img.dispose(); --> disposing this will not allow suplicate src(s) across images.
 				fileData = null;
 			}
 			
