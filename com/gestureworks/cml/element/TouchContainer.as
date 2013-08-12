@@ -103,16 +103,7 @@ package com.gestureworks.cml.element
 						
 		}
 		
-		
-		/**
-		 * property states array
-		 */
-		public var state:Array;
-		
-		[Deprecated(replacement="state")]		
-		public var propertyStates:Array;
-		
-		
+					
 		private var _id:String
 		/**
 		 * sets childlist id
@@ -133,6 +124,23 @@ package com.gestureworks.cml.element
 			_cmlIndex = value;
 		}	
 		
+		/**
+		 * property states array
+		 */
+		public var state:Array;
+		
+		[Deprecated(replacement="state")]		
+		public var propertyStates:Array;
+		
+		private var _stateId:String
+		/**
+		 * Sets the state id
+		 */
+		public function get stateId():String {return _stateId};
+		public function set stateId(value:String):void
+		{
+			_stateId = value;
+		}
 		
 		/**
 		 * postparse method
