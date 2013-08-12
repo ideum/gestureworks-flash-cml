@@ -410,16 +410,16 @@ package com.gestureworks.cml.element
 			var gl:*;			
 			gl = value.Gesture;
 			
-			var go:String;
+			var go:Boolean;
 			
 			var object:Object = new Object();
 			
 			for (var i:int; i < gl.length(); i++)
 			{
-				if (gl[i].@gestureOn == undefined)
-					go = "true";
+				if (gl[i].@gestureOn == undefined || gl[i].@gestureOn == "true")
+					go = true;
 				else 
-					go = String(gl[i].@gestureOn);
+					go = false;
 					
 				object[String((gl[i].@ref))] = go;
 			}
