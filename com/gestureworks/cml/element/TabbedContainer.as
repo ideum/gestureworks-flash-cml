@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.ColorTransform;
 	
@@ -231,7 +232,7 @@ package com.gestureworks.cml.element
 				else 
 					tab.tabX = nextTabX() +tab.tabX;
 					
-				tab.addEventListener(TouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);					
+				tab.addEventListener(GWTouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);
 				tabs.push(tab);
 			}
 			
