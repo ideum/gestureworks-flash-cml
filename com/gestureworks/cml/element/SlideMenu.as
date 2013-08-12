@@ -161,7 +161,7 @@ package com.gestureworks.cml.element
 		protected var titleGradientRatiosArray:Array = [0, 177, 255];
 		protected var _titleGradientRatios:String = "";
 		public function get titleGradientRatios():String { return _titleGradientRatios; }
-		public function set titleGradientRatios(value:String) {
+		public function set titleGradientRatios(value:String):void {
 			titleGradientRatiosArray = [];
 			
 			if (!value) return;
@@ -268,7 +268,7 @@ package com.gestureworks.cml.element
 		protected var itemGradientRatiosArray:Array = [0, 177, 255];
 		protected var _itemGradientRatios:String = "";
 		public function get itemGradientRatios():String { return _itemGradientRatios; }
-		public function set itemGradientRatios(value:String) {
+		public function set itemGradientRatios(value:String):void {
 			itemGradientRatiosArray = [];
 			
 			if (!value) return;
@@ -563,7 +563,7 @@ package com.gestureworks.cml.element
 			_title.graphics.endFill();
 			
 			var titleLabel:Text = new Text();
-			
+			titleLabel.font = _font;
 			titleLabel.width = width - _fontPaddingLeft - _fontPaddingRight;
 			titleLabel.x = _fontPaddingLeft;
 			titleLabel.height = height - fontPaddingTop;
@@ -638,7 +638,9 @@ package com.gestureworks.cml.element
 			_selected.visible = false;
 			
 			var itemLabel:Text = new Text();
+			itemLabel.font = _itemFont;
 			var selectedLabel:Text = new Text();
+			selectedLabel.font = _itemFont;
 			
 			itemLabel.width = itemWidth - _itemFontPaddingLeft - _fontPaddingRight;
 			itemLabel.x = _itemFontPaddingLeft;
@@ -752,9 +754,11 @@ package com.gestureworks.cml.element
 		private function onTap(e:GWGestureEvent):void 
 		{
 			
-			if (_menuState == _label){
+			if (_menuState == _label) {
+				
 				for (var i:int = 0; i < _menuItems.length; i++) {
-					if (DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY)) {
+					trace(DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY));
+					if (DisplayObject(_menuItems[i]).hitTestPoint(e.value.stageX, e.value.stageY)) {
 						tweenForward(_menuItems[i], this);
 					}
 				}
@@ -762,13 +766,15 @@ package com.gestureworks.cml.element
 			else {
 				
 				if (e.value.localY < height) {
+					
 					if (subMenu)
 						tweenBackwards();
 				}
 				else {
+					
 					for (var j:int = 0; j < _subMenu.menuItems.length; j++) 
 					{
-						if (DisplayObject(_subMenu.menuItems[j]).hitTestPoint(e.value.localX + this.x, e.value.localY)) {
+						if (DisplayObject(_subMenu.menuItems[j]).hitTestPoint(e.value.stageX, e.value.stageY)) {
 							tweenForward(_subMenu.menuItems[j], _subMenu);
 						}
 					}
@@ -941,7 +947,7 @@ package com.gestureworks.cml.element
 		{
 			for (var i:int = 1; i < objToClean.numChildren; i++) {
 				if (objToClean.getChildAt(i) is Sprite && !(objToClean.getChildAt(i) is SlideMenu)) {
-					if (objToClean.getChildAt(i) != objToClean.title);
+					//if (objToClean.getChildAt(i) != objToClean.title)
 						callUp(Sprite(objToClean.getChildAt(i)));
 				}
 			}
