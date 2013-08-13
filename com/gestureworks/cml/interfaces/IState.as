@@ -14,7 +14,7 @@ package com.gestureworks.cml.interfaces
 		function get stateIndex():int;
 		
 		/**
-		 * Returns the current state id (derived from current stateIndex).
+		 * Returns the current state id.
 		 * @return State id.
 		 */
 		function get stateId():String;
@@ -32,7 +32,7 @@ package com.gestureworks.cml.interfaces
 		function loadState(sIndex:int=NaN, recursion:Boolean=false):void;
 		
 		/**
-		 * Load state by stateId. If the first parameter is null, the current state will be saved (derived from current stateIndex).
+		 * Load state by stateId. If the first parameter is null, the current state will be save.
 		 * @param sId State id to load.
 		 * @param recursion If true, the state will load recursively through the display list starting at current display ojbect.
 		 */
@@ -46,11 +46,11 @@ package com.gestureworks.cml.interfaces
 		function saveState(sIndex:int=NaN, recursion:Boolean=false):void;		
 		
 		/**
-		 * Save state by stateId. If the first parameter is null, the current state will be saved (derived from current stateIndex).
+		 * Save state by stateId. If the first parameter is null, the current state will be saved.
 		 * @param sIndex State index to be save.
 		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
 		 */
-		function saveStateById(sId:String=null, recursion:Boolean=false):void;
+		function saveStateById(sId:String, recursion:Boolean=false):void;
 		
 		/**
 		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be saved.
@@ -59,9 +59,9 @@ package com.gestureworks.cml.interfaces
 		function tweenState(sIndex:int=NaN):void;		
 		
 		/**
-		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved (derived from current stateIndex).
+		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved.
 		 * @param sId State id to tween.
 		 */
-		function tweenStateById(sId:String=null):void;			
+		function tweenStateById(sId:String):void;			
 	}
 }
