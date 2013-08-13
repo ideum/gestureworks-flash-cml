@@ -602,22 +602,22 @@ package com.gestureworks.cml.core
 		}
 		
 		
-		private static function nestRender(x:XMLList, nest:int=0):void {
-			
-			var retCopy:XMLList = XMLList(ret[0]);
-
+		//private static function nestRender(x:XMLList, nest:int=0):void {
+			//
+			//var retCopy:XMLList = XMLList(ret[0]);
+//
 			//check for nest attribute in rendererData
-			for (var i:int = 1; i < ret.length(); i++) {
-				if (renderList[i].@nest != undefined) {
-					nest = int(renderList[i].@nest);
-					retCopy[0].appendChild(ret[i].copy());
-				}
-				else {
-					retCopy += ret[i];
-				}
-			}			
-			
-		}
+			//for (var i:int = 1; i < ret.length(); i++) {
+				//if (renderList[i].@nest != undefined) {
+					//nest = int(renderList[i].@nest);
+					//retCopy[0].appendChild(ret[i].copy());
+				//}
+				//else {
+					//retCopy += ret[i];
+				//}
+			//}			
+			//
+		//}
 		
 		private static function loopRenderer(renderList:XMLList, cmlRenderer:XMLList):void
 		{			
