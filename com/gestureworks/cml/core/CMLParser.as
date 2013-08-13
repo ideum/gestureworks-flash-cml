@@ -591,33 +591,48 @@ package com.gestureworks.cml.core
 				}
 			}
 			
-/*			XML.prettyPrinting = true;
-			
-			if (ret.length()) {
-				nestRender(retCopy);			
-				return nestRender(x, 0);
-			}
-			else */
-				return ret;	
-		}
-		
-		
-		//private static function nestRender(x:XMLList, nest:int=0):void {
+			//XML.prettyPrinting = true;
 			//
-			//var retCopy:XMLList = XMLList(ret[0]);
-//
-			//check for nest attribute in rendererData
-			//for (var i:int = 1; i < ret.length(); i++) {
-				//if (renderList[i].@nest != undefined) {
-					//nest = int(renderList[i].@nest);
-					//retCopy[0].appendChild(ret[i].copy());
-				//}
-				//else {
-					//retCopy += ret[i];
-				//}
+			//
+			//var temp:XMLList;
+			//var lastNode:XMLList = XMLList(ret[0].copy());		
+			//var nested:XMLList = XMLList(ret[0].copy());
+			//
+			//
+			//
+			//var orderArray:Array = new Array();
+			//var excludeArray:Array = new Array();
+			//for (var i:int = 1; i < ret.length(); i++) {	
+				 //if (renderList[i].@nest != undefined) orderArray.push(ret[i]);
+				 //else excludeArray.push(ret[i]);
 			//}			
-			//
-		//}
+			//ret.sortOn("@nest");
+			//var newList:XMLList = new XMLList();
+			//for each (var orderItem:XML in orderArray) newList += orderItem;
+			//for each (var excludeItem:XML in excludeArray) newList += excludeItem;
+			//trace(newList.toXMLString()) // your new ordered list
+
+//
+			//for (var i:int = 1; i < ret.length(); i++) {				
+				//if (renderList[i].@nest != undefined) {
+					//temp = XMLList(ret[i].copy());
+				//lastNode.appendChild(temp);
+					//trace("\n", lastNode);
+					//
+				//nested += lastNode;
+				//lastNode = temp;
+					//trace("\n", lastNode);
+					//trace("\n");
+				//
+				//}				
+				//else {
+					//lastNode += ret[i].copy();	
+					//nn = lastNode.copy();
+				//}
+			//}
+			
+			return ret;
+		}
 		
 		private static function loopRenderer(renderList:XMLList, cmlRenderer:XMLList):void
 		{			
