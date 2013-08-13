@@ -500,6 +500,7 @@ package com.gestureworks.cml.core
 				//target state tag
 				StateUtils.parseCML(obj, XMLList(node));
 				
+				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
 
 				
@@ -535,8 +536,12 @@ package com.gestureworks.cml.core
 			var ret:XMLList = new XMLList;
 			var max:int = int.MAX_VALUE;
 			var repeat:int = 1;
-
-			for (var q:int; q < renderKit.Renderer.length(); q++) {
+			var j:int;
+			var i:int;
+			var q:int;
+			var nest:int;
+			
+			for (q = 0; q < renderKit.Renderer.length(); q++) {
 				
 				if (renderKit.Renderer.@dataPath == undefined)
 					rendererData = renderKit.RendererData;
@@ -548,8 +553,6 @@ package com.gestureworks.cml.core
 				}
 				
 				if (rendererData.Include != undefined) {
-					var j:int;
-					var src:String;
 					tmp = XMLList(<RendererData />);
 					
 					for each (var node:* in rendererData.*) {
@@ -576,54 +579,74 @@ package com.gestureworks.cml.core
 				}	
 				
 				var len:int = (max < renderList.length()) ? max : renderList.length();
-				cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
-				processStates(renderList, cmlRenderer);
 				
-				for (var i:int = 0; i < repeat; i++) {
-					for (var j:int = 0; j < len; j++) {
+				processStates(renderList, XMLList(renderKit.Renderer[q].*));
+								
+				for (i = 0; i < repeat; i++) {
+					for (j = 0; j < len; j++) {
+						cmlRenderer = XMLList(renderKit.Renderer[q].*).copy();
 						loopRenderer(XMLList(renderList[j]), cmlRenderer);
 						ret += XMLList(cmlRenderer);
 					}
 				}
 			}
-					
-			return ret;
+			
+/*			XML.prettyPrinting = true;
+			
+			if (ret.length()) {
+				nestRender(retCopy);			
+				return nestRender(x, 0);
+			}
+			else */
+				return ret;	
 		}
 		
+		
+		private static function nestRender(x:XMLList, nest:int=0):void {
+			
+			var retCopy:XMLList = XMLList(ret[0]);
+
+			//check for nest attribute in rendererData
+			for (var i:int = 1; i < ret.length(); i++) {
+				if (renderList[i].@nest != undefined) {
+					nest = int(renderList[i].@nest);
+					retCopy[0].appendChild(ret[i].copy());
+				}
+				else {
+					retCopy += ret[i];
+				}
+			}			
+			
+		}
 		
 		private static function loopRenderer(renderList:XMLList, cmlRenderer:XMLList):void
 		{			
 			var str:String;
 			var val:*;
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
+			var level:int;
+			var i:int;
 			
-			
-			for (var i:int = 0; i < cmlRenderer.length(); i++) 
-			{
+			for (i = 0; i < cmlRenderer.length(); i++) {
 				if (cmlRenderer[i].name() == "Include") {
 					cmlRenderer[i] = XMLList(FileManager.fileList.getKey(String(cmlRenderer[i].@src))).copy();
 					cmlRenderer[i] = XMLList(cmlRenderer[i].children());
 				}
 			}
 		
-				
-			
 			for each (var node:* in cmlRenderer) {
-				
 				if (node.name()) {
 					//if (node.name() == "RenderKit") continue;
 					str = node.name().toString();
 				}
 				
-				for each (val in renderList.*) {
-					
+				for each (val in renderList.*) {										
 					if (node.nodeKind() == "text" ) { 
-												
 						str = node.toString();
 					
 						// filter value for expression delimiter "{}"
 						if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {				
-							// remove whitepsace and {} characters
+							// remove whitespace and {} characters
 							str = str.replace(regExp, '');
 						}	
 												
@@ -631,12 +654,10 @@ package com.gestureworks.cml.core
 							var p : XML = node.parent(); 
 							var childIndex : int = node.childIndex(); 
 							p.children()[childIndex] = String(val.*);
-						}
-					
-					}
+						}					
+					}					
 					
 					for each (var attrVal:* in node.@*) {
-						
 						var attr:* = attrVal.name();							
 						str = String(attrVal);
 						
@@ -652,12 +673,10 @@ package com.gestureworks.cml.core
 					}
 				
 				}	
-				
-				
+								
 				if (node.*.length())
-					loopRenderer(renderList, node.*);				
-				
-			}						
+					loopRenderer(renderList, node.*);
+			}			
 		}
 		
 		/**
