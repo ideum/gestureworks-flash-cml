@@ -232,7 +232,7 @@ package com.gestureworks.cml.element
 				else 
 					tab.tabX = nextTabX() +tab.tabX;
 					
-				tab.addEventListener(GWTouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);
+				tab.addEventListener(TouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);
 				tabs.push(tab);
 			}
 			
