@@ -50,6 +50,8 @@ package com.gestureworks.cml.utils
 		 */
 		public static function saveState(obj:Object, stateIndex:Number, recursion:Boolean=false):void 
 		{	
+			if (!stateIndex) stateIndex = 0;
+			
 			if (!obj.state[stateIndex])
 				obj.state[stateIndex] = new Dictionary(false);
 		
@@ -97,16 +99,27 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function loadState(obj:Object, stateIndex:Number, recursion:Boolean=false):void 
+		public static function loadState(obj:Object, stateIndex:Number, recursion:Boolean=false):Boolean
 		{		
-			if (obj.state[stateIndex])
+			var success:Boolean = false;
+			
+			if (!stateIndex) stateIndex = 0;
+			
+			if (obj.state[stateIndex]){
 				obj.updateProperties(stateIndex);
+				success = true;
+			}
 			
 			if (obj is DisplayObjectContainer && recursion) {
 				for (var i:int = 0; i < obj.numChildren; i++) {
-					StateUtils.loadState(obj.getChildAt(i), stateIndex, recursion);		
+					if (!StateUtils.loadState(obj.getChildAt(i), stateIndex, recursion)) {
+						success = false;
+						break;
+					}
 				}					
 			}				
+			
+			return success;
 		}
 		
 		
@@ -115,27 +128,16 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function loadStateById(obj:Object, stateId:String, recursion:Boolean=false):void 
+		public static function loadStateById(obj:Object, stateId:String, recursion:Boolean=false):Boolean 
 		{
-			var i:int;
-			
-			for (i = 0; i < obj.state.length; i++) {
-				if ("stateId" in obj.state[i]) {
-					if (obj.state[i]["stateId"] == stateId) {
-						obj.updateProperties(i);
-						break;
-					}	
-				}	
-			}
-			
-			if (obj is DisplayObjectContainer && recursion) {
-				for (i = 0; i < obj.numChildren; i++) {
-					StateUtils.loadStateById(obj.getChildAt(i), stateId, recursion);		
-				}					
-			}				
+			return loadState(obj, getStateById(obj,stateId), recursion);				
 		}		
 		
-		
+		/**
+		 * Tween state by state number from current to given state index. 
+		 * @param sIndex State index to tween.
+		 * @param tweenTime Duration of tween
+		 */		
 		public static function tweenState(obj:*, state:Number, tweenTime:Number=1):void
 		{			
 			var propertyValue:String;
@@ -144,6 +146,8 @@ package com.gestureworks.cml.utils
 			var tweenArray:Array = new Array();
 			var noTweenDict:Dictionary = new Dictionary(true);
 			var rgb:Array;			
+			
+			if (!state) state = 0;
 			
 			for (var propertyName:String in obj.propertyStates[state])
 			{
@@ -164,19 +168,47 @@ package com.gestureworks.cml.utils
 				}
 			}
 			
-				var tweens:TimelineLite = new TimelineLite({onComplete:function():void { 
-					for (var p:String in noTweenDict) {
-						obj[p] = noTweenDict[p];
-				}}});
-				tweens.appendMultiple(tweenArray);
-				tweens.play();
-					
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, null, null, "tweenComplete"));
-			}
-	
+			var tweens:TimelineLite = new TimelineLite({onComplete:function():void { 
+				for (var p:String in noTweenDict) {
+					obj[p] = noTweenDict[p];
+			}}});
+			tweens.appendMultiple(tweenArray);
+			tweens.play();
+				
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, null, null, "tweenComplete"));
+		}
 			
+		/**
+		 * Tween state by state number from current to given state index. 
+		 * @param	obj The object to tween
+		 * @param	stateId The id of the state to tween to
+		 * @param	tweenTime Duration of tween
+		 */
+		public static function tweenStateById(obj:*, stateId:String, tweenTime:Number = 1):void
+		{
+			tweenState(obj, getStateById(obj,stateId), tweenTime);
+		}
 			
-		
+		/**
+		 * Return state index by id
+		 * @param	obj
+		 * @param	stateId
+		 * @return
+		 */
+		public static function getStateById(obj:*, stateId:String):int
+		{
+			var i:int;
+			
+			for (i = 0; i < obj.state.length; i++) {
+				if ("stateId" in obj.state[i]) {
+					if (obj.state[i]["stateId"] == stateId) {
+						return i;
+					}	
+				}	
+			}			
+			
+			return 0;			
+		}
 	
 		// IEventDispatcher
         private static var _dispatcher:EventDispatcher = new EventDispatcher();

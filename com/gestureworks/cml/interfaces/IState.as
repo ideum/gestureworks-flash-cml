@@ -55,8 +55,9 @@ package com.gestureworks.cml.interfaces
 		/**
 		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be saved.
 		 * @param sIndex State index to tween.
+		 * @param tweenTime Duration of tween
 		 */
-		function tweenState(sIndex:int=NaN):void;		
+		function tweenState(sIndex:int=NaN, tweenTime:Number = 1):void;		
 		
 		/**
 		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved.
