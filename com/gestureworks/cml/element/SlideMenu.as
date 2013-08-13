@@ -1,6 +1,9 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.LinkedMap;
+	import com.gestureworks.cml.utils.List;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
@@ -109,6 +112,12 @@ package com.gestureworks.cml.element
 			if (!value) return;
 			_returnIndicator = value;
 		}
+		
+		private var _level:int;
+		public function get level():int { return _level; }
+		public function set level(value:int):void {
+			_level = value;
+		}		
 		
 		//{ region Background properties
 		
@@ -489,9 +498,49 @@ package com.gestureworks.cml.element
 		
 		override public function init():void {
 			
-			if (_initialized) {
+			if (_initialized)
 				return;
+						
+			if (!(parent is SlideMenu)) { 
+				level = 1; 			
+			
+				var lastLevel:int = 0;				
+				var nextLevel:int = 0;
+				
+				var slideMenus:List = new List();
+				slideMenus.append(this);
+				var levels:LinkedMap = new LinkedMap(true);
+				
+				for (var j:int = 0; j < numChildren; j++) {
+					if (getChildAt(j) is SlideMenu)
+						slideMenus.append(getChildAt(j));
+				}
+				for (var i:int = 1; i < slideMenus.length; i++) {
+					nextLevel = slideMenus[i].level;
+					if (nextLevel > lastLevel) {
+						slideMenus[i - 1].addChild(slideMenus[i]);
+						if (levels.hasKey(nextLevel))
+							levels.replace(nextLevel, slideMenus[i]);
+						else 
+							levels.append(nextLevel, slideMenus[i]);
+					}
+					else if (nextLevel < lastLevel) {
+						levels.getKey(nextLevel).parent.addChild(slideMenus[i]);
+						levels.replace(nextLevel, slideMenus[i]);
+					}
+					else if (nextLevel == lastLevel) {
+						slideMenus[i - 1].parent.addChild(slideMenus[i]);
+						levels.replace(nextLevel, slideMenus[i]);
+					}
+					lastLevel = nextLevel;
+				}
+				
+				slideMenus = null;
+				levels = null;
+				
+				//DisplayUtils.traceDisplayList(this);
 			}
+			
 			
 			if (_arrowIndicator != undefined) {
 				if (_arrowIndicator is XML)
@@ -786,9 +835,12 @@ package com.gestureworks.cml.element
 		
 		//{ region Utility
 		
-		protected function updateLayout():void 
+		public function updateLayout():void 
 		{
+			
 			var numberOfChildren:int = numChildren;
+
+			
 			
 			for (var j:int = 0; j < numberOfChildren; j++) {
 				if (getChildAt(j) is SlideMenu) {
@@ -810,10 +862,7 @@ package com.gestureworks.cml.element
 					this.addChild(_menuItems[_menuItems.length - 1]);
 				}
 			}
-			
-			for (var s:String in _subMenus) {
-				addChild(_subMenus[s]);
-			}
+
 			
 			addChildAt(_title, 0);
 			var yPos:Number = _title.y + _title.height + itemSpacing;
