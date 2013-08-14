@@ -63,6 +63,6 @@ package com.gestureworks.cml.interfaces
 		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved.
 		 * @param sId State id to tween.
 		 */
-		function tweenStateById(sId:String):void;			
+		function tweenStateById(sId:String, tweenTime:Number = 1):void;			
 	}
 }

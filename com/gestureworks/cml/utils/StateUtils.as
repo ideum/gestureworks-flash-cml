@@ -138,14 +138,15 @@ package com.gestureworks.cml.utils
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */		
-		public static function tweenState(obj:*, state:Number, tweenTime:Number=1):void
+		public static function tweenState(obj:*, state:Number, tweenTime:Number=1):Boolean
 		{			
 			var propertyValue:String;
 			var objType:String;
 			var newValue:*;			
 			var tweenArray:Array = new Array();
 			var noTweenDict:Dictionary = new Dictionary(true);
-			var rgb:Array;			
+			var rgb:Array;		
+			var success:Boolean = false;
 			
 			if (!state) state = 0;
 			
@@ -161,8 +162,10 @@ package com.gestureworks.cml.utils
 							tweenArray.push(TweenLite.to(obj, 1, {colorTransform:{redOffset:rgb[0], greenOffset:rgb[1], blueOffset:rgb[2]}, onComplete:function():void { obj.color = newValue }}));							
 						}
 						else tweenArray.push(
-							TweenLite.to(obj, tweenTime, {(propertyName.valueOf()):(Number(newValue)) } ));
-						}
+							TweenLite.to(obj, tweenTime, { (propertyName.valueOf()):(Number(newValue)) } ));
+							
+						success = true;
+					}
 					
 					else noTweenDict[propertyName] = newValue;
 				}
@@ -176,6 +179,8 @@ package com.gestureworks.cml.utils
 			tweens.play();
 				
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, null, null, "tweenComplete"));
+			
+			return success;
 		}
 			
 		/**
@@ -184,9 +189,9 @@ package com.gestureworks.cml.utils
 		 * @param	stateId The id of the state to tween to
 		 * @param	tweenTime Duration of tween
 		 */
-		public static function tweenStateById(obj:*, stateId:String, tweenTime:Number = 1):void
+		public static function tweenStateById(obj:*, stateId:String, tweenTime:Number = 1):Boolean
 		{
-			tweenState(obj, getStateById(obj,stateId), tweenTime);
+			return tweenState(obj, getStateById(obj,stateId), tweenTime);
 		}
 			
 		/**
