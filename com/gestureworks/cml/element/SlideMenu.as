@@ -113,7 +113,7 @@ package com.gestureworks.cml.element
 			_returnIndicator = value;
 		}
 		
-		private var _level:int;
+		private var _level:int = 0;
 		public function get level():int { return _level; }
 		public function set level(value:int):void {
 			_level = value;
@@ -501,7 +501,7 @@ package com.gestureworks.cml.element
 			if (_initialized)
 				return;
 						
-			if (!(parent is SlideMenu)) { 
+			if (!(parent is SlideMenu) && level > 0) { 
 				level = 1; 			
 			
 				var lastLevel:int = 0;				
