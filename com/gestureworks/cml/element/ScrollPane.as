@@ -360,10 +360,10 @@ package com.gestureworks.cml.element
 		
 		//} endregion
 		
-		public function updateLayout(inWidth:Number, inHeight:Number):void {
+		public function updateLayout(inWidth:Number=NaN, inHeight:Number=NaN):void {
 			
-			width = inWidth;
-			height = inHeight;
+			if (!isNaN(inWidth)) width = inWidth; 
+			if (!isNaN(inHeight)) height = inHeight; 
 			
 			if(_mask){
 				_mask.width = width;
