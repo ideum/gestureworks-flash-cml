@@ -1011,7 +1011,11 @@ package com.gestureworks.cml.element
 					getChildAt(i).x += (this.width + _itemSpacing);
 				}
 			}
+			
 			this.x = 0;
+			_subMenu = null;
+			_menuState = _label;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", "reset"));
 		}
 		
 		//} endregion Utility
