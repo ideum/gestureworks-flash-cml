@@ -23,17 +23,14 @@ package com.gestureworks.cml.element
 		public var _horizontal:Boolean = false;
 		public var _mask:Graphic;
 		public var _vertStyleSet:Boolean = false;
-		public var _horizStyleSet:Boolean = false;
-		
+		public var _horizStyleSet:Boolean = false;		
 		public var _horizontalMovement:Number;
 		public var _verticalMovement:Number;
-		
 		private var oldY:Number;
 		private var oldX:Number;
-		
 		public var _content:*;
-		
 		private var loaded:Boolean = false;
+		public var invertDrag:Boolean = false;
 	
 		
 		public function ScrollPane()
@@ -259,9 +256,7 @@ package com.gestureworks.cml.element
 				addChild(_verticalScroll);
 				_vertical = true;
 			} else { _vertical = false; }
-			
-			
-			
+						
 			_horizontalMovement = _content.width - width;
 			_horizontal = true;
 			_horizontalScroll.orientation = "horizontal";
@@ -294,7 +289,6 @@ package com.gestureworks.cml.element
 				addChild(_mask);
 			}
 			_content.mask = _mask;
-			
 			
 			createEvents();
 			
@@ -337,8 +331,8 @@ package com.gestureworks.cml.element
 			addEventListener(GWGestureEvent.SCALE, onScale);
 			content.addEventListener(GWGestureEvent.SCALE, onScale);
 			
-			addEventListener(GWGestureEvent.COMPLETE, onComplete);
-			content.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+			content.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
 			
 			addEventListener(GWGestureEvent.ROTATE, onRotate);
 			content.addEventListener(GWGestureEvent.ROTATE, onRotate);
@@ -352,7 +346,7 @@ package com.gestureworks.cml.element
 			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
 				this.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			this.removeEventListener(GWGestureEvent.SCALE, onScale);
-			this.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
+			this.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
 			
 			this._verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 			this._horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
@@ -427,10 +421,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		public var invertDrag:Boolean = false;
 		
 		private function onDrag(e:GWGestureEvent):void {
-						
+	
 			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
 				if (_verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
 					_verticalScroll.onDrag(e);
@@ -442,7 +435,6 @@ package com.gestureworks.cml.element
 				return;
 			}
 		
-				
 			if (this.parent) {
 				if ("clusterBubbling" in parent) {
 					if (parent["clusterBubbling"] == true) {
@@ -450,7 +442,6 @@ package com.gestureworks.cml.element
 					}
 				}
 			}
-			
 			
 			if (!scrollOnPane) {
 				if (this.parent) {
@@ -473,22 +464,26 @@ package com.gestureworks.cml.element
 			
 			var newXPos:Number;
 			var newYPos:Number;
-			
+					
 			if (contains(_verticalScroll)) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newYPos = _content.y;
 				
-				if (!oldY) {
-					oldY = e.value.localY;
-					//newPos = oldY;
+				if (!gestureReleaseInertia) {
+					if (!oldY) {
+						oldY = e.value.localY;
+					}
+					else if (oldY) {
+						if (!invertDrag) newYPos -= e.value.localY - oldY;
+						else newYPos += e.value.localY - oldY;
+						oldY = e.value.localY;
+					}
 				}
-				else if (oldY) {
-					if (!invertDrag)
-						newYPos -= e.value.localY - oldY;
-					else
-						newYPos += e.value.localY - oldY;
-					oldY = e.value.localY;
+				else {
+					if (!invertDrag) newYPos -= e.value.drag_dy;
+					else newYPos += e.value.drag_dy;
 				}
+				
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 				// Get the localY of the previous gesture call
 				// Get the differential of the previous localY and the new localY
@@ -507,17 +502,19 @@ package com.gestureworks.cml.element
 				
 				newXPos = _content.x;
 				
-				if (!oldX) {
-					oldX = e.value.localX;
-					//newPos = oldX;
+				if (!gestureReleaseInertia) {
+					if (!oldX) {
+						oldX = e.value.localX;
+					}
+					else if (oldX) {
+						if (!invertDrag) newXPos -= e.value.localX  - oldX;
+						else newXPos += e.value.localX - oldX;
+						oldX = e.value.localX;
+					}
 				}
-				else if (oldX) {
-					if (!invertDrag)
-						newXPos -= e.value.localX  - oldX;
-					else
-						newXPos += e.value.localX - oldX;
-						
-					oldX = e.value.localX;
+				else {
+					if (!invertDrag) newXPos -= e.value.drag_dx;
+					else newXPos += e.value.drag_dx;
 				}
 				
 				// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -536,7 +533,7 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function onComplete(e:GWGestureEvent):void {
+		private function onBegin(e:GWTouchEvent):void {
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
