@@ -517,19 +517,7 @@ package com.gestureworks.cml.element
 		{
 			return childList.getKey(id);
 		}
-
-		
-		
-		
-		private function displayEventHandler(event:Event):void
-		{
-			if (_outlineOn=="true")
-			{
-				graphics.lineStyle(_outline_stroke+1,_outline_color,_outline_alpha , true, "normal",null, _outline_joint)
-				graphics.drawRect(-_outline_stroke*0.5, -_outline_stroke*0.5, width+_outline_stroke, height+_outline_stroke);
-			}
-		}
-		
+	
 		
 		
 		private function updateChildren():void
