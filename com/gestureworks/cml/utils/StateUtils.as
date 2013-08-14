@@ -161,7 +161,7 @@ package com.gestureworks.cml.utils
 							tweenArray.push(TweenLite.to(obj, 1, {colorTransform:{redOffset:rgb[0], greenOffset:rgb[1], blueOffset:rgb[2]}, onComplete:function():void { obj.color = newValue }}));							
 						}
 						else tweenArray.push(
-							TweenLite.to(obj, tweenTime, {(propertyName.valueOf):(Number(newValue)) } ));
+							TweenLite.to(obj, tweenTime, {(propertyName.valueOf()):(Number(newValue)) } ));
 						}
 					
 					else noTweenDict[propertyName] = newValue;
