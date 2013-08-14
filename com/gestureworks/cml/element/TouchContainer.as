@@ -308,7 +308,7 @@ package com.gestureworks.cml.element
 		
 		private var _layout:*;
 		/**
-		 * speciffies the type of layout
+		 * specifies the type of layout
 		 */
 		public function get layout():* {return _layout;}
 		public function set layout(value:*):void 
