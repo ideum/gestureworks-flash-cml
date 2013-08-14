@@ -28,7 +28,7 @@ package com.gestureworks.cml.element
 	 * @author Ideum
 	 * @see SWF
 	 */	
-	public class Text extends TextField implements IElement, ICSS
+	public class Text extends TextField implements IElement, ICSS, IState
 	{
 		private var bmd:BitmapData;
 		private var b:Bitmap;
@@ -123,17 +123,6 @@ package com.gestureworks.cml.element
 		[Deprecated(replacement="state")]		
 		public var propertyStates:Array;
 		
-		
-		private var _stateId:String
-		/**
-		 * Sets the state id
-		 */
-		public function get stateId():String {return _stateId};
-		public function set stateId(value:String):void
-		{
-			_stateId = value;
-		}
-		
 		/**
 		 * parses the cml file
 		 * @param	cml
@@ -207,6 +196,78 @@ package com.gestureworks.cml.element
 			_className = value;
 			_class_ = value;
 		}	
+		
+		
+		//////////////////////////////////////////////////////////////
+		// ISTATE
+		//////////////////////////////////////////////////////////////				
+		
+		private var _stateIndex:int = 0;
+		public function get stateIndex():int { return _stateIndex; }
+		
+		private var _stateId:String
+		/**
+		 * Sets the state id
+		 */
+		public function get stateId():String {return _stateId};
+		public function set stateId(value:String):void
+		{
+			_stateId = value;
+		}
+		
+		/**
+		 * Loads state by index number. If the first parameter is NaN, the current state will be saved.
+		 * @param sIndex State index to be loaded.
+		 * @param recursion If true the state will load recursively through the display list starting at current display ojbect.
+		 */
+		public function loadState(sIndex:int = NaN, recursion:Boolean = false):void { 
+			if (StateUtils.loadState(this, sIndex, recursion))
+				_stateIndex = sIndex;
+		}
+		
+		/**
+		 * Load state by stateId. If the first parameter is null, the current state will be save.
+		 * @param sId State id to load.
+		 * @param recursion If true, the state will load recursively through the display list starting at current display ojbect.
+		 */
+		public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
+			if (StateUtils.loadStateById(this, sId, recursion))
+				_stateIndex = StateUtils.getStateById(this,sId);
+		}	
+		
+		/**
+		 * Save state by index number. If the first parameter is NaN, the current state will be saved.
+		 * @param sIndex State index to save.
+		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
+		 */
+		public function saveState(sIndex:int = NaN, recursion:Boolean = false):void { StateUtils.saveState(this, sIndex, recursion); }		
+		
+		/**
+		 * Save state by stateId. If the first parameter is null, the current state will be saved.
+		 * @param sIndex State index to be save.
+		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
+		 */
+		public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
+		
+		/**
+		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be saved.
+		 * @param sIndex State index to tween.
+		 * @param tweenTime Duration of tween
+		 */
+		public function tweenState(sIndex:int = NaN, tweenTime:Number = 1):void { 
+			if (StateUtils.tweenState(this, sIndex, tweenTime))
+				_stateIndex = sIndex;
+		}			
+		
+		/**
+		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved.
+		 * @param sId State id to tween.
+		 */
+		public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
+			if (StateUtils.tweenStateById(this, sId, tweenTime))
+				_stateIndex = StateUtils.getStateById(this, sId);
+		}	
+		
 		
 		/////////////////////////////////
 		// TEXT 

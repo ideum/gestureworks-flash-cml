@@ -372,13 +372,19 @@ package com.gestureworks.cml.element
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */
-		public function tweenState(sIndex:int = NaN, tweenTime:Number = 1):void { StateUtils.tweenState(this, sIndex, tweenTime); }			
+		public function tweenState(sIndex:int = NaN, tweenTime:Number = 1):void { 
+			if (StateUtils.tweenState(this, sIndex, tweenTime))
+				_stateIndex = sIndex;
+		}			
 		
 		/**
 		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved.
 		 * @param sId State id to tween.
 		 */
-		public function tweenStateById(sId:String):void{}			
+		public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
+			if (StateUtils.tweenStateById(this, sId, tweenTime))
+				_stateIndex = StateUtils.getStateById(this, sId);
+		}			
 		
 		
 		
