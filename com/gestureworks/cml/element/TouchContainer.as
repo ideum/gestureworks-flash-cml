@@ -336,7 +336,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Loads state by index number. If the first parameter is NaN, the current state will be saved.
 		 * @param sIndex State index to be loaded.
-		 * @param recursion If true the state will load recursively through the display list starting at current display ojbect.
+		 * @param recursion If true the state will load recursively through the display list starting at the current display ojbect.
 		 */
 		public function loadState(sIndex:int = NaN, recursion:Boolean = false):void { 
 			if (StateUtils.loadState(this, sIndex, recursion))
@@ -346,7 +346,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Load state by stateId. If the first parameter is null, the current state will be save.
 		 * @param sId State id to load.
-		 * @param recursion If true, the state will load recursively through the display list starting at current display ojbect.
+		 * @param recursion If true, the state will load recursively through the display list starting at the current display ojbect.
 		 */
 		public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
 			if (StateUtils.loadStateById(this, sId, recursion))
@@ -356,7 +356,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Save state by index number. If the first parameter is NaN, the current state will be saved.
 		 * @param sIndex State index to save.
-		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
+		 * @param recursion If true the state will save recursively through the display list starting at the current display ojbect.
 		 */
 		public function saveState(sIndex:int = NaN, recursion:Boolean = false):void { StateUtils.saveState(this, sIndex, recursion); }		
 		
@@ -368,7 +368,7 @@ package com.gestureworks.cml.element
 		public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
 		
 		/**
-		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be saved.
+		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be used.
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */
@@ -378,7 +378,7 @@ package com.gestureworks.cml.element
 		}			
 		
 		/**
-		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be saved.
+		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be used.
 		 * @param sId State id to tween.
 		 */
 		public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
@@ -462,7 +462,7 @@ package com.gestureworks.cml.element
 		protected var cmlGestureList:Object;
 		
 		/**
-		 * TODO
+		 * Creates gestureList object from XML
 		 * @param	value
 		 * @return
 		 */
@@ -502,80 +502,24 @@ package com.gestureworks.cml.element
 		}
 		
 		
+
+		//////////////////////////////////////////////////////////////
+		// TODO: Complete DOM methods
+		//////////////////////////////////////////////////////////////	
+		
+	
 		/**
-		 * returns the child element by id
+		 * Returns the child element by id
 		 * @param	id
 		 * @return
 		 */
-		public function getElementById(id:String):*
+		public function getElementById(id:String):DisplayObject
 		{
 			return childList.getKey(id);
-		}		
-		
-		
-		//////////////////////////////////////////////////////////////
-		// outline
-		//////////////////////////////////////////////////////////////
-		
-		private var _outlineOn:String = "false";
-		/**
-		 * specifies the outline of container to true or false
-		 * @default false;
-		 */
-		public function get outlineOn():String{return _outlineOn;}
-		public function set outlineOn(value:String):void
-		{
-			_outlineOn = value;
 		}
-		private var _outline_stroke:int = 20;
-		/**
-		 * sets the line stroke of outline
-		 * @default 20;
-		 */
-		public function get outline_stroke():int{return _outline_stroke;}
-		public function set outline_stroke(value:int):void
-		{
-			_outline_stroke = value;
-		}
-		
-		private var _outline_color:Number = 0xFFFFFF;
-		/**
-		 * sets the color of outline
-		 */
-		public function get outline_color():Number{return _outline_color;}
-		public function set outline_color(value:Number):void
-		{
-			_outline_color = value;
-		}
-		
-		private var _outline_alpha:Number = 1;
-		/**
-		 * sets the alpha of outline
-		 * @default =1;
-		 */
-		public function get outline_alpha():Number{return _outline_alpha;}
-		public function set outline_alpha(value:Number):void
-		{
-			_outline_alpha = value;
-		}
-		
-		private var _outline_joint:String = "miter";
-		/**
-		 * TODO
-		 */
-		public function get outline_joint():String{return _outline_joint;}
-		public function set outline_joint(value:String):void
-		{
-			_outline_joint = value;
-		}
-		
-		
-		
-		//////////////////////////////////////////////////////////////
-		
-	
 
-
+		
+		
 		
 		private function displayEventHandler(event:Event):void
 		{
