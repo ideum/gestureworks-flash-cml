@@ -22,6 +22,7 @@ package com.gestureworks.cml.element
 		private var debug:Boolean = false;				
 		private var knobOffset:Number = 0;
 		private var stepknobPositions:Array;
+		private var stepknobAngles:Array;
 		
 		public var touchKnob:TouchContainer;
 		private var minPos:Number		
@@ -126,6 +127,28 @@ package com.gestureworks.cml.element
 			_knobRadius = r;
 		}
 
+		private var _discrete:Boolean = false;
+		/**
+		 * Sets the slider's mode
+		 * @default false
+		 */		
+		public function get discrete():Boolean {return _discrete;}
+		public function set discrete(value:Boolean):void
+		{
+			_discrete = value;
+		}
+		
+		private var _steps:int = 9;
+		/**
+		 * Sets the number of discrete steps used when discrete is true
+		 * @default 9
+		 */		
+		public function get steps():int {return _steps;}
+		public function set steps(value:int):void
+		{
+			_steps = value;	
+		}
+		
 		private var _min:Number = 0;
 		/**
 		 * Sets the min output value
@@ -134,7 +157,7 @@ package com.gestureworks.cml.element
 		public function get min():Number {return _min;}
 		public function set min(value:Number):void
 		{
-			_min = value;	
+			_min = value;
 		}
 		
 		private var _max:Number = 100;
@@ -297,12 +320,25 @@ package com.gestureworks.cml.element
 					addChild(touchKnob);					
 				}
 				
-				knobOffset = -knobRadius;
-				knobOffset = -knobRadius;
-				
 				var knobStartPosition:Point = findPoint(0.0);
-				knob.x = knobStartPosition.x + knobOffset;
-				knob.y = knobStartPosition.y + knobOffset;
+				knob.x = knobStartPosition.x;
+				knob.y = knobStartPosition.y;
+				
+				knobOffset = -knobRadius;
+			}
+			
+			if (discrete && steps > 0)
+			{
+				stepknobPositions = [];
+				stepknobAngles = [];
+				var angle:Number = 0;
+				var angleStep:Number = 360.0 / steps;
+				
+				for (var i:uint = 0; i < steps; ++i)
+				{
+					stepknobPositions[i] = findPoint(i * angleStep);
+					stepknobAngles[i] = i * angleStep;
+				}
 			}
 			
 			createEvents();			
@@ -396,11 +432,7 @@ package com.gestureworks.cml.element
 			
 			updateValues();
 		}
-		
-		/**
-		 * 
-		 * 
-		 */
+
 		private function onComplete(event:*):void
 		{
 			if (debug)
@@ -411,12 +443,9 @@ package com.gestureworks.cml.element
 		
 		private function updateValues():void
 		{
-			var progressAngle:Number = NumberUtils.map(progress, min, max, 0.0, 360.0);
-			if (_rail && _rail is Graphic)
-			{
-				_rail.angleLength = progressAngle;
-			}
+			var progressAngleBase:Number = NumberUtils.map(progress, min, max, 0.0, 360.0);
 			
+			var progressAngle:Number = progressAngleBase;
 			if (!clockwise)
 			{
 				progressAngle = 360.0 - progressAngle;
@@ -429,8 +458,33 @@ package com.gestureworks.cml.element
 			
 			var placementRadius:Number = innerRadius + ((radius - innerRadius) * 0.5);
 			
-			knob.x = Math.cos(angle) * placementRadius + knobOffset + centerX;
-			knob.y = Math.sin(angle) * placementRadius + knobOffset + centerY;
+			var knobPosition:Point = new Point();
+			knobPosition.x = Math.cos(angle) * placementRadius + knobOffset + centerX;
+			knobPosition.y = Math.sin(angle) * placementRadius + knobOffset + centerY;
+			
+			if (discrete && steps > 0)
+			{
+				var index:int = getSnapValue(knobPosition);
+				if (index > 0 && index < stepknobPositions.length && index < stepknobAngles.length)
+				{
+					knobPosition = stepknobPositions[index];
+					progressAngleBase = stepknobAngles[index];
+					if (!clockwise)
+					{
+						progressAngleBase = 360.0 - progressAngleBase;
+					}
+				}
+			}
+			
+			knob.x = knobPosition.x;
+			knob.y = knobPosition.y;
+
+			if (_rail && _rail is Graphic)
+			{
+				_rail.angleLength = progressAngleBase;
+			}
+			
+			_value = progress;
 			
 			if (debug)
 			{
@@ -448,8 +502,8 @@ package com.gestureworks.cml.element
 			var angle:Number = ((startAngle + angleDegrees) / 180.0) * pi;
 			var radius:Number = innerRadius + ((radius - innerRadius) * 0.5);
 			
-			return new Point(Math.cos(angle) * radius + centerX, 
-							 Math.sin(angle) * radius + centerY);
+			return new Point(Math.cos(angle) * radius + centerX - knobRadius, 
+							 Math.sin(angle) * radius + centerY - knobRadius);
 		}
 		
 		private function findProgress(x:Number, y:Number):Number
@@ -470,6 +524,28 @@ package com.gestureworks.cml.element
 			}
 			
 			return NumberUtils.map(angle, 0.0, 360.0, min, max);
+		}
+		
+		private function getSnapValue(desiredPoint:Point):int
+		{
+			var nearestIndex:int = -1;
+			var bestDistance:Number = Number.MAX_VALUE;
+			
+			var distance:Number = 0;
+			var stepKnobPositionsLength:uint = stepknobPositions.length;
+			
+			for (var i:uint = 0; i < stepKnobPositionsLength; ++i)
+			{
+				distance = Point.distance(stepknobPositions[i], desiredPoint);
+				
+				if (distance < bestDistance)
+				{
+					nearestIndex = i;
+					bestDistance = distance;
+				}
+			}
+			
+			return nearestIndex;
 		}
 		
 		override public function clone():*{
