@@ -64,6 +64,14 @@ package  com.gestureworks.cml.element
 		 */
 		override public function init():void 
 		{
+			if (!parent || !(parent is TouchKeyboard))			
+				setup();
+		}
+		
+		/**
+		 * Setup object
+		 */
+		public function setup():void {
 			setBackground();
 			setIcon();
 			setText();
@@ -72,16 +80,7 @@ package  com.gestureworks.cml.element
 			if (!dispatch)
 				dispatch = "down:" + text;
 			
-			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{ 
-			if(!parent || !(parent is TouchKeyboard))
-				init();
+			super.init();			
 		}
 				
 		/**

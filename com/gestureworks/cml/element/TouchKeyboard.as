@@ -245,7 +245,7 @@ package com.gestureworks.cml.element
 				{
 					var key:* = container.childList.getIndex(j);
 					if (!(key is Key)) continue;
-					key.init();
+					key.setup();
 					rowArray.push(key);
 				}
 					
