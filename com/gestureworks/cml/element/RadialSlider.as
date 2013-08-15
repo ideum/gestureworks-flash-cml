@@ -253,19 +253,6 @@ package com.gestureworks.cml.element
 			_innerRadius = value;
 		}
 		
-		/**
-		 * Turns gestureReleaseInertia off and on
-		 * @default false
-		 */		
-		override public function get gestureReleaseInertia():Boolean {return super.gestureReleaseInertia;}
-		override public function set gestureReleaseInertia(value:Boolean):void
-		{
-			super.gestureReleaseInertia = value;
-			if (touchKnob)
-				touchKnob.gestureReleaseInertia = value;
-		}		
-		
-		
 		
 		// read only // 
 			
@@ -314,7 +301,7 @@ package com.gestureworks.cml.element
 					touchKnob.disableNativeTransform = true;	
 					touchKnob.gestureEvents = true;
 					touchKnob.gestureList = { "n-drag-inertia": true };
-					touchKnob.gestureReleaseInertia = gestureReleaseInertia;
+					touchKnob.gestureReleaseInertia = false;
 					
 					touchKnob.addChild(knob);
 					addChild(touchKnob);					
