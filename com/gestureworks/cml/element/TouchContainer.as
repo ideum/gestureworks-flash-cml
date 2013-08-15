@@ -339,8 +339,11 @@ package com.gestureworks.cml.element
 		 * @param recursion If true the state will load recursively through the display list starting at the current display ojbect.
 		 */
 		public function loadState(sIndex:int = NaN, recursion:Boolean = false):void { 
-			if (StateUtils.loadState(this, sIndex, recursion))
+			if (StateUtils.loadState(this, sIndex, recursion)){
 				_stateIndex = sIndex;
+				if ("stateId" in state[_stateIndex]) 
+					stateId = state[_stateIndex]["stateId"];
+			}
 		}
 		
 		/**
@@ -349,8 +352,10 @@ package com.gestureworks.cml.element
 		 * @param recursion If true, the state will load recursively through the display list starting at the current display ojbect.
 		 */
 		public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
-			if (StateUtils.loadStateById(this, sId, recursion))
-				_stateIndex = StateUtils.getStateById(this,sId);
+			if (StateUtils.loadStateById(this, sId, recursion)){
+				_stateIndex = StateUtils.getStateById(this, sId);
+				stateId = sId;
+			}
 		}	
 		
 		/**

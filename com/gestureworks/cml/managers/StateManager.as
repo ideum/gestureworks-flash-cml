@@ -1,5 +1,6 @@
 package com.gestureworks.cml.managers 
 {
+	import com.adobe.utils.StringUtil;
 	import flash.utils.Dictionary;
 	/**
 	 * Manages the storage and loading of object states through the RenderKit. Passing a state to the StateManager, is done by assigning a stateId to 
@@ -217,15 +218,23 @@ package com.gestureworks.cml.managers
 			var stateId:String = attr["stateId"];
 			if (!stateId) {
 				stateId = nextId;
-				attr["stateId"] = stateId;
 			}			
 			
-			if (!lookUp[stateId])
-				lookUp[stateId] = new Array();
-			lookUp[stateId].push(object);
+			//allow comma delimited state ids to associate a single state with multiple ids
+			var stateIds:Array = stateId.split(",");
+			var attrCopy:Dictionary;
 			
-			_states.push(attr);
-			object.state.push(_states[_states.length - 1]);			
+			for each(stateId in stateIds) {
+				stateId = StringUtil.trim(stateId);
+				attrCopy = copyAttributes(attr);
+				if (!lookUp[stateId])
+					lookUp[stateId] = new Array();
+				lookUp[stateId].push(object);
+				
+				attrCopy["stateId"] = stateId;
+				_states.push(attrCopy);
+				object.state.push(_states[_states.length - 1]);			
+			}
 		}
 		
 		/**
@@ -244,7 +253,9 @@ package com.gestureworks.cml.managers
 		 * @return An array of objects
 		 */
 		public static function stateIdObjects(stateId:String):Array {
-			return lookUp[stateId];
+			if (lookUp[stateId])
+				return lookUp[stateId];
+			return null;
 		}
 		
 		/**
@@ -253,12 +264,26 @@ package com.gestureworks.cml.managers
 		 * @return An array of state ids
 		 */
 		public static function stateIds(object:*):Array {
-			var ids:Array = [];
+			var ids:Array;
 			for (var id:String in lookUp) {
-				if (stateIdObjects[id].indexOf(object) >= 0)
+				if (lookUp[id] && lookUp[id].indexOf(object) >= 0) {
+					if (!ids) ids = [];
 					ids.push(id);
+				}
 			}
 			return ids;
+		}
+		
+		/**
+		 * Returns shallow copy of attribute dictionary
+		 * @param source The source dictionary
+		 * @return The dictionary copy
+		 */
+		private static function copyAttributes(source:Dictionary):Dictionary {
+			var copy:Dictionary = new Dictionary();			
+			for (var key:String in source)
+				copy[key] = source[key];
+			return copy;
 		}
 	}
 
