@@ -463,9 +463,9 @@ package com.gestureworks.cml.core
 				
 				obj = createObject(tag);	
 				
-				//save object states
+				//save render kit object states
 				if (node.@saveState != undefined) {
-					StateManager.saveObject(obj);
+					StateManager.registerRenderObject(obj);
 					delete node.@["saveState"];
 				}					
 				
@@ -498,7 +498,7 @@ package com.gestureworks.cml.core
 				
 				
 				//target state tag
-				StateUtils.parseCML(obj, XMLList(node));
+				StateManager.registerStateTag(obj, XMLList(node));
 				
 				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
@@ -661,7 +661,7 @@ package com.gestureworks.cml.core
 		private static function processStates(renderList:XMLList, cmlRenderer:XMLList):void {
 			for each(var node:XML in renderList) {
 				if (node.@stateId != undefined)
-					StateManager.saveState(node, cmlRenderer);
+					StateManager.saveRenderState(node, cmlRenderer);
 			}
 		}
 	
