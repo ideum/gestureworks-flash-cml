@@ -1,11 +1,35 @@
 package com.gestureworks.cml.managers 
 {
-	import com.gestureworks.cml.element.Image;
+	import com.adobe.utils.StringUtil;
 	import flash.utils.Dictionary;
 	/**
-	 * Manages the storage and loading of object states through the RenderKit. Passing a state to the StateManager, is done by assigning a stateId to 
-	 * a RenderData object. To load the object state, pass the stateId to the StateManager through the loadState function (StateManager.loadState("first state")).
-		<RenderKit>
+	 * Manages the storage and loading of object states through the RenderKit or the State tag. Through the RenderKit, passing a state to the StateManager is done by assigning a stateId to 
+	 * a RenderData object. To register a state through a "State" tag, nest the tag inside the CML object node and assign attributes. If a stateId is not defined on a state tag, one is automatically 
+	 * generated. To load the object state, pass the stateId to the StateManager through the loadState function (StateManager.loadState("first state")).
+	 * @author shaun
+	 */
+	public class StateManager 
+	{		
+		private static var renderStates:Array;
+		private static var attributes:Array;
+		private static var placeholder:int = -1;
+		private static var _states:Array = [];
+		private static var lookUp:Dictionary = new Dictionary;
+		
+		private static var id = 0;
+		
+		public static function get states():Array { return _states; }
+		
+		private static function get nextId():String { 
+			while (lookUp["state_" + id])
+				id++;
+			return "state_" + id; 
+		};
+		
+		////////////////////////////////////////////////
+		//////	RENDER KIT
+		///////////////////////////////////////////////
+		/*<RenderKit>
 
 			<Renderer max="1" dataRootNode="Item">
 				<Container id="c1" x="{x}" y="{y}">
@@ -45,46 +69,26 @@ package com.gestureworks.cml.managers
 				</Item>
 			</RendererData>	
 
-		</RenderKit>
-	 * @author shaun
-	 */
-	public class StateManager 
-	{		
-		private static var _states:Dictionary;
-		private static var _loadedObjects:Array;		
-		private static var attributes:Array;
-		private static var placeholder:int = -1;
+		</RenderKit>*/
 		
 		/**
-		 * Dictionary of object states in the following nested structure: state id-->object-->property-->value.
-		 */
-		public static function get states():Dictionary { return _states; }
-		
-		/**
-		 * Latest updated objects
-		 */
-		public static function get loadedObjects():Array { return _loadedObjects;}
-				
-		/**
-		 * Generates a nested dictionary of state data with the following structure: state id-->object placeholder-->property-->value.
+		 * Generates a nested dictionary of state data with the following structure: object placeholder-->state id-->property-->value.
 		 * The placeholder will be replaced by the resulting CML object after instantiaton.
 		 * @param	stateData
 		 * @param	objects
 		 */
-		public static function saveState(stateData:XML, cmlObjects:XMLList):void {
+		public static function saveRenderState(stateData:XML, cmlObjects:XMLList):void {
 			var stateAttr:XML;
 			var attr:*;
 			var stateId:String = stateData.@stateId;
 						
 			if (!attributes) {
 				attributes = new Array();
-				storeAttributes(cmlObjects);
+				storeRenderAttributes(cmlObjects);
 			}
 			
-			if (!_states)
-				_states = new Dictionary();	
-			if(!_states[stateId])
-				_states[stateId] = new Dictionary();
+			if (!renderStates)
+				renderStates = new Array();	
 			
 			for each(stateAttr in stateData.*){
 
@@ -93,16 +97,17 @@ package com.gestureworks.cml.managers
 					//populate states with state attributes matching renderer object attributes
 					if (stateAttr.name() == attr.value) {
 						
-						if (!_states[stateId][attr.placeholder])
-							_states[stateId][attr.placeholder] = new Dictionary();
-						if (!_states[stateId][attr.placeholder][attr.property])
-							_states[stateId][attr.placeholder][attr.property] = new Dictionary();
+						if (!renderStates[attr.placeholder])
+							renderStates.push(new Dictionary());
+						if (!renderStates[attr.placeholder][stateId])
+							renderStates[attr.placeholder][stateId] = new Dictionary();	
+						if (!renderStates[attr.placeholder][stateId][attr.property])
+							renderStates[attr.placeholder][stateId][attr.property] = new Dictionary();
 							
-						_states[stateId][attr.placeholder][attr.property] = stateAttr.toString();
+						renderStates[attr.placeholder][stateId][attr.property] = stateAttr.toString();
 					}
 				}
-			}
-			
+			}			
 		}
 		
 		/**
@@ -111,7 +116,7 @@ package com.gestureworks.cml.managers
 		 * saveState attribute to later (after instantiation) identify the AS3 object for placeholder replacement.
 		 * @param	objects
 		 */
-		private static function storeAttributes(objects:XMLList):void {
+		private static function storeRenderAttributes(objects:XMLList):void {
 			var str:String;
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
 			
@@ -121,57 +126,171 @@ package com.gestureworks.cml.managers
 					str = attr.toString();
 					if (str.charAt(0) == "{" && str.charAt(str.length -1) == "}") {
 						obj.@saveState = "true";
-						attributes.push({placeholder:placeholder, property:attr.name().toString(), value:str.replace(regExp, '')});
+						str = str.replace(regExp, '');
+						attributes.push({placeholder:placeholder, property:attr.name().toString(), value:str == "true" ? true : str == "false" ? false : str});
 					}
 				}
-				storeAttributes(obj.*);				
+				storeRenderAttributes(obj.*);				
 			}
 		}
 		
 		/**
-		 * Sequentially replace the placeholder integers with objects. Intended for post CML object
+		 * Sequentially replace the placeholder integers with objects. Intended for post RenderKit object
 		 * instantiation.
 		 * @param	object
+		 * @private
 		 */
-		public static function saveObject(object:*): void {
+		public static function registerRenderObject(object:*): void {
 			placeholder = -1;
 			attributes = null;
-			var phId:Number;
+								
+			for (var stateId:* in renderStates[0]) {				
+				renderStates[0][stateId]["stateId"] = stateId;
+				registerObject(object, renderStates[0][stateId]);
+				object.stateId = stateId;
+			}
 			
-			for (var stateId:* in _states) {
-				for (var p:* in _states[stateId]) {
-					
-					//placeholder change
-					if (!isNaN(phId) && p != phId)
-						continue;
-					
-					//current placeholder
-					if (p is int) {
-						phId = p;						
-					}
-					
-					//assign placeholder dictionary to object
-					_states[stateId][object] = _states[stateId][phId];
-					
-					//delete placeholder dictionary
-					delete _states[stateId][phId];
+			renderStates.shift();
+		}
+		
+		////////////////////////////////////////////////
+		//////	STATE TAG 
+		///////////////////////////////////////////////
+		/*<Graphic x="10" y="100" shape="rectangle" width="100" height="100" color="0xcccccc" lineStroke="0">
+			<State x="20" y="300" shape="circle" color="0xff1223" radius="50"/>	
+			<State stateId="test" x="20" y="300" shape="rectangle" width="300" height="50" color="0xccf2cd" lineStroke="0"/>	
+		</Graphic>*/
+		
+		/**
+		 * Register object attributes in State tag
+		 * @param	object
+		 * @param	cml
+		 */
+		public static function registerStateTag(object:*, cml:XMLList):void {
+			
+			if (!("state" in object)) return;
+		
+			var name:String;
+			var val:*;	
+			var attr:Dictionary;
+			var initial:Boolean = false;
+			
+			//register initial state if parent contains state nodes
+			function registerInitialState():void {
+				if (!initial) {
+					initial = true;
+					registerObject(object, object.state[0]);
+					object.state[0] = object.state.pop();
+					object.stateId = object.state[0].stateId;
 				}
+			}	
+			
+			for each (var node:XML in cml.*) {
+				if (node.name() == "State") {
+					
+					registerInitialState();
+					
+					if (node.@stateId == undefined)
+						node.@stateId = nextId;
+						
+					for each (val in node.@ * ) {
+						if(!attr)
+							attr = new Dictionary();
+						name = val.name();	
+						if (val == "true") val = true;
+						if (val == "false") val = false;	
+						attr[name] = val.toString();
+					}	
+					
+					if (attr)
+						registerObject(object, attr);
+					attr = null;
+				}	
+			}					
+		}
+		
+		////////////////////////////////////////////////
+		//////	AS3
+		///////////////////////////////////////////////
+		
+		/**
+		 * Registers object attributes for state management
+		 * @param	object The object to register
+		 * @param	attr Property to value Dictionary
+		 */
+		public static function registerObject(object:*, attr:Dictionary):void {
+			
+			if (!("state" in object)) return;
+			
+			var stateId:String = attr["stateId"];
+			if (!stateId) {
+				stateId = nextId;
+			}			
+			
+			//allow comma delimited state ids to associate a single state with multiple ids
+			var stateIds:Array = stateId.split(",");
+			var attrCopy:Dictionary;
+			
+			for each(stateId in stateIds) {
+				stateId = StringUtil.trim(stateId);
+				attrCopy = copyAttributes(attr);
+				if (!lookUp[stateId])
+					lookUp[stateId] = new Array();
+				lookUp[stateId].push(object);
+				
+				attrCopy["stateId"] = stateId;
+				_states.push(attrCopy);
+				object.state.push(_states[_states.length - 1]);			
 			}
 		}
 		
 		/**
-		 * Loads applicable objects with provided states.
+		 * Loads applicable objects with provided states by state id.
 		 * @param	stateId
 		 */
 		public static function loadState(stateId:*): void {
-			if(_states[stateId])
-				_loadedObjects = new Array();
-			for (var obj:* in _states[stateId]) {
-				_loadedObjects.push(obj);
-				for (var prop:* in _states[stateId][obj]){
-					obj[prop] = _states[stateId][obj][prop];
+			var obj:*;
+			for each(obj in lookUp[stateId])
+				obj.loadStateById(stateId);
+		}
+		
+		/**
+		 * Returns all objects with states associated with the provided state id
+		 * @param	stateId
+		 * @return An array of objects
+		 */
+		public static function stateIdObjects(stateId:String):Array {
+			if (lookUp[stateId])
+				return lookUp[stateId];
+			return null;
+		}
+		
+		/**
+		 * Returns registered state ids of the provided object
+		 * @param	object The registered object
+		 * @return An array of state ids
+		 */
+		public static function stateIds(object:*):Array {
+			var ids:Array;
+			for (var id:String in lookUp) {
+				if (lookUp[id] && lookUp[id].indexOf(object) >= 0) {
+					if (!ids) ids = [];
+					ids.push(id);
 				}
 			}
+			return ids;
+		}
+		
+		/**
+		 * Returns shallow copy of attribute dictionary
+		 * @param source The source dictionary
+		 * @return The dictionary copy
+		 */
+		private static function copyAttributes(source:Dictionary):Dictionary {
+			var copy:Dictionary = new Dictionary();			
+			for (var key:String in source)
+				copy[key] = source[key];
+			return copy;
 		}
 	}
 
