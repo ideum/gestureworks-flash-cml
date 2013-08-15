@@ -1,6 +1,7 @@
 package com.gestureworks.cml.utils 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.managers.StateManager;
 	import com.greensock.plugins.ColorTransformPlugin;
 	import com.greensock.plugins.TweenPlugin;
 	import com.greensock.TimelineLite;
@@ -14,34 +15,7 @@ package com.gestureworks.cml.utils
 	TweenPlugin.activate([ColorTransformPlugin]);
 	
 	public class StateUtils 
-	{		
-		/**
-		 * Writes cml state to object state
-		 * @param	obj 
-		 * @param	state
-		 */		
-		public static function parseCML(obj:Object, cml:XMLList):void
-		{
-			if (!("state" in obj)) return;
-		
-			var name:String;
-			var val:*;
-			var i:int;			
-			
-			for each (var node:XML in cml.*) {
-				if (node.name() == "State") {
-					obj.state.push(new Dictionary); 
-					for each (val in node.@*) {
-						name = val.name();	
-						if (val == "true") val = true;
-						if (val == "false") val = false;	
-						obj.state[obj.state.length - 1][name]  = val;
-					}	
-					
-				}	
-			}
-		}
-		
+	{				
 		
 		/**
 		 * Stores current property values to a provided slot of the object's state array.
