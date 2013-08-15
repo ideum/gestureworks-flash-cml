@@ -3,8 +3,9 @@ package com.gestureworks.cml.managers
 	import com.adobe.utils.StringUtil;
 	import flash.utils.Dictionary;
 	/**
-	 * Manages the storage and loading of object states through the RenderKit. Passing a state to the StateManager, is done by assigning a stateId to 
-	 * a RenderData object. To load the object state, pass the stateId to the StateManager through the loadState function (StateManager.loadState("first state")).
+	 * Manages the storage and loading of object states through the RenderKit or the State tag. Through the RenderKit, passing a state to the StateManager is done by assigning a stateId to 
+	 * a RenderData object. To register a state through a "State" tag, nest the tag inside the CML object node and assign attributes. If a stateId is not defined on a state tag, one is automatically 
+	 * generated. To load the object state, pass the stateId to the StateManager through the loadState function (StateManager.loadState("first state")).
 	 * @author shaun
 	 */
 	public class StateManager 
@@ -17,8 +18,13 @@ package com.gestureworks.cml.managers
 		
 		private static var id = 0;
 		
-		public static function get states():Array { return _states;}
-		private static function get nextId():String { return "state_" + id++; };
+		public static function get states():Array { return _states; }
+		
+		private static function get nextId():String { 
+			while (lookUp["state_" + id])
+				id++;
+			return "state_" + id; 
+		};
 		
 		////////////////////////////////////////////////
 		//////	RENDER KIT
@@ -167,13 +173,22 @@ package com.gestureworks.cml.managers
 			var name:String;
 			var val:*;	
 			var attr:Dictionary;
-			var stateTag:Boolean = false;
+			var initial:Boolean = false;
 			
+			//register initial state if parent contains state nodes
+			function registerInitialState():void {
+				if (!initial) {
+					initial = true;
+					registerObject(object, object.state[0]);
+					object.state[0] = object.state.pop();
+					object.stateId = object.state[0].stateId;
+				}
+			}	
 			
 			for each (var node:XML in cml.*) {
 				if (node.name() == "State") {
 					
-					stateTag = true;
+					registerInitialState();
 					
 					if (node.@stateId == undefined)
 						node.@stateId = nextId;
@@ -191,15 +206,7 @@ package com.gestureworks.cml.managers
 						registerObject(object, attr);
 					attr = null;
 				}	
-			}	
-			
-			//register initial state if parent contains state nodes
-			if (stateTag) {
-				registerObject(object, object.state[0]);
-				object.state.pop();
-				object.stateId = object.state[0].stateId;
-			}
-				
+			}					
 		}
 		
 		////////////////////////////////////////////////
