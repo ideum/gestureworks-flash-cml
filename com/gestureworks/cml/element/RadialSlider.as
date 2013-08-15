@@ -342,7 +342,7 @@ package com.gestureworks.cml.element
 			if (!rail)
 			{
 				var railGraphic:Graphic = new Graphic();
-				railGraphic.shape = "circlesegment";
+				railGraphic.shape = "circleSegment";
 				railGraphic.radius = radius;
 				railGraphic.innerRadius = innerRadius;
 				railGraphic.startAngle = startAngle;

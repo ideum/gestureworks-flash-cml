@@ -187,7 +187,7 @@ package com.gestureworks.cml.element
 					break;
 				}
 				
-				case "circlesegment":
+				case "circleSegment":
 				{
 					drawCircleSector();
 					break;
@@ -236,7 +236,7 @@ package com.gestureworks.cml.element
 			graphics.endFill();			
 		}
 		
-		function drawCircleSector():void
+		private function drawCircleSector():void
 		{	
 			var angle:Number = startAngle;
 			
@@ -279,7 +279,7 @@ package com.gestureworks.cml.element
 			graphics.endFill();
 		}
 		
-		function drawCircleSegment(angle:Number, segmentAngle:Number, arcRadius:Number, offset:Number):void
+		private function drawCircleSegment(angle:Number, segmentAngle:Number, arcRadius:Number, offset:Number):void
 		{
 			var angleMid:Number;
 			var anchorX:Number;
@@ -1084,7 +1084,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Set the start angle of the circle segment in degrees, clockwise from X axis.
 		 * Must be in range 0.0 - 360.0.
-		 * Shape must be circlesegment.
+		 * Shape must be circleSegment.
 		 */
 		public function get startAngle():Number{return _startAngle;}
 		public function set startAngle(value:Number):void
@@ -1100,7 +1100,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Set the angle length of the circle segment in degrees.
 		 * Must be in range 0.0 - 360.0.
-		 * Shape must be circlesegment.
+		 * Shape must be circleSegment.
 		 */
 		public function get angleLength():Number{return _angleLength;}
 		public function set angleLength(value:Number):void
@@ -1116,7 +1116,7 @@ package com.gestureworks.cml.element
 		private var _clockwise:Boolean = true;
 		/**
 		 * Set if the circle segment should go clockwise/
-		 * Shape must be circlesegment.
+		 * Shape must be circleSegment.
 		 */
 		public function get clockwise():Boolean{return _clockwise;}
 		public function set clockwise(value:Boolean):void
