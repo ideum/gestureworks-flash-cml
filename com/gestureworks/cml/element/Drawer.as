@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.easing.Expo;
@@ -726,7 +727,7 @@ package com.gestureworks.cml.element
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.removeEventListener(GWGestureEvent.FLICK, open);
 			handle.addEventListener(GWGestureEvent.TAP, close);	
-			handle.addEventListener(GWGestureEvent.FLICK, close);	
+			handle.addEventListener(GWGestureEvent.FLICK, close);
 		}
 
 		/**
@@ -773,6 +774,7 @@ package com.gestureworks.cml.element
 		private function handleTransition():void
 		{
 			_isOpen = !_isOpen;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "drawerEvent", _isOpen));
 			if (useLeftHandle || useRightHandle)
 				handle.visible = !_isOpen;
 			if (leftHandle)
