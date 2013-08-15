@@ -279,7 +279,11 @@ package com.gestureworks.cml.element
 				  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
 				else{
 					touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
-					hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+					
+					if (hit)
+					{
+						hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+					}
 				}
 			}
 		}
@@ -350,16 +354,9 @@ package com.gestureworks.cml.element
 				railGraphic.color = railColor;
 				railGraphic.alpha = railAlpha;
 				railGraphic.lineColor = 0x333333;
+				railGraphic.clockwise = clockwise;
 				addChild(railGraphic);
 				rail = DisplayObject(railGraphic);
-			}
-			
-			if (!hit && railGraphic)
-			{
-				var hitGraphic:Graphic = railGraphic.clone();
-				hitGraphic.alpha = 0;
-				addChild(hitGraphic);
-				hit = DisplayObject(hitGraphic);
 			}
 			
 			if (!knob && defaultKnob)
