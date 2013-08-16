@@ -774,7 +774,7 @@ package com.gestureworks.cml.element
 		private function handleTransition():void
 		{
 			_isOpen = !_isOpen;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "drawerEvent", _isOpen));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));
 			if (useLeftHandle || useRightHandle)
 				handle.visible = !_isOpen;
 			if (leftHandle)
