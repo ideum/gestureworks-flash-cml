@@ -1,5 +1,4 @@
 Simplified BSD License
-======================
 
 Copyright 2008-2013 GestureWorks. All rights reserved.
 
@@ -26,3 +25,5 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those of the
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of GestureWorks.
+
+All third party libraries (cml_ext.swc) are subject to their own license restrictions. 
