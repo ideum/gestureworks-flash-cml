@@ -1,6 +1,6 @@
 # GestureWorks Flash CML 
 
-Gestureworks Flash Creative Markup Language (CML) framework
+GestureWorks Flash CML framework
 
 Creative Markup Language (CML) is an XML-based open standard for defining object creation, management, and interaction 
 within a multiuser, mulititouch environment. It is the official markup language for authoring GestureWorks Flash and 
