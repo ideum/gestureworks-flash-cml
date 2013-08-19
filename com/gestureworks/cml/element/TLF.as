@@ -167,7 +167,7 @@ package com.gestureworks.cml.element
 			initialized=true;
 		}
 		
-		private function updateContainer():void
+		public function updateContainer():void
 		{			
 			if (initialized) 
 			{
