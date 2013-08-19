@@ -1,6 +1,6 @@
 # GestureWorks Flash CML 
 
-Gestureworks Flash and Open Exhibits Creative Markup Language (CML) framework
+Gestureworks Flash Creative Markup Language (CML) framework
 
 Creative Markup Language (CML) is an XML-based open standard for defining object creation, management, and interaction 
 within a multiuser, mulititouch environment. It is the official markup language for authoring GestureWorks Flash and 
@@ -22,7 +22,7 @@ language-agnostic and to accelerate the development of multiuser, multitouch app
 * ActionScript 3 API
 
 GestureWorks Flash CML is compatible with the GestureWorks Flash GML framework. The GestureWorks Flash GML framework is a markup driven
-gesture analysis engine. It is free for non-commercial use through the Open Exhibits project http://openexhibits.org/(http://openexhibits.org/ "Open Exhibits"). It avaialable for commercial use through
-the GestureWorks website: http://gestureworks.com/pages/flash-home(http://gestureworks.com/pages/flash-home "GestureWorks Flash").
+gesture analysis engine. It is free for non-commercial use through the Open Exhibits project http://openexhibits.org/ ; it is available for commercial use through
+the GestureWorks website: http://gestureworks.com/pages/flash-home
 
-For more information see the Wiki: http://creativeml.org/wiki/index.php/Main_Page ( http://creativeml.org/wiki/index.php/Main_Page, CreativeML Wiki).
+For more information see the Wiki: http://creativeml.org/wiki/index.php/Main_Page
