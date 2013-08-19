@@ -263,19 +263,19 @@ package com.gestureworks.cml.element
 		{
 			if (file) src = file;
 			img = new ImageLoader(src);
-			img.load();
 			img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
 			img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+			img.load();
 		}	
 		
 		
 		public var percentLoaded:Number;
-		protected function onPercentLoad(event:StateEvent):void
+		protected function onPercentLoad(event:LoaderEvent):void
 		{
-			if (event.property == "percentLoaded") {
+			/*if (event.property == "percentLoaded") {
 				percentLoaded = event.value;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", percentLoaded, true, true));
-			}
+			}*/
 		}
 		
 		
