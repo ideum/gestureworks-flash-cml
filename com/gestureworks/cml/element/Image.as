@@ -48,7 +48,9 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		override public function init():void {}
+		override public function init():void 
+		{
+		}
 			
 		
 		/**
@@ -261,11 +263,16 @@ package com.gestureworks.cml.element
 		 */
 		public function open(file:String=null):void
 		{
-			if (file) src = file;
-			img = new ImageLoader(src);
-			img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
-			img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
-			img.load();
+			if (FileManager.media.getContent(file)) {
+				src = file;
+				loadComplete();
+			}
+			else {
+				img = new ImageLoader(src);
+				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
+				img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+				img.load();
+			}
 		}	
 		
 		
@@ -273,6 +280,12 @@ package com.gestureworks.cml.element
 		protected function onPercentLoad(event:LoaderEvent):void
 		{
 			/*if (event.property == "percentLoaded") {
+<<<<<<< HEAD
+=======
+=======
+/*			if (event.property == "percentLoaded") {
+>>>>>>> Fixed image not loading through open method
+>>>>>>> tmp
 				percentLoaded = event.value;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", percentLoaded, true, true));
 			}*/
