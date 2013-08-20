@@ -25,6 +25,7 @@ package com.gestureworks.cml.element
 		private var tweening:Boolean;
 		private var maskSprite:Sprite;
 		private var origins:Dictionary = new Dictionary(true);
+		private var _disabledItems:Dictionary = new Dictionary(false);
 		
 		public function SlideMenu() 
 		{
@@ -118,6 +119,12 @@ package com.gestureworks.cml.element
 		public function set level(value:int):void {
 			_level = value;
 		}		
+		
+		private var _enable:Boolean = true;
+		public function get enable():Boolean { return _enable; }
+		public function set enable(value:Boolean):void {
+			_enable = value;
+		}
 		
 		//{ region Background properties
 		
@@ -448,7 +455,9 @@ package com.gestureworks.cml.element
 		}*/
 		
 		protected var _menuItems:Array = [];
+		//protected var _menuItems:Dictionary = new Dictionary();
 		public function get menuItems():Array { return _menuItems; }
+		//public function get menuItems():Dictionary { return _menuItems; }
 		
 		protected var _subMenus:Dictionary = new Dictionary();
 		public function get subMenus():Dictionary { return _subMenus; }
@@ -468,33 +477,6 @@ package com.gestureworks.cml.element
 		//} endregion
 		
 		
-		//{ region display list overrides
-		
-		/*override public function addChild(child:DisplayObject):DisplayObject {
-			
-			if (!_initialized)
-				return super.addChild(child);
-				
-			if (child is SlideMenu) {
-				trace("Adding slide menu.");
-				super.addChild(child);
-				updateLayout();
-				return child;
-			}
-			else
-				return super.addChild(child);
-		}*/
-		
-		/*override public function removeChild(child:DisplayObject):DisplayObject {
-			
-			if (!_initialized)
-				return super.addChild(child);
-			
-			trace("Overriding remove child.");
-			return super.removeChild(child);
-		}*/
-		
-		//} endregion display list overrides
 		
 		override public function init():void {
 			
@@ -573,7 +555,7 @@ package com.gestureworks.cml.element
 			
 			createTitle();
 			
-			updateLayout();
+			initialLayout();
 			
 			listenForEvents();
 			
@@ -768,45 +750,16 @@ package com.gestureworks.cml.element
 		//{ region Event handlers
 		
 		
-		protected function onItemDown(e:GWTouchEvent):void 
-		{
-			if (_menuItems.indexOf(e.target) > -1) {
-				
-				var ind:int = _menuItems.indexOf(e.target);
-				
-				if (_menuItems[ind].id in origins) {
-					callDown(TouchContainer(e.target));
-					
-					_menuItems[ind].addEventListener(GWTouchEvent.TOUCH_END, onItemUp);
-					_menuItems[ind].addEventListener(GWTouchEvent.TOUCH_OUT, onItemUp);
-				}
-			}
-		}
-		
-		
-		private function onItemUp(e:GWTouchEvent):void 
-		{
-			
-			if (_menuItems.indexOf(e.target) > -1) {
-				
-				var ind:int = _menuItems.indexOf(e.target);
-				
-				if (_menuItems[ind].id in origins) {
-					callUp(TouchContainer(e.target));
-					
-					_menuItems[ind].removeEventListener(GWTouchEvent.TOUCH_END, onItemUp);
-					_menuItems[ind].removeEventListener(GWTouchEvent.TOUCH_OUT, onItemUp);
-				}
-			}
-		}
-		
 		private function onTap(e:GWGestureEvent):void 
 		{
 			
 			if (_menuState == _label) {
 				
 				for (var i:int = 0; i < _menuItems.length; i++) {
-					trace(DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY));
+					if (!_menuItems[i].visible) continue;
+					
+					//trace(DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY));
+					
 					if (DisplayObject(_menuItems[i]).hitTestPoint(e.value.stageX, e.value.stageY)) {
 						tweenForward(_menuItems[i], this);
 					}
@@ -827,6 +780,7 @@ package com.gestureworks.cml.element
 							tweenForward(_subMenu.menuItems[j], _subMenu);
 						}
 					}
+					
 				}
 			}
 		}
@@ -835,19 +789,20 @@ package com.gestureworks.cml.element
 		
 		//{ region Utility
 		
-		public function updateLayout():void 
+		private function initialLayout():void 
 		{
 			
 			var numberOfChildren:int = numChildren;
-
-			
 			
 			for (var j:int = 0; j < numberOfChildren; j++) {
 				if (getChildAt(j) is SlideMenu) {
 					
 					var childMenu:SlideMenu = getChildAt(j) as SlideMenu;
 					synchChildMenu(childMenu);
-					_menuItems.push(childMenu.item);
+					if (childMenu.enable)
+						_menuItems.push(childMenu.item);
+					else
+						_disabledItems.push(childMenu.item);
 					
 					origins[childMenu.label] = childMenu;
 					
@@ -869,7 +824,6 @@ package com.gestureworks.cml.element
 			
 			for (var i:int = 0; i < _menuItems.length; i++) {
 				_menuItems[i].y = yPos;
-				
 				yPos = _menuItems[i].y + _menuItems[i].height + itemSpacing;
 			}
 			
@@ -888,6 +842,63 @@ package com.gestureworks.cml.element
 			maskSprite.graphics.endFill();
 			this.parent.addChild(maskSprite);
 			this.mask = maskSprite;
+		}
+		
+		
+		public function updateLayout():void {
+			if (!title) return;
+			
+			if (!(parent is SlideMenu))
+				reset();
+			
+			for (var j:int = 0; j < numChildren; j++) {
+				if (getChildAt(j) is SlideMenu) {
+					
+					var childMenu:SlideMenu = getChildAt(j) as SlideMenu;
+					
+					if (childMenu.title && !(childMenu.label in _subMenus)) {
+						childMenu.visible = false;
+						_subMenus[childMenu.label] = childMenu;
+						childMenu.x = width + itemSpacing;
+					}
+						
+					if (!(childMenu.label in origins)) {
+						origins[childMenu.label] = childMenu;
+						_menuItems.push(childMenu.item);
+					}
+				}
+				
+			}
+			
+			var yPos:Number = _title.y + _title.height + itemSpacing;
+			for (var i:int = 0; i < _menuItems.length; i++) {
+				if (_menuItems[i].name in origins) {
+					if (origins[_menuItems[i].name].enable) {
+						if (!contains(_menuItems[i])) {
+							addChild(_menuItems[i]);
+						}
+						
+						_menuItems[i].y = yPos;
+						yPos = _menuItems[i].y + _menuItems[i].height + itemSpacing;
+					}
+					else if (!origins[_menuItems[i].name].enable) {
+						if (contains(_menuItems[i]))
+							removeChild(_menuItems[i]);
+						if (_menuItems[i].name in _subMenus) {
+							delete _subMenus[_menuItems[i].name];
+						}
+					}
+				}
+			}
+			
+			var testHeight:Number = yPos +  _menuItems[_menuItems.length - 1].height;
+			if (_totalHeight < testHeight)
+				_totalHeight = testHeight;
+			
+			if (this.parent && this.parent is SlideMenu)
+				return;
+				
+			maskSprite.height = _totalHeight;
 		}
 		
 		protected function synchChildMenu(childMenu:SlideMenu):void 
@@ -1003,13 +1014,16 @@ package com.gestureworks.cml.element
 		}
 		
 		public function reset():void {
+			if (tweening)
+				TweenMax.killAll();
+			
 			clearTrail(this);
-			for (var i:int = 0; i < numChildren; i++) {
-				if (getChildAt(i) is SlideMenu) {
-					//clearTrail(SlideMenu(getChildAt(i)));
-					SlideMenu(getChildAt(i)).reset();
-					getChildAt(i).x += (this.width + _itemSpacing);
-				}
+			
+			for each (var childMenu:SlideMenu in _subMenus) {
+				childMenu.reset();
+				childMenu.x += (this.width + _itemSpacing);
+				childMenu.visible = false;
+				
 			}
 			
 			this.x = 0;
