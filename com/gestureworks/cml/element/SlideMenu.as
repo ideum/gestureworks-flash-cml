@@ -477,33 +477,6 @@ package com.gestureworks.cml.element
 		//} endregion
 		
 		
-		//{ region display list overrides
-		
-		/*override public function addChild(child:DisplayObject):DisplayObject {
-			
-			if (!_initialized)
-				return super.addChild(child);
-				
-			if (child is SlideMenu) {
-				trace("Adding slide menu.");
-				super.addChild(child);
-				updateLayout();
-				return child;
-			}
-			else
-				return super.addChild(child);
-		}*/
-		
-		/*override public function removeChild(child:DisplayObject):DisplayObject {
-			
-			if (!_initialized)
-				return super.addChild(child);
-			
-			trace("Overriding remove child.");
-			return super.removeChild(child);
-		}*/
-		
-		//} endregion display list overrides
 		
 		override public function init():void {
 			
@@ -784,19 +757,13 @@ package com.gestureworks.cml.element
 				
 				for (var i:int = 0; i < _menuItems.length; i++) {
 					if (!_menuItems[i].visible) continue;
-					trace(DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY));
+					
+					//trace(DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY));
+					
 					if (DisplayObject(_menuItems[i]).hitTestPoint(e.value.stageX, e.value.stageY)) {
 						tweenForward(_menuItems[i], this);
 					}
 				}
-				
-				/*for (var i:String in _menuItems) {
-					if (!_menuItems[i].visible) continue;
-					trace(DisplayObject(_menuItems[i]).hitTestPoint(e.value.localX, e.value.localY));
-					if (DisplayObject(_menuItems[i]).hitTestPoint(e.value.stageX, e.value.stageY)) {
-						tweenForward(_menuItems[i], this);
-					}
-				}*/
 			}
 			else {
 				
@@ -814,12 +781,6 @@ package com.gestureworks.cml.element
 						}
 					}
 					
-					/*for (var j:string in _subMenu.menuItems) 
-					{
-						if (DisplayObject(_subMenu.menuItems[j]).hitTestPoint(e.value.stageX, e.value.stageY)) {
-							tweenForward(_subMenu.menuItems[j], _subMenu);
-						}
-					}*/
 				}
 			}
 		}
@@ -883,92 +844,27 @@ package com.gestureworks.cml.element
 			this.mask = maskSprite;
 		}
 		
-		/*private function initialLayout():void 
-		{
-			
-			var numberOfChildren:int = numChildren;
-			
-			for (var j:int = 0; j < numberOfChildren; j++) {
-				if (getChildAt(j) is SlideMenu) {
-					
-					var childMenu:SlideMenu = getChildAt(j) as SlideMenu;
-					synchChildMenu(childMenu);
-					
-					if (childMenu.enable)
-						_menuItems[childMenu.label] = childMenu.item;
-					else
-						_disabledItems[childMenu.label] = childMenu.item;
-					
-					origins[childMenu.label] = childMenu;
-					
-					if (_totalHeight < childMenu.totalHeight)
-						_totalHeight = childMenu.totalHeight;
-					
-					if (childMenu.title) {
-						childMenu.visible = false;
-						_subMenus[childMenu.label] = childMenu;
-						childMenu.x = width + itemSpacing;
-					}
-					this.addChild(_menuItems[childMenu.label]);
-				}
-			}
-
-			
-			addChildAt(_title, 0);
-			var yPos:Number = _title.y + _title.height + itemSpacing;
-			
-			var testHeight:Number = 0;
-			for (var i:String in _menuItems) {
-				_menuItems[i].y = yPos;
-				yPos = _menuItems[i].y + _menuItems[i].height + itemSpacing;
-				testHeight = yPos + _menuItems[i].height;
-			}
-			
-			//var testHeight:Number = yPos +  _menuItems[_menuItems.length - 1].height;
-			if (_totalHeight < testHeight)
-				_totalHeight = testHeight;
-			
-			if (this.parent && this.parent is SlideMenu)
-				return;
-				
-			maskSprite = new Sprite();
-			maskSprite.name = "SlideMenu-Mask";
-			maskSprite.graphics.beginFill(0xff00ff, 0);
-			//maskSprite.graphics.drawRect(0, 0, width, _totalHeight);
-			maskSprite.graphics.drawRect(0, 0, width + _itemSpacing, _totalHeight);
-			maskSprite.graphics.endFill();
-			this.parent.addChild(maskSprite);
-			this.mask = maskSprite;
-		}*/
 		
 		public function updateLayout():void {
 			if (!title) return;
 			
-			this.reset();
+			if (!(parent is SlideMenu))
+				reset();
 			
 			for (var j:int = 0; j < numChildren; j++) {
 				if (getChildAt(j) is SlideMenu) {
 					
 					var childMenu:SlideMenu = getChildAt(j) as SlideMenu;
 					
-					/*if (childMenu.initialized) {
-						childMenu.updateLayout();
-					}*/
-					/*else {
-						synchChildMenu(childMenu);
-						_menuItems.push(childMenu.item);
-					}*/
-					
 					if (childMenu.title && !(childMenu.label in _subMenus)) {
 						childMenu.visible = false;
 						_subMenus[childMenu.label] = childMenu;
-						//childMenu.x = width + itemSpacing;
+						childMenu.x = width + itemSpacing;
 					}
 						
 					if (!(childMenu.label in origins)) {
 						origins[childMenu.label] = childMenu;
 						_menuItems.push(childMenu.item);
-						trace("Pushing new menu item.");
 					}
 				}
 				
@@ -980,7 +876,6 @@ package com.gestureworks.cml.element
 					if (origins[_menuItems[i].name].enable) {
 						if (!contains(_menuItems[i])) {
 							addChild(_menuItems[i]);
-							trace("Adding uncontained menu item.");
 						}
 						
 						_menuItems[i].y = yPos;
@@ -996,54 +891,14 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			/*for each (var subM:SlideMenu in _subMenus) {
-				subM.updateLayout();
-				trace("updating submenu.");
-			}*/
+			var testHeight:Number = yPos +  _menuItems[_menuItems.length - 1].height;
+			if (_totalHeight < testHeight)
+				_totalHeight = testHeight;
 			
-			/*for (var i:int = 0; i < ; i++) 
-			{
+			if (this.parent && this.parent is SlideMenu)
+				return;
 				
-			}
-			
-					if (contains(childMenu.item))
-						removeChild(childMenu.item);
-					
-					if (childMenu.enable) {
-						var addNewItem:Boolean = true;
-						for (var l:int = 0; l < _menuItems.length; l++) 
-						{
-							if (childMenu.label == _menuItems[l].name) {
-								addNewItem = false;
-							}
-						}
-						
-						if (addNewItem)
-							_menuItems.push(childMenu.item);
-					}
-					else {
-						_disabledItems.push(childMenu.item);
-						trace("Disabled.", childMenu.label, childMenu.enable);
-						if (_menuItems.indexOf(childMenu.item) > -1) {
-							_menuItems.splice(childMenu.item, 1);
-						}
-					}
-				}
-			}
-			
-			for (var k:int = 0; k < _disabledItems.length; k++) {
-				if (contains(_disabledItems[k]))
-					removeChild(_disabledItems[k]);
-			}
-			
-			var yPos:Number = _title.y + _title.height + itemSpacing;
-			for (var i:int = 0; i < _menuItems.length; i++) {
-				if (!contains(_menuItems[i])) {
-					addChild(menuItems[i])
-				}
-				_menuItems[i].y = yPos;
-				yPos = _menuItems[i].y + _menuItems[i].height + itemSpacing;
-			}*/
+			maskSprite.height = _totalHeight;
 		}
 		
 		protected function synchChildMenu(childMenu:SlideMenu):void 
@@ -1159,17 +1014,10 @@ package com.gestureworks.cml.element
 		}
 		
 		public function reset():void {
+			if (tweening)
+				TweenMax.killAll();
+			
 			clearTrail(this);
-			/*for (var i:int = 0; i < numChildren; i++) {
-				if (getChildAt(i) is SlideMenu) {
-					//clearTrail(SlideMenu(getChildAt(i)));
-					var childMenu:SlideMenu = getChildAt(i) as SlideMenu;
-					
-					childMenu.reset();
-					childMenu.x += (this.width + _itemSpacing);
-					getChildAt(i).visible = false;
-				}
-			}*/
 			
 			for each (var childMenu:SlideMenu in _subMenus) {
 				childMenu.reset();
