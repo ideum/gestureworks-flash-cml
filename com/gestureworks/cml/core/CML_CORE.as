@@ -107,13 +107,11 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Key; Key;	
 	import com.gestureworks.cml.element.Magnifier; Magnifier;
 	import com.gestureworks.cml.element.Flickr; Flickr;
-	import com.gestureworks.cml.element.Panoramic; Panoramic;
 	import com.gestureworks.cml.element.Menu; Menu;
 	import com.gestureworks.cml.element.DropDownMenu; DropDownMenu;
 	import com.gestureworks.cml.element.OrbMenu; OrbMenu;	
 	import com.gestureworks.cml.element.Button; Button;
 	import com.gestureworks.cml.element.RadioButtons; RadioButtons;	
-	import com.gestureworks.cml.element.Model3D; Model3D;
 	import com.gestureworks.cml.element.Drawer; Drawer;
 	import com.gestureworks.cml.element.Dock; Dock;	
 	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
