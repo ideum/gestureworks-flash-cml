@@ -548,7 +548,11 @@ package com.gestureworks.cml.element
 				
 				// If there's no children, and the parent is a Slidemenu, this isn't a menu itself, it's a menu item,
 				// and will only be used to dispatch events, so lets just skip everything else move along.
-				if (numChildren == 0) return;
+				if (numChildren == 0) {
+					if (_arrowIndicator is DisplayObject && _item.contains(_arrowIndicator))
+						_item.removeChild(_arrowIndicator);
+					return;
+				}
 				
 				createBackButton();
 			}
@@ -752,7 +756,6 @@ package com.gestureworks.cml.element
 		
 		private function onTap(e:GWGestureEvent):void 
 		{
-			
 			if (_menuState == _label) {
 				
 				for (var i:int = 0; i < _menuItems.length; i++) {
@@ -842,6 +845,7 @@ package com.gestureworks.cml.element
 			maskSprite.graphics.endFill();
 			this.parent.addChild(maskSprite);
 			this.mask = maskSprite;
+			
 		}
 		
 		
@@ -897,7 +901,7 @@ package com.gestureworks.cml.element
 			
 			if (this.parent && this.parent is SlideMenu)
 				return;
-				
+			
 			maskSprite.height = _totalHeight;
 		}
 		
