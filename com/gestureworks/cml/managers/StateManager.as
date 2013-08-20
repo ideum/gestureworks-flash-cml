@@ -1,6 +1,7 @@
 package com.gestureworks.cml.managers 
 {
 	import com.adobe.utils.StringUtil;
+	import com.gestureworks.cml.element.TLF;
 	import flash.utils.Dictionary;
 	/**
 	 * Manages the storage and loading of object states through the RenderKit or the State tag. Through the RenderKit, passing a state to the StateManager is done by assigning a stateId to 
@@ -98,7 +99,7 @@ package com.gestureworks.cml.managers
 					if (stateAttr.name() == attr.value) {
 						
 						if (!renderStates[attr.placeholder])
-							renderStates.push(new Dictionary());
+							renderStates[attr.placeholder] = new Dictionary();
 						if (!renderStates[attr.placeholder][stateId])
 							renderStates[attr.placeholder][stateId] = new Dictionary();	
 						if (!renderStates[attr.placeholder][stateId][attr.property])
@@ -119,9 +120,11 @@ package com.gestureworks.cml.managers
 		private static function storeRenderAttributes(objects:XMLList):void {
 			var str:String;
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
+			var p:XML;
 			
 			for each(var obj:* in objects) {
 				placeholder++;
+				
 				for each(var attr:* in obj.@ * ) {
 					str = attr.toString();
 					if (str.charAt(0) == "{" && str.charAt(str.length -1) == "}") {
@@ -130,8 +133,51 @@ package com.gestureworks.cml.managers
 						attributes.push({placeholder:placeholder, property:attr.name().toString(), value:str == "true" ? true : str == "false" ? false : str});
 					}
 				}
-				storeRenderAttributes(obj.*);				
+				
+				if (obj.name() == "TLF") {
+					if (storeTLFAttributes(obj.*)){
+						obj.@saveState = "true";
+					}
+					continue;
+				}
+					
+				storeRenderAttributes(obj.*);
 			}
+		}
+		
+		/**
+		 * Store attributes of TLF child nodes. TLF nodes need to be treated differently because they can have child nodes that are not AS3 objects. 
+		 * @param	obj
+		 * @return
+		 */
+		private static function storeTLFAttributes(obj:XMLList):Boolean {
+			var save:Boolean = false;
+			var regExp:RegExp = /[\s\r\n{}]*/gim;
+			var str:String;
+				
+			if (obj.nodeKind() == "text") {
+				str = obj.toString();
+				if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {	
+					str = str.replace(regExp, '');
+					attributes.push( { placeholder:placeholder, property:obj.nodeKind(), value:str == "true" ? true : str == "false" ? false : str } );
+					save = true;
+				}	
+				return save;
+			}
+			else {
+				for each(var attr:* in obj.@ * ) {
+					str = attr.toString();
+					if (str.charAt(0) == "{" && str.charAt(str.length -1) == "}") {
+						str = str.replace(regExp, '');
+						attributes.push( { placeholder:placeholder, property:attr.name().toString(), value:str == "true" ? true : str == "false" ? false : str } );
+						save = true;
+					}
+					
+				}
+			}
+			
+			return storeTLFAttributes(obj.*) || save; 
+			
 		}
 		
 		/**
@@ -142,15 +188,28 @@ package com.gestureworks.cml.managers
 		 */
 		public static function registerRenderObject(object:*): void {
 			placeholder = -1;
-			attributes = null;
-								
-			for (var stateId:* in renderStates[0]) {				
-				renderStates[0][stateId]["stateId"] = stateId;
-				registerObject(object, renderStates[0][stateId]);
+			attributes = null;		
+			var firstObj:Dictionary = firstObject();
+			
+			for (var stateId:* in firstObj) {				
+				firstObj[stateId]["stateId"] = stateId;
+				registerObject(object, firstObj[stateId]);
 				object.stateId = stateId;
 			}
 			
-			renderStates.shift();
+			renderStates.splice(renderStates.indexOf(firstObj), 1);
+		}
+		
+		/**
+		 * Loops through the renderStates sparse array until it finds the first element.
+		 */
+		private static function firstObject():Dictionary {
+			var obj:Dictionary;
+			for each(obj in renderStates) {
+				if (obj != undefined)
+					return obj;
+			}
+			return obj;
 		}
 		
 		////////////////////////////////////////////////

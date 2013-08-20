@@ -9,6 +9,7 @@ package com.gestureworks.cml.element
 	import flashx.textLayout.edit.EditingMode;
 	import flashx.textLayout.edit.SelectionFormat;
 	import flashx.textLayout.edit.SelectionManager;
+	import flashx.textLayout.edit.EditManager;
 	import flashx.textLayout.elements.Configuration;
 	import flashx.textLayout.elements.TextFlow;
 	import flashx.textLayout.formats.TextLayoutFormat;
@@ -39,8 +40,12 @@ package com.gestureworks.cml.element
 		private var configuration:Configuration;
 		private var textFlow:TextFlow;
 		private var container:ContainerController;
-		private var initialized:Boolean=false;
-		
+		private var initialized:Boolean = false;
+		private var inputVal:XMLList;
+		private var editManager:EditManager;
+		private var selectionManager:SelectionManager;
+		private var range:Object;
+
 		/**
 		 * Constructor
 		 */
@@ -50,6 +55,8 @@ package com.gestureworks.cml.element
 			textFormat = new TextLayoutFormat;
 			configuration = new Configuration;
 			configuration.textFlowInitialFormat = textFormat;
+			editManager = new EditManager();
+			selectionManager = new SelectionManager();
 			textFlow = new TextFlow;
 			mouseChildren = false;
 		}	
@@ -156,10 +163,11 @@ package com.gestureworks.cml.element
 		 * </codeblock>
 		 * @param input string
 		 */
-		public function input(value:String):void
-		{				
+		public function input(value:XMLList):void
+		{		
+			inputVal = value;			
 			configuration.textFlowInitialFormat = textFormat;
-			textFlow = TextConverter.importToFlow(value, TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+			textFlow = TextConverter.importToFlow(value.toString(), TextConverter.TEXT_LAYOUT_FORMAT, configuration);
 			textFlow.fontLookup = FontLookup.EMBEDDED_CFF;
 			textFlow.fontFamily = font;	
 			textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
@@ -178,8 +186,75 @@ package com.gestureworks.cml.element
 			{
 				container = new ContainerController(this, width, height);
 				textFlow.flowComposer.addController(container);		
-				textFlow.flowComposer.updateAllControllers();	
+				textFlow.flowComposer.updateAllControllers();
 			}
+		}
+		
+		/**
+		 * Custom property update to account for TLF child nodes
+		 * @param	state
+		 */
+		override public function updateProperties(state:Number = 0):void 
+		{
+			var propertyValue:String;
+			var objType:String;
+			
+			var newValue:*;
+			
+			for (var propertyName:String in this.state[state]) {
+				
+				newValue = this.state[state][propertyName];
+				newValue = newValue == "true" ? true : newValue == "false" ? false : newValue;
+				
+				//apply to TLF object
+				if (hasOwnProperty(propertyName))
+					this[propertyName] = newValue;
+				//update TextFlow tag	
+				else {
+					updateInputProperty(propertyName, newValue);
+				}
+					
+			}
+		}
+		
+		/**
+		 * Search for and update properties of TextFlow xml
+		 * @param	prop Name of property
+		 * @param	val Value of property
+		 * @param	input TextFlow xml
+		 */
+		private function updateInputProperty(prop:String, val:*, input:XMLList = null):void {
+			
+			if (!input)
+				input = inputVal;
+				
+			if (input.nodeKind() == prop) { 
+				input[0] = val;
+				updateText(val);
+				return;
+			}
+			else{
+				updateInputProperty(prop, val, input.*);
+			}
+		}
+		
+		/**
+		 * Through interaction manager assignment, overwrite current TextFlow text with provided text.
+		 * @param	text
+		 */
+		private function updateText(text:String):void {
+			
+			//store range of current text
+			textFlow.interactionManager = selectionManager;
+			selectionManager.selectAll();			
+			range = { start:selectionManager.absoluteStart, end:selectionManager.absoluteEnd };
+			
+			//overwrite text
+			textFlow.interactionManager = editManager;
+			editManager.selectRange(range.start, range.end);
+			editManager.overwriteText(text);
+			
+			textFlow.interactionManager = null;			
 		}
 		
 		/**
