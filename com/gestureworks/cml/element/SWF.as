@@ -30,11 +30,13 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void 
 		{
-			var colorTransform:ColorTransform = new ColorTransform();
-			colorTransform.color = _color;
-			if (asset)
-				asset.transform.colorTransform = colorTransform;
-			colorTransform = null;
+			if (!isNaN(_color)) {
+				var colorTransform:ColorTransform = new ColorTransform();
+				colorTransform.color = _color;
+				if (asset)
+					asset.transform.colorTransform = colorTransform;
+				colorTransform = null;
+			}
 		}
 		
 		
@@ -75,7 +77,7 @@ package com.gestureworks.cml.element
 			addChild(asset);
 		}		
 		
-		private var _color:Number;
+		private var _color:Number = NaN;
 		/**
 		 * Sets element's color in hex
 		 */
