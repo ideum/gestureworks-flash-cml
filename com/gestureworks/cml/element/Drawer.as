@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element 
 {
+	import com.adobe.utils.StringUtil;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.events.GWGestureEvent;
@@ -45,6 +46,7 @@ package com.gestureworks.cml.element
 		private var _useLeftHandle:Boolean = false;
 		private var _useRightHandle:Boolean = false;
 		private var _handleOrientation:String = "top";
+		private var _handleGestureList:Object;
 		
 		private var _isOpen:Boolean = false;	
 		public function get isOpen():Boolean { return _isOpen; }
@@ -438,6 +440,25 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Modifies the handle's gesture list to disable default (tap, flick, drag) gestures. Through AS3, pass the list
+		 * as an Object (e.g. {n-tap:true, n-drag:true}) and through CML, pass the list as comma delimited string 
+		 * (e.g. "n-tap:true, n-drag:true"). 
+		 * @param	list
+		 */
+		public function get handleGestureList():Object { return _handleGestureList; }
+		public function set handleGestureList(list:*):void {			
+			if (list is XML) { 
+				var tmp:Object = new Object();
+				for each(var g:String in list.split(",")) 
+					tmp[StringUtil.trim(g.split(":")[0])] = Boolean(g.split(":")[1]);
+				list = tmp;
+			}				
+			
+			_handleGestureList = list;
+			if(handle) handle.gestureList = handleGestureList;				
+		}
+		
+		/**
 		 * Configures the handle components and adds them to the drawer. If the handles are not provided,
 		 * defaults are generated. 
 		 */
@@ -452,9 +473,15 @@ package com.gestureworks.cml.element
 			if (useLeftHandle && ! leftHandle)
 				leftHandle = getDefaultHandle("left");
 			if (useRightHandle && ! rightHandle)			
-				rightHandle = getDefaultHandle("right");
+				rightHandle = getDefaultHandle("right");				
+			if(!handleGestureList)
+				handleGestureList = { "n-tap":true, "n-flick":false, "n-drag":true };
+			else
+				handleGestureList = handleGestureList;  //reset incase handle was null when list was set
 				
-			handle.gestureList = { "n-tap":true, "n-flick":true };
+			handle.nativeTransform = true;
+			handle.x_lock = !horizontalHandle;
+			handle.y_lock = horizontalHandle;
 			handle.width = handleWidth;
 			handle.height = handleHeight			
 			
@@ -558,37 +585,69 @@ package com.gestureworks.cml.element
 		private function generateTweens():void
 		{	
 			var upDestination:Dictionary = new Dictionary();
-			var downDestination:Dictionary = new Dictionary();
-			var ease:ExpoOut = Expo.easeOut;
+			var downDestination:Dictionary = new Dictionary();			
+			var ease:ExpoOut = Expo.easeOut;			
 			
 			var hUp:Object, hDwn:Object;
 			var cUp:Object, cDwn:Object;
 			
 			switch(handleOrientation) {
 				case "left":
+					
 					hUp = { x:0, ease:ease };
 					hDwn = { x:contentHolder.width, ease:ease };
 					cUp = { x:handle.height, ease:ease };
-					cDwn = { x:contentHolder.width + handle.height, ease:ease };							
+					cDwn = { x:contentHolder.width + handle.height, ease:ease };	
+					
+					//drag limits
+					handle.minX = hUp.x;
+					handle.maxX = hDwn.x;
+					contentHolder.minX = cUp.x;
+					contentHolder.maxX = cDwn.x;
+					
 					break;
 				case "right":
+					
 					hUp = { x:contentHolder.width+handle.height, ease:ease };
 					hDwn = { x:handle.height, ease:ease };
 					cUp = { x:0, ease:ease };
-					cDwn = { x:-contentHolder.width, ease:ease };								
+					cDwn = { x: -contentHolder.width, ease:ease };
+					
+					//drag limits
+					handle.minX = hDwn.x;
+					handle.maxX = hUp.x;
+					contentHolder.minX = cDwn.x;
+					contentHolder.maxX = cUp.x;
+					
 					break;
 				case "bottom":
+					
 					hUp = { y:contentHolder.height + handle.height, ease:ease };
 					hDwn = { y:handle.height, ease:ease };
 					cUp = { y:0, ease:ease };
-					cDwn = { y:-contentHolder.height, ease:ease };					
+					cDwn = { y: -contentHolder.height, ease:ease };	
+					
+					//drag limits
+					handle.minY = hDwn.y;
+					handle.maxY = hUp.y;
+					contentHolder.minY = cDwn.y;
+					contentHolder.maxY = cUp.y;		
+					
 					break;
 				default:
+					
 					hUp = { y:0, ease:ease };
 					hDwn = { y:contentHolder.height, ease:ease };
 					cUp = { y:handle.height, ease:ease };
-					cDwn = { y:contentHolder.height + handle.height, ease:ease };					
-				break;
+					cDwn = { y:contentHolder.height + handle.height, ease:ease };
+					
+					//drag limits
+					handle.minY = hUp.y;
+					handle.maxY = hDwn.y;
+					contentHolder.minY = cUp.y;
+					contentHolder.maxY = cDwn.y;							
+					
+					break;
 			}
 			
 			upDestination[handle] = hUp;
@@ -603,7 +662,7 @@ package com.gestureworks.cml.element
 			if (rightHandle) {
 				upDestination[rightHandle] = cUp;
 				downDestination[rightHandle] = cDwn;
-			}			
+			}
 			
 			var upTweens:Array = new Array();				
 			for (var key:* in upDestination)
@@ -621,41 +680,57 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Positions the components and registers the appropriate listener based on the drawer's initial state.
+		 * Positions the components 
 		 */
 		private function initialState():void
 		{		
 			positionHandle();
-			if (!initializeOpen)
-			{
-				_isOpen = false;	
-				handle.addEventListener(GWGestureEvent.TAP, open); 
-				handle.addEventListener(GWGestureEvent.FLICK, open);
-			}
-			else
-			{
-				_isOpen = true;
-				handle.addEventListener(GWGestureEvent.TAP, close); 
-				handle.addEventListener(GWGestureEvent.FLICK, close);
-			}
+			_isOpen = initializeOpen;
 			
-			if (leftHandle)
-			{
+			if (leftHandle){
 				leftHandle.y = contentHolder.y;
-				leftHandle.addEventListener(GWGestureEvent.TAP, close);
-				leftHandle.addEventListener(GWGestureEvent.FLICK, close);
+				leftHandle.visible = isOpen;
 			}
 			if (rightHandle)
 			{
 				rightHandle.y = contentHolder.y;
 				rightHandle.x = contentHolder.x + contentHolder.width;
-				rightHandle.addEventListener(GWGestureEvent.TAP, close);
-				rightHandle.addEventListener(GWGestureEvent.FLICK, close);
-			}			
+				rightHandle.visible = isOpen;
+			}						
+			if (useRightHandle || useLeftHandle) 
+				handle.visible = !isOpen;	
+				
+			addEventListeners();
+		}
+		
+		/**
+		 *  Registers the appropriate listener based on the drawer's initial state.
+		 */
+		private function addEventListeners():void {
 			
-			if(useRightHandle || useLeftHandle) handle.visible = !_isOpen;										
-			if (leftHandle) leftHandle.visible = _isOpen;
-			if (rightHandle) rightHandle.visible = _isOpen;
+			var action:Function = isOpen ? close : open;
+			
+			//descrete gesture event listeners
+			if (handleGestureList["n-tap"]) {				
+				handle.addEventListener(GWGestureEvent.TAP, action);
+				if (leftHandle) leftHandle.addEventListener(GWGestureEvent.TAP, action);
+				if (rightHandle) rightHandle.addEventListener(GWGestureEvent.TAP, action);				
+			}			
+			if (handleGestureList["n-flick"]) {				
+				handle.addEventListener(GWGestureEvent.FLICK, action);
+				if (leftHandle) leftHandle.addEventListener(GWGestureEvent.FLICK, action);
+				if (rightHandle) rightHandle.addEventListener(GWGestureEvent.FLICK, action);				
+			}						
+			if (handleGestureList["n-drag"]) {
+				handle.addEventListener(GWGestureEvent.DRAG, dragHandle);
+				handle.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
+					if (isOpen)
+						close();
+					else
+						open();
+				});
+			}
+			
 		}
 		
 		/**
@@ -747,6 +822,17 @@ package com.gestureworks.cml.element
 			handle.removeEventListener(GWGestureEvent.FLICK, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
 			handle.addEventListener(GWGestureEvent.FLICK, open);	
+		}
+		
+		/**
+		 * Translate content holder with handle drag event
+		 * @param	e
+		 */
+		private function dragHandle(e:GWGestureEvent):void {
+			if (horizontalHandle)
+				contentHolder.x += e.value.drag_dx;
+			else
+				contentHolder.y += e.value.drag_dy;
 		}
 		
 		/**
