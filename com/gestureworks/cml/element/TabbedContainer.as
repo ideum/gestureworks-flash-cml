@@ -187,16 +187,19 @@ package com.gestureworks.cml.element
 		 * Updates the selected state of the target tab element
 		 * @param	e the touch event
 		 */
-		private function selectTab(e:TouchEvent):void
+		private function selectTab(e:GWTouchEvent):void
 		{
-			e.stopPropagation(); // added to allow nested tabbed containers
+			//e.stopPropagation(); // added to allow nested tabbed containers
 			
 			var tab:Tab;
 			if (e.target is Tab)
 				tab = Tab(e.target);
 			else
-				tab = DisplayUtils.getParentType(Tab, e.target);				
-	
+				tab = DisplayUtils.getParentType(Tab, e.target);	
+				
+			if (tab != e.currentTarget)  //workaround for stopPropagation failure on GWTouchEvent
+				return;
+				
 			addTab(tab);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "selectedIndex", selectedIndex)); 
 		}
@@ -232,7 +235,7 @@ package com.gestureworks.cml.element
 				else 
 					tab.tabX = nextTabX() +tab.tabX;
 					
-				tab.addEventListener(TouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);
+				tab.addEventListener(GWTouchEvent.TOUCH_BEGIN, selectTab, false, 0, true);
 				tabs.push(tab);
 			}
 			
