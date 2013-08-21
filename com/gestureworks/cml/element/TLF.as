@@ -165,14 +165,28 @@ package com.gestureworks.cml.element
 		 */
 		public function input(value:XMLList):void
 		{		
-			inputVal = value;			
+			inputVal = formatInput(value.copy());			
 			configuration.textFlowInitialFormat = textFormat;
-			textFlow = TextConverter.importToFlow(value.toString(), TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+			textFlow = TextConverter.importToFlow(inputVal.toString(), TextConverter.TEXT_LAYOUT_FORMAT, configuration);
 			textFlow.fontLookup = FontLookup.EMBEDDED_CFF;
 			textFlow.fontFamily = font;	
 			textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
 			updateContainer();
 			initialized=true;
+		}
+		
+		/**
+		 * Remove non-TextFlow child nodes
+		 * @param	value
+		 * @return
+		 */
+		private function formatInput(value:XMLList):XMLList {
+			var tmp:XMLList = value.copy();
+			for (var i:int = 0; i < value.length(); i++) {
+				if (value[i].localName() != "TextFlow") 	
+					delete tmp[i];
+			}
+			return tmp;
 		}
 		
 		public function updateContainer():void
