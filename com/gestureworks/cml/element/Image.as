@@ -280,12 +280,6 @@ package com.gestureworks.cml.element
 		protected function onPercentLoad(event:LoaderEvent):void
 		{
 			/*if (event.property == "percentLoaded") {
-<<<<<<< HEAD
-=======
-=======
-/*			if (event.property == "percentLoaded") {
->>>>>>> Fixed image not loading through open method
->>>>>>> tmp
 				percentLoaded = event.value;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", percentLoaded, true, true));
 			}*/
@@ -322,6 +316,7 @@ package com.gestureworks.cml.element
 			if (_bitmap) {
 				if (contains(_bitmap))
 					removeChild(_bitmap)
+				_bitmap.bitmapData.dispose();
 				_bitmap = null;
 			}
 				
@@ -443,6 +438,7 @@ package com.gestureworks.cml.element
 			if (img &&  !_bitmapDataCache) 
 			{
 				//img.dispose(); --> disposing this will not allow suplicate src(s) across images.
+				img = null;
 				fileData = null;
 			}
 			
