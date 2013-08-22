@@ -56,6 +56,8 @@ package com.gestureworks.cml.element
 		private var upTween:TimelineLite;
 		private var downTween:TimelineLite;
 		private var timer:Timer;
+		
+		private var initialized:Boolean = false;
 
 		
 		/**
@@ -67,14 +69,6 @@ package com.gestureworks.cml.element
 			contentHolder = new Container();
 			width = 500;
 			height = 420;			
-		}
-		
-		/**
-		 * CML init
-		 */
-		override public function displayComplete():void 
-		{
-			init();
 		}
 		
 		/**
@@ -109,6 +103,7 @@ package com.gestureworks.cml.element
 			//threshold timer to allow tweening to process
 			timer = new Timer(500);
 			timer.addEventListener(TimerEvent.TIMER, thresholdCheck);
+			initialized = true;
 		}
 		
 		/**
@@ -374,7 +369,6 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void 
 		{
 			super.width = value;
-			contentHolder.width = value;
 			
 			if (horizontalHandle) {
 				contentHolder.width = handle ? value - handle.height : value;
@@ -386,7 +380,10 @@ package com.gestureworks.cml.element
 				handleWidth = value;				
 			}
 			
-			if (contentMask) contentMask.width = contentHolder.width;
+			if (contentMask) contentMask.width = width;
+			if (background) background.width = contentHolder.width;
+			
+			update = initialized;
 		}
 
 		/**
@@ -405,7 +402,10 @@ package com.gestureworks.cml.element
 				contentHolder.height = handle ? value - handle.height : value;
 			}
 				
-			if (contentMask) contentMask.height = contentHolder.height;
+			if (contentMask) contentMask.height = height;
+			if (background) background.height = contentHolder.height;
+			
+			update = initialized;
 		}
 		
 		/**
@@ -870,6 +870,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Updates Drawer when set to true
+		 */
+		public function set update(u:Boolean):void {
+			if (u) {
+				generateTweens();
+			}
+		}
+		
+		/**
 		 * Destructor
 		 */
 		override public function dispose():void 
@@ -884,7 +893,11 @@ package com.gestureworks.cml.element
 			downTween = null;
 			
 			handle.removeEventListener(GWGestureEvent.TAP, open);
-			handle.removeEventListener(GWGestureEvent.TAP, close);
+			handle.removeEventListener(GWGestureEvent.TAP, close);			
+			handle.removeEventListener(GWGestureEvent.DRAG, open);
+			handle.removeEventListener(GWGestureEvent.DRAG, close);			
+			handle.removeEventListener(GWGestureEvent.FLICK, open);
+			handle.removeEventListener(GWGestureEvent.FLICK, close);
 			handle = null;			
 		}
 	}
