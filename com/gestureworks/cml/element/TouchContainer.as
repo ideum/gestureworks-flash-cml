@@ -623,9 +623,10 @@ package com.gestureworks.cml.element
 			var searchType:String = null;
 			
 			if (returnType == Array)
-			{
 				var returnArray:Array = [];
-			}
+				
+			if (value is XML)
+				value = value.toString();
 			
 			// determine search method
 			if (value is Class) {				
