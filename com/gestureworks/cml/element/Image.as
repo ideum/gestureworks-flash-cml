@@ -263,7 +263,9 @@ package com.gestureworks.cml.element
 		 */
 		public function open(file:String=null):void
 		{
-			src = file;
+			if(file)
+				src = file;
+				
 			if (FileManager.media.getContent(src)) {
 				loadComplete();
 			}
