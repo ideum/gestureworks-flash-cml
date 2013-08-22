@@ -137,7 +137,6 @@ package com.gestureworks.cml.element
 			
 			switch(shape)
 			{
-				
 				case "vector":
 					{
 						// for lines that a niether horizontal nor vertical
@@ -188,6 +187,12 @@ package com.gestureworks.cml.element
 					break;
 				}
 				
+				case "circleSegment":
+				{
+					drawCircleSector();
+					break;
+				}
+				
 				case "path":
 				{
 		            graphics.drawPath(pathCommandsVector, pathCoordinatesVector); 
@@ -230,7 +235,67 @@ package com.gestureworks.cml.element
 			// end fill
 			graphics.endFill();			
 		}
+		
+		private function drawCircleSector():void
+		{	
+			var angle:Number = startAngle;
 			
+			var numOfSegs:Number = Math.ceil(Math.abs(angleLength) / 45.0);
+			var segmentAngle:Number = -angleLength / numOfSegs;
+			segmentAngle = clockwise ? -segmentAngle : segmentAngle;
+            
+			// Convert angles to radians
+			var pi:Number = Math.PI;
+			angle = (angle / 180.0) * pi;
+			segmentAngle = (segmentAngle / 180.0) * pi;
+            
+			var offset:Number = radius;
+			
+			graphics.beginFill(color);
+			
+			var initialInnerPointX:Number = Math.cos(angle) * innerRadius + offset;
+			var initialInnerPointY:Number = Math.sin(angle) * innerRadius + offset;
+			
+			graphics.moveTo(initialInnerPointX, initialInnerPointY);
+			graphics.lineTo(Math.cos(angle) * radius + offset, 
+							Math.sin(angle) * radius + offset);
+			
+			for (var i:int = 0; i < numOfSegs; i++) 
+			{
+				angle += segmentAngle;
+				drawCircleSegment(angle, segmentAngle, radius, offset);
+			}
+            
+			graphics.lineTo(Math.cos(angle) * innerRadius + offset,
+							Math.sin(angle) * innerRadius + offset);
+							
+			for (var i:int = 0; i < numOfSegs; i++) 
+			{
+            	angle -= segmentAngle;
+				drawCircleSegment(angle, -segmentAngle, innerRadius, offset);
+            }
+							
+			graphics.lineTo(initialInnerPointX, initialInnerPointY);
+			graphics.endFill();
+		}
+		
+		private function drawCircleSegment(angle:Number, segmentAngle:Number, arcRadius:Number, offset:Number):void
+		{
+			var angleMid:Number;
+			var anchorX:Number;
+			var anchorY:Number;
+			var controlX:Number;
+			var controlY:Number;
+			var midPoint:Number;
+		
+			angleMid = angle - (segmentAngle / 2);
+			midPoint = arcRadius / Math.cos(segmentAngle / 2);
+			anchorX = Math.cos(angle) * arcRadius + offset;
+			anchorY = Math.sin(angle) * arcRadius + offset;
+			controlX = Math.cos(angleMid) * midPoint + offset;
+			controlY = Math.sin(angleMid) * midPoint + offset;
+			graphics.curveTo(controlX, controlY, anchorX, anchorY);
+		}
 		
 		/**
 		 * Returns clone of self
@@ -996,6 +1061,72 @@ package com.gestureworks.cml.element
 			}
 		}
 	
+		////////////////////////
+		// SHAPE TYPE: CIRCLESEGMENT //
+		////////////////////////
+		private var _innerRadius:Number = 0;
+		/**
+		 * Set the inner radius of the circle segment in pixels.
+		 * Shape must be circlesegement.
+		 */
+		
+		public function get innerRadius():Number{return _innerRadius;}
+		public function set innerRadius(value:Number):void
+		{
+			if (value >= 0)
+			{
+				_innerRadius = value;
+				updateGraphic();
+			}
+		}
+		
+		private var _startAngle:Number = 0;
+		/**
+		 * Set the start angle of the circle segment in degrees, clockwise from X axis.
+		 * Must be in range 0.0 - 360.0.
+		 * Shape must be circleSegment.
+		 */
+		public function get startAngle():Number{return _startAngle;}
+		public function set startAngle(value:Number):void
+		{
+			if (value >= 0 && value <= 360.0)
+			{
+				_startAngle = value;
+				updateGraphic();
+			}
+		}
+		
+		private var _angleLength:Number = 0;
+		/**
+		 * Set the angle length of the circle segment in degrees.
+		 * Must be in range 0.0 - 360.0.
+		 * Shape must be circleSegment.
+		 */
+		public function get angleLength():Number{return _angleLength;}
+		public function set angleLength(value:Number):void
+		{
+			if (value >= 0 && value <= 360.0)
+			{
+				_angleLength = value;
+				
+				updateGraphic();
+			}
+		}
+		
+		private var _clockwise:Boolean = true;
+		/**
+		 * Set if the circle segment should go clockwise/
+		 * Shape must be circleSegment.
+		 */
+		public function get clockwise():Boolean{return _clockwise;}
+		public function set clockwise(value:Boolean):void
+		{
+			if (_clockwise != value)
+			{
+				_clockwise = value;
+				updateGraphic();
+			}
+		}
 		
 		/////////////////////////
 		// SHAPE TYPE: PATH //
