@@ -135,7 +135,7 @@ package com.gestureworks.cml.managers
 				}
 				
 				if (obj.name() == "TLF") {
-					if (storeTLFAttributes(obj.*)){
+					if (storeTLFAttributes(formatTLF(obj.*))){
 						obj.@saveState = "true";
 					}
 					continue;
@@ -146,6 +146,20 @@ package com.gestureworks.cml.managers
 		}
 		
 		/**
+		 * Remove non-TextFlow child nodes
+		 * @param	value
+		 * @return
+		 */
+		private static function formatTLF(value:XMLList):XMLList {
+			var tmp:XMLList = value.copy();
+			for (var i:int = 0; i < value.length(); i++) {
+				if (value[i].localName() != "TextFlow") 	
+					delete tmp[i];
+			}
+			return tmp;
+		}		
+		
+		/**
 		 * Store attributes of TLF child nodes. TLF nodes need to be treated differently because they can have child nodes that are not AS3 objects. 
 		 * @param	obj
 		 * @return
@@ -154,7 +168,7 @@ package com.gestureworks.cml.managers
 			var save:Boolean = false;
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
 			var str:String;
-				
+
 			if (obj.nodeKind() == "text") {
 				str = obj.toString();
 				if ( (str.charAt(0) == "{") && (str.charAt(str.length - 1) == "}") ) {	
