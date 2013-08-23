@@ -152,6 +152,16 @@ package com.gestureworks.cml.element
 			if (initialized) updateContainer();
 		}
 		
+		private var _text:String;
+		/**
+		 * sets text
+		 */
+		public function get text():String { return _text; }
+		public function set text(t:String):void {
+			_text = t;
+			updateText(_text);
+		}
+		
 		/**
 		 * Input must be prefixed with AS3's namespace:
 		 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
