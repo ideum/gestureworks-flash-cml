@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.events.*;
+	import com.greensock.TweenMax;
 	import flash.events.TouchEvent;
 		
 	/**
@@ -38,6 +39,18 @@ package com.gestureworks.cml.element
 			super();			
 			disableNativeTransform = true;
 		}	
+		
+		private var _autoHide:Boolean = false;
+		public function get autoHide():Boolean { return _autoHide; }
+		public function set autoHide(value:Boolean):void {
+			_autoHide = value;
+		}
+		
+		private var _autoHideSpeed:Number = 0.5;
+		public function get autoHideSpeed():Number { return _autoHideSpeed; }
+		public function set autoHideSpeed(value:Number):void {
+			_autoHideSpeed = value;
+		}
 		
 		private var _width:Number = 0;
 		/**
@@ -131,6 +144,7 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _multiFingerScroll:Boolean = false;
+		private var tweening:Boolean;
 		/**
 		 * Set single finger drag, multi-finger scroll functionality. If true, the pane will only be scrolled on two fingers or more.
 		 * @default false
@@ -292,6 +306,11 @@ package com.gestureworks.cml.element
 			
 			createEvents();
 			
+			if (_autoHide) {
+				_verticalScroll.alpha = 0;
+				_horizontalScroll.alpha = 0;
+			}
+			
 			loaded = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded"));
 		}
@@ -334,6 +353,9 @@ package com.gestureworks.cml.element
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
 			content.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
 			
+			addEventListener(GWGestureEvent.COMPLETE, onEnd);
+			content.addEventListener(GWGestureEvent.COMPLETE, onEnd);
+			
 			addEventListener(GWGestureEvent.ROTATE, onRotate);
 			content.addEventListener(GWGestureEvent.ROTATE, onRotate);
 			
@@ -350,6 +372,9 @@ package com.gestureworks.cml.element
 			
 			this._verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 			this._horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
+			
+			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);
+			content.removeEventListener(GWTouchEvent.TOUCH_END, onEnd);
 		}
 		
 		//} endregion
@@ -537,6 +562,22 @@ package com.gestureworks.cml.element
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
+			
+			if (_autoHide) {
+				if (tweening)
+					TweenMax.killAll();
+				tweening = true;
+				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autoHideSpeed, { alpha:1, onComplete:function():void { tweening = false;} } );
+			}
+		}
+		
+		private function onEnd(e:GWGestureEvent):void {
+			if (_autoHide) {
+				if (tweening)
+					TweenMax.killAll();
+				
+				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autoHideSpeed, { alpha:0, onComplete:function():void { tweening = false;} } );
+			}
 		}
 		
 		private function clampPos(pos:Number, direction:String):Number {
