@@ -31,6 +31,7 @@ package  com.gestureworks.cml.element
 	{
 		private var _capsOn:Boolean = false;
 		private var _shiftOn:Boolean = false;
+		private var _outputText:Boolean;
 		private var _keyCode:uint;
 		private var _charCode:uint;
 		private var _shiftCharCode:uint;
@@ -174,6 +175,16 @@ package  com.gestureworks.cml.element
 				_text = t.toString();
 			else
 				_text = t;
+		}
+		
+		/**
+		 * Instructs the <code>TouchKeyboard</code> to bypass the KeyboardEvent evaluation and output the text
+		 * instead. This is a useful setting for key text without valid character or key codes. For example, setting
+		 * this flag on a key having a text value of '.com', will output '.com' in the designated text field. 
+		 */
+		public function get outputText():Boolean { return _outputText; }
+		public function set outputText(t:Boolean):void {
+			_outputText = t;
 		}
 		
 		/**

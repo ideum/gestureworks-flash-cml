@@ -394,8 +394,10 @@ package com.gestureworks.cml.element
 			//if text field not provided, don't process the key events
 			if (!currentTF) return;
 
+			if (event.target.outputText)
+				addCharacter(event.target.text);
 			//prioritize char codes, if none evaluate key codes
-			if (charCode != 0)
+			else if (charCode != 0)
 				addCharacter(String.fromCharCode(charCode));
 			else
 			{
