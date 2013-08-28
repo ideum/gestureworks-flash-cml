@@ -909,6 +909,7 @@ package com.gestureworks.cml.core
 			var objType:String;
 			
 			var newValue:*;
+			var isExpression:Boolean;
 			
 			for (var propertyName:String in obj.propertyStates[state]) {				
 				newValue = obj.propertyStates[state][propertyName];
@@ -918,8 +919,8 @@ package com.gestureworks.cml.core
 				else if (newValue == "false")
 					newValue = false
 					
-				//if (obj[propertyName] != newValue && String(newValue).charAt(0) != "{") {
-				if (String(newValue).charAt(0) != "{") {
+				isExpression = obj is Key && (propertyName == "text" || propertyName == "shiftText") ? false : String(newValue).charAt(0) == "{"; 
+				if (!isExpression) {
 					obj[propertyName] = newValue;
 				}
 				
@@ -951,12 +952,15 @@ package com.gestureworks.cml.core
 			var selector:String;
 			var pp:String;
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
+			var isExpression:Boolean;
 			
 			for each (st in obj.state) {
 				for  (prop in st) {					
 					val = st[prop]; 
 					
-					if ( val.charAt(0) != "{" ) continue;
+					//bypass non expressions
+					isExpression = obj is Key && (prop == "text" || prop == "shiftText") ? false : val.charAt(0) == "{"; 					
+					if (!isExpression) continue;
 					
 					// remove whitepsace and {} characters
 					val = val.replace(regExp, '');

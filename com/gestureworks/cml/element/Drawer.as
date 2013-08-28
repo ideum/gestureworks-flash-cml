@@ -47,6 +47,7 @@ package com.gestureworks.cml.element
 		private var _useRightHandle:Boolean = false;
 		private var _handleOrientation:String = "top";
 		private var _handleGestureList:Object;
+		private var _dragAngle:Number = 0;
 		
 		private var _isOpen:Boolean = false;	
 		public function get isOpen():Boolean { return _isOpen; }
@@ -363,6 +364,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Determines the drag direction. Must be adjusted for rotation and nested rotations.
+		 * @default 0
+		 */
+		public function get dragAngle():Number { return _dragAngle; }
+		public function set dragAngle(d:Number):void {
+			_dragAngle = d;
+		}
+		
+		/**
 		 * Sets the width of the drawer and drawer's UI components
 		 * @default 500
 		 */
@@ -479,9 +489,8 @@ package com.gestureworks.cml.element
 			else
 				handleGestureList = handleGestureList;  //reset incase handle was null when list was set
 				
-			handle.nativeTransform = true;
-			handle.x_lock = !horizontalHandle;
-			handle.y_lock = horizontalHandle;
+			handle.nativeTransform = false;
+			handle.affineTransform = false;
 			handle.width = handleWidth;
 			handle.height = handleHeight			
 			
@@ -829,10 +838,14 @@ package com.gestureworks.cml.element
 		 * @param	e
 		 */
 		private function dragHandle(e:GWGestureEvent):void {
-			if (horizontalHandle)
-				contentHolder.x += e.value.drag_dx;
-			else
-				contentHolder.y += e.value.drag_dy;
+			if (horizontalHandle) {		
+				handle.x += e.value.drag_dy * Math.sin(dragAngle) + e.value.drag_dx * Math.cos(dragAngle);			
+				contentHolder.x = handle.x + handle.height;
+			}
+			else {
+				handle.y += e.value.drag_dy * Math.cos(dragAngle) - e.value.drag_dx * Math.sin(dragAngle);				
+				contentHolder.y = handle.y + handle.height;
+			}
 		}
 		
 		/**
