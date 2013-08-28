@@ -252,6 +252,7 @@
 				{
 					min = lastLabel.textHeight + 10 > button.height ? lastLabel.textHeight + 10 : button.height;
 					offset = _verticalOffset > min ? _verticalOffset : min;
+					if (absOffset) offset = _verticalOffset;
 					button.y = lastLabel.y + offset;
 				}
 				else
