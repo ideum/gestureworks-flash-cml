@@ -22,7 +22,9 @@ package com.gestureworks.cml.element
 	public class SlideMenu extends TouchContainer
 	{
 		private var _backButton:Sprite;
-		private var tweening:Boolean;
+		private var _tweening:Boolean;
+		public function get tweening():Boolean { return _tweening; }
+		
 		private var maskSprite:Sprite;
 		private var origins:Dictionary = new Dictionary(true);
 		private var _disabledItems:Dictionary = new Dictionary(false);
@@ -931,14 +933,14 @@ package com.gestureworks.cml.element
 		
 		protected function tweenBackwards():void 
 		{
-			if (tweening) return;
+			if (_tweening) return;
 			
-			tweening = true;
+			_tweening = true;
 			
 			var tweenXto:Number = subMenu.parent.x + (subMenu.width + _itemSpacing);
 			
 			TweenMax.to(subMenu.parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void {
-																		tweening = false;
+																		_tweening = false;
 																		subMenu.visible = false;
 																		clearTrail(SlideMenu(subMenu.parent));
 																		dispatchBackMenu(subMenu.parent); 
@@ -949,10 +951,10 @@ package com.gestureworks.cml.element
 		protected function tweenForward(target:Sprite, menu:SlideMenu):void 
 		{
 			
-			if (tweening) return;
+			if (_tweening) return;
 			
 			if (target.name in menu.subMenus) {
-				tweening = true;
+				_tweening = true;
 				callDown(target);
 				
 				menu.subMenus[target.name].visible = true;
@@ -960,7 +962,7 @@ package com.gestureworks.cml.element
 				var tweenXto:Number = menu.x - (menu.width + _itemSpacing);
 				
 				TweenMax.to(target.parent, 0.5, { x:tweenXto, ease:Quad.easeInOut, onComplete:function():void { 
-																			tweening = false; 
+																			_tweening = false; 
 																			dispatchMenuState(target.name);
 																			if (!_breadcrumbTrail) callUp(target);
 																			} } );
@@ -1018,7 +1020,7 @@ package com.gestureworks.cml.element
 		}
 		
 		public function reset():void {
-			if (tweening)
+			if (_tweening)
 				TweenMax.killAll();
 			
 			clearTrail(this);
