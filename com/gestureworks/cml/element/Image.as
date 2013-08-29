@@ -330,7 +330,7 @@ package com.gestureworks.cml.element
 		 */		
 		public function loadComplete(event:Event=null):void
 		{	
-			if (img)
+			if (img && img.rawContent)
 			{
 				fileData = img.rawContent;
 				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
