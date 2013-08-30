@@ -295,7 +295,29 @@ package com.gestureworks.cml.utils
 				return parent;
 			else
 				return getParentType(type,parent);			
-		}		
+		}	
+		
+		/**
+		 * Returns an array of ancestors of the specified type
+		 * @param	type The type to search the object hierarchy for
+		 * @param	obj The object to search
+		 * @return
+		 */
+		public static function getAncestorsOfType(type:Class, obj:*):Array {
+			var ancestors:Array = new Array();
+			var parent:*;
+			
+			if (!obj)
+				return ancestors;	
+				
+			parent = getParentType(type, obj);
+			if (parent) {
+				ancestors.push(parent);
+				ancestors = ancestors.concat(getAncestorsOfType(type, parent));
+			}
+			
+			return ancestors;
+		}
 		
 	}
 
