@@ -268,11 +268,12 @@ package com.gestureworks.cml.element
 				
 			if (FileManager.media.getContent(src)) {
 				loadComplete();
-			}
+			} 
 			else {
 				img = new ImageLoader(src);
 				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
 				img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+				img.addEventListener(LoaderEvent.ERROR, onError);
 				img.load();
 			}
 		}	
@@ -287,6 +288,14 @@ package com.gestureworks.cml.element
 			}*/
 		}
 		
+		/**
+		 * Dispatches load error state event
+		 * @param	event
+		 */
+		private function onError(event:LoaderEvent):void
+		{
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "loadError", event.text));
+		}		
 		
 		/**
 		 * loads external image file
