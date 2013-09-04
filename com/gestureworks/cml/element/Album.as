@@ -414,7 +414,7 @@ package com.gestureworks.cml.element
 			storeSnapPoints();
 			setBoundaries();
 			addUIComponent(belt);
-			_currentObject = belt.getChildAt(1);
+			_currentObject = belt.numChildren > 1 ? belt.getChildAt(1): null;
 		}
 						
 		/**
