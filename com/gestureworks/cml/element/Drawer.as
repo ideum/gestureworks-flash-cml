@@ -888,6 +888,7 @@ package com.gestureworks.cml.element
 		public function set update(u:Boolean):void {
 			if (u) {
 				generateTweens();
+				positionHandle();
 			}
 		}
 		
