@@ -36,7 +36,8 @@ package com.gestureworks.cml.core
 			"com.gestureworks.cml.filters.",
 			"com.gestureworks.cml.kits.",
 			"com.gestureworks.cml.layouts.",
-			"com.gestureworks.cml.menus."
+			"com.gestureworks.cml.menus.",
+			"com.gestureworks.cml.away3d.elements."
 		];
 		
 		// loads default open sans TLF fonts
