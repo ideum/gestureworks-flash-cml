@@ -56,9 +56,10 @@ package com.gestureworks.cml.element
 		
 		private var contentHolder:Container;
 		private var contentMask:Graphic;
-		private var upTween:TimelineLite;
-		private var downTween:TimelineLite;
 		private var timer:Timer;
+		
+		private var upDestination:Dictionary = new Dictionary();
+		private var downDestination:Dictionary = new Dictionary();			
 		
 		private var initialized:Boolean = false;
 
@@ -81,7 +82,7 @@ package com.gestureworks.cml.element
 		{
 			addHandles();
 			addContentHolder();
-			generateTweens();
+			generateTweenDest();
 			initialState();
 			
 			//drawer mask
@@ -591,14 +592,11 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Creates the up and down tweens for the drawer components. 
+		 * Creates the up and down tween destinations for drawer components
 		 */
-		private function generateTweens():void
+		private function generateTweenDest():void
 		{	
-			var upDestination:Dictionary = new Dictionary();
-			var downDestination:Dictionary = new Dictionary();			
-			var ease:ExpoOut = Expo.easeOut;			
-			
+			var ease:ExpoOut = Expo.easeOut;						
 			var hUp:Object, hDwn:Object;
 			var cUp:Object, cDwn:Object;
 			
@@ -674,20 +672,6 @@ package com.gestureworks.cml.element
 				upDestination[rightHandle] = cUp;
 				downDestination[rightHandle] = cDwn;
 			}
-			
-			var upTweens:Array = new Array();				
-			for (var key:* in upDestination)
-				upTweens.push(TweenLite.to(key, .3, upDestination[key]));
-			upTween = new TimelineLite();
-			upTween.appendMultiple(upTweens);
-			upTween.stop();
-			
-			var downTweens:Array = new Array();
-			for (key in downDestination)
-				downTweens.push(TweenLite.to(key, .3, downDestination[key]));
-			downTween = new TimelineLite({onComplete: handleTransition});
-			downTween.appendMultiple(downTweens);
-			downTween.stop();
 		}
 		
 		/**
@@ -809,7 +793,10 @@ package com.gestureworks.cml.element
 				leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
 			if(rightHandle)
 				rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
-			upTween.restart();
+				
+			TweenLite.to(handle, .3, upDestination[handle] );
+			TweenLite.to(contentHolder, .3, upDestination[contentHolder] );
+			
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.removeEventListener(GWGestureEvent.FLICK, open);
 			handle.addEventListener(GWGestureEvent.TAP, close);	
@@ -823,12 +810,16 @@ package com.gestureworks.cml.element
 		public function close(e:GWGestureEvent = null):void
 		{			
 			if (!tweenThreshold()) return;
+			handleTransition();
 			handle.visible = true;
 			if(leftHandle)
 				leftHandle.searchChildren(Graphic).topLeftRadius = 0;
 			if(rightHandle)
 				rightHandle.searchChildren(Graphic).topRightRadius = 0;			
-			downTween.restart();
+				
+			TweenLite.to(handle, .3, downDestination[handle] );
+			TweenLite.to(contentHolder, .3, downDestination[contentHolder] );			
+			
 			handle.removeEventListener(GWGestureEvent.TAP, close);
 			handle.removeEventListener(GWGestureEvent.FLICK, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
@@ -893,7 +884,7 @@ package com.gestureworks.cml.element
 		 */
 		public function set update(u:Boolean):void {
 			if (u) {
-				generateTweens();
+				generateTweenDest();
 				positionHandle();
 			}
 		}
@@ -909,9 +900,7 @@ package com.gestureworks.cml.element
 			background = null;
 			contentHolder = null;
 			contentMask = null;
-			upTween = null;
-			downTween = null;
-			
+
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.removeEventListener(GWGestureEvent.TAP, close);			
 			handle.removeEventListener(GWGestureEvent.DRAG, open);
