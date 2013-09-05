@@ -48,6 +48,7 @@ package com.gestureworks.cml.element
 		private var _handleOrientation:String = "top";
 		private var _handleGestureList:Object;
 		private var _dragAngle:Number = 0;
+		private var dragOpen:Boolean;
 		
 		private var _isOpen:Boolean = false;	
 		public function get isOpen():Boolean { return _isOpen; }
@@ -733,10 +734,10 @@ package com.gestureworks.cml.element
 			if (handleGestureList["n-drag"]) {
 				handle.addEventListener(GWGestureEvent.DRAG, dragHandle);
 				handle.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
-					if (isOpen)
-						close();
-					else
+					if (dragOpen)
 						open();
+					else
+						close();
 				});
 			}
 			
@@ -841,10 +842,12 @@ package com.gestureworks.cml.element
 			if (horizontalHandle) {		
 				handle.x += e.value.drag_dy * Math.sin(dragAngle) + e.value.drag_dx * Math.cos(dragAngle);			
 				contentHolder.x = handle.x + handle.height;
+				dragOpen = handleOrientation == "left" ? e.value.drag_dx < 0 : e.value.drag_dx > 0;
 			}
 			else {
 				handle.y += e.value.drag_dy * Math.cos(dragAngle) - e.value.drag_dx * Math.sin(dragAngle);				
 				contentHolder.y = handle.y + handle.height;
+				dragOpen = handleOrientation == "top" ? e.value.drag_dy < 0 : e.value.drag_dy > 0;
 			}
 		}
 		
