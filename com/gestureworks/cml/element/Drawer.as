@@ -801,6 +801,9 @@ package com.gestureworks.cml.element
 			handle.removeEventListener(GWGestureEvent.FLICK, open);
 			handle.addEventListener(GWGestureEvent.TAP, close);	
 			handle.addEventListener(GWGestureEvent.FLICK, close);
+			
+			_isOpen = true;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
 		}
 
 		/**
@@ -824,6 +827,9 @@ package com.gestureworks.cml.element
 			handle.removeEventListener(GWGestureEvent.FLICK, close);
 			handle.addEventListener(GWGestureEvent.TAP, open);	
 			handle.addEventListener(GWGestureEvent.FLICK, open);	
+			
+			_isOpen = false;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
 		}
 		
 		/**
@@ -869,8 +875,6 @@ package com.gestureworks.cml.element
 		 */
 		private function handleTransition():void
 		{
-			_isOpen = !_isOpen;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));
 			if (useLeftHandle || useRightHandle)
 				handle.visible = !_isOpen;
 			if (leftHandle)
