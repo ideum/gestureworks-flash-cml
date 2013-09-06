@@ -871,7 +871,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets the open state of the drawer and updates the visibility of the handles
+		 * Updates the visibility of the handles
 		 */
 		private function handleTransition():void
 		{
