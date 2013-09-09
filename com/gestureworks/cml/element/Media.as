@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.managers.FileManager;
 	import flash.events.*;
 	import flash.utils.*;
@@ -86,8 +87,10 @@ package com.gestureworks.cml.element
 				//dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
-			else
-				throw new Error("Media type is not supported: " + file);
+			else{
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "loadError"));				
+				return;
+			}
 				
 			if (dictionary[file].hasOwnProperty("width") && _width != 0)	dictionary[file].width = _width;
 			if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
@@ -141,6 +144,8 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void
 		{
 			_width = value;
+			if (dictionary[currentFile] && dictionary[currentFile].hasOwnProperty("width"))
+				dictionary[currentFile].width = value;
 		}		
 		
 	
@@ -153,6 +158,8 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void
 		{
 			_height = value;
+			if (dictionary[currentFile] && dictionary[currentFile].hasOwnProperty("height"))
+				dictionary[currentFile].height = value;
 		}		
 		
 	
@@ -246,7 +253,8 @@ package com.gestureworks.cml.element
 			{
 				dictionary[file] = new Image;
 				dictionary[file].src = src;
-				
+				dictionary[file].bitmapDataCache = false;
+				dictionary[file].addEventListener(StateEvent.CHANGE, function(e:StateEvent):void { dispatchEvent(e);});
 				
 				if ( FileManager.media.getContent(file) ) {
 					dictionary[file].addEventListener(Event.COMPLETE, onComplete);					
@@ -265,7 +273,9 @@ package com.gestureworks.cml.element
 			else if (file.search(videoTypes) >= 0)
 			{	
 				dictionary[file] = new Video;
-				dictionary[file].src = src;
+				dictionary[file].src = src;				
+				dictionary[file].width = width;				
+				dictionary[file].height = height;				
 				//dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
 				if (playButton) dictionary[file].addChild(playButton);
@@ -278,8 +288,11 @@ package com.gestureworks.cml.element
 				//dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);				
 			}
-			else
-				throw new Error("Media type is not supported: " + file);
+			else {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "loadError"));				
+				return;
+			}
+				
 				
 			if (dictionary[file].hasOwnProperty("width") && _width != 0)	dictionary[file].width = _width;
 			if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
@@ -297,6 +310,17 @@ package com.gestureworks.cml.element
 		private function onComplete(event:Event=null):void
 		{
 			this.dispatchEvent(new Event(Event.COMPLETE));
+			
+			if (event && event.target) {
+				
+				if (event.target.src) {
+					if (!_width)
+						_width = dictionary[event.target.src].width;
+					if (!_height)
+						_height = dictionary[event.target.src].height;
+					trace("Dimensions:", _width, _height, event.target);
+				}
+			}
 		}
 		
 		
