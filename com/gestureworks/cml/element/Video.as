@@ -35,6 +35,7 @@ package com.gestureworks.cml.element
 		private var progressTimer:Timer;
 		private var sizeLoaded:Boolean = false;
 		private var playButton:Button;
+		private var unmuteVolume:Number = 1;
 		
 		/**
 		 * Constructor
@@ -200,6 +201,32 @@ package com.gestureworks.cml.element
 		{
 			_playButtonState = s;
 		}
+				
+		private var _volume:Number = 1;
+		/**
+		 * Sets the audio volume
+		 * @default 1
+		 */
+		public function get volume():Number { return _volume; }
+		public function set volume(value:Number):void {
+			_volume = value;
+			var soundTransform:SoundTransform = netStream.soundTransform;
+			soundTransform.volume = _volume;
+			netStream.soundTransform = soundTransform;	
+		}
+		
+		private var _mute:Boolean;
+		/**
+		 * Turns the volume all the way down when true and returns it to volume prior to muting when false
+		 * @default false
+		 */
+		public function get mute():Boolean { return _mute; }
+		public function set mute(value:Boolean):void {
+			_mute = value;
+			if (_mute)
+				unmuteVolume = volume;
+			volume = _mute ? 0 : unmuteVolume;								
+		}		
    		
 		/**
 		 * Flag central alignment of the play button
