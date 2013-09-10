@@ -39,6 +39,23 @@ package com.gestureworks.cml.utils
 
 		  return array;
 		}
+		
+		/**
+		 * Removes a value by index
+		 * @param	array
+		 * @param	index
+		 */
+		public function remove(array:Array, index:int):Array
+		{			
+			var original:Array = original.slice(); 
+			var temp:Array = original.splice(index, 1); 
+			temp.shift();
+			original = original.concat(temp); 
+			array = original;
+			return array;
+		}	
+		
+		
 	}
 
 }
