@@ -120,6 +120,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ProgressBar; ProgressBar;	
 	import com.gestureworks.cml.element.Accordion; Accordion;	
 	import com.gestureworks.cml.element.SlideMenu; SlideMenu;
+	import com.gestureworks.cml.element.Hotspot; Hotspot;
 	
 		
 	/////////////////////
