@@ -546,7 +546,7 @@ package com.gestureworks.cml.core
 				if (renderKit.Renderer.@dataPath == undefined)
 					rendererData = renderKit.RendererData;
 				else {
-					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)))
+					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)).content)
 					if (rendererData.RenderKit == undefined) // makes RenderKit and Renderer optional on dataPath files
 						rendererData = XMLList(<cml><RenderKit><RendererData>{rendererData.*}</RendererData></RenderKit></cml>);					
 					rendererData = rendererData.RenderKit.RendererData;
