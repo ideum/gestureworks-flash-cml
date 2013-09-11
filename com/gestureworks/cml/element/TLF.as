@@ -177,7 +177,7 @@ package com.gestureworks.cml.element
 		{		
 			inputVal = formatInput(value.copy());			
 			configuration.textFlowInitialFormat = textFormat;
-			textFlow = TextConverter.importToFlow(inputVal.toString(), TextConverter.TEXT_LAYOUT_FORMAT, configuration);
+			textFlow = TextConverter.importToFlow(value.toString(), TextConverter.TEXT_LAYOUT_FORMAT, configuration);
 			textFlow.fontLookup = FontLookup.EMBEDDED_CFF;
 			textFlow.fontFamily = font;	
 			textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
