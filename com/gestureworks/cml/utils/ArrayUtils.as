@@ -45,9 +45,9 @@ package com.gestureworks.cml.utils
 		 * @param	array
 		 * @param	index
 		 */
-		public function remove(array:Array, index:int):Array
+		public static function remove(array:Array, index:int):Array
 		{			
-			var original:Array = original.slice(); 
+			var original:Array = array.slice(); 
 			var temp:Array = original.splice(index, 1); 
 			temp.shift();
 			original = original.concat(temp); 
