@@ -557,7 +557,7 @@ package com.gestureworks.cml.core
 					
 					for each (var node:* in rendererData.*) {
 						if (node.name() == "Include")
-							tmp.appendChild( XMLList(FileManager.fileList.getKey(String(node.@src)).children() ));
+							tmp.appendChild( XMLList(FileManager.fileList.getKey(String(node.@src)).content.children() ));
 						else
 							tmp.appendChild(node);
 					}
