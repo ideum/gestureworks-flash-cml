@@ -466,7 +466,7 @@ package  com.gestureworks.cml.element
 			super.dispose();
 			background = null;
 			keyText = null;
-			icon = null;
+			_icon = null;
 			dropshadow = null;
 		}
 	}
