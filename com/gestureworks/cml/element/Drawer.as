@@ -492,8 +492,8 @@ package com.gestureworks.cml.element
 			else
 				handleGestureList = handleGestureList;  //reset incase handle was null when list was set
 				
-			handle.nativeTransform = false;
-			handle.affineTransform = false;
+			handle.disableNativeTransform = true;
+			handle.disableAffineTransform = true;
 			handle.width = handleWidth;
 			handle.height = handleHeight			
 			
@@ -788,14 +788,18 @@ package com.gestureworks.cml.element
 		public function open(e:GWGestureEvent = null):void
 		{	
 			if (!tweenThreshold()) return;
-			handleTransition();
-			if (leftHandle)
-				leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
-			if(rightHandle)
-				rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;
 				
 			TweenLite.to(handle, .3, upDestination[handle] );
-			TweenLite.to(contentHolder, .3, upDestination[contentHolder] );
+			TweenLite.to(contentHolder, .3, upDestination[contentHolder] );			
+			
+			if (leftHandle){
+				leftHandle.searchChildren(Graphic).topLeftRadius = leftCornerRadius;
+				TweenLite.to(leftHandle, .3, upDestination[contentHolder]);
+			}
+			if(rightHandle){
+				rightHandle.searchChildren(Graphic).topRightRadius = rightCornerRadius;			
+				TweenLite.to(rightHandle, .3, upDestination[contentHolder]);
+			}
 			
 			handle.removeEventListener(GWGestureEvent.TAP, open);
 			handle.removeEventListener(GWGestureEvent.FLICK, open);
@@ -803,6 +807,7 @@ package com.gestureworks.cml.element
 			handle.addEventListener(GWGestureEvent.FLICK, close);
 			
 			_isOpen = true;
+			handleTransition();			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
 		}
 
@@ -813,15 +818,19 @@ package com.gestureworks.cml.element
 		public function close(e:GWGestureEvent = null):void
 		{			
 			if (!tweenThreshold()) return;
-			handleTransition();
-			handle.visible = true;
-			if(leftHandle)
-				leftHandle.searchChildren(Graphic).topLeftRadius = 0;
-			if(rightHandle)
-				rightHandle.searchChildren(Graphic).topRightRadius = 0;			
+			handle.visible = true;		
 				
 			TweenLite.to(handle, .3, downDestination[handle] );
 			TweenLite.to(contentHolder, .3, downDestination[contentHolder] );			
+			
+			if (leftHandle) {				
+				leftHandle.searchChildren(Graphic).topLeftRadius = 0;
+				TweenLite.to(leftHandle, .3, downDestination[contentHolder]);
+			}
+			if(rightHandle){
+				rightHandle.searchChildren(Graphic).topRightRadius = 0;				
+				TweenLite.to(rightHandle, .3, downDestination[contentHolder]);				
+			}
 			
 			handle.removeEventListener(GWGestureEvent.TAP, close);
 			handle.removeEventListener(GWGestureEvent.FLICK, close);
@@ -829,6 +838,7 @@ package com.gestureworks.cml.element
 			handle.addEventListener(GWGestureEvent.FLICK, open);	
 			
 			_isOpen = false;
+			handleTransition();			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
 		}
 		
