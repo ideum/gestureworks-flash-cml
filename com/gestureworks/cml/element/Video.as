@@ -340,6 +340,7 @@ package com.gestureworks.cml.element
 		public function resume():void
 		{
 			netStream.resume();
+			_isPlaying = true;
 			positionTimer.start();
 			hideButton();
 	   	}
@@ -364,6 +365,8 @@ package com.gestureworks.cml.element
 			positionTimer.stop();	
 			positionTimer.reset();
 			_position = 0;
+			_progressBar.input(0);
+				
 			hideButton(false);
 		}
 		
