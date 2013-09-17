@@ -204,7 +204,7 @@ package com.gestureworks.cml.components
 					}
 				}
 			}
-			clone.displayComplete();
+			clone.init();
 			
 			if (clone.textFields)
 			{

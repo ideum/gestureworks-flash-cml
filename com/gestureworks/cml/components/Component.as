@@ -754,7 +754,7 @@ package com.gestureworks.cml.components
 				clone.frame = String(frame.id);	
 			
 			//clone.resetMatrix();
-			clone.displayComplete();
+			clone.init();
 			
 			return clone;
 		}		

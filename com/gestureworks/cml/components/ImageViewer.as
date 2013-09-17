@@ -190,7 +190,7 @@ package com.gestureworks.cml.components
 					}
 				}
 			}
-			clone.displayComplete();				
+			clone.init();				
 			
 			/*for (var i:int = 0; i < clone.textFields.length; i++) {	
 				for (var n:int = 0; n < clone.numChildren; n++) 
