@@ -120,15 +120,7 @@ package com.gestureworks.cml.components
 				slider = searchChildren(Slider);
 									
 			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
+		}	
 			
 		override protected function updateLayout(event:*=null):void 
 		{

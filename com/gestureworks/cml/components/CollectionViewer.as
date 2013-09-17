@@ -103,16 +103,7 @@ package com.gestureworks.cml.components
 				_bottomContainer = c;
 				_bottomContainer.addEventListener(GWGestureEvent.TAP, tapLayout);
 			}			
-		}		
-		
-		/**
-		 * CML display initialization callback
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}	
-		
+		}				
 		
 		/**
 		 * Initialization

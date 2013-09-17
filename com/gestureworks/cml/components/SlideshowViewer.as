@@ -124,14 +124,6 @@ package  com.gestureworks.cml.components
 		}
 		
 		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void 
-		{
-			init();
-		}
-		
-		/**
 		 * If front and back slideshows can be linked, synchronize the back slideshow properties with the front and
 		 * listen for state changes from each album. 
 		 */

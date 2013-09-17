@@ -83,14 +83,6 @@ package com.gestureworks.cml.components
 				wav = searchChildren(WAV);
 			
 			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
 		}		
 			
 		

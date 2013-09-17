@@ -108,14 +108,7 @@ package com.gestureworks.cml.components
 		}
 		
 		public var isLoaded:Boolean = true;
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
+	
 					
 		override protected function updateLayout(event:*=null):void 
 		{

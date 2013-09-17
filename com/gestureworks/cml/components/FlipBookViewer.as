@@ -47,15 +47,7 @@ package com.gestureworks.cml.components
 		
 		private function uselessComplete(e:StateEvent):void {
 			
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
+		}	
 					
 		override protected function updateLayout(event:*=null):void 
 		{

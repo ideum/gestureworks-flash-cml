@@ -87,14 +87,6 @@
 			super.init();
 		}
 		
-		/**
-		 * CML initialization 
-		 */
-		override public function displayComplete():void
-		{			
-			init();
-		}
-		
 		override protected function updateLayout(event:*=null):void 
 		{
 			// update width and height to the size of the video, if not already specified

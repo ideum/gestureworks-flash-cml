@@ -79,15 +79,7 @@ package com.gestureworks.cml.components
 				album.addEventListener(StateEvent.CHANGE, onStateEvent);
 			}
 			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}			
+		}		
 		
 		private var _album:*;
 		/**

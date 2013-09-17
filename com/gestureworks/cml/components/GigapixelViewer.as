@@ -111,14 +111,6 @@
 				gigapixel.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{			
-			init();
 		}		
 		
 		override protected function updateLayout(event:* = null):void 

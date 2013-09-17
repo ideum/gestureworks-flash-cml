@@ -88,14 +88,6 @@ package com.gestureworks.cml.components
 			updateLayout();				
 		}
 		
-		/**
-		 * CML Initialisation callback
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}
-		
 		private var _fontIncrement:Number = 2;
 		/**
 		 * font increment
