@@ -165,7 +165,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function input(val:Number):void 
 		{
-			if (val <= 0) 
+			if (val < 0) 
 				return;
 			if (knob)
 			{
