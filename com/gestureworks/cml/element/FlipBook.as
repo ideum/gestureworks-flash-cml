@@ -969,14 +969,5 @@ package com.gestureworks.cml.element
 			
 			super.dispose();
 		}
-		
-		/**
-		 * CML initialization method
-		 * @internal do not call super here
-		 */
-		override public function displayComplete():void
-		{			
-			init();
-		}
 	}
 }

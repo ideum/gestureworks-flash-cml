@@ -140,11 +140,10 @@ package com.gestureworks.cml.element
 		public function get loaded():String { return _loaded; }
 		
 		/**
-		 * CML callbcak Initialisation
+		 * Initialisation method
 		 */
-		override public function displayComplete():void {
-			super.displayComplete();
-			
+		override public function init():void
+		{
 			while (this.numChildren > 0) {
 				if (this.getChildAt(this.numChildren - 1) is DisplayObject) {
 					mapMarkers.push(this.getChildAt(this.numChildren - 1));
@@ -152,15 +151,6 @@ package com.gestureworks.cml.element
 				removeChildAt(this.numChildren - 1);
 			}
 			createMap();
-			
-		}
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function init():void
-		{
-			displayComplete();
 		}
 		
 		private function createMap():void {

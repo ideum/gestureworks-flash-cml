@@ -284,16 +284,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML initialization callback
-		 */		
-		override public function displayComplete():void
-		{
-			//if (preload)
-				//load();
-				init();
-		}
-		
-		/**
 		 * Initialisation method
 		 */
 		override public function init():void

@@ -76,14 +76,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
-		
-		/**
 		 * The graphical canvas containing the keys
 		 */
 		public function get background():* { return _background; }

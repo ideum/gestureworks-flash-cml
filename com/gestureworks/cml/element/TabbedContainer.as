@@ -80,14 +80,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML initialization. 
-		 */
-		override public function displayComplete():void 
-		{			
-			init();	
-		}
-		
-		/**
 		 * The index of the currently selected tab. 
 		 */
 		public function get selectedIndex():int { return _selectedIndex; }

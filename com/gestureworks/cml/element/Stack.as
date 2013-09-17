@@ -65,17 +65,6 @@ package com.gestureworks.cml.element
 		public function set loop(value:Boolean):void 
 		{			
 			_loop = value;		
-		}	
-		
-		
-		// public methods //
-		
-		/**
-		 * Initialization method
-		 */
-		override public function init():void
-		{
-			displayComplete();
 		}
 		
 		/**
@@ -90,7 +79,7 @@ package com.gestureworks.cml.element
 		 * CML initialization method
 		 * @internal do not call super here
 		 */
-		override public function displayComplete():void
+		override public function init():void
 		{			
 			// hide all but first child
 			for (var i:int = 1; i < childList.length; i++) 

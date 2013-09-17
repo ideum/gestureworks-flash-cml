@@ -243,16 +243,6 @@ package com.gestureworks.cml.element
 			_thumbMin = value;
 		}
 		
-		//} endregion
-		
-		/**
-		 * CML display callback Initialisation
-		 */
-		override public function displayComplete():void
-		{			
-			init();
-		}
-		
 		/**
 		 * Initialisation method
 		 */
@@ -812,7 +802,7 @@ package com.gestureworks.cml.element
 		//} endregion
 		
 		override public function clone():*{
-			//clone.displayComplete();
+			//clone.init();
 			//var v:Vector.<String> = new < String > ["childList", "initial", "hit", "up", "down", "over", "out",
 			//"mouseUp", "mouseDown", "mouseOver", "mouseOut", "touchUp", "touchDown", "touchOver", "touchOut"];
 			

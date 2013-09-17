@@ -79,18 +79,10 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void
 		{
-			setupUI();
-		}
-		
-		/**
-		 * CML initialization call
-		 */
-		override public function displayComplete():void 
-		{
 			if(!(parent is TabbedContainer))
-				init();			
-		}	
-		
+				setupUI();
+		}
+
 		/**
 		 * The text displayed on the container's tab
 		 * @default ""

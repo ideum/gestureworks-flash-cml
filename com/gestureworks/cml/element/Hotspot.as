@@ -111,15 +111,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML callback Initialisation
-		 */
-		override public function displayComplete():void
-		{			
-			init();
-		}
-		
-		
-		/**
 		 * Initialisation method
 		 */
 		override public function init():void {

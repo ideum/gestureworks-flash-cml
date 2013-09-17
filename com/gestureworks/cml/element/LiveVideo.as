@@ -100,14 +100,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML display initialization callback
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}
-		
-		/**
 		* Initializes the configuration and display of live video and audio.
 		*/
 		override public function init():void

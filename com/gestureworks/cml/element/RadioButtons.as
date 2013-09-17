@@ -88,15 +88,6 @@
 				_radioButtons[labelList[0]].addChild(selected);
 				_selectedLabel = _radioButtons[labelList[0]].name;
 			}
-		}	
-		
-		/**
-		 * CML display initialization callback
-		 */
-		public override function displayComplete():void
-		{
-			super.displayComplete();
-			init();
 		}		
 		
 		/**

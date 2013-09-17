@@ -84,16 +84,7 @@ package com.gestureworks.cml.element
 		{ 
 			_position = value; 
 		}		
-		
-		/**
-		 * CML Initialisation call back
-		 */
-		override public function displayComplete():void {
-			//updateLayout(this.width, this.height)
-			//init();
-			addEventListener(StateEvent.CHANGE, onStateEvent);
-		}
-		
+
 		/**
 		 * Initialisation method
 		 */

@@ -180,23 +180,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML call back Initialisation
+		 * Initialisation method
 		 */
-		override public function displayComplete():void {
-			
+		override public function init():void
+		{
 			for (var i:Number = 0; i < childList.length; i++) {
 				graphicArray.append(getChildAt(i));
 			}
 			
 			createMasks();
-		}
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function init():void
-		{
-			displayComplete();
 		}
 		
 		private function createMasks():void {

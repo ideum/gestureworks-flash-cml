@@ -52,17 +52,7 @@ package com.gestureworks.cml.element
 		{
 			super();
 			mouseChildren = true;
-		}
-		
-		/**
-		 * CML display initialization callback
-		 */
-		public override function displayComplete():void
-		{
-			super.displayComplete();
-			init();
-		}
-		
+		}		
 		
 		private var _width:Number = 100;
 		/**

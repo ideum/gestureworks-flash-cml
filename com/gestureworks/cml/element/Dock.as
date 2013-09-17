@@ -126,15 +126,6 @@ package com.gestureworks.cml.element
 			dockText[1].text = "Server Time Expired: Make a new selection.";
 			dockText[1].visible = true;
 		}
-				
-		
-		/**
-		 * CML init
-		 */
-		override public function displayComplete():void 
-		{
-			init();
-		}
 		
 		/**
 		 * Initialization function

@@ -89,14 +89,6 @@ package com.gestureworks.cml.element
 			_belt = new TouchContainer();
 			loopClones = new Dictionary();
 		}
-				
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void 
-		{
-			init();
-		}
 		
 		/**
 		 * Initialization function

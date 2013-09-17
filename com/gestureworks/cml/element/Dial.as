@@ -167,15 +167,6 @@ package com.gestureworks.cml.element
 			super();
 			mouseChildren = true;
 		}
-		
-		/**
-		 * CML display initialization callback
-		 */
-		override public function displayComplete():void
-		{
-			super.displayComplete();
-			init();
-		}
 			
 		/**
 		 * Defines the background which is a rectangle

@@ -88,27 +88,16 @@ package  com.gestureworks.cml.element
 		public function get description():String { return _description; }
 		
 		/**
-		 * CML display callback Initialisation
+		 * Initialisation method
 		 */
-		override public function displayComplete():void {
-			super.displayComplete();
-		
-			
+		override public function init():void
+		{
 			if (src && src.length > 1) {
 				service = new FlickrService(_API_KEY);
 				service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
 				service.addEventListener(IOErrorEvent.IO_ERROR, errorEvent);
 				service.photos.getInfo(_src);
 			}
-		}
-		
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function init():void
-		{
-			displayComplete();
 		}
 		
 		private function errorEvent(e:IOErrorEvent):void {

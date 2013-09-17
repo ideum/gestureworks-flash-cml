@@ -107,15 +107,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML display initialization callback
-		 */
-		public override function displayComplete():void
-		{
-			super.displayComplete();
-			init();
-		}
-		
-		/**
 		 * Defines the background which is a rectangle
 		 */
 		public var background:Sprite = new Sprite();

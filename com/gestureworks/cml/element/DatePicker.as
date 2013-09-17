@@ -126,15 +126,6 @@ package com.gestureworks.cml.element
 				m = m + ",";
 			_months = m;
 		}
-		
-		/**
-		 * CML display initialization callback
-		 */
-		public override function displayComplete():void
-		{
-			super.displayComplete();
-			init();
-		}
 			
 		/**
 		 * Initializes the calendar components

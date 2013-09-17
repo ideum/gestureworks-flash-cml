@@ -158,22 +158,12 @@ package  com.gestureworks.cml.element
 		
 		
 		/**
-		 * CML display callback Initialisation
-		 */
-		override public function displayComplete():void {
-			super.displayComplete();
-			
-			service = new FlickrService(_API_KEY);
-			service.addEventListener(FlickrResultEvent.PHOTOS_SEARCH, onSearchComplete);
-		}
-		
-		
-		/**
 		 * Initialisation method
 		 */
 		override public function init():void
 		{
-			displayComplete();
+			service = new FlickrService(_API_KEY);
+			service.addEventListener(FlickrResultEvent.PHOTOS_SEARCH, onSearchComplete);
 		}
 		
 		public function flickrSearch():void {

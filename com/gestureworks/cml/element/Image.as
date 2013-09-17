@@ -50,8 +50,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void 
 		{
-		}
-			
+		}	
 		
 		/**
 		 * Dispose methods and remove listener
@@ -523,14 +522,7 @@ package com.gestureworks.cml.element
 			width = bitmap.width * scaleX;
 			height = bitmap.height * scaleY;
 			
-		}
-		
-		
-		
-		/**
-		 * This is called by the CML parser. Do not override this method.
-		 */
-		override public function displayComplete():void {}		
+		}		
 		
 		
 		

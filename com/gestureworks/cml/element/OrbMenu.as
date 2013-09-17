@@ -624,15 +624,6 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Initializes the configuration and display of orbMenu
-		 */
-		override public function init():void
-		{
-		//	displayOrb();
-			displayComplete();
-		}
-		
-		/**
 		 * creats OrbMenu Graphics and the curved text on OrbMenu.
 		 */
 		private function displayOrb():void
@@ -742,7 +733,7 @@ package com.gestureworks.cml.element
 		 * CML display initialization callback
 		 * defines positions for buttons,lines and rectangle.
 		 */
-		override public function displayComplete():void
+		override public function init():void
 		{
 			if (attractMode)
 			{

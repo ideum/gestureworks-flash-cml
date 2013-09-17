@@ -136,17 +136,7 @@ package com.gestureworks.cml.element
 			
 			this.mask = cMask;
 			_current = tabs.length - 1;
-		}
-		
-		
-		/**
-		 * CML initialization. 
-		 */
-		override public function displayComplete():void 
-		{			
-			init();	
-		}
-		
+		}	
 		
 		/**
 		 * The index of the currently selected tab. 

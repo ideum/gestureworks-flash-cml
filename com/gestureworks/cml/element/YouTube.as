@@ -108,23 +108,12 @@ package  com.gestureworks.cml.element
 		private var _isPlaying:Boolean = false;
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
-		
-		/**
-		 * CML callback Initialisation
-		 */
-		override public function displayComplete():void {
-			super.displayComplete();
-			
-			loadVideo();
-		
-		}
-		
 		/**
 		 * Initialisation method
 		 */
 		override public function init():void
 		{
-			displayComplete();
+			loadVideo();
 		}
 		
 		/**

@@ -251,13 +251,6 @@ package com.gestureworks.cml.element
 			_class_ = value;
 		}			
 		
-		/**
-		 * CML callback Initialisation
-		 */
-		public function displayComplete():void{}
-		
-
-		
 		private var dropShadowfilter:DropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);		
 		private var _dropShadow:Boolean = false;
 		/**
@@ -890,7 +883,7 @@ package com.gestureworks.cml.element
 		{		
 			var clone:TouchContainer = CloneUtils.clone(this, this.parent, cloneExclusions);
 			clone.graphics.copyFrom(this.graphics);
-			clone.displayComplete();			
+			clone.init();			
 			
 			return clone;
 		}	

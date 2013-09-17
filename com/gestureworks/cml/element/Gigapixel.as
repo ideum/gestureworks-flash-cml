@@ -162,13 +162,22 @@
 			return image.localToScene(p);
 		}
 		
+		private function onEnterFrame(e:Event):void {
+			for (var i:Number = 0; i < _hotspots.length; i++) {
+				if (!(contains(_hotspots[i])))
+					addChild(_hotspots[i]);
+				var point:Point = image.sceneToLocal(new Point(_hotspots[i].sceneX, _hotspots[i].sceneY));
+				_hotspots[i].x = point.x;
+				_hotspots[i].y = point.y;
+			}
+		}
 		
 		/**
-		 * CML call back Initialisation
+		 * Initialisation method
 		 */
-		override public function displayComplete():void
-		{			
-			while (this.numChildren > 0) {
+		override public function init():void
+		{ 
+						while (this.numChildren > 0) {
 				if (this.getChildAt(0) is Hotspot) {
 					_hotspots.push(this.getChildAt(0));
 				}
@@ -231,26 +240,6 @@
 			if (_hotspots.length > 0 && !hasEventListener(Event.ENTER_FRAME)) {
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
-			
-			
-		}
-		
-		private function onEnterFrame(e:Event):void {
-			for (var i:Number = 0; i < _hotspots.length; i++) {
-				if (!(contains(_hotspots[i])))
-					addChild(_hotspots[i]);
-				var point:Point = image.sceneToLocal(new Point(_hotspots[i].sceneX, _hotspots[i].sceneY));
-				_hotspots[i].x = point.x;
-				_hotspots[i].y = point.y;
-			}
-		}
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function init():void
-		{ 
-			displayComplete();
 		}
 		
 		

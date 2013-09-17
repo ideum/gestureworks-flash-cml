@@ -142,13 +142,7 @@ package com.gestureworks.cml.element
 			
 			updateLayout();
 		}
-
-		override public function displayComplete():void
-		{
-			init();
-		}
-		
-		
+	
 		/**
 		 * Adds or removes a listener based on the value of the <code>add</code> flag
 		 * @param	type  the type of event
@@ -1336,7 +1330,7 @@ package com.gestureworks.cml.element
 			clone.touchOut = touchOut ? String(touchOut.id) : touchOut;
 			
 			
-			clone.displayComplete();
+			clone.init();
 			
 			// Workaround: Loop through the childList after the cloning is complete and remove the duplicate items that were created.
 			for (var y:Number = 0; y < this.childList.length; y++) {

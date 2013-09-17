@@ -254,16 +254,7 @@ package com.gestureworks.cml.element
 			drawColorRec();
 			drawSelectedColorRec();
 			drawColorSpecs();
-		}
-		
-		/**
-		 * CML display initialization callback
-		 */
-		public override function displayComplete():void
-		{
-			super.displayComplete();
-			init();
-		}		
+		}	
 		
 		/**
 		 * Draw the container sprite to add all of the components to

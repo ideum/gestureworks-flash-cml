@@ -63,34 +63,24 @@ package com.gestureworks.cml.element
 		/**
 		 * Sets frame thickness
 		 * @default 100
-		 */			
+		 */
 		public function get frameColor():Number{return _frameColor;}
 		public function set frameColor(value:Number):void
 		{
-			_frameColor = value;		
-			init();	
+			_frameColor = value;
+			init();
 		}
 		
 		private var _frameAlpha:Number=0.3;
 		/**
 		 * Sets frame thickness
 		 * @default 100
-		 */			
+		 */
 		public function get frameAlpha():Number{return _frameAlpha;}
 		public function set frameAlpha(value:Number):void
 		{
-			_frameAlpha = value;		
-			init();	
-		}		
-		
-		
-		
-		/**
-		 * CML display callback
-		 */
-		override public function displayComplete():void
-		{			
-			init();			
+			_frameAlpha = value;	
+			init();
 		}
 		
 		/**

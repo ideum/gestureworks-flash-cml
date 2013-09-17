@@ -195,14 +195,9 @@ package com.gestureworks.cml.element
 			
 			_mask = null;
 			_verticalScroll = null;
-			_horizontalScroll = null;
-			
+			_horizontalScroll = null;		
 		}
-		
-		override public function displayComplete():void {
-			init();
-		}
-		
+
 		override public function init():void {
 			// Check the child list. 
 			// Iterate through each item, getting position, width, and height.

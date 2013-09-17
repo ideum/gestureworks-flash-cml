@@ -110,14 +110,12 @@ package com.gestureworks.cml.element
 		public function set loop(value:Boolean):void {
 			_loop = value;
 		}
-		
+
 		/**
-		 * CML callback Initialisation
+		 * Initialisation method
 		 */
-		override public function displayComplete():void 
+		override public function init():void
 		{
-			super.displayComplete();
-			
 			var arr:Array = childList.getValueArray();
 			for (var j:int = 0; j < arr.length; j++) {
 				slideshowItems.append(arr[j]); 
@@ -141,14 +139,6 @@ package com.gestureworks.cml.element
 			//init();
 			if (autoplay)
 				play();
-		}
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function init():void
-		{
-			displayComplete();
 		}
 		
 		/**

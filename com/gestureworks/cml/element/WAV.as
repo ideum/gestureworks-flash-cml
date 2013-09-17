@@ -433,16 +433,6 @@ package com.gestureworks.cml.element
 		// PUBLIC METHODS //
 		
 		/**
-		 * CML callback Initialisation
-		 */
-		override public function displayComplete():void {
-			super.displayComplete();
-			//bytes = new ByteArray();
-			//load();
-			init();
-		}
-		
-		/**
 		 * Initialisation method
 		 */
 		override public function init():void

@@ -137,22 +137,12 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * CML display initialization callback
-		 * creates menu
-		 */
-		override public function displayComplete():void {
-			super.displayComplete();
-			
-			_menuItemsArray = new Array();
-			createMenu();
-		}
-		
-		/**
 		 * inialisation method 
 		 */
 		override public function init():void
 		{
-			displayComplete();
+			_menuItemsArray = new Array();
+			createMenu();
 		}
 		
 		private function createMenu():void {
