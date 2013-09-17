@@ -78,14 +78,14 @@ package com.gestureworks.cml.managers
 		 * Calls the init() method on the entire CMLObjectList
 		 * by looping through the index of the CMLObjectList.
 		 */
-		public function displayComplete():void
+		public function init():void
 		{			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
 			{				
 				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("init"))
 					CMLObjectList.instance.getIndex(i).init();
 				else if (CMLObjectList.instance.getIndex(i).hasOwnProperty("displayComplete"))
-					CMLObjectList.instance.getIndex(i).displayComplete();
+					CMLObjectList.instance.getIndex(i).init();
 			}
 		}			
 		

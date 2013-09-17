@@ -53,16 +53,8 @@ package com.gestureworks.cml.kits
 		 */
 		override public function init():void
 		{
-			displayComplete()
-		}		
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function displayComplete():void
-		{
 			updateLayout();
-		}
+		}		
 		
 		/**
 		 * Updates the child x and y position to the center of the stage

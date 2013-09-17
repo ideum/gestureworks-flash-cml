@@ -115,14 +115,6 @@ package com.gestureworks.cml.kits
 		 */
 		override public function init():void
 		{
-			displayComplete();
-		}		
-		
-		/**
-		 * Initialisation method
-		 */
-		override public function displayComplete():void
-		{
 			disableNativeTransform = true;
 			CMLParser.instance.addEventListener(CMLParser.COMPLETE, cmlinit);
 			
@@ -132,8 +124,8 @@ package com.gestureworks.cml.kits
 			
 			timer = new Timer(timeout);
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
-		}
-		
+		}		
+
 		/**
 		 * Updates the child x and y position to the center of the stage
 		 * @param	event
