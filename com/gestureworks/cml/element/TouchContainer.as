@@ -596,9 +596,9 @@ package com.gestureworks.cml.element
 		}	
 		
 		private var _cloneExclusions:Vector.<String> = new <String>
-			["$x", "$y", "_$x", "_$y", "_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
+			["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
 			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray", "$transformPoint"];
+			"touchObjectID", "_touchObjectID", "_pointArray", "transformPoint"];
 		/**
 		 * Returns a list of properties to exclude when cloning this object
 		 */

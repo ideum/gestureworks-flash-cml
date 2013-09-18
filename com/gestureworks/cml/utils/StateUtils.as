@@ -129,7 +129,7 @@ package com.gestureworks.cml.utils
 				newValue = obj.propertyStates[state][propertyName];
 				if (obj[propertyName] != newValue) {
 					
-					if (propertyName != "$x" && propertyName != "$y" && propertyName != "_x" && propertyName != "_y") {				
+					if (propertyName != "_x" && propertyName != "_y") {				
 						
 						if (propertyName.toLowerCase().search("color") > -1) {
 							rgb = ColorUtils.rgbSubtract(newValue, obj[propertyName]);							
