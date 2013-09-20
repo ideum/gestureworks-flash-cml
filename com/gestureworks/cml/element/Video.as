@@ -191,6 +191,12 @@ package com.gestureworks.cml.element
 		 */	
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
+		private var _isPaused:Boolean = false;
+		/**
+		 * sets video paused status
+		 */
+		public function get isPaused():Boolean { return _isPaused; }
+		
 		private var _playButtonState:String = "down";
 		/**
 		 * Specifies the button state to execute the play operation
@@ -238,12 +244,8 @@ package com.gestureworks.cml.element
 			super.init();
 			
 			playButton = searchChildren(Button);
-			if (playButton) {
-				mouseChildren = true;
-				hideButton(false);
-				
-				playButton.addEventListener(StateEvent.CHANGE, play);
-				
+			if (playButton) {				
+				mouseChildren = true;								
 				if(centerPlayButton){				
 					var tempRot:Number = playButton.rotation;				
 					playButton.rotation = 0;
@@ -324,35 +326,32 @@ package com.gestureworks.cml.element
 		{			
 			if (e && e.value != playButtonState) return;
 			netStream.seek(0);				
-			//netStream.resume();
 			netStream.play(src);
 			positionTimer.reset();
 			positionTimer.start();
 			_position = 0;
 			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
 			positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
-			hideButton();
 		}
 		
 		/**
 		 * Resumes video playback from paused position
 		 */			
-		public function resume():void
+		public function resume(e:StateEvent=null):void
 		{
+			if (e && e.value != playButtonState) return;
 			netStream.resume();
-			_isPlaying = true;
 			positionTimer.start();
-			hideButton();
 	   	}
 		
 		/**
 		 * Pauses video
 		 */			
-		public function pause():void
+		public function pause(e:StateEvent=null):void
 		{
+			if (e && e.value != playButtonState) return;
 			netStream.pause();
 			positionTimer.stop();
-			hideButton(false);
 		}
 		
 		/**
@@ -365,9 +364,6 @@ package com.gestureworks.cml.element
 			positionTimer.stop();	
 			positionTimer.reset();
 			_position = 0;
-			_progressBar.input(0);
-				
-			hideButton(false);
 		}
 		
 		/**
@@ -391,10 +387,21 @@ package com.gestureworks.cml.element
 		/// PRIVATE METHODS ///	
 		private function load():void
 		{
-			netConnection = new NetConnection;
-			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			if (netConnection) {
+				netConnection.close();
+				//netConnection.removeEventListener((NetStatusEvent.NET_STATUS, onNetStatus);
+				//netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			}
+			else
+				netConnection = new NetConnection;
+			
+			if (!netConnection.hasEventListener(NetStatusEvent.NET_STATUS))
+				netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			if (!netConnection.hasEventListener(SecurityErrorEvent.SECURITY_ERROR));
+				netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			
 			netConnection.connect(null);
+			
 		}		
 		
 		private function onNetStatus(event:NetStatusEvent):void
@@ -415,18 +422,30 @@ package com.gestureworks.cml.element
 					 break;	
 				case "NetStream.Play.Start":
 					 _isPlaying = true;
+					 _isPaused = false;
+					 updatePlayButton();
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;	
 				case "NetStream.Play.Stop":
 					 end();
 				     _isPlaying = false;
+					 _isPaused = false;
+					 updatePlayButton();
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "ended", true));
 					 break;
 				case "NetStream.Pause.Notify":
 					 _isPlaying = false;
+					 _isPaused = true;
+					 updatePlayButton();
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;
+				case "NetStream.Unpause.Notify":
+					_isPlaying = true;
+					_isPaused = false;
+					updatePlayButton();
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					break;
 				case "NetStream.Seek.Notify":
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
 					 break;
@@ -438,10 +457,12 @@ package com.gestureworks.cml.element
 		private function connectNetStream():void
 		{
 			progressTimer = new Timer(1000);
-			positionTimer = new Timer(20);
+			if (!positionTimer)
+				positionTimer = new Timer(20);
 			
 			netStream = new NetStream(netConnection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			netStream.addEventListener(NetStatusEvent.NET_STATUS, initializeNS);
 			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			
@@ -462,13 +483,19 @@ package com.gestureworks.cml.element
 			else if (!height)
 				height = video.height;
 				
-			addChild(video);			
-			
+			addChild(video);						
 			play();
-			netStream.pause();
-			netStream.seek(0);
-			if (autoplay)		
-				play();
+		}
+		
+		/**
+		 * Initialize connection
+		 * @param	e
+		 */
+		private function initializeNS(e:NetStatusEvent):void {
+			if (e.info.code == "NetStream.Play.Start") {
+				if (!autoplay) stop();
+				netStream.removeEventListener(NetStatusEvent.NET_STATUS, initializeNS);
+			}
 		}
 		
 		private function onMetaData(meta:Object):void
@@ -544,6 +571,7 @@ package com.gestureworks.cml.element
 		
 		private function onPosition(event:TimerEvent):void
 		{			
+			if (!netStream) return;
 			_position = netStream.time / _duration;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
@@ -556,19 +584,30 @@ package com.gestureworks.cml.element
 			// Dispatch event for playlist here.
 		}	
 		
-		private function hideButton(hide:Boolean = true):void
+		/**
+		 * Toggles between play and pause states
+		 */
+		private function updatePlayButton():void
 		{
 			if (!playButton) return;
 			
-			if (hide)
-				playButton.visible = false;
-			else
-			{
-				playButton.visible = true;
+			if (isPlaying){
+				playButton.alpha = 0;
+				playButton.removeEventListener(StateEvent.CHANGE, resume);
+				playButton.removeEventListener(StateEvent.CHANGE, play);				
+				playButton.addEventListener(StateEvent.CHANGE, pause);				
+			}
+			else{
+				playButton.alpha = 1;
 				
 				//move to top
 				if (getChildIndex(playButton) != numChildren - 1)
 					addChild(playButton);
+				if (isPaused)
+					playButton.addEventListener(StateEvent.CHANGE, resume);
+				else
+					playButton.addEventListener(StateEvent.CHANGE, play);
+				playButton.removeEventListener(StateEvent.CHANGE, pause);					
 			}
 		}
 		
@@ -578,19 +617,37 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
+			
+			positionTimer.stop();
+			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
+			positionTimer = null;
+			
+			progressTimer.stop();
+			progressTimer = null;
+			
+			video.attachNetStream(null);
+			
+			netConnection.close();
+			netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			netConnection = null;
+			
+			netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			netStream.dispose();
 			netStream = null;
+			
 			video = null;
 			videoObject = null;
 			customClient = null;
-			positionTimer = null;
-			progressTimer = null;
-			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);	
-			netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-	        netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			
+			if (playButton) {
+				playButton.removeAllListeners();
+				playButton.dispose();
+				playButton = null;
+			}
+			
 		}
 
 	}
