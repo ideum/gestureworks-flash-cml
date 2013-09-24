@@ -397,7 +397,7 @@ package com.gestureworks.cml.element
 			
 			if (!netConnection.hasEventListener(NetStatusEvent.NET_STATUS))
 				netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			if (!netConnection.hasEventListener(SecurityErrorEvent.SECURITY_ERROR));
+			if (!netConnection.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
 				netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			
 			netConnection.connect(null);

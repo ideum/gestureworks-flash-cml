@@ -17,7 +17,7 @@ package com.gestureworks.cml.managers
 		private static var _states:Array = [];
 		private static var lookUp:Dictionary = new Dictionary;
 		
-		private static var id = 0;
+		private static var id:int = 0;
 		
 		public static function get states():Array { return _states; }
 		
@@ -220,8 +220,7 @@ package com.gestureworks.cml.managers
 		private static function firstObject():Dictionary {
 			var obj:Dictionary;
 			for each(obj in renderStates) {
-				if (obj != undefined)
-					return obj;
+				return obj;
 			}
 			return obj;
 		}

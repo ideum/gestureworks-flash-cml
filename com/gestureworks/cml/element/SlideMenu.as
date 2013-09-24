@@ -347,7 +347,7 @@ package com.gestureworks.cml.element
 			_itemFontSize = value;
 		}
 		
-		protected var _itemFontColor = 0xffffff;
+		protected var _itemFontColor:uint = 0xffffff;
 		public function get itemFontColor():uint { return _itemFontColor; }
 		public function set itemFontColor(value:uint):void {
 			_itemFontColor = value;
@@ -419,7 +419,7 @@ package com.gestureworks.cml.element
 		protected var selectedGradientRatiosArray:Array = [0, 177, 255];
 		protected var _selectedGradientRatios:String = "";
 		public function get selectedGradientRatios():String { return _selectedGradientRatios; }
-		public function set selectedGradientRatios(value:String) {
+		public function set selectedGradientRatios(value:String):void {
 			selectedGradientRatiosArray = [];
 			
 			if (!value) return;

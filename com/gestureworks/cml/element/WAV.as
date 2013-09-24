@@ -45,7 +45,7 @@ package com.gestureworks.cml.element
 	public class WAV extends TouchContainer
 	{
 		private var urlLoader:URLLoader;
-		private var sound:flash.media.Sound;
+		private var waveSound:flash.media.Sound;
 		private var channel:SoundChannel;
 		private var soundTrans:SoundTransform;
 		private var Position:uint;		
@@ -290,12 +290,12 @@ package com.gestureworks.cml.element
 		public function get percentLoaded():Number { return _percentLoaded; }
 		
 	
-		private var _position:Number = 0;
+		private var _playhead:Number = 0;
 		/**
 		 * Playhead position in ms
 		 * @default 0
 		 */			
-		public function get position():Number { return _position; }
+		public function get playhead():Number { return _playhead; }
 		
 		private var _isPlaying:Boolean = false;
 		/**
@@ -456,7 +456,7 @@ package com.gestureworks.cml.element
 		public function close():void 
 		{
 			channel.stop();
-			sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
+			waveSound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
 			_isPlaying = false;
 			_paused = false;
 			visible = false;
@@ -486,12 +486,12 @@ package com.gestureworks.cml.element
 				}
 								
 				//add SampleDataEvent listener (runs at the audio rate, currently flash only supports 44.1 Hz)
-				sound.addEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
+				waveSound.addEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
 				
 				timer.start();
 				
 				//play the sound file through sound object, leave cue and loop properties at zero (handled differently)
-				sound.play();
+				waveSound.play();
 				_isPlaying = true;	
 			}
 		}
@@ -501,7 +501,7 @@ package com.gestureworks.cml.element
 		 */			
 		public function pause():void {
 			//stop playback and set pause to true
-			sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
+			waveSound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
 			timer.stop();
 			_isPlaying = false;
 			_paused = true;
@@ -526,7 +526,7 @@ package com.gestureworks.cml.element
 		 */
 		public function stop():void {
 			//stop playback 
-			sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
+			waveSound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
 			timer.stop();
 			_isPlaying = false;
 		}
@@ -538,7 +538,7 @@ package com.gestureworks.cml.element
 		{
 			loading = true;;
 			
-			sound = new flash.media.Sound();
+			waveSound = new flash.media.Sound();
 			channel = new SoundChannel();
 			soundTrans = new SoundTransform();
 			//sound.addEventListener(Event.COMPLETE, soundLoaded);
@@ -886,9 +886,9 @@ package com.gestureworks.cml.element
 				soundTrans = null;
 			}
 			
-			if (sound) {
-				sound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
-				sound = null;
+			if (waveSound) {
+				waveSound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
+				waveSound = null;
 			}
 			
 			while (this.numChildren > 0) {

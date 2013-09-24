@@ -23,7 +23,8 @@ package com.gestureworks.cml.utils
 		 */
 		public static function shuffle(array:Array):Array
 		{
-		  var m = array.length, t, i;
+		  var m:Number = array.length, i:Number;
+		  var t:*;
 
 		  // While there remain elements to shuffle…
 		  while (m) {

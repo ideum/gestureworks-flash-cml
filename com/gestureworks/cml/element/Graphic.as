@@ -260,7 +260,8 @@ package com.gestureworks.cml.element
 			graphics.lineTo(Math.cos(angle) * radius + offset, 
 							Math.sin(angle) * radius + offset);
 			
-			for (var i:int = 0; i < numOfSegs; i++) 
+			var i:int;
+			for (i = 0; i < numOfSegs; i++) 
 			{
 				angle += segmentAngle;
 				drawCircleSegment(angle, segmentAngle, radius, offset);
@@ -269,7 +270,7 @@ package com.gestureworks.cml.element
 			graphics.lineTo(Math.cos(angle) * innerRadius + offset,
 							Math.sin(angle) * innerRadius + offset);
 							
-			for (var i:int = 0; i < numOfSegs; i++) 
+			for (i = 0; i < numOfSegs; i++) 
 			{
             	angle -= segmentAngle;
 				drawCircleSegment(angle, -segmentAngle, innerRadius, offset);

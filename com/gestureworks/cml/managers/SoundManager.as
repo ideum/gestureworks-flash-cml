@@ -84,7 +84,7 @@ package com.gestureworks.cml.managers
 		 * @param	target
 		 * @param	soundIndex
 		 */
-		public static function stop(target:Object, soundIndex:int = 0, stopAll:Boolean = false) {
+		public static function stop(target:Object, soundIndex:int = 0, stopAll:Boolean = false):void {
 			if (soundMap.hasKey(target)) {
 				var arr:Array = soundMap.getKey(target);
 				if (!stopAll) {
@@ -115,7 +115,7 @@ package com.gestureworks.cml.managers
 		 * @param	target
 		 * @param	soundIndex
 		 */
-		public static function stopAll() {
+		public static function stopAll():void {
 			for (var i:int = 0; i < soundsPlaying.length; i++) {
 				Sound(soundsPlaying[i]).stop();
 			}
@@ -199,8 +199,9 @@ package com.gestureworks.cml.managers
 		
 		private static function triggerSound(soundMapArray:Array, e:GWTouchEvent):void {
 			
+			var sound:Sound;
 			if (soundMapArray.length < 2) {
-				var sound:Sound = soundMapArray[0];
+				sound = soundMapArray[0];
 				for (var m:int = 0; m < sound.triggerArray.length; m++) {
 					if (sound.triggerArray[m] == e.type) {
 						
@@ -217,7 +218,7 @@ package com.gestureworks.cml.managers
 			}
 			
 			for (var i:int = 0; i < soundMapArray.length; i++) {
-				var sound:Sound = soundMapArray[i];
+				sound = soundMapArray[i];
 				
 				for (var j:int = 0; j < sound.triggerArray.length; j++) {
 					
@@ -280,6 +281,7 @@ package com.gestureworks.cml.managers
 		
 		private static function onSoundEvent(e:GWGestureEvent):void {			
 			var arr:Array
+			var sound:Sound;
 			
 			if (e.target is TouchContainer) {
 				var tc:TouchContainer = e.target as TouchContainer;
@@ -298,7 +300,7 @@ package com.gestureworks.cml.managers
 			}
 			
 			if (arr.length < 2) {
-				var sound:Sound = arr[0];
+				sound = arr[0];
 				for (var m:int = 0; m < sound.triggerArray.length; m++) {
 					if (sound.triggerArray[m] == e.value.id) {
 						if (!important(sound)) 
@@ -315,7 +317,7 @@ package com.gestureworks.cml.managers
 			}
 			
 			for (var i:int = 0; i < arr.length; i++) {
-				var sound:Sound = arr[i];
+				sound = arr[i];
 				
 				for (var j:int = 0; j < sound.triggerArray.length; j++) {
 					if (sound.triggerArray[j] == e.value.id) {

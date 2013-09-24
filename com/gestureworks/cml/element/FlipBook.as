@@ -457,10 +457,11 @@ package com.gestureworks.cml.element
 		private function flashPageCorners():void 
 		{
 			if (cornerFlashing) return;
+			var tween:TweenMax;
 			
 			if (_currentPage == 0) {
 				// First page, only show right flash.
-				var tween:TweenMax = new TweenMax(pageCorners[_currentPage], 0.5, { alpha:_indicatorAlpha, onComplete:reverse, 
+				tween = new TweenMax(pageCorners[_currentPage], 0.5, { alpha:_indicatorAlpha, onComplete:reverse, 
 													onReverseComplete:function():void { cornerFlashing = false;} } );
 				cornerFlashing = true;
 				
@@ -470,7 +471,7 @@ package com.gestureworks.cml.element
 			}
 			else if (_currentPage >= pageContent.length - 1) {
 				// If it's the last page we can't flip any more, only show left flash.
-				var tween:TweenMax = new TweenMax(pageCorners[_currentPage-1], 0.5, { alpha:_indicatorAlpha, onComplete:reverse2, 
+				tween = new TweenMax(pageCorners[_currentPage-1], 0.5, { alpha:_indicatorAlpha, onComplete:reverse2, 
 													onReverseComplete:function():void { cornerFlashing = false;} } );
 				cornerFlashing = true;
 				

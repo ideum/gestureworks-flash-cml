@@ -534,7 +534,7 @@ package com.gestureworks.cml.components
 				}
 				
 				if (scrollPanes) {
-					for (var l:int = 0; l < scrollPanes.length; l++) {
+					for (var a:int = 0; a < scrollPanes.length; a++) {
 						ScrollPane(scrollPanes[l]).reset();
 					}
 				}

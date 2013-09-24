@@ -478,7 +478,7 @@ package com.gestureworks.cml.element
 			_leftTriangleAlpha = value;
 		}
 		
-		private var _leftTriangleScale = 1;
+		private var _leftTriangleScale:Number = 1;
 		/**
 		 * Sets the scale of the left triangle
 		 * @default 1
