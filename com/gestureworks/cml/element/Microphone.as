@@ -10,7 +10,8 @@ package com.gestureworks.cml.element
 	
 
 	/**
-	 *   
+	 * <codeblock>   
+	 * 
 	 * CML wrapper for AS3 micrphone class
 	 * package {
 	 * import flash.display.Sprite;
