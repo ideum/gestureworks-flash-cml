@@ -54,6 +54,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.VideoViewer; VideoViewer;	
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
+	import com.gestureworks.cml.components.PaintViewer; PaintViewer;
 	import com.gestureworks.cml.components.MaskImageViewer; MaskImageViewer;
 	import com.gestureworks.cml.components.YouTubeViewer; YouTubeViewer;
 	import com.gestureworks.cml.components.Component; Component;	
@@ -104,6 +105,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Album; Album;	
 	import com.gestureworks.cml.element.ModestMap; ModestMap;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
+	import com.gestureworks.cml.element.Paint; Paint;
 	//import com.gestureworks.cml.element.Gigapixel; Gigapixel;
 	import com.gestureworks.cml.element.Tab; Tab;
 	import com.gestureworks.cml.element.Key; Key;	
