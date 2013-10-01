@@ -2,6 +2,9 @@ package com.gestureworks.cml.managers
 {
 	import flash.text.*
 	import flash.text.engine.*
+	import fonts.OpenSansBoldTLF;
+	import fonts.OpenSansItalicTLF;
+	import fonts.OpenSansRegularTLF;
 	
 	/**
 	 * The FontManager loads embedded fonts. 
@@ -23,11 +26,11 @@ package com.gestureworks.cml.managers
 		// Keep the default fonts to a miminum. OpenSans is the chosen font for Open Exhibits.
 		// For custom projects embed fonts directly into the project, not here.
 
-		Font.registerFont(Fonts_OpenSansRegularTLF);	
+		Font.registerFont(OpenSansRegularTLF);	
 		
-		Font.registerFont(Fonts_OpenSansItalicTLF); 
+		Font.registerFont(OpenSansItalicTLF); 
 		
-		Font.registerFont(Fonts_OpenSansBoldTLF);
+		Font.registerFont(OpenSansBoldTLF); 
 		
 	}
 }
