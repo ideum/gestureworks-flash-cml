@@ -55,7 +55,7 @@ package com.gestureworks.cml.element
 		/**
 		* defines camera element.
 		*/
-		public var _camera:com.gestureworks.cml.element.Camera;
+		public var _camera:VideoCamera;
 		/**
 		* defines the mic object.
 		*/
@@ -76,7 +76,7 @@ package com.gestureworks.cml.element
 		{
 			if (!value) return;
 			
-			if (value is com.gestureworks.cml.element.Camera)
+			if (value is VideoCamera)
 				_camera = value;
 			else 
 				_camera = searchChildren(value);

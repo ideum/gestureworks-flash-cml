@@ -104,7 +104,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Album; Album;	
 	import com.gestureworks.cml.element.ModestMap; ModestMap;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
-	//import com.gestureworks.cml.element.Gigapixel; Gigapixel;
 	import com.gestureworks.cml.element.Tab; Tab;
 	import com.gestureworks.cml.element.Key; Key;	
 	import com.gestureworks.cml.element.Magnifier; Magnifier;
@@ -121,6 +120,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Accordion; Accordion;	
 	import com.gestureworks.cml.element.SlideMenu; SlideMenu;
 	import com.gestureworks.cml.element.Hotspot; Hotspot;
+	import com.gestureworks.cml.element.VideoCamera; VideoCamera;
 	
 		
 	/////////////////////
