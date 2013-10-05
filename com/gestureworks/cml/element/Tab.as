@@ -282,8 +282,9 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Configures all of the UI elements of the container
+		 * @private
 		 */
-		private function setupUI():void
+		public function setupUI():void
 		{	
 			//setup text
 			text.text = title;
