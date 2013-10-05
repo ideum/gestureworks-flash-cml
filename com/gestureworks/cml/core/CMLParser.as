@@ -799,7 +799,7 @@ package com.gestureworks.cml.core
 		 * @param	packageArray
 		 * @return
 		 */
-		private static function searchPackages(tag:String, packageArray:Array):Object
+		public static function searchPackages(tag:String, packageArray:Array):Object
 		{
 			var obj:* = null;
 			var as3class:Class;
