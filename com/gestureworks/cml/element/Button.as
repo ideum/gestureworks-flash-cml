@@ -128,7 +128,8 @@ package com.gestureworks.cml.element
 			if (down) listenDown();
 			if (over) listenOver();
 			
-			if (tap) listenTap();
+			if (tap) 
+				listenTap();
 			
 			//initaialize exclusive touch listeners
 			if (touchDown) listenTouchDown();
@@ -800,7 +801,7 @@ package com.gestureworks.cml.element
 		 * @param	event
 		 */
 		private function listenTap(listen:Boolean = true):void {
-			addListener(TouchEvent.TOUCH_TAP, onTap, listen, hit);
+			addListener(GWTouchEvent.TOUCH_TAP, onTap, listen, hit);
 		}
 				
 
