@@ -105,11 +105,9 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Album; Album;	
 	import com.gestureworks.cml.element.ModestMap; ModestMap;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
-<<<<<<< HEAD
 	import com.gestureworks.cml.element.Paint; Paint;
 	//import com.gestureworks.cml.element.Gigapixel; Gigapixel;
-=======
->>>>>>> 29700cc86ce2f9f30d0272abd4ab0a81353da1e5
+
 	import com.gestureworks.cml.element.Tab; Tab;
 	import com.gestureworks.cml.element.Key; Key;	
 	import com.gestureworks.cml.element.Magnifier; Magnifier;
