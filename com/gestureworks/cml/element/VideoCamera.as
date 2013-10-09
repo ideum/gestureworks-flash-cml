@@ -88,14 +88,14 @@ package com.gestureworks.cml.element
 	 * </codeblock>
 	 * @author Ideum
 	 */
-	public final class Camera extends CMLObject
+	public final class VideoCamera extends CMLObject
 	{
 		private var cam:flash.media.Camera;
 		
 		/**
 		 * Constructor
 		 */
-		public function Camera()
+		public function VideoCamera()
 		{
 			cam = new flash.media.Camera;
 		}

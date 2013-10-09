@@ -532,12 +532,13 @@ package com.gestureworks.cml.element
 			{
 				for (i = 1; i < belt.numChildren; i++)
 				{
-					if (belt.getChildAt(i)[axis] > limit)
-					{
-						snapPoints.push(-limit);
-						break;
-					}					
-					snapPoints.push( -belt.getChildAt(i)[axis]);					
+					//TODO: incorporate offset into limit
+					//if (belt.getChildAt(i)[axis] > limit)
+					//{
+						//snapPoints.push(-limit);
+						//break;
+					//}					
+					snapPoints.push(offset-belt.getChildAt(i)[axis]);					
 				}
 			}			
 		}

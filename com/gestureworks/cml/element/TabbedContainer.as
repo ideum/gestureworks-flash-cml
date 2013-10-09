@@ -168,7 +168,7 @@ package com.gestureworks.cml.element
 				var child:* = getChildAt(i);
 				if (child is Tab)
 				{
-					child.init();
+					child.setupUI();
 					addTab(child);
 				}
 			}

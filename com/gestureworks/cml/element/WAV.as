@@ -268,12 +268,12 @@ package com.gestureworks.cml.element
 		 */
 		public function get bitDepth():uint { return _bitDepth; }
 		
-		private var _length:uint;
+		private var _wavLength:uint;
 		/**
 		 * length of wav file
 		 */
-		public function get length():uint { return _length; }
-	
+		public function get wavLength():uint { return _wavLength; }
+		
 		private var _duration:Number = 0;
 		/**
 		 * Total duration
@@ -827,7 +827,7 @@ package com.gestureworks.cml.element
 						_audioStreamSize = subChunkSize;
 						_audioStreamStart = _stream.position;
 						_audioStreamEnd = _audioStreamStart + _audioStreamSize;
-						_length = _audioStreamSize / byteRate * 1000;
+						_wavLength = _audioStreamSize / byteRate * 1000;
 					}	
 					
 					_stream.position += subChunkSize;
