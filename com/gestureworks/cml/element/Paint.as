@@ -235,7 +235,7 @@ package com.gestureworks.cml.element
 		}
 		
 		//e.g. "#ff00cc" -> 0xff00cc  
-		private function hexStringToUint(c:String):uint {
+		private function hexStringToUint(c:String) {
 			c = c.substr(1, c.length - 1); 
 			return parseInt(c, 16);
 		}
@@ -382,7 +382,7 @@ package com.gestureworks.cml.element
 			ba.clear();
 		}
 		
-		public function importSVG():void {
+		public function importSVG() {
 			fileR.addEventListener(Event.SELECT, svgSelected);
 			fileR.addEventListener(Event.COMPLETE, svgLoaded);
 			fileR.browse([new FileFilter("SVG", "*.svg")]);
