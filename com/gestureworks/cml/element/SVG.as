@@ -8,8 +8,8 @@ package com.gestureworks.cml.element
     import flash.events.Event;
 	
     import flash.net.URLLoaderDataFormat;
-	import com.lorentz.SVG.display.SVGDocument;
-	import com.lorentz.processing.ProcessExecutor;
+	import SVGcom.lorentz.SVG.display.SVGDocument;
+	import SVGcom.lorentz.processing.ProcessExecutor;
 	
 	public class SVG extends TouchContainer {
 		
