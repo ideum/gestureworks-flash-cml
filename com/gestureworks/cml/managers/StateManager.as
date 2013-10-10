@@ -1,7 +1,7 @@
 package com.gestureworks.cml.managers 
 {
-	import com.adobe.utils.StringUtil;
 	import com.gestureworks.cml.element.TLF;
+	import com.gestureworks.cml.utils.StringUtils;
 	import flash.utils.Dictionary;
 	/**
 	 * Manages the storage and loading of object states through the RenderKit or the State tag. Through the RenderKit, passing a state to the StateManager is done by assigning a stateId to 
@@ -304,7 +304,7 @@ package com.gestureworks.cml.managers
 			var attrCopy:Dictionary;
 			
 			for each(stateId in stateIds) {
-				stateId = StringUtil.trim(stateId);
+				stateId = StringUtils.trim(stateId); 
 				attrCopy = copyAttributes(attr);
 				if (!lookUp[stateId])
 					lookUp[stateId] = new Array();

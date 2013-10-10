@@ -1,8 +1,8 @@
 package com.gestureworks.cml.element 
 {
-	import com.adobe.utils.StringUtil;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.StringUtils;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.easing.Expo;
 	import com.greensock.easing.ExpoOut;
@@ -463,7 +463,7 @@ package com.gestureworks.cml.element
 			if (list is XML) { 
 				var tmp:Object = new Object();
 				for each(var g:String in list.split(",")) 
-					tmp[StringUtil.trim(g.split(":")[0])] = Boolean(g.split(":")[1]);
+					tmp[StringUtils.trim(g.split(":")[0])] = Boolean(g.split(":")[1]); 
 				list = tmp;
 			}				
 			
