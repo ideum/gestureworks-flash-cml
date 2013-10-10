@@ -362,7 +362,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Flag indicating handle orientation is either left or right
 		 */
-		public function get horizontalHandle():Boolean {
+		public function get verticalHandle():Boolean {
 			return handleOrientation == "left" || handleOrientation == "right";
 		}
 		
@@ -381,9 +381,10 @@ package com.gestureworks.cml.element
 		 */
 		override public function set width(value:Number):void 
 		{
+			trace(value);
 			super.width = value;
 			
-			if (horizontalHandle) {
+			if (verticalHandle) {
 				contentHolder.width = handle ? value - handle.height : value;
 				handleWidth = contentHolder.height;
 			}
@@ -407,7 +408,7 @@ package com.gestureworks.cml.element
 		{
 			super.height = value;
 			
-			if(horizontalHandle){
+			if(verticalHandle){
 				contentHolder.height = leftHandle ? contentHolder.height - leftHandle.width : height;
 				contentHolder.height = rightHandle ? contentHolder.height - leftHandle.width : height;
 			}
@@ -847,7 +848,7 @@ package com.gestureworks.cml.element
 		 * @param	e
 		 */
 		private function dragHandle(e:GWGestureEvent):void {
-			if (horizontalHandle) {		
+			if (verticalHandle) {		
 				dragDelta = e.value.drag_dy * Math.sin(dragAngle) + e.value.drag_dx * Math.cos(dragAngle);			
 				handle.x += dragDelta;
 				contentHolder.x = handle.x + handle.height;
