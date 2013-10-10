@@ -83,24 +83,18 @@ package com.gestureworks.cml.element
 				
 		
 		/**
-		 * Calls the Dispose method for each child possessing a Dispose method then removes all children. 
-		 * This is the root destructor intended to be called by overriding dispose functions. 
+		 * Destructor
 		 */
-		public function dispose():void 		
+		override public function dispose():void 		
 		{			
-			for (var i:int = numChildren - 1; i >= 0; i--)
-			{
-				var child:Object = getChildAt(i);
-				if (child.hasOwnProperty("dispose"))
-					child["dispose"]();
-				removeChildAt(i);
-			}
+			super.dispose();
 			state = null; 
 			_childList = null; 
 			layout = null;
 			layoutList = null;							
-			cmlGestureList = null;
-						
+			cmlGestureList = null;					
+			
+			CMLObjectList.instance.removeByValue(this);
 		}
 		
 					
