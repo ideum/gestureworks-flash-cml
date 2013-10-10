@@ -633,7 +633,7 @@ package com.gestureworks.cml.components
 		{			
 			for (var i:int = 0; i < numChildren; i++)
 			{
-				if(getChildAt(i) is TouchContainer)
+				if(getChildAt(i) is Component)
 					getChildAt(i).visible = false;
 			}
 		}
