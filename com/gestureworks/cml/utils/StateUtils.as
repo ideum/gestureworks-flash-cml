@@ -79,7 +79,7 @@ package com.gestureworks.cml.utils
 			
 			if (!stateIndex) stateIndex = 0;
 			
-			if (obj.state[stateIndex]){
+			if (obj.hasOwnProperty("state") && obj.state[stateIndex]){
 				obj.updateProperties(stateIndex);
 				success = true;
 			}
