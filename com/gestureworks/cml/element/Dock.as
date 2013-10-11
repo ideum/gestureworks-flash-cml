@@ -315,16 +315,16 @@ package com.gestureworks.cml.element
 		
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 
 		{	
-			if (!("propertyStates" in obj)) 
+			if (!("state" in obj)) 
 				return lm;
 			
 			// Iterate through the properties of the object to find {values}
-			for (var s:String in obj.propertyStates[0]) {
-				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
+			for (var s:String in obj.state[0]) {
+				if ((String(obj.state[0][s])).indexOf("{") != -1) {
 					
 					// Create substring
-					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
-					obj.propertyStates[0][s] = str;
+					var str:String = String(obj.state[0][s]).substring(1, String(obj.state[0][s]).length -1);
+					obj.state[0][s] = str;
 					if (s == "src") 
 						lm.prepend(obj, s);
 					else
@@ -345,7 +345,7 @@ package com.gestureworks.cml.element
 		{			
 			var obj:Object = cloneMap.value.key;
 			var prop:String = cloneMap.value.value;
-			var exp:* = obj["propertyStates"][0][prop];
+			var exp:* = obj["state"][0][prop];
 			var src:String = res[exp];
 			
 			if ("updateLayout" in obj)
@@ -412,7 +412,7 @@ package com.gestureworks.cml.element
 			{
 				obj = keys[i];
 				prop = values[i];
-				exp = obj["state"][0][prop];
+				exp = String(obj["state"][0][prop]).replace(/[\s\r\n{}]*/gim,"");
 				
 				StateUtils.loadState(obj, 0, true);
 				
@@ -939,14 +939,14 @@ package com.gestureworks.cml.element
 			if (autoShuffle) 
 				obj.addEventListener(GWTouchEvent.TOUCH_BEGIN, moveB);
 			
-			//if ("scale" in obj["propertyStates"][0])
-			//	obj.scale = obj["propertyStates"][0]["scale"];
+			//if ("scale" in obj["state"][0])
+			//	obj.scale = obj["state"][0]["scale"];
 			//else
 				obj.scale = .6;
 					
 			if (position == "top") {
-				//if ("rotation" in obj["propertyStates"][0])
-				//	obj.rotation = obj["propertyStates"][0]["rotation"];
+				//if ("rotation" in obj["state"][0])
+				//	obj.rotation = obj["state"][0]["rotation"];
 				//else
 					obj.rotation = 180;
 				
@@ -955,8 +955,8 @@ package com.gestureworks.cml.element
 				collectionViewer.tagObject(true, obj);
 			}
 			else {		
-				//if ("rotation" in obj["propertyStates"][0])
-				//	obj.rotation = obj["propertyStates"][0]["rotation"];
+				//if ("rotation" in obj["state"][0])
+				//	obj.rotation = obj["state"][0]["rotation"];
 				//else
 					obj.rotation = 0;
 				obj.x = location.x;
@@ -1000,16 +1000,16 @@ package com.gestureworks.cml.element
 		}
 		
 		private function searchExp(obj:*, target:*):void {					
-			if (!("propertyStates" in obj)) return;
+			if (!("state" in obj)) return;
 
 			// Pass in the template, and the object to compare.
 			
 			// Iterate through the properties of the object to find {values}
-			for (var s:String in obj.propertyStates[0]) {
-				if ((String(obj.propertyStates[0][s])).indexOf("{") != -1) {
+			for (var s:String in obj.state[0]) {
+				if ((String(obj.state[0][s])).indexOf("{") != -1) {
 					
 					// Create substring, check for substring "in" comparison object.
-					var str:String = String(obj.propertyStates[0][s]).substring(1, String(obj.propertyStates[0][s]).length -1);
+					var str:String = String(obj.state[0][s]).substring(1, String(obj.state[0][s]).length -1);
 					
 					if (str in target && target[str] != null) {
 						// Assign object's values to template clone if found.
