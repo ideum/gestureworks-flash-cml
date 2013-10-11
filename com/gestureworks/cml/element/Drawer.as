@@ -381,7 +381,6 @@ package com.gestureworks.cml.element
 		 */
 		override public function set width(value:Number):void 
 		{
-			trace(value);
 			super.width = value;
 			
 			if (verticalHandle) {
@@ -389,7 +388,7 @@ package com.gestureworks.cml.element
 				handleWidth = contentHolder.height;
 			}
 			else {	
-				contentHolder.width = leftHandle ? contentHolder.width - leftHandle.width : width;
+				contentHolder.width = leftHandle ? width - leftHandle.width : width;
 				contentHolder.width = rightHandle ? contentHolder.width - rightHandle.width : width;
 				handleWidth = value;				
 			}
@@ -409,7 +408,7 @@ package com.gestureworks.cml.element
 			super.height = value;
 			
 			if(verticalHandle){
-				contentHolder.height = leftHandle ? contentHolder.height - leftHandle.width : height;
+				contentHolder.height = leftHandle ? height - leftHandle.width : height;
 				contentHolder.height = rightHandle ? contentHolder.height - leftHandle.width : height;
 			}
 			else{
@@ -607,7 +606,7 @@ package com.gestureworks.cml.element
 					hUp = { x:0, ease:ease };
 					hDwn = { x:contentHolder.width, ease:ease };
 					cUp = { x:handle.height, ease:ease };
-					cDwn = { x:contentHolder.width + handle.height, ease:ease };	
+					cDwn = { x:contentHolder.width + handle.height, ease:ease, onComplete:handleTransition };	
 					
 					//drag limits
 					handle.minX = hUp.x;
@@ -621,7 +620,7 @@ package com.gestureworks.cml.element
 					hUp = { x:contentHolder.width+handle.height, ease:ease };
 					hDwn = { x:handle.height, ease:ease };
 					cUp = { x:0, ease:ease };
-					cDwn = { x: -contentHolder.width, ease:ease };
+					cDwn = { x: -contentHolder.width, ease:ease, onComplete:handleTransition };
 					
 					//drag limits
 					handle.minX = hDwn.x;
@@ -635,7 +634,7 @@ package com.gestureworks.cml.element
 					hUp = { y:contentHolder.height + handle.height, ease:ease };
 					hDwn = { y:handle.height, ease:ease };
 					cUp = { y:0, ease:ease };
-					cDwn = { y: -contentHolder.height, ease:ease };	
+					cDwn = { y: -contentHolder.height, ease:ease, onComplete:handleTransition };	
 					
 					//drag limits
 					handle.minY = hDwn.y;
@@ -649,7 +648,7 @@ package com.gestureworks.cml.element
 					hUp = { y:0, ease:ease };
 					hDwn = { y:contentHolder.height, ease:ease };
 					cUp = { y:handle.height, ease:ease };
-					cDwn = { y:contentHolder.height + handle.height, ease:ease };
+					cDwn = { y:contentHolder.height + handle.height, ease:ease, onComplete:handleTransition };
 					
 					//drag limits
 					handle.minY = hUp.y;
@@ -700,7 +699,8 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 *  Registers the appropriate listener based on the drawer's initial state.
+		 * Registers the appropriate listener based on the drawer's initial state. Side handles will always
+		 * close the drawer since they are inaccessible when the drawer is closed.
 		 */
 		private function addEventListeners():void {
 			
@@ -709,13 +709,13 @@ package com.gestureworks.cml.element
 			//descrete gesture event listeners
 			if (handleGestureList["n-tap"]) {				
 				handle.addEventListener(GWGestureEvent.TAP, action);
-				if (leftHandle) leftHandle.addEventListener(GWGestureEvent.TAP, action);
-				if (rightHandle) rightHandle.addEventListener(GWGestureEvent.TAP, action);				
+				if (leftHandle) leftHandle.addEventListener(GWGestureEvent.TAP, close);
+				if (rightHandle) rightHandle.addEventListener(GWGestureEvent.TAP, close);				
 			}			
 			if (handleGestureList["n-flick"]) {				
 				handle.addEventListener(GWGestureEvent.FLICK, action);
-				if (leftHandle) leftHandle.addEventListener(GWGestureEvent.FLICK, action);
-				if (rightHandle) rightHandle.addEventListener(GWGestureEvent.FLICK, action);				
+				if (leftHandle) leftHandle.addEventListener(GWGestureEvent.FLICK, close);
+				if (rightHandle) rightHandle.addEventListener(GWGestureEvent.FLICK, close);				
 			}						
 			if (handleGestureList["n-drag"]) {
 				handle.addEventListener(GWGestureEvent.DRAG, dragHandle);
@@ -822,7 +822,7 @@ package com.gestureworks.cml.element
 			handle.visible = true;		
 				
 			TweenLite.to(handle, .3, downDestination[handle] );
-			TweenLite.to(contentHolder, .3, downDestination[contentHolder] );			
+			TweenLite.to(contentHolder, .3, downDestination[contentHolder]);			
 			
 			if (leftHandle) {				
 				leftHandle.searchChildren(Graphic).topLeftRadius = 0;
@@ -839,7 +839,6 @@ package com.gestureworks.cml.element
 			handle.addEventListener(GWGestureEvent.FLICK, open);	
 			
 			_isOpen = false;
-			handleTransition();			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
 		}
 		
