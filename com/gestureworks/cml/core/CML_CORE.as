@@ -75,11 +75,9 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.View; View;
 	import com.gestureworks.cml.element.Stack; Stack;	
 	import com.gestureworks.cml.element.TLF; TLF;	
-	import com.gestureworks.cml.element.GestureList; GestureList;		
 	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
 	import com.gestureworks.cml.element.Slider; Slider;		
 	import com.gestureworks.cml.element.RadialSlider; RadialSlider;
-	import com.gestureworks.cml.element.Gesture; Gesture;
 	import com.gestureworks.cml.element.Toggle; Toggle;
     import com.gestureworks.cml.element.Switch; Switch;
 	import com.gestureworks.cml.element.DatePicker; DatePicker;
@@ -106,6 +104,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ModestMap; ModestMap;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
 	import com.gestureworks.cml.element.Paint; Paint;
+	import com.gestureworks.cml.element.Preloader; Preloader;
 	//import com.gestureworks.cml.element.Gigapixel; Gigapixel;
 
 	import com.gestureworks.cml.element.Tab; Tab;
@@ -125,15 +124,15 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.SlideMenu; SlideMenu;
 	import com.gestureworks.cml.element.Hotspot; Hotspot;
 	import com.gestureworks.cml.element.VideoCamera; VideoCamera;
-	
+	import com.gestureworks.cml.element.Background; Background;		
+	import com.gestureworks.cml.element.Attract; Attract;
+	import com.gestureworks.cml.element.StageKit; StageKit;	
 		
 	/////////////////////
 	//  KITS  
 	/////////////////////
 	import com.gestureworks.cml.kits.LayoutKit; LayoutKit;		
-	import com.gestureworks.cml.kits.BackgroundKit; BackgroundKit;		
-	import com.gestureworks.cml.kits.StageKit; StageKit;
-	import com.gestureworks.cml.kits.AttractKit; AttractKit;
+	
 	
 	
 	
