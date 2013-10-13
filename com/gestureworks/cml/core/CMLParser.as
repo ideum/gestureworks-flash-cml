@@ -25,7 +25,7 @@ package com.gestureworks.cml.core
 	 * @see com.gestureworks.cml.core.CMLObjectList
 	 * @see com.gestureworks.cml.core.CMLDisplay
 	 */		
-	public class CMLParser extends CML_CORE
+	public class CMLParser extends CMLRegistry
 	{	
 		// private variables
 		
@@ -480,7 +480,7 @@ package com.gestureworks.cml.core
 				
 				// assign class values
 				if (node.@['class'] != undefined)
-					obj.class_ = node.@['class'];
+					obj.className = node.@['class'];
 									
 				
 				// run object's parse routine	
@@ -848,7 +848,7 @@ package com.gestureworks.cml.core
 
 				// check for css keyword
 				if (attr == "class")
-					attr = "class_";				
+					attr = "className";				
 				
 				if (attrValue.search(FileManager.fileTypes) >= 0 && String(attrValue.charAt(0) != "{") ) {
 					// rootDirectory allows you to change root path	
