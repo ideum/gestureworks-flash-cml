@@ -2,7 +2,6 @@ package  com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	

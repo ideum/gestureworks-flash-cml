@@ -3,7 +3,6 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.components.Component;
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	
 	public class FlipBookViewer extends Component 
 	{		

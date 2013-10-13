@@ -5,7 +5,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.*;
-	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.cml.layouts.*;
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
@@ -338,7 +338,7 @@ package com.gestureworks.cml.core
 			if (cml.name() != "Layout") return;
 			if (cml.parent().name() != "LayoutKit") return; 
 			
-			LayoutKit.instance.parseCML(XMLList(cml));
+			LayoutKit.instance.parseCML(XMLList(cml)); 
 			if (debug) trace("0:  Layout found: " + cml.@ref + cml.@classRef);	// deprecate classRef								
 		}	
 		
@@ -773,7 +773,7 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				obj = searchPackages(tag, CML_CORE.CML_CORE_PACKAGES);
+				obj = searchPackages(tag, CMLRegistry.PACKAGES);
 
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");

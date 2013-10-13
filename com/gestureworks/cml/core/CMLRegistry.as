@@ -27,7 +27,7 @@ package com.gestureworks.cml.core
 	public class CMLRegistry
 	{
 		// searchable packages
-		protected static var CML_CORE_PACKAGES:Array = 
+		protected static var PACKAGES:Array = 
 		[
 			"",
 			"com.gestureworks.cml.buttons.",			
@@ -128,24 +128,18 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Background; Background;		
 	import com.gestureworks.cml.element.Attract; Attract;
 	import com.gestureworks.cml.element.StageKit; StageKit;	
-		
-	/////////////////////
-	//  KITS  
-	/////////////////////
-	import com.gestureworks.cml.kits.LayoutKit; LayoutKit;		
-	
-	
 	
 	
 	///////////////////////
 	//  LAYOUTS 
 	//////////////////////
-	import com.gestureworks.cml.layouts.Random; Random;
-	import com.gestureworks.cml.layouts.List; List;
-	import com.gestureworks.cml.layouts.Grid; Grid;
-	import com.gestureworks.cml.layouts.Point; Point;
-	import com.gestureworks.cml.layouts.Pile; Pile;
-	import com.gestureworks.cml.layouts.Fan; Fan;
+	import com.gestureworks.cml.layouts.RandomLayout; RandomLayout;
+	import com.gestureworks.cml.layouts.ListLayout; ListLayout;
+	import com.gestureworks.cml.layouts.GridLayout; GridLayout;
+	import com.gestureworks.cml.layouts.PointLayout; PointLayout;
+	import com.gestureworks.cml.layouts.PileLayout; PileLayout;
+	import com.gestureworks.cml.layouts.FanLayout; FanLayout;
+	import com.gestureworks.cml.layouts.LayoutKit; LayoutKit;		
 	
 
 	

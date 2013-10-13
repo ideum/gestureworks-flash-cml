@@ -2,11 +2,8 @@ package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
 	
 	/**
 	 * The ImageViewer component is primarily meant to display an Image element and its associated meta-data.

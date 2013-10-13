@@ -2,17 +2,8 @@ package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.core.GestureWorks;	
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	import com.gestureworks.cml.utils.NumberUtils;
 	
 	/**
 	 * The VideoViewer component is primarily meant to display a Video element and its associated meta-data.

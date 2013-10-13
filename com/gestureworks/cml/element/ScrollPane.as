@@ -37,7 +37,7 @@ package com.gestureworks.cml.element
 		public function ScrollPane()
 		{
 			super();			
-			disableNativeTransform = true;
+			nativeTransform = true;
 		}	
 		
 		private var _autoHide:Boolean = false;

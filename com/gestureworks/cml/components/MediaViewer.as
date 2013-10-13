@@ -2,8 +2,7 @@
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
-	import flash.display.DisplayObject;	
+	import flash.display.DisplayObject;
 	
 	/**
 	 * The MediaViewer component is primarily meant to display a Media element and its associated meta-data.
