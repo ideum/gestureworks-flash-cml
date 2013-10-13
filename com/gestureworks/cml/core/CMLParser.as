@@ -167,7 +167,7 @@ package com.gestureworks.cml.core
 				if (debug && tag == "cml") trace("");
 				if (debug) trace(dash(XMLList(cml[i])) + tag + "");
 				
-				if (tag == "PreloaderKit")
+				if (tag == "Preloader")
 					ppPreloaderKit(cml[i]);
 				else if (tag == "Include")
 					ppInclude(cml[i]);				
@@ -176,7 +176,9 @@ package com.gestureworks.cml.core
 				else if (tag == "LibraryKit" || tag == "Library")
 					ppLibraryKit(cml[i]);
 				else if (tag == "LayoutKit" || tag == "Layout")
-					ppLayoutKit(cml[i]);					
+					ppLayoutKit(cml[i]);	
+				else if (tag == "Stage")
+					cml[i].setName("StageKit");				
 				else if (cml[i].@src != undefined)
 					ppMedia(cml[i]);					
 				
