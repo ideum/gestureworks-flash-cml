@@ -859,7 +859,7 @@ package com.gestureworks.cml.core
 					}					
 				}
 					
-				obj.propertyStates[0][attr] = attrValue;
+				obj.state[0][attr] = attrValue;
 			}
 					
 			attr = null;			
@@ -908,8 +908,8 @@ package com.gestureworks.cml.core
 			var newValue:*;
 			var isExpression:Boolean;
 			
-			for (var propertyName:String in obj.propertyStates[state]) {				
-				newValue = obj.propertyStates[state][propertyName];
+			for (var propertyName:String in obj.state[state]) {				
+				newValue = obj.state[state][propertyName];
 					
 				if (newValue == "true")
 					newValue = true;

@@ -62,11 +62,10 @@ package com.gestureworks.cml.element
 			super();
 			state = [];
 			state[0] = new Dictionary(false);
-			this['propertyStates'] = state;	
 			_childList = new ChildList;			
 			mouseChildren = false;
-			affineTransform = false; 
-			nativeTransform = false;			
+			affineTransform = true; 
+			nativeTransform = true;			
 		}
 
 		/**
@@ -122,9 +121,6 @@ package com.gestureworks.cml.element
 		 * property states array
 		 */
 		public var state:Array;
-		
-		[Deprecated(replacement="state")]		
-		public var propertyStates:Array;
 		
 		/**
 		 * postparse method

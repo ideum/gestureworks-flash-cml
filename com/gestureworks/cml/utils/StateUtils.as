@@ -124,9 +124,9 @@ package com.gestureworks.cml.utils
 			
 			if (!state) state = 0;
 			
-			for (var propertyName:String in obj.propertyStates[state])
+			for (var propertyName:String in obj.state[state])
 			{
-				newValue = obj.propertyStates[state][propertyName];
+				newValue = obj.state[state][propertyName];
 				if (obj[propertyName] != newValue) {
 					
 					if (propertyName != "_x" && propertyName != "_y") {				

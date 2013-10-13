@@ -47,7 +47,6 @@ package com.gestureworks.cml.element
 			
 			state = [];
 			state[0] = new Dictionary(false);
-			this['propertyStates'] = state;
 
 			textFormat.font = "OpenSansRegular";
 			textFormat.color = color;
@@ -119,9 +118,6 @@ package com.gestureworks.cml.element
 		 * property states array
 		 */
 		public var state:Array;
-		
-		[Deprecated(replacement="state")]		
-		public var propertyStates:Array;
 		
 		/**
 		 * parses the cml file

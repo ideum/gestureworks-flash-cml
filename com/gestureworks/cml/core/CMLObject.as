@@ -21,7 +21,6 @@ package com.gestureworks.cml.core
 			super();
 			state = [];
 			state[0] = new Dictionary(false);
-			this['propertyStates'] = state;
 		}	
 		
 		/**	
@@ -36,9 +35,6 @@ package com.gestureworks.cml.core
 		 * property states array
 		 */
 		public var state:Array;
-		
-		[Deprecated(replacement="state")]		
-		public var propertyStates:Array;
 		
 		
 		private var _cmlIndex:int;
