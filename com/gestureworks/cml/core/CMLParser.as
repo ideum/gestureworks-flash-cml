@@ -25,7 +25,7 @@ package com.gestureworks.cml.core
 	 * @see com.gestureworks.cml.core.CMLObjectList
 	 * @see com.gestureworks.cml.core.CMLDisplay
 	 */		
-	public class CMLParser extends CMLRegistry
+	public class CMLParser extends CMLCore
 	{	
 		// private variables
 		
@@ -773,7 +773,7 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				obj = searchPackages(tag, CMLRegistry.PACKAGES);
+				obj = searchPackages(tag, CMLCore.PACKAGES);
 
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");

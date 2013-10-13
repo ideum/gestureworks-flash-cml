@@ -2,7 +2,7 @@ package com.gestureworks.cml.core
 {
 	import com.gestureworks.cml.managers.FontManager;
 	/** 
-	 * The CMLRegistry class is the registry file for classes that are capable of
+	 * The CMLCore class is the registry file for classes that are capable of
 	 * being loaded by the CML Parser.
 	 * 
 	 * <p>You can register your own class for CML loading by placing your class file
@@ -24,7 +24,7 @@ package com.gestureworks.cml.core
 	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CML_AIR
 	 */		
-	public class CMLRegistry
+	public class CMLCore
 	{
 		// searchable packages
 		protected static var PACKAGES:Array = 

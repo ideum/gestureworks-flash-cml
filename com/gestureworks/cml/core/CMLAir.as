@@ -1,7 +1,7 @@
 package com.gestureworks.cml.core 
 {
 	/** 
-	 * The CMLRegistryAir class is the registry file for AIR-exclusive classes that are capable of
+	 * The CMLAir class is the registry file for AIR-exclusive classes that are capable of
 	 * being loaded by the CML Parser.
 	 * 
 	 * <p>You can register your own AIR class for CML loading by placing your class file
@@ -23,7 +23,7 @@ package com.gestureworks.cml.core
 	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CMLRegistry
 	 */	 
-	public class CMLRegistryAir{ }
+	public class CMLAir{ }
 
 	import com.gestureworks.cml.element.WAV; WAV;
 	import com.gestureworks.cml.components.WAVPlayer; WAVPlayer;
