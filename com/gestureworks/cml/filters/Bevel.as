@@ -30,7 +30,7 @@ package com.gestureworks.cml.filters
 	 * If, for example, you zoom in on a large movie clip with a filter applied, the filter is 
 	 * turned off if the resulting image exceeds the maximum dimensions.</p>
 	 */
-	public class BevelFilter
+	public class Bevel
 	{
 		/**
 		 * Initializes a new Bevel instance with the specified parameters.
@@ -56,7 +56,7 @@ package com.gestureworks.cml.filters
 		 * @param	knockout	Applies a knockout effect (true), which effectively 
 		 *   makes the object's fill transparent and reveals the background color of the document.
 		 */
-		public function BevelFilter (distance:Number = 4, angle:Number = 45, highlightColor:uint = 16777215, highlightAlpha:Number = 1, shadowColor:uint = 0, shadowAlpha:Number = 1, 
+		public function Bevel (distance:Number = 4, angle:Number = 45, highlightColor:uint = 16777215, highlightAlpha:Number = 1, shadowColor:uint = 0, shadowAlpha:Number = 1, 
 			blurX:Number = 4, blurY:Number = 4, strength:Number = 1, quality:int = 1, type:String = "inner", knockout:Boolean = false)
 		{
 			_distance = distance;

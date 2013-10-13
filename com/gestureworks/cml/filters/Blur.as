@@ -31,7 +31,7 @@ package com.gestureworks.cml.filters
 	 * If, for example, you zoom in on a large movie clip with a filter applied, the filter is 
 	 * turned off if the resulting image exceeds the maximum dimensions.</p>
 	 */
-	public class BlurFilter
+	public class Blur
 	{
 		/**
 		 * Initializes the filter with the specified parameters.
@@ -48,7 +48,7 @@ package com.gestureworks.cml.filters
 		 *   Although you can use additional numeric values up to 15 to achieve different effects, be aware
 		 *   that higher values are rendered more slowly.
 		 */
-		public function BlurFilter (blurX:Number = 4, blurY:Number = 4, quality:int = 1)
+		public function Blur (blurX:Number = 4, blurY:Number = 4, quality:int = 1)
 		{
 			_blurX = blurX;
 			_blurY = blurY;

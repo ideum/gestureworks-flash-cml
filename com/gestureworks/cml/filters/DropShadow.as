@@ -28,7 +28,7 @@ package com.gestureworks.cml.filters
 	 * turned off if the resulting image exceeds the maximum dimensions.</p>
 	 * 
 	 */
-	public class DropShadowFilter
+	public class DropShadow
 	{
 		/**
 		 * Creates a new DropShadow instance with the specified parameters.
@@ -54,7 +54,7 @@ package com.gestureworks.cml.filters
 		 * @param	hideObject	Indicates whether or not the object is hidden. A value of true 
 		 *   indicates that the object itself is not drawn; only the shadow is visible.
 		 */
-		public function DropShadowFilter (distance:Number = 4, angle:Number = 45, color:uint = 0, alpha:Number = 1, blurX:Number = 4, blurY:Number = 4, 
+		public function DropShadow (distance:Number = 4, angle:Number = 45, color:uint = 0, alpha:Number = 1, blurX:Number = 4, blurY:Number = 4, 
 			strength:Number = 1, quality:int = 1, inner:Boolean = false, knockout:Boolean = false, hideObject:Boolean = false)
 		{
 			super();

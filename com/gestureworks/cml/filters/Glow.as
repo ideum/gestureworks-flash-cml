@@ -30,7 +30,7 @@ package com.gestureworks.cml.filters
 	 * turned off if the resulting image exceeds the maximum dimensions.</p>
 	 * 
 	 */
-	public class GlowFilter
+	public class Glow
 	{
 		/**
 		 * Initializes a new Glow instance with the specified parameters.
@@ -55,7 +55,7 @@ package com.gestureworks.cml.filters
 		 * @param	knockout	Specifies whether the object has a knockout effect. The value true
 		 *   makes the object's fill transparent and reveals the background color of the document.
 		 */
-		public function GlowFilter(color:uint = 16711680, alpha:Number = 1, blurX:Number = 6, blurY:Number = 6, strength:Number = 2, quality:int = 1, inner:Boolean = false, knockout:Boolean = false)
+		public function Glow(color:uint = 16711680, alpha:Number = 1, blurX:Number = 6, blurY:Number = 6, strength:Number = 2, quality:int = 1, inner:Boolean = false, knockout:Boolean = false)
 		{		
 			_color = color;
 			_alpha = alpha;
