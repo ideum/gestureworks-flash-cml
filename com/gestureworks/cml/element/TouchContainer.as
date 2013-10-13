@@ -229,17 +229,7 @@ package com.gestureworks.cml.element
 		{
 			_paddingBottom = value;
 		}		
-		
-		private var _className:String;
-		/**
-		 * sets the class name of displayobject
-		 */
-		public function get className():String { return _className ; }
-		public function set className(value:String):void
-		{
-			_className = value;
-			_class_ = value;
-		}			
+				
 		
 		private var dropShadowfilter:DropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);		
 		private var _dropShadow:Boolean = false;
@@ -277,21 +267,20 @@ package com.gestureworks.cml.element
 		//  ICSS 
 		//////////////////////////////////////////////////////////////
 		
-		private var _class_:String;
+
+		private var _className:String;
 		/**
-		 * Object's css class; 
-		 */			
-		public function get class_():String {return _className;}
-		public function set class_(value:String):void 
-		{ 
-			_class_ = value; 
+		 * sets the class name of displayobject
+		 */
+		public function get className():String { return _className ; }
+		public function set className(value:String):void
+		{
 			_className = value;
 		}			
 		
 		
 		
-		
-		
+		//////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////
 		// ICONTAINER
 		//////////////////////////////////////////////////////////////						

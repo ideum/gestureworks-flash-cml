@@ -9,11 +9,11 @@ package com.gestureworks.cml.interfaces
 		/**
 		 * Returns the css class name.
 		 */
-		function get class_():String;
+		function get className():String;
 		
 		/**
 		 * Sets the css class name.
 		 */
-		function set class_(value:String):void;			
+		function set className(value:String):void;			
 	}
 }

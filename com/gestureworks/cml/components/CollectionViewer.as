@@ -336,7 +336,7 @@ package com.gestureworks.cml.components
 			var y:Number = placeHolder.y;
 			
 			var tapC:TouchContainer = new TouchContainer();
-			tapC.class_ = "tap_container";
+			tapC.className = "tap_container";
 			
 			if (top && topContainer)
 				topContainer.addChild(tapC);
