@@ -479,13 +479,7 @@ package com.gestureworks.cml.core
 				// assign class values
 				if (node.@['class'] != undefined)
 					obj.class_ = node.@['class'];
-					
-				
-
-				// unique object identifier
-				obj.cmlIndex = CMLObjectList.instance.length;	
-				
-				
+									
 				
 				// run object's parse routine	
 				returned = obj.parseCML(XMLList(node));
@@ -503,9 +497,6 @@ package com.gestureworks.cml.core
 				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
 
-				
-				// add to master object list
-				CMLObjectList.instance.append(obj.id, obj);	
 		
 					
 				if (parent is (IContainer))
@@ -829,6 +820,12 @@ package com.gestureworks.cml.core
 		 */
 		public static function parseCML(obj:*, cml:XMLList):XMLList
 		{
+			// unique object identifier
+			obj.cmlIndex = CMLObjectList.instance.length;	
+			
+			// add to master object list
+			CMLObjectList.instance.append(obj.id, obj);	
+			
 			var returnNode:XMLList = new XMLList;
 			
 			attrLoop(obj, cml);
