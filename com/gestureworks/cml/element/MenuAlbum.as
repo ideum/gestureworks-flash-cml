@@ -28,7 +28,6 @@ package  com.gestureworks.cml.element
 		private var dock:Dock;
 		private var inAlbumBounds:Boolean = true;
 		
-		private var selectedTexts:Array = [];
 		private var _selectedString:String = "ON STAGE";
 		
 		public function MenuAlbum() 
@@ -158,6 +157,7 @@ package  com.gestureworks.cml.element
 					continue;
 				
 				var selectedText:Text = new Text();
+				selectedText.id = "sText";
 				selectedText.autoSize = "left";
 				selectedText.text = _selectedString;
 				selectedText.color = 0xffffff;
@@ -167,7 +167,6 @@ package  com.gestureworks.cml.element
 				ts.addChild(selectedText);
 				selectedText.x = (ts.width / 2) - (selectedText.width / 2);
 				selectedText.y = (ts.height / 2) - (selectedText.height);
-				selectedTexts[i] = selectedText;
 			}
 		}
 		
@@ -191,7 +190,6 @@ package  com.gestureworks.cml.element
 				return;
 			}
 			
-			Text(selectedTexts[belt.getChildIndex(_selectedItem)]).visible = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));			
 		}
 		
@@ -201,8 +199,8 @@ package  com.gestureworks.cml.element
 				return;
 							
 			obj.alpha = selectedAlpha;
-			//selectedTexts[getChildIndex(obj)].visible = true;
-			selections.append(obj);			
+			selections.append(obj);		
+			obj.searchChildren("sText").visible = true;
 		}
 				
 		public function unSelect(obj:*):void
@@ -210,9 +208,9 @@ package  com.gestureworks.cml.element
 			var index:int = selections.search(obj);
 			
 			if (index >= 0) {
-				selections.getIndex(index).alpha = initialAlpha;
-				Text(selectedTexts[belt.getChildIndex(selections.getIndex(index))]).visible = false;
-				selections.remove(index);
+				obj.alpha = initialAlpha;
+				obj.searchChildren("sText").visible = false;
+				selections.remove(obj);
 			}
 		}
 		
@@ -269,7 +267,6 @@ package  com.gestureworks.cml.element
 			if (dragClone)
 			{
 				if (!inDockBounds(dragClone)) {
-					Text(selectedTexts[targetIndex]).visible = true;
 					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "droppedItem", e.target, true));			
 				}
 				

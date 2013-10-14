@@ -853,7 +853,6 @@ package com.gestureworks.cml.element
 			img.width = 0;
 			img.height = 140;
 			img.resample = true;
-			img.scale = 1;
 			img.resize();
 						
 			var title:Text;

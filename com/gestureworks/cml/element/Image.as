@@ -519,8 +519,8 @@ package com.gestureworks.cml.element
 		
 			
 			// very important to set width and height!
-			width = bitmap.width * scaleX;
-			height = bitmap.height * scaleY;
+			width = bitmap.width;
+			height = bitmap.height;
 			
 		}		
 		

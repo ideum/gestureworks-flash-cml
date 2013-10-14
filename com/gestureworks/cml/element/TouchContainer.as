@@ -591,12 +591,12 @@ package com.gestureworks.cml.element
 		private var _cloneExclusions:Vector.<String> = new <String>
 			["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
 			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-			"touchObjectID", "_touchObjectID", "_pointArray", "transformPoint"];
+		"touchObjectID", "_touchObjectID", "pointArray", "transformPoint", "transform"];
 		/**
 		 * Returns a list of properties to exclude when cloning this object
 		 */
 		public function get cloneExclusions():Vector.<String> { return _cloneExclusions; }
-				
+		
 		
 		/**
 		 * This method does a depth first search of childLists. Search parameter can be a simple CSS selector 
