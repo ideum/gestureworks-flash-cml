@@ -877,10 +877,8 @@ package com.gestureworks.cml.element
 		 */
 		protected function outOfBounds(e:*):void
 		{
-			if (e.type=="gwTouchRollOut" || e.type=="gwTouchEnd")			
+			if (e.type=="gwTouchRollOut" || e.type=="gwTouchEnd")	{		
 				removeEventListener(GWTouchEvent.TOUCH_ROLL_OUT, outOfBounds);
-			else
-			{	
 				var scrollType:Function = horizontal ? scrollH : scrollV;
 				belt.removeEventListener(GWGestureEvent.DRAG, scrollType);				
 			}			
