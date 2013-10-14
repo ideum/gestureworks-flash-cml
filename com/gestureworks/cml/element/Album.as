@@ -76,6 +76,7 @@ package com.gestureworks.cml.element
 		private var initLoopOrder:Array;	
 		private var _currentObject:*;
 		private var loopClones:Dictionary = new Dictionary();
+		private var tEnd:Boolean = false; //flag to differentiate between gwTouchEnd and gwTouchRollOut according to sequence
 				
 		/**
 		 * Constructor
@@ -877,11 +878,13 @@ package com.gestureworks.cml.element
 		 */
 		protected function outOfBounds(e:*):void
 		{
-			if (e.type=="gwTouchRollOut" || e.type=="gwTouchEnd")	{		
+			if (e.type == "gwTouchEnd")
+				tEnd = true;
+			if (!tEnd && e.type == "gwTouchRollOut")	{		
 				removeEventListener(GWTouchEvent.TOUCH_ROLL_OUT, outOfBounds);
 				var scrollType:Function = horizontal ? scrollH : scrollV;
 				belt.removeEventListener(GWGestureEvent.DRAG, scrollType);				
-			}			
+			}	
 		}
 		
 		/**
@@ -893,6 +896,7 @@ package com.gestureworks.cml.element
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);			
 			addEventListener(GWTouchEvent.TOUCH_ROLL_OUT, outOfBounds);
+			tEnd = false;
 		}
 		
 		/**
