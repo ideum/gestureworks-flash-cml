@@ -54,6 +54,7 @@ package com.gestureworks.cml.element
 			antiAliasType = AntiAliasType.ADVANCED;
 			blendMode = BlendMode.LAYER;
 			embedFonts = true;	
+			selectable = false;
 			updateTextFormat();
 		}
 		
