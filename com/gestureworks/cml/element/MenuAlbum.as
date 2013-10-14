@@ -9,7 +9,6 @@ package  com.gestureworks.cml.element
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.TouchEvent;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	/**
@@ -236,15 +235,22 @@ package  com.gestureworks.cml.element
 				dragClone = dragClones[e.target];
 			else
 			{
-				dragClone = e.target.clone();
+				var img:Image = e.target.searchChildren(Image);
+				dragClone = img.clone();
+				
+				//temporary kluge to resolve clone resizing issue
+				dragClone.bitmap.height = 750;
+				dragClone.width = 0;
+				dragClone.resize();
+				
 				if (collectionViewer)
 				{
-					var globalPoint:Point = dragClone.transform.pixelBounds.topLeft;	
-					collectionViewer.addChild(dragClone);
+					var globalPoint:Point = e.target.transform.pixelBounds.topLeft;	
 					dragClone.x = globalPoint.x;
 					dragClone.y = globalPoint.y;
 					DisplayUtils.rotateAroundCenter(dragClone, dock.rotation);
 					dragClone.alpha = .5;
+					collectionViewer.addChild(dragClone);					
 				}
 				dragClones[e.target] = dragClone;
 			}
