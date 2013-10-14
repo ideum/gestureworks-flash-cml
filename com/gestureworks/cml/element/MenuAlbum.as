@@ -209,7 +209,7 @@ package  com.gestureworks.cml.element
 			if (index >= 0) {
 				obj.alpha = initialAlpha;
 				obj.searchChildren("sText").visible = false;
-				selections.remove(obj);
+				selections.remove(index);
 			}
 		}
 		
