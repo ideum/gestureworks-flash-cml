@@ -51,9 +51,9 @@ package com.gestureworks.cml.utils
 			{
 				if (!this.getIndex(i)) continue; // Make sure index is defined; causing error when cloning the ScrollPane.
 				
-				if (this.getIndex(i).hasOwnProperty("class_"))
+				if (this.getIndex(i).hasOwnProperty("className"))
 				{
-					if (this.getIndex(i).class_ == value)
+					if (this.getIndex(i).className == value)
 						tmp.append(this.getIndex(i).id, this.getIndex(i));
 				}
 			}

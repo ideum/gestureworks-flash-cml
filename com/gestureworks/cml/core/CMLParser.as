@@ -928,8 +928,8 @@ package com.gestureworks.cml.core
 					objType = objType.replace("[object ", "");
 					objType = objType.replace("]", "");
 										
-					if (obj.class_)
-						trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", obj.cmlIndex, objType, obj.id, obj['class_'], propertyName, obj[propertyName]));
+					if (obj.className)
+						trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", obj.cmlIndex, objType, obj.id, obj['className'], propertyName, obj[propertyName]));
 					else
 						trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", obj.cmlIndex, objType, obj.id, "", propertyName, obj[propertyName]));
 				}	
@@ -1085,7 +1085,7 @@ package com.gestureworks.cml.core
 		{			
 			var cmlIndex:int;
 			var id:String;
-			var class_:String;
+			var className:String;
 			var object:*;
 			var childArray:Array = [];
 			var found:Boolean = true;
@@ -1096,7 +1096,7 @@ package com.gestureworks.cml.core
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) {	
 				cmlIndex = -1;
 				id = "";
-				class_ = "";
+				className = "";
 				object = null;
 				found = false;
 							
@@ -1104,8 +1104,8 @@ package com.gestureworks.cml.core
 					cmlIndex = CMLObjectList.instance.getIndex(i).cmlIndex;
 				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("id"))
 					id = CMLObjectList.instance.getIndex(i).id;
-				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("class_"))
-					class_ = CMLObjectList.instance.getIndex(i).class_;
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("className"))
+					className = CMLObjectList.instance.getIndex(i).className;
 				object = CMLObjectList.instance.getIndex(i);
 										
 				for (var j:int = 0; j < childArray.length; j++) {
@@ -1115,7 +1115,7 @@ package com.gestureworks.cml.core
 				
 				if (!found) {
 					trace();
-					trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + class_, " object:" + object);
+					trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + className, " object:" + object);
 				
 					if (CMLObjectList.instance.getIndex(i).hasOwnProperty("childList")) 
 						childLoop(CMLObjectList.instance.getIndex(i), 0);
@@ -1125,21 +1125,21 @@ package com.gestureworks.cml.core
 			function childLoop(obj:*, index:int):void {
 				var cmlIndex:int;
 				var id:String;
-				var class_:String;
+				var className:String;
 				var object:*;
 				
 				for (var i:int = 0; i < obj.childList.length; i++) {
 					cmlIndex = -1;
 					id = "";
-					class_ = "";
+					className = "";
 					object = null;					
 					
 					if (obj.childList.getIndex(i).hasOwnProperty("cmlIndex"))
 						cmlIndex = obj.childList.getIndex(i).cmlIndex;
 					if (obj.childList.getIndex(i).hasOwnProperty("id"))
 						id = obj.childList.getIndex(i).id;
-					if (obj.childList.getIndex(i).hasOwnProperty("class_"))
-						class_ = obj.childList.getIndex(i).class_;
+					if (obj.childList.getIndex(i).hasOwnProperty("className"))
+						className = obj.childList.getIndex(i).className;
 					object = obj.childList.getIndex(i);					
 					
 					childArray.push(cmlIndex);
@@ -1149,7 +1149,7 @@ package com.gestureworks.cml.core
 						str += "*";
 					}
 					
-					if (debug) trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", class_, " object:", object);					
+					if (debug) trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", className, " object:", object);					
 					
 					if (obj.childList.getIndex(i).hasOwnProperty("childList"))
 						childLoop(obj.childList.getIndex(i), index + 1); 										

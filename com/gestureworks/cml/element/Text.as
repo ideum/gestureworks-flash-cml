@@ -172,16 +172,6 @@ package com.gestureworks.cml.element
 		// ICSS
 		////////////////////////////////		
 		
-		private var _class_:String;
-			/**
-		 * Object's css class; 
-		 */		
-		public function get class_():String { return _class_; }
-		public function set class_(value:String):void 
-		{ 
-			_class_ = value; 
-		}	
-		
 		private var _className:String;
 		/**
 		 * sets the class name of displayobject
@@ -190,7 +180,6 @@ package com.gestureworks.cml.element
 		public function set className(value:String):void
 		{
 			_className = value;
-			_class_ = value;
 		}	
 		
 		
