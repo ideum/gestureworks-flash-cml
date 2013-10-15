@@ -272,7 +272,7 @@ package com.gestureworks.cml.element
 			thumbTouch = new TouchContainer();
 			thumbTouch.gestureEvents = true;
 			thumbTouch.gestureList = { "n-drag":true };
-			thumbTouch.disableNativeTransform = true;
+			thumbTouch.nativeTransform = false;
 			addChild(thumbTouch);
 			}
 			

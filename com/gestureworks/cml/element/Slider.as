@@ -282,8 +282,8 @@ package com.gestureworks.cml.element
 					
 					touchKnob = new TouchContainer;
 					touchKnob.mouseChildren = false;
-					touchKnob.disableAffineTransform = true;
-					touchKnob.disableNativeTransform = true;	
+					touchKnob.affineTransform = false;
+					touchKnob.nativeTransform = false;	
 					touchKnob.gestureEvents = true;
 					touchKnob.gestureList = { "n-drag-inertia": true };
 					touchKnob.gestureReleaseInertia = gestureReleaseInertia;

@@ -379,8 +379,8 @@ package com.gestureworks.cml.element
 			belt.width = width;
 
 			belt.gestureReleaseInertia = true;
-			belt.disableNativeTransform = true;
-			belt.disableAffineTransform = true;
+			belt.nativeTransform = false;
+			belt.affineTransform = false;
 			belt.mouseChildren = beltMouseChildren;
 			belt.clusterBubbling = clusterBubbling;
 			

@@ -115,7 +115,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void
 		{
-			disableNativeTransform = true;
+			nativeTransform = false;
 			CMLParser.instance.addEventListener(CMLParser.COMPLETE, cmlinit);
 			
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, onAttractTouch);

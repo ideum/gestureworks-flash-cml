@@ -492,8 +492,8 @@ package com.gestureworks.cml.element
 			else
 				handleGestureList = handleGestureList;  //reset incase handle was null when list was set
 				
-			handle.disableNativeTransform = true;
-			handle.disableAffineTransform = true;
+			handle.nativeTransform = false;
+			handle.affineTransform = false;
 			handle.width = handleWidth;
 			handle.height = handleHeight			
 			

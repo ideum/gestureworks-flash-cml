@@ -683,7 +683,7 @@ package com.gestureworks.cml.element
 			
 			
 			hitShape.gestureEvents = true;
-			hitShape.disableNativeTransform = true;			
+			hitShape.nativeTransform = false;			
 			hitShape.gestureList = {"n-drag-inertia": true, "n-tap": true};
 			hitShape.addEventListener(GWGestureEvent.DRAG, onDrag);
 			hitShape.addEventListener(GWGestureEvent.TAP, onTap);

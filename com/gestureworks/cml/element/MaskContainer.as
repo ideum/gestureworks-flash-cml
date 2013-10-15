@@ -66,7 +66,7 @@ package com.gestureworks.cml.element
 			super();
 			
 			graphicArray = new List();
-			disableNativeTransform = true;
+			nativeTransform = false;
 			nestedTransform = true;
 			gestureEvents = true;
 			//gestureList = { "n-double_tap":true, "n-drag":true, "n-rotate":true, "n-scale":true };

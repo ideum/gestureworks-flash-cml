@@ -14,8 +14,8 @@ package com.gestureworks.cml.components
 		{
 			super();
 			mouseChildren = true;
-			disableNativeTransform = false;
-			disableAffineTransform = false;	
+			nativeTransform = true;
+			affineTransform = true;	
 		}
 		
 		public function get painter():* { return _painter; }

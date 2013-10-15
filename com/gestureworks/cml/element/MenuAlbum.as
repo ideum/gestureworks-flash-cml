@@ -144,7 +144,7 @@ package  com.gestureworks.cml.element
 			{
 				var ts:TouchSprite = TouchSprite(belt.getChildAt(i));
 				ts.alpha = initialAlpha;
-				ts.disableNativeTransform = true;
+				ts.nativeTransform = false;
 				ts.gestureList = { "n-tap":true, "n-drag":true};
 				ts.addEventListener(GWGestureEvent.TAP, selection);	
 				ts.addEventListener(GWGestureEvent.DRAG, dragItem);

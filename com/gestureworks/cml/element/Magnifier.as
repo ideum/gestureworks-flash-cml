@@ -168,8 +168,8 @@ package com.gestureworks.cml.element
 		
 		override public function init():void {
 			mouseChildren = false;
-			disableNativeTransform = true;
-			disableAffineTransform = true;
+			nativeTransform = false;
+			affineTransform = false;
 			gestureEvents = true;
 			
 			readyBitmaps();

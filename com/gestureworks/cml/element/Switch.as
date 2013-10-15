@@ -404,8 +404,8 @@ package com.gestureworks.cml.element
 			touchSprite.gestureReleaseInertia = false;
 			touchSprite.gestureEvents = true;
 			touchSprite.mouseChildren = false;
-			touchSprite.disableNativeTransform = true;
-			touchSprite.disableAffineTransform = false;
+			touchSprite.nativeTransform = false;
+			touchSprite.affineTransform = true;
 			touchSprite.gestureList = {"n-drag": true, "n-tap": true};
 			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 			touchSprite.addEventListener(GWGestureEvent.RELEASE, onEnd);
@@ -414,8 +414,8 @@ package com.gestureworks.cml.element
 			touchSpriteBg.gestureReleaseInertia = false;
 			touchSpriteBg.gestureEvents = true;
 			touchSpriteBg.mouseChildren = false;
-			touchSpriteBg.disableNativeTransform = true;
-			touchSpriteBg.disableAffineTransform = false;
+			touchSpriteBg.nativeTransform = false;
+			touchSpriteBg.affineTransform = true;
 			touchSpriteBg.gestureList = {"n-tap": true};
 			touchSpriteBg.addEventListener(GWGestureEvent.TAP, onTap);
 					
