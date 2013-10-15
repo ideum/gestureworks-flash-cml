@@ -271,11 +271,8 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
-			album = null;	
-			
-			removeEventListener(StateEvent.CHANGE, albumComplete);
-			removeEventListener(GWGestureEvent.ROTATE, updateAngle);
-			removeEventListener(StateEvent.CHANGE, updateAlbums);				
+			_album = null;	
+			_pageButtons = null;
 		}
 		
 	}

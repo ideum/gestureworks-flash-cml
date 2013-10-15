@@ -93,6 +93,17 @@ package com.gestureworks.cml.element
 			layoutList = null;							
 			cmlGestureList = null;					
 			
+			if (childList)
+			{
+				for (var i:int = 0; i < childList.length; i++) 
+				{	
+					var child:Object = childList.getIndex(i);
+					if (child.hasOwnProperty("dispose"))
+						child["dispose"]();
+					childList.removeIndex(i);					
+				}
+			}
+				
 			CMLObjectList.instance.removeByValue(this);
 		}
 		

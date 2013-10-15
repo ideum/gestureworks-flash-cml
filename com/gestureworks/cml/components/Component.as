@@ -777,29 +777,17 @@ package com.gestureworks.cml.components
 		{
 			super.dispose();
 			textFields = null;
-			front = null;
-			back = null;
-			background = null;
-			menu = null;
-			frame = null;
+			_front = null;
+			_back = null;
+			_background = null;
+			_menu = null;
+			_frame = null;			
+			tween = null; 
 			
-			tween = null;
 			if (timer){
 				timer.stop();
 				timer = null;
 			}
-			
-			this.removeEventListener(StateEvent.CHANGE, onStateEvent);					
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);			
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
-			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);		
-			this.removeEventListener(TouchEvent.TOUCH_END, onUp);			
-			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);
-			this.removeEventListener(TuioTouchEvent.TOUCH_OUT, onUp);		
-			this.removeEventListener(TouchEvent.TOUCH_OUT, onUp);			
-			this.removeEventListener(MouseEvent.MOUSE_OUT, onUp);			
-			this.removeEventListener(GWGestureEvent.RELEASE, noActivity);
 		}
 	}
 

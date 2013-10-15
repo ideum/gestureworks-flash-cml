@@ -667,32 +667,13 @@ package com.gestureworks.cml.components
 			containerTags = null;
 			entry = null;
 			positions = null;
-			
-			if (topContainer){
-				topContainer.addEventListener(GWGestureEvent.TAP, tapLayout);
-				topContainer = null;
-			}
-			
-			if (bottomContainer) {
-				bottomContainer.addEventListener(GWGestureEvent.TAP, tapLayout);		
-				bottomContainer = null;
-			}
+			topContainer = null;
+			bottomContainer = null;
 			
 			if (timer){
 				timer.stop();
 				timer.removeEventListener(TimerEvent.TIMER, timerCheck);
 				timer = null;
-			}
-			
-			if (childList)
-			{
-				for (var i:int = 0; i < childList.length; i++) 
-				{	
-					childList.getIndex(i).removeEventListener(TuioTouchEvent.TOUCH_DOWN, updateLayout);
-					childList.getIndex(i).removeEventListener(TouchEvent.TOUCH_BEGIN, updateLayout);
-					childList.getIndex(i).removeEventListener(MouseEvent.MOUSE_DOWN, updateLayout);
-					childList.getIndex(i).removeEventListener(StateEvent.CHANGE, onStateEvent);
-				}
 			}
 		}		
 		
