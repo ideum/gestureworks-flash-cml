@@ -1157,8 +1157,13 @@ package com.gestureworks.cml.element
 			matrix = null;
 			textContainer = null;
 			touchSprite = null;
-		 	touchSprite.removeEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-			touchSprite.removeEventListener(GWGestureEvent.COMPLETE, onEnd);
+			filterMap = null;
+			gradientAlphaArray = null;
+			gradientColorArray = null;
+			gradientRatioArray = null;
+			
+			if (_filterDial) _filterDial.addEventListener(StateEvent.CHANGE, applyFilter);
+			_filterDial = null;
 		}
 		
 		public function clear():void {

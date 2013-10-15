@@ -464,10 +464,10 @@ package  com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
-			background = null;
+			background = null; 
 			keyText = null;
 			_icon = null;
-			dropshadow = null;
+			dropshadow = null; 
 		}
 	}
 

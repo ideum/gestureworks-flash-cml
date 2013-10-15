@@ -309,6 +309,9 @@ package  com.gestureworks.cml.element
 			dragClones = null;
 			collectionViewer = null;
 			dock = null;
+			_forwardButton = null;
+			_backButton = null;
+			selections = null;
 		}
 				
 	}

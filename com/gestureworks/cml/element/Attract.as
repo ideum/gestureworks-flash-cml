@@ -147,7 +147,12 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{	
 			super.dispose();
+			stage.removeEventListener(TouchEvent.TOUCH_MOVE, resetTimer);
 			stage.removeEventListener(Event.RESIZE, updateLayout);
+			if (timer) {
+				timer.stop();
+				timer = null;
+			}
 		}		
 		
 		private function cmlinit(e:Event):void {

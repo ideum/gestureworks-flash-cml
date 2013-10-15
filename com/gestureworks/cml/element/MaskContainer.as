@@ -318,17 +318,9 @@ package com.gestureworks.cml.element
 		 * Dispose method to nullify listeners
 		 */
 		override public function dispose():void {
-			super.dispose();
-			
-			_touchScreen.removeEventListener(GWGestureEvent.DOUBLE_TAP, cycleMasks);
-			_touchScreen.removeEventListener(GWGestureEvent.TILT, alphaHandler);
-			
-			graphicArray = null;
-			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
+			super.dispose();			
+			graphicArray = null;	
+			overallMask = null;
 			hitShape = null;
 			_mShape = null;
 			borderShape = null;

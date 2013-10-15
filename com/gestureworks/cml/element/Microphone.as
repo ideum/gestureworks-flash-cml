@@ -437,6 +437,8 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			mp = null;
+			names = null;
+			soundTransform = null;
 		}
 	}
 }

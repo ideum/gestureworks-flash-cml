@@ -74,6 +74,11 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			matrix = null;
+			lineGradientAlphaArray = null;
+			lineGradientColorArray = null;
+			lineGradientRatioArray = null;
+			pathCommandsVector = null;
+			pathCoordinatesVector = null;
 		}
 		
 		

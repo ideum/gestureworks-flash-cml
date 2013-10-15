@@ -808,8 +808,15 @@ package com.gestureworks.cml.element
 		override public function dispose():void 
 		{
 			super.dispose();
-			background = null;
-			tabs = null;			
+			background = null;  
+			tabs = null;	
+			contents = null;
+			_labelsArray = null;
+			cMask = null;
+			cTab = null;
+			twirlIcons = null;
+			snapHigh = null;
+			snapLow = null;
 		}		
 		
 		

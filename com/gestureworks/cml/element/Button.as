@@ -1353,42 +1353,27 @@ package com.gestureworks.cml.element
 		override public function dispose():void 
 		{
 			super.dispose();
-			buttonStates = null;
-			dispatchDict = null;
-			mouseDown = null;
-			mouseUp = null;
-			mouseOver = null;
-			mouseOut = null;
-			touchDown = null;
-			touchUp = null;
-			touchOver = null;
-			touchOut = null;
-			down = null;
-			up = null;
-			over = null;
-			out = null;
+			buttonStates = null; 
+			dispatchDict = null; 
+			_initial = null;
+			_tap = null;
+			_mouseDown = null;
+			_mouseUp = null;
+			_mouseOver = null;
+			_mouseOut = null;
+			_touchDown = null;
+			_touchUp = null;
+			_touchOver = null;
+			_touchOut = null;
+			_down = null;
+			_up = null;
+			_over = null;
+			_out = null;
+			_hit = null;
 			
-			if (hit)
-			{
-				listenMouseDown(false);
-				listenMouseUp(false);
-				listenMouseOver(false);
-				listenMouseOut(false);
-				listenTouchDown(false);
-				listenTouchUp(false);
-				listenTouchOver(false);
-				listenTouchOut(false);
-				listenDown(false);
-				listenUp(false);
-				listenOver(false);
-				listenOut(false);				
-				hit = null;
-			}
 			if (side) {
 				GestureWorks.application.removeEventListener(StateEvent.CHANGE, onFlip);
 			}
-			
-			listenToggle(false);
 		}
 		
 		

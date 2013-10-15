@@ -1088,21 +1088,17 @@ package com.gestureworks.cml.element
 		 */
 		override public function dispose():void 
 		{
-			super.dispose();
-			
-			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
-			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
-			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
-			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
-			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
-			belt.removeEventListener(GWTouchEvent.TOUCH_BEGIN, resetDrag);			
-			
+			super.dispose();							
 			_belt = null;
 			_loopQueue = null;
 			snapPoints = null;
 			albumMask = null;
 			snapTween = null;
 			loopSnapTween = null;
+			frame = null;
+			initLoopOrder = null;
+			_currentObject = null;
+			loopClones = null;
 		}
 				
 	}

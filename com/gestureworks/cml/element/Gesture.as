@@ -35,13 +35,5 @@ package com.gestureworks.cml.element
 		{
 			return new XMLList;
 		}
-		
-		/**
-		 * Dispose method
-		 */
-		override public function dispose():void
-		{
-			super.dispose();
-		}
 	}
 }

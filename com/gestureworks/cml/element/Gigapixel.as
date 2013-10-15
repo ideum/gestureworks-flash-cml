@@ -283,22 +283,12 @@
 		 */
 		override public function dispose():void
 		{
-			scaleConstraint = null;
-			
-			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-			
-			while (this.numChildren > 0){
-				this.removeChildAt(0);
-			}
-			
-			if (image)
-			{
-				image.removeEventListener(Event.COMPLETE, image_completeHandler);
-				//image.dispose();
-				image = null;
-			}	
-			
 			super.dispose();
+			sceneNavigator = null;
+			scaleConstraint = null;
+			_hotspots = null;
+			scaleConstraint = null;
+			image = null;						
 		}
 	}
 }

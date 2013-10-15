@@ -932,43 +932,27 @@ package com.gestureworks.cml.element
 				removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
 		}
 		
-		override public function dispose():void {
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
-			if (tweening) {
-				TweenMax.killAll();
-			}
-			
-			pageContent = [];
-			pageCorners = [];
-			shadows = [];
-			
-			removeEventListener(TouchEvent.TOUCH_BEGIN, onBegin);
-			removeEventListener(GWGestureEvent.DRAG, onPointMove);
-			removeEventListener(GWGestureEvent.RELEASE, onTouchEnd);
-			
-			removeEventListener(GWGestureEvent.SCALE, onRegularScale);
-			removeEventListener(GWGestureEvent.DRAG, onRegularDrag);
-			removeEventListener(GWGestureEvent.ROTATE, onRegularRotate);
-			removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
-			
-			shape.graphics.clear();
+		override public function dispose():void {									
+			super.dispose();
+			R_UPPERCORNER = null;
+			R_LOWERCORNER = null;
+			R_MIDDLE = null;
+			L_UPPERCORNER = null;
+			L_LOWERCORNER = null;
+			L_MIDDLE = null;			
+			currentCorner = null;
+			trackPoint = null;
+			pageContent = null;
+			shadows = null;
+			pageCorners = null;
 			shape = null;
-			shadow.graphics.clear();
 			shadow = null;
-			shadow2.graphics.clear();
-			shadow2 = null;
-			
+			shadow2 = null;			
 			bmpD1.dispose();
 			bmpD2.dispose();
 			bmpD1 = null;
-			bmpD2 = null;
-			
+			bmpD2 = null;			
 			obj = null;
-			
-			super.dispose();
 		}
 	}
 }

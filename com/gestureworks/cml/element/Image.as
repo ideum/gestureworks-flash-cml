@@ -58,8 +58,10 @@ package com.gestureworks.cml.element
 	    override public function dispose():void
 		{
 			super.dispose();
-			fileData = null;
-			sizeArray = null;
+			fileData = null; 
+			_sizeArray = null;
+			_bitmapArray = null;
+			_bitmapDataArray = null; 
 				
    			if (img) {
 				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
@@ -67,8 +69,8 @@ package com.gestureworks.cml.element
 				img = null;
 			}
 			
-			bitmap = null;
-			bitmapData = null;
+			_bitmap = null;
+			_bitmapData = null;
 		}
 		
 		/**

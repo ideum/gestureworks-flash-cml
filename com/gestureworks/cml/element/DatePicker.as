@@ -78,8 +78,6 @@ package com.gestureworks.cml.element
 			nextArrow = null;
 			calendar = null;
 			bkg = null;
-			
-		
 		} 
 		 
 		

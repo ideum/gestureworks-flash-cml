@@ -142,20 +142,11 @@ package com.gestureworks.cml.element
 		override public function dispose():void {
 			super.dispose();
 			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
 			if (timer) {
-				timer.stop();
-				timer = null;
-				
+				timer.stop();				
 				timer.removeEventListener(TimerEvent.TIMER, onTimer);
+				timer = null;
 			}
-			
-			removeEventListener(GWGestureEvent.ROTATE, rotateFilter);
-			removeEventListener(GWGestureEvent.DRAG, dragHandler);
-			removeEventListener(GWGestureEvent.SCALE, scaleHandler);
 			
 			mSprite = null;
 			shaderFilter = null;
@@ -163,7 +154,8 @@ package com.gestureworks.cml.element
 			canvasContainer = null;
 			canvas = null;
 			bitmapData = null;
-			
+			_border = null;
+			mBorder = null;			
 		}
 		
 		override public function init():void {

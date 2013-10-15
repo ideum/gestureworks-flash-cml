@@ -910,18 +910,22 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();
 			
-			label = null;
-			background = null;
-			contentHolder = null;
-			contentMask = null;
-
-			handle.removeEventListener(GWGestureEvent.TAP, open);
-			handle.removeEventListener(GWGestureEvent.TAP, close);			
-			handle.removeEventListener(GWGestureEvent.DRAG, open);
-			handle.removeEventListener(GWGestureEvent.DRAG, close);			
-			handle.removeEventListener(GWGestureEvent.FLICK, open);
-			handle.removeEventListener(GWGestureEvent.FLICK, close);
-			handle = null;			
+			_label = null;
+			_background = null; 
+			contentHolder = null; 
+			contentMask = null; 
+			_handle = null;
+			_leftHandle = null;
+			_rightHandle = null;
+			_handleGestureList = null;
+			upDestination = null; 
+			downDestination = null;
+			
+			if (timer) { 
+				timer.removeEventListener(TimerEvent.TIMER, thresholdCheck);
+				timer.stop();
+				timer = null;
+			}
 		}
 	}
 

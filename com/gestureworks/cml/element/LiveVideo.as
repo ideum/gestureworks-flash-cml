@@ -216,12 +216,18 @@ package com.gestureworks.cml.element
 	{
 		netConnection = null;
 		netstream = null;
-		mic = null;
-		cam = null;
-		camera = null;
+		_camera = null;
+		_microphone = null;
 		video = null;
-		cam.removeEventListener(StatusEvent.STATUS, statusHandler);
-		mic.removeEventListener(ActivityEvent.ACTIVITY , testMic);
+		
+		if(cam){
+			cam.removeEventListener(StatusEvent.STATUS, statusHandler);
+			cam = null;
+		}
+		if(mic){
+			mic.removeEventListener(ActivityEvent.ACTIVITY , testMic);
+			mic = null;
+		}
 	}
 }
 }

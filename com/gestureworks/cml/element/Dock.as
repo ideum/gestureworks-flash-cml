@@ -167,8 +167,6 @@ package com.gestureworks.cml.element
 			addEventListener(StateEvent.CHANGE, dragSelection);
 			addEventListener(StateEvent.CHANGE, dropSelection);
 			
-			CMLParser.addEventListener(CMLParser.COMPLETE, cmlInit);
-			
 			for (var j:int = 0; j < dials.length; j++) {
 				dials[j].addEventListener(StateEvent.CHANGE, onDialChange);
 				searchTerms[j] = "";
@@ -1336,7 +1334,7 @@ package com.gestureworks.cml.element
 		{
 			super.dispose();	
 			searchTerms = null;
-			returnFields = null;
+			_returnFields = null;
 			_searchFieldsArray = null;
 			result = null;
 			loadText = null;
@@ -1354,18 +1352,26 @@ package com.gestureworks.cml.element
 			dial3Filters = null;
 			progress = null;
 			nextArrow = null;
-			previousArrow = null;
+			previousArrow = null;			
+			srcMap = null;
+			dial2Filters = null;
+			dial3Filters = null;
+			resultsDict = null;
+			previews = null;
+			locked = null;
 			
-			removeEventListener(StateEvent.CHANGE, selection);
-			removeEventListener(StateEvent.CHANGE, dragSelection);
-			removeEventListener(StateEvent.CHANGE, dropSelection);
+			if (serverTimer) { 
+				serverTimer.removeEventListener(TimerEvent.TIMER, serverTimeExpired);
+				serverTimer.stop();
+				serverTimer = null;
+			}
 			
-			if (flickrQuery)
-			{
+			if (flickrQuery) {
 				flickrQuery.removeEventListener(StateEvent.CHANGE, onQueryLoad);
+				flickrQuery.removeEventListener(StateEvent.CHANGE, flickrSetup);
 				flickrQuery = null;
+			}
 		}
-	}
 	}
 
 }

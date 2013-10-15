@@ -261,26 +261,21 @@ package com.gestureworks.cml.element
 		 */				
 		override public function dispose():void
 		{
-			super.dispose();
-			
-			while (numChildren > 0) {
-				removeChildAt(0);
-			}
-			
-			if (bgGraphic)
-				bgGraphic = null;
-						
+			super.dispose();			
+			bgGraphic = null;						
 			if (timer) {
 				timer.stop();
 				timer.removeEventListener(TimerEvent.TIMER, updateDisplay);
 				timer = null;
+			}			
+			if (_mp3) {
+				_mp3.addEventListener(Event.ID3, id3Handler);
+				_mp3.addEventListener(StateEvent.CHANGE, playbackHandler);				
+				_mp3 = null;
 			}
-			
-			if (_id3) {
-				_mp3.removeEventListener(Event.ID3, id3Handler);
-				_id3 = null;
-			}
-			if (bytes) bytes = null;
+			_id3 = null;
+			bytes = null;
+			waveForm = null;
 		}
 		
 		/**

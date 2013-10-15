@@ -234,14 +234,10 @@ package  com.gestureworks.cml.element
 		 */
 		override public function dispose():void {
 			super.dispose();
-			
+			resultPhotos = null;
+			checkTags = null;
 			service.removeEventListener(FlickrResultEvent.PHOTOS_SEARCH, onSearchComplete);
-			service = null;
-			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
+			service = null;			
 			_data = null;
 		}
 	}

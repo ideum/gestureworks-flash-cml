@@ -271,18 +271,11 @@ package com.gestureworks.cml.element
 		
 		override public function dispose():void {
 			super.dispose();
-			
-			removeEventListener(StateEvent.CHANGE, onHotspot);
-			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-			
-			if (_component)
-				_component.removeEventListener(StateEvent.CHANGE, onComponentState);
-			
-			while (numChildren > 0) {
-				removeChildAt(0);
+			tetherSprite = null;
+			if (_component){
+				_component.removeEventListener(StateEvent.CHANGE, onComponentState);						
+				_component = null;
 			}
-			
-			component = null;
 		}
 	}
 

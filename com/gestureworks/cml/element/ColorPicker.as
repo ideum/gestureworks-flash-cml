@@ -235,11 +235,6 @@ package com.gestureworks.cml.element
 		   colorSelector = null;
 		   colorRec = null;
 		   containerRec = null;
-			
-		  	hueBar.removeEventListener(GWGestureEvent.DRAG, hueBarHandler);
-			hueBar.removeEventListener(TouchEvent.TOUCH_BEGIN, hueBarHandler); 
-			colorRec.removeEventListener(GWGestureEvent.DRAG, colorSelectionHandler);
-			colorRec.removeEventListener(TouchEvent.TOUCH_BEGIN, colorSelectionHandler); 
 		}	
 		   
 		

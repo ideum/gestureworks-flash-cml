@@ -41,10 +41,8 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
-			buttonArray = null;
-			
-			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onClick);
-			
+			buttonArray = null;		
+			slider = null;
 			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);
 		}
 		

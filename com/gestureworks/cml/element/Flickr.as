@@ -145,10 +145,6 @@ package  com.gestureworks.cml.element
 			service.removeEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
 			service.removeEventListener(IOErrorEvent.IO_ERROR, errorEvent);
 			service = null;
-			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
 		}
 	}
 

@@ -394,20 +394,6 @@ package com.gestureworks.cml.element
 		 */
 		override public function dispose():void {
 			super.dispose();
-			
-			if (GestureWorks.activeNativeTouch)
-				_hit.removeEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
-			else if (GestureWorks.activeTUIO)
-				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
-			else
-				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
-				
-			if (GestureWorks.activeNativeTouch)
-					_menuTitle.removeEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-				else if (GestureWorks.activeTUIO)
-					_menuTitle.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-				else
-					_menuTitle.removeEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
 					
 			for (var i:Number = 0; i < _menuItemsArray.length; i++) {
 				if (GestureWorks.activeNativeTouch){
@@ -427,9 +413,12 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			while (this.numChildren > 0) {
-				this.removeChildAt(0);
-			}
+			_itemBackgrounds = null;
+			_menuTitle = null;
+			_menuItemsArray = null;
+			menuItemsArray = null;
+			_hit = null;
+			triangle = null;
 		}
 	}
 	

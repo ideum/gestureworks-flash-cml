@@ -122,6 +122,8 @@ package com.gestureworks.cml.element
 			videoTypes = null;
 			mp3Types = null;
 			currentFile = null;
+			playButton = null;
+			_current = null;
 						
 			for each (var i:Object in dictionary)
             {
@@ -133,6 +135,7 @@ package com.gestureworks.cml.element
 				dictionary[i] = null;
 				delete dictionary[i];
 			}
+			dictionary = null;
 		}
 		
 		private var _width:Number=0;

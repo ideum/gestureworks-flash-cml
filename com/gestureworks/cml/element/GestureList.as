@@ -72,7 +72,7 @@ package com.gestureworks.cml.element
 		override public function dispose():void
 		{
 			super.dispose();
-			gestureList = null;
+			_gestureList = null;
 		}
 	}
 }

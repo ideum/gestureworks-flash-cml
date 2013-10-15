@@ -215,17 +215,15 @@ package com.gestureworks.cml.element
 		 * Dispose method
 		 */
 		override public function dispose():void {
-			super.dispose();
-			
-			this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-			map.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-			map.addEventListener(StateEvent.CHANGE, onZoom);			
-			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
+			super.dispose();	
+			if(parent)
+				parent.removeEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);					
 			map = null;
+			p1 = p2 = p3 = p4 = p5 = p6 = p7 = p8 = null;
+			providers = null;
+			lastLoc = null;
+			mapMarkers = null;
+			_mapProvider = null;
 		}
 	}
 
