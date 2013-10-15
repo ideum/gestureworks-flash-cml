@@ -1,4 +1,4 @@
-﻿package com.gestureworks.cml.elements
+﻿package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import flash.events.*;

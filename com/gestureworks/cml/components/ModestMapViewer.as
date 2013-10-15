@@ -124,11 +124,7 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
-			if (map)
-			{
-				map.removeEventListener(StateEvent.CHANGE, onStateEvent);
-				map = null;
-			}				
+			_map = null;		
 		}
 		
 	}

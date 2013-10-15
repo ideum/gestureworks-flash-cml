@@ -115,7 +115,7 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
-			wav = null;
+			_wav = null; 
 		}
 		
 	}

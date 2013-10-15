@@ -783,6 +783,7 @@ package com.gestureworks.cml.components
 			_menu = null;
 			_frame = null;			
 			tween = null; 
+			fontArray = null;
 			
 			if (timer){
 				timer.stop();

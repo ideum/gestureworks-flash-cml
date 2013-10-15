@@ -56,6 +56,8 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
+			_painter = null;
+			colorPicker = null;
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void {

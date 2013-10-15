@@ -159,7 +159,8 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
-			video = null;
+			_video = null;
+			_slider = null;
 		}
 	}
 }

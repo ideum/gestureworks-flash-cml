@@ -123,10 +123,7 @@
 		override public function dispose():void
 		{
 			super.dispose();
-			maskCon = null;
-			
-			removeEventListener(GWGestureEvent.ROTATE, onRotate);
-			removeEventListener(GWGestureEvent.MANIPULATE, onRotate);
+			_maskCon = null;
 		}
 	}
 }

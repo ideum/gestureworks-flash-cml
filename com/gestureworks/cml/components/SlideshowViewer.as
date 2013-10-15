@@ -215,8 +215,8 @@ package  com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
-			slideshow = null;
-			//slideshows = null;
+			_slideshow = null; 
+			_pageButtons = null;
 		}
 	}
 

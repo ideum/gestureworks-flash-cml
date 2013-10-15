@@ -144,11 +144,9 @@
 		{
 			super.dispose();
 			info = null;
-			if (gigapixel)
-			{
-				gigapixel.removeEventListener(StateEvent.CHANGE, onStateEvent);
-				gigapixel = null;
-			}		
+			_gigapixel = null;
+			sceneNavigator = null;
+			scaleConstraint = null;
 		}
 	}
 }

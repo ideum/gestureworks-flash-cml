@@ -68,8 +68,7 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
-			flipBook.removeEventListener(StateEvent.CHANGE, uselessComplete);
-			//flipBook = null;
+			_flipBook = null;
 		}
 		
 	}

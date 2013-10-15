@@ -111,7 +111,8 @@
 		 */
 		override public function dispose():void 
 		{
-			super.dispose();								
+			super.dispose();	
+			_media = null;
 		}
 		
 	}

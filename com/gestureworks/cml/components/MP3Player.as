@@ -137,8 +137,8 @@ package com.gestureworks.cml.components
 		 */
 		override public function dispose():void 
 		{
-			super.dispose();
-			mp3 = null;					
+			super.dispose();	
+			_mp3 = null;
 		}
 		
 	}
