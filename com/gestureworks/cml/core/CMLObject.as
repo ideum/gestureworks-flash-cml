@@ -24,7 +24,7 @@ package com.gestureworks.cml.core
 		}	
 		
 		/**	
-		 * Dispose method
+		 * Destructor
 		 */
 		public function dispose():void 
 		{ 			

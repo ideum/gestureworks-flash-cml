@@ -932,6 +932,9 @@ package com.gestureworks.cml.element
 				removeEventListener(GWGestureEvent.COMPLETE, onRegularComplete);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void {									
 			super.dispose();
 			R_UPPERCORNER = null;

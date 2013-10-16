@@ -859,17 +859,20 @@ package com.gestureworks.cml.element
 		
 		
 		/**
-		 * Dispose methods and nullify attributes
+		 * @inheritDoc
 		 */
 		override public function dispose():void {
-			super.dispose();
-			
-			_averageGain = [];
+			super.dispose();			
 			_averageGain = null;
 			_xmp = null;
 			_file = null;
 			_stream = null;
 			_invalidError = null;
+			waveForm = null;
+			soundTrans = null;
+			urlLoader = null;
+			bgGraphic = null;
+			bytes = null;
 			
 			if (timer) {
 				timer.stop();
@@ -882,21 +885,10 @@ package com.gestureworks.cml.element
 				channel.stop();
 				channel = null;
 			}
-			if (soundTrans) {
-				soundTrans = null;
-			}
 			
 			if (waveSound) {
 				waveSound.removeEventListener(SampleDataEvent.SAMPLE_DATA, readAudioData);
 				waveSound = null;
-			}
-			
-			while (this.numChildren > 0) {
-				this.removeChildAt(0);
-			}
-			
-			if (_display == "waveform") {
-				waveForm = null;
 			}
 		}
 	}

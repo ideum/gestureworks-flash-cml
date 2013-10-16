@@ -269,6 +269,9 @@ package com.gestureworks.cml.element
 			
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void {
 			super.dispose();
 			tetherSprite = null;

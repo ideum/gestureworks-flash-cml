@@ -431,14 +431,16 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Destructor
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{
 			super.dispose();
 			displayBkg = null;
 			tabGE = null;
-			text = null;			
+			text = null;
+			contentContainer = null;
+			contentMask = null;
 		}
 						
 	}

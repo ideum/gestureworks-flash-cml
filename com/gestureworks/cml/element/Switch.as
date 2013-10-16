@@ -481,17 +481,14 @@ package com.gestureworks.cml.element
 		
 	
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
-				super.dispose();
-				background = null;
-                button = null;
-				touchSprite.removeEventListener(GWGestureEvent.DRAG, gestureDragHandler);
-		        this.removeEventListener(TuioTouchEvent.TOUCH_UP, onEnd);
-                this.removeEventListener(TouchEvent.TOUCH_END, onEnd);
-	            this.removeEventListener(MouseEvent.MOUSE_UP, onEnd);
+			super.dispose();
+			background = null;
+			button = null;
+			touchSprite = null;
 		}
 	}
 }

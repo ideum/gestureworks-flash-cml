@@ -218,7 +218,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Dispose method to nullify the attributes and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{

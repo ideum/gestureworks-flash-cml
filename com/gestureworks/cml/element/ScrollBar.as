@@ -842,32 +842,17 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
-			super.dispose();
-			
-			if (touchBtn1)
-				touchBtn1.removeEventListener(GWGestureEvent.TAP, onTap1);
-			if (touchBtn2)
-				touchBtn2.removeEventListener(GWGestureEvent.TAP, onTap2);
-			
-			thumbTouch.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
+			super.dispose();		
 			touchBtn1 = null;
-			scrollBtn1 = null;
-			
+			scrollBtn1 = null;			
 			touchBtn2 = null;
-			scrollBtn2 = null;
-			
+			scrollBtn2 = null;			
 			thumbTouch = null;
-			thumb = null;
-			
+			thumb = null;			
 			railTouch = null;
 			railGraphic = null;
 		}

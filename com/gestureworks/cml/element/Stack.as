@@ -135,20 +135,11 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
 			super.dispose();
-			this.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onToggle);
-			this.removeEventListener(GWTouchEvent.TOUCH_END, onToggle);
-			
-			this.removeEventListener(MouseEvent.MOUSE_OVER, onToggle);	
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onToggle);
-			this.removeEventListener(MouseEvent.MOUSE_UP, onToggle);	
-
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onToggle);
-			this.removeEventListener(TouchEvent.TOUCH_END, onToggle);
 		}
 	}
 }

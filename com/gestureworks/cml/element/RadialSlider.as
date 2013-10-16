@@ -565,19 +565,22 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods and remove listeners
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
 			super.dispose();
 			touchKnob = null;
-			hit = null;
 			rail = null;
 			knob = null;
-			touchKnob.removeEventListener(GWGestureEvent.COMPLETE, onComplete);
-			touchKnob.removeEventListener(GWTouchEvent.TOUCH_END, onComplete);
-			hit.removeEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
-			hit.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onDownHit);
+			stepknobAngles = null;
+			stepknobPositions = null;
+			oldPoint = null;
+			if(_hit){
+				_hit.removeEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+				_hit.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onDownHit);
+				_hit = null;
+			}
 		}
 		
 	}

@@ -554,7 +554,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose method to nullify the attribute
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{

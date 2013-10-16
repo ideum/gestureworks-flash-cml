@@ -53,7 +53,7 @@ package com.gestureworks.cml.element
 		}	
 		
 		/**
-		 * Dispose methods and remove listener
+		 * @inheritDoc
 		 */
 	    override public function dispose():void
 		{

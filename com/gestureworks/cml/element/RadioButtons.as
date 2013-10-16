@@ -722,7 +722,7 @@
 		}
 		
 		/**
-		 * Dispose methods and remove listeners
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
@@ -730,6 +730,10 @@
 			 selected = null;
 			_textElements = null;
 			_radioButtons = null;
+			_labels = null;
+			_graphicsArray = null;
+			labelList = null;
+			downStates = null;
 			removeEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
 			
 		}

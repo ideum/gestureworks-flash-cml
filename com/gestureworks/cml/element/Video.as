@@ -612,7 +612,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods and remove listeners
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
@@ -640,13 +640,9 @@ package com.gestureworks.cml.element
 			
 			video = null;
 			videoObject = null;
-			customClient = null;
-			
-			if (playButton) {
-				playButton.removeAllListeners();
-				playButton.dispose();
-				playButton = null;
-			}
+			customClient = null;			
+			playButton = null;
+			_progressBar = null;
 			
 		}
 

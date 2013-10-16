@@ -302,6 +302,9 @@ package  com.gestureworks.cml.element
 			inAlbumBounds = true;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

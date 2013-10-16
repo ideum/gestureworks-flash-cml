@@ -36,6 +36,15 @@ package com.gestureworks.cml.element
 			_svg.load(file);
 			addChild(_svg);
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			_svg = null;
+			_stage = null;
+		}
 	}
 	
 }

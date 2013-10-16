@@ -279,7 +279,7 @@
 		}
 		
 		/**
-		 * Dispose method and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{

@@ -529,7 +529,7 @@ package com.gestureworks.cml.element
 			}
 		}
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
@@ -538,7 +538,6 @@ package com.gestureworks.cml.element
 			_background = null;
 			keys = null;
 			currentTF = null;
-			removeEventListener(KeyboardEvent.KEY_DOWN, keyHandler);
 		}
 	}
 

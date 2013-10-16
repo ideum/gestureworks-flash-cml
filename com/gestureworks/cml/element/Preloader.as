@@ -107,11 +107,15 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{	
 			super.dispose();
+			_currentNumberDisplay = null;
+			_fileNumberTotal = null;
+			_percentageDisplay = null;
+			FileManager.removeEventListener(FileEvent.FILE_LOADED, onFileLoaded);
 		}		
 	}
 }

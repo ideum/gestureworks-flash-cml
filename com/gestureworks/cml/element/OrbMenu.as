@@ -808,12 +808,11 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods to nullify attributes and remove listeners
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
 			tweener = null;
-			timer = null;
 			matrix = null;
 			dropshadow = null;
 			filtersArray = null;
@@ -822,9 +821,14 @@ package com.gestureworks.cml.element
 			background = null;
 			shape2 = null;
 			shape1 = null;
-			shape1.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			shape1.removeEventListener(GWGestureEvent.TAP, onTap);
-			timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
+			gradientColorArray = null;
+			gradientAlphaArray = null;
+			gradientRatioArray = null;
+			
+			if(timer){
+				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerListener);
+				timer = null;
+			}
 		}
 	}
 }

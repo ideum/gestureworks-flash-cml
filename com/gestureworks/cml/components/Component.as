@@ -773,6 +773,9 @@ package com.gestureworks.cml.components
 			displayObject.transform.matrix = concatenatedChildMatrix;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

@@ -282,15 +282,23 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
 			super.dispose();
 			textFormat = null;
             configuration = null;
-            textFlow = null;
             container = null;
+			inputVal = null;
+			editManager = null;
+			selectionManager = null;
+			range = null;
+			
+			if (textFlow) {
+				textFlow.removeEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
+				textFlow = null;
+			}
 		}
 		
 	}

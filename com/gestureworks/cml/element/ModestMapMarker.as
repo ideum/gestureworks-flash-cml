@@ -39,7 +39,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void {
 			super.dispose();

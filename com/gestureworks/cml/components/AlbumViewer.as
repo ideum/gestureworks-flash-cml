@@ -266,7 +266,7 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Dispose method
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{

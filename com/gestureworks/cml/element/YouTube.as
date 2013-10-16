@@ -220,28 +220,25 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose
+		 * @inheritDoc
 		 */
 		override public function dispose():void {
 			super.dispose();
-			
-			while (this.numChildren > 0) {
-				removeChildAt(0);
-			}
-			
-			player.destroy();
 			player = null;
 			
-			loader.content.removeEventListener("onError", onPlayerError);
-			loader.unload();
-			loader = null;
-			
-			_loaded = false;
-			
-			timer.stop();
-			timer.reset();
-			timer.removeEventListener(TimerEvent.TIMER, onTimer);
-			timer = null;
+			if(loader){
+				loader.contentLoaderInfo.removeEventListener(Event.INIT, onLoaderInit);
+				loader.content.removeEventListener("onReady", onPlayerReady);
+				loader.content.removeEventListener("onError", onPlayerError);
+				loader.unload();
+				loader = null;
+			}
+		
+			if(timer){
+				timer.stop();
+				timer.removeEventListener(TimerEvent.TIMER, onTimer);
+				timer = null;
+			}
 		}
 	}
 

@@ -53,6 +53,9 @@ package com.gestureworks.cml.components
 			super.updateLayout();				
 		}	
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();

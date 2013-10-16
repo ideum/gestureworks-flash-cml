@@ -103,9 +103,13 @@ package com.gestureworks.cml.element
 				super.play();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void {
 			super.dispose();
 			target = null;
+			_triggerArray = null;
 		}
 	}
 

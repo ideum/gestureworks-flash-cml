@@ -137,7 +137,7 @@ package  com.gestureworks.cml.element
 					
 		
 		/*
-		 * Dispose method to nullify the children and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void {
 			super.dispose();

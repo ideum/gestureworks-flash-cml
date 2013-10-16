@@ -280,7 +280,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Destructor
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{

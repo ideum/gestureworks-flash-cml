@@ -387,5 +387,26 @@ package com.gestureworks.cml.element
 			fileR.addEventListener(Event.COMPLETE, svgLoaded);
 			fileR.browse([new FileFilter("SVG", "*.svg")]);
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			points = null;
+			lines = null;
+			lineThickness = null;
+			lineColor = null;
+			history = null;
+			image = null;
+			
+			if (fileR) {
+				fileR.removeEventListener(Event.SELECT, svgSelected);
+				fileR.removeEventListener(Event.COMPLETE, svgLoaded);	
+				fileR = null;
+			}
+			
+			stage.removeEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
+		}
 	}
 }

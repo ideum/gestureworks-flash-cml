@@ -364,24 +364,17 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose method to remove children
+		 * @inheritDoc
 		 */
 		override public function dispose():void {
-			super.dispose();
-			
-			timer.removeEventListener(TimerEvent.TIMER, onTimer);
-			if (_autoplay)
+			super.dispose();			
+			if(timer){
+				timer.removeEventListener(TimerEvent.TIMER, onTimer);
 				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
-			timer.stop();
-			timer = null;
-			tween = null;
-			
-			for each (var item:DisplayObject in slideshowItems.toArray()) {
-				if (contains(item)) {
-					removeChild(item);
-				}
+				timer.stop();
+				timer = null;
 			}
-			
+			tween = null;
 			slideshowItems = null;
 		}
 		

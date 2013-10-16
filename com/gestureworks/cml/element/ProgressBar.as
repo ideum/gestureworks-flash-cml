@@ -90,18 +90,22 @@ package com.gestureworks.cml.element
 			if (!source) return;
 			
 			if (source is Video)
-			{
-				source.addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
-					if (e.property == "position")
-					{
-						max = e.target.duration;						
-						if (max > 0) 
-							input(e.value);
-					}
-				});
-			}
+				source.addEventListener(StateEvent.CHANGE, videoProgress);
 			
 			//TODO: register loader source
+		}
+		
+		/**
+		 * Update bar relative to video position
+		 * @param	e
+		 */
+		private function videoProgress(e:StateEvent):void {
+			if (e.property == "position")
+			{
+				max = e.target.duration;						
+				if (max > 0) 
+					input(e.value);
+			}			
 		}
 		
 		/**
@@ -209,6 +213,18 @@ package com.gestureworks.cml.element
 				source.seek((bar.width / width) * 100);
 				if(source.isPlaying)
 					source.resume();
+			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			_bar = null;
+			if (_source) {
+				_source.removeEventListener(StateEvent.CHANGE, videoProgress);
+				_source = null;
 			}
 		}
 	}

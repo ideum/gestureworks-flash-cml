@@ -180,19 +180,12 @@ package com.gestureworks.cml.element
 			return clone;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void {
 			super.dispose();
-			
-			if (_verticalScroll)
-				_verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
-			
-			if (_horizontalScroll)
-				_horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
-			
-			while (this.numChildren > 0) {
-				this.removeChildAt(0);
-			}
-			
+			_content = null;
 			_mask = null;
 			_verticalScroll = null;
 			_horizontalScroll = null;		

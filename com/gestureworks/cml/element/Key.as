@@ -459,7 +459,7 @@ package  com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{

@@ -1038,6 +1038,34 @@ package com.gestureworks.cml.element
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", "reset"));
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			_backButton = null;
+			maskSprite = null;
+			origins = null;
+			_disabledItems = null;
+			_arrowIndicator = null;
+			_returnIndicator = null;
+			titleGradientAlphasArray = null;
+			titleGradientColorArray = null;
+			titleGradientRatiosArray = null;
+			itemGradientAlphasArray = null;
+			itemGradientColorArray = null;
+			itemGradientRatiosArray = null;			
+			selectedGradientAlphasArray = null;
+			selectedGradientColorArray = null;
+			selectedGradientRatiosArray = null;				
+			_title = null;
+			_item = null;
+			_selected = null;
+			_menuItems = null;
+			_subMenu = null;
+			_subMenus = null;
+		}
+		
 		//} endregion Utility
 	}
 

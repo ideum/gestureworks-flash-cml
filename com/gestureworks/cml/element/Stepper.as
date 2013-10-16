@@ -521,7 +521,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Dispose methods
+		 * @inheritDoc
 		 */
 		override public function dispose(): void
 		{
@@ -534,13 +534,6 @@ package com.gestureworks.cml.element
 			txt = null;
 			inputTxt = null;
 			ts = null;
-			ts.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			ts.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
-			topSquare.removeEventListener(GWGestureEvent.TAP, upArrow);
-			bottomSquare.removeEventListener(GWGestureEvent.TAP, downArrow);
-			topSquare.removeEventListener(MouseEvent.MOUSE_UP, incrementText);
-			bottomSquare.removeEventListener(MouseEvent.MOUSE_DOWN, decrementText);
-			removeEventListener(GWTouchEvent.TOUCH_TAP, onTap);
 		}
 		
 }

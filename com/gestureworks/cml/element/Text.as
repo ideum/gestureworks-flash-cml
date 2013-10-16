@@ -93,6 +93,12 @@ package com.gestureworks.cml.element
 		{
 			textFormat = null;
 			state = null;
+			b = null;
+			
+			if (bmd) {
+				bmd.dispose();
+				bmd = null;
+			}
 		}
 	
 		private var _id:String

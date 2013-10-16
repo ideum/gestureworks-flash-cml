@@ -187,6 +187,13 @@ package com.gestureworks.cml.element
 			_displayFrameRate = d;
 			if (stage) stage.addChild(new FrameRate());
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+		}
 				
 	}	
 }
