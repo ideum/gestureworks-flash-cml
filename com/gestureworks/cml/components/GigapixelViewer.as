@@ -2,7 +2,6 @@
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.core.*;
 	import flash.display.*;
 	import flash.events.*;
