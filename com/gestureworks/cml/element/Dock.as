@@ -166,6 +166,8 @@ package com.gestureworks.cml.element
 			addEventListener(StateEvent.CHANGE, selection);
 			addEventListener(StateEvent.CHANGE, dragSelection);
 			addEventListener(StateEvent.CHANGE, dropSelection);
+
+			CMLParser.addEventListener(CMLParser.COMPLETE, cmlInit);
 			
 			for (var j:int = 0; j < dials.length; j++) {
 				dials[j].addEventListener(StateEvent.CHANGE, onDialChange);
