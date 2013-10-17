@@ -2,6 +2,7 @@ package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.utils.FrameRate;
+	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
@@ -25,17 +26,14 @@ package com.gestureworks.cml.element
 		{
 			super();
 			mouseChildren = true;			
-			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
-		
+	
 		/**
 		 * This method provides the stage width and height and also the fullscreen depending on the condition
 		 * @param	event
 		 */
-		public function onAddedToStage(event:Event = null):void
-		{
-			this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
+		override public function init():void {
+			super.init();
 			if (_width) width = _width;			
 			if (_height) height = _height;
 			if (_color) color = _color;
@@ -49,9 +47,27 @@ package com.gestureworks.cml.element
 				stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 			else
 				stage.displayState = StageDisplayState.NORMAL;	
-
+				
+			//display the frame rate
+			if (displayFrameRate)
+				stage.addChild(new FrameRate(frX, frY, frColor));		
+				
+			//display a sprite to exit full screen
+			if (escapeSprite) {
+				esX = esX ? esX : stage.stageWidth;
+				esY = esY ? esY : stage.stageHeight;
+				
+				var ts:Sprite = new Sprite(); 
+				ts.graphics.beginFill(esColor);
+				ts.graphics.drawRect(0, 0, 50, 50);
+				ts.x = esX - 50;
+				ts.y = esY - 50;				
+				ts.addEventListener(TouchEvent.TOUCH_TAP, function(e:TouchEvent):void {
+					stage.displayState = StageDisplayState.NORMAL;
+				});
+				stage.addChild(ts);
+			}
 		}
-
 		
 
 		private var _fullscreen:Boolean = false;
@@ -180,13 +196,39 @@ package com.gestureworks.cml.element
 			if (stage) stage.frameRate = value;
 		}
 		
-		private var _displayFrameRate:Boolean = false;
-		
-		public function get displayFrameRate():Boolean { return _displayFrameRate; }
-		public function set displayFrameRate(d:Boolean):void {
-			_displayFrameRate = d;
-			if (stage && d) stage.addChild(new FrameRate());
-		}
+		/**
+		 * Display the frame rate 
+		 */		
+		public var displayFrameRate:Boolean = false;
+		/**
+		 * Frame rate x position
+		 */
+		public var frX:Number = 0;
+		/**
+		 * Frame rate y position
+		 */
+		public var frY:Number = 0;
+		/**
+		 * Frame rate color
+		 */
+		public var frColor:uint = 0xFFFFFF;
+		/**
+		 * Display sprite to exit full screen on touch  
+		 */
+		public var escapeSprite:Boolean = false;
+		/**
+		 * Escape sprite x position
+		 */
+		public var esX:Number = 0;
+		/**
+		 * Escape sprite y position
+		 */		
+		public var esY:Number = 0;
+		/**
+		 * Escape sprite color
+		 */		
+		public var esColor:uint = 0xFFFFFF;
+		 
 		
 		/**
 		 * @inheritDoc
