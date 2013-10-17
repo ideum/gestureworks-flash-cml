@@ -182,6 +182,8 @@ package com.gestureworks.cml.element
 					_progressBar.height = height*.06;
 				if (!_progressBar.y)
 					_progressBar.y = height;
+				
+				addChildAt(_progressBar, numChildren - 1);
 			}
 		}
 		
@@ -462,7 +464,6 @@ package com.gestureworks.cml.element
 			
 			netStream = new NetStream(netConnection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netStream.addEventListener(NetStatusEvent.NET_STATUS, initializeNS);
 			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			
@@ -485,17 +486,6 @@ package com.gestureworks.cml.element
 				
 			addChild(video);						
 			play();
-		}
-		
-		/**
-		 * Initialize connection
-		 * @param	e
-		 */
-		private function initializeNS(e:NetStatusEvent):void {
-			if (e.info.code == "NetStream.Play.Start") {
-				if (!autoplay) stop();
-				netStream.removeEventListener(NetStatusEvent.NET_STATUS, initializeNS);
-			}
 		}
 		
 		private function onMetaData(meta:Object):void
@@ -532,7 +522,7 @@ package com.gestureworks.cml.element
 				sizeLoaded = true;
 				
 				// file and all metadata loaded
-				if (autoplay) resume();
+				if (!autoplay) stop();
 				this.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
