@@ -185,7 +185,7 @@ package com.gestureworks.cml.element
 		public function get displayFrameRate():Boolean { return _displayFrameRate; }
 		public function set displayFrameRate(d:Boolean):void {
 			_displayFrameRate = d;
-			if (stage) stage.addChild(new FrameRate());
+			if (stage && d) stage.addChild(new FrameRate());
 		}
 		
 		/**
