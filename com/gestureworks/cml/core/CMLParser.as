@@ -1166,6 +1166,10 @@ package com.gestureworks.cml.core
 				return;
 			}
 			
+			while(CMLObjectList.instance.length > 0)  {
+				CMLObjectList.instance.removeIndex(0);
+			}
+			
 			var childrenToIgnore:int = 0;
 			
 			while (cmlDisplay.numChildren > childrenToIgnore) {
@@ -1177,29 +1181,12 @@ package com.gestureworks.cml.core
 					continue;
 				}
 				
-				if (child) {
+				if (child is DisplayObject) {
 					cmlDisplay.removeChild(child);
-					// child.dispose();
+					child.dispose();
+					child = 0;
 				}
 			}
-			/*
-			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
-			{		
-				if (CMLObjectList.instance.getIndex(i) is IContainer)
-				{
-					while (CMLObjectList.instance.getIndex(i).numChildren > 0) {
-						
-						var child:* =  CMLObjectList.instance.getIndex(i).getChildAt(0)
-						
-						trace("Removing cml object " + child);
-						
-						CMLObjectList.instance.getIndex(i).removeChildAt(0);
-						
-						child.dispose();
-					}
-				}
-			}
-			*/
 		}
 		
 		// IEventDispatcher
