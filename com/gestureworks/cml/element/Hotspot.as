@@ -39,6 +39,7 @@ package com.gestureworks.cml.element
 		public var compAbsPos:Boolean = false;	
 		public var compTween:Boolean = false;
 		public var compTweenTime:Number = .25;
+		public var compAddOnOpen:Boolean = false;
 		
 		private var _tether:Boolean = true;
 		/**
@@ -186,6 +187,9 @@ package com.gestureworks.cml.element
 					}				
 					updateComponent();
 				}
+				
+				if (component.parent && compAddOnOpen)
+					component.parent.addChild(_component);
 			}
 		}
 		
