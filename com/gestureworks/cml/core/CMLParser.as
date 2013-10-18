@@ -38,15 +38,15 @@ package com.gestureworks.cml.core
 		private static var GXMLComponent:Class;
 		private static var currentParent:*;			
 		private static var index:int = 0;
-
 		
 		//public variables
 		public static const COMPLETE:String = "COMPLETE";
 		
 		public static var debug:Boolean = false;			
 		
-		public static var rootDirectory:String = "";	
-		public static var relativePaths:Boolean = false;					
+		public static var rootDirectory:String = "";
+		public static var rootHeader:String = "";
+		public static var relativePaths:Boolean = false;
 		
 		public static var cssFile:String;
 		public static var cmlFile:String;
@@ -83,20 +83,24 @@ package com.gestureworks.cml.core
 			// set paths relative to main cml document
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
-			
+
 			// set root directory of file paths
 			if (cml.@rootDirectory != undefined && !relativePaths)
 				rootDirectory = cml.@rootDirectory;
 			else if (cml.@rootDirectory != undefined && relativePaths)
 				rootDirectory = relToAbsPath(rootDirectory.concat(cml.@rootDirectory));	
+			else
+				rootDirectory = "";
+				
+			rootDirectory = combinePaths(rootHeader, rootDirectory);
 				
 			// set css file
 			var cssStr:String = "";
 			if (cml.@css != undefined)
 				cssStr = cml.@css;			
-			if (cssStr.length)
+			if (cssStr.length) {
 				CMLParser.cssFile = updatePath(cssStr);
-			
+			}
 			
 			// set parent display
 			cmlDisplay = parent as DisplayObjectContainer;
@@ -896,6 +900,53 @@ package com.gestureworks.cml.core
 			return newString;
 		}
 		
+		public static function combinePaths(absPath:String, relPath:String):String {
+			
+			if (absPath == "") {
+				return relPath;
+			}
+			
+			if (relPath == "") {
+				return absPath;
+			}
+			
+			var absArray:Array = absPath.split("/");
+			var relArray:Array = relPath.split("/");
+			
+			var relCountToDelete:int = 0;
+			for (var i:int = 0; i < relArray.length; ++i) {
+				
+				var relPart:String = relArray[i];
+				
+				switch(relPart) {
+					case ".":
+						relCountToDelete++;
+						break;
+					
+					case "..":
+						relCountToDelete++;
+						if (absArray.length > 0) {
+							var popped:String = absArray.pop();
+							while (popped == "" && absArray.length > 0) {
+								popped = absArray.pop();
+								trace("popped " + popped);
+							}
+						}
+						break;
+						
+					default:
+						break;
+				}
+			}
+			
+			if(relCountToDelete > 0) {
+				relArray.splice(0, relCountToDelete);
+			}
+			
+			var finalPath:String = absArray.join("\\") + "\\" + relArray.join("\\");
+			
+			return finalPath;
+		}
 		
 		/**
 		 * Default updateProperties routine
