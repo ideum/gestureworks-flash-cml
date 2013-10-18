@@ -1160,6 +1160,47 @@ package com.gestureworks.cml.core
 			trace("\n*********** CMLObjectList End **************");			
 		}	
 		
+		public static function clear():void {
+			
+			if (!cmlDisplay) {
+				return;
+			}
+			
+			var childrenToIgnore:int = 0;
+			
+			while (cmlDisplay.numChildren > childrenToIgnore) {
+				
+				var child:* = cmlDisplay.getChildAt(childrenToIgnore);
+				
+				if (child is GestureWorks) {
+					childrenToIgnore++;
+					continue;
+				}
+				
+				if (child) {
+					cmlDisplay.removeChild(child);
+					// child.dispose();
+				}
+			}
+			/*
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
+			{		
+				if (CMLObjectList.instance.getIndex(i) is IContainer)
+				{
+					while (CMLObjectList.instance.getIndex(i).numChildren > 0) {
+						
+						var child:* =  CMLObjectList.instance.getIndex(i).getChildAt(0)
+						
+						trace("Removing cml object " + child);
+						
+						CMLObjectList.instance.getIndex(i).removeChildAt(0);
+						
+						child.dispose();
+					}
+				}
+			}
+			*/
+		}
 		
 		// IEventDispatcher
         private static var _dispatcher:EventDispatcher = new EventDispatcher();
