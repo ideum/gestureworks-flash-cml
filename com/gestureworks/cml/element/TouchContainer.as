@@ -262,16 +262,16 @@ package com.gestureworks.cml.element
 		/**
 		 * Override targetList assignment to allow CML assignment
 		 */
-		override public function set targetList(value:*):void 
-		{
-			if (value is XML) {				
-				var ids:Array = String(value).split(",");
-				for each(var id:String in ids) 					
-					super.targetList.push(document.getElementById(StringUtils.trim(id))); 
-			}
-			else if(value is Array)
-				super.targetList = value;
-		}
+		//override public function set targetList(value:*):void 
+		//{
+			//if (value is XML) {				
+				//var ids:Array = String(value).split(",");
+				//for each(var id:String in ids) 					
+					//super.targetList.push(document.getElementById(StringUtils.trim(id))); 
+			//}
+			//else if(value is Array)
+				//super.targetList = value;
+		//}
 		
 		
 		//////////////////////////////////////////////////////////////
