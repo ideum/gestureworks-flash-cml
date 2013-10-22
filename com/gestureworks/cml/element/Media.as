@@ -24,6 +24,7 @@ package com.gestureworks.cml.element
 		private var dictionary:Dictionary;
 		private var currentFile:String;
 		private var playButton:Button;
+		private var progressBar:ProgressBar;
 		
 		/**
 		 * Constructor
@@ -44,7 +45,8 @@ package com.gestureworks.cml.element
 		{
 			super.init();
 			
-			playButton = searchChildren(Button);				
+			playButton = searchChildren(Button);	
+			progressBar = searchChildren(ProgressBar);
 			
 			currentFile = src;	
 			var file:String = currentFile;
@@ -76,6 +78,7 @@ package com.gestureworks.cml.element
 				//dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
 				if (playButton) dictionary[file].addChild(playButton);
+				if (progressBar) dictionary[file].addChild(progressBar);
 					//dictionary[file].init();
 			}
 			else if (file.search(mp3Types) >= 0)
@@ -112,7 +115,7 @@ package com.gestureworks.cml.element
 
 		
 		/**
-		 * @inheritDoc
+		 * Dispose method
 		 */
 		override public function dispose():void
 		{
@@ -123,6 +126,7 @@ package com.gestureworks.cml.element
 			mp3Types = null;
 			currentFile = null;
 			playButton = null;
+			progressBar = null;
 			_current = null;
 						
 			for each (var i:Object in dictionary)
@@ -135,6 +139,7 @@ package com.gestureworks.cml.element
 				dictionary[i] = null;
 				delete dictionary[i];
 			}
+			
 			dictionary = null;
 		}
 		
@@ -199,8 +204,7 @@ package com.gestureworks.cml.element
 				if (dictionary[_src].hasOwnProperty("loop"))
 					dictionary[_src].loop = loop;
 			}
-		}				
-		
+		}
 	
 		private var _src:String;
 		/**
