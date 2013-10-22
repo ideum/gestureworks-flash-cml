@@ -281,6 +281,19 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
+		 * Returns a rotated point
+		 * @param	point The original point
+		 * @param	rotation The rotation in radians
+		 * @return
+		 */
+		public static function getRotatedPoint(point:Point, rotation:Number):Point {
+			var rp:Point = new Point(point.x * Math.cos(rotation) - point.y * Math.sin(rotation), point.x * Math.sin(rotation) + point.y * Math.cos(rotation));
+			rp.x = Math.round(rp.x * 100) / 100;
+			rp.y = Math.round(rp.y * 100) / 100;
+			return rp;
+		}
+		
+		/**
 		 * Returns the first parent of the specified type
 		 * @param	obj
 		 * @return  the parent if the parent of type exists, null otherwise
