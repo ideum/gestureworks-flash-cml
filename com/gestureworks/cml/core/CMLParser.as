@@ -802,10 +802,17 @@ package com.gestureworks.cml.core
 			var as3class:Class;
 			
 			//search package list
-			for (var i:int=0; i<packageArray.length; i++)
-			{
-				//create object
+			for (var i:int=0; i<packageArray.length; i++) {
+			
 				try {
+					// auto-append period to package names, if not provided
+					if ( packageArray[i].length > 0) {
+						if ( packageArray[i].substr(packageArray[i].length - 1, packageArray[i].length) != "." ) {
+							packageArray[i] = packageArray[i] + ".";
+							trace( packageArray[i] );
+						}					
+					}
+					//create object
 					as3class = getDefinitionByName(packageArray[i] + tag) as Class;					
 					obj = new as3class();
 					break;

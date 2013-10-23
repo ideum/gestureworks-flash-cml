@@ -27,7 +27,7 @@ package com.gestureworks.cml.core
 	public class CMLCore
 	{
 		// searchable packages
-		protected static var PACKAGES:Array = 
+		public static var PACKAGES:Array = 
 		[
 			"",
 			"com.gestureworks.cml.buttons.",			
