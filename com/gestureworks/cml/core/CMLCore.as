@@ -107,7 +107,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Paint; Paint;
 	import com.gestureworks.cml.element.Preloader; Preloader;
 	//import com.gestureworks.cml.element.Gigapixel; Gigapixel;
-
 	import com.gestureworks.cml.element.Tab; Tab;
 	import com.gestureworks.cml.element.Key; Key;	
 	import com.gestureworks.cml.element.Magnifier; Magnifier;
@@ -128,6 +127,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Background; Background;		
 	import com.gestureworks.cml.element.Attract; Attract;
 	import com.gestureworks.cml.element.StageKit; StageKit;	
+	import com.gestureworks.cml.element.PopupMenu; PopupMenu;
 	
 	
 	///////////////////////

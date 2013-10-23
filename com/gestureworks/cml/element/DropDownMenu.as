@@ -45,15 +45,18 @@ package com.gestureworks.cml.element
 	 */
 	public class DropDownMenu extends TouchContainer
 	{
-		private var _open:Boolean = false;
-		private var _currentSelection:String;
-		private var _itemBackgrounds:Array;
-		private var _menuTitle:Text;
-		private var _menuItemsArray:Array;
-		private var _hit:Sprite;
-		private var _width:Number;
-		private var _height:Number;
-		private var triangle:Graphic;
+		protected var _open:Boolean = false;
+		protected var _currentSelection:String;
+		protected var _currentObject:Text;
+		protected var _itemBackgrounds:Array;
+		protected var _menuTitle:Text;
+		protected var _menuItemsArray:Array;
+		protected var _hit:Sprite;
+		protected var _width:Number;
+		protected var _height:Number;
+		protected var triangle:Graphic;
+		protected var _showTitleBg:Boolean = true;
+		protected var _showPopupBg:Boolean = true;
 		
 		/**
 		 * dropdown menu Constructor
@@ -65,7 +68,7 @@ package com.gestureworks.cml.element
 		
 		public function get open():Boolean { return _open; }
 		
-		private var _title:String = "Menu Title";
+		protected var _title:String = "Menu Title";
 		/**
 		 * The menu's title that will always be visible.
 		 */
@@ -76,7 +79,7 @@ package com.gestureworks.cml.element
 		
 		protected var menuItemsArray:Array = ["Item1", "Item2"];
 		
-		private var _menuItems:String = "Item1, Item2";
+		protected var _menuItems:String = "Item1, Item2";
 		/**
 		 * The items that will populate the expanding menu panel
 		 */
@@ -86,7 +89,7 @@ package com.gestureworks.cml.element
 			menuItemsArray = _menuItems.split(",");
 		}
 		
-		private var _fill:uint = 0x777777;
+		protected var _fill:uint = 0x777777;
 		/**
 		 * Background color for the menu, default grey
 		 * @default 0x777777
@@ -96,7 +99,25 @@ package com.gestureworks.cml.element
 			_fill = value;
 		}
 		
-		private var _font:String = "OpenSansRegular"
+		/**
+		 * Shows the title background
+		 * @default 0x777777
+		 */
+		public function get showTitleBg():Boolean { return _showTitleBg; }
+		public function set showTitleBg(value:Boolean):void {
+			_showTitleBg = value;
+		}
+		
+		/**
+		 * Shows the popup background
+		 * @default 0x777777
+		 */
+		public function get showPopupBg():Boolean { return _showPopupBg; }
+		public function set showPopupBg(value:Boolean):void {
+			_showPopupBg = value;
+		}		
+		
+		protected var _font:String = "OpenSansRegular"
 		/**
 		 * Font style of the menu
 		 * @default OpenSansRegular
@@ -106,7 +127,7 @@ package com.gestureworks.cml.element
 			_font = value;
 		}
 		
-		private var _color:uint = 0x0000ff;
+		protected var _color:uint = 0x0000ff;
 		/**
 		 * The text color
 		 * @default blue
@@ -116,7 +137,7 @@ package com.gestureworks.cml.element
 			_color = value;
 		}
 		
-		private var _fontSize:Number = 15;
+		protected var _fontSize:Number = 15;
 		/**
 		 * defines the font size
 		 * @default 15;
@@ -126,13 +147,13 @@ package com.gestureworks.cml.element
 			_fontSize = value;
 		}
 		
-		private var _menuMarker:Boolean = true;
+		protected var _menuMarker:Boolean = true;
 		/**
 		 * Sets whether or not to display a triangle to help indicate this is a drop down menu.
 		 * @default true
 		 */
 		public function get menuMarker():Boolean { return _menuMarker; }
-		private function set menuMarker(value:Boolean):void {
+		protected function set menuMarker(value:Boolean):void {
 			_menuMarker = value;
 		}
 		
@@ -145,7 +166,7 @@ package com.gestureworks.cml.element
 			createMenu();
 		}
 		
-		private function createMenu():void {
+		protected function createMenu():void {
 			if (_menuMarker){
 				triangle = new Graphic();
 				triangle.shape = "triangle";
@@ -241,7 +262,7 @@ package com.gestureworks.cml.element
 			this.width = _width;
 		}
 		
-		private function createHit():void {
+		protected function createHit():void {
 			_hit = new Sprite();
 			_hit.graphics.clear();
 			_hit.graphics.beginFill(0x000000, 1);
@@ -252,15 +273,17 @@ package com.gestureworks.cml.element
 			//AddEventListeners.
 		}
 		
-		private function createMenuItem(s:String, idIn:String=""):Text {
+		protected function createMenuItem(s:String, idIn:String=""):Text {
 			var menuElement:Text = new Text();
 			menuElement.width = _width;
 			menuElement.height = _height;
 			menuElement.text = s;
 			menuElement.selectable = false;
 			
-			menuElement.background = true;
-			menuElement.backgroundColor = _fill;
+			if (showTitleBg) {
+				menuElement.background = true;
+			}
+			menuElement.backgroundColor = _fill;			
 			menuElement.color = _color;
 			
 			menuElement.font = _font;
@@ -284,22 +307,23 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function onOver(event:*):void {
+		protected function onOver(event:*):void {
 			event.currentTarget.backgroundColor = _fill;
 			event.currentTarget.color = _color;
 		}
 		
-		private function onItemOut(event:*):void {
+		protected function onItemOut(event:*):void {
 			event.currentTarget.backgroundColor = _color;
 			event.currentTarget.color = _fill;
 		}
 		
-		private function onItemSelected(event:*):void {
+		protected function onItemSelected(event:*):void {
+			_currentSelection = event.target.text;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "itemSelected", event.target.text, true));
 			hideMenu();
 		}
 		
-		private function onMenuOut(event:*):void {
+		protected function onMenuOut(event:*):void {
 			hideMenu();
 		}
 		
@@ -314,6 +338,9 @@ package com.gestureworks.cml.element
 			for each (var i:Text in _menuItemsArray) {
 				i.backgroundColor = _color;
 				i.color = _fill;
+				if (showPopupBg) {
+					i.background = true;
+				}
 				i.visible = true;
 				if (GestureWorks.supportsTouch){
 					i.addEventListener(TouchEvent.TOUCH_OVER, onOver);
@@ -353,6 +380,9 @@ package com.gestureworks.cml.element
 			
 			this.height = _menuTitle.height;
 			
+			if (showTitleBg) {
+				_menuTitle.background = true;
+			}
 			_menuTitle.backgroundColor = _fill;
 			_menuTitle.color = _color;
 			
