@@ -93,10 +93,8 @@ package com.gestureworks.cml.element
 			layoutList = null;							
 			cmlGestureList = null;					
 			
-			if (childList)
-			{
-				for (var i:int = 0; i < childList.length; i++) 
-				{	
+			if (childList) {
+				for (var i:int = 0; i < childList.length; i++) {	
 					var child:Object = childList.getIndex(i);
 					if (child.hasOwnProperty("dispose"))
 						child["dispose"]();
@@ -515,11 +513,34 @@ package com.gestureworks.cml.element
 		 * @param	id
 		 * @return
 		 */
-		public function getElementById(id:String):DisplayObject
+		public function getElementById(id:String):*
 		{
 			return childList.getKey(id);
 		}
 	
+		/**
+		 * Returns the child element by CSS class name
+		 * @param	className
+		 * @return
+		 */
+		public function getElementsByClassName(className:String):Array
+		{
+			return childList.getCSSClass(className).getValueArray();
+		}		
+		
+		
+		/**
+		 * Returns the child element by Tag name / AS3 class name
+		 * @param	tagName
+		 * @return
+		 */
+		public function getElementsByTagName(tagName:String):Array
+		{
+			tagName = tagName.toUpperCase();
+			tagName = getQualifiedClassName(tagName);
+			var cls:Class = getDefinitionByName(tagName) as Class;
+			return childList.getClass(cls).getValueArray();
+		}			
 		
 		
 		private function updateChildren():void
@@ -530,8 +551,6 @@ package com.gestureworks.cml.element
 					childList.getIndex(i).updateProperties();
 			}
 		}
-		
-
 		
 		
 		/**
