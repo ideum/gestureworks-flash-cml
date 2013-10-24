@@ -140,10 +140,40 @@ package com.gestureworks.cml.element
 		}
 		
 		private var _zoomRotateFactor:Number = 0.01;
+		/**
+		 * Sets how fast rotating zooms in.
+		 * @default 0.01
+		 */
+		public function get zoomRotateFactor():Number {
+			return _zoomRotateFactor;
+		}
+		public function set zoomRotateFactor(value:Number):void {
+			_zoomRotateFactor = value;
+		}
 		
 		private var _zoomMin:Number = 1.0;
+		/**
+		 * The minimum zoom in value.
+		 * @default 1.0
+		 */
+		public function get zoomMin():Number {
+			return _zoomMin;
+		}
+		public function set zoomMin(value:Number):void {
+			_zoomMin = value;
+		}
 		
 		private var _zoomMax:Number = 5.0;
+		/**
+		 * The maximum zoom out value.
+		 * @default 1.0
+		 */
+		public function get zoomMax():Number { 
+			return _zoomMax;
+		}
+		public function set zoomMax(value:Number):void {
+			_zoomMax = value;
+		}
 		
 		private var _maxObjectScale:Number = 3.0;
 		public function get maxObjectScale():Number {
@@ -176,8 +206,6 @@ package com.gestureworks.cml.element
 			nativeTransform = false;
 			affineTransform = false;
 			gestureEvents = true;
-			
-			_graphic = "notch";
 			
 			if (_graphic == "notch") {
 				_border = new NotchGraphic as Sprite;
