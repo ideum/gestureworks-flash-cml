@@ -505,7 +505,7 @@ package com.gestureworks.cml.core
 
 		
 					
-				if (parent is (IContainer))
+				if ("childToList" in parent)
 					parent.childToList(obj.id, obj);
 				
 				else if (parent == cmlDisplay && obj is DisplayObject)
