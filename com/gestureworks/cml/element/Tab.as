@@ -366,7 +366,8 @@ package com.gestureworks.cml.element
 		 * @return  the object added
 		 */
 		override public function addChild(child:DisplayObject):DisplayObject 
-		{
+		{	
+			childList.removeByValue(child);
 			return contentContainer.addChild(child);
 		}
 		
@@ -378,6 +379,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{
+			childList.removeByValue(child);
 			index = index == 0 ? 1 : index;  //index 0 is reserved for background
 			return contentContainer.addChildAt(child, index);
 		}

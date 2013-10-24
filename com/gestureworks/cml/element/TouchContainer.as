@@ -633,8 +633,7 @@ package com.gestureworks.cml.element
 		 * (id or class) or AS3 Class. If found, a corresponding display object is returned, if not, null is returned.
 		 * The first occurrance that matches the parameter is returned.
 		 */			
-		public function searchChildren(value:*, returnType:Class=null):*
-		{		
+		public function searchChildren(value:*, returnType:Class=null):* {		
 			var returnVal:* = null;
 			var searchType:String = null;
 			
@@ -650,18 +649,16 @@ package com.gestureworks.cml.element
 			}
 			else if (value is String) {				
 				// determine type and strip the first character
-				if (value.charAt(0) == "#")
-				{
+				if (value.charAt(0) == "#") {
 					searchType = "getKey";
 					value = value.substring(1);
 				}
-				else if (value.charAt(0) == ".")
-				{
+				else if (value.charAt(0) == ".") {
 					searchType = "getCSSClass";
 					value = value.substring(1);
 				}
-				else //default to id
-				{
+				//default to id
+				else  {
 					searchType = "getKey";
 				}
 			}
@@ -670,22 +667,19 @@ package com.gestureworks.cml.element
 			}
 			
 			// run first level search
-			if (searchType == "getKey" && this.childList.getKey(value))
-			{
+			if (searchType == "getKey" && this.childList.getKey(value)) {
 				if (returnType == Array)
 					returnArray = this.childList.getKey(value).getValueArray();
 				else
 					return this.childList.getKey(value);
 			}
-			else if (searchType == "getCSSClass" && this.childList.getCSSClass(value, 0))
-			{
+			else if (searchType == "getCSSClass" && this.childList.getCSSClass(value, 0)) {
 				if (returnType == Array)
 					returnArray = this.childList.getCSSClass(value).getValueArray();
 				else
 					return this.childList.getCSSClass(value, 0);
 			}
-			else if (searchType == "getClass" && this.childList.getClass(value, 0))
-			{
+			else if (searchType == "getClass" && this.childList.getClass(value, 0)) {
 				if (returnType == Array)
 					returnArray = this.childList.getClass(value).getValueArray();
 				else
@@ -693,58 +687,60 @@ package com.gestureworks.cml.element
 			}
 			
 			// recursive search through sub-children's childList
-			else 
-			{
+			else {
 				var arr:Array = childList.getValueArray()
 				if (arr)
 					loopSearch(arr, value, searchType);
 			}
 			
-			function loopSearch(arr:Array, val:*, sType:String):*
-			{
+			function loopSearch(arr:Array, val:*, sType:String):* {
+				
+				trace("---------------loop-----------------------");
+				trace(arr);
+				
 				if (returnVal)
 					return;
 				
 				var tmp:Array;
-				var i:int;
 				
-				if (returnType == Array)
-				{					
-					for (i = 0; i < arr.length; i++) 
-					{
-						if (arr[i].hasOwnProperty("childList"))
-						{	
-							if (sType == "getCSSClass" || sType == "getClass")
-							{
-								if (arr[i].childList[sType](val))
-									returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());									
-							}
-							else 
-							{
-								if (arr[i].childList[sType](val))
-									returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());
+				
+				if (returnType == Array) {					
+					for (var i:int = 0; i < arr.length; i++) {
+						if (arr[i].hasOwnProperty("childList")) {	
+							
+							if (arr[i].childList[sType](val)) {
+								returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());		
 							}
 							
-							if (arr[i].childList.getValueArray())
-								loopSearch(arr[i].childList.getValueArray(), val, sType);
+							if (arr[i].childList.getValueArray()) {
+								trace("parent", i, arr[i], arr[i].id);
+								
+								for each (var item:* in arr[i].childList.getValueArray()) {
+									if ("id" in item)
+										trace(item, item.id);
+								}
+								
+								if (arr[i].name == "instance408") {
+									trace("hi", i);
+								}
+								  
+								loopSearch(arr[i].childList.getValueArray(), val, sType);								
+							
+							}
 						}
 					}					
 				}
 				
-				else
-				{					
-					for (i = 0; i < arr.length; i++) 
-					{					
-						if (arr[i].hasOwnProperty("childList"))
-						{						
-							if (sType == "getCSSClass" || sType == "getClass")
-							{
+				else {					
+					for (i = 0; i < arr.length; i++) {					
+						if (arr[i].hasOwnProperty("childList")) {						
+							
+							if (sType == "getCSSClass" || sType == "getClass") {
 								returnVal = arr[i].childList[sType](val, 0);
 								if (returnVal)
 									return returnVal;						
 							}
-							else 
-							{
+							else {
 								returnVal = arr[i].childList[sType](val);
 								if (returnVal)
 									return returnVal;
@@ -763,13 +759,14 @@ package com.gestureworks.cml.element
 				return returnVal;
 		}	
 		
+		
+		
 		/**
 		 * Parse cml for local layouts.
 		 * @param	cml
 		 * @return
 		 */
-		public function parseCML(cml:XMLList):XMLList
-		{
+		public function parseCML(cml:XMLList):XMLList {
 			//cmlGestureList = makeGestureList(cml.GestureList);			
 			
 			var node:XML = XML(cml);
@@ -779,16 +776,13 @@ package com.gestureworks.cml.element
 					var attrName:String;
 					var returnNode:XMLList = new XMLList;
 					
-			for each (var item:XML in node.*) 
-			{
+			for each (var item:XML in node.*) {
 				if (item.name() == "Layout") {
 					
 					obj = CMLParser.instance.createObject(item.@classRef);					
-
 					
 					//apply attributes
-					for each (var attrValue:* in item.@*)
-					{				
+					for each (var attrValue:* in item.@*) {				
 						attrName = attrValue.name().toString();						
 						if (attrValue == "true")
 							attrValue = true;
@@ -879,8 +873,34 @@ package com.gestureworks.cml.element
 		 * @param	child
 		 * @return
 		 */
+		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
+		{	
+			if (child.parent) {
+				child.parent.removeChild(child);
+			}
+			
+			if (childList.search(child) == -1) {
+				
+				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
+					childToList(child["id"], child);
+				else
+					childToList(child.name, child);
+			}
+			
+			return super.addChildAt(child, index);
+		}		
+		
+		/**
+		 * Adds child to display list and, if not already added, the child list
+		 * @param	child
+		 * @return
+		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
-		{		
+		{	
+			if (child.parent) {
+				child.parent.removeChild(child);
+			}
+			
 			if (childList.search(child) == -1) {
 				
 				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
@@ -891,6 +911,20 @@ package com.gestureworks.cml.element
 			
 			return super.addChild(child);
 		}
+		
+		/**
+		 * Adds child to display list and, if not already added, the child list
+		 * @param	child
+		 * @return
+		 */
+		override public function removeChild(child:DisplayObject):flash.display.DisplayObject 
+		{	
+			if (childList.search(child) != -1) {
+				childList.removeByValue(child);
+			}
+			
+			return super.removeChild(child);
+		}		
 		
 		private var _toBitmap:Boolean = false;
 		
