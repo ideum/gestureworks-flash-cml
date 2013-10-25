@@ -325,7 +325,7 @@ package com.gestureworks.cml.element
 			
 			var worldPoint:Point = localToGlobal(point);
 			
-			var rect:Rectangle = new Rectangle(worldPoint.x, worldPoint.y, offset * 2.0, offset * 2.0);
+			var rect:Rectangle = new Rectangle(worldPoint.x, worldPoint.y, offset * 2.1, offset * 2.1);
 			
 			backgroundSourceCanvas.copyPixels(backgroundBitmapData, rect, ZERO_POINT);
 			
