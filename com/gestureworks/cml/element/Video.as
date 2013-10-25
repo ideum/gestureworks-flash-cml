@@ -187,15 +187,21 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		private var _isLoaded:Boolean = false;
+		/**
+		 * Returns video loaded status
+		 */
+		public function get isLoaded():Boolean { return _isLoaded;}
+		
 		private var _isPlaying:Boolean = false;
 		/**
-		 * sets video playing status
+		 * Returns video playing status
 		 */	
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
 		private var _isPaused:Boolean = false;
 		/**
-		 * sets video paused status
+		 * Returns video paused status
 		 */
 		public function get isPaused():Boolean { return _isPaused; }
 		
@@ -389,6 +395,7 @@ package com.gestureworks.cml.element
 		/// PRIVATE METHODS ///	
 		private function load():void
 		{
+			if (isLoaded) return;
 			if (netConnection) {
 				netConnection.close();
 				//netConnection.removeEventListener((NetStatusEvent.NET_STATUS, onNetStatus);
@@ -486,6 +493,7 @@ package com.gestureworks.cml.element
 				
 			addChild(video);						
 			play();
+			_isLoaded = true;
 		}
 		
 		private function onMetaData(meta:Object):void
