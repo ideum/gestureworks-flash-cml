@@ -196,25 +196,16 @@ package com.gestureworks.cml.element
 			
 			_loaded = "loaded";
 			
-			if (this.parent) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
-			}
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
 		}
 		
 		private function createEvents():void {
-			if (this.parent && this.parent is TouchContainer) {
-				
-				var touchContainer:TouchContainer = this.parent as TouchContainer;
-				
-				touchContainer.gestureList = { "n-double_tap":true, "n-scale":true };
-				
-				this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				this.parent.addEventListener(GWGestureEvent.SCALE, onScale);
-				touchContainer.nativeTransform = false;
-				
-			} else {
-				map.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-			}
+			
+			gestureList = { "n-double_tap":true, "n-scale":true };
+			
+			addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+			addEventListener(GWGestureEvent.SCALE, onScale);
+			nativeTransform = false;
 		}
 		
 		private function onScale(e:GWGestureEvent):void {
@@ -226,14 +217,9 @@ package com.gestureworks.cml.element
 			var scaleX:Number = e.value.scale_dsx;
 			var scaleY:Number = e.value.scale_dsy;
 			
-			var localX:Number = e.value.localX;
-			var localY:Number = e.value.localY;
-			
-			var position:Point = new Point(localX - x, localY - y);
-			
 			var scaleDelta:Number = Math.max(scaleX, scaleY);
 			
-			map.zoomByAbout(scaleDelta * scaleFactor, position);
+			map.zoomByAbout(scaleDelta * scaleFactor);
 		}
 
 		/**
@@ -259,8 +245,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function dispose():void {
 			super.dispose();	
-			if(parent)
-				parent.removeEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);					
+			removeEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+			removeEventListener(GWGestureEvent.SCALE, onScale);
 			map = null;
 			p1 = p2 = p3 = p4 = p5 = p6 = p7 = p8 = null;
 			providers = null;
