@@ -10,6 +10,7 @@ package com.gestureworks.cml.element
 	import flash.filters.ShaderFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.Timer;
 	import org.tuio.*;
 	
@@ -58,18 +59,17 @@ package com.gestureworks.cml.element
 		private var NotchGraphic:Class;
 		
 		private var _border:Sprite;
-		private var mBorder:Sprite;
 		
 		private const ZERO_POINT:Point = new Point(0,0);
 		
 		private var shader:Shader;
 		private var shaderFilter:ShaderFilter;
 		
-		private var canvas:BitmapData;
-		private var canvasContainer:Bitmap;
-		public var bitmapData:BitmapData;
+		private var backgroundSourceCanvas:BitmapData;
+		private var backgroundCanvasContainer:Bitmap;
+		public var backgroundBitmapData:BitmapData;
 		
-		private var mSprite:Sprite;
+		private var backgroundMaskSprite:Sprite;
 		
 		private var timer:Timer;
 		
@@ -99,6 +99,9 @@ package com.gestureworks.cml.element
 		public function set radius(value:Number):void {
 			_radius = value;
 		}
+		
+		private var _radiusOffset:Number = 0;
+		private var _radiusOffsetHeight:Number = 0;
 		
 		private var _distortionRadius:Number = 30;
 		/**
@@ -136,6 +139,47 @@ package com.gestureworks.cml.element
 			_magnification = value;
 		}
 		
+		private var _zoomRotateFactor:Number = 0.01;
+		/**
+		 * Sets how fast rotating zooms in.
+		 * @default 0.01
+		 */
+		public function get zoomRotateFactor():Number {
+			return _zoomRotateFactor;
+		}
+		public function set zoomRotateFactor(value:Number):void {
+			_zoomRotateFactor = value;
+		}
+		
+		private var _zoomMin:Number = 1.0;
+		/**
+		 * The minimum zoom in value.
+		 * @default 1.0
+		 */
+		public function get zoomMin():Number {
+			return _zoomMin;
+		}
+		public function set zoomMin(value:Number):void {
+			_zoomMin = value;
+		}
+		
+		private var _zoomMax:Number = 5.0;
+		/**
+		 * The maximum zoom out value.
+		 * @default 1.0
+		 */
+		public function get zoomMax():Number { 
+			return _zoomMax;
+		}
+		public function set zoomMax(value:Number):void {
+			_zoomMax = value;
+		}
+		
+		private var _maxObjectScale:Number = 3.0;
+		public function get maxObjectScale():Number {
+			return _maxObjectScale;
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -148,14 +192,13 @@ package com.gestureworks.cml.element
 				timer = null;
 			}
 			
-			mSprite = null;
+			backgroundMaskSprite = null;
 			shaderFilter = null;
 			shader = null;
-			canvasContainer = null;
-			canvas = null;
-			bitmapData = null;
-			_border = null;
-			mBorder = null;			
+			backgroundCanvasContainer = null;
+			backgroundSourceCanvas = null;
+			backgroundBitmapData = null;
+			_border = null;			
 		}
 		
 		override public function init():void {
@@ -164,15 +207,15 @@ package com.gestureworks.cml.element
 			affineTransform = false;
 			gestureEvents = true;
 			
-			readyBitmaps();
-			
 			if (_graphic == "notch") {
 				_border = new NotchGraphic as Sprite;
-				mBorder = null;
-				var nRad:Number = _radius + 15;
+				_radiusOffset = 15;
+				_radiusOffsetHeight = 15;
+				var nRad:Number = _radius + _radiusOffset;
 				var nNum:Number = (nRad * 2) / _border.width;
 				_border.width *= nNum;
 				_border.height *= nNum;
+				_border.alpha = 1.0;
 				
 				this.width = _border.width;
 				this.height = _border.height;
@@ -180,8 +223,9 @@ package com.gestureworks.cml.element
 			} else if (_graphic == "default") {
 				
 				_border = new DefaultGraphic as Sprite;
-				mBorder = new mDefaultGraphic as Sprite;
-				var dRad:Number = _radius + 15;
+				_radiusOffset = 15;
+				_radiusOffsetHeight = _radiusOffset * 3;
+				var dRad:Number = _radius + _radiusOffset;
 				var dNum:Number = (dRad * 2) * (_border.height / _border.width) / _border.height;
 				_border.height *= dNum;
 				dNum = (dRad * 2) / _border.width;
@@ -194,70 +238,50 @@ package com.gestureworks.cml.element
 				this.height = _radius * 2;
 			}
 			
+			readyBitmaps();
+			
 			applyFilter();
 		}
 		
 		private function readyBitmaps():void {
-			bitmapData = new BitmapData(stage.width, stage.height, true, 0xffffff);
 			
+			backgroundBitmapData = new BitmapData(stage.width, stage.height, true, 0xffffff);
 			
-			bitmapData.draw(this.stage);
+			backgroundBitmapData.draw(this.stage);
 			
-			canvas = new BitmapData(stage.width, stage.height, false, 0x0);
+			backgroundSourceCanvas = new BitmapData(stage.width, stage.height, false, 0x0);
 			
-			canvasContainer = new Bitmap(canvas);
-			addChild(canvasContainer);
-	
-			//Set the centre of the canvas container to 0,0
-			canvasContainer.x = -_radius;
-			canvasContainer.y = -_radius;
+			backgroundCanvasContainer = new Bitmap(backgroundSourceCanvas);
+			addChild(backgroundCanvasContainer);
 		}
 		
 		private function applyFilter():void {
-			
+
 			shader = new Shader();
 			shader.byteCode = new MagnifierShader();
 			shaderFilter = new ShaderFilter(shader);
-			
+
 			applyMask();
 			init2();
 		}
 		
 		private function applyMask():void {
+				
+			backgroundMaskSprite = new Sprite();
+			backgroundMaskSprite.graphics.beginFill(0xffffff, 0);
+			backgroundMaskSprite.graphics.drawCircle(0, 0, radius);
+			backgroundMaskSprite.graphics.endFill();
 			
-			if (_graphic == "notch") {
-				
-				var tempRad:Number = (radius + 15);
-				
-				mSprite = new Sprite();
-				mSprite.graphics.beginFill(0xffffff, 1);
-				mSprite.graphics.drawCircle(0, 0, tempRad);
-				mSprite.graphics.endFill();
-				
-				addChild(mSprite);
+			addChild(backgroundMaskSprite);
+		
+			backgroundCanvasContainer.mask = backgroundMaskSprite;
 			
-				addChild(_border);
-			
-				this.mask = mSprite;
-			} else if (_graphic == "default") {
-				mBorder.width = _border.width;
-				mBorder.height = _border.height;
-				
-				addChild(mBorder);
+			if (_graphic == "notch" || _graphic == "default") {
 				
 				addChild(_border);
 				
-				this.mask = mBorder;
 			} else if (_graphic == "none") {
-				
-				mSprite = new Sprite();
-				mSprite.graphics.beginFill(0xffffff, 1);
-				mSprite.graphics.drawCircle(0, 0, _radius);
-				mSprite.graphics.endFill();
-				
-				addChild(mSprite);
-				
-				this.mask = mSprite;
+				// No functionality for default
 			}
 		}
 		
@@ -266,10 +290,14 @@ package com.gestureworks.cml.element
 			timer = new Timer(34);
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 			
+			gestureList = { "n-drag":true, "n-rotate":true, "n-scale":true };
+			
 			// Initialize custom touch events.
 			addEventListener(GWGestureEvent.ROTATE, rotateFilter);
 			addEventListener(GWGestureEvent.DRAG, dragHandler);
 			addEventListener(GWGestureEvent.SCALE, scaleHandler);
+			
+			updateBackgroundSpriteScale();
 			
 			timer.start();
 			width = _radius * 2;
@@ -277,91 +305,71 @@ package com.gestureworks.cml.element
 		}
 		
 		private function onTimer(e:TimerEvent):void {
+
 			this.visible = false;
-			bitmapData.fillRect(bitmapData.rect, 0);
-			bitmapData.draw(stage);
+			backgroundBitmapData.fillRect(backgroundBitmapData.rect, 0x0000FF);
+			backgroundBitmapData.draw(stage);
 			this.visible = true;
 			updateFilter();
 		}
 		
 		public function updateFilter():void {
-			canvas.copyPixels(bitmapData, this.getRect(stage), ZERO_POINT);
+
+			if (!backgroundSourceCanvas) {
+				return;
+			}
 			
-			shader.data.center.value = [_radius, _radius];
-			shader.data.innerRadius.value = [_radius - _distortionRadius];
-			shader.data.outerRadius.value = [_radius];
+			var offset:Number = radius + _radiusOffset;
+			
+			var point:Point = new Point(backgroundCanvasContainer.x, backgroundCanvasContainer.y);
+			
+			var worldPoint:Point = localToGlobal(point);
+			
+			var rect:Rectangle = new Rectangle(worldPoint.x, worldPoint.y, offset * 2.0, offset * 2.0);
+			
+			backgroundSourceCanvas.copyPixels(backgroundBitmapData, rect, ZERO_POINT);
+			
+			var magnifyRadius:Number = _radius;
+			var magnifyDistortionRadius:Number = _distortionRadius;
+			shader.data.center.value = [magnifyRadius, magnifyRadius];
+			
+			shader.data.innerRadius.value = [magnifyRadius - magnifyDistortionRadius];
+			shader.data.outerRadius.value = [magnifyRadius];
 			shader.data.magnification.value = [_magnification];
 			shaderFilter = new ShaderFilter(shader);
-			canvasContainer.filters = [shaderFilter];
+			backgroundCanvasContainer.filters = [shaderFilter];
+		}
+		
+		private function updateBackgroundSpriteScale():void {
+			
+			backgroundCanvasContainer.x = (-_radius - _radiusOffset);
+			backgroundCanvasContainer.y = (-_radius - _radiusOffsetHeight);
 		}
 		
 		private function scaleHandler(e:GWGestureEvent):void {
-			_radius += (e.value.scale_dsx + e.value.scale_dsy) * 20;
-			width = _radius * 2;
-			height = _radius * 2;
 			
-			var tempRad:Number = _radius + 15;
-			
-			if (_graphic == "notch") {
-				mSprite.width = tempRad * 2;
-				mSprite.height = tempRad * 2;
-				
-				mSprite.x += e.value.scale_dsx * 40;
-				mSprite.y += e.value.scale_dsy * 40;
-				
-				_border.width = tempRad * 2;
-				_border.height = tempRad * 2;
-				
-				_border.x = mSprite.x;
-				_border.y = mSprite.y;
-			} else if (_graphic == "default") {
-				var num:Number = (tempRad * 2) * (_border.height / _border.width) / _border.height;
-				_border.height *= num;
-				num = (tempRad * 2) / _border.width;
-				_border.width *= num;
-				
-				mBorder.width = _border.width;
-				mBorder.height = _border.height;
-				
-				width = _border.width;
-				height = _border.height;
-				
-				mBorder.x += e.value.scale_dsx * 40;
-				mBorder.y += e.value.scale_dsy * 40;
-				_border.x = mBorder.x;
-				_border.y = mBorder.y;
-			} else if (_graphic == "none") {
-				mSprite.width = _radius * 2;
-				mSprite.height = _radius * 2;
-				
-				mSprite.x += e.value.scale_dsx * 40;
-				mSprite.y += e.value.scale_dsy * 40;
-			}
+			// Scale currently has issues with 
+			return;
 		}
 		
 		private function rotateFilter(e:GWGestureEvent):void {
-			magnification += e.value.rotate_dtheta * 0.1;
-			if (_graphic == "notch") {
+			
+			if (_border) {
 				_border.rotation += e.value.rotate_dtheta;
-				mSprite.rotation = _border.rotation;
-			} else if (_graphic == "default") {
-				var m:Matrix = _border.transform.matrix;
-				
-				m.rotate(e.value.rotate_dtheta * PItoRAD);
-				m.tx = _border.x;
-				m.ty = _border.y;
-				
-				_border.transform.matrix = m;
-				
-				mBorder.x = _border.x;
-				mBorder.y = _border.y;
-				mBorder.rotation = _border.rotation;
 			}
+			
+			magnification += e.value.rotate_dtheta * _zoomRotateFactor;
+			
+			magnification = Math.min(_zoomMax, magnification);
+			magnification = Math.max(_zoomMin, magnification);
 		}
 		
 		private function dragHandler(e:GWGestureEvent):void {
+			
 			x += e.value.drag_dx;
 			y += e.value.drag_dy;
+			
+			onTimer(null);
 		}
 	}
 

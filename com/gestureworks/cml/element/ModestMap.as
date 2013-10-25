@@ -10,7 +10,9 @@ package com.gestureworks.cml.element
 	import com.modestmaps.mapproviders.yahoo.*;
 	import com.modestmaps.TweenMap;
 	import flash.display.DisplayObject;
+	import flash.events.GestureEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import org.tuio.*;
 	
 	
@@ -133,6 +135,26 @@ package com.gestureworks.cml.element
 			_draggable = value;
 		}
 		
+		private var _scaleFactor:Number = 15.0;
+		/**
+		 * Sets how fast the map scales in
+		 * @default 15.0
+		 */
+		public function get scaleFactor():Number { return _scaleFactor; }
+		public function set scaleFactor(value:Number):void {
+			_scaleFactor = value;
+		}
+		
+		private var _scaleable:Boolean = true;
+		/**
+		 * Sets if the map is scaleable
+		 * @default true
+		 */
+		public function get scaleable():Boolean { return _scaleable; }
+		public function set scaleable(value:Boolean):void {
+			_scaleable = value;
+		}
+		
 		private var _loaded:String = "";
 		/**
 		 * Read-only property indicating if the element is loaded or not.
@@ -174,25 +196,32 @@ package com.gestureworks.cml.element
 			
 			_loaded = "loaded";
 			
-			if (this.parent) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
-			}
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
 		}
 		
 		private function createEvents():void {
-			if (this.parent && this.parent is TouchContainer) {
-				this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				map.addEventListener(StateEvent.CHANGE, onZoom);
-			} else {
-				map.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				map.addEventListener(StateEvent.CHANGE, onZoom);
+			
+			gestureList = { "n-double_tap":true, "n-scale":true };
+			
+			addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+			addEventListener(GWGestureEvent.SCALE, onScale);
+			nativeTransform = false;
+		}
+		
+		private function onScale(e:GWGestureEvent):void {
+			
+			if (!scaleable) {
+				return;
 			}
+			
+			var scaleX:Number = e.value.scale_dsx;
+			var scaleY:Number = e.value.scale_dsy;
+			
+			var scaleDelta:Number = Math.max(scaleX, scaleY);
+			
+			map.zoomByAbout(scaleDelta * scaleFactor);
 		}
-		
-		private function onZoom(e:StateEvent):void {
-			map.zoomByAbout(e.value);
-		}
-		
+
 		/**
 		 * Sets the current index value
 		 * @param	e
@@ -216,8 +245,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function dispose():void {
 			super.dispose();	
-			if(parent)
-				parent.removeEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);					
+			removeEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
+			removeEventListener(GWGestureEvent.SCALE, onScale);
 			map = null;
 			p1 = p2 = p3 = p4 = p5 = p6 = p7 = p8 = null;
 			providers = null;
