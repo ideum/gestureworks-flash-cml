@@ -10,7 +10,9 @@ package com.gestureworks.cml.element
 	import com.modestmaps.mapproviders.yahoo.*;
 	import com.modestmaps.TweenMap;
 	import flash.display.DisplayObject;
+	import flash.events.GestureEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import org.tuio.*;
 	
 	
@@ -133,6 +135,26 @@ package com.gestureworks.cml.element
 			_draggable = value;
 		}
 		
+		private var _scaleFactor:Number = 15.0;
+		/**
+		 * Sets how fast the map scales in
+		 * @default 15.0
+		 */
+		public function get scaleFactor():Number { return _scaleFactor; }
+		public function set scaleFactor(value:Number):void {
+			_scaleFactor = value;
+		}
+		
+		private var _scaleable:Boolean = true;
+		/**
+		 * Sets if the map is scaleable
+		 * @default true
+		 */
+		public function get scaleable():Boolean { return _scaleable; }
+		public function set scaleable(value:Boolean):void {
+			_scaleable = value;
+		}
+		
 		private var _loaded:String = "";
 		/**
 		 * Read-only property indicating if the element is loaded or not.
@@ -181,18 +203,39 @@ package com.gestureworks.cml.element
 		
 		private function createEvents():void {
 			if (this.parent && this.parent is TouchContainer) {
+				
+				var touchContainer:TouchContainer = this.parent as TouchContainer;
+				
+				touchContainer.gestureList = { "n-double_tap":true, "n-scale":true };
+				
 				this.parent.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				map.addEventListener(StateEvent.CHANGE, onZoom);
+				this.parent.addEventListener(GWGestureEvent.SCALE, onScale);
+				touchContainer.nativeTransform = false;
+				
 			} else {
 				map.addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
-				map.addEventListener(StateEvent.CHANGE, onZoom);
 			}
 		}
 		
-		private function onZoom(e:StateEvent):void {
-			map.zoomByAbout(e.value);
+		private function onScale(e:GWGestureEvent):void {
+			
+			if (!scaleable) {
+				return;
+			}
+			
+			var scaleX:Number = e.value.scale_dsx;
+			var scaleY:Number = e.value.scale_dsy;
+			
+			var localX:Number = e.value.localX;
+			var localY:Number = e.value.localY;
+			
+			var position:Point = new Point(localX - x, localY - y);
+			
+			var scaleDelta:Number = Math.max(scaleX, scaleY);
+			
+			map.zoomByAbout(scaleDelta * scaleFactor, position);
 		}
-		
+
 		/**
 		 * Sets the current index value
 		 * @param	e
