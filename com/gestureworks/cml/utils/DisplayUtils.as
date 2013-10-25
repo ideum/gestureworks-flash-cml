@@ -284,13 +284,15 @@ package com.gestureworks.cml.utils
 		 * Returns a rotated point
 		 * @param	point The original point
 		 * @param	rotation The rotation in radians
-		 * @return
+		 * @param	center The center of rotation point
+		 * @return 
 		 */
-		public static function getRotatedPoint(point:Point, rotation:Number):Point {
-			var rp:Point = new Point(point.x * Math.cos(rotation) - point.y * Math.sin(rotation), point.x * Math.sin(rotation) + point.y * Math.cos(rotation));
-			rp.x = Math.round(rp.x * 100) / 100;
-			rp.y = Math.round(rp.y * 100) / 100;
-			return rp;
+		public static function getRotatedPoint(point:Point, rotation:Number, center:Point):Point {
+			var rotX:Number = (point.x-center.x) * Math.cos(rotation) - (point.y-center.y) * Math.sin(rotation);
+			var rotY:Number = (point.y - center.y) * Math.cos(rotation) + (point.x - center.x) * Math.sin(rotation);			
+			rotX += center.x;
+			rotY += center.y;	
+			return new Point(rotX, rotY);
 		}
 		
 		/**
