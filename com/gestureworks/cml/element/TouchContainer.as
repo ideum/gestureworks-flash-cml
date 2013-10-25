@@ -695,9 +695,6 @@ package com.gestureworks.cml.element
 			
 			function loopSearch(arr:Array, val:*, sType:String):* {
 				
-				trace("---------------loop-----------------------");
-				trace(arr);
-				
 				if (returnVal)
 					return;
 				
