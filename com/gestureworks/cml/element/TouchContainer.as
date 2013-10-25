@@ -423,11 +423,14 @@ package com.gestureworks.cml.element
 		 * method searches the child and adds to the list
 		 */
 		public function addAllChildren():void
-		{			
-			for (var i:int = 0; i < _childList.length; i++) 
+		{		
+			var n:int = childList.length;
+			for (var i:int = 0; i < childList.length; i++) 
 			{
-				if(childList.getIndex(i) is DisplayObject)
+				if (childList.getIndex(i) is DisplayObject)				
 				addChild(_childList.getIndex(i));
+				if (n != childList.length)
+					i--;
 			}
 		}		
 
