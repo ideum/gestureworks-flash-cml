@@ -713,14 +713,7 @@ package com.gestureworks.cml.element
 							}
 							
 							if (arr[i].childList.getValueArray()) {
-								
-								for each (var item:* in arr[i].childList.getValueArray()) {
-									if ("id" in item)
-										trace(item, item.id);
-								}
-								  
-								loopSearch(arr[i].childList.getValueArray(), val, sType);								
-							
+								loopSearch(arr[i].childList.getValueArray(), val, sType);
 							}
 						}
 					}					
