@@ -327,6 +327,16 @@ package com.gestureworks.cml.managers
 		}
 		
 		/**
+		 * Saves applicable objects with provided states by state id.
+		 * @param	stateId
+		 */
+		public static function saveState(stateId:*): void {
+			var obj:*;
+			for each(obj in lookUp[stateId])
+				obj.saveStateById(stateId);
+		}		
+		
+		/**
 		 * Returns all objects with states associated with the provided state id
 		 * @param	stateId
 		 * @return An array of objects
