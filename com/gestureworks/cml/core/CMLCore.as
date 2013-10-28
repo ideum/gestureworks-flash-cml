@@ -61,7 +61,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.Component; Component;	
 	import com.gestureworks.cml.components.FlickrViewer; FlickrViewer;
 	import com.gestureworks.cml.components.ModestMapViewer; ModestMapViewer;
-	//import com.gestureworks.cml.components.GigapixelViewer; GigapixelViewer;
+	import com.gestureworks.cml.components.GigapixelViewer; GigapixelViewer;
 	import com.gestureworks.cml.components.LiveVideoViewer; LiveVideoViewer;
 	import com.gestureworks.cml.components.SlideshowViewer; SlideshowViewer;
 	import com.gestureworks.cml.components.FlipBookViewer; FlipBookViewer;
@@ -106,7 +106,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
 	import com.gestureworks.cml.element.Paint; Paint;
 	import com.gestureworks.cml.element.Preloader; Preloader;
-	//import com.gestureworks.cml.element.Gigapixel; Gigapixel;
+	import com.gestureworks.cml.element.Gigapixel; Gigapixel;
 	import com.gestureworks.cml.element.Tab; Tab;
 	import com.gestureworks.cml.element.Key; Key;	
 	import com.gestureworks.cml.element.Magnifier; Magnifier;
