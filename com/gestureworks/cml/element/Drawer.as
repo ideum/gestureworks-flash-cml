@@ -34,6 +34,7 @@ package com.gestureworks.cml.element
 		
 		private var _title:String;
 		private var _handleColor:uint = 0x2E2D2D;		
+		private var _handleAlpha:Number = 1.0;		
 		private var _bkgColor:uint = 0x424141;
 		
 		private var _leftCornerRadius:Number = 20;
@@ -229,6 +230,15 @@ package com.gestureworks.cml.element
 		{
 			_handleColor = c;
 		}
+		
+		/**
+		 * The alpha of the drawer's handle
+		 * @default 1.0
+		 */		
+		public function get handleAlpha():Number { return _handleAlpha; }
+		public function set handleAlpha(value:Number):void {
+			_handleAlpha = value;
+		}		
 		
 		/**
 		 * The width of the handle's border in pixels
@@ -514,6 +524,7 @@ package com.gestureworks.cml.element
 			var bkg:Graphic = new Graphic();
 			bkg.shape = "roundRectangleComplex";
 			bkg.color = handleColor;
+			bkg.alpha = handleAlpha;
 			bkg.lineStroke = handleLineStroke;
 			bkg.lineColor = handleLineColor;
 			h.addChild(bkg);
@@ -902,6 +913,7 @@ package com.gestureworks.cml.element
 				positionHandle();
 			}
 		}
+		
 		
 		/**
 		 * @inheritDoc
