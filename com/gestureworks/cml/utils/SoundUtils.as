@@ -14,13 +14,7 @@ package com.gestureworks.cml.utils
 	 */
 	public class SoundUtils 
 	{
-		
 		private static var dictionary:Dictionary = new Dictionary();
-		
-		public function SoundUtils() 
-		{
-			
-		}
 		
 		/**
 		 * Writes cml to object sound.
