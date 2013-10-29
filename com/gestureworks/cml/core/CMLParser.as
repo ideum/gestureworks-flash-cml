@@ -182,7 +182,7 @@ package com.gestureworks.cml.core
 				else if (tag == "LayoutKit" || tag == "Layout")
 					ppLayoutKit(cml[i]);	
 				else if (tag == "Stage")
-					cml[i].setName("StageKit");				
+					cml[i].setName("StageKit");
 				else if (cml[i].@src != undefined)
 					ppMedia(cml[i]);					
 				
@@ -343,7 +343,7 @@ package com.gestureworks.cml.core
 			if (cml.parent().name() != "LayoutKit") return; 
 			
 			LayoutKit.instance.parseCML(XMLList(cml)); 
-			if (debug) trace("0:  Layout found: " + cml.@ref + cml.@classRef);	// deprecate classRef								
+			if (debug) trace("0:  Layout found: " + cml.@ref);	// deprecate classRef								
 		}	
 		
 		private static function ppMedia(cml:XML, str:String=""):void 
@@ -762,7 +762,7 @@ package com.gestureworks.cml.core
 			//new object reference
 			var obj:* = null;			
 			var as3class:Class;
-			
+						
 			//search for package syntax
 			if (tag.indexOf('.') != -1)
 			{
@@ -777,15 +777,14 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				obj = searchPackages(tag, CMLCore.PACKAGES);
 
+				obj = searchPackages(tag, CMLCore.PACKAGES);
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");
 			}
 				
 			return obj;
 		}		
-		
 		
 		
 		

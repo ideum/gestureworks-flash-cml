@@ -39,12 +39,21 @@ package com.gestureworks.cml.layouts
 		{
 			var xmlList:XMLList = null;
 			var obj:*;
+			var ref:String = "";
 
-
-			if (cml.@ref != undefined)
-				obj = CMLParser.instance.createObject(cml.@ref);
-			else if (cml.@classRef != undefined)
-				obj = CMLParser.instance.createObject(cml.@classRef);
+			if (cml.@ref != undefined) {
+				ref = String(cml.@ref);
+			} 
+			else if (cml.@classRef != undefined) {
+				ref = String(cml.@classRef);
+			}			
+			
+			if (ref.length) {				
+				if (!ref.search("Layout") == -1) {
+					ref = ref + "Layout";
+				}
+				obj = CMLParser.instance.createObject(ref);
+			}
 			else
 				throw new Error("The Layout tag requires the 'ref' attribute");
 			
@@ -56,17 +65,13 @@ package com.gestureworks.cml.layouts
 			var attrName:String;
 			var returnNode:XMLList = new XMLList;
 			
-			for each (var attrValue:* in cml.@*)
-			{				
+			for each (var attrValue:* in cml.@*) {				
 				attrName = attrValue.name().toString();
-				if (attrName != "classRef" && attrName != "ref")
+				if (attrName != "ref" && attrName != "classRef")
 					LayoutManager.instance.layoutList[obj.id][attrName] = attrValue;
 			}
 			
-			attrName = null;					
-				
-
-			
+			attrName = null;
 			return xmlList;
 		}		
 	}
