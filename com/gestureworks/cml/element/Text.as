@@ -69,6 +69,14 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void {
 			super.init();
+			
+			if (!width) {
+				width = 100;
+			}
+			if (!height) {
+				height = 100;
+			}
+			
 			updateTextFormat();			
 		}
 		
@@ -1070,7 +1078,8 @@ package com.gestureworks.cml.element
 					sum += textField.getLineMetrics(i).height;
 				}
 				super.y = setY + (this.height - sum) / 2;
-			}	
+			}
+			updateTextFormat();
 		}						
 
 		/**
@@ -1082,6 +1091,7 @@ package com.gestureworks.cml.element
 			if (parent) {
 				x = ((parent.width - width) / 2) + value;
 			}
+			updateTextFormat();
 		}
 		
 		/**
@@ -1093,6 +1103,7 @@ package com.gestureworks.cml.element
 			if (parent) {
 				y = ((parent.height - height) / 2) + value;
 			}
+			updateTextFormat();
 		}
 					
 		/**
