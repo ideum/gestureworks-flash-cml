@@ -8,7 +8,6 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.element.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.plugins.GlowFilterPlugin;
@@ -16,12 +15,9 @@ package com.gestureworks.cml.components
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.events.TouchEvent;
 	import flash.geom.Matrix;
 	import flash.utils.Timer;
-	import org.tuio.TuioTouchEvent;
 
 
 	/**

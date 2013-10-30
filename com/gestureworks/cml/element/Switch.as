@@ -2,13 +2,9 @@ package com.gestureworks.cml.element
 {
 	
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * The Switch element is acts as a switch button.

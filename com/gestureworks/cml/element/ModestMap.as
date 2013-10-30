@@ -10,9 +10,6 @@ package com.gestureworks.cml.element
 	import com.modestmaps.mapproviders.yahoo.*;
 	import com.modestmaps.TweenMap;
 	import flash.display.DisplayObject;
-	import flash.events.GestureEvent;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
 	import org.tuio.*;
 	
 	

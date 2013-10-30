@@ -8,7 +8,6 @@ package com.gestureworks.cml.element
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.Sprite;
 	import flash.events.FocusEvent;
-	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.text.*;
 
@@ -475,48 +474,6 @@ package com.gestureworks.cml.element
 				text = int(inputTxt.text);
 				text--;
 				inputTxt.text = text.toString();
-			}
-		}
-		
-		/**
-		 * handles mouse event increment text when up arrow pressed
-		 * @param	event
-		 */
-		private function incrementText(event:MouseEvent):void
-		{
-			if (float)
-			{
-				text = Number(inputTxt.text);
-				text = NumberUtils.roundNumber(text , 10);
-				text++;
-				inputTxt.text = text.toString();
-			}
-			else
-			{
-				text = int(inputTxt.text);
-				text++;
-				inputTxt.text = text.toString();
-			}
-		}
-		
-		/**
-		 * handles mouse event decrement text when down arrow pressed
-		 * @param	event
-		 */
-		private function decrementText(event:MouseEvent):void
-		{
-			if (float)
-			{
-				text = Number(inputTxt.text);
-				text = NumberUtils.roundNumber(text , 10);
-				text--;
-				inputTxt.text = text.toString();
-			}
-			else
-			{
-				text = int(inputTxt.text);
-				text--;
-				inputTxt.text = text.toString();	
 			}
 		}
 		
