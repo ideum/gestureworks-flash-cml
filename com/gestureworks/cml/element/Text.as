@@ -577,7 +577,9 @@ package com.gestureworks.cml.element
 		 * @playerversion	Flash 9
 		 * @playerversion	Lite 4
 		 */
-		public function get textWidth () : Number;		
+		public function get textWidth():Number {
+			return textField.textWidth;
+		}
 		
 		/**
 		 * The thickness of the glyph edges in this text field. This property applies only
