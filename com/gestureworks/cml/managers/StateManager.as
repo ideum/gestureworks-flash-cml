@@ -22,10 +22,10 @@ package com.gestureworks.cml.managers
 		
 		public static function get states():Array { return _states; }
 		
-		private static function get nextId():String { 
-			while (lookUp["state_" + id])
+		private static function get nextId():* { 
+			while (lookUp[id])
 				id++;
-			return "state_" + id; 
+			return id; 
 		};
 		
 		////////////////////////////////////////////////
@@ -252,8 +252,12 @@ package com.gestureworks.cml.managers
 			function registerInitialState():void {
 				if (!initial) {
 					initial = true;
+					
+					if (!object.state[0].stateId) {
+						object.state[0].stateId = nextId; // initial nextId will be 0
+					}
 					registerObject(object, object.state[0]);					
-					object.stateId = object.state[0].stateId;
+					//object.stateId = object.state[0].stateId;
 				}
 			}	
 			
@@ -294,6 +298,10 @@ package com.gestureworks.cml.managers
 			
 			if (!("state" in object)) return;
 			
+			if (object.id == "data-c") {
+				trace("hi");
+			}
+			
 			var stateId:String = attr["stateId"];
 			if (!stateId) {
 				stateId = nextId;
@@ -312,7 +320,6 @@ package com.gestureworks.cml.managers
 				
 				attrCopy["stateId"] = stateId;
 				
-				// TODO
 				_states.push(attrCopy);
 				object.state[stateId] = _states[_states.length - 1];			
 			}
@@ -323,9 +330,13 @@ package com.gestureworks.cml.managers
 		 * @param	stateId
 		 */
 		public static function loadState(stateId:*): void {
+			
 			var obj:*;
-			for each(obj in lookUp[stateId])
+			for each(obj in lookUp[stateId]) {
 				obj.loadState(stateId);
+				if (obj.id && obj.id == "data-c")
+					trace(obj.state);				
+			}
 		}
 		
 		/**
