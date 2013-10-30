@@ -29,11 +29,7 @@ package com.gestureworks.cml.element
 	 * @see SWF
 	 */	
 	public class Text extends TouchContainer {
-		private var _index:int;			
-		private var _paddingLeft:Number = 0;
-		private var _paddingRight:Number = 0;
-		private var _paddingTop:Number = 0;
-		private var _paddingBottom:Number = 0;		
+		private var _index:int;				
 		private var _verticalAlign:Boolean = false;
 		private var _horizontalCenter:Number = 0;
 		private var _verticalCenter:Number = 0;
@@ -52,14 +48,15 @@ package com.gestureworks.cml.element
 			_textField = new TextField;
 			_textFormat = new TextFormat;
 
+			textFormat.font = "OpenSansRegular";
+			textFormat.color = 0x000000;
+			textFormat.size = 15;
+			
 			textField.antiAliasType = AntiAliasType.ADVANCED;
-			textField.blendMode = BlendMode.ALPHA;
+			textField.blendMode = BlendMode.NORMAL;
 			textField.embedFonts = true;	
 			textField.selectable = false;
-			
-			textFormat.font = "OpenSansRegular";
-			textFormat.color = color;
-			textFormat.size = fontSize;
+			addChild(textField);
 			
 			updateTextFormat();
 		}
@@ -1047,7 +1044,7 @@ package com.gestureworks.cml.element
 		 * @inheritDoc
 		 */
 		override public function set width(value:Number):void {
-			width = value;
+			super.width = value;
 			textField.width = value;
 		}
 		
@@ -1055,7 +1052,7 @@ package com.gestureworks.cml.element
 		 * @inheritDoc
 		 */		
 		override public function set height(value:Number):void {
-			height = value;
+			super.height = value;
 			textField.height = value;
 			verticalAlign = verticalAlign;			
 		}		
