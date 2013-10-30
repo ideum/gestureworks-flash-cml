@@ -69,14 +69,6 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void {
 			super.init();
-			
-			if (!width) {
-				width = 100;
-			}
-			if (!height) {
-				height = 100;
-			}
-			
 			updateTextFormat();			
 		}
 		
