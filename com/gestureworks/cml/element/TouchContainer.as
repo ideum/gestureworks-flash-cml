@@ -932,8 +932,8 @@ package com.gestureworks.cml.element
 		private var _toBitmap:Boolean = false;
 		
 		public function get toBitmap():Boolean { return _toBitmap; }
-		public function set toBitmap(b:Boolean):void {
-			_toBitmap = b;
+		public function set toBitmap(value:Boolean):void {
+			_toBitmap = value;
 		}
 		
 		/**
