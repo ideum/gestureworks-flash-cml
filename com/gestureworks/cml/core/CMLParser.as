@@ -852,6 +852,7 @@ package com.gestureworks.cml.core
 		public static function attrLoop(obj:*, cml:XMLList):void
 		{
 			var attr:String;
+			var stateId:String;
 			
 			for each (var attrValue:* in cml.@*) {
 				attr = attrValue.name().toString();
@@ -870,10 +871,17 @@ package com.gestureworks.cml.core
 						attrValue = rootDirectory.concat(attrValue);
 					}					
 				}
-					
+				
+				if (attr == "stateId") {
+					stateId = attrValue;
+				}
+				
 				obj.state[0][attr] = attrValue;
 			}
-					
+			
+			if (stateId) {
+				obj.state[stateId] = obj.state[0];
+			}
 			attr = null;			
 		}
 		
@@ -959,7 +967,7 @@ package com.gestureworks.cml.core
 		 * @param	obj
 		 * @param	state
 		 */
-		public static function updateProperties(obj:*, state:Number=0):void
+		public static function updateProperties(obj:*, state:*=0):void
 		{
 			var propertyValue:String;
 			var objType:String;

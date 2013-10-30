@@ -64,7 +64,7 @@ package com.gestureworks.cml.core
 		 */
 		public function parseCML(cml:XMLList):XMLList
 		{			
-			return CMLParser.instance.parseCML(this, cml);
+			return CMLParser.parseCML(this, cml);
 		}
 		
 		/**
@@ -77,9 +77,9 @@ package com.gestureworks.cml.core
 		 * update the properties
 		 * @param	state
 		 */
-		public function updateProperties(state:Number=0):void
+		public function updateProperties(state:*=0):void
 		{
-			CMLParser.instance.updateProperties(this, state);		
+			CMLParser.updateProperties(this, state);		
 		}	
 	
 				

@@ -60,8 +60,8 @@ package com.gestureworks.cml.element
 		public function TouchContainer()
 		{
 			super();
-			state = [];
-			state[0] = new Dictionary(false);
+			state = new Dictionary(false);
+			state[0] = new State(false);
 			_childList = new ChildList;			
 			mouseChildren = false;
 			affineTransform = true; 
@@ -127,9 +127,9 @@ package com.gestureworks.cml.element
 		}	
 		
 		/**
-		 * property states array
+		 * property states
 		 */
-		public var state:Array;
+		public var state:Dictionary;
 		
 		/**
 		 * postparse method
@@ -141,9 +141,9 @@ package com.gestureworks.cml.element
 		 * update properties of child
 		 * @param	state
 		 */
-		public function updateProperties(state:Number=0):void
+		public function updateProperties(state:*=0):void
 		{
-			CMLParser.instance.updateProperties(this, state);		
+			CMLParser.updateProperties(this, state);		
 		}		
 			
 		/////////////////////////////////////////
@@ -315,15 +315,15 @@ package com.gestureworks.cml.element
 		// ISTATE
 		//////////////////////////////////////////////////////////////				
 		
-		private var _stateIndex:int = 0;
-		public function get stateIndex():int { return _stateIndex; }
+		//private var _stateIndex:int = 0;
+		//public function get stateIndex():int { return _stateIndex; }
 		
 		private var _stateId:String
 		/**
 		 * Sets the state id
 		 */
-		public function get stateId():String {return _stateId};
-		public function set stateId(value:String):void
+		public function get stateId():* {return _stateId};
+		public function set stateId(value:*):void
 		{
 			_stateId = value;
 		}
@@ -333,11 +333,11 @@ package com.gestureworks.cml.element
 		 * @param sIndex State index to be loaded.
 		 * @param recursion If true the state will load recursively through the display list starting at the current display ojbect.
 		 */
-		public function loadState(sIndex:int = NaN, recursion:Boolean = false):void { 
-			if (StateUtils.loadState(this, sIndex, recursion)){
-				_stateIndex = sIndex;
-				if ("stateId" in state[_stateIndex]) 
-					stateId = state[_stateIndex]["stateId"];
+		public function loadState(sId:* = null, recursion:Boolean = false):void { 
+			if (StateUtils.loadState(this, sId, recursion)){
+				_stateId = sId;
+				//if ("stateId" in state[sId]) 
+					//stateId = state[_stateIndex]["stateId"];
 			}
 		}
 		
@@ -346,56 +346,59 @@ package com.gestureworks.cml.element
 		 * @param sId State id to load.
 		 * @param recursion If true, the state will load recursively through the display list starting at the current display ojbect.
 		 */
-		public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
-			if (StateUtils.loadStateById(this, sId, recursion)){
-				_stateIndex = StateUtils.getStateById(this, sId);
-				stateId = sId;
-			}
-		}	
+		//public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
+			//if (StateUtils.loadStateById(this, sId, recursion)){
+				//_stateIndex = StateUtils.getStateById(this, sId);
+				//stateId = sId;
+			//}
+		//}	
 		
 		/**
 		 * Save state by index number. If the first parameter is NaN, the current state will be saved.
 		 * @param sIndex State index to save.
 		 * @param recursion If true the state will save recursively through the display list starting at the current display ojbect.
 		 */
-		public function saveState(sIndex:int = NaN, recursion:Boolean = false):void { StateUtils.saveState(this, sIndex, recursion); }		
+		public function saveState(sId:* = null, recursion:Boolean = false):void { StateUtils.saveState(this, sId, recursion); }		
 		
 		/**
 		 * Save state by stateId. If the first parameter is null, the current state will be saved.
 		 * @param sIndex State index to be save.
 		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
 		 */
-		public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
+		//public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
 		
 		/**
 		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be used.
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */
-		public function tweenState(sIndex:int = NaN, tweenTime:Number = 1):void { 
-			if (StateUtils.tweenState(this, sIndex, tweenTime))
-				_stateIndex = sIndex;
+		public function tweenState(sId:*= null, tweenTime:Number = 1):void {
+			if (StateUtils.tweenState(this, sId, tweenTime))
+				_stateId = sId;
 		}			
 		
 		/**
 		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be used.
 		 * @param sId State id to tween.
 		 */
-		public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
-			if (StateUtils.tweenStateById(this, sId, tweenTime))
-				_stateIndex = StateUtils.getStateById(this, sId);
-		}			
+		//public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
+			//if (StateUtils.tweenStateById(this, sId, tweenTime))
+				//_stateIndex = StateUtils.getStateById(this, sId);
+		//}			
 		
 		
 		
-		private var _dimensionsTo:String;
+		private var _dimensionsTo:Object;
 		/**
-		 * sets the dimensions of touchcontainer
+		 * Sets the dimensions of TouchContainer to given object
 		 */
-		public function get dimensionsTo():String { return _dimensionsTo ; }
-		public function set dimensionsTo(value:String):void
+		public function get dimensionsTo():Object { return _dimensionsTo ; }
+		public function set dimensionsTo(value:Object):void
 		{
 			_dimensionsTo = value;
+			this.width = value.width;
+			this.height = value.height;
+			this.length = value.length;
 		}		
 		
 		private var _autoShuffle:Boolean = false;

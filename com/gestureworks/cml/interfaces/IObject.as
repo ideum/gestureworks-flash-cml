@@ -31,7 +31,7 @@ package com.gestureworks.cml.interfaces
 		 * 
 		 * @param	state
 		 */
-		function updateProperties(state:Number = 0):void;
+		function updateProperties(state:* = 0):void;
 	}
 	
 }

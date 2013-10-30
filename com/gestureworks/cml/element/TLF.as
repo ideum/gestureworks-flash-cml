@@ -218,7 +218,7 @@ package com.gestureworks.cml.element
 		 * Custom property update to account for TLF child nodes
 		 * @param	state
 		 */
-		override public function updateProperties(state:Number = 0):void 
+		override public function updateProperties(state:* = 0):void 
 		{
 			var propertyValue:String;
 			var objType:String;
