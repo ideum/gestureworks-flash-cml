@@ -249,20 +249,18 @@ package com.gestureworks.cml.managers
 			var initial:Boolean = false;
 			
 			//register initial state if parent contains state nodes
-			//function registerInitialState():void {
-				//if (!initial) {
-					//initial = true;
-					//registerObject(object, object.state[0]);
-					// TODO
-					//object.state[0] = object.state.pop();
-					//object.stateId = object.state[0].stateId;
-				//}
-			//}	
+			function registerInitialState():void {
+				if (!initial) {
+					initial = true;
+					registerObject(object, object.state[0]);					
+					object.stateId = object.state[0].stateId;
+				}
+			}	
 			
 			for each (var node:XML in cml.*) {
 				if (node.name() == "State") {
 					
-					//registerInitialState();
+					registerInitialState();
 					
 					if (node.@stateId == undefined)
 						node.@stateId = nextId;
