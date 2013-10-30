@@ -22,7 +22,7 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function saveState(obj:Object, state:*, recursion:Boolean=false, auto:Boolean=false):void 
+		public static function saveState(obj:Object, state:*, recursion:Boolean=false):void 
 		{	
 			if (!state) state = 0;
 			
