@@ -58,6 +58,9 @@ package com.gestureworks.cml.element
 			textField.selectable = false;
 			addChild(textField);
 			
+			width = 100;
+			height = 100;
+			
 			updateTextFormat();
 		}
 		
@@ -66,12 +69,6 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void {
 			super.init();
-			if (!width) {
-				width = 100;
-			}
-			if (!height) {
-				height = 100;
-			}
 			updateTextFormat();			
 		}
 		
@@ -1046,6 +1043,7 @@ package com.gestureworks.cml.element
 		override public function set width(value:Number):void {
 			super.width = value;
 			textField.width = value;
+			updateTextFormat();
 		}
 		
 		/**
@@ -1054,7 +1052,8 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void {
 			super.height = value;
 			textField.height = value;
-			verticalAlign = verticalAlign;			
+			verticalAlign = verticalAlign;	
+			updateTextFormat();			
 		}		
 		
 		/**
@@ -1117,13 +1116,13 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets bottom padding, currently only used for Menu layouts.
+		 * 
 		 */			
-		public function get scrollable():Boolean { return _scrollable; }
-		public function set scrollable(value:Boolean):void {
-			_scrollable = value;
-			updateTextFormat();			
-		}
+		//public function get scrollable():Boolean { return _scrollable; }
+		//public function set scrollable(value:Boolean):void {
+			//_scrollable = value;
+			//updateTextFormat();			
+		//}
 		
 		
 		/////////////////////
@@ -1153,9 +1152,9 @@ package com.gestureworks.cml.element
 				addChild(b);
 			}
 			
-			if (scrollable) {
-				textField.scrollRect = new Rectangle(0, 0, this.width, this.height);
-			}
+			//if (scrollable) {
+				//textField.scrollRect = new Rectangle(0, 0, this.width, this.height);
+			//}
 			
 			textField.text = this.text;			
 		}
