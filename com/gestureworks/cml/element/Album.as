@@ -436,33 +436,15 @@ package com.gestureworks.cml.element
 		 * based on the greatest width and height of the child dimensions. If clusterBubbling is enabled, the children 
 		 * are wrapped in a TouchSprite to enable interactivity.
 		 */		
-		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
+		override public function addChild(child:DisplayObject):DisplayObject 
 		{			
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;			
 			frame.width = child.width > frame.width ? child.width: frame.width;
 			frame.height = child.height > frame.height ? child.height : frame.height;
 
-			if (belt.clusterBubbling) //wrap child in a TouchSprite 
-			{
-				var ts:TouchSprite;
-				if (child is TouchSprite)
-					ts = TouchSprite(child);
-				else
-				{
-					ts = new TouchSprite();
-					ts.addChild(child);
-					ts.width = child.width;
-					ts.height = child.height;
-				}
-				
-				belt.addChild(ts);
-			}
-			else
-				belt.addChild(child);
-							
-				
-			return child;
+			childList.removeByValue(child);
+			return belt.addChild(child);											
 		}
 		
 		/**
@@ -470,7 +452,7 @@ package com.gestureworks.cml.element
 		 * based on the greatest width and height of the child dimensions. If clusterBubbling is enabled, the children 
 		 * are wrapped in a TouchSprite to enable interactivity.
 		 */		
-		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
+		override public function addChildAt(child:DisplayObject, index:int):DisplayObject 
 		{	
 			index = index == 0 ? 1 : index;
 			width = child.width > width ? child.width : width;
@@ -478,26 +460,8 @@ package com.gestureworks.cml.element
 			frame.width = child.width > frame.width ? child.width: frame.width;
 			frame.height = child.height > frame.height ? child.height : frame.height;			
 
-			if (belt.clusterBubbling) //wrap child in a TouchSprite 
-			{
-				var ts:TouchSprite;
-				if (child is TouchSprite)
-					ts = TouchSprite(child);
-				else
-				{
-					ts = new TouchSprite();
-					ts.addChild(child);
-					ts.width = child.width;
-					ts.height = child.height;
-				}
-				
-				belt.addChildAt(ts, index);
-			}
-			else
-				belt.addChildAt(child, index);
-							
-				
-			return child;
+			childList.removeByValue(child);
+			return belt.addChildAt(child, index);
 		}
 		
 		/**
