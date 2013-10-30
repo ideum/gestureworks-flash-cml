@@ -298,6 +298,10 @@ package com.gestureworks.cml.managers
 			
 			if (!("state" in object)) return;
 			
+			if (object.id == "data-c") {
+				trace("hi");
+			}
+			
 			var stateId:String = attr["stateId"];
 			if (!stateId) {
 				stateId = nextId;
@@ -329,7 +333,9 @@ package com.gestureworks.cml.managers
 			
 			var obj:*;
 			for each(obj in lookUp[stateId]) {
-				obj.loadState(stateId);			
+				obj.loadState(stateId);
+				if (obj.id && obj.id == "data-c")
+					trace(obj.state);				
 			}
 		}
 		
