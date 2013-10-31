@@ -757,7 +757,7 @@ package com.gestureworks.cml.core
 			{
 				//begin search in core class list
 
-				obj = searchPackages(tag, CMLCore.PACKAGES);
+				obj = searchPackages(tag, CMLCore.packages);
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");
 			}
