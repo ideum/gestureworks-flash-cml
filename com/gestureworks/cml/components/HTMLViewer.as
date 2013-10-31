@@ -27,7 +27,7 @@ package com.gestureworks.cml.components
 	 * 
 	 * @author Ideum/cyancdesign
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Image
+	 * @see com.gestureworks.cml.element.HTML
 	 * @see com.gestureworks.cml.element.TouchContainer
 	 */	
 	
