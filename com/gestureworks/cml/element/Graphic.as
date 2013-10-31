@@ -371,10 +371,10 @@ package com.gestureworks.cml.element
 		}		
 		
 		
-		private var _lineStroke:Number = 1;
+		private var _lineStroke:Number = 0;
 		/**
 		 * Sets the width of the line stroke (in pixels)
-		 * @default 1
+		 * @default 0
 		 */		
 		public function get lineStroke():Number{return _lineStroke;}
 		public function set lineStroke(value:Number):void

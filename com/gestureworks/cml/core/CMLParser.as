@@ -52,7 +52,7 @@ package com.gestureworks.cml.core
 		public static var cmlFile:String;
 		public static var cmlData:XML;
 		
-		public static var cmlDisplay:DisplayObjectContainer;
+		public static var cmlDisplay:Container;
 		
 		
 		public function CMLParser() {}
@@ -103,7 +103,7 @@ package com.gestureworks.cml.core
 			}
 			
 			// set parent display
-			cmlDisplay = parent as DisplayObjectContainer;
+			cmlDisplay = parent as Container;
 			
 			if (cml.PreloaderKit != undefined) {
 				var preloader:XML =  <cml/>
@@ -401,10 +401,7 @@ package com.gestureworks.cml.core
 		
 		
 		
-		
-		
-		
-		
+	
 		
 		private static function process(cml:XMLList):void
 		{
@@ -415,9 +412,7 @@ package com.gestureworks.cml.core
 			loadCSS();			
 		}
 		
-	
-	
-							
+					
 		/**
 		 * Recursive CML parsing
 		 * @param	cml
@@ -493,29 +488,23 @@ package com.gestureworks.cml.core
 				returned = parseFilter(obj, returned);
 				returned = parseGesture(obj, returned);
 				
-				obj.postparseCML(XMLList(node));
-				
-				
+				obj.postparseCML(XMLList(node));				
 				
 				//target state tag
 				StateManager.registerStateTag(obj, XMLList(node));
 				
 				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
-
-		
 					
 				if ("childToList" in parent)
 					parent.childToList(obj.id, obj);
 				
-				else if (parent == cmlDisplay && obj is DisplayObject)
+				if (parent == cmlDisplay && obj is DisplayObject)
 					cmlDisplay.addChild(obj);					
-
 					
 				//recursion
 				if (returned && returned.length())
 					loopCML(returned, obj);
-					
 			}
 		}		
 		

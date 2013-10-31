@@ -510,12 +510,12 @@ package com.gestureworks.cml.element
 		
 
 		//////////////////////////////////////////////////////////////
-		// TODO: Complete DOM methods
+		// DOM methods
 		//////////////////////////////////////////////////////////////	
 		
 	
 		/**
-		 * Returns the child element by id
+		 * Searches CML childList by id. The first object is returned.
 		 * @param	id
 		 * @return
 		 */
@@ -525,7 +525,7 @@ package com.gestureworks.cml.element
 		}
 	
 		/**
-		 * Returns the child element by CSS class name
+		 * Searches the CML childList by className. An array of objects are returned.
 		 * @param	className
 		 * @return
 		 */
@@ -534,19 +534,37 @@ package com.gestureworks.cml.element
 			return childList.getCSSClass(className).getValueArray();
 		}		
 		
-		
 		/**
-		 * Returns the child element by Tag name / AS3 class name
+		 * Searches the CML childList by tagName as Class. An array of objects are returned.
 		 * @param	tagName
 		 * @return
 		 */
-		public function getElementsByTagName(tagName:String):Array
+		public function getElementsByTagName(tagName:Class):Array
 		{
-			tagName = tagName.toUpperCase();
-			tagName = getQualifiedClassName(tagName);
-			var cls:Class = getDefinitionByName(tagName) as Class;
-			return childList.getClass(cls).getValueArray();
+			return childList.getClass(tagName).getValueArray();
 		}			
+		
+		/**
+		 * Searches the CML childList by selector. The first object is returned.
+		 * @param	selector
+		 * @return
+		 */
+		public function querySelector(selector:String):* 
+		{			
+			return searchChildren(selector);
+		}		
+
+		/**
+		 * Search the CML childList by selector. An array of objects are returned.
+		 * @param	selector
+		 * @return
+		 */
+		public function querySelectorAll(selector:*):Array 
+		{
+			return searchChildren(selector, Array);
+		}			
+		
+		
 		
 		
 		private function updateChildren():void
@@ -637,7 +655,7 @@ package com.gestureworks.cml.element
 		/**
 		 * This method does a depth first search of childLists. Search parameter can be a simple CSS selector 
 		 * (id or class) or AS3 Class. If found, a corresponding display object is returned, if not, null is returned.
-		 * The first occurrance that matches the parameter is returned.
+		 * The first occurrance that matches the parameter is returned, unless a returnType of Array (as class) is given;
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):* {		
 			var returnVal:* = null;
@@ -653,7 +671,7 @@ package com.gestureworks.cml.element
 			if (value is Class) {				
 				searchType = "getClass";
 			}
-			else if (value is String) {				
+			else if (value is String || XMLList) {				
 				// determine type and strip the first character
 				if (value.charAt(0) == "#") {
 					searchType = "getKey";
@@ -673,51 +691,60 @@ package com.gestureworks.cml.element
 			}
 			
 			// run first level search
-			if (searchType == "getKey" && this.childList.getKey(value)) {
-				if (returnType == Array)
-					returnArray = this.childList.getKey(value).getValueArray();
+			if (searchType == "getKey" && childList.getKey(value)) {
+				if (returnType == Array) {
+					for each (var item:* in childList) {
+						if ("id" in item && item.id == value) {
+							returnArray.push(item);
+						}
+					}
+				}
 				else
-					return this.childList.getKey(value);
+					return childList.getKey(value);
 			}
-			else if (searchType == "getCSSClass" && this.childList.getCSSClass(value, 0)) {
+			else if (searchType == "getCSSClass" && childList.getCSSClass(value, 0)) {
 				if (returnType == Array)
-					returnArray = this.childList.getCSSClass(value).getValueArray();
+					returnArray = childList.getCSSClass(value).getValueArray();
 				else
-					return this.childList.getCSSClass(value, 0);
+					return childList.getCSSClass(value, 0);
 			}
-			else if (searchType == "getClass" && this.childList.getClass(value, 0)) {
+			else if (searchType == "getClass" && childList.getClass(value, 0)) {
 				if (returnType == Array)
-					returnArray = this.childList.getClass(value).getValueArray();
+					returnArray = childList.getClass(value).getValueArray();
 				else
-					return this.childList.getClass(value, 0);
+					return childList.getClass(value, 0);
 			}
 			
 			// recursive search through sub-children's childList
-			else {
+			if (childList.length) {				
 				var arr:Array = childList.getValueArray()
 				if (arr)
 					loopSearch(arr, value, searchType);
 			}
 			
 			function loopSearch(arr:Array, val:*, sType:String):* {
-				
-				if (returnVal)
+				if (returnVal) {
 					return;
+				}
 				
-				var tmp:Array;
-				
-				
+				var tmp:Array;				
 				if (returnType == Array) {					
 					for (var i:int = 0; i < arr.length; i++) {
 						if (arr[i].hasOwnProperty("childList")) {	
-							
-							if (arr[i].childList[sType](val)) {
+							if (sType == "getKey") {
+								for each (var item:* in arr[i].childList) {
+									if ("id" in item && item.id == value) {
+										returnArray.push(item);
+									}
+								}								
+							}
+							else if (arr[i].childList[sType](val)) {
 								returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());		
 							}
 							
 							if (arr[i].childList.getValueArray()) {
-								loopSearch(arr[i].childList.getValueArray(), val, sType);
-							}
+									loopSearch(arr[i].childList.getValueArray(), val, sType);
+							}							
 						}
 					}					
 				}
@@ -744,13 +771,15 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			if (returnType == Array)
+			if (returnType == Array) {
 				return returnArray;
-			else
+			}
+			else {
 				return returnVal;
+			}
 		}	
 		
-		
+	
 		
 		/**
 		 * Parse cml for local layouts.
