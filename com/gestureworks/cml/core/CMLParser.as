@@ -92,8 +92,8 @@ package com.gestureworks.cml.core
 			else
 				rootDirectory = "";
 				
-			rootDirectory = combinePaths(rootHeader, rootDirectory);
-				
+			rootDirectory = combinePaths(rootHeader, rootDirectory);			
+			
 			// set css file
 			var cssStr:String = "";
 			if (cml.@css != undefined)
@@ -101,22 +101,10 @@ package com.gestureworks.cml.core
 			if (cssStr.length) {
 				CMLParser.cssFile = updatePath(cssStr);
 			}
-			
+
 			// set parent display
 			cmlDisplay = parent as Container;
 			
-			if (cml.PreloaderKit != undefined) {
-				var preloader:XML =  <cml/>
-				preloader.appendChild(XML(cml.PreloaderKit).copy());
-				
-				cmlData = preloader;
-				
-				preprocess(XMLList(preloader));
-				
-				preloader = XML(cml.PreloaderKit).copy();
-				delete cml["PreloaderKit"];
-			}
-			cmlData = cml;
 			// preprocess
 			preprocess(XMLList(cml));
 		}			
@@ -277,10 +265,12 @@ package com.gestureworks.cml.core
 		}
 		
 		private static function ppPreloaderKit(cml:XML):void 
-		{
-			if (cml.name() != "PreloaderKit") 
-				return;
-			//createObject(cml.name());
+		{	
+			if (cml.Preloader != undefined) {
+				var obj:Object = createObject(cml.name());
+				obj.parseCML();
+				obj.init();
+			}
 		}
 		
 		private static function ppInclude(cml:XML, str:String=""):void 
