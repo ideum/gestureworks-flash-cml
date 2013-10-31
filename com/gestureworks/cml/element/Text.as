@@ -58,8 +58,8 @@ package com.gestureworks.cml.element
 			textField.selectable = false;
 			addChild(textField);
 			
-			width = 100;
-			height = 100;
+			width = textField.width;
+			height = textField.height;
 			
 			updateTextFormat();
 		}
