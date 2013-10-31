@@ -1,5 +1,4 @@
-package com.gestureworks.cml.components 
-{
+package com.gestureworks.cml.components {
 	import com.gestureworks.cml.element.*;
 	import com.gestureworks.cml.events.*;
 	import flash.display.DisplayObject;
@@ -30,9 +29,7 @@ package com.gestureworks.cml.components
 	 * @see com.gestureworks.cml.element.HTML
 	 * @see com.gestureworks.cml.element.TouchContainer
 	 */	
-	
-	public class HTMLViewer extends Component
-	{
+	public class HTMLViewer extends Component {
 		private var backBtnTxt:Text;
 		private var backBtn:Button;
 		private var forwardBtnTxt:Text;
@@ -40,14 +37,15 @@ package com.gestureworks.cml.components
 		public var isLoaded:Boolean = true;		
 		private var _html:*;
 
-		public function HTMLViewer() 
-		{
+		/**
+		 * Contructor
+		 */
+		public function HTMLViewer() {
 			super();
 			mouseChildren = true;
 			nativeTransform = false;
 			affineTransform = false;
 		}
-		
 		
 		/**
 		 * Sets the video element.
@@ -80,6 +78,10 @@ package com.gestureworks.cml.components
 			super.init();
 		}
 		
+		/**
+		 * Load complete event handler
+		 * @param	e
+		 */
 		private function onLoadComplete(e:StateEvent):void {
 			if (e.property == "isLoaded") {
 				html.removeEventListener(StateEvent.CHANGE, onLoadComplete);
@@ -88,7 +90,10 @@ package com.gestureworks.cml.components
 			}
 		}
 		
-		
+		/**
+		 * @inheritDoc
+		 * @param	event
+		 */
 		override protected function updateLayout(event:*=null):void {
 			if (html) {
 				width = html.width;
@@ -105,7 +110,5 @@ package com.gestureworks.cml.components
 			html = null;
 		}
 		
-		
 	}
-
 }
