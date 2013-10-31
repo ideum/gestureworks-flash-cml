@@ -52,7 +52,6 @@ package com.gestureworks.cml.components
 		/**
 		 * Sets the video element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 * Regardless of how this set, a corresponding display object is always returned. 
 		 */		
 		public function get html():* { return _html }
 		public function set html(value:*):void {
