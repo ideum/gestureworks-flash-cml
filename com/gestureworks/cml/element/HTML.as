@@ -40,6 +40,9 @@ package com.gestureworks.cml.element
 		private var _baseURL:String = "http://";
 		private var _hideFlash:Boolean = true;
 		private var _hideFlashType:String = "visibility:hidden;";
+		private var _smooth:Boolean = true;
+		private var _width:Number = 1024;
+		private var _lockBaseURL:Boolean = true;
 		
 		/**
 		 * Constructor
@@ -116,8 +119,9 @@ package com.gestureworks.cml.element
 		}
 			
 		/**
-		 * Sets whether or not if Flash will be hideen (object/embed).
+		 * Sets whether or not if Flash will be hidden (object/embed).
 		 * hideFlashType = "display: none;" or "visibility:hidden;"
+		 * @default true
 		 */	
 		public function get hideFlash():Boolean{ return _hideFlash;}
 		public function set hideFlash(value:Boolean):void {
@@ -125,7 +129,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets the specific
+		 * Sets the specific type flash embed. Options are "display: none;" or "visibility:hidden;
 		 * @default visibility:hidden
 		 */
 		public function get hideFlashType():String{ return _hideFlashType;}
@@ -135,9 +139,9 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets the 
+		 * Sets whether or not to smooth the rendered html page
+		 * @default true
 		 */	
-		private var _smooth:Boolean = false;
 		public function get smooth():Boolean{ return _smooth;}
 		public function set smooth(value:Boolean):void
 		{
@@ -147,8 +151,8 @@ package com.gestureworks.cml.element
 		/**
 		 * Locks base url.
 		 * Set to true if you don't want users to be able to navigate awaw from http://www.xxxxxxx.xxx/
+		 * @default true 
 		 */	
-		private var _lockBaseURL:Boolean = true;
 		public function get lockBaseURL():Boolean{ return _lockBaseURL;}
 		public function set lockBaseURL(value:Boolean):void
 		{
@@ -158,6 +162,7 @@ package com.gestureworks.cml.element
 		/**
 		 * Get/Set the base URL.
 		 * Initial URL loaded.
+		 * @default http://
 		 */	
 		public function get baseURL():String{ return _baseURL;}
 		public function set baseURL(value:String):void
@@ -167,8 +172,8 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the width;
+		 * @defualt 1024
 		 */	
-		private var _width:Number = 1024;
 		override public function get width():Number{ return _width;}
 		override public function set width(value:Number):void
 		{
@@ -178,6 +183,7 @@ package com.gestureworks.cml.element
 		
 		/**
 		 * Sets the height.
+		 * @height 768
 		 */	
 		private var _height:Number = 768;
 		override public function get height():Number{ return _height;}
@@ -188,7 +194,7 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
-		 * Sets the src URL and sends load request
+		 * Sets the src URL and sends load request.
 		 */
 		public function get src():String { return _src; }
 		public function set src(value:String):void	{ 
