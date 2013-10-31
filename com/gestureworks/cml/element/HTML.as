@@ -24,7 +24,8 @@ package com.gestureworks.cml.element
 	 * @author Ideum/cyancdesign
 	 */
 	
-	public class HTML extends Container {		
+	public class HTML extends Container {	
+		private var _bkg:Sprite;	
 		private var _html:HTMLLoader;
 		private var _src:String = "";
 		private var _loadURL:String;
