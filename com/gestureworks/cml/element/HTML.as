@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {
+	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.events.StateEvent;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -25,7 +26,7 @@ package com.gestureworks.cml.element
 	 */
 	
 	public class HTML extends Container {	
-		private var _bkg:Sprite;	
+		private var _backgroundGraphic:Sprite;	
 		private var _html:HTMLLoader;
 		private var _src:String = "";
 		private var _loadURL:String;
@@ -38,10 +39,11 @@ package com.gestureworks.cml.element
 		private var _baseURL:String = "http://";
 		private var _hideFlash:Boolean = true;
 		private var _hideFlashType:String = "visibility:hidden;";
-		private var _smooth:Boolean = true;
+		private var _smooth:Boolean = false;
 		private var _lockBaseURL:Boolean = true;
 		private var _width:Number = 1024;		
 		private var _height:Number = 768;
+		private var _srcString:String;
 
 		public var _verticalScroll:ScrollBar;
 		public var _horizontalScroll:ScrollBar;
@@ -49,13 +51,24 @@ package com.gestureworks.cml.element
 		/**
 		 * Constructor
 		 */
-		public function HTML()
-		{
+		public function HTML() {
 			super();
+			_urlReq = new URLRequest;
+			_html = new HTMLLoader;
+		}
+		
+		override public function parseCML(cml:XMLList):XMLList {
+			var ret:XMLList = cml.copy();
+			var str:String = cml.children().toString();
+			if (str.length) {
+				_srcString = str;
+			}	
+			cml.setChildren(new XMLList());				
+			return CMLParser.parseCML(this, cml);
 		}
 		
 		/**
-		 * Getter for html object
+		 * Returns html object
 		 */
 		public function get html():HTMLLoader { return _html; }
 		
@@ -63,32 +76,45 @@ package com.gestureworks.cml.element
 		 * @inheritDoc
 		 */
 		override public function init():void {			
-			_loadURL = _baseURL;
-			if (_src != ""){
-				_loadURL = _src;
+			if (srcString.length) {
+				
+			}
+			else if (src.length) {
+				_urlReq.url = src;		
 			}
 			
-			_bkg = new Sprite();
-			_bkg.graphics.beginFill(0x000000);
-			_bkg.graphics.drawRect(0, 0, _width, _height);
-			_bkg.graphics.endFill();
-			addChild(_bkg);
+			// background graphic
+			_backgroundGraphic = new Sprite();
+			_backgroundGraphic.graphics.beginFill(0x000000);
+			_backgroundGraphic.graphics.drawRect(0, 0, _width, _height);
+			_backgroundGraphic.graphics.endFill();
+			addChild(_backgroundGraphic);
 			
+			// smoothed bitmap
 			rawSmoothCap = new Bitmap();
 			smoothCap = new Sprite();
 			smoothCap.addChild(rawSmoothCap);
 			addChild(smoothCap);
 			
-			_html = new HTMLLoader();
-			_urlReq = new URLRequest(_loadURL);
+			// html element
 			_html.width = _width;
 			_html.height = _height;
 			_html.addEventListener(Event.COMPLETE, onURLLoadComplete);
 			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onLocationChange);
 			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onLocationChanging );
-			_html.load(_urlReq); 
+			_html.window.as3Function = Main.changeStageColor;
+			
+			if (srcString.length) {
+				_html.placeLoadStringContentInApplicationSandbox = true;				
+				_html.loadString(_srcString);				
+			}
+			else {
+				_html.load(_urlReq); 
+			}
+			
 			addChild(_html);
 			
+			// scrollbars
 			_verticalScroll = new ScrollBar();	
 			_verticalScroll.x = _html.width - 25;
 			_verticalScroll.y = 0;
@@ -169,7 +195,7 @@ package com.gestureworks.cml.element
 		public function get baseURL():String{ return _baseURL;}
 		public function set baseURL(value:String):void
 		{
-			_baseURL = value;	
+			_baseURL = value;
 		}
 		
 		/**
@@ -202,6 +228,14 @@ package com.gestureworks.cml.element
 			_src = value;
 			if(loaded)
 				loadURL(_src);
+		}
+		
+		public function get srcString():String {
+			return _srcString;
+		}
+		
+		public function set srcString(value:String):void {
+			_srcString = value;
 		}
 		
 		/**
@@ -351,7 +385,7 @@ package com.gestureworks.cml.element
 			_html.alpha = 0;
 			addChild(smoothCap);
 			setChildIndex(smoothCap, 0);
-			setChildIndex(_bkg, 0);
+			setChildIndex(_backgroundGraphic, 0);
 		}	
 		
 		/**
