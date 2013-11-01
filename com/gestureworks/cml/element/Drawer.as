@@ -438,8 +438,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{
-			if (contains(child))
-				return child;
+			childList.removeByValue(child);
 			return contentHolder.addChild(child);
 		}
 		
@@ -450,6 +449,7 @@ package com.gestureworks.cml.element
 		 */		
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{
+			childList.removeByValue(child);
 			return contentHolder.addChildAt(child, index);
 		}
 		

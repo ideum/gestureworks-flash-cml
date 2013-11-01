@@ -1,15 +1,14 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.core.TouchSprite;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.text.*;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.Matrix;
 	import flash.filters.*;
-	import flash.events.TouchEvent;
 	import com.gestureworks.core.GestureWorks;
-	import flash.events.MouseEvent;	
-	import org.tuio.TuioTouchEvent;
 
 	/**
 	 * The DatePicker element provides date selection capability. The initial state will display the current
@@ -49,8 +48,8 @@ package com.gestureworks.cml.element
 		private var yCount:Number;					
 		private var calendar:Sprite;			// container-Sprite for the Date-Grid
 		private var bkg:Sprite;
-		private var prevArrow:Sprite;
-		private var nextArrow:Sprite;
+		private var prevArrow:TouchSprite;
+		private var nextArrow:TouchSprite;
 		private var dayDisplay:Sprite;
 		
 		/**
@@ -210,7 +209,7 @@ package com.gestureworks.cml.element
 			for(var i:int = 1; i<=daysNr; i++){	
 				if (dayNameNr == 1 && i != 1)  row++;  // increases the row-counter
 				//date number container
-				var nr_spr:Sprite = new Sprite();
+				var nr_spr:TouchSprite = new TouchSprite();
 				nr_spr.name = (mm+1)+"/"+i+"/"+yy;
 				nr_spr.x = (dayNameNr-1)*32;
 				nr_spr.y = row*20+30;
@@ -249,27 +248,12 @@ package com.gestureworks.cml.element
 		 * @param	util  the utilitiy to add the button to
 		 * @param	touchHandler  the handler for the touch event
 		 */
-		private function addEvents(util:Sprite, touchHandler:Function):void
+		private function addEvents(util:TouchSprite, touchHandler:Function):void
 		{
-			util.buttonMode = true;			
-			if (GestureWorks.activeTUIO)
-			{
-				util.addEventListener(TuioTouchEvent.TOUCH_DOWN, touchHandler);
-				util.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-				util.addEventListener(TuioTouchEvent.TOUCH_OUT, onOut);
-			}
-			else if (GestureWorks.activeNativeTouch)
-			{
-				util.addEventListener(TouchEvent.TOUCH_BEGIN, touchHandler);
-				util.addEventListener(TouchEvent.TOUCH_OVER, onOver);
-				util.addEventListener(TouchEvent.TOUCH_OUT, onOut);
-			}
-			else
-			{
-				util.addEventListener(MouseEvent.CLICK, touchHandler);
-				util.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-				util.addEventListener(MouseEvent.MOUSE_OUT, onOut);				
-			}			
+			util.buttonMode = true;	
+			util.addEventListener(GWTouchEvent.TOUCH_BEGIN, touchHandler);
+			util.addEventListener(GWTouchEvent.TOUCH_OVER, onOver);			
+			util.addEventListener(GWTouchEvent.TOUCH_OUT, onOut);					
 		}		
 		
 		//**************************Event Handlers**************************//
@@ -363,8 +347,8 @@ package com.gestureworks.cml.element
 		 * @param	rot  the rotation value
 		 * @return  the arrow sprite
 		 */
-		private function drawArrow(x:Number,y:Number,rot:Number):Sprite{  
-			var spr:Sprite = new Sprite();
+		private function drawArrow(x:Number,y:Number,rot:Number):TouchSprite{  
+			var spr:TouchSprite = new TouchSprite();
 			spr.graphics.lineStyle(1, 0);
 			spr.graphics.beginFill(fontColor);
 			spr.graphics.lineTo(0,-7.5);

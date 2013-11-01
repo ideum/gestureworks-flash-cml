@@ -2,6 +2,7 @@ package com.gestureworks.cml.managers
 {
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.*;
+	import com.greensock.events.TweenEvent;
 	import com.greensock.loading.core.LoaderCore;
 	import com.greensock.loading.data.SWFLoaderVars;
 	import com.greensock.loading.ImageLoader;
@@ -151,23 +152,21 @@ package com.gestureworks.cml.managers
 			return loader;
 		}
 		
-		
-		public static function onProgress(e:LoaderEvent):void
+		private static function onProgress(e:LoaderEvent):void
 		{
-			
+			dispatchEvent(e);
 		}
 		
-		public static function onComplete(e:LoaderEvent):void
+		private static function onComplete(e:LoaderEvent):void
 		{
-			
+			dispatchEvent(e);
 		}
 		
-		public static function onError(e:LoaderEvent):void
+		private static function onError(e:LoaderEvent):void
 		{
-			
+			dispatchEvent(e);
 		}
 				
-		
 		
 		// IEventDispatcher
         private static var _dispatcher:EventDispatcher = new EventDispatcher();

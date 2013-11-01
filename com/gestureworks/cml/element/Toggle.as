@@ -1,12 +1,8 @@
 package com.gestureworks.cml.element
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import org.tuio.TuioTouchEvent;
 	
 	/**
 	 * The Toggle element acts as a toggle button. It adds a crossline graphic inside of square when toggled.

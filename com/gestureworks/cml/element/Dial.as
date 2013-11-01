@@ -5,16 +5,11 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
-	import com.gestureworks.events.*;
 	import com.gestureworks.core.TouchSprite;
+	import com.gestureworks.events.*;
 	import com.greensock.TweenLite;
-	import flash.events.GestureEvent;
-	import flash.events.TouchEvent;
-	import flash.utils.Dictionary;
-	import org.tuio.TuioTouchEvent;
-	import flash.events.MouseEvent;
-	import flash.filters.DropShadowFilter;
 	import flash.display.*;
+	import flash.filters.DropShadowFilter;
 	import flash.geom.*;
 	import flash.text.*;
 	

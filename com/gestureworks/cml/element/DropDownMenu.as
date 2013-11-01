@@ -221,12 +221,8 @@ package com.gestureworks.cml.element
 			addChild(_menuTitle);
 			
 			//Add event listener for mouseDown/touchDown
-			if (GestureWorks.activeNativeTouch)
-				_menuTitle.addEventListener(TouchEvent.TOUCH_BEGIN, onDownHit);
-			else if (GestureWorks.activeTUIO)
-				_menuTitle.addEventListener(TuioTouchEvent.TOUCH_DOWN, onDownHit);
-			else
-				_menuTitle.addEventListener(MouseEvent.MOUSE_DOWN, onDownHit);
+			
+			_menuTitle.addEventListener(GWTouchEvent.TOUCH_BEGIN, onDownHit);
 			
 			//Create Text for each menu item.
 			for (var j:int = 0; j < menuItemsArray.length; j++) {
@@ -236,21 +232,9 @@ package com.gestureworks.cml.element
 				addChild(_menuItemsArray[j]);
 				_menuItemsArray[j].visible = false;
 				
-				if (GestureWorks.activeNativeTouch){
-					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[j].addEventListener(TouchEvent.TOUCH_END, onItemSelected);
-				}
-				else if (GestureWorks.activeTUIO){
-					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[j].addEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
-				}
-				else {
-					_menuItemsArray[j].addEventListener(MouseEvent.MOUSE_OVER, onOver);
-					_menuItemsArray[j].addEventListener(MouseEvent.MOUSE_OUT, onItemOut);
-					_menuItemsArray[j].addEventListener(MouseEvent.MOUSE_UP, onItemSelected);
-				}
+				_menuItemsArray[j].addEventListener(GWTouchEvent.TOUCH_OVER, onOver);
+				_menuItemsArray[j].addEventListener(GWTouchEvent.TOUCH_OUT, onItemOut);
+				_menuItemsArray[j].addEventListener(GWTouchEvent.TOUCH_END, onItemSelected);
 			}
 			if (_menuMarker){
 				triangle.y = (_height / 2) + (triangle.height / 2);
@@ -342,33 +326,17 @@ package com.gestureworks.cml.element
 					i.background = true;
 				}
 				i.visible = true;
-				if (GestureWorks.supportsTouch){
-					i.addEventListener(TouchEvent.TOUCH_OVER, onOver);
-					i.addEventListener(TouchEvent.TOUCH_OUT, onItemOut);
-					i.addEventListener(TouchEvent.TOUCH_END, onItemSelected);
-				}
-				else if (GestureWorks.activeTUIO){
-					i.addEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-					i.addEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
-					i.addEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
-				}
-				else {
-					i.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-					i.addEventListener(MouseEvent.MOUSE_OUT, onItemOut);
-					i.addEventListener(MouseEvent.MOUSE_UP, onItemSelected);
-				}
-				//_menuItemsArray[i].visible = true;
 				
+				i.addEventListener(GWTouchEvent.TOUCH_OVER, onOver);
+				i.addEventListener(GWTouchEvent.TOUCH_OUT, onItemOut);
+				i.addEventListener(GWTouchEvent.TOUCH_END, onItemSelected);
+
+				//_menuItemsArray[i].visible = true;
 			}
 			
 			this.height = _height * _menuItemsArray.length + _menuTitle.height;
 			
-			if (GestureWorks.activeNativeTouch)
-				_hit.addEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
-			else if (GestureWorks.activeTUIO)
-				_hit.addEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
-			else
-				_hit.addEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
+			_hit.addEventListener(GWTouchEvent.TOUCH_OUT, onMenuOut);
 			
 			if(!noDispatch)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "menu", "open", true));
@@ -391,30 +359,13 @@ package com.gestureworks.cml.element
 			for (var i:Number = 0; i < _menuItemsArray.length; i++) {
 				//removeChild(i);
 				_menuItemsArray[i].visible = false;
-				if (GestureWorks.supportsTouch){
-					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_END, onItemSelected);
-				}
-				else if (GestureWorks.activeTUIO){
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
-				}
-				else {
-					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_UP, onItemSelected);
-				}
+				
+				_menuItemsArray[i].removeEventListener(GWTouchEvent.TOUCH_OVER, onOver);
+				_menuItemsArray[i].removeEventListener(GWTouchEvent.TOUCH_OUT, onItemOut);
+				_menuItemsArray[i].removeEventListener(GWTouchEvent.TOUCH_END, onItemSelected);
 			}
 			
-			if (GestureWorks.activeNativeTouch)
-				_hit.removeEventListener(TouchEvent.TOUCH_OUT, onMenuOut);
-			else if (GestureWorks.activeTUIO)
-				_hit.removeEventListener(TuioTouchEvent.TOUCH_OUT, onMenuOut);
-			else
-				_hit.removeEventListener(MouseEvent.MOUSE_OUT, onMenuOut);
-			
+			_hit.removeEventListener(GWTouchEvent.TOUCH_OUT, onMenuOut);					
 			if(!noDispatch)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "menu", "close", true));
 		}
@@ -426,21 +377,9 @@ package com.gestureworks.cml.element
 			super.dispose();
 					
 			for (var i:Number = 0; i < _menuItemsArray.length; i++) {
-				if (GestureWorks.activeNativeTouch){
-					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(TouchEvent.TOUCH_END, onItemSelected);
-				}
-				else if (GestureWorks.activeTUIO){
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(TuioTouchEvent.TOUCH_UP, onItemSelected);
-				}
-				else {
-					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OVER, onOver);
-					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_OUT, onItemOut);
-					_menuItemsArray[i].removeEventListener(MouseEvent.MOUSE_UP, onItemSelected);
-				}
+				_menuItemsArray[i].removeEventListener(GWTouchEvent.TOUCH_OVER, onOver);
+				_menuItemsArray[i].removeEventListener(GWTouchEvent.TOUCH_OUT, onItemOut);
+				_menuItemsArray[i].removeEventListener(GWTouchEvent.TOUCH_END, onItemSelected);
 			}
 			
 			_itemBackgrounds = null;

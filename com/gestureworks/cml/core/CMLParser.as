@@ -52,7 +52,7 @@ package com.gestureworks.cml.core
 		public static var cmlFile:String;
 		public static var cmlData:XML;
 		
-		public static var cmlDisplay:DisplayObjectContainer;
+		public static var cmlDisplay:Container;
 		
 		
 		public function CMLParser() {}
@@ -92,8 +92,8 @@ package com.gestureworks.cml.core
 			else
 				rootDirectory = "";
 				
-			rootDirectory = combinePaths(rootHeader, rootDirectory);
-				
+			rootDirectory = combinePaths(rootHeader, rootDirectory);			
+			
 			// set css file
 			var cssStr:String = "";
 			if (cml.@css != undefined)
@@ -101,22 +101,10 @@ package com.gestureworks.cml.core
 			if (cssStr.length) {
 				CMLParser.cssFile = updatePath(cssStr);
 			}
-			
+
 			// set parent display
-			cmlDisplay = parent as DisplayObjectContainer;
+			cmlDisplay = parent as Container;
 			
-			if (cml.PreloaderKit != undefined) {
-				var preloader:XML =  <cml/>
-				preloader.appendChild(XML(cml.PreloaderKit).copy());
-				
-				cmlData = preloader;
-				
-				preprocess(XMLList(preloader));
-				
-				preloader = XML(cml.PreloaderKit).copy();
-				delete cml["PreloaderKit"];
-			}
-			cmlData = cml;
 			// preprocess
 			preprocess(XMLList(cml));
 		}			
@@ -277,10 +265,12 @@ package com.gestureworks.cml.core
 		}
 		
 		private static function ppPreloaderKit(cml:XML):void 
-		{
-			if (cml.name() != "PreloaderKit") 
-				return;
-			//createObject(cml.name());
+		{	
+			if (cml.Preloader != undefined) {
+				var obj:Object = createObject(cml.name());
+				obj.parseCML();
+				obj.init();
+			}
 		}
 		
 		private static function ppInclude(cml:XML, str:String=""):void 
@@ -401,10 +391,7 @@ package com.gestureworks.cml.core
 		
 		
 		
-		
-		
-		
-		
+	
 		
 		private static function process(cml:XMLList):void
 		{
@@ -415,9 +402,7 @@ package com.gestureworks.cml.core
 			loadCSS();			
 		}
 		
-	
-	
-							
+					
 		/**
 		 * Recursive CML parsing
 		 * @param	cml
@@ -493,29 +478,23 @@ package com.gestureworks.cml.core
 				returned = parseFilter(obj, returned);
 				returned = parseGesture(obj, returned);
 				
-				obj.postparseCML(XMLList(node));
-				
-				
+				obj.postparseCML(XMLList(node));				
 				
 				//target state tag
 				StateManager.registerStateTag(obj, XMLList(node));
 				
 				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
-
-		
 					
 				if ("childToList" in parent)
 					parent.childToList(obj.id, obj);
 				
-				else if (parent == cmlDisplay && obj is DisplayObject)
+				if (parent == cmlDisplay && obj is DisplayObject)
 					cmlDisplay.addChild(obj);					
-
 					
 				//recursion
 				if (returned && returned.length())
 					loopCML(returned, obj);
-					
 			}
 		}		
 		
@@ -778,7 +757,7 @@ package com.gestureworks.cml.core
 			{
 				//begin search in core class list
 
-				obj = searchPackages(tag, CMLCore.PACKAGES);
+				obj = searchPackages(tag, CMLCore.packages);
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");
 			}
@@ -852,6 +831,7 @@ package com.gestureworks.cml.core
 		public static function attrLoop(obj:*, cml:XMLList):void
 		{
 			var attr:String;
+			var stateId:String;
 			
 			for each (var attrValue:* in cml.@*) {
 				attr = attrValue.name().toString();
@@ -870,10 +850,17 @@ package com.gestureworks.cml.core
 						attrValue = rootDirectory.concat(attrValue);
 					}					
 				}
-					
+				
+				if (attr == "stateId") {
+					stateId = attrValue;
+				}
+				
 				obj.state[0][attr] = attrValue;
 			}
-					
+			
+			if (stateId) {
+				obj.state[stateId] = obj.state[0];
+			}
 			attr = null;			
 		}
 		
@@ -959,7 +946,7 @@ package com.gestureworks.cml.core
 		 * @param	obj
 		 * @param	state
 		 */
-		public static function updateProperties(obj:*, state:Number=0):void
+		public static function updateProperties(obj:*, state:*=0):void
 		{
 			var propertyValue:String;
 			var objType:String;

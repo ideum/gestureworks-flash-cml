@@ -57,7 +57,7 @@ package com.gestureworks.cml.core
 		 * @param	id	The string cml object id.
 		 * @return  object	The corresponding display object if found.
 		 */
-		public function getId(id:String):* 
+		override public function getId(id:String):* 
 		{
 			return CMLObjectList.instance.getKey(id);
 		}

@@ -60,8 +60,8 @@ package com.gestureworks.cml.element
 		public function TouchContainer()
 		{
 			super();
-			state = [];
-			state[0] = new Dictionary(false);
+			state = new Dictionary(false);
+			state[0] = new State(false);
 			_childList = new ChildList;			
 			mouseChildren = false;
 			affineTransform = true; 
@@ -127,9 +127,9 @@ package com.gestureworks.cml.element
 		}	
 		
 		/**
-		 * property states array
+		 * property states
 		 */
-		public var state:Array;
+		public var state:Dictionary;
 		
 		/**
 		 * postparse method
@@ -141,9 +141,9 @@ package com.gestureworks.cml.element
 		 * update properties of child
 		 * @param	state
 		 */
-		public function updateProperties(state:Number=0):void
+		public function updateProperties(state:*=0):void
 		{
-			CMLParser.instance.updateProperties(this, state);		
+			CMLParser.updateProperties(this, state);		
 		}		
 			
 		/////////////////////////////////////////
@@ -315,15 +315,15 @@ package com.gestureworks.cml.element
 		// ISTATE
 		//////////////////////////////////////////////////////////////				
 		
-		private var _stateIndex:int = 0;
-		public function get stateIndex():int { return _stateIndex; }
+		//private var _stateIndex:int = 0;
+		//public function get stateIndex():int { return _stateIndex; }
 		
 		private var _stateId:String
 		/**
 		 * Sets the state id
 		 */
-		public function get stateId():String {return _stateId};
-		public function set stateId(value:String):void
+		public function get stateId():* {return _stateId};
+		public function set stateId(value:*):void
 		{
 			_stateId = value;
 		}
@@ -333,11 +333,11 @@ package com.gestureworks.cml.element
 		 * @param sIndex State index to be loaded.
 		 * @param recursion If true the state will load recursively through the display list starting at the current display ojbect.
 		 */
-		public function loadState(sIndex:int = NaN, recursion:Boolean = false):void { 
-			if (StateUtils.loadState(this, sIndex, recursion)){
-				_stateIndex = sIndex;
-				if ("stateId" in state[_stateIndex]) 
-					stateId = state[_stateIndex]["stateId"];
+		public function loadState(sId:* = null, recursion:Boolean = false):void { 
+			if (StateUtils.loadState(this, sId, recursion)){
+				_stateId = sId;
+				//if ("stateId" in state[sId]) 
+					//stateId = state[_stateIndex]["stateId"];
 			}
 		}
 		
@@ -346,56 +346,59 @@ package com.gestureworks.cml.element
 		 * @param sId State id to load.
 		 * @param recursion If true, the state will load recursively through the display list starting at the current display ojbect.
 		 */
-		public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
-			if (StateUtils.loadStateById(this, sId, recursion)){
-				_stateIndex = StateUtils.getStateById(this, sId);
-				stateId = sId;
-			}
-		}	
+		//public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
+			//if (StateUtils.loadStateById(this, sId, recursion)){
+				//_stateIndex = StateUtils.getStateById(this, sId);
+				//stateId = sId;
+			//}
+		//}	
 		
 		/**
 		 * Save state by index number. If the first parameter is NaN, the current state will be saved.
 		 * @param sIndex State index to save.
 		 * @param recursion If true the state will save recursively through the display list starting at the current display ojbect.
 		 */
-		public function saveState(sIndex:int = NaN, recursion:Boolean = false):void { StateUtils.saveState(this, sIndex, recursion); }		
+		public function saveState(sId:* = null, recursion:Boolean = false):void { StateUtils.saveState(this, sId, recursion); }		
 		
 		/**
 		 * Save state by stateId. If the first parameter is null, the current state will be saved.
 		 * @param sIndex State index to be save.
 		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
 		 */
-		public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
+		//public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
 		
 		/**
 		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be used.
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */
-		public function tweenState(sIndex:int = NaN, tweenTime:Number = 1):void { 
-			if (StateUtils.tweenState(this, sIndex, tweenTime))
-				_stateIndex = sIndex;
+		public function tweenState(sId:*= null, tweenTime:Number = 1):void {
+			if (StateUtils.tweenState(this, sId, tweenTime))
+				_stateId = sId;
 		}			
 		
 		/**
 		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be used.
 		 * @param sId State id to tween.
 		 */
-		public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
-			if (StateUtils.tweenStateById(this, sId, tweenTime))
-				_stateIndex = StateUtils.getStateById(this, sId);
-		}			
+		//public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
+			//if (StateUtils.tweenStateById(this, sId, tweenTime))
+				//_stateIndex = StateUtils.getStateById(this, sId);
+		//}			
 		
 		
 		
-		private var _dimensionsTo:String;
+		private var _dimensionsTo:Object;
 		/**
-		 * sets the dimensions of touchcontainer
+		 * Sets the dimensions of TouchContainer to given object
 		 */
-		public function get dimensionsTo():String { return _dimensionsTo ; }
-		public function set dimensionsTo(value:String):void
+		public function get dimensionsTo():Object { return _dimensionsTo ; }
+		public function set dimensionsTo(value:Object):void
 		{
 			_dimensionsTo = value;
+			this.width = value.width;
+			this.height = value.height;
+			this.length = value.length;
 		}		
 		
 		private var _autoShuffle:Boolean = false;
@@ -507,12 +510,12 @@ package com.gestureworks.cml.element
 		
 
 		//////////////////////////////////////////////////////////////
-		// TODO: Complete DOM methods
+		// DOM methods
 		//////////////////////////////////////////////////////////////	
 		
 	
 		/**
-		 * Returns the child element by id
+		 * Searches CML childList by id. The first object is returned.
 		 * @param	id
 		 * @return
 		 */
@@ -522,7 +525,7 @@ package com.gestureworks.cml.element
 		}
 	
 		/**
-		 * Returns the child element by CSS class name
+		 * Searches the CML childList by className. An array of objects are returned.
 		 * @param	className
 		 * @return
 		 */
@@ -531,19 +534,37 @@ package com.gestureworks.cml.element
 			return childList.getCSSClass(className).getValueArray();
 		}		
 		
-		
 		/**
-		 * Returns the child element by Tag name / AS3 class name
+		 * Searches the CML childList by tagName as Class. An array of objects are returned.
 		 * @param	tagName
 		 * @return
 		 */
-		public function getElementsByTagName(tagName:String):Array
+		public function getElementsByTagName(tagName:Class):Array
 		{
-			tagName = tagName.toUpperCase();
-			tagName = getQualifiedClassName(tagName);
-			var cls:Class = getDefinitionByName(tagName) as Class;
-			return childList.getClass(cls).getValueArray();
+			return childList.getClass(tagName).getValueArray();
 		}			
+		
+		/**
+		 * Searches the CML childList by selector. The first object is returned.
+		 * @param	selector
+		 * @return
+		 */
+		public function querySelector(selector:String):* 
+		{			
+			return searchChildren(selector);
+		}		
+
+		/**
+		 * Search the CML childList by selector. An array of objects are returned.
+		 * @param	selector
+		 * @return
+		 */
+		public function querySelectorAll(selector:*):Array 
+		{
+			return searchChildren(selector, Array);
+		}			
+		
+		
 		
 		
 		private function updateChildren():void
@@ -634,7 +655,7 @@ package com.gestureworks.cml.element
 		/**
 		 * This method does a depth first search of childLists. Search parameter can be a simple CSS selector 
 		 * (id or class) or AS3 Class. If found, a corresponding display object is returned, if not, null is returned.
-		 * The first occurrance that matches the parameter is returned.
+		 * The first occurrance that matches the parameter is returned, unless a returnType of Array (as class) is given;
 		 */			
 		public function searchChildren(value:*, returnType:Class=null):* {		
 			var returnVal:* = null;
@@ -650,7 +671,7 @@ package com.gestureworks.cml.element
 			if (value is Class) {				
 				searchType = "getClass";
 			}
-			else if (value is String) {				
+			else if (value is String || XMLList) {				
 				// determine type and strip the first character
 				if (value.charAt(0) == "#") {
 					searchType = "getKey";
@@ -670,51 +691,60 @@ package com.gestureworks.cml.element
 			}
 			
 			// run first level search
-			if (searchType == "getKey" && this.childList.getKey(value)) {
-				if (returnType == Array)
-					returnArray = this.childList.getKey(value).getValueArray();
+			if (searchType == "getKey" && childList.getKey(value)) {
+				if (returnType == Array) {
+					for each (var item:* in childList) {
+						if ("id" in item && item.id == value) {
+							returnArray.push(item);
+						}
+					}
+				}
 				else
-					return this.childList.getKey(value);
+					return childList.getKey(value);
 			}
-			else if (searchType == "getCSSClass" && this.childList.getCSSClass(value, 0)) {
+			else if (searchType == "getCSSClass" && childList.getCSSClass(value, 0)) {
 				if (returnType == Array)
-					returnArray = this.childList.getCSSClass(value).getValueArray();
+					returnArray = childList.getCSSClass(value).getValueArray();
 				else
-					return this.childList.getCSSClass(value, 0);
+					return childList.getCSSClass(value, 0);
 			}
-			else if (searchType == "getClass" && this.childList.getClass(value, 0)) {
+			else if (searchType == "getClass" && childList.getClass(value, 0)) {
 				if (returnType == Array)
-					returnArray = this.childList.getClass(value).getValueArray();
+					returnArray = childList.getClass(value).getValueArray();
 				else
-					return this.childList.getClass(value, 0);
+					return childList.getClass(value, 0);
 			}
 			
 			// recursive search through sub-children's childList
-			else {
+			if (childList.length) {				
 				var arr:Array = childList.getValueArray()
 				if (arr)
 					loopSearch(arr, value, searchType);
 			}
 			
 			function loopSearch(arr:Array, val:*, sType:String):* {
-				
-				if (returnVal)
+				if (returnVal) {
 					return;
+				}
 				
-				var tmp:Array;
-				
-				
+				var tmp:Array;				
 				if (returnType == Array) {					
 					for (var i:int = 0; i < arr.length; i++) {
 						if (arr[i].hasOwnProperty("childList")) {	
-							
-							if (arr[i].childList[sType](val)) {
+							if (sType == "getKey") {
+								for each (var item:* in arr[i].childList) {
+									if ("id" in item && item.id == value) {
+										returnArray.push(item);
+									}
+								}								
+							}
+							else if (arr[i].childList[sType](val)) {
 								returnArray = returnArray.concat(arr[i].childList[sType](val).getValueArray());		
 							}
 							
 							if (arr[i].childList.getValueArray()) {
-								loopSearch(arr[i].childList.getValueArray(), val, sType);
-							}
+									loopSearch(arr[i].childList.getValueArray(), val, sType);
+							}							
 						}
 					}					
 				}
@@ -741,13 +771,15 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			if (returnType == Array)
+			if (returnType == Array) {
 				return returnArray;
-			else
+			}
+			else {
 				return returnVal;
+			}
 		}	
 		
-		
+	
 		
 		/**
 		 * Parse cml for local layouts.
@@ -932,8 +964,8 @@ package com.gestureworks.cml.element
 		private var _toBitmap:Boolean = false;
 		
 		public function get toBitmap():Boolean { return _toBitmap; }
-		public function set toBitmap(b:Boolean):void {
-			_toBitmap = b;
+		public function set toBitmap(value:Boolean):void {
+			_toBitmap = value;
 		}
 		
 		/**

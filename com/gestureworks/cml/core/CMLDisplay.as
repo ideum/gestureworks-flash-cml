@@ -1,6 +1,7 @@
 package com.gestureworks.cml.core
 {	
 	import com.gestureworks.cml.core.*;
+	import com.gestureworks.cml.element.Container;
 	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.utils.*;
 	import com.gestureworks.cml.utils.*;
@@ -14,7 +15,7 @@ package com.gestureworks.cml.core
 	 * @see com.gestureworks.cml.core.CMLParser
 	 * @see com.gestureworks.cml.core.CMLObjectList
 	 */
-	public class CMLDisplay extends Sprite
+	public class CMLDisplay extends Container
 	{
 		/**
 		 * Constructor
@@ -25,12 +26,11 @@ package com.gestureworks.cml.core
 		}
 		
 		/**
-		 * initialization method
+		 * Initialization method
 		 * @param	cml
 		 */
-		public function init(cml:XML):void 
+		public function initialize(cml:XML):void 
 		{	
-			removeEventListener(Event.ADDED_TO_STAGE, init);
 			DefaultStage.instance.stage = GestureWorks.application.stage;			
 			CMLParser.init(cml, this);			
 		}

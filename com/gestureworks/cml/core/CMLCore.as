@@ -12,34 +12,44 @@ package com.gestureworks.cml.core
 	 *	<li>com.gestureworks.buttons</li>
 	 *	<li>com.gestureworks.components</li>
 	 *	<li>com.gestureworks.element</li>
-	 *	<li>com.gestureworks.kits</li>
+	 *	<li>com.gestureworks.filters</li>
 	 *	<li>com.gestureworks.layouts</li>
 	 *	<li>com.gestureworks.menus</li>
 	 * </ul>
 	 * 
-	 * <p>You can then use the following import syntax to register your class:</p>
-	 * <code>com.gestureworks.cml.element.CustomClass; CustomClass;</code>
-	 *
+	 * <p>Register custom packages by pushing into the CMLCore.packages array.
+	 * 
+	 * <p>You can then use one of the following procedures to register your class:</p>
+	 * <listing version="3.0">com.gestureworks.cml.element.CustomClass; CustomClass;</listing>
+	 * <p>or</p>
+	 * <listing version="3.0">CMLCore.classes.push(CMLCustomClass);</listing>
 	 * 
 	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CML_AIR
 	 */		
-	public class CMLCore
-	{
-		// searchable packages
-		public static var PACKAGES:Array = 
-		[
+	public class CMLCore {
+		/**
+		 * The packages that are searchable by the CML parser. To add you own package, simply push
+		 * a new string into this array.
+		 */
+		public static var packages:Array = [
 			"",
 			"com.gestureworks.cml.buttons.",			
 			"com.gestureworks.cml.components.",		
 			"com.gestureworks.cml.element.",
 			"com.gestureworks.cml.filters.",
-			"com.gestureworks.cml.kits.",
 			"com.gestureworks.cml.layouts.",
 			"com.gestureworks.cml.menus.",
 			"com.gestureworks.cml.away3d.elements.",
 			"com.gestureworks.cml.away3d.geometries."
 		];
+		
+		/**
+		 * Custom classes can be registered by either pushing into this array or using the following import 
+		 * syntax (note the reference to the class after the import statement):
+		 * <listing version="3.0">import com.gestureworks.cml.components.MediaViewer; MediaViewer;</listing> 
+		 */		
+		public static var classes:Array = [];		
 		
 		// loads default open sans TLF fonts
 		public var fontManager:FontManager = new FontManager;
@@ -105,7 +115,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.ModestMap; ModestMap;
 	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
 	import com.gestureworks.cml.element.Paint; Paint;
-	import com.gestureworks.cml.element.Preloader; Preloader;
 	import com.gestureworks.cml.element.Gigapixel; Gigapixel;
 	import com.gestureworks.cml.element.Tab; Tab;
 	import com.gestureworks.cml.element.Key; Key;	

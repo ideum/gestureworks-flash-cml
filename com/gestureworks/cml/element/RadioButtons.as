@@ -1,16 +1,12 @@
  package com.gestureworks.cml.element
     {
+	import com.gestureworks.cml.element.Text;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
-	import flash.events.TouchEvent;
-	import com.gestureworks.core.GestureWorks;
-	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.cml.element.Text;
 	
 	/**
 	 * The RadioButtons element represents a group of radio buttons generated from a user defined list of labels. Other configurable

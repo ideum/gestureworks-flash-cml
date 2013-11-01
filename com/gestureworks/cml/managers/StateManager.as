@@ -1,5 +1,6 @@
 package com.gestureworks.cml.managers 
 {
+	import com.gestureworks.cml.element.State;
 	import com.gestureworks.cml.element.TLF;
 	import com.gestureworks.cml.utils.StringUtils;
 	import flash.utils.Dictionary;
@@ -15,7 +16,7 @@ package com.gestureworks.cml.managers
 		private static var attributes:Array;
 		private static var placeholder:int = -1;
 		private static var _states:Array = [];
-		private static var lookUp:Dictionary = new Dictionary;
+		private static var lookUp:State = new State;
 		
 		private static var id:int = 0;
 		
@@ -99,11 +100,11 @@ package com.gestureworks.cml.managers
 					if (stateAttr.name() == attr.value) {
 						
 						if (!renderStates[attr.placeholder])
-							renderStates[attr.placeholder] = new Dictionary();
+							renderStates[attr.placeholder] = new State();
 						if (!renderStates[attr.placeholder][stateId])
-							renderStates[attr.placeholder][stateId] = new Dictionary();	
+							renderStates[attr.placeholder][stateId] = new State();	
 						if (!renderStates[attr.placeholder][stateId][attr.property])
-							renderStates[attr.placeholder][stateId][attr.property] = new Dictionary();
+							renderStates[attr.placeholder][stateId][attr.property] = new State();
 							
 						renderStates[attr.placeholder][stateId][attr.property] = stateAttr.toString();
 					}
@@ -203,7 +204,7 @@ package com.gestureworks.cml.managers
 		public static function registerRenderObject(object:*): void {
 			placeholder = -1;
 			attributes = null;		
-			var firstObj:Dictionary = firstObject();
+			var firstObj:State = firstObject();
 			
 			for (var stateId:* in firstObj) {				
 				firstObj[stateId]["stateId"] = stateId;
@@ -217,8 +218,8 @@ package com.gestureworks.cml.managers
 		/**
 		 * Loops through the renderStates sparse array until it finds the first element.
 		 */
-		private static function firstObject():Dictionary {
-			var obj:Dictionary;
+		private static function firstObject():State {
+			var obj:State;
 			for each(obj in renderStates) {
 				return obj;
 			}
@@ -244,15 +245,14 @@ package com.gestureworks.cml.managers
 		
 			var name:String;
 			var val:*;	
-			var attr:Dictionary;
+			var attr:State;
 			var initial:Boolean = false;
 			
 			//register initial state if parent contains state nodes
 			function registerInitialState():void {
 				if (!initial) {
 					initial = true;
-					registerObject(object, object.state[0]);
-					object.state[0] = object.state.pop();
+					registerObject(object, object.state[0]);					
 					object.stateId = object.state[0].stateId;
 				}
 			}	
@@ -267,7 +267,7 @@ package com.gestureworks.cml.managers
 						
 					for each (val in node.@ * ) {
 						if(!attr)
-							attr = new Dictionary();
+							attr = new State();
 						name = val.name();	
 						if (val == "true") val = true;
 						if (val == "false") val = false;	
@@ -290,7 +290,7 @@ package com.gestureworks.cml.managers
 		 * @param	object The object to register
 		 * @param	attr Property to value Dictionary
 		 */
-		public static function registerObject(object:*, attr:Dictionary):void {
+		public static function registerObject(object:*, attr:State):void {
 			
 			if (!("state" in object)) return;
 			
@@ -301,7 +301,7 @@ package com.gestureworks.cml.managers
 			
 			//allow comma delimited state ids to associate a single state with multiple ids
 			var stateIds:Array = stateId.split(",");
-			var attrCopy:Dictionary;
+			var attrCopy:State;
 			
 			for each(stateId in stateIds) {
 				stateId = StringUtils.trim(stateId); 
@@ -311,8 +311,10 @@ package com.gestureworks.cml.managers
 				lookUp[stateId].push(object);
 				
 				attrCopy["stateId"] = stateId;
+				
+				// TODO
 				_states.push(attrCopy);
-				object.state.push(_states[_states.length - 1]);			
+				object.state[stateId] = _states[_states.length - 1];			
 			}
 		}
 		
@@ -323,7 +325,7 @@ package com.gestureworks.cml.managers
 		public static function loadState(stateId:*): void {
 			var obj:*;
 			for each(obj in lookUp[stateId])
-				obj.loadStateById(stateId);
+				obj.loadState(stateId);
 		}
 		
 		/**
@@ -333,7 +335,7 @@ package com.gestureworks.cml.managers
 		public static function saveState(stateId:*): void {
 			var obj:*;
 			for each(obj in lookUp[stateId])
-				obj.saveStateById(stateId);
+				obj.saveState(stateId);
 		}		
 		
 		/**
@@ -368,8 +370,8 @@ package com.gestureworks.cml.managers
 		 * @param source The source dictionary
 		 * @return The dictionary copy
 		 */
-		private static function copyAttributes(source:Dictionary):Dictionary {
-			var copy:Dictionary = new Dictionary();			
+		private static function copyAttributes(source:State):State {
+			var copy:State = new State();			
 			for (var key:String in source)
 				copy[key] = source[key];
 			return copy;
