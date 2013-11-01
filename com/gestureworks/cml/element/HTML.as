@@ -31,8 +31,6 @@ package com.gestureworks.cml.element
 		private var _loadURL:String;
 		private var _prevURL:String;
 		private var _urlReq:URLRequest;
-		public var _verticalScroll:ScrollBar;
-		public var _horizontalScroll:ScrollBar;
 		private var loaded:Boolean = false;
 		private var tmpImage:BitmapData;
 		private var rawSmoothCap:Bitmap;
@@ -41,8 +39,12 @@ package com.gestureworks.cml.element
 		private var _hideFlash:Boolean = true;
 		private var _hideFlashType:String = "visibility:hidden;";
 		private var _smooth:Boolean = true;
-		private var _width:Number = 1024;
 		private var _lockBaseURL:Boolean = true;
+		private var _width:Number = 1024;		
+		private var _height:Number = 768;
+
+		public var _verticalScroll:ScrollBar;
+		public var _horizontalScroll:ScrollBar;
 		
 		/**
 		 * Constructor
@@ -185,7 +187,6 @@ package com.gestureworks.cml.element
 		 * Sets the height.
 		 * @height 768
 		 */	
-		private var _height:Number = 768;
 		override public function get height():Number{ return _height;}
 		override public function set height(value:Number):void
 		{
