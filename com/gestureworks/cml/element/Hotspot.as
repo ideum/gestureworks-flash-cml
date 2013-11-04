@@ -77,6 +77,42 @@ package com.gestureworks.cml.element
 			_tetherAlpha = value;
 		}
 		
+		private var _tetherOffsetX:Number = 0;
+		/**
+		 * X offset to the source of the tether sprite
+		 */
+		public function get tetherOffsetX():Number { return _tetherOffsetX; }
+		public function set tetherOffsetX(val:Number):void { 
+			_tetherOffsetX = val; 
+		}
+		
+		private var _tetherOffsetY:Number = 0;
+		/**
+		 * Y offset to the source of the tether sprite
+		 */
+		public function get tetherOffsetY():Number { return _tetherOffsetY; }
+		public function set tetherOffsetY(val:Number):void { 
+			_tetherOffsetY = val; 
+		}
+		
+		private var _componentAnchorOffsetX:Number = 0;
+		/**
+		 *	X offset to where the tether sprite is anchored on the component 
+		 */
+		public function get componentAnchorOffsetX():Number { return _componentAnchorOffsetX; }
+		public function set componentAnchorOffsetX(val:Number):void { 
+			_componentAnchorOffsetX = val; 
+		}
+		
+		private var _componentAnchorOffsetY:Number = 0;
+		/**
+		 * Y offset to where the tether sprite is anchored on the component
+		 */
+		public function get componentAnchorOffsetY():Number { return _componentAnchorOffsetY; }
+		public function set componentAnchorOffsetY(val:Number):void { 
+			_componentAnchorOffsetY = val;
+		}
+		
 		private var _sceneX:Number = 0;
 		/**
 		 * The relative _x coordinate to be attached to on the scene of an object that does not use regular stage coordinates (ie: gigapixel).
@@ -263,14 +299,27 @@ package com.gestureworks.cml.element
 			}
 			
 			if (_component.visible){
-				tetherSprite.x = 18;
-				tetherSprite.y = 12;
+				tetherSprite.x = _tetherOffsetX;
+				tetherSprite.y = _tetherOffsetY;
 				tetherSprite.graphics.clear();
 				tetherSprite.graphics.lineStyle(_tetherStroke, _tetherColor, _tetherAlpha);
-				var point:Point = globalToLocal(new Point(_component.x, _component.y));
-				tetherSprite.graphics.lineTo(point.x, point.y);
-			}
+				
+				var mat:Matrix = new Matrix();
+				mat.identity();
+				mat.rotate(_component.rotation*Math.PI/180);
 			
+				var anchor:Point = new Point(_component.x + _componentAnchorOffsetX, 
+											  _component.y + _componentAnchorOffsetY);
+				
+				var nPoint:Point = DisplayUtils.getRotatedPoint(anchor, 
+																  _component.rotation * Math.PI / 180,
+																  new Point(_component.x, _component.y));
+											  
+				var point:Point = globalToLocal(new Point(nPoint.x, nPoint.y));
+
+				tetherSprite.graphics.lineTo(point.x - _tetherOffsetX, 
+											 point.y - _tetherOffsetY);
+			}
 		}
 		
 		/**
