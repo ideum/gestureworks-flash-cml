@@ -811,12 +811,7 @@ package com.gestureworks.cml.core
 		 */
 		public static function parseCML(obj:*, cml:XMLList):XMLList
 		{
-			// unique object identifier
-			obj.cmlIndex = CMLObjectList.instance.length;	
-			
-			// add to master object list
-			CMLObjectList.instance.append(obj.id, obj);	
-			
+			addToObjectList(obj);
 			var returnNode:XMLList = new XMLList;
 			
 			attrLoop(obj, cml);
@@ -825,8 +820,19 @@ package com.gestureworks.cml.core
 				returnNode = cml.*;
 			
 			return returnNode;
-		}		
+		}
 		
+		/**
+		 * Assigns cml index to object and adds object to global CMLObjectList
+		 * @param	obj
+		 */
+		public static function addToObjectList(obj:*):void {
+			// unique object identifier
+			obj.cmlIndex = CMLObjectList.instance.length;	
+			
+			// add to master object list
+			CMLObjectList.instance.append(obj.id, obj);				
+		}		
 		
 		public static function attrLoop(obj:*, cml:XMLList):void
 		{

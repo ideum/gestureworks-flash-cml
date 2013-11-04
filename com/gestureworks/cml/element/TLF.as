@@ -1,5 +1,6 @@
 package com.gestureworks.cml.element
 {	
+	import com.gestureworks.cml.core.CMLParser;
 	import flash.display.Sprite;
 	import flash.text.engine.*;
 	
@@ -78,6 +79,7 @@ package com.gestureworks.cml.element
 		 */
 		override public function parseCML(cml:XMLList):XMLList
 		{
+			CMLParser.addToObjectList(this);
 			XML.ignoreWhitespace = true;			
 			input(cml.children());
 			var returnNode:XMLList = new XMLList;
