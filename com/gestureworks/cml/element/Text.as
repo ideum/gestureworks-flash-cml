@@ -58,7 +58,7 @@ package com.gestureworks.cml.element
 			textField.blendMode = BlendMode.NORMAL;
 			textField.embedFonts = true;	
 			textField.selectable = false;
-			textField.gridFitType = "none"
+			textField.gridFitType = "none";
 			addChild(textField);
 			
 			width = textField.width;
@@ -226,7 +226,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get border():Boolean { return textField.border; }
 		public function set border(value:Boolean):void {
-			textField.border;
+			textField.border = value;
 			if (toBitmap) {
 				updateTextFormat();
 			}				
