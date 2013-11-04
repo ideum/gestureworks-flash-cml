@@ -176,9 +176,19 @@ package com.gestureworks.cml.element
 		 * @param input string
 		 */
 		public function input(value:XMLList):void
-		{		
+		{
 			inputVal = formatInput(value.copy());			
 			configuration.textFlowInitialFormat = textFormat;
+			
+			if (textFlow) {
+				textFlow.removeEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, onChange);
+				if(container) {
+					textFlow.flowComposer.removeController(container);
+				}
+				textFlow = null;
+				initialized = false;
+			}
+			
 			textFlow = TextConverter.importToFlow(value.toString(), TextConverter.TEXT_LAYOUT_FORMAT, configuration);
 			textFlow.fontLookup = FontLookup.EMBEDDED_CFF;
 			textFlow.fontFamily = font;	
