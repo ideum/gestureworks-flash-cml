@@ -961,6 +961,13 @@ package com.gestureworks.cml.core
 					newValue = true;
 				else if (newValue == "false")
 					newValue = false
+									
+				if (propertyName == "width" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
+					propertyName = "widthPercent";
+				}
+				else if (propertyName == "height" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
+					propertyName = "heightPercent";
+				}				
 					
 				isExpression = obj is Key && (propertyName == "text" || propertyName == "shiftText") ? false : String(newValue).charAt(0) == "{"; 
 				if (!isExpression) {

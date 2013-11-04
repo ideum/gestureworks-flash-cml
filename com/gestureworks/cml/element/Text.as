@@ -6,6 +6,7 @@ package com.gestureworks.cml.element
 	import flash.display.*;
 	import flash.geom.*;
 	import flash.text.*;
+	import flash.text.engine.FontMetrics;
 	import flash.utils.*;
 	
 	/**
@@ -35,6 +36,7 @@ package com.gestureworks.cml.element
 		private var _verticalCenter:Number = 0;
 		private var _textBitmap:Boolean = false;
 		private var _scrollable:Boolean = false;
+		private var _autosize:Boolean = true;
 
 		private var b:Bitmap;
 		private var bmd:BitmapData;		
@@ -56,6 +58,7 @@ package com.gestureworks.cml.element
 			textField.blendMode = BlendMode.NORMAL;
 			textField.embedFonts = true;	
 			textField.selectable = false;
+			textField.gridFitType = "none"
 			addChild(textField);
 			
 			width = textField.width;
@@ -170,11 +173,25 @@ package com.gestureworks.cml.element
 		 */
 		public function get autoSize():String { return textField.autoSize; }
 		public function set autoSize(value:String):void {
-			textField.autoSize = value;			
+			if (value == "true") { value = "left"; }
+			textField.autoSize = value;
+			super.width = textField.textWidth;
+			super.height = textField.textHeight;
 			if (toBitmap) {
 				updateTextFormat();
 			}		
 		}
+		
+		/**
+		 * Auto-sizes based on text.
+		 */
+		public function get autosize():Boolean { return _autosize; }
+		public function set autosize(value:Boolean):void {
+			if (value) {
+				autoSize = "left";
+			}
+			_autosize = value;
+		}		
 		
 		/**
 		 * Specifies whether the text field has a background fill. If true, the text field has a
@@ -548,7 +565,7 @@ package com.gestureworks.cml.element
 		 */
 		public function get text():String { return textField.text; }
 		public function set text(value:String):void {
-			textField.text = value;			
+			textField.text = value;
 			verticalAlign = _verticalAlign;
 			updateTextFormat();
 		}
@@ -1119,6 +1136,17 @@ package com.gestureworks.cml.element
 		}
 		
 		/**
+		 * Sets text string. Same as text.
+		 */
+		public function get str():String {
+			return text;
+		}
+		
+		public function set str(value:String):void {
+			text = value;
+		}
+		
+		/**
 		 * 
 		 */			
 		//public function get scrollable():Boolean { return _scrollable; }
@@ -1150,16 +1178,13 @@ package com.gestureworks.cml.element
 					removeChild(b);
 				}
 				textField.visible = false;
-				b.x = this.x;
-				b.y = this.y;
 				addChild(b);
 			}
 			
 			//if (scrollable) {
 				//textField.scrollRect = new Rectangle(0, 0, this.width, this.height);
 			//}
-			
-			textField.text = this.text;			
+			textField.text = this.text;
 		}
 		
 		

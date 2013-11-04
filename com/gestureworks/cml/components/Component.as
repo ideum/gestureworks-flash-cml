@@ -73,15 +73,15 @@ package com.gestureworks.cml.components
 			
 			textFields = [];
 			textFields = searchChildren(Text, Array);
-			for (var i:int = 0; i < textFields.length; i++)
+			for (var i:int = 0; i < textFields.length; i++) {
 				fontArray.push(textFields[i].fontSize);
+			}
 			
 			scrollPanes = [];
 			scrollPanes = searchChildren(ScrollPane, Array);
 			
 			addEventListener(GWGestureEvent.RELEASE, noActivity);
-			
-			updateLayout();				
+			updateLayout();	
 		}
 		
 		private var _fontIncrement:Number = 2;
@@ -225,10 +225,10 @@ package com.gestureworks.cml.components
 		}				
 		
 		
-		private var _autoTextLayout:Boolean = true;
+		private var _autoTextLayout:Boolean = false;
 		/**
 		 * Specifies whether text fields will be automatically adjusted to the component's width
-		 * @default true
+		 * @default false
 		 */		
 		public function get autoTextLayout():Boolean {return _autoTextLayout}
 		public function set autoTextLayout(value:Boolean):void 
@@ -243,7 +243,6 @@ package com.gestureworks.cml.components
 		public function get timeout():Number { return _timeout; }
 		public function set timeout(value:Number):void {
 			_timeout = value;
-			//updateLayout();
 		}
 		
 		private var _fadeoutDuration:Number = 0;
@@ -369,7 +368,7 @@ package com.gestureworks.cml.components
 						textFields[i].y = textFields[i].paddingTop;
 					else
 						textFields[i].y = textFields[i].paddingTop + textFields[i - 1].paddingBottom + textFields[i - 1].height;
-					
+											
 					if (textFields[i].parent is ScrollPane) {
 						formatPane(textFields[i], textFields[i].parent);
 					}

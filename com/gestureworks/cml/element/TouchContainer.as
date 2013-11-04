@@ -54,6 +54,9 @@ package com.gestureworks.cml.element
 		private var b:Bitmap;
 		private var store:Array;
 		
+		private var _relativeX:Boolean = false;
+		private var _relativeY:Boolean = false;
+				
 		/**
 		 * Constructor
 		 */		
@@ -73,8 +76,13 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
+			updateAutosize();
+			updatePercentDim();			
+			updateRelativePos();	
+			updatePadding();
 			contentToBitmap();
 		}
+
 				
 		//////////////////////////////////////////////////////////////
 		// IOBJECT
@@ -182,6 +190,26 @@ package com.gestureworks.cml.element
 		override public function set height(value:Number):void
 		{
 			_height = value;
+		}
+		
+		private var _widthPercent:String = "";
+		/**
+		 * sets the width of the container
+		 */
+		public function get widthPercent():String{return _widthPercent;}
+		public function set widthPercent(value:String):void
+		{
+			_widthPercent = value;
+		}
+		
+		private var _heightPercent:String = "";
+		/**
+		 * sets the height of the container
+		 */
+		public function get heightPercent():String{return _heightPercent;}
+		public function set heightPercent(value:String):void
+		{
+			_heightPercent = value;
 		}		
 		
 		
@@ -315,9 +343,6 @@ package com.gestureworks.cml.element
 		// ISTATE
 		//////////////////////////////////////////////////////////////				
 		
-		//private var _stateIndex:int = 0;
-		//public function get stateIndex():int { return _stateIndex; }
-		
 		private var _stateId:String
 		/**
 		 * Sets the state id
@@ -336,22 +361,8 @@ package com.gestureworks.cml.element
 		public function loadState(sId:* = null, recursion:Boolean = false):void { 
 			if (StateUtils.loadState(this, sId, recursion)){
 				_stateId = sId;
-				//if ("stateId" in state[sId]) 
-					//stateId = state[_stateIndex]["stateId"];
 			}
-		}
-		
-		/**
-		 * Load state by stateId. If the first parameter is null, the current state will be save.
-		 * @param sId State id to load.
-		 * @param recursion If true, the state will load recursively through the display list starting at the current display ojbect.
-		 */
-		//public function loadStateById(sId:String = null, recursion:Boolean = false):void { 
-			//if (StateUtils.loadStateById(this, sId, recursion)){
-				//_stateIndex = StateUtils.getStateById(this, sId);
-				//stateId = sId;
-			//}
-		//}	
+		}	
 		
 		/**
 		 * Save state by index number. If the first parameter is NaN, the current state will be saved.
@@ -359,13 +370,6 @@ package com.gestureworks.cml.element
 		 * @param recursion If true the state will save recursively through the display list starting at the current display ojbect.
 		 */
 		public function saveState(sId:* = null, recursion:Boolean = false):void { StateUtils.saveState(this, sId, recursion); }		
-		
-		/**
-		 * Save state by stateId. If the first parameter is null, the current state will be saved.
-		 * @param sIndex State index to be save.
-		 * @param recursion If true the state will save recursively through the display list starting at current display ojbect.
-		 */
-		//public function saveStateById(sId:String, recursion:Boolean = false):void { StateUtils.saveStateById(this, sId, recursion); }
 		
 		/**
 		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be used.
@@ -378,15 +382,78 @@ package com.gestureworks.cml.element
 		}			
 		
 		/**
-		 * Tween state by stateId from current to given id. If the first parameter is null, the current state will be used.
-		 * @param sId State id to tween.
+		 *	Updates child auto-sizing within this container
+		 */			
+		public function updateAutosize():void {	
+			var i:int;
+			for (i = 0; i < numChildren; i++) {
+				if (getChildAt(i) is Text) {
+					getChildAt(i)['autosize'] = getChildAt(i)['autosize'];
+					trace("00000", getChildAt(i)['height']);
+				}
+			}	
+		}		
+		
+		/**
+		 *	Updates child percent dimensions within this container
+		 */		
+		public function updatePercentDim():void {		
+			if (widthPercent.length) {
+				var w:Number = Number(widthPercent.replace("%", ""));
+				width = parent.width * w / 100;
+				if ('paddingRight' in parent && parent['paddingRight']) {
+					width -= parent['paddingRight'];
+				}					
+			}
+			if (heightPercent.length) {
+				var h:Number = Number(heightPercent.replace("%", ""));
+				height = parent.height * h / 100;
+				if ('paddingBottom' in parent && parent['paddingBottom']) {
+					height -= parent['paddingBottom'];
+				}				
+			}	
+		}
+		
+		/**
+		 *	Updates child relative positions within this container
 		 */
-		//public function tweenStateById(sId:String, tweenTime:Number = 1):void { 
-			//if (StateUtils.tweenStateById(this, sId, tweenTime))
-				//_stateIndex = StateUtils.getStateById(this, sId);
-		//}			
-		
-		
+		public function updateRelativePos():void {		
+			var i:int;
+			if (relativeX) {
+				for (i = 1; i < numChildren; i++) {					
+					getChildAt(i).x = getChildAt(i - 1).height + getChildAt(i - 1).x;
+					if ( getChildAt(i)['state'][0]['x'] ) {
+						getChildAt(i).x += Number(getChildAt(i)['state'][0].x);
+					}
+				}					
+			}	
+			if (relativeY) {
+				for (i = 1; i < numChildren; i++) {			
+					getChildAt(i - 1)['autosize'] = "true";
+					getChildAt(i).y = getChildAt(i - 1).height + getChildAt(i - 1).y;
+					if ( getChildAt(i)['state'][0]['y'] ) {
+						getChildAt(i).y += Number(getChildAt(i)['state'][0].y);
+						
+					}
+					trace("y", getChildAt(i).y, getChildAt(i - 1).height, getChildAt(i - 1).y);
+					
+				}					
+			}				
+		}
+
+				
+		/**
+		 *	Updates child padding within this container
+		 */
+		public function updatePadding():void {
+			var i:int;
+			for (i = 0; i < numChildren; i++) {
+				getChildAt(i).x += paddingLeft;
+				getChildAt(i).width -= paddingLeft + paddingRight;
+				getChildAt(i).y += paddingTop;
+				getChildAt(i).height -= paddingTop + paddingBottom;
+			}			
+		}
 		
 		private var _dimensionsTo:Object;
 		/**
@@ -811,7 +878,7 @@ package com.gestureworks.cml.element
 						if (ref.search("Layout") == -1) {
 							ref = ref + "Layout";
 						}
-						obj = CMLParser.instance.createObject(ref);
+						obj = CMLParser.createObject(ref);
 					}
 					else
 						throw new Error("The Layout tag requires the 'ref' attribute");							
@@ -968,6 +1035,30 @@ package com.gestureworks.cml.element
 			_toBitmap = value;
 		}
 		
+		/**
+		 * When set true this containers children's x position will be laid out relatively 
+		 * to each other.
+		 */
+		public function get relativeX():Boolean {
+			return _relativeX;
+		}
+		
+		public function set relativeX(value:Boolean):void {
+			_relativeX = value;
+		}
+		
+		/**
+		 * When set true this containers children's y position will be laid out relatively 
+		 * to each other.
+		 */		
+		public function get relativeY():Boolean {
+			return _relativeY;
+		}
+		
+		public function set relativeY(value:Boolean):void {
+			_relativeY = value;
+		}
+
 		/**
 		 * Clone method
 		 */
