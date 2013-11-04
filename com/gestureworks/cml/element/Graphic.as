@@ -352,6 +352,53 @@ package com.gestureworks.cml.element
 			updateGraphic();
 		}
 		
+		private var _widthPercent:String = "";
+		/**
+		 * sets the width of the container
+		 */
+		override public function get widthPercent():String{return _widthPercent;}
+		override public function set widthPercent(value:String):void
+		{
+			_widthPercent = value;
+			
+			if (parent) {
+				var w:Number = Number(widthPercent.replace("%", ""));
+				width = parent.width * w / 100;
+				if ("paddingLeft" in parent && parent['paddingLeft']) {
+					if ( (width + y) > parent.width) {
+						width -= parent['paddingLeft'];
+					}
+					if ( (width + y) > parent.width) {
+						width -= parent['paddingRight'];
+					}	
+				}
+			}
+			updateGraphic();
+		}
+		
+		private var _heightPercent:String = "";
+		/**
+		 * sets the height of the container
+		 */
+		override public function get heightPercent():String{return _heightPercent;}
+		override public function set heightPercent(value:String):void
+		{
+			_heightPercent = value;
+			if (parent) {
+				var h:Number = Number(widthPercent.replace("%", ""));
+				height = parent.height * h / 100;
+				if ("paddingBottom" in parent && parent['paddingBottom']) {
+					if ( (height + y) > parent.height) {
+						height -= parent['paddingTop'];
+					}
+					if ( (height + y) > parent.height) {
+						height -= parent['paddingBottom'];
+					}	
+				}
+			}
+			updateGraphic();
+		}			
+		
        		
 		///////////////////////////////
 		// LINE TYPES AND PROPERTIES //

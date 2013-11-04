@@ -199,6 +199,13 @@ package com.gestureworks.cml.element
 		public function set widthPercent(value:String):void
 		{
 			_widthPercent = value;
+			if (parent) {
+				var w:Number = Number(widthPercent.replace("%", ""));
+				width = parent.width * w / 100;
+				if ("paddingRight" in parent && parent['paddingRight']) {
+					width -= parent['paddingRight'] + parent['paddingLeft'];
+				}
+			}			
 		}
 		
 		private var _heightPercent:String = "";
@@ -209,6 +216,13 @@ package com.gestureworks.cml.element
 		public function set heightPercent(value:String):void
 		{
 			_heightPercent = value;
+			if (parent) {
+				var h:Number = Number(widthPercent.replace("%", ""));
+				width = parent.height * h / 100;
+				if ("paddingBottom" in parent && parent['paddingBottom']) {
+					height -= parent['paddingBottom'] + parent['paddingTop'];
+				}
+			}			
 		}		
 		
 		
@@ -392,21 +406,31 @@ package com.gestureworks.cml.element
 				if (getChildAt(i) is TouchContainer) {
 					child = TouchContainer(getChildAt(i));
 					if (child.widthPercent.length) {
-						var w:Number = Number(child.widthPercent.replace("%", ""));
+						w = Number(child.widthPercent.replace("%", ""));
 						child.width = width * w / 100;
 						if (paddingRight) {
-							child.width -= paddingRight + paddingLeft;
+							if ( (child.width + child.x) > width ) {
+								child.width -= paddingLeft;
+							}
+							if ( (child.width + child.x) > width ) {
+								child.width -= paddingRight;
+							}
 						}					
-					}
+					}					
 					if (child.heightPercent.length) {
-						var h:Number = Number(heightPercent.replace("%", ""));
+						h = Number(child.heightPercent.replace("%", ""));
 						child.height = parent.height * h / 100;
 						if (paddingBottom) {
-							height -= paddingBottom + paddingTop;
+							if ( (child.height + child.y) > height) {
+								child.height -= paddingTop;
+							}
+							if ( (child.height + child.y) > height) {
+								child.height -= paddingBottom;
+							}	
 						}				
-					}					
+					}
 				}
-			}	
+			}
 		}
 		
 		/**
@@ -414,6 +438,7 @@ package com.gestureworks.cml.element
 		 */
 		public function updateRelativePos():void {		
 			var i:int;
+			var child:DisplayObject;
 			if (relativeX) {
 				for (i = 1; i < numChildren; i++) {					
 					getChildAt(i).x = getChildAt(i - 1).height + getChildAt(i - 1).x;
@@ -440,16 +465,23 @@ package com.gestureworks.cml.element
 		 */
 		public function updatePadding():void {
 			var i:int;
+			var child:DisplayObject;
 			for (i = 0; i < numChildren; i++) {
-				getChildAt(i).x += paddingLeft;
-				if ( (getChildAt(i).width + getChildAt(i).x) > width ) {
-					getChildAt(i).width -= paddingLeft + paddingRight;
+				child = getChildAt(i);
+				child.x += paddingLeft;
+				child.y += paddingTop;
+				if ( (child.width + child.x) > width ) {
+					child.width -= paddingLeft;
 				}
-					getChildAt(i).y += paddingTop;
-				if ( (getChildAt(i).height + getChildAt(i).y) > height) {
-					getChildAt(i).height -= paddingTop + paddingBottom;
+				if ( (child.width + child.x) > width ) {
+					child.width -= paddingRight;
 				}
-				
+				if ( (child.height + child.y) > height) {
+					child.height -= paddingTop;
+				}
+				if ( (child.height + child.y) > height) {
+					child.height -= paddingBottom;
+				}				
 			}			
 		}
 		

@@ -68,8 +68,6 @@ package com.gestureworks.cml.components
 				menu = searchChildren(Menu);
 			if (!frame)
 				frame = searchChildren(Frame);
-			if (!background && back && back.hasOwnProperty("searchChildren"))
-				background = back.searchChildren(Graphic);	
 			
 			textFields = [];
 			textFields = searchChildren(Text, Array);
