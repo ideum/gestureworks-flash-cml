@@ -47,7 +47,6 @@ package com.gestureworks.cml.utils
 		{
 			var bmd:BitmapData = new BitmapData(obj.width, obj.height, true, 0xffffff);
 			bmd.draw(DisplayObject(obj));
-			
 			var bitmap:Bitmap = new Bitmap(bmd);
 			bitmap.smoothing = smoothing;
 			return bitmap;
