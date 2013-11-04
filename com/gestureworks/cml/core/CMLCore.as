@@ -75,7 +75,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.LiveVideoViewer; LiveVideoViewer;
 	import com.gestureworks.cml.components.SlideshowViewer; SlideshowViewer;
 	import com.gestureworks.cml.components.FlipBookViewer; FlipBookViewer;
-	import com.gestureworks.cml.components.HTMLViewer; HTMLViewer;	
+	
 	
 	
 	/////////////////////
@@ -137,8 +137,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.element.Attract; Attract;
 	import com.gestureworks.cml.element.StageKit; StageKit;	
 	import com.gestureworks.cml.element.PopupMenu; PopupMenu;
-	import com.gestureworks.cml.element.HTML; HTML;
-	
 	
 	
 	///////////////////////
