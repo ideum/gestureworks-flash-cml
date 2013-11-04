@@ -68,7 +68,7 @@ package com.gestureworks.cml.element
 			_childList = new ChildList;			
 			mouseChildren = false;
 			affineTransform = true; 
-			nativeTransform = true;			
+			nativeTransform = true;	
 		}
 
 		/**
@@ -76,8 +76,7 @@ package com.gestureworks.cml.element
 		 */
 		public function init():void
 		{
-			updateAutosize();
-			updatePercentDim();			
+			updatePercentDim();
 			updateRelativePos();	
 			updatePadding();
 			contentToBitmap();
@@ -380,37 +379,33 @@ package com.gestureworks.cml.element
 			if (StateUtils.tweenState(this, sId, tweenTime))
 				_stateId = sId;
 		}			
-		
-		/**
-		 *	Updates child auto-sizing within this container
-		 */			
-		public function updateAutosize():void {	
-			var i:int;
-			for (i = 0; i < numChildren; i++) {
-				if (getChildAt(i) is Text) {
-					getChildAt(i)['autosize'] = getChildAt(i)['autosize'];
-					trace("00000", getChildAt(i)['height']);
-				}
-			}	
-		}		
-		
+			
 		/**
 		 *	Updates child percent dimensions within this container
 		 */		
-		public function updatePercentDim():void {		
-			if (widthPercent.length) {
-				var w:Number = Number(widthPercent.replace("%", ""));
-				width = parent.width * w / 100;
-				if ('paddingRight' in parent && parent['paddingRight']) {
-					width -= parent['paddingRight'];
-				}					
-			}
-			if (heightPercent.length) {
-				var h:Number = Number(heightPercent.replace("%", ""));
-				height = parent.height * h / 100;
-				if ('paddingBottom' in parent && parent['paddingBottom']) {
-					height -= parent['paddingBottom'];
-				}				
+		public function updatePercentDim():void {	
+			var i:int;
+			var w:Number;
+			var h:Number;
+			var child:TouchContainer;			
+			for (i = 0; i < numChildren; i++) {
+				if (getChildAt(i) is TouchContainer) {
+					child = TouchContainer(getChildAt(i));
+					if (child.widthPercent.length) {
+						var w:Number = Number(child.widthPercent.replace("%", ""));
+						child.width = width * w / 100;
+						if (paddingRight) {
+							child.width -= paddingRight + paddingLeft;
+						}					
+					}
+					if (child.heightPercent.length) {
+						var h:Number = Number(heightPercent.replace("%", ""));
+						child.height = parent.height * h / 100;
+						if (paddingBottom) {
+							height -= paddingBottom + paddingTop;
+						}				
+					}					
+				}
 			}	
 		}
 		
@@ -434,9 +429,7 @@ package com.gestureworks.cml.element
 					if ( getChildAt(i)['state'][0]['y'] ) {
 						getChildAt(i).y += Number(getChildAt(i)['state'][0].y);
 						
-					}
-					trace("y", getChildAt(i).y, getChildAt(i - 1).height, getChildAt(i - 1).y);
-					
+					}					
 				}					
 			}				
 		}
@@ -449,9 +442,14 @@ package com.gestureworks.cml.element
 			var i:int;
 			for (i = 0; i < numChildren; i++) {
 				getChildAt(i).x += paddingLeft;
-				getChildAt(i).width -= paddingLeft + paddingRight;
-				getChildAt(i).y += paddingTop;
-				getChildAt(i).height -= paddingTop + paddingBottom;
+				if ( (getChildAt(i).width + getChildAt(i).x) > width ) {
+					getChildAt(i).width -= paddingLeft + paddingRight;
+				}
+					getChildAt(i).y += paddingTop;
+				if ( (getChildAt(i).height + getChildAt(i).y) > height) {
+					getChildAt(i).height -= paddingTop + paddingBottom;
+				}
+				
 			}			
 		}
 		
