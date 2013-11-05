@@ -252,11 +252,9 @@ package com.gestureworks.cml.element
 		 * Initialisation method
 		 */
 		override public function init():void
-		{
-			
+		{			
 			super.init();
 			load();
-			//_mp3.init();
 		}
 
 		/**
@@ -391,6 +389,9 @@ package com.gestureworks.cml.element
 			_mp3.addEventListener(StateEvent.CHANGE, playbackHandler);
 			
 			_mp3.init();
+			
+			if(autoplay)
+				open();
 		}		
 		
 		private function playbackHandler(e:StateEvent):void {
