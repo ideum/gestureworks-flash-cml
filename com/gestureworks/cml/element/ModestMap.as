@@ -10,6 +10,7 @@ package com.gestureworks.cml.element
 	import com.modestmaps.mapproviders.yahoo.*;
 	import com.modestmaps.TweenMap;
 	import flash.display.DisplayObject;
+	import flash.geom.Point;
 	import org.tuio.*;
 	
 	
@@ -216,7 +217,7 @@ package com.gestureworks.cml.element
 			
 			var scaleDelta:Number = Math.max(scaleX, scaleY);
 			
-			map.zoomByAbout(scaleDelta * scaleFactor);
+			map.zoomByAbout(scaleDelta * scaleFactor, new Point(e.value.localX, e.value.localY));
 		}
 
 		/**
