@@ -66,9 +66,10 @@ package com.gestureworks.cml.element
 			super();
 			
 			graphicArray = new List();
-			nativeTransform = false;
+			nativeTransform = true;
 			nestedTransform = true;
 			gestureEvents = true;
+			mouseChildren = true;
 			//gestureList = { "n-double_tap":true, "n-drag":true, "n-rotate":true, "n-scale":true };
 		}
 		
@@ -182,24 +183,23 @@ package com.gestureworks.cml.element
 		/**
 		 * Initialisation method
 		 */
-		override public function init():void
-		{
+		override public function init():void {
 			for (var i:Number = 0; i < childList.length; i++) {
 				graphicArray.append(getChildAt(i));
 			}
-			
 			createMasks();
 		}
 		
 		private function createMasks():void {
 			overallMask = new Graphic();
-			
-			//_touchScreen = new TouchContainer();
-			//_touchScreen.gestureEvents = true;
-			//_touchScreen.gestureList = { "n-drag":true, "n-rotate":true, "2-finger-scale":true, "n-double_tap":true, "3-finger-tilt":true };
-			if (_touchScreen){
+			_touchScreen = new TouchContainer();
+			_touchScreen.gestureEvents = true;
+			_touchScreen.gestureList = { "n-drag":true, "n-rotate":true, "n-scale":true, "n-double_tap":true };
+			if (_touchScreen) {
+				_touchScreen.nativeTransform = true;
 				addChild(_touchScreen);
-				_touchScreen.gestureReleaseInertia = true;
+				_touchScreen.releaseInertia = true;
+				_touchScreen.nestedTransform = true;
 			}
 			
 			switch(_maskShape) {
@@ -275,7 +275,7 @@ package com.gestureworks.cml.element
 		 * cycles through multiple images
 		 * @param	e
 		 */
-		public function cycleMasks(e:GWGestureEvent = null):void {			
+		public function cycleMasks(e:GWGestureEvent = null):void {
 			//removeChild(graphicArray.array[counter]);
 			var tempAlpha:Number = graphicArray.selectIndex(_counter).alpha;
 			graphicArray.selectIndex(_counter).visible = false;
