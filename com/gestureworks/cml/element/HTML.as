@@ -28,7 +28,7 @@ package com.gestureworks.cml.element
 	public class HTML extends Container {	
 		private var _backgroundGraphic:Sprite;	
 		private var _html:HTMLLoader;
-		private var _src:String = "";
+		private var _src:String;
 		private var _loadURL:String;
 		private var _prevURL:String;
 		private var _urlReq:URLRequest;
@@ -76,10 +76,7 @@ package com.gestureworks.cml.element
 		 * @inheritDoc
 		 */
 		override public function init():void {			
-			if (srcString.length) {
-				
-			}
-			else if (src.length) {
+			if (src) {
 				_urlReq.url = src;		
 			}
 			
@@ -101,10 +98,10 @@ package com.gestureworks.cml.element
 			_html.height = _height;
 			_html.addEventListener(Event.COMPLETE, onURLLoadComplete);
 			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onLocationChange);
-			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onLocationChanging );
-			_html.window.as3Function = Main.changeStageColor;
+			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onLocationChanging);
+			//_html.window.as3Function = Main.changeStageColor;
 			
-			if (srcString.length) {
+			if (srcString) {
 				_html.placeLoadStringContentInApplicationSandbox = true;				
 				_html.loadString(_srcString);				
 			}
@@ -226,7 +223,7 @@ package com.gestureworks.cml.element
 		public function get src():String { return _src; }
 		public function set src(value:String):void	{ 
 			_src = value;
-			if(loaded)
+			if(!loaded)
 				loadURL(_src);
 		}
 		
@@ -359,7 +356,7 @@ package com.gestureworks.cml.element
 		 */
 		protected function onLocationChange(event:LocationChangeEvent):void {	
 			if ( event.location.indexOf( _baseURL ) < 0 && _lockBaseURL && event.location.match("*.pdf") ) {
-                event.preventDefault();
+              //  event.preventDefault();
 				return;
             }
 			if (_smooth)
