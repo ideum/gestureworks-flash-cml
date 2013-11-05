@@ -59,11 +59,8 @@ package com.gestureworks.cml.element
 			textField.embedFonts = true;	
 			textField.selectable = false;
 			textField.gridFitType = "none";
-			addChild(textField);
-			
-			width = textField.width;
-			height = textField.height;
-			
+			textField.text = "text"; // leave default text for spacing
+			addChild(textField);			
 			updateTextFormat();
 		}
 		
