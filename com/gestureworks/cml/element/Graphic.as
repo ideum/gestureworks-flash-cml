@@ -1175,7 +1175,7 @@ package com.gestureworks.cml.element
 			{
 				array = _pathCommands.split(",");
 				for (var i:int = 0; i < array.length; i++)
-				   pathCommandsVector.push(array[i]);
+				   pathCommandsVector.push(int(array[i]));
 			}
 			updateGraphic();
 			
