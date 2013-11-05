@@ -969,13 +969,21 @@ package com.gestureworks.cml.core
 					newValue = false
 									
 				if (propertyName == "width" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
+					String(newValue).replace("%", "");
 					propertyName = "widthPercent";
 				}
 				else if (propertyName == "height" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
+					String(newValue).replace("%", "");
 					propertyName = "heightPercent";
-				}				
-					
+				}	
+				else if (propertyName == "widthPercent" || propertyName == "heightPercent") {
+					if ( String(newValue).charAt(String(newValue).length - 1 ) == "%") {
+						String(newValue).replace("%", "");
+					}
+				}			
+				
 				isExpression = obj is Key && (propertyName == "text" || propertyName == "shiftText") ? false : String(newValue).charAt(0) == "{"; 
+				
 				if (!isExpression) {
 					obj[propertyName] = newValue;
 				}
