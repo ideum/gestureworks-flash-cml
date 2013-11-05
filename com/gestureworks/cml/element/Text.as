@@ -46,21 +46,26 @@ package com.gestureworks.cml.element
 		 */
 		public function Text() {
 			super();
+			mouseChildren = true; // leave for selectable text
 			
 			_textField = new TextField;
 			_textFormat = new TextFormat;
+			addChild(textField);			
 
 			textFormat.font = "OpenSansRegular";
-			textFormat.color = 0x000000;
-			textFormat.size = 15;
+			textFormat.color = 0xFFFFFF;
+			textFormat.size = fontSize;
 			
 			textField.antiAliasType = AntiAliasType.ADVANCED;
-			textField.blendMode = BlendMode.NORMAL;
+			textField.blendMode = BlendMode.LAYER;
 			textField.embedFonts = true;	
 			textField.selectable = false;
-			textField.gridFitType = "none";
 			textField.text = "text"; // leave default text for spacing
-			addChild(textField);			
+			
+			// keep default for past consistency 
+			width = 100;
+			height = 100;		
+			
 			updateTextFormat();
 		}
 		
@@ -69,6 +74,8 @@ package com.gestureworks.cml.element
 		 */
 		override public function init():void {
 			super.init();
+			if (!width) width = 100;
+			if (!height) height = 100;			
 			updateTextFormat();			
 		}
 		
@@ -1014,7 +1021,7 @@ package com.gestureworks.cml.element
 		
 		private var _textAlign:String;
 		/**
-		 * Sets the allignment of text in text field.
+		 * Sets the alignment of text in text field.
 		 */
         public function get textAlign():String { return textFormat.align; }   
         public function set textAlign(value:String):void {
