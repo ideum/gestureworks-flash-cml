@@ -969,11 +969,11 @@ package com.gestureworks.cml.core
 					newValue = false
 									
 				if (propertyName == "width" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
-					String(newValue).replace("%", "");
+					newValue = String(newValue).replace("%", "");
 					propertyName = "widthPercent";
 				}
 				else if (propertyName == "height" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
-					String(newValue).replace("%", "");
+					newValue = String(newValue).replace("%", "");
 					propertyName = "heightPercent";
 				}	
 				else if (propertyName == "widthPercent" || propertyName == "heightPercent") {
