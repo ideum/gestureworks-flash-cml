@@ -47,6 +47,7 @@ package com.gestureworks.cml.element
 		public function Text() {
 			super();
 			
+			mouseChildren = true;
 			_textField = new TextField;
 			_textFormat = new TextFormat;
 
