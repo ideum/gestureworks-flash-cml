@@ -69,6 +69,7 @@ package com.gestureworks.cml.element
 
 				tabs[i].gestureList = { "n-tap":true, "n-drag-inertia":true };
 				tabs[i].gestureEvents = true;
+				tabs[i].mouseChildren = false;
 				tabs[i].addEventListener(GWGestureEvent.TAP, onTap);								
 				tabs[i].addEventListener(GWGestureEvent.DRAG, onDrag);								
 				tabs[i].addEventListener(GWGestureEvent.RELEASE, onRelease);
