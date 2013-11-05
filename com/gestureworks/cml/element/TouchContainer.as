@@ -407,12 +407,12 @@ package com.gestureworks.cml.element
 			for (i = 0; i < numChildren; i++) {
 				if (getChildAt(i) is TouchContainer) {
 					child = TouchContainer(getChildAt(i));
-					if (child.widthPercent.length) {
-						w = Number(child.widthPercent.replace("%", ""));
+					if (child.widthPercent) {
+						w = Number(child.widthPercent);
 						child.width = width * w / 100;
 					}					
-					if (child.heightPercent.length) {
-						h = Number(child.heightPercent.replace("%", ""));
+					if (child.heightPercent) {
+						h = Number(child.heightPercent);
 						child.height = parent.height * h / 100;			
 					}
 				}

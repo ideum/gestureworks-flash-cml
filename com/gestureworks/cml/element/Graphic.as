@@ -355,8 +355,8 @@ package com.gestureworks.cml.element
 		/**
 		 * Sets the width relative to the parent container.
 		 */
-		override public function get widthPercent():String { return super.widthPercent; }
-		override public function set widthPercent(value:String):void
+		override public function get widthPercent():Number { return super.widthPercent; }
+		override public function set widthPercent(value:Number):void
 		{
 			super.widthPercent = value;
 			updateGraphic();
@@ -365,8 +365,8 @@ package com.gestureworks.cml.element
 		/**
 		 * Sets the height relative to the parent container.
 		 */
-		override public function get heightPercent():String { return super.heightPercent; }
-		override public function set heightPercent(value:String):void
+		override public function get heightPercent():Number { return super.heightPercent; }
+		override public function set heightPercent(value:Number):void
 		{
 			super.heightPercent = value;
 			updateGraphic();
