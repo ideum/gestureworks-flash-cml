@@ -1,6 +1,7 @@
 package com.gestureworks.cml.element 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
@@ -454,7 +455,7 @@ package com.gestureworks.cml.element
 		protected function createTextField(lab:String, _width:Number, _x:Number, _y:Number, _text:String = null, _maxChar:Number = 6):Text
 		{
 			var label:Text = new Text();
-			label.autoSize = "center";
+			label.autoSize = "left";
 			label.color = labelColor;
 			label.text = lab;
 			label.selectable = false;
@@ -473,6 +474,7 @@ package com.gestureworks.cml.element
 			te.type = "input";
 			te.maxChars = _maxChar;
 			te.scrollH = 0;		
+			te.selectable = true;
 			te.addEventListener(KeyboardEvent.KEY_DOWN, updateColorByEntry);
 			
 			if (containerRec)
@@ -602,7 +604,7 @@ package com.gestureworks.cml.element
 			if (event.keyCode != 13)
 				return;
 				
-			var txt:Text = Text(event.target);
+			var txt:Text = DisplayUtils.getParentType(Text, event.target) as Text; 
 			var tgtId:String = txt.id;
 			var hsb:Array;
 			switch(tgtId)

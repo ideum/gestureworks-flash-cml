@@ -48,6 +48,7 @@ package com.gestureworks.cml.element
 			super();
 			mouseChildren = true; // leave for selectable text
 			
+			mouseChildren = true;
 			_textField = new TextField;
 			_textFormat = new TextFormat;
 			addChild(textField);			

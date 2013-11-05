@@ -24,7 +24,6 @@ package com.gestureworks.cml.element
 		mp3Element.volume = 1.0;
 		mp3Element.pan = 0;
 		mp3Element.loop = true;
-		mp3Element.preload = true;
 		mp3Element.autoplay = true;
 		addChild(mp3Element);		
 		mp3Element.init();
@@ -113,12 +112,6 @@ package com.gestureworks.cml.element
 			_waveColor = value;
 		}
 		
-		/*override public function set preload(value:Boolean):void {
-			if (value)
-			super.preload = value;
-			//load();
-		}*/
-		
 		private var _display:String = "waveform";
 		/**
 		 * Visualization display type, can be set to "waveform", "none", or an image URL.
@@ -132,29 +125,6 @@ package com.gestureworks.cml.element
 		
 		public function get isPlaying():Boolean { return _mp3.isPlaying; }
 		
-		
-		
-//{ region MP3Factory properties
-		/**
-		 * @deprecated use preload instead.
-		 */
-		[Deprecated(replacement = "preload")]
-		public function get autoLoad():Boolean { return _preload; }
-		public function set autoLoad(value:Boolean):void 
-		{ 
-			_preload = value;
-			_mp3.preload = _preload; 
-		}
-		
-		private var _preload:Boolean = true;
-		/**
-		 * Indicates whether the mp3 file is loaded when the src property is set
-		 */	
-		public function get preload():Boolean { return _preload; }
-		public function set preload(value:Boolean):void {
-			_preload = value;
-			_mp3.preload = _preload;
-		}
 		
 		private var _autoplay:Boolean = false;
 		/**
