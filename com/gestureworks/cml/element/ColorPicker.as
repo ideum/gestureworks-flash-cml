@@ -1,21 +1,16 @@
 package com.gestureworks.cml.element 
 {
-	import org.tuio.TuioTouchEvent;
-	import com.gestureworks.events.GWGestureEvent;
-	import flash.events.Event;
-	import flash.events.TouchEvent;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.core.TouchSprite;
+	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.BitmapData;
+	import flash.display.GradientType;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
+	import flash.events.KeyboardEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.text.TextField;
-	import flash.display.GradientType;
-	import flash.utils.Dictionary;
-	import flash.events.KeyboardEvent;
-	import com.gestureworks.cml.events.StateEvent;
 	
 	/**
 	 * The ColorPicker element provides color selection capability by moving graphical indicators or adjusting color 
@@ -271,9 +266,8 @@ package com.gestureworks.cml.element
 			//use the drag and touch events to select hue
 			hueBar = new TouchSprite();
 			hueBar.gestureList = { "n-drag":true };
-			hueBar.gestureReleaseInertia = false;
 			hueBar.addEventListener(GWGestureEvent.DRAG, hueBarHandler);
-			hueBar.addEventListener(TouchEvent.TOUCH_BEGIN, hueBarHandler);
+			hueBar.addEventListener(GWTouchEvent.TOUCH_BEGIN, hueBarHandler);
 			
 			var barWidth:Number = 20;
 			hueBarBMD = new BitmapData(barWidth, colorRecHeight);
@@ -345,7 +339,7 @@ package com.gestureworks.cml.element
 			colorRec.gestureList = { "n-drag":true };
 			colorRec.gestureReleaseInertia = false;
 			colorRec.addEventListener(GWGestureEvent.DRAG, colorSelectionHandler);
-			colorRec.addEventListener(TouchEvent.TOUCH_BEGIN, colorSelectionHandler);			
+			colorRec.addEventListener(GWTouchEvent.TOUCH_BEGIN, colorSelectionHandler);			
 			
 			colors = [0x000000, 0x000000];
 			alphas = [0, 1];
