@@ -329,7 +329,7 @@ package com.gestureworks.cml.element
 		
 		protected var _width:Number=0;
 		/**
-		 * Sets graphics with
+		 * Sets graphics width.
 		 * @default 0
 		 */		
 		override public function get width():Number{return _width;}
@@ -342,7 +342,7 @@ package com.gestureworks.cml.element
 		
 		protected var _height:Number=0;
 		/**
-		 * Sets graphics with
+		 * Sets graphics height.
 		 * @default 0
 		 */			
 		override public function get height():Number{return _height;}
@@ -352,50 +352,23 @@ package com.gestureworks.cml.element
 			updateGraphic();
 		}
 		
-		private var _widthPercent:String = "";
 		/**
-		 * sets the width of the container
+		 * Sets the width relative to the parent container.
 		 */
-		override public function get widthPercent():String{return _widthPercent;}
+		override public function get widthPercent():String { return super.widthPercent; }
 		override public function set widthPercent(value:String):void
 		{
-			_widthPercent = value;
-			
-			if (parent) {
-				var w:Number = Number(widthPercent.replace("%", ""));
-				width = parent.width * w / 100;
-				if ("paddingLeft" in parent && parent['paddingLeft']) {
-					if ( (width + y) > parent.width) {
-						width -= parent['paddingLeft'];
-					}
-					if ( (width + y) > parent.width) {
-						width -= parent['paddingRight'];
-					}	
-				}
-			}
+			super.widthPercent = value;
 			updateGraphic();
 		}
 		
-		private var _heightPercent:String = "";
 		/**
-		 * sets the height of the container
+		 * Sets the height relative to the parent container.
 		 */
-		override public function get heightPercent():String{return _heightPercent;}
+		override public function get heightPercent():String { return super.heightPercent; }
 		override public function set heightPercent(value:String):void
 		{
-			_heightPercent = value;
-			if (parent) {
-				var h:Number = Number(widthPercent.replace("%", ""));
-				height = parent.height * h / 100;
-				if ("paddingBottom" in parent && parent['paddingBottom']) {
-					if ( (height + y) > parent.height) {
-						height -= parent['paddingTop'];
-					}
-					if ( (height + y) > parent.height) {
-						height -= parent['paddingBottom'];
-					}	
-				}
-			}
+			super.heightPercent = value;
 			updateGraphic();
 		}			
 		
