@@ -191,12 +191,12 @@ package com.gestureworks.cml.element
 			_height = value;
 		}
 		
-		private var _widthPercent:String = "";
+		private var _widthPercent:Number;
 		/**
 		 * sets the width of the container
 		 */
-		public function get widthPercent():String{return _widthPercent;}
-		public function set widthPercent(value:String):void
+		public function get widthPercent():Number{return _widthPercent;}
+		public function set widthPercent(value:Number):void
 		{
 			_widthPercent = value;
 			if (parent) {
@@ -209,12 +209,12 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private var _heightPercent:String = "";
+		private var _heightPercent:Number;
 		/**
 		 * sets the height of the container
 		 */
-		public function get heightPercent():String{return _heightPercent;}
-		public function set heightPercent(value:String):void
+		public function get heightPercent():Number{return _heightPercent;}
+		public function set heightPercent(value:Number):void
 		{
 			_heightPercent = value;
 			if (parent) {
