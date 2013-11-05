@@ -53,7 +53,7 @@ package com.gestureworks.cml.element
 			dial1.gradientRotation = 1.57;
 			
 			// background graphics
-			dial1.backgroundLineStoke = 3;
+			dial1.backgroundLineStroke = 3;
 			dial1.backgroundAlpha = 5;
 			
 			// triangles graphics
@@ -107,7 +107,7 @@ package com.gestureworks.cml.element
 			dial2.gradientRotation = 1.57;
 			
 			//background graphics
-			dial2.backgroundLineStoke = 3;
+			dial2.backgroundLineStroke = 3;
 			dial2.backgroundAlpha = 5;
 			
 			//triangles graphics
@@ -409,20 +409,20 @@ package com.gestureworks.cml.element
 			_gradientRotation = value;
 		}
 		
-		private var _backgroundLineStoke:Number = 3;
+		private var _backgroundLineStroke:Number = 3;
 		
 		/**
 		 * Sets the background Line Stoke
 		 *  @default 1
 		 */
-		public function get backgroundLineStoke():Number
+		public function get backgroundLineStroke():Number
 		{
-			return _backgroundLineStoke;
+			return _backgroundLineStroke;
 		}
 		
-		public function set backgroundLineStoke(value:Number):void
+		public function set backgroundLineStroke(value:Number):void
 		{
-			_backgroundLineStoke = value;
+			_backgroundLineStroke = value;
 		}
 		
 		private var _backgroundAlpha:Number = 5;
@@ -661,7 +661,7 @@ package com.gestureworks.cml.element
 			matrix.createGradientBox(width, height, gradientRotation, gradientX, gradientY);
 			
 			background.graphics.clear();
-			background.graphics.lineStyle(backgroundLineStoke, selectedTextColor, backgroundAlpha);
+			background.graphics.lineStyle(backgroundLineStroke, selectedTextColor, backgroundAlpha);
 			background.graphics.beginGradientFill(gradientType, gradientColorArray, gradientAlphaArray, gradientRatioArray, matrix);
 			background.graphics.drawRect(0, 0, width, height);
 			
@@ -713,7 +713,7 @@ package com.gestureworks.cml.element
 			touchSprite.gestureList = {"n-drag": true};
 			touchSprite.addEventListener(GWGestureEvent.DRAG, gestureDragHandler);
 			touchSprite.addEventListener(GWGestureEvent.COMPLETE, onEnd);			
-		    touchSprite.gestureReleaseInertia = true;
+		    touchSprite.releaseInertia = true;
 			touchSprite.graphics.clear();
 			touchSprite.graphics.lineStyle(0, 0);
 			touchSprite.graphics.drawRect(0, 0, width, height);
