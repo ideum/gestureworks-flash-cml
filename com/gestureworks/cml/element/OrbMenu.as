@@ -544,7 +544,7 @@ package com.gestureworks.cml.element
 			_textRadius = value;
 		}
 		
-		private var _curveText:String = "MENU";
+		private var _curveText:String;
 		/**
 		* defines the text
 		*/
@@ -650,7 +650,7 @@ package com.gestureworks.cml.element
 			shape2.x = 0;
 			shape2.y = 0;
 			
-			shape2.filters = filtersArray;
+		//	shape2.filters = filtersArray;
 			
 			//width = 100;
 			
@@ -663,14 +663,15 @@ package com.gestureworks.cml.element
 			background.y = 60;
 			background.rotation = 45;
 			background.visible = false;
-						
-			var c1:CircleText = new CircleText(textX, textY, textRadius, curveText, coverage, startAngle, stopAngle);
 							
 			addChild(background);
 			addChild(shape1);
 			shape1.addChild(shape2);
-			addChild(c1);
 			
+			if(curveText){
+				var c1:CircleText = new CircleText(textX, textY, textRadius, curveText, coverage, startAngle, stopAngle);			
+				addChild(c1);
+			}			
 			
 			var hitShape:TouchSprite = new TouchSprite;
 			hitShape.graphics.lineStyle(shape1LineStoke, shape1OutlineColor);
@@ -706,9 +707,9 @@ package com.gestureworks.cml.element
 					tweener.kill();
 					tweener.eventCallback("onComplete");
 				}
-				this.x += event.value.drag_dx;
-				this.y += event.value.drag_dy;
-			}
+			}		
+			this.x += event.value.drag_dx;
+			this.y += event.value.drag_dy;			
 		}
 		
 		/**
