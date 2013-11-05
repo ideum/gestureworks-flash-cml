@@ -7,7 +7,6 @@ package com.gestureworks.cml.element
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
 	import flash.events.KeyboardEvent;
-	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	/**
@@ -38,7 +37,7 @@ package com.gestureworks.cml.element
 	 */
 	public class TouchKeyboard extends TouchContainer
 	{	
-		private var _output:TextField;
+		private var _output:Text;
 		private var _bkgPadding:Number;	
 		private var _cornerWidth:Number = 2;
 		private var _cornerHeight:Number = 5;
@@ -49,7 +48,7 @@ package com.gestureworks.cml.element
 		private var shift:Boolean = false;
 		private var bkgWidth:Number;
 		private var bkgHeight:Number;
-		private var currentTF:TextField;
+		private var currentTF:Text;
 		private var caret:int = 0;
 		
 		/**
@@ -93,7 +92,7 @@ package com.gestureworks.cml.element
 		public function get output():* { return _output; }
 		public function set output(o:*):void
 		{
-			if(o is TextField)
+			if(o is Text)
 				_output = o;
 			else 
 				_output = CMLObjectList.instance.getId(String(o));
@@ -377,7 +376,7 @@ package com.gestureworks.cml.element
 			if (!output)
 			{
 				var focusedObj:* = stage.focus;
-				if ((focusedObj is TextField) && !(focusedObj.parent is Key))
+				if ((focusedObj is Text) && !(focusedObj.parent is Key))
 					currentTF = focusedObj;
 			}
 			else
