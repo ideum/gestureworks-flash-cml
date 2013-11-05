@@ -180,9 +180,11 @@ package com.gestureworks.cml.element
 			//Find longest string
 			var widthField:Text = new Text();
 			widthField.text = _title;
-			widthField.autoSize = "left";
+			
 			widthField.font = _font;
 			widthField.fontSize = _fontSize;
+			widthField.autosize = true;	
+			widthField.height *= 1.2;	
 			addChild(widthField);
 			
 			if (_menuMarker)
@@ -195,9 +197,10 @@ package com.gestureworks.cml.element
 			for each (var i:String in menuItemsArray) {
 				var iField:Text = new Text();
 				iField.text = i;
-				iField.autoSize = "left";
 				iField.font = _font;
 				iField.fontSize = _fontSize;
+				iField.autosize = true;				
+				iField.height *= 1.2;			
 				addChild(iField);
 				if(_menuMarker){
 					if (Math.floor(iField.width + (triangle.width * 2)) > _width) {
