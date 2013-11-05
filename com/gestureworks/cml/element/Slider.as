@@ -61,7 +61,6 @@ package com.gestureworks.cml.element
 				_hit = value;
 			else {
 				_hit = searchChildren(value);
-				_hit = CMLObjectList.instance.getId(value);
 			}
 		}
 				
@@ -77,7 +76,6 @@ package com.gestureworks.cml.element
 				_rail = value;
 			else {
 				_rail = searchChildren(value);
-				_rail = CMLObjectList.instance.getId(value);
 			}
 			
 			if (_rail) {
@@ -98,7 +96,6 @@ package com.gestureworks.cml.element
 				_knob = value;
 			else {
 				_knob = searchChildren(value);	
-				_knob = CMLObjectList.instance.getId(value);
 			}
 		}
 		
@@ -212,12 +209,12 @@ package com.gestureworks.cml.element
 		 * Turns gestureReleaseInertia off and on
 		 * @default false
 		 */		
-		override public function get gestureReleaseInertia():Boolean {return super.gestureReleaseInertia;}
-		override public function set gestureReleaseInertia(value:Boolean):void
+		override public function get releaseInertia():Boolean {return super.releaseInertia;}
+		override public function set releaseInertia(value:Boolean):void
 		{
-			super.gestureReleaseInertia = value;
+			super.releaseInertia = value;
 			if (touchKnob)
-				touchKnob.gestureReleaseInertia = value;
+				touchKnob.releaseInertia = value;
 		}		
 		
 			
@@ -453,19 +450,19 @@ package com.gestureworks.cml.element
 				oldPoint.x = event.value.localX;
 			}
 			
-			if (orientation == "horizontal" && point.x < minPos)	
+			if (orientation == "horizontal" && point.x-knob.height/2 < minPos)	
 				knob.x = minPos;
-			else if (orientation == "vertical" && point.y < minPos)	
+			else if (orientation == "vertical" && point.y-knob.height/2 < minPos)	
 				knob.y = minPos;
-			else if (orientation == "horizontal" && point.x > maxPos)	
+			else if (orientation == "horizontal" && point.x-knob.height/2 > maxPos)	
 				knob.x = maxPos;
-			else if (orientation == "vertical" && point.y > maxPos)	
+			else if (orientation == "vertical" && point.y-knob.height/2 > maxPos)	
 				knob.y = maxPos;
 			else {
 				if (orientation == "horizontal")	
-					knob.x = point.x;
+					knob.x = point.x - knob.width/2;
 				else if (orientation == "vertical")	
-					knob.y = point.y;
+					knob.y = point.y - knob.height/2;
 			}
 			
 			updateValues();
@@ -528,12 +525,14 @@ package com.gestureworks.cml.element
 		
 		private function updateValues():void
 		{
-			if (orientation == "horizontal")
+			if (orientation == "horizontal") {
 				_knobPosition = knob.x - minPos;
-			else if (orientation == "vertical")
+				_value = NumberUtils.map(_knobPosition, 0, rail.width, min, max, false, true, true); 											
+			}
+			else if (orientation == "vertical") {
 				_knobPosition = knob.y - minPos;
-				
-			_value = NumberUtils.map(_knobPosition, 0, rail.width, min, max, false, true, true); 							
+				_value = NumberUtils.map(_knobPosition, 0, rail.height, min, max, false, true, true); 											
+			}
 			
 			if (debug)
 			{
