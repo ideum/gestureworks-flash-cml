@@ -61,7 +61,7 @@ package com.gestureworks.cml.element
 			dial1.rightTriangleColor = 0x303030;
 			
 			// center line graphics
-			dial1.centerLineLineStoke = 1;
+			dial1.centerLineLineStroke = 1;
 			dial1.centerLineOutlineColor = 0xAAAAAAA;
 			dial1.centerLineOutlineAlpha = 0.4;
 			dial1.centerLineColor = 0x666666;
@@ -115,7 +115,7 @@ package com.gestureworks.cml.element
 			dial2.rightTriangleColor = 0x303030;
 			
 			//center line graphics
-			dial2.centerLineLineStoke = 1;
+			dial2.centerLineLineStroke = 1;
 			dial2.centerLineOutlineColor = 0xAAAAAAA;
 			dial2.centerLineOutlineAlpha = 0.4;
 			dial2.centerLineColor = 0x666666;
@@ -536,20 +536,20 @@ package com.gestureworks.cml.element
 			_rightTriangleScale = value;
 		}
 		
-		private var _centerLineLineStoke:Number = 1;
+		private var _centerLineLineStroke:Number = 1;
 		
 		/**
 		 * Sets the center line line stroke of background
 		 *  @default 1
 		 */
-		public function get centerLineLineStoke():Number
+		public function get centerLineLineStroke():Number
 		{
-			return _centerLineLineStoke;
+			return _centerLineLineStroke;
 		}
 		
-		public function set centerLineLineStoke(value:Number):void
+		public function set centerLineLineStroke(value:Number):void
 		{
-			_centerLineLineStoke = value;
+			_centerLineLineStroke = value;
 		}
 		
 		private var _centerLineOutlineColor:uint = 0xAAAAAAA;
@@ -698,7 +698,7 @@ package com.gestureworks.cml.element
 			rightTriangle.y = height / 2 + rightTriangle.height*rightTriangle.scale / 2;			
 			
 			centerLine.graphics.clear();
-			centerLine.graphics.lineStyle(centerLineLineStoke, centerLineOutlineColor, centerLineOutlineAlpha);
+			centerLine.graphics.lineStyle(centerLineLineStroke, centerLineOutlineColor, centerLineOutlineAlpha);
 			centerLine.graphics.beginFill(centerLineColor, centerLineAlpha);
 			centerLine.graphics.drawRect(width * 0.01, (this.height / 2) - 4, this.width * 0.98, 8);
 			centerLine.graphics.endFill();
