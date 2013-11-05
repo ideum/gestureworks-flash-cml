@@ -767,7 +767,6 @@ package com.gestureworks.cml.element
 		private function updateTextFields():void
 		{
 			textFieldArray = new Array();
-			textFieldArray = new Array();
 			
 			for (var i:int = textContainer.numChildren-1; i >= 0; i--)
 			{
@@ -790,9 +789,10 @@ package com.gestureworks.cml.element
 				textContainer.addChildAt(txt,0);
 				txt.width = centerLine.width;
 				txt.border = false;
-				txt.autoSize = "left";
-				textSpacing = (background.height - (txt.height * maxItemsOnScreen)) / (maxItemsOnScreen - 1);	
-				txt.y = textSpacing * i + txt.height * i ;
+				txt.height = 35;
+				textSpacing = (background.height - (txt.textHeight * maxItemsOnScreen)) / (maxItemsOnScreen - 1);	
+				txt.y = textSpacing * i + txt.textHeight * i;
+				trace(txt.y);
 				txt.color = textColor;
 				textFieldArray.push(txt);				
 			}
