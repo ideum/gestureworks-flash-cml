@@ -2,17 +2,16 @@ package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.utils.PNGEncoder;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
-	import com.gestureworks.cml.utils.PNGEncoder;
-	import flash.events.Event;
-	import flash.net.FileFilter;
-	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.TouchEvent;
 	import flash.geom.Point;
+	import flash.net.FileFilter;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	
@@ -34,15 +33,17 @@ package com.gestureworks.cml.elements
 				
 		private var _canvasWidth:Number, _canvasHeight:Number;
 		private var _background:uint;
+		private var _backgroundAlpha:Number = 1.0;
 		private var _brushSize:int;
 		private var eraserColor:uint;
 		private var _eraserOn:Boolean;
 
-		public function Paint(w:Number=1280, h:Number=720, bg:uint=0x00efefef){
+		public function Paint(w:Number=1280, h:Number=720, bg:uint=0x00efefef, bgAlpha:Number=1.0){
 			super();
 			_canvasWidth  = w;
 			_canvasHeight = h;
 			_background = bg;
+			_backgroundAlpha = bgAlpha;
 			eraserColor = _background;
 		}
 
@@ -62,7 +63,7 @@ package com.gestureworks.cml.elements
 		}
 
 		private function createGraphics():void {
-			this.graphics.beginFill(_background);
+			this.graphics.beginFill(_background, _backgroundAlpha);
 			this.graphics.drawRect(0, 0, _canvasWidth, _canvasHeight);
 			this.graphics.endFill();
 
@@ -73,26 +74,33 @@ package com.gestureworks.cml.elements
 		private function createEvents():void {
 			this.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchDown);
 			this.addEventListener(TouchEvent.TOUCH_END, onTouchUp);
+			this.addEventListener(TouchEvent.TOUCH_OUT, onTouchUp);
 		}
 		
 		private function onTouchDown(e:TouchEvent):void {
 			this.graphics.lineStyle(brushSize, _color);
 			this.graphics.moveTo(e.localX, e.localY);
 			points.push(new Point(e.localX, e.localY));
-			stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
+			this.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
 		}
 
 		private function onTouchMove(e:TouchEvent):void {
+			if (e.localX < 0 || e.localY < 0) {
+				onTouchUp();
+				return;
+			}			
+			else if (e.localX > width || e.localY > height) {
+				onTouchUp();
+				return;
+			}
+			
 			points.push(new Point(e.localX, e.localY));
 			var i:Number = points.length;
 			this.graphics.lineTo(points[i-1].x, points[i-1].y);
 		}
 
-		private function onTouchUp(e:TouchEvent):void {
-			trace("TouchUp");
-			
+		private function onTouchUp(e:TouchEvent=null):void {			
 			this.removeEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-			
 			if (_eraserOn)
 				eraseLines(points);
 			else{
@@ -310,7 +318,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Sets paint color
+		 * Sets paint color.
 		 */
 		public function set color(newColor:uint):void {
 			if (newColor >= 0 && newColor <= 0xffffff && !_eraserOn)
@@ -318,7 +326,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Sets background color 
+		 * Sets background color.
 		 */
 		public function set backgroundColor(newBg:uint):void {
 			if (newBg >= 0 && newBg <= 0xffffff){
@@ -328,7 +336,7 @@ package com.gestureworks.cml.elements
 		}
 
 		/**
-		 * Sets brush size, aka line width
+		 * Sets brush size, aka line width.
 		 */
 		public function get brushSize():int { return _brushSize; }
 		public function set brushSize(newSize:int):void {
@@ -336,6 +344,18 @@ package com.gestureworks.cml.elements
 				_brushSize = newSize;
 		}
 		
+		/**
+		 * Sets background alphs.
+		 */		
+		public function get backgroundAlpha():Number { return _backgroundAlpha; }
+		public function set backgroundAlpha(value:Number):void {
+			_backgroundAlpha = value;
+		}
+		
+		/**
+		 * Exports drawing as SVG
+		 * @param	defaultFileName
+		 */
 		public function exportSVG(defaultFileName:String = "painting.svg"):void {
 			if (lines.length < 1)
 				return;
@@ -367,6 +387,10 @@ package com.gestureworks.cml.elements
 			fileRef.save(svgXML, defaultFileName);
 		}
 		
+		/**
+		 * Exports drawing as PNG
+		 * @param	defaultFileName
+		 */
 		public function exportPNG(defaultFileName:String = "painting.png"):void {
 			if (lines.length < 1)
 				return;
