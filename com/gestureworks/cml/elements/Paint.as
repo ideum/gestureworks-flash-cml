@@ -38,6 +38,13 @@ package com.gestureworks.cml.elements
 		private var eraserColor:uint;
 		private var _eraserOn:Boolean;
 
+		/**
+		 * Constructor
+		 * @param	w - width, 1280 by default
+		 * @param	h - height, 720 by default
+		 * @param	bg - background color, an off white by default
+		 * @param	bgAlpha - alpha for background, relevant in png or svg exporting.
+		 */
 		public function Paint(w:Number=1280, h:Number=720, bg:uint=0x00efefef, bgAlpha:Number=1.0){
 			super();
 			_canvasWidth  = w;
@@ -281,6 +288,9 @@ package com.gestureworks.cml.elements
 		//PUBLIC FUNCTIONS
 		//------------------
 		
+		/**
+		 * Erases data and clears canvas
+		 */
 		public function resetImage():void {
 			points  	  = new Array();
 			lines 		  = new Array();
@@ -290,6 +300,9 @@ package com.gestureworks.cml.elements
 			resetCanvas();
 		}
 
+		/**
+		 * Turns on or off the eraser tool.
+		 */
 		public function toggleEraser():void {
 			_eraserOn = !_eraserOn;
 			if (_eraserOn){
@@ -318,7 +331,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Sets paint color.
+		 * Sets paint color
 		 */
 		public function set color(newColor:uint):void {
 			if (newColor >= 0 && newColor <= 0xffffff && !_eraserOn)
@@ -326,7 +339,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Sets background color.
+		 * Sets background color
 		 */
 		public function set backgroundColor(newBg:uint):void {
 			if (newBg >= 0 && newBg <= 0xffffff){
@@ -336,7 +349,7 @@ package com.gestureworks.cml.elements
 		}
 
 		/**
-		 * Sets brush size, aka line width.
+		 * Sets brush size, aka line width
 		 */
 		public function get brushSize():int { return _brushSize; }
 		public function set brushSize(newSize:int):void {
@@ -345,7 +358,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Sets background alphs.
+		 * Sets background alphas
 		 */		
 		public function get backgroundAlpha():Number { return _backgroundAlpha; }
 		public function set backgroundAlpha(value:Number):void {
