@@ -27,177 +27,142 @@ package com.gestureworks.cml.components
 	
 	 * </codeblock>
 	 *
-	 * @author Josh
+	 * @author Ideum
 	 * @see Component
 	 * @see com.gestureworks.cml.element.Flickr
 	 * @see com.gestureworks.cml.element.TouchContainer
 	 */
 	public class FlickrViewer extends Component
 	{
+		private var _flickr:*;
+		private var _isLoaded:Boolean = false;
 		
 		/**
 		 * Constructor
 		 */
-		public function FlickrViewer()
-		{
+		public function FlickrViewer() {
 			super();
 			mouseChildren = true;
 			nativeTransform = true;
 			affineTransform = true;
 		}
 		
-		private var _image:*;
 		/**
-		 * Sets the image element.
+		 * Sets the flickr element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
 		 * Regardless of how this set, a corresponding display object is always returned.
 		 */
-		public function get image():*
-		{
-			return _image
-		}
-		
-		public function set image(value:*):void
-		{
+		public function get flickr():* { return _flickr; }
+		public function set flickr(value:*):void {
 			if (!value)
 				return;
 			
 			if (value is DisplayObject)
-				_image = value;
+				_flickr = value;
 			else
-				_image = searchChildren(value);
+				_flickr = searchChildren(value);
+		}
+		
+		/**
+		 * Returns the whether is the Flickr element is loaded
+		 */
+		public function get isLoaded():Boolean {
+			return _isLoaded;
 		}
 		
 		/**
 		 * Initialisation method
 		 */
-		override public function init():void
-		{
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!image)
-				image = searchChildren(".flickr_element");
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".flickr_container");
-			if (!back)
-				back = searchChildren(".info_container");
-			if (!background)
-				background = searchChildren(".info_bg");
-			
+		override public function init():void {			
 			// automatically try to find elements based on AS3 class
-			if (!image)
-				image = searchChildren(Flickr);
-			image.addEventListener(StateEvent.CHANGE, onLoadComplete);
-		
+			if (!flickr)
+				flickr = searchChildren(Flickr);
+			flickr.addEventListener(StateEvent.CHANGE, onLoadComplete);
 			super.init();
 		}
 		
-		/*override protected function updateLayout(event:* = null):void
-		{
-			// update width and height to the size of the image, if not already specified
-			if (!width && image)
-				width = image.width;
-			if (!height && image)
-				height = image.height;
-			
-			super.updateLayout();
-		}*/
-		
-		override protected function updateLayout(event:*=null):void 
-		{
-			if (image) {
-				// update width and height to the size of the image, if not already specified
-				//if (!width && image)
-					width = image.width;
-				//if (!height && image)
-					height = image.height;	
+		/**
+		 * @inheritDoc
+		 */
+		override protected function updateLayout(event:*=null):void {
+			if (flickr) {
+				width = flickr.width;
+				height = flickr.height;	
 			}	
 			super.updateLayout();				
 		}
 		
-		private function onLoadComplete(e:StateEvent):void
-		{
-			if (e.property == "isLoaded")
-			{
-				image.removeEventListener(StateEvent.CHANGE, onLoadComplete);
+		/**
+		 * Load complete event handler
+		 * @private
+		 * @param	e
+		 */
+		private function onLoadComplete(e:StateEvent):void {
+			if (e.property == "isLoaded") {
+				flickr.removeEventListener(StateEvent.CHANGE, onLoadComplete);
 				isLoaded = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 				updateLayout();
 			}
 		}
 		
-		public function listenLoadComplete():void
-		{
-			if(image)
-			image.addEventListener(StateEvent.CHANGE, onLoadComplete);			
+		/**
+		 * Enables load complete listener
+		 */
+		public function listenLoadComplete():void {
+			if (flickr) {
+				flickr.addEventListener(StateEvent.CHANGE, onLoadComplete);		
+			}
 		}
 		
-		public var isLoaded:Boolean = true;
 		
-		override public function clone():*
-		{
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
 			cloneExclusions.push("backs", "fronts");
 			var clone:FlickrViewer = CloneUtils.clone(this, this.parent, cloneExclusions);
-			
-			//CloneUtils.copyChildList(this, clone);		
-			
-			if (image)
-			{
-				clone.image = String(image.id);
+						
+			if (flickr) {
+				clone.flickr = String(flickr.id);
 			}
 			
-			if (front)
-			{
+			if (front) {
 				clone.front = String(front.id);
 			}
 			
-			if (back)
-			{
+			if (back) {
 				clone.back = String(back.id);
 			}
 			
-			if (background)
-			{
+			if (background) {
 				clone.background = String(background.id);
 			}
 			
-			if (menu)
-			{
+			if (menu) {
 				clone.menu = String(menu.id);
 			}
 			
-			if (frame)
-			{
+			if (frame) {
 				clone.frame = String(frame.id);
 			}
 			
-			if (fronts && fronts.length > 1)
-			{
+			if (fronts && fronts.length > 1) {
 				clone.fronts = [];
-				for (var l:int = 0; l < fronts.length; l++)
-				{
-					for (var m:int = 0; m < clone.numChildren; m++)
-					{
-						if (fronts[l].name == clone.getChildAt(m).name)
-						{
+				for (var l:int = 0; l < fronts.length; l++) {
+					for (var m:int = 0; m < clone.numChildren; m++) {
+						if (fronts[l].name == clone.getChildAt(m).name) {
 							clone.fronts[l] = clone.getChildAt(m);
 						}
 					}
 				}
 			}
 			
-			if (backs && backs.length > 1)
-			{
+			if (backs && backs.length > 1) {
 				clone.backs = [];
-				for (var j:int = 0; j < backs.length; j++)
-				{
-					for (var k:int = 0; k < clone.numChildren; k++)
-					{
-						if (backs[j].name == clone.getChildAt(k).name)
-						{
+				for (var j:int = 0; j < backs.length; j++) {
+					for (var k:int = 0; k < clone.numChildren; k++) {
+						if (backs[j].name == clone.getChildAt(k).name) {
 							clone.backs[j] = clone.getChildAt(k);
 						}
 					}
@@ -205,25 +170,21 @@ package com.gestureworks.cml.components
 			}
 			clone.init();
 			
-			if (clone.textFields)
-			{
-				for (var i:int = 0; i < clone.textFields.length; i++)
-				{
+			if (clone.textFields) {
+				for (var i:int = 0; i < clone.textFields.length; i++) {
 					clone.textFields[i].x = textFields[i].x;
 					clone.textFields[i].y = textFields[i].y;
 				}
 			}
-			
 			return clone;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function dispose():void
-		{
+		override public function dispose():void {
 			super.dispose();
-			image = null;
+			flickr = null;
 		}
 	
 	}
