@@ -100,7 +100,7 @@ package com.gestureworks.cml.components
 		private function onLoadComplete(e:StateEvent):void {
 			if (e.property == "isLoaded") {
 				flickr.removeEventListener(StateEvent.CHANGE, onLoadComplete);
-				isLoaded = true;
+				_isLoaded = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 				updateLayout();
 			}
