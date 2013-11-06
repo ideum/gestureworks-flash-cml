@@ -262,18 +262,18 @@ package com.gestureworks.cml.element
 			}
 			
 			if (!touchBtn2) {
-			touchBtn2 = new TouchContainer();
-			touchBtn2.gestureEvents = true;
-			touchBtn2.gestureList = { "n-tap":true };
-			addChild(touchBtn2);
+				touchBtn2 = new TouchContainer();
+				touchBtn2.gestureEvents = true;
+				touchBtn2.gestureList = { "n-tap":true };
+				addChild(touchBtn2);
 			}
 			
 			if (!thumbTouch){
-			thumbTouch = new TouchContainer();
-			thumbTouch.gestureEvents = true;
-			thumbTouch.gestureList = { "n-drag":true };
-			thumbTouch.nativeTransform = false;
-			addChild(thumbTouch);
+				thumbTouch = new TouchContainer();
+				thumbTouch.gestureEvents = true;
+				thumbTouch.gestureList = { "n-drag":true };
+				thumbTouch.nativeTransform = false;
+				addChild(thumbTouch);
 			}
 			
 			// Create the rail.
@@ -439,96 +439,34 @@ package com.gestureworks.cml.element
 			}
 		}
 		
-		private function onRailTouch(e:GWTouchEvent):void 
-		{
-			
+		private function onRailTouch(e:GWTouchEvent):void {			
 			switch(_orientation) {
-				case "vertical":
-					if (e.localY > thumb.y) {
-						thumb.y += movementRail * 0.1;
-						clampThumb();
-						if (thumb.y < e.localY) {
-							if(_buttonVisible)
-								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
-							else
-								scrollPosition = thumb.y / movementRail;
-						}
-						else if (thumb.y > e.localY) {
-							thumb.y = e.localY;
-							clampThumb();
-							if(_buttonVisible)
-								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
-							else
-								scrollPosition = thumb.y / movementRail;
-						}
-					}
-					else if (e.localY < thumb.y) {
-						thumb.y -= movementRail * 0.1;
-						clampThumb();
-						if (thumb.y > e.localY) {
-							if(_buttonVisible)
-								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
-							else
-								scrollPosition = thumb.y / movementRail;
-						}
-						else if (thumb.y < e.localY) {
-							thumb.y = e.localY;
-							clampThumb();
-							if(_buttonVisible)
-								scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
-							else
-								scrollPosition = thumb.y / movementRail;
-						}
-					}
-					
-					newYPos = thumb.y;
-					break;
-					
 				case "horizontal":
-					if (e.localX > thumb.x) {
-						thumb.x += movementRail * 0.1;
-						clampThumb();
-						if (thumb.x < e.localX) {
-							if(_buttonVisible)
-								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
-							else
-								scrollPosition = thumb.x / movementRail;
-						}
-						else if (thumb.x > e.localX) {
-							thumb.x = e.localX;
-							clampThumb();
-							if(_buttonVisible)
-								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
-							else
-								scrollPosition = thumb.x / movementRail;
-						}
+					thumb.x = e.localX - thumb.width / 2;
+					clampThumb();					
+					if (_buttonVisible) {
+						scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
 					}
-					else if (e.localX < thumb.x) {
-						thumb.x -= movementRail * 0.1;
-						clampThumb();
-						if (thumb.x > e.localX) {
-							if(_buttonVisible)
-								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
-							else
-								scrollPosition = thumb.x / movementRail;
-						}
-						else if (thumb.x < e.localX) {
-							thumb.x = e.localX;
-							clampThumb();
-							if(_buttonVisible)
-								scrollPosition = (thumb.x - scrollBtn1.width) / movementRail;
-							else
-								scrollPosition = thumb.x / movementRail;
-						}
-					}
-					
+					else {
+						scrollPosition = thumb.x / movementRail;
+					}		
 					newXPos = thumb.x;
+					break;				
+				case "vertical":
+					thumb.y = e.localY - thumb.height / 2;
+					clampThumb();					
+					if (_buttonVisible) {
+						scrollPosition = (thumb.y - scrollBtn1.height) / movementRail;
+					}
+					else {
+						scrollPosition = thumb.y / movementRail;
+					}					
+					newYPos = thumb.y;
 					break;
 			}
 		}
 		
 		private function onTap1(e:GWGestureEvent):void {
-			
 			switch(_orientation) {
 				case "vertical":
 					thumb.y -= movementRail * 0.1;
