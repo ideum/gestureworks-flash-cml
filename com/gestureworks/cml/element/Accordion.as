@@ -19,22 +19,19 @@ package com.gestureworks.cml.element
 	public class Accordion extends TouchContainer 
 	{
 		private var _selectedIndex:int = -1;
-		private var _backgroundColor:uint = 0x424141;
 		private var _spacing:Number = 5;
-		private var background:Graphic;
 		private var contents:Array = [];
-		public var collapsedHeight:Number = 0;
-		public var totalHeight:Number = 0;
+		private var collapsedHeight:Number = 0;
+		private var totalHeight:Number = 0;
 		
 		
+		/**
+		 * Constructor
+		 */
 		public function Accordion() 
 		{
 			super();
 			mouseChildren = true;
-			//width = 500;
-			//height = 375;	
-			//background = new Graphic();			
-			//addChild(background);
 		}
 
 		
@@ -48,15 +45,6 @@ package com.gestureworks.cml.element
 				contents.push(getChildAt(j));
 			}
 			
-			background = new Graphic();
-			background.lineStroke = 0;
-			background.color = backgroundColor;
-			background.shape = "rectangle";
-			background.width = width;
-			background.height = height;
-			addChildAt(background, 0);
-			background.init();
-			
 			snapLow = [];
 			snapHigh = [];
 			
@@ -65,7 +53,6 @@ package com.gestureworks.cml.element
 			for (var i:int = 0; i < contents.length; i++)
 			{
 				tabs[i] = createTab();
-				
 
 				tabs[i].gestureList = { "n-tap":true, "n-drag-inertia":true };
 				tabs[i].gestureEvents = true;
@@ -94,8 +81,8 @@ package com.gestureworks.cml.element
 						label.font = _font;
 						label.color = _fontColor;
 						label.fontSize = _fontSize;
-						label.autoSize = "left";
 						label.text = _labelsArray[i];
+						label.autosize = true;						
 						tabs[i].addChild(label);
 						if (autoLayout){
 							label.y = (tabs[i].height - label.height) / 2;
@@ -123,13 +110,12 @@ package com.gestureworks.cml.element
 			if (twirlIndicator)
 				twirlIcons[twirlIcons.length - 1].rotation = 180;
 				
-			background.height = snapHigh[snapHigh.length - 1] + tabs[tabs.length - 1].height;
-			totalHeight = background.height;
+			totalHeight = snapHigh[snapHigh.length - 1] + tabs[tabs.length - 1].height;
 			collapsedHeight = snapLow[snapLow.length - 1] + tabs[tabs.length - 1].height;
 			
 			cMask = new Graphic;
 			cMask.shape = "rectangle";
-			cMask.height = background.height;
+			cMask.height = totalHeight;
 			cMask.width = width;
 			cMask.init();
 			cMask.visible = false;
@@ -150,43 +136,6 @@ package com.gestureworks.cml.element
 		}		
 		
 
-		
-		/**
-		 * The width of the container 
-		 */
-		override public function set width(value:Number):void 
-		{
-			super.width = value;
-			if(background) background.width = value;
-		}		
-		
-		/**
-		 * The height of the container 
-		 */
-		override public function set height(value:Number):void 
-		{
-			super.height = value;
-			if (background) background.height = value;
-		}
-		
-		
-		
-		/**
-		 * The color of the background graphic element
-		 * @default 0x424141
-		 */
-		public function get backgroundColor():uint { return _backgroundColor; }
-		public function set backgroundColor(c:uint):void
-		{
-			_backgroundColor = c;
-			if (background)
-			{
-				var ct:ColorTransform = new ColorTransform();
-				ct.color = _backgroundColor;
-				background.transform.colorTransform = ct;
-			}
-		}
-		
 		private var _gradientColors:String = "0x000000, 0xFFFFFF, 0xFFFFFF, 0x00000";
 		/**
 		 * Input the gradient colors as a comma-separated list.
@@ -404,14 +353,11 @@ package com.gestureworks.cml.element
 					tweenArray.push(TweenLite.to(contents[0], tweenSpeed, { y:snapLow[0] + tabs[0].height - 4 }));
 					tweenArray.push(TweenLite.to(tabs[_current], tweenSpeed, { y:snapLow[_current] }));
 					tweenArray.push(TweenLite.to(contents[_current], tweenSpeed, { y:snapLow[_current] + tabs[_current].height - 4  }));
-					tweenArray.push(TweenLite.to(background, tweenSpeed, { height:totalHeight, y:snapLow[0] }));
 				} else {
 					tabs[0].y = snapLow[0];
 					contents[0].y = snapLow[0] + tabs[0].height - 4;
 					tabs[_current].y = snapLow[_current];
 					contents[_current].y = snapLow[_current] + tabs[_current].height - 4;
-					background.height = totalHeight;
-					background.y = snapLow[0];
 				}
 				
 				_collapsed = false;
@@ -446,12 +392,9 @@ package com.gestureworks.cml.element
 				if (!immediately) {
 					if (twirlIndicator)
 						tweenArray.push(TweenLite.to(twirlIcons[current], tweenSpeed, { rotation:90 }));
-					tweenArray.push(TweenLite.to(background, tweenSpeed, { height:collapsedHeight, y:snapHigh[0] }));
 				} else {
 					if (twirlIndicator)
 						twirlIcons[current].rotation = 90;
-					background.height = collapsedHeight;
-					background.y = snapHigh[0];
 				}
 				
 				
@@ -501,8 +444,6 @@ package com.gestureworks.cml.element
 			if (collapsed) {
 				tabs[0].y = snapLow[0];
 				contents[0].y = snapLow[0] + tabs[0].height;
-				background.height = totalHeight;
-				background.y = snapLow[0];
 				_collapsed = false;
 			}
 			
@@ -516,8 +457,8 @@ package com.gestureworks.cml.element
 			label.font = _font;
 			label.color = _fontColor;
 			label.fontSize = _fontSize;
-			label.autoSize = "left";
 			label.text = "This is a test.";
+			label.autosize = true;			
 			addChild(label);
 			
 			var tab:Graphic = new Graphic();
@@ -552,11 +493,8 @@ package com.gestureworks.cml.element
 				twirl.shape = "triangle";
 				twirl.height = _twirlIconHeight;
 				twirl.fillAlpha = 0;
-				//twirl.color = backgroundColor;
-				//twirl.fill = "color";
 				twirl.lineStroke = _twirlStroke;
 				twirl.lineColor = fontColor;
-				//twirl.rotation = 90;
 				twirl.x -= _twirlIconHeight / 2;
 				twirl.y -= _twirlIconHeight / 2;
 				
@@ -618,13 +556,6 @@ package com.gestureworks.cml.element
 			
 			
 			if (down) {
-				if (_current == 0) {
-					background.height -= e.value.drag_dy;
-					background.y += e.value.drag_dy;
-					if (background.height < collapsedHeight) {
-						background.height = collapsedHeight;
-					}
-				}
 				for (i = _current; i < tabs.length; i++) {
 					
 					if (tabs[i].y + e.value.drag_dy > snapHigh[i]) {
@@ -643,25 +574,24 @@ package com.gestureworks.cml.element
 							var index:Number = tabs.indexOf(dragGroup[k]);
 							if (k == dragGroup.length - 1 && twirlIndicator) // Last element in the group that was open before, getting closed now.
 								twirlIcons[index].rotation = 180 - (90 * (tabs[index].y / snapHigh[index]));
-							else if (k == 0 && twirlIndicator)
-								twirlIcons[index - 1].rotation = (90 * (tabs[index].y / snapHigh[index])) + 90;
+							else if (k == 0 && twirlIndicator) {
+								if (index > 0) {
+									twirlIcons[index - 1].rotation = (90 * (tabs[index].y / snapHigh[index])) + 90;
+								}
+							}
 						}
 					}
 					else if (i - 1 == _current - 1 && dragGroup.length == 1 && twirlIndicator) {
-						twirlIcons[i - 1].rotation = (90 * (tabs[i].y / snapHigh[i])) + 90;
+						
+						if (i > 0) {
+							twirlIcons[i - 1].rotation = (90 * (tabs[i].y / snapHigh[i])) + 90;
+						}
 						twirlIcons[i].rotation = 180 - (90 * (tabs[i].y / snapHigh[i]));
+							
 					}
 				}
 			}
 			else {
-				if (_collapsed) {
-					background.height += e.value.drag_dy;
-					background.y -= e.value.drag_dy;
-					if (background.height > height) {
-						background.height = height;
-					}
-				}
-				
 				for (i = 0; i <= _current; i++) {
 					
 					if (tabs[i].y + e.value.drag_dy < snapLow[i]) {
@@ -685,8 +615,11 @@ package com.gestureworks.cml.element
 								zIndex -= 1;
 								twirlIcons[ndex].rotation = (90 * (snapLow[ndex] / tabs[ndex].y)) + 90;
 							}
-							else if (l == 0 && twirlIndicator)
-								twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
+							else if (l == 0 && twirlIndicator) {
+								if (ndex > 0) {
+									twirlIcons[ndex - 1].rotation = (90 * ((tabs[ndex].y - (tabs[ndex - 1].y + tabs[ndex - 1].height)) / (height - tabs[ndex].height))) + 90;
+								}
+							}
 						}
 					}
 				}
@@ -732,11 +665,6 @@ package com.gestureworks.cml.element
 			// Check the target's snapping direction, and make everything in the dragGroup follow that;
 			if (e.target.y < (tabs[targetIndex].height + snapLow[targetIndex] + (height / 2))) {
 				
-				if (_collapsed) {
-					// Reset the background if dragged open.
-					tweenArray.push(TweenLite.to(background, 0.3, { y:0, height:totalHeight } ));
-				}
-				
 				for (var k:int = 0; k < dragGroup.length; k++) 
 				{
 					// Grab index of the dragGroup member in the actual list of tabs.
@@ -752,7 +680,9 @@ package com.gestureworks.cml.element
 				if (twirlIndicator) {
 					if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
 						//Rotate the item preceding the dragGroup to closed.
-						tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:90}));
+						if (outIndex > 0) {
+							tweenArray.push(TweenLite.to(twirlIcons[outIndex - 1], 0.3, { rotation:90 } ));
+						}
 						//Rotate the item ending the dragGroup to open.
 						tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:180}));
 					}
@@ -761,12 +691,6 @@ package com.gestureworks.cml.element
 				_collapsed = false;
 			} else if (e.target.y > (tabs[targetIndex].height + snapLow[targetIndex] + (height / 2)) && 
 			e.target.y < snapHigh[_current] - 5) {
-				
-				if (_current == 0) {
-					// If current is 0, and the tweening direction is down, tween the background.
-					tweenArray.push(TweenLite.to(background, 0.3, { y:snapHigh[0], height:collapsedHeight } ));
-				}
-				
 				for (var i:int = 0; i < dragGroup.length; i++) 
 				{
 					cNum = tabs.indexOf(dragGroup[i]);
@@ -779,7 +703,9 @@ package com.gestureworks.cml.element
 				if (twirlIndicator){
 					if (e.target == dragGroup[0] || e.target == dragGroup[dragGroup.length - 1]) {
 						// Rotate the item preceding all the dragGroup items to open.
-						tweenArray.push(TweenLite.to(twirlIcons[outIndex-1], 0.3, {rotation:180}));
+						if (outIndex > 0) {
+							tweenArray.push(TweenLite.to(twirlIcons[outIndex - 1], 0.3, { rotation:180 } ));
+						}
 						//Rotate the item ending the dragGroup to closed.
 						tweenArray.push(TweenLite.to(twirlIcons[endIndex], 0.3, {rotation:90}));
 					}
@@ -809,7 +735,6 @@ package com.gestureworks.cml.element
 		override public function dispose():void 
 		{
 			super.dispose();
-			background = null;  
 			tabs = null;	
 			contents = null;
 			_labelsArray = null;
