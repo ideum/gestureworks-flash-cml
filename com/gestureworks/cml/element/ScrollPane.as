@@ -36,7 +36,8 @@ package com.gestureworks.cml.element
 		
 		public function ScrollPane()
 		{
-			super();			
+			super();	
+			mouseChildren = true;
 			nativeTransform = false;
 		}	
 		
@@ -191,6 +192,9 @@ package com.gestureworks.cml.element
 			_horizontalScroll = null;		
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		override public function init():void {
 			// Check the child list. 
 			// Iterate through each item, getting position, width, and height.
@@ -436,7 +440,6 @@ package com.gestureworks.cml.element
 		
 		
 		private function onDrag(e:GWGestureEvent):void {
-	
 			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
 				if (_verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
 					_verticalScroll.onDrag(e);
@@ -482,7 +485,7 @@ package com.gestureworks.cml.element
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newYPos = _content.y;
 				
-				if (!gestureReleaseInertia) {
+				if (!releaseInertia) {
 					if (!oldY) {
 						oldY = e.value.localY;
 					}
@@ -515,7 +518,7 @@ package com.gestureworks.cml.element
 				
 				newXPos = _content.x;
 				
-				if (!gestureReleaseInertia) {
+				if (!releaseInertia) {
 					if (!oldX) {
 						oldX = e.value.localX;
 					}
