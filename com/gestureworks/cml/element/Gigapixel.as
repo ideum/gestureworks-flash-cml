@@ -53,6 +53,7 @@
 		public function Gigapixel()
 		{
 			super();
+			mouseChildren = true;
 		}
 		
 		private var _toggleHotspots:Boolean = true;
