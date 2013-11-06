@@ -36,15 +36,16 @@
 			
 	 * </codeblock>
 	 * 
-	 * @author Josh
+	 * @author Ideum
 	 * @see Component
 	 * @see com.gestureworks.cml.elements.Gigapixel
 	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class GigapixelViewer extends Component
 	{
-		private var info:*;
-
+		private var _minScaleConstraint:Number = 0.001;
+		private var _gigapixel:*;
+		
 		//------ image settings ------//
 		private var _clickZoomInFactor:Number = 1.7
 		private var _scaleZoomFactor:Number = 1.4
@@ -53,22 +54,19 @@
     	private var scaleConstraint:ScaleConstraint;
 	
 		/**
-		 * gigaPixelViewer Constructor
+		 * Constructor
 		 */
-	  	public function GigapixelViewer()
-		{
+	  	public function GigapixelViewer() {
 			super();
 		}
 		
-		private var _gigapixel:*;
 		/**
 		 * Sets the gigapixel element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
 		 * Regardless of how this set, a corresponding display object is always returned. 
 		 */		
-		public function get gigapixel():* {return _gigapixel}
-		public function set gigapixel(value:*):void 
-		{
+		public function get gigapixel():* { return _gigapixel; }
+		public function set gigapixel(value:*):void {
 			if (!value) return;
 			
 			if (value is DisplayObject)
@@ -77,61 +75,55 @@
 				_gigapixel = searchChildren(value);					
 		}
 		
-		private var _minScaleConstraint:Number = 0.001;
+		/**
+		 * Sets minimum contraint for scale
+		 */
 		public function get minScaleConstraint():Number { return _minScaleConstraint; }
 		public function set minScaleConstraint(value:Number):void {
-			if(!isNaN(value) && value >=0){
+			if (!isNaN(value) && value >= 0) {
 				_minScaleConstraint = value;
 			}
 		}
 		
+		
+		
 		/**
-		 * Initialization function
+		 * @inheritDoc
 		 */
-		override public function init():void 
-		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!gigapixel)
-				gigapixel = searchChildren(".gigapixel_element");
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".gigapixel_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");	
-			
+		override public function init():void {						
 			// automatically try to find elements based on AS3 class
-			if (!gigapixel)
+			if (!gigapixel) {
 				gigapixel = searchChildren(Gigapixel);
+			}
+			if (gigapixel) {
 				gigapixel.addEventListener(StateEvent.CHANGE, onStateEvent);
-			
+			}
 			super.init();
 		}		
 		
-		override protected function updateLayout(event:* = null):void 
-		{
-			// update width and height to the size of the image, if not already specified
-			if (!width && gigapixel)
+		/**
+		 * @inheritDoc
+		 */
+		override protected function updateLayout(event:* = null):void {
+			
+			if (!width) {
 				width = gigapixel.width;
-			if (!height && gigapixel)
-				height = gigapixel.height;
-				
+			}
+			if (!height) {
+				height = gigapixel.height;	
+			}
 			super.updateLayout(event);
 		}
 		
-		override protected function onStateEvent(event:StateEvent):void
-		{	
+		/**
+		 * @inheritDoc
+		 */
+		override protected function onStateEvent(event:StateEvent):void {	
 			super.onStateEvent(event);
-			
 			if (event.value == "loaded") {
 				height = gigapixel.height;
 				width = gigapixel.width;
 				gigapixel.removeEventListener(StateEvent.CHANGE, onStateEvent);
-				
 				updateLayout();
 			}
 		}
@@ -139,10 +131,8 @@
 		/**
 		 * @inheritDoc
 		 */
-		override public function dispose():void
-		{
+		override public function dispose():void {
 			super.dispose();
-			info = null;
 			_gigapixel = null;
 			sceneNavigator = null;
 			scaleConstraint = null;
