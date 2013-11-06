@@ -106,11 +106,6 @@ package com.gestureworks.cml.elements
 			else if (dictionary[file] is MP3) dictionary[file].init();
 				
 			addChild(dictionary[file]);	
-			
-		
-			
-			//if (src.length)
-				//open(src);	
 		}
 
 		
@@ -316,18 +311,15 @@ package com.gestureworks.cml.elements
 		
 		private function onComplete(event:Event=null):void
 		{
-			this.dispatchEvent(new Event(Event.COMPLETE));
-			
-			if (event && event.target) {
-				
+			if (event && event.target) {				
 				if (event.target.src) {
 					if (!_width)
 						_width = dictionary[event.target.src].width;
 					if (!_height)
 						_height = dictionary[event.target.src].height;
-					trace("Dimensions:", _width, _height, event.target);
 				}
 			}
+			dispatchEvent(new Event(Event.COMPLETE));			
 		}
 		
 		
