@@ -32,7 +32,7 @@ package com.gestureworks.cml.elements
 		map1.mapprovider = "MicrosoftRoadMapProvider";
 	 *
 	 * </codeblock>
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class ModestMap extends TouchContainer
 	{

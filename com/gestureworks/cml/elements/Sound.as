@@ -10,7 +10,7 @@ package com.gestureworks.cml.elements
 	import flash.utils.Dictionary;
 	/**
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class Sound extends MP3Factory
 	{

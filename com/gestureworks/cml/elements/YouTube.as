@@ -28,7 +28,7 @@ package  com.gestureworks.cml.elements
 		ytElement.init();
 	 *
 	 * </codeblock>
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class YouTube extends TouchContainer
 	{

@@ -6,7 +6,7 @@ package com.gestureworks.cml.elements
 	 * A ModestMapMarker is primarily a container for graphic objects that gives the latitude and longitude of map.
 	 * It has following parameters: longitude and longitude.
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 * @see ModestMap
 	 */
 	public class ModestMapMarker extends TouchContainer

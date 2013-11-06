@@ -40,7 +40,7 @@ package com.gestureworks.cml.elements
 		magnifier.init();
 	 *
 	 * </codeblock>
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class Magnifier extends TouchContainer
 	{

@@ -39,7 +39,7 @@ package com.gestureworks.cml.elements
 
 	 * </codeblock>
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 * @see Menu
 	 * @see OrbMenu
 	 */

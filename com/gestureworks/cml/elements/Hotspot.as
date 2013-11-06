@@ -16,7 +16,7 @@ package com.gestureworks.cml.elements
 	/**
 	 * A Hotspot is primarily a container for graphic objects that is set at an index local to a gigapixel scene.
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 * @see Gigapixel
 	 */
 	public class Hotspot extends Container

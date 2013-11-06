@@ -29,7 +29,7 @@
 			
 	 * </codeblock>
 	 * 
-	 * @author Josh
+	 * @author Ideum
 	 * @see Component
 	 * @see com.gestureworks.cml.elements.MaskContainer
 	 * @see com.gestureworks.cml.elements.TouchContainer

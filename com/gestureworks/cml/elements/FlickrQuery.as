@@ -19,7 +19,7 @@ package  com.gestureworks.cml.elements
 	 *
 	 * </codeblock>
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 * @see YouTube
 	 */
 	public class FlickrQuery extends TouchContainer

@@ -17,7 +17,7 @@ package com.gestureworks.cml.elements
 	import flash.utils.Dictionary;
 	/**
 	 * ...
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class SlideMenu extends TouchContainer
 	{

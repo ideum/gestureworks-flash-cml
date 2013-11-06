@@ -40,7 +40,7 @@ package com.gestureworks.cml.elements
 		
 	 *
 	 * </codeblock>
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class WAV extends TouchContainer
 	{

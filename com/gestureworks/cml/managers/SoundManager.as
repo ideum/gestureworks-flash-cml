@@ -12,7 +12,7 @@ package com.gestureworks.cml.managers
 	 * The sound manager only handles Sound elements attached to CML display objects for the purposes of accessibility. It does not handle regular MP3
 	 * or WAV elements.
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class SoundManager 
 	{

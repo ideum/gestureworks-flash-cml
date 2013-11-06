@@ -28,7 +28,7 @@ package com.gestureworks.cml.elements
 	 
 	 * </codeblock>
 	 * 
-	 * @author josh
+	 * @author Ideum
 	 * @see TouchContainer
 	 */
 		
