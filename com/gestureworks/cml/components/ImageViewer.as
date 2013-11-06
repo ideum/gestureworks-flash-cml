@@ -68,22 +68,7 @@ package com.gestureworks.cml.components
 		 * Initialization function
 		 */
 		override public function init():void 
-		{	
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!image)
-				image = searchChildren(".image_element");
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front && !fronts)
-				front = searchChildren(".image_container");
-			if (!back && !backs) {
-				back = searchChildren(".info_container");
-			}
-			if (!background)
-				background = searchChildren(".info_bg");	
-			
+		{				
 			// automatically try to find elements based on AS3 class
 			if (!image)
 				image = searchChildren(Image);

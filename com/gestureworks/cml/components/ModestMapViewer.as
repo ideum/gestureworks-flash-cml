@@ -68,28 +68,15 @@ package com.gestureworks.cml.components
 		 */
 		override public function init():void 
 		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!map){
-				map = searchChildren(".map_element");
-				map.addEventListener(StateEvent.CHANGE, onStateEvent);
-			}
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".map_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");
-			
 			// automatically try to find elements based on AS3 class
 			if (!map){
 				map = searchChildren(ModestMap);
-				map.addEventListener(StateEvent.CHANGE, onStateEvent);
-				map.addEventListener(GWGestureEvent.DOUBLE_TAP, onDouble);
 			}	
+			
+			if (map) {
+				map.addEventListener(StateEvent.CHANGE, onStateEvent);
+				map.addEventListener(GWGestureEvent.DOUBLE_TAP, onDouble);				
+			}
 			
 			super.init();
 		}

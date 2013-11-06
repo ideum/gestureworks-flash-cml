@@ -32,24 +32,23 @@
 	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	 
 	public class MediaViewer extends Component 
-	{		
+	{
+		private var _media:*;
+		
 		/**
-		 * media viewer Constructor
+		 * Constructor
 		 */
-		public function MediaViewer() 
-		{
+		public function MediaViewer() {
 			super();			
 		}
 		
-		private var _media:*;
 		/**
 		 * Sets the media element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
 		 * Regardless of how this set, a corresponding display object is always returned. 
 		 */		
-		public function get media():* {return _media}
-		public function set media(value:*):void 
-		{
+		public function get media():* { return _media; }
+		public function set media(value:*):void {
 			if (!value) return;
 			
 			if (value is DisplayObject)
@@ -59,33 +58,20 @@
 		}				
 		
 		/**
-		 * Initialization function
+		 * @inheritDoc
 		 */
-		override public function init():void 
-		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!media)
-				media = searchChildren(".media_element");
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".image_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");	
-			
+		override public function init():void {			
 			// automatically try to find elements based on AS3 class
 			if (!media)
 				media = searchChildren(Media);
 
 			super.init();
 		}				
-			
-		override protected function updateLayout(event:*=null):void 
-		{
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function updateLayout(event:*=null):void {
 			// update width and height to the size of the media, if not already specified
 			if (!width && media)
 				width = media.width;
@@ -95,8 +81,10 @@
 			super.updateLayout();
 		}		
 		
-		override protected function onStateEvent(event:StateEvent):void
-		{				
+		/**
+		 * @inheritDoc
+		 */
+		override protected function onStateEvent(event:StateEvent):void {				
 			super.onStateEvent(event);
 			if (event.value == "close" && media)
 				media.stop();
@@ -109,8 +97,7 @@
 		/**
 		 * @inheritDoc
 		 */
-		override public function dispose():void 
-		{
+		override public function dispose():void {
 			super.dispose();	
 			_media = null;
 		}

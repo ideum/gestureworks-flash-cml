@@ -36,15 +36,15 @@
 	 */	 
 	public class MaskImageViewer extends Component//ComponentKit
 	{	
+		private var _maskCon:*;
+		
 		/**
 		 * Constructor
 		 */
-		public function MaskImageViewer()
-		{
+		public function MaskImageViewer() {
 			super();
 		}
 		
-		private var _maskCon:*;
 		/**
 		 * Sets the image mask element.
 		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
@@ -62,36 +62,25 @@
 		}			
 		
 		/**
-		 * Initialization function
+		 * @inheritDoc
 		 */
 		override public function init():void 
 		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!maskCon){
-				_maskCon = searchChildren(".mask_element");
-				addEventListener(GWGestureEvent.ROTATE, onRotate);
-			}
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".mask_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");	
-			
 			// automatically try to find elements based on AS3 class
 			if (!maskCon){
 				_maskCon = searchChildren(MaskContainer);
 				addEventListener(GWGestureEvent.ROTATE, onRotate);
 				addEventListener(GWGestureEvent.MANIPULATE, onRotate);
-			}							
-			maskCon.addEventListener(StateEvent.CHANGE, onStateEvent);
+			}	
+			if (maskCon) {
+				maskCon.addEventListener(StateEvent.CHANGE, onStateEvent);
+			}
 			super.init();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function updateLayout(event:* = null):void 
 		{
 			// update width and height to the size of the image, if not already specified
@@ -103,9 +92,11 @@
 			super.updateLayout(event);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function onStateEvent(event:StateEvent):void
 		{	
-
 			super.onStateEvent(event);
 			if (event.value == "LOADED") {
 				maskCon.removeEventListener(StateEvent.CHANGE, onStateEvent);
