@@ -17,7 +17,7 @@ package com.gestureworks.cml.elements
 	
 	/**
 	 * ...
-	 * @author Tristan
+	 * @author Ideum
 	 */
 	public class Paint extends TouchContainer
 	{
