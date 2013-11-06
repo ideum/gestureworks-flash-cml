@@ -58,7 +58,7 @@ package com.gestureworks.cml.element
 			textFormat.size = fontSize;
 			
 			textField.antiAliasType = AntiAliasType.ADVANCED;
-			textField.blendMode = BlendMode.LAYER;
+			textField.blendMode = BlendMode.NORMAL;
 			textField.embedFonts = true;	
 			textField.selectable = false;
 			textField.text;
@@ -66,7 +66,7 @@ package com.gestureworks.cml.element
 			// keep default for past consistency 
 			width = 100;
 			height = 100;		
-			
+
 			updateTextFormat();
 		}
 		
