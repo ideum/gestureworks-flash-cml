@@ -71,25 +71,33 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Initialisation method
+		 * Initialization method
 		 */
-		override public function init():void {			
+		override public function init():void {
+			// hide while loading
+			visible = false;
+			
 			// automatically try to find elements based on AS3 class
 			if (!flickr)
 				flickr = searchChildren(Flickr);
-			flickr.addEventListener(StateEvent.CHANGE, onLoadComplete);
+			
+			// listen for load complete
+			if (flickr) {
+				flickr.addEventListener(StateEvent.CHANGE, onLoadComplete);
+			}
+
 			super.init();
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:*=null):void {
+		override protected function updateLayout(event:*= null):void {
 			if (flickr) {
 				width = flickr.width;
 				height = flickr.height;	
 			}	
-			super.updateLayout();				
+			super.updateLayout();	
 		}
 		
 		/**
@@ -103,6 +111,7 @@ package com.gestureworks.cml.components
 				_isLoaded = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 				updateLayout();
+				visible = true;
 			}
 		}
 		
