@@ -299,16 +299,6 @@ package com.gestureworks.cml.element
 		}		
 		
 		/**
-		 * loads external image file
-		 */
-		[Deprecated(replacement="open()")] 
-		public function load(file:String):void
-		{
-			open(file);
-		}
-		
-		
-		/**
 		 * Closes the currently open image file
 		 */
 		public function close():void
@@ -540,25 +530,11 @@ package com.gestureworks.cml.element
 		}
 	
 		public var isLoaded:Boolean = false;
-		
 
 		////////////////////////////////////////////////////////////////////////////////
 		// Private Methods
 		////////////////////////////////////////////////////////////////////////////////		
-		
-		/**
-		 * loads the file
-		 * @param	file
-		 */
-		public function preloadFile(file:String):void
-		{
-			//src = file;
-			//FileManager.instance.addToQueue(file, "img");
-		}
-		
-		
-	
-			
+				
 		private function createBitmapDataArray():void
 		{
 			var avatarNum:int = _sizeArray.length;
