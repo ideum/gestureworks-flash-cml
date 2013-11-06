@@ -1,7 +1,7 @@
 package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.components.Component;
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	
 	

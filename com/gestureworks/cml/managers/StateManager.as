@@ -1,7 +1,7 @@
 package com.gestureworks.cml.managers 
 {
-	import com.gestureworks.cml.element.State;
-	import com.gestureworks.cml.element.TLF;
+	import com.gestureworks.cml.elements.State;
+	import com.gestureworks.cml.elements.TLF;
 	import com.gestureworks.cml.utils.StringUtils;
 	import flash.utils.Dictionary;
 	/**

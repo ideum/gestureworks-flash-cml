@@ -1,6 +1,6 @@
 ﻿package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import flash.display.DisplayObject;
 	
@@ -28,8 +28,8 @@
 	 * 
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Media
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.Media
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	 
 	public class MediaViewer extends Component 
 	{		

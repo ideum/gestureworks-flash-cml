@@ -1,7 +1,7 @@
 package com.gestureworks.cml.utils 
 {
-	import com.gestureworks.cml.element.MP3;
-	import com.gestureworks.cml.element.Sound;
+	import com.gestureworks.cml.elements.MP3;
+	import com.gestureworks.cml.elements.Sound;
 	import com.gestureworks.cml.managers.SoundManager;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.TouchEvent;

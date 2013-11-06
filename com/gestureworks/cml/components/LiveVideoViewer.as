@@ -1,6 +1,6 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import flash.display.DisplayObject;
 	
@@ -28,8 +28,8 @@ package com.gestureworks.cml.components
 	 * 
 	 * @author Uma and Shaun
 	 * @see Component
-	 * @see com.gestureworks.cml.element.LiveVideo
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.LiveVideo
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class LiveVideoViewer extends Component 
 	{						

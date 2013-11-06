@@ -1,6 +1,6 @@
 ﻿package com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
@@ -31,8 +31,8 @@
 	 * 
 	 * @author Josh
 	 * @see Component
-	 * @see com.gestureworks.cml.element.MaskContainer
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.MaskContainer
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	 
 	public class MaskImageViewer extends Component//ComponentKit
 	{	

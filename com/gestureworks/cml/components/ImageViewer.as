@@ -1,6 +1,6 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
@@ -29,8 +29,8 @@ package com.gestureworks.cml.components
 	 * 
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Image
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.Image
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class ImageViewer extends Component 
 	{		

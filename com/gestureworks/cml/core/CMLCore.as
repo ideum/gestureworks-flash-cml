@@ -20,7 +20,7 @@ package com.gestureworks.cml.core
 	 * <p>Register custom packages by pushing into the CMLCore.packages array.
 	 * 
 	 * <p>You can then use one of the following procedures to register your class:</p>
-	 * <listing version="3.0">com.gestureworks.cml.element.CustomClass; CustomClass;</listing>
+	 * <listing version="3.0">com.gestureworks.cml.elements.CustomClass; CustomClass;</listing>
 	 * <p>or</p>
 	 * <listing version="3.0">CMLCore.classes.push(CMLCustomClass);</listing>
 	 * 
@@ -36,7 +36,7 @@ package com.gestureworks.cml.core
 			"",
 			"com.gestureworks.cml.buttons.",			
 			"com.gestureworks.cml.components.",		
-			"com.gestureworks.cml.element.",
+			"com.gestureworks.cml.elements.",
 			"com.gestureworks.cml.filters.",
 			"com.gestureworks.cml.layouts.",
 			"com.gestureworks.cml.menus.",
@@ -81,62 +81,62 @@ package com.gestureworks.cml.core
 	/////////////////////
 	//  ELEMENTS   
 	/////////////////////
-	import com.gestureworks.cml.element.Include; Include;			
-	import com.gestureworks.cml.element.Container; Container;
-	import com.gestureworks.cml.element.View; View;
-	import com.gestureworks.cml.element.Stack; Stack;	
-	import com.gestureworks.cml.element.TLF; TLF;	
-	import com.gestureworks.cml.element.TouchContainer; TouchContainer;
-	import com.gestureworks.cml.element.Slider; Slider;		
-	import com.gestureworks.cml.element.RadialSlider; RadialSlider;
-	import com.gestureworks.cml.element.Toggle; Toggle;
-    import com.gestureworks.cml.element.Switch; Switch;
-	import com.gestureworks.cml.element.DatePicker; DatePicker;
-	import com.gestureworks.cml.element.YouTube; YouTube;
-	import com.gestureworks.cml.element.Slideshow; Slideshow;
-	import com.gestureworks.cml.element.ColorPicker; ColorPicker;
-	import com.gestureworks.cml.element.MaskContainer; MaskContainer;
-	import com.gestureworks.cml.element.TabbedContainer; TabbedContainer;
-	import com.gestureworks.cml.element.TouchKeyboard; TouchKeyboard;
-	import com.gestureworks.cml.element.Dial; Dial;
-	import com.gestureworks.cml.element.ScrollBar; ScrollBar;
-	import com.gestureworks.cml.element.ScrollPane; ScrollPane;
-	import com.gestureworks.cml.element.Stepper; Stepper;
-	import com.gestureworks.cml.element.Text; Text;
-	import com.gestureworks.cml.element.SWC; SWC;
-	import com.gestureworks.cml.element.SWF; SWF;	
-	import com.gestureworks.cml.element.Frame; Frame;
-	import com.gestureworks.cml.element.Video; Video;
-	import com.gestureworks.cml.element.MP3; MP3;
-	import com.gestureworks.cml.element.Graphic; Graphic;	
-	import com.gestureworks.cml.element.Image; Image;
-	import com.gestureworks.cml.element.Media; Media;
-	import com.gestureworks.cml.element.Album; Album;	
-	import com.gestureworks.cml.element.ModestMap; ModestMap;
-	import com.gestureworks.cml.element.ModestMapMarker; ModestMapMarker;
-	import com.gestureworks.cml.element.Paint; Paint;
-	import com.gestureworks.cml.element.Gigapixel; Gigapixel;
-	import com.gestureworks.cml.element.Tab; Tab;
-	import com.gestureworks.cml.element.Key; Key;	
-	import com.gestureworks.cml.element.Magnifier; Magnifier;
-	import com.gestureworks.cml.element.Flickr; Flickr;
-	import com.gestureworks.cml.element.Menu; Menu;
-	import com.gestureworks.cml.element.DropDownMenu; DropDownMenu;
-	import com.gestureworks.cml.element.OrbMenu; OrbMenu;	
-	import com.gestureworks.cml.element.Button; Button;
-	import com.gestureworks.cml.element.RadioButtons; RadioButtons;	
-	import com.gestureworks.cml.element.Drawer; Drawer;
-	import com.gestureworks.cml.element.Dock; Dock;	
-	import com.gestureworks.cml.element.MenuAlbum; MenuAlbum;	
-	import com.gestureworks.cml.element.ProgressBar; ProgressBar;	
-	import com.gestureworks.cml.element.Accordion; Accordion;	
-	import com.gestureworks.cml.element.SlideMenu; SlideMenu;
-	import com.gestureworks.cml.element.Hotspot; Hotspot;
-	import com.gestureworks.cml.element.VideoCamera; VideoCamera;
-	import com.gestureworks.cml.element.Background; Background;		
-	import com.gestureworks.cml.element.Attract; Attract;
-	import com.gestureworks.cml.element.StageKit; StageKit;	
-	import com.gestureworks.cml.element.PopupMenu; PopupMenu;
+	import com.gestureworks.cml.elements.Include; Include;			
+	import com.gestureworks.cml.elements.Container; Container;
+	import com.gestureworks.cml.elements.View; View;
+	import com.gestureworks.cml.elements.Stack; Stack;	
+	import com.gestureworks.cml.elements.TLF; TLF;	
+	import com.gestureworks.cml.elements.TouchContainer; TouchContainer;
+	import com.gestureworks.cml.elements.Slider; Slider;		
+	import com.gestureworks.cml.elements.RadialSlider; RadialSlider;
+	import com.gestureworks.cml.elements.Toggle; Toggle;
+    import com.gestureworks.cml.elements.Switch; Switch;
+	import com.gestureworks.cml.elements.DatePicker; DatePicker;
+	import com.gestureworks.cml.elements.YouTube; YouTube;
+	import com.gestureworks.cml.elements.Slideshow; Slideshow;
+	import com.gestureworks.cml.elements.ColorPicker; ColorPicker;
+	import com.gestureworks.cml.elements.MaskContainer; MaskContainer;
+	import com.gestureworks.cml.elements.TabbedContainer; TabbedContainer;
+	import com.gestureworks.cml.elements.TouchKeyboard; TouchKeyboard;
+	import com.gestureworks.cml.elements.Dial; Dial;
+	import com.gestureworks.cml.elements.ScrollBar; ScrollBar;
+	import com.gestureworks.cml.elements.ScrollPane; ScrollPane;
+	import com.gestureworks.cml.elements.Stepper; Stepper;
+	import com.gestureworks.cml.elements.Text; Text;
+	import com.gestureworks.cml.elements.SWC; SWC;
+	import com.gestureworks.cml.elements.SWF; SWF;	
+	import com.gestureworks.cml.elements.Frame; Frame;
+	import com.gestureworks.cml.elements.Video; Video;
+	import com.gestureworks.cml.elements.MP3; MP3;
+	import com.gestureworks.cml.elements.Graphic; Graphic;	
+	import com.gestureworks.cml.elements.Image; Image;
+	import com.gestureworks.cml.elements.Media; Media;
+	import com.gestureworks.cml.elements.Album; Album;	
+	import com.gestureworks.cml.elements.ModestMap; ModestMap;
+	import com.gestureworks.cml.elements.ModestMapMarker; ModestMapMarker;
+	import com.gestureworks.cml.elements.Paint; Paint;
+	import com.gestureworks.cml.elements.Gigapixel; Gigapixel;
+	import com.gestureworks.cml.elements.Tab; Tab;
+	import com.gestureworks.cml.elements.Key; Key;	
+	import com.gestureworks.cml.elements.Magnifier; Magnifier;
+	import com.gestureworks.cml.elements.Flickr; Flickr;
+	import com.gestureworks.cml.elements.Menu; Menu;
+	import com.gestureworks.cml.elements.DropDownMenu; DropDownMenu;
+	import com.gestureworks.cml.elements.OrbMenu; OrbMenu;	
+	import com.gestureworks.cml.elements.Button; Button;
+	import com.gestureworks.cml.elements.RadioButtons; RadioButtons;	
+	import com.gestureworks.cml.elements.Drawer; Drawer;
+	import com.gestureworks.cml.elements.Dock; Dock;	
+	import com.gestureworks.cml.elements.MenuAlbum; MenuAlbum;	
+	import com.gestureworks.cml.elements.ProgressBar; ProgressBar;	
+	import com.gestureworks.cml.elements.Accordion; Accordion;	
+	import com.gestureworks.cml.elements.SlideMenu; SlideMenu;
+	import com.gestureworks.cml.elements.Hotspot; Hotspot;
+	import com.gestureworks.cml.elements.VideoCamera; VideoCamera;
+	import com.gestureworks.cml.elements.Background; Background;		
+	import com.gestureworks.cml.elements.Attract; Attract;
+	import com.gestureworks.cml.elements.StageKit; StageKit;	
+	import com.gestureworks.cml.elements.PopupMenu; PopupMenu;
 	
 	
 	///////////////////////

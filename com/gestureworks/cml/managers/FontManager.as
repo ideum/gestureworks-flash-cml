@@ -18,7 +18,7 @@ package com.gestureworks.cml.managers
 	 * the GML core library: OpenSansRegular, OpenSansBold, and OpenSansItalic</p>
 	 * 
 	 * @author Charles
-	 * @see com.gestureworks.cml.element.TLF
+	 * @see com.gestureworks.cml.elements.TLF
 	 * @see com.gestureworks.text.DefaultFonts
 	 */
 	public class FontManager

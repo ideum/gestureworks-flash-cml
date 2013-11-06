@@ -1,6 +1,6 @@
 package  com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import flash.display.DisplayObject;
 	
@@ -28,8 +28,8 @@ package  com.gestureworks.cml.components
 	 * 
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Slideshow
-	 * @see com.gestureworks.cml.element.Stack
+	 * @see com.gestureworks.cml.elements.Slideshow
+	 * @see com.gestureworks.cml.elements.Stack
 	 */		
 	public class SlideshowViewer extends Component
 	{

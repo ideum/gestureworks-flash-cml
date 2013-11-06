@@ -17,8 +17,8 @@ package com.gestureworks.cml.layouts
 	 * It is an abstract class that is not meant to be called directly.
 	 *
 	 * @author Charles and Shaun
-	 * @see com.gestureworks.cml.element.Container
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.Container
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	
 	public class Layout extends CMLObject implements ILayout
 	{

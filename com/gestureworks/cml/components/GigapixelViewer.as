@@ -1,6 +1,6 @@
 ﻿package com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.core.*;
 	import flash.display.*;
@@ -38,8 +38,8 @@
 	 * 
 	 * @author Josh
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Gigapixel
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.Gigapixel
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class GigapixelViewer extends Component
 	{

@@ -1,7 +1,7 @@
 package com.gestureworks.cml.managers 
 {
-	import com.gestureworks.cml.element.Sound;
-	import com.gestureworks.cml.element.TouchContainer;
+	import com.gestureworks.cml.elements.Sound;
+	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.LinkedMap;
 	import flash.utils.Dictionary;

@@ -1,11 +1,11 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.Frame;
-	import com.gestureworks.cml.element.Graphic;
-	import com.gestureworks.cml.element.Menu;
-	import com.gestureworks.cml.element.ScrollPane;
-	import com.gestureworks.cml.element.Text;
-	import com.gestureworks.cml.element.TouchContainer;
+	import com.gestureworks.cml.elements.Frame;
+	import com.gestureworks.cml.elements.Graphic;
+	import com.gestureworks.cml.elements.Menu;
+	import com.gestureworks.cml.elements.ScrollPane;
+	import com.gestureworks.cml.elements.Text;
+	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.events.GWGestureEvent;
@@ -38,7 +38,7 @@ package com.gestureworks.cml.components
 	 * </codeblock>
 	 * 
 	 * @author Ideum
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	
 	public class Component extends TouchContainer 
 	{	

@@ -32,8 +32,8 @@ package com.gestureworks.cml.utils
 	 * It is an abstract class that is not meant to be called directly.
 	 *
 	 * @author Charles
-	 * @see com.gestureworks.cml.element.MP3
-	 * @see com.gestureworks.cml.element.WAV
+	 * @see com.gestureworks.cml.elements.MP3
+	 * @see com.gestureworks.cml.elements.WAV
 	 */	
 	public class MP3Factory extends CMLObject
 	{

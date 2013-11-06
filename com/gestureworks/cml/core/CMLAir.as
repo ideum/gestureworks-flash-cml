@@ -17,7 +17,7 @@ package com.gestureworks.cml.core
 	 * </ul>
 	 * 
 	 * <p>You can then use the following import syntax to register your class:</p>
-	 * <code>com.gestureworks.cml.element.CustomClass; CustomClass;</code>
+	 * <code>com.gestureworks.cml.elements.CustomClass; CustomClass;</code>
 	 *
 	 *
 	 * @author Ideum
@@ -25,8 +25,8 @@ package com.gestureworks.cml.core
 	 */	 
 	public class CMLAir{ }
 
-	import com.gestureworks.cml.element.WAV; WAV;
+	import com.gestureworks.cml.elements.WAV; WAV;
 	import com.gestureworks.cml.components.WAVPlayer; WAVPlayer;
-	import com.gestureworks.cml.element.HTML; HTML;
+	import com.gestureworks.cml.elements.HTML; HTML;
 	import com.gestureworks.cml.components.HTMLViewer; HTMLViewer;
 }

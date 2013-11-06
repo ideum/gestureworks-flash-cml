@@ -1,6 +1,6 @@
 package com.gestureworks.cml.utils
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.utils.*;
 	import flash.display.*;
 	import flash.text.TextFormat;
@@ -15,8 +15,8 @@ package com.gestureworks.cml.utils
 	 * </codeblock>
 	 * 
 	 * @author Uma
-	 * @see com.gestureworks.cml.element.Text
-	 * @see com.gestureworks.cml.element.TLF
+	 * @see com.gestureworks.cml.elements.Text
+	 * @see com.gestureworks.cml.elements.TLF
 	 */
 	public class CircleText extends Sprite
 	{

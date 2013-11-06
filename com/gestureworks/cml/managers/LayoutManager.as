@@ -8,7 +8,7 @@
 	 * The LayoutManager manages global layout definitions.
 	 * 
 	 * @author Ideum
-	 * @see com.gestureworks.cml.element.Container
+	 * @see com.gestureworks.cml.elements.Container
 	 */	
 	public class LayoutManager
 	{			

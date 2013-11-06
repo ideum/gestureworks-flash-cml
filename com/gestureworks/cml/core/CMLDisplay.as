@@ -1,6 +1,6 @@
 package com.gestureworks.cml.core
 {	
-	import com.gestureworks.cml.element.Container;
+	import com.gestureworks.cml.elements.Container;
 	import com.gestureworks.cml.utils.DefaultStage;
 	import com.gestureworks.core.GestureWorks;
 	
