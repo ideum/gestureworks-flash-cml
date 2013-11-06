@@ -64,6 +64,7 @@ package com.gestureworks.cml.elements
 			super();
 			mapMarkers = new Array();
 			mouseChildren = true;
+			this.clusterBubbling = true;
 		}
 		
 		private var _mapProvider:IMapProvider;
@@ -122,17 +123,7 @@ package com.gestureworks.cml.elements
 				_zoom = value;
 			}
 		}
-		
-		private var _draggable:Boolean = true;
-		/**
-		 * Sets the draggable property of the map.
-		 * @default true
-		 */
-		public function get draggable():Boolean { return _draggable; }
-		public function set draggable(value:Boolean):void {
-			_draggable = value;
-		}
-		
+
 		private var _scaleFactor:Number = 15.0;
 		/**
 		 * Sets how fast the map scales in
@@ -174,7 +165,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		private function createMap():void {
-			map = new TweenMap(width, height, _draggable, _mapProvider);
+			map = new TweenMap(width, height, false, _mapProvider);
 			
 			lastLoc = new Location(_latitude, _longitude);
 			map.setCenterZoom(lastLoc, _zoom);
@@ -199,10 +190,11 @@ package com.gestureworks.cml.elements
 		
 		private function createEvents():void {
 			
-			gestureList = { "n-double_tap":true, "n-scale":true };
+			gestureList = { "n-double_tap":true, "n-scale":true, "n-drag":true };
 			
 			addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
 			addEventListener(GWGestureEvent.SCALE, onScale);
+			addEventListener(GWGestureEvent.DRAG, onDrag);
 			nativeTransform = false;
 		}
 		
@@ -218,6 +210,11 @@ package com.gestureworks.cml.elements
 			var scaleDelta:Number = Math.max(scaleX, scaleY);
 			
 			map.zoomByAbout(scaleDelta * scaleFactor, new Point(e.value.localX, e.value.localY));
+		}
+		
+		private function onDrag(e:GWGestureEvent):void {
+			if (e.value.n > 1) return;
+			map.grid.dragMap(new Point(e.value.stageX, e.value.stageY));
 		}
 
 		/**
