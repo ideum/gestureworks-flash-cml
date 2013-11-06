@@ -8,7 +8,8 @@ package com.gestureworks.cml.element
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.events.*;
 	import com.greensock.TweenMax;
-	import flash.events.TouchEvent;
+	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
 		
 	/**
 	 * The ScrollPane creates a masked viewing area of a display object and dynamically updates two scrollbars as that content is optionally dragged or scaled inside the viewing area.
@@ -17,180 +18,136 @@ package com.gestureworks.cml.element
 	 */
 	
 	public class ScrollPane extends TouchContainer
-	{	
-		public var _verticalScroll:ScrollBar;
-		public var _horizontalScroll:ScrollBar;
-		public var _vertical:Boolean = false;
-		public var _horizontal:Boolean = false;
-		public var _mask:Graphic;
-		public var _vertStyleSet:Boolean = false;
-		public var _horizStyleSet:Boolean = false;		
-		public var _horizontalMovement:Number;
-		public var _verticalMovement:Number;
+	{
+		private var tweening:Boolean;	
+		private var loaded:Boolean = false;	
+		
 		private var oldY:Number;
 		private var oldX:Number;
-		public var _content:*;
-		private var loaded:Boolean = false;
-		public var invertDrag:Boolean = false;
-	
 		
-		public function ScrollPane()
-		{
+		private var _content:*;
+		
+		public var _mask:Graphic;
+		
+		public var _verticalScroll:ScrollBar;
+		public var _horizontalScroll:ScrollBar;
+		
+		public var _vertical:Boolean = false;
+		public var _horizontal:Boolean = false;	
+		public var _vertStyleSet:Boolean = false;
+		public var _horizStyleSet:Boolean = false;
+		public var _horizontalMovement:Number;
+		public var _verticalMovement:Number;
+		
+		private var _invertDrag:Boolean = false;
+		
+		private var _autohide:Boolean = false;
+		private var _autohideSpeed:Number = 0.5;
+		
+		private var _paneStroke:Number = 1;
+		private var _paneStrokeColor:uint = 0x777777;
+		private var _paneStrokeMargin:Number = 0;
+
+		private var _scrollMargin:Number = 5;
+		private var _scrollThickness:Number = 30;
+		
+		
+		
+		/**
+		 * Constructor
+		 */
+		public function ScrollPane() {
 			super();	
 			mouseChildren = true;
 			nativeTransform = false;
 		}	
 		
-		private var _autoHide:Boolean = false;
-		public function get autoHide():Boolean { return _autoHide; }
-		public function set autoHide(value:Boolean):void {
-			_autoHide = value;
-		}
 		
-		private var _autoHideSpeed:Number = 0.5;
-		public function get autoHideSpeed():Number { return _autoHideSpeed; }
-		public function set autoHideSpeed(value:Number):void {
-			_autoHideSpeed = value;
-		}
 		
-		private var _width:Number = 0;
 		/**
-		 * Set the width of the window pane of the scrollPane.
+		 * Sets whether to auto-hides scroll bars.
+		 * @default false
 		 */
-		override public function get width():Number { return _width; }
-		override public function set width(value:Number):void {
-			_width = value;
-			super.width = value;
-			//if (loaded)
-				//updateLayout(width, height);
+		public function get autohide():Boolean { return _autohide; }
+		public function set autohide(value:Boolean):void {
+			_autohide = value;
 		}
 		
-		private var _height:Number = 0;
 		/**
-		 * Set the height of the window pane of the scrollPane.
+		 * Sets the auto-hide tween speed.
+		 * @default .5
 		 */
-		override public function get height():Number { return _height; }
-		override public function set height(value:Number):void {
-			_height = value;
-			super.height = value;
-			//if (loaded)
-				//updateLayout(width, height);
+		public function get autohideSpeed():Number { return _autohideSpeed; }
+		public function set autohideSpeed(value:Number):void {
+			_autohideSpeed = value;
 		}
 		
-		private var _paneStroke:Number = 1;
 		/**
-		 * Set the thickness of a border stroke around the pane.
+		 * Sets the thickness of a border stroke around the pane.
+		 * @default 1
 		 */
 		public function get paneStroke():Number { return _paneStroke; }
 		public function set paneStroke(value:Number):void {
 			_paneStroke = value;
 		}
 		
-		private var _paneStrokeColor:uint = 0x777777;
 		/**
-		 * Set the color of the paneStroke.
+		 * Sets the color of the pane stroke.
+		 * @default 0x777777
 		 */
 		public function get paneStrokeColor():uint { return _paneStrokeColor; }
 		public function set paneStrokeColor(value:uint):void {
 			_paneStrokeColor = value;
 		}
 		
-		private var _paneStrokeMargin:Number = 0;
 		/**
-		 * Set a margin if the border should be slightly separate from the content
+		 * Set a margin if the border should be slightly separate from the content.
+		 * @default 0
 		 */
 		public function get paneStrokeMargin():Number { return _paneStrokeMargin; }
 		public function set paneStrokeMargin(value:Number):void {
 			_paneStrokeMargin = value;
 		}
 		
-		private var _scrollMargin:Number = 5;
 		/**
-		 * Set the margin between the scroll bars and the content;
+		 * Set the margin between the scroll bars and the content.
+		 * @default 5
 		 */
 		public function get scrollMargin():Number { return _scrollMargin; }
 		public function set scrollMargin(value:Number):void {
 			_scrollMargin = value;
 		}
 		
-		private var _scrollThickness:Number = 30;
 		/**
 		 * The only styling that can be set for the scroll bars in the scrollPane is their thickness.
 		 * For all other custom styling, a ScrollBar item should be added in CML, or through the
 		 * childToList function in AS3, and the ScrollPane class will automatically pull styles from that.
+		 * @default 30
 		 */
 		public function get scrollThickness():Number { return _scrollThickness; }
 		public function set scrollThickness(value:Number):void {
 			_scrollThickness = value;
 		}
 		
-		private var _scrollOnPane:Boolean = true;
 		/**
-		 * Set whether or not the pane can be scrolled on.
-		 * @default true
-		 */
-		public function get scrollOnPane():Boolean { return _scrollOnPane; }
-		public function set scrollOnPane(value:Boolean):void {
-			_scrollOnPane = value;
-		}
-		
-		private var _scaleOnPane:Boolean = true;
-		/**
-		 * Set whether or not the pane can be scaled on if the gesture is available.
-		 * @default true
-		 */
-		public function get scaleOnPane():Boolean { return _scaleOnPane; }
-		public function set scaleOnPane(value:Boolean):void {
-			_scaleOnPane = value;
-		}
-		
-		private var _multiFingerScroll:Boolean = false;
-		private var tweening:Boolean;
-		/**
-		 * Set single finger drag, multi-finger scroll functionality. If true, the pane will only be scrolled on two fingers or more.
+		 * Sets whether to invert drag.
 		 * @default false
 		 */
-		public function get multiFingerScroll():Boolean { return _multiFingerScroll; }
-		public function set multiFingerScroll(value:Boolean):void {
-			_multiFingerScroll = value;
+		public function get invertDrag():Boolean { return _invertDrag;}
+		public function set invertDrag(value:Boolean):void {
+			_invertDrag = value;
 		}
 		
-		public function get content():* { return _content; }
 		
-		
-		override public function clone():*{
-			this.removeChild(_mask);
-			this.removeEvents();
-			var v:Vector.<String> = cloneExclusions;
-			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
-			var clone:ScrollPane = CloneUtils.clone(this, null, v);
-			
-			CloneUtils.copyChildList(this, clone);	
-			
-			if (clone.parent)
-				clone.parent.addChild(clone);
-			else
-				this.parent.addChild(clone);
-			
-			this.addChild(_mask);
-			this.content.mask = _mask;
-			this.createEvents();
-			
-			clone.init();
-			
-			return clone;
-		}
 		
 		/**
-		 * @inheritDoc
+		 * Returns content of pane.
 		 */
-		override public function dispose():void {
-			super.dispose();
-			_content = null;
-			_mask = null;
-			_verticalScroll = null;
-			_horizontalScroll = null;		
+		public function get content():* {
+			return _content;
 		}
+		
+		
 
 		/**
 		 * @inheritDoc
@@ -200,10 +157,27 @@ package com.gestureworks.cml.element
 			// Iterate through each item, getting position, width, and height.
 			// Check if total items width are larger than the container.
 			
-			if (!numChildren) return;
+			if (!numChildren) { return; }
 			
+			// search for content
+			if (!_content){
+				for (var j:int = 0; j < numChildren; j++) {
+					if (getChildAt(j) is ScrollBar || 
+						getChildAt(j) is GestureList || 
+						getChildAt(j) == _mask) {
+						continue;
+						}
+					else { 
+						_content = getChildAt(j);
+					}
+				}
+			}			
+			
+		
+			// get scrollbars
 			var scrollBars:Array = searchChildren(ScrollBar, Array);
 			
+			// set up scroll bars
 			if (scrollBars.length > 0){
 				for (var i:int = 0; i < scrollBars.length; i++) {
 					if (ScrollBar(scrollBars[i]).orientation == "vertical") {
@@ -217,36 +191,25 @@ package com.gestureworks.cml.element
 				}
 			}
 			
-			if (!_content){
-				for (var j:int = 0; j < numChildren; j++) {
-					if (getChildAt(j) is ScrollBar || getChildAt(j) is GestureList || getChildAt(j) == _mask)
-						continue;
-					else 
-						_content = getChildAt(j);
-				}
-			}
-			
 			// If one bar is set but not the other, set the other to match.
 			if (_verticalScroll && !_horizontalScroll) {
 				createHorizontal();
 			}
-			
 			if (!_verticalScroll && _horizontalScroll) {
 				createVertical();
 			}
 			
+			// Create the scroll bars if they haven't been caught anywhere else.			
 			if (!_verticalScroll && !_horizontalScroll) {
-				// Create the scroll bars if they haven't been caught anywhere else.
 				_verticalScroll = new ScrollBar();
 				_horizontalScroll = new ScrollBar();
 			}
 			
 			// Create the scroll bar properties that would not be affected by setting out a style.
-			
-			_verticalMovement = _content.height - height;
 			_vertical = true;
 			_verticalScroll.contentHeight = _content.height;
 			_verticalScroll.height = height;
+			_verticalMovement = _content.height - height;
 			
 			// Check if the scroll's thickness has already been set. If not, use the default or thickness listed in CML.
 			if (!_verticalScroll.width || _verticalScroll.width <= 0){
@@ -286,8 +249,9 @@ package com.gestureworks.cml.element
 				_horizontal = true;
 			} else { _horizontal = false; }
 			
-			// create mask and hitTouch.
-			if(!_mask){
+			
+			// create mask
+			if (!_mask){
 				_mask = new Graphic();
 				_mask.shape = "rectangle";
 				_mask.width = width;
@@ -296,19 +260,24 @@ package com.gestureworks.cml.element
 			}
 			_content.mask = _mask;
 			
+			
+			// create events
 			createEvents();
 			
-			if (_autoHide) {
+			
+			// set up autohide
+			if (_autohide) {
 				_verticalScroll.alpha = 0;
 				_horizontalScroll.alpha = 0;
 			}
 			
+			// loaded
 			loaded = true;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded"));
-		}
+		}		
 		
-		//{ region graphic creation
 		
+		// create vertical scroll bar
 		private function createVertical():void {
 			_verticalScroll = new ScrollBar();
 			_verticalScroll.height = _horizontalScroll.width;
@@ -318,6 +287,7 @@ package com.gestureworks.cml.element
 				_verticalScroll.thumbFill = _horizontalScroll.thumbFill;
 		}
 		
+		// create horizontal scroll bar
 		private function createHorizontal():void {
 			_horizontalScroll = new ScrollBar();
 			_horizontalScroll.orientation = "horizontal";
@@ -328,55 +298,54 @@ package com.gestureworks.cml.element
 				_horizontalScroll.thumbFill = _verticalScroll.thumbFill;
 		}
 		
-		//} endregion
 		
 		
-		//{ region event addition and removal
-		
+		/**
+		 * Creates scroll pane events
+		 */
 		public function createEvents():void {
-			
 			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
 				addEventListener(GWGestureEvent.DRAG, onDrag);
 				content.addEventListener(GWGestureEvent.DRAG, onDrag);
 			}
 			addEventListener(GWGestureEvent.SCALE, onScale);
-			content.addEventListener(GWGestureEvent.SCALE, onScale);
-			
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			content.addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			
 			addEventListener(GWGestureEvent.COMPLETE, onEnd);
-			content.addEventListener(GWGestureEvent.COMPLETE, onEnd);
-			
 			addEventListener(GWGestureEvent.ROTATE, onRotate);
-			content.addEventListener(GWGestureEvent.ROTATE, onRotate);
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 		}
 		
+		/**
+		 * Removes scroll pane events
+		 */
 		public function removeEvents():void {
-			
-			if (contains(_horizontalScroll) || contains(_verticalScroll)) 
+			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
 				this.removeEventListener(GWGestureEvent.DRAG, onDrag);
-			this.removeEventListener(GWGestureEvent.SCALE, onScale);
-			this.removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			
-			this._verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
-			this._horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
-			
-			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);
-			content.removeEventListener(GWTouchEvent.TOUCH_END, onEnd);
+			}
+			removeEventListener(GWGestureEvent.SCALE, onScale);
+			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);			
+			_verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
+			_horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 		}
 		
-		//} endregion
 		
+		/**
+		 * Updates scroll pane layout
+		 * @param	inWidth
+		 * @param	inHeight
+		 */
 		public function updateLayout(inWidth:Number=NaN, inHeight:Number=NaN):void {
+			if (!isNaN(inWidth)) {
+				width = inWidth; 
+			}
+			if (!isNaN(inHeight)) {
+				height = inHeight; 
+			}
 			
-			if (!isNaN(inWidth)) width = inWidth; 
-			if (!isNaN(inHeight)) height = inHeight; 
-			
-			if(_mask){
+			if (_mask){
 				_mask.width = width;
 				_mask.height = height;
 			}
@@ -420,6 +389,9 @@ package com.gestureworks.cml.element
 			}
 		}
 		
+		/**
+		 * Resets scroll positions.
+		 */
 		public function reset():void {
 			if (_verticalScroll)
 				_verticalScroll.reset();
@@ -429,6 +401,11 @@ package com.gestureworks.cml.element
 			_content.x = 0;
 			_content.y = 0;
 		}
+		
+		
+		
+		// events
+		
 		
 		private function onScroll(e:StateEvent):void {
 			if (e.target == _verticalScroll) {
@@ -450,34 +427,7 @@ package com.gestureworks.cml.element
 					_horizontalScroll.onDrag(e);
 				return;
 			}
-		
-			if (this.parent) {
-				if ("clusterBubbling" in parent) {
-					if (parent["clusterBubbling"] == true) {
-						return;
-					}
-				}
-			}
-			
-			if (!scrollOnPane) {
-				if (this.parent) {
-					passTouchUp();
-					return;
-				}
-			}
-			
-			if (multiFingerScroll && e.value.n < 2 && this.parent) {
-				passTouchUp();
-				return;
-			}
-			
-			function passTouchUp():void {
-				TouchContainer(parent).x += e.value.drag_dx;
-				TouchContainer(parent).y += e.value.drag_dy;
-			}
-						
-			//var newPos:Number;
-			
+								
 			var newXPos:Number;
 			var newYPos:Number;
 					
@@ -515,7 +465,6 @@ package com.gestureworks.cml.element
 			}
 			
 			if (contains(_horizontalScroll)) {
-				
 				newXPos = _content.x;
 				
 				if (!releaseInertia) {
@@ -553,106 +502,122 @@ package com.gestureworks.cml.element
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
-			
-			if (_autoHide) {
+			if (_autohide) {
 				if (tweening)
 					TweenMax.killAll();
 				tweening = true;
-				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autoHideSpeed, { alpha:1, onComplete:function():void { tweening = false;} } );
+				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autohideSpeed, { alpha:1, onComplete:function():void { tweening = false;} } );
 			}
 		}
 		
 		private function onEnd(e:GWGestureEvent):void {
-			if (_autoHide) {
+			if (_autohide) {
 				if (tweening)
 					TweenMax.killAll();
 				
-				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autoHideSpeed, { alpha:0, onComplete:function():void { tweening = false;} } );
+				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autohideSpeed, { alpha:0, onComplete:function():void { tweening = false;} } );
 			}
 		}
 		
 		private function clampPos(pos:Number, direction:String):Number {
-			
 			if (direction == "vertical") {
 				if (pos < -_verticalMovement) pos = -_verticalMovement;
 				else if (pos > 0) pos = 0;
 			}
-			
 			if(direction == "horizontal"){
 				if (pos < -_horizontalMovement) pos = -_horizontalMovement;
 				else if (pos > 0) pos = 0;
 			}
-			
 			return pos;
 		}
 		
 		protected function onScale(e:GWGestureEvent):void {
+			var c:DisplayObject = DisplayObject(content);
 			
-			if (scaleOnPane) {
-				if (this.parent) {
-					
-					DisplayUtils.scaleFromPoint(this.parent, e.value.scale_dsx, e.value.scale_dsy, e.value.stageX, e.value.stageY);
-					
-					return;
-				}
-			}
+			var dsx:Number = e.value.scale_dsx;
+			var dsy:Number = e.value.scale_dsy;
 			
-			var xShift:Number = e.value.localX - _content.x;
-			var yShift:Number = e.value.localY - _content.y;
-			//_content.scale += e.value.scale_dsx + e.value.scale_dsy;
-			_content.scaleX += e.value.scale_dsx;
-			_content.scaleY += e.value.scale_dsy;
-			if (_content.height * _content.scaleY > height) {
-				
-				_verticalScroll.resize(_content.height * _content.scaleY);
-				_verticalMovement = _content.height * _content.scaleY - height;
-				_verticalScroll.thumbPosition = _content.y / _verticalMovement;
-				
+			var m:Matrix = c.transform.matrix;
+			m.translate(-e.value.localX, -e.value.localY);
+			m.scale(1 + dsx, 1 + dsy);
+			m.translate(e.value.localX, e.value.localY);
+			c.transform.matrix = m;
+			
+			if (c.height * c.scaleY > height) {
+				_verticalScroll.resize(c.height * c.scaleY);
+				_verticalMovement = c.height * c.scaleY - height;
 				_vertical = true;
 				
-				if (!(contains(_verticalScroll))) addChild(_verticalScroll);
+				if (!(contains(_verticalScroll))) {
+					addChild(_verticalScroll);
+				}
 				
-			} else if (_content.height * _content.scaleY < height) {
-				
-				if (contains(_verticalScroll)) removeChild(_verticalScroll);
-				
+			} 
+			else if (_content.height * c.scaleY < height) {
+				if (contains(_verticalScroll)) 
+					removeChild(_verticalScroll);
 			}
-			if (_content.width * _content.scaleX > width) {
-				
-				_horizontalScroll.resize(_content.width * _content.scaleX);
-				_horizontalMovement = _content.width * _content.scaleX - width;
-				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
-				
+			if (c.width * c.scaleX > width) {
+				_horizontalScroll.resize(c.width * c.scaleX);
+				_horizontalMovement = c.width * c.scaleX - width;
 				_horizontal = true;
 				
-				if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
-				
-			} else if (_content.width * _content.scaleX < width) {
-				
-				if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
-				
+				if (!(contains(_horizontalScroll))) {
+					addChild(_horizontalScroll);
+				}
+			} 
+			else if (c.width * c.scaleX < width) {
+				if (contains(_horizontalScroll)) {
+					removeChild(_horizontalScroll);
+				}	
 			}
 			
-			//_content.x -= xShift * _content.scale;
-			//_content.y -= yShift * _content.scale;
 			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
 				addEventListener(GWGestureEvent.DRAG, onDrag);
-				//_hit.addEventListener(GWGestureEvent.DRAG, onDrag);
 			} else {
 				removeEventListener(GWGestureEvent.DRAG, onDrag);
-				//_hit.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			}
 		}
 		
 		private function onRotate(e:GWGestureEvent):void {
-			if (!scrollOnPane) {
-				if (this.parent) {
-					//this.parent.dispatchEvent(e);
-					//TouchContainer(parent).rotation += e.value.rotate_dtheta;
-					DisplayUtils.rotateAroundPoint(this.parent, e.value.rotate_dtheta, e.value.stageX, e.value.stageY);
-					return;
-				}
-			}
+
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():*{
+			this.removeChild(_mask);
+			this.removeEvents();
+			var v:Vector.<String> = cloneExclusions;
+			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
+			var clone:ScrollPane = CloneUtils.clone(this, null, v);
+			
+			CloneUtils.copyChildList(this, clone);	
+			
+			if (clone.parent)
+				clone.parent.addChild(clone);
+			else
+				this.parent.addChild(clone);
+			
+			this.addChild(_mask);
+			this.content.mask = _mask;
+			this.createEvents();
+			
+			clone.init();
+			
+			return clone;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			_content = null;
+			_mask = null;
+			_verticalScroll = null;
+			_horizontalScroll = null;		
+		}		
 	}
 }
