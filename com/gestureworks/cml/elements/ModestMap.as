@@ -214,7 +214,7 @@ package com.gestureworks.cml.elements
 		
 		private function onDrag(e:GWGestureEvent):void {
 			if (e.value.n > 1) return;
-			map.grid.dragMap(new Point(e.value.stageX, e.value.stageY));
+			//map.grid.dragMap(new Point(e.value.stageX, e.value.stageY));
 		}
 
 		/**
