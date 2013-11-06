@@ -280,7 +280,7 @@ package com.gestureworks.cml.elements
 		//------------------
 		//PUBLIC FUNCTIONS
 		//------------------
-
+		
 		public function resetImage():void {
 			points  	  = new Array();
 			lines 		  = new Array();
@@ -406,6 +406,9 @@ package com.gestureworks.cml.elements
 			ba.clear();
 		}
 		
+		/**
+		 * Imports SVG file.
+		 */
 		public function importSVG():void {
 			fileR.addEventListener(Event.SELECT, svgSelected);
 			fileR.addEventListener(Event.COMPLETE, svgLoaded);
