@@ -7,6 +7,7 @@ package com.gestureworks.cml.element
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
 	import flash.events.KeyboardEvent;
+	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	/**
@@ -376,6 +377,8 @@ package com.gestureworks.cml.element
 			if (!output)
 			{
 				var focusedObj:* = stage.focus;
+				if (focusedObj is TextField)
+					focusedObj = focusedObj.parent;
 				if ((focusedObj is Text) && !(focusedObj.parent is Key))
 					currentTF = focusedObj;
 			}
@@ -438,7 +441,7 @@ package com.gestureworks.cml.element
 			var temp:String = currentTF.text;
 			caret = currentTF.caretIndex;
 
-			currentTF.text = temp.substring(0, caret) + char + temp.substring(caret, currentTF.length);
+			currentTF.text = temp.substring(0, caret) + char + temp.substring(caret, currentTF.textField.length);
 			caret += char.length;			
 		}	
 		

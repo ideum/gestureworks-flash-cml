@@ -61,7 +61,7 @@ package com.gestureworks.cml.element
 			textField.blendMode = BlendMode.LAYER;
 			textField.embedFonts = true;	
 			textField.selectable = false;
-			textField.text = "text"; // leave default text for spacing
+			textField.text;
 			
 			// keep default for past consistency 
 			width = 100;
