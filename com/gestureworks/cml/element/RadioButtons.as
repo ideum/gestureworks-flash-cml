@@ -6,6 +6,7 @@
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
+	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	/**
@@ -565,7 +566,9 @@
 		 * @param	event
 		 */
 		private function buttonSelected(event:*):void
-		{		
+		{	
+			if (event.target is TextField || event.target is Text)
+				return;
 			if (event.target.name == "forward") {
 				next();
 				return;
