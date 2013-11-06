@@ -59,7 +59,12 @@ package com.gestureworks.cml.element
 				addEventListener(GWTouchEvent.TOUCH_BEGIN, onClick);
 		}
 		
-	
+		public function get autohide():Boolean { return _autoHide; }
+		public function set autohide(value:Boolean):void 
+		{ 
+			_autoHide = value;
+		}
+		
 		private var _autoHideTime:Number = 2500;
 		/**
 		 * Specifies the auto-hide time
