@@ -34,7 +34,7 @@
 		
 	 * </codeblock>
 	 * 
-	 * @author Josh
+	 * @author Ideum
 	 * @see Panoramic
 	 */
 	public class Gigapixel extends TouchContainer
