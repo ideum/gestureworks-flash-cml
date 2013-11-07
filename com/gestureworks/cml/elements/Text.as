@@ -54,19 +54,19 @@ package com.gestureworks.cml.elements
 			addChild(textField);			
 
 			textFormat.font = "OpenSansRegular";
-			textFormat.color = 0xFFFFFF;
+			textFormat.color = 0x000000;
 			textFormat.size = fontSize;
 			
 			textField.antiAliasType = AntiAliasType.ADVANCED;
 			textField.blendMode = BlendMode.NORMAL;
 			textField.embedFonts = true;	
 			textField.selectable = false;
-			textField.text;
+			textField.text = " "; // keep space for past consistency
 			
 			// keep default for past consistency 
 			width = 100;
 			height = 100;		
-
+			
 			updateTextFormat();
 		}
 		
