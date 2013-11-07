@@ -59,6 +59,7 @@ package com.gestureworks.cml.elements
 			
 			textField.antiAliasType = AntiAliasType.ADVANCED;
 			textField.blendMode = BlendMode.NORMAL;
+			textField.gridFitType = GridFitType.NONE;
 			textField.embedFonts = true;	
 			textField.selectable = false;
 			textField.text = " "; // keep space for past consistency
