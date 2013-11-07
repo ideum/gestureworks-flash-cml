@@ -52,6 +52,7 @@ package com.gestureworks.cml.elements
 			_background = bg;
 			_backgroundAlpha = bgAlpha;
 			eraserColor = _background;
+			active = true;
 		}
 
 		override public function init():void{
