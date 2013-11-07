@@ -99,6 +99,9 @@ package com.gestureworks.cml.elements
 			_html.addEventListener(Event.COMPLETE, onURLLoadComplete);
 			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onLocationChange);
 			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onLocationChanging);
+			_html.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onLocationChanging);
+			_html.addEventListener(Event.HTML_RENDER, onRender);
+			
 			//_html.window.as3Function = Main.changeStageColor;
 			
 			if (srcString) {
@@ -364,6 +367,32 @@ package com.gestureworks.cml.elements
 			if (!_smooth)
 				_html.alpha = .5;
 			loaded = false;
+		}
+		
+		public function onRender(event:Event):void {
+			if (_smooth) {
+				generateSmoothVersion();
+			}
+			
+			if (_html.contentWidth > _html.width) {
+				_html.height = _height - _horizontalScroll.height;
+				_horizontalScroll.visible = true;
+				_horizontalScroll.resize(_html.contentWidth);
+			}
+			else{
+				_horizontalScroll.visible = false;
+				_html.height = _height;
+			}			
+			if (_html.contentHeight > _html.height) {
+				_html.width = _width - _verticalScroll.width;
+				_verticalScroll.visible = true;
+				_verticalScroll.resize(_html.contentHeight);
+			}
+			else{
+				_verticalScroll.visible = false;
+				_html.width = _width;
+			}
+						
 		}
 		
 		/**

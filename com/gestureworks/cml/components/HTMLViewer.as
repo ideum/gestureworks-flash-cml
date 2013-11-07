@@ -43,8 +43,7 @@ package com.gestureworks.cml.components {
 		public function HTMLViewer() {
 			super();
 			mouseChildren = true;
-			nativeTransform = false;
-			affineTransform = false;
+			nativeTransform = true;
 		}
 		
 		/**
