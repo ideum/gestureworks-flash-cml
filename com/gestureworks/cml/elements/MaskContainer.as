@@ -185,7 +185,7 @@ package com.gestureworks.cml.elements
 		 */
 		override public function init():void {
 			for (var i:Number = 0; i < childList.length; i++) {
-				graphicArray.append(getChildAt(i));
+				graphicArray.append(childList.getIndex(i));
 			}
 			createMasks();
 		}
