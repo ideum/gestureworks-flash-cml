@@ -137,6 +137,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.elements.Attract; Attract;
 	import com.gestureworks.cml.elements.StageKit; StageKit;	
 	import com.gestureworks.cml.elements.PopupMenu; PopupMenu;
+	import com.gestureworks.cml.elements.SVG; SVG;
 	
 	
 	///////////////////////
