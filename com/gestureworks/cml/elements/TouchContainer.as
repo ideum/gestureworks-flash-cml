@@ -60,9 +60,9 @@ package com.gestureworks.cml.elements
 		/**
 		 * Constructor
 		 */		
-		public function TouchContainer()
+		public function TouchContainer(_vto:Object=null)
 		{
-			super();
+			super(_vto);
 			state = new Dictionary(false);
 			state[0] = new State(false);
 			_childList = new ChildList;			
@@ -646,9 +646,6 @@ package com.gestureworks.cml.elements
 			return searchChildren(selector, Array);
 		}			
 		
-		
-		
-		
 		private function updateChildren():void
 		{			
 			for (var i:int = 0; i < childList.length; i++)
@@ -657,43 +654,7 @@ package com.gestureworks.cml.elements
 					childList.getIndex(i).updateProperties();
 			}
 		}
-		
-		
-		/**
-		 * shows index of the child list
-		 * @param	index
-		 */
-		public function showIndex(index:int):void
-		{
-			childList.getIndex(index).visible = false;
-		}
-		
-		/**
-		 * hides child list index 
-		 * @param	index
-		 */
-		public function hideIndex(index:int):void
-		{
-			childList.getIndex(index).visible = false;
-		}		
-		
-		/**
-		 * shows the child list key visibility
-		 * @param	key
-		 */
-		public function showKey(key:String):void
-		{
-			childList.getKey(key).visible = true;
-		}
-		
-		/**
-		 * hides childlist key visibility
-		 * @param	key
-		 */
-		public function hideKey(key:String):void
-		{
-			childList.getKey(key).visible = false;
-		}		
+				
 	
 		private var _sound:String;
 		public function get sound():String { return _sound; }
