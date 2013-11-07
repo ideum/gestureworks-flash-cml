@@ -333,6 +333,23 @@ package com.gestureworks.cml.utils
 			return ancestors;
 		}
 		
+		/**
+		 * Recursively initializes container and all children
+		 * @param	container
+		 */
+		public static function initAll(container:*):void {
+			if ("init" in container) {
+				container.init();
+			}	
+			
+			if (!("numChildren" in container))
+				return;
+				
+			for (var i:int = 0; i < container.numChildren; i++ ) {
+				initAll(container.getChildAt(i));
+			}
+		}
+		
 	}
 
 }
