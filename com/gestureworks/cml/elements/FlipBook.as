@@ -1,6 +1,5 @@
 package com.gestureworks.cml.elements 
 {
-	import com.gestureworks.cml.components.FlipBookViewer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.cml.utils.PageFlip;
