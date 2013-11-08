@@ -157,7 +157,7 @@ package com.gestureworks.cml.utils
 		 */
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
-		public function init():void
+		override public function init():void
 		{
 			//if (preload)
 				//load();

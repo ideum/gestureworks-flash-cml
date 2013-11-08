@@ -153,18 +153,22 @@ package com.gestureworks.cml.managers
 			{
 				if (CMLObjectList.instance.getIndex(i) is IContainer)
 				{
-					CMLObjectList.instance.getIndex(i).setDimensionsToChild();	
+					if ("setDimensionsToChild" in CMLObjectList.instance.getIndex(i)) {
+						CMLObjectList.instance.getIndex(i).setDimensionsToChild();	
+					}
 					
-					if (CMLObjectList.instance.getIndex(i).layout)
-					{						
-						layoutString = CMLObjectList.instance.getIndex(i).layout;
-						//apply local layout
-						if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
-							CMLObjectList.instance.getIndex(i).applyLayout();
-	
-						//apply global layout
-						else 
-							LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, CMLObjectList.instance.getIndex(i));					
+					if ("applyLayout" in CMLObjectList.instance.getIndex(i)) {
+					
+						if (CMLObjectList.instance.getIndex(i).layout) {						
+							layoutString = CMLObjectList.instance.getIndex(i).layout;
+							//apply local layout
+							if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
+								CMLObjectList.instance.getIndex(i).applyLayout();
+		
+							//apply global layout
+							else 
+								LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, CMLObjectList.instance.getIndex(i));					
+						}
 					}
 				}	
 			}

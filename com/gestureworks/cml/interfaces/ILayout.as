@@ -7,7 +7,7 @@ package com.gestureworks.cml.interfaces
 	 * @author Ideum
 	 */
 	public interface ILayout extends IObject
-	{
+	{		
 		/**
 		 * Applies layout to the input container
 		 * @param	container
