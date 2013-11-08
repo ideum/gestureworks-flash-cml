@@ -195,6 +195,8 @@ package com.gestureworks.cml.elements
 			addEventListener(GWGestureEvent.DOUBLE_TAP, switchMapProvider);
 			addEventListener(GWGestureEvent.SCALE, onScale);
 			addEventListener(GWGestureEvent.DRAG, onDrag);
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+			addEventListener(GWTouchEvent.TOUCH_END, onEnd);
 			nativeTransform = false;
 		}
 		
@@ -214,7 +216,18 @@ package com.gestureworks.cml.elements
 		
 		private function onDrag(e:GWGestureEvent):void {
 			if (e.value.n > 1) return;
-			//map.grid.dragMap(new Point(e.value.stageX, e.value.stageY));
+			map.grid.prepareForPanning(true);
+			map.grid.dragMap(new Point(e.value.stageX, e.value.stageY));
+		}
+		
+		private function onBegin(e:GWTouchEvent):void {
+			map.grid.pmouse = new Point(e.stageX, e.stageY);
+		}
+		
+		private function onEnd(e:GWTouchEvent):void {
+			map.grid.donePanning();
+			map.grid.doneZooming();
+			map.grid.onRender();
 		}
 
 		/**
