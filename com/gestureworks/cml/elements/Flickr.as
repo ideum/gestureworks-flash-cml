@@ -92,6 +92,8 @@ package  com.gestureworks.cml.elements
 		 */
 		override public function init():void
 		{
+			if (isLoaded)
+				return;
 			if (src && src.length > 1) {
 				service = new FlickrService(_API_KEY);
 				service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
