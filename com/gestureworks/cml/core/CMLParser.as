@@ -433,7 +433,7 @@ package com.gestureworks.cml.core
 					}
 					
 					if (FileManager.hasFile(path)) {
-						node = XML(FileManager.cml.getLoader(path).content);
+						node = XML(FileManager.cml.getLoader(path).content).copy();
 					
 						tag = node.name();
 						loopCML(node.*, parent);
