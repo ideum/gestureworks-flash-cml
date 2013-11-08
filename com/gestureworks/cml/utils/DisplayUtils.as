@@ -338,8 +338,12 @@ package com.gestureworks.cml.utils
 		 * @param	container
 		 */
 		public static function initAll(container:*):void {
+			
 			if ("init" in container) {
-				container.init();
+				try{
+					container.init();
+				}
+				catch(e:Error){}
 			}	
 			
 			if (!("numChildren" in container))
