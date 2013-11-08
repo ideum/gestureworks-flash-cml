@@ -160,7 +160,7 @@ package com.gestureworks.cml.utils
 		public function init():void
 		{
 			//if (preload)
-				//load();
+				load();
 				
 			if (preload && FileManager.media.getContent(_src)) {
 				soundLoaded();
@@ -306,6 +306,7 @@ package com.gestureworks.cml.utils
 			{
 				soundLoader.removeEventListener(LoaderEvent.COMPLETE, soundLoaded);
 				soundData = soundLoader.content;
+				soundLoader.pauseSound();
 				//fileData = img.loader;
 				//img.removeEventListener(IMGLoader.COMPLETE, loadComplete);
 				//img.removeEventListener(StateEvent.CHANGE, onPercentLoad);
@@ -325,7 +326,9 @@ package com.gestureworks.cml.utils
 				soundData = (FileManager.media.getContent(soundSrc)) as Sound;			
 			}
 			
-			if (autoplay) play();
+			if (autoplay) 
+				play()
+			
 		}
 		
 		protected function soundComplete(event:Event):void

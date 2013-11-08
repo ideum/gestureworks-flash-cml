@@ -389,9 +389,6 @@ package com.gestureworks.cml.elements
 			_mp3.addEventListener(StateEvent.CHANGE, playbackHandler);
 			
 			_mp3.init();
-			
-			if(autoplay)
-				open();
 		}		
 		
 		private function playbackHandler(e:StateEvent):void {
