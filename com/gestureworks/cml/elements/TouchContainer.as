@@ -56,13 +56,14 @@ package com.gestureworks.cml.elements
 		
 		private var _relativeX:Boolean = false;
 		private var _relativeY:Boolean = false;
+		private var _childList:ChildList;
 				
 		/**
 		 * Constructor
 		 */		
-		public function TouchContainer()
+		public function TouchContainer(_vto:Object=null)
 		{
-			super();
+			super(_vto);
 			state = new Dictionary(false);
 			state[0] = new State(false);
 			_childList = new ChildList;			
@@ -115,7 +116,7 @@ package com.gestureworks.cml.elements
 					
 		private var _id:String
 		/**
-		 * sets childlist id
+		 * @inheritDoc
 		 */
 		public function get id():String {return _id};
 		public function set id(value:String):void
@@ -125,7 +126,7 @@ package com.gestureworks.cml.elements
 		
 		private var _cmlIndex:int;
 		/**
-		 * sets the cml index
+		 * @inheritDoc
 		 */
 		public function get cmlIndex():int {return _cmlIndex};
 		public function set cmlIndex(value:int):void
@@ -134,20 +135,27 @@ package com.gestureworks.cml.elements
 		}	
 		
 		/**
-		 * property states
-		 */
+		 * @inheritDoc
+		 */		
+		public function get childList():ChildList { return _childList };
+		public function set childList(value:ChildList):void {
+			_childList = value;
+		}	
+				
+		
+		/**
+		 * @inheritDoc
+		 */	
 		public var state:Dictionary;
 		
 		/**
-		 * postparse method
-		 * @param	cml
-		 */
+		 * @inheritDoc
+		 */	
 		public function postparseCML(cml:XMLList):void {}
 			
 		/**
-		 * update properties of child
-		 * @param	state
-		 */
+		 * @inheritDoc
+		 */	
 		public function updateProperties(state:*=0):void
 		{
 			CMLParser.updateProperties(this, state);		
@@ -165,9 +173,6 @@ package com.gestureworks.cml.elements
 		}
 		///////////////////////////////////////////////////
 		
-		//////////////////////////////////////////////////////////////
-		// IELEMENT
-		//////////////////////////////////////////////////////////////		
 		
 		
 		
@@ -314,6 +319,15 @@ package com.gestureworks.cml.elements
 				//super.targetList = value;
 		//}
 		
+		private var _layout:*;
+		/**
+		 * specifies the type of layout
+		 */
+		public function get layout():* {return _layout;}
+		public function set layout(value:*):void 
+		{
+			_layout = value;
+		}			
 		
 		//////////////////////////////////////////////////////////////
 		//  ICSS 
@@ -329,38 +343,16 @@ package com.gestureworks.cml.elements
 		{
 			_className = value;
 		}			
-		
-		
-		
-		//////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////
-		// ICONTAINER
-		//////////////////////////////////////////////////////////////						
-		
-		
-		private var _childList:ChildList;
-		/**
-		 * returns the childlist
-		 */
-		public function get childList():ChildList { return _childList; }	
-		
-		private var _layout:*;
-		/**
-		 * specifies the type of layout
-		 */
-		public function get layout():* {return _layout;}
-		public function set layout(value:*):void 
-		{
-			_layout = value;
-		}		
+			
 		
 		//////////////////////////////////////////////////////////////
 		// ISTATE
 		//////////////////////////////////////////////////////////////				
 		
 		private var _stateId:String
+		
 		/**
-		 * Sets the state id
+		 * @inheritDoc
 		 */
 		public function get stateId():* {return _stateId};
 		public function set stateId(value:*):void
@@ -369,9 +361,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Loads state by index number. If the first parameter is NaN, the current state will be saved.
-		 * @param sIndex State index to be loaded.
-		 * @param recursion If true the state will load recursively through the display list starting at the current display ojbect.
+		 * @inheritDoc
 		 */
 		public function loadState(sId:* = null, recursion:Boolean = false):void { 
 			if (StateUtils.loadState(this, sId, recursion)){
@@ -380,16 +370,12 @@ package com.gestureworks.cml.elements
 		}	
 		
 		/**
-		 * Save state by index number. If the first parameter is NaN, the current state will be saved.
-		 * @param sIndex State index to save.
-		 * @param recursion If true the state will save recursively through the display list starting at the current display ojbect.
+		 * @inheritDoc
 		 */
 		public function saveState(sId:* = null, recursion:Boolean = false):void { StateUtils.saveState(this, sId, recursion); }		
 		
 		/**
-		 * Tween state by stateIndex from current to given state index. If the first parameter is null, the current state will be used.
-		 * @param sIndex State index to tween.
-		 * @param tweenTime Duration of tween
+		 * @inheritDoc
 		 */
 		public function tweenState(sId:*= null, tweenTime:Number = 1):void {
 			if (StateUtils.tweenState(this, sId, tweenTime))
@@ -646,9 +632,6 @@ package com.gestureworks.cml.elements
 			return searchChildren(selector, Array);
 		}			
 		
-		
-		
-		
 		private function updateChildren():void
 		{			
 			for (var i:int = 0; i < childList.length; i++)
@@ -657,43 +640,7 @@ package com.gestureworks.cml.elements
 					childList.getIndex(i).updateProperties();
 			}
 		}
-		
-		
-		/**
-		 * shows index of the child list
-		 * @param	index
-		 */
-		public function showIndex(index:int):void
-		{
-			childList.getIndex(index).visible = false;
-		}
-		
-		/**
-		 * hides child list index 
-		 * @param	index
-		 */
-		public function hideIndex(index:int):void
-		{
-			childList.getIndex(index).visible = false;
-		}		
-		
-		/**
-		 * shows the child list key visibility
-		 * @param	key
-		 */
-		public function showKey(key:String):void
-		{
-			childList.getKey(key).visible = true;
-		}
-		
-		/**
-		 * hides childlist key visibility
-		 * @param	key
-		 */
-		public function hideKey(key:String):void
-		{
-			childList.getKey(key).visible = false;
-		}		
+				
 	
 		private var _sound:String;
 		public function get sound():String { return _sound; }

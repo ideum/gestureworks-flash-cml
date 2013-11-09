@@ -84,7 +84,7 @@ package com.gestureworks.cml.elements
 			// hide all but first child
 			for (var i:int = 1; i < childList.length; i++) 
 			{
-				hideIndex(i);
+				childList[i].visible = false;
 			}
 			
 			childList.reset();

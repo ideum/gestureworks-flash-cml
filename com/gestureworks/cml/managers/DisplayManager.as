@@ -52,7 +52,7 @@ package com.gestureworks.cml.managers
 		{	
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
 			{		
-				if (CMLObjectList.instance.getIndex(i) is IContainer)
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("addAllChildren"))
 					CMLObjectList.instance.getIndex(i).addAllChildren();					
 			}
 		}
@@ -83,8 +83,6 @@ package com.gestureworks.cml.managers
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
 			{				
 				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("init"))
-					CMLObjectList.instance.getIndex(i).init();
-				else if (CMLObjectList.instance.getIndex(i).hasOwnProperty("displayComplete"))
 					CMLObjectList.instance.getIndex(i).init();
 			}
 		}			
@@ -117,10 +115,15 @@ package com.gestureworks.cml.managers
 		 */
 		public function activateTouch():void
 		{			
-			for (var i:int = 0; i < CMLObjectList.instance.length; i++) 
-			{				
-				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("activateTouch"))
+			for (var i:int = 0; i < CMLObjectList.instance.length; i++) {				
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("activateTouch")) {
 					CMLObjectList.instance.getIndex(i).activateTouch();
+				}
+				else if ("vto" in CMLObjectList.instance.getIndex(i)) {
+					if (CMLObjectList.instance.getIndex(i).vto) {
+						CMLObjectList.instance.getIndex(i).vto.activateTouch();
+					}
+				}
 			}
 		}			
 		
@@ -150,18 +153,22 @@ package com.gestureworks.cml.managers
 			{
 				if (CMLObjectList.instance.getIndex(i) is IContainer)
 				{
-					CMLObjectList.instance.getIndex(i).setDimensionsToChild();	
+					if ("setDimensionsToChild" in CMLObjectList.instance.getIndex(i)) {
+						CMLObjectList.instance.getIndex(i).setDimensionsToChild();	
+					}
 					
-					if (CMLObjectList.instance.getIndex(i).layout)
-					{						
-						layoutString = CMLObjectList.instance.getIndex(i).layout;
-						//apply local layout
-						if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
-							CMLObjectList.instance.getIndex(i).applyLayout();
-	
-						//apply global layout
-						else 
-							LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, CMLObjectList.instance.getIndex(i));					
+					if ("applyLayout" in CMLObjectList.instance.getIndex(i)) {
+					
+						if (CMLObjectList.instance.getIndex(i).layout) {						
+							layoutString = CMLObjectList.instance.getIndex(i).layout;
+							//apply local layout
+							if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
+								CMLObjectList.instance.getIndex(i).applyLayout();
+		
+							//apply global layout
+							else 
+								LayoutManager.instance.layout(CMLObjectList.instance.getIndex(i).layout, CMLObjectList.instance.getIndex(i));					
+						}
 					}
 				}	
 			}

@@ -9,6 +9,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
+	import com.gestureworks.interfaces.ITouchObject;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.core.LoaderCore;
 	import com.greensock.loading.LoaderMax;
@@ -416,10 +417,8 @@ package com.gestureworks.cml.core
 			var attr:String;
 			var obj:*;
 			var returned:XMLList=null;
-
 			
-			
-			for each (node in cml) {
+			for each (node in cml) {				
 				tag = node.name();	
 				if (debug) trace(dash(XMLList(node)) + tag + "");
 				
@@ -490,8 +489,8 @@ package com.gestureworks.cml.core
 					parent.childToList(obj.id, obj);
 				
 				if (parent == cmlDisplay && obj is DisplayObject)
-					cmlDisplay.addChild(obj);					
-					
+					cmlDisplay.addChild(obj);
+				
 				//recursion
 				if (returned && returned.length())
 					loopCML(returned, obj);
@@ -679,7 +678,14 @@ package com.gestureworks.cml.core
 		
 		private static function parseGesture(obj:*, node:XMLList):XMLList
 		{
-			if (!(obj is TouchSprite)) return node;
+			if (!(obj is ITouchObject)) {
+				if ("vto" in obj && obj.vto) {
+					obj = obj.vto;
+				}
+				else {
+					return node;
+				}
+			}
 		
 			var tmp:XMLList;
 			
@@ -861,7 +867,17 @@ package com.gestureworks.cml.core
 					stateId = attrValue;
 				}
 				
-				obj.state[0][attr] = attrValue;
+				if (attr == "geometry") {
+					obj.state[0]["gref"] = attrValue;
+				}
+				
+				else if (attr == "material") {
+					obj.state[0]["mref"] = attrValue;
+				}
+				else {
+					obj.state[0][attr] = attrValue;
+				}
+
 			}
 			
 			if (stateId) {
