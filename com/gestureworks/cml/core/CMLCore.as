@@ -41,7 +41,10 @@ package com.gestureworks.cml.core
 			"com.gestureworks.cml.layouts.",
 			"com.gestureworks.cml.menus.",
 			"com.gestureworks.cml.away3d.elements.",
-			"com.gestureworks.cml.away3d.geometries."
+			"com.gestureworks.cml.away3d.geometries.",
+			"com.gestureworks.cml.away3d.lights.",			
+			"com.gestureworks.cml.away3d.materials.",
+			"com.gestureworks.cml.away3d.textures."
 		];
 		
 		/**

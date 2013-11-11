@@ -26,6 +26,7 @@ package com.gestureworks.cml.core
 			super();
 			state = [];
 			state[0] = new Dictionary(false);
+			_childList = new ChildList;
 		}	
 		
 		/**

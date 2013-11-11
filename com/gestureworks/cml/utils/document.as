@@ -7,7 +7,7 @@ package com.gestureworks.cml.utils {
 
 	public class document {
 		/**
-		 * Searches CML document by id. The first object is returned.
+		 * Searches the CML document by id. The first object is returned.
 		 * @param	id
 		 * @return Matched object.
 		 */	
@@ -16,7 +16,7 @@ package com.gestureworks.cml.utils {
 		}
 		
 		/**
-		 * Searches CML document by tagName as type Class. An array of objects are returned.
+		 * Searches the CML document by tagName as type Class. An array of objects are returned.
 		 * @param	tagName
 		 * @return Array of found objects.
 		 */

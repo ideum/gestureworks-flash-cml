@@ -485,8 +485,8 @@ package com.gestureworks.cml.core
 				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
 					
-				if ("childToList" in parent)
-					parent.childToList(obj.id, obj);
+				if ("childList" in parent)
+					parent.childList.append(obj.id, obj);
 				
 				if (parent == cmlDisplay && obj is DisplayObject)
 					cmlDisplay.addChild(obj);
@@ -866,14 +866,6 @@ package com.gestureworks.cml.core
 				if (attr == "stateId") {
 					stateId = attrValue;
 				}
-				
-				if (attr == "geometry") {
-					obj.state[0]["gref"] = attrValue;
-				}
-				
-				else if (attr == "material") {
-					obj.state[0]["mref"] = attrValue;
-				}
 				else {
 					obj.state[0][attr] = attrValue;
 				}
@@ -1001,7 +993,16 @@ package com.gestureworks.cml.core
 				isExpression = obj is Key && (propertyName == "text" || propertyName == "shiftText") ? false : String(newValue).charAt(0) == "{"; 
 				
 				if (!isExpression) {
-					obj[propertyName] = newValue;
+					
+					if (propertyName in obj) {
+						obj[propertyName] = newValue;
+					}
+					
+					if ("vto" in obj) {
+						if (obj.vto &&  propertyName in obj.vto) {
+							obj.vto[propertyName] = newValue;
+						}
+					}
 				}
 				
 				if (debug) {
