@@ -68,7 +68,7 @@ package com.gestureworks.cml.elements
 			state[0] = new State(false);
 			_childList = new ChildList;			
 			mouseChildren = false;
-			affineTransform = true; 
+			affineTransform = false; 
 			nativeTransform = true;	
 		}
 
