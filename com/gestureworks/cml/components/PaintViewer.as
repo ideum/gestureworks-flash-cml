@@ -41,7 +41,7 @@ package com.gestureworks.cml.components
 		}
 		
 		private function painterComplete(e:StateEvent):void {
-			trace("Painter Started");
+			//trace("Painter Started");
 		}	
 					
 		override protected function updateLayout(event:*=null):void 
@@ -104,7 +104,7 @@ package com.gestureworks.cml.components
 		
 		public function changeColor(e:StateEvent):void {
 			if (_painter) {
-				trace(e.value);
+				//trace(e.value);
 				_painter.color = uint (e.value);
 			}
 		}

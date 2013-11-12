@@ -153,10 +153,9 @@ package com.gestureworks.cml.elements
 			
 			for each (var elem:XML in xml.children()) {
 				var path:Array = (elem.@d).split(/ /);
-				trace(path);
 				for (var i:Number = 1; i < path.length; i++) {
 					var point:Array = path[i].split(",");
-					trace("point: ", new Point(parseInt(point[0]), parseInt(point[1])));
+					//trace("point: ", new Point(parseInt(point[0]), parseInt(point[1])));
 					points.push(new Point(parseInt(point[0]), parseInt(point[1])));
 				}
 				lines.push(points);
@@ -207,7 +206,6 @@ package com.gestureworks.cml.elements
 		}
 		
 		private function eraseLines(eraserPath:Array):void {
-			trace("intersection checking");
 			var tmpLines:Array = lines;
 			
 			for (var i:Number = 0; i < eraserPath.length-2; i++ ){
@@ -222,7 +220,7 @@ package com.gestureworks.cml.elements
 						if (p3 == p4) 
 							continue;
 						if (lineIntersectLine(p1, p2, p3, p4)){
-							trace("intersection between (", p1, "," , p2, ") and (" , p3, ",", p4, ")" );
+							//trace("intersection between (", p1, "," , p2, ") and (" , p3, ",", p4, ")" );
 							tmpLines.splice(j, 1, subset(lines[j], 0, k+1), subset(lines[j], k+1, lines[j].length)); 
 							lineColor.splice(j, 0, lineColor[j]);
 							lineThickness.splice(j, 0, lineThickness[j]);

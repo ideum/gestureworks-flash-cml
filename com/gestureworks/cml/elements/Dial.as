@@ -792,7 +792,7 @@ package com.gestureworks.cml.elements
 				txt.height = 35;
 				textSpacing = (background.height - (txt.textHeight * maxItemsOnScreen)) / (maxItemsOnScreen - 1);	
 				txt.y = textSpacing * i + txt.textHeight * i;
-				trace(txt.y);
+				//trace(txt.y);
 				txt.color = textColor;
 				textFieldArray.push(txt);				
 			}

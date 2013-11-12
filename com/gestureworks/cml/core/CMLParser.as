@@ -793,7 +793,7 @@ package com.gestureworks.cml.core
 					if ( packageArray[i].length > 0) {
 						if ( packageArray[i].substr(packageArray[i].length - 1, packageArray[i].length) != "." ) {
 							packageArray[i] = packageArray[i] + ".";
-							trace( packageArray[i] );
+							//trace( packageArray[i] );
 						}					
 					}
 					//create object
@@ -936,7 +936,7 @@ package com.gestureworks.cml.core
 							var popped:String = absArray.pop();
 							while (popped == "" && absArray.length > 0) {
 								popped = absArray.pop();
-								trace("popped " + popped);
+								//trace("popped " + popped);
 							}
 						}
 						break;
@@ -1172,8 +1172,10 @@ package com.gestureworks.cml.core
 			var childArray:Array = [];
 			var found:Boolean = true;
 			
-			trace("\n*********** CMLObjectList Begin **************");
-			trace("  root = no star, 'n'-child = 'n'-star");
+			if(debug){
+				trace("\n*********** CMLObjectList Begin **************");
+				trace("  root = no star, 'n'-child = 'n'-star");
+			}
 			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) {	
 				cmlIndex = -1;
@@ -1196,8 +1198,8 @@ package com.gestureworks.cml.core
 				}					
 				
 				if (!found) {
-					trace();
-					trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + className, " object:" + object);
+					//trace();
+					//trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + className, " object:" + object);
 				
 					if (CMLObjectList.instance.getIndex(i).hasOwnProperty("childList")) 
 						childLoop(CMLObjectList.instance.getIndex(i), 0);
@@ -1239,7 +1241,7 @@ package com.gestureworks.cml.core
 			
 			}
 										
-			trace("\n*********** CMLObjectList End **************");			
+			//trace("\n*********** CMLObjectList End **************");			
 		}	
 		
 		public static function clear():void {
