@@ -47,7 +47,6 @@ package com.gestureworks.cml.utils
 		{
 			var bmd:BitmapData = new BitmapData(obj.width, obj.height, true, 0xffffff);
 			bmd.draw(DisplayObject(obj));
-			
 			var bitmap:Bitmap = new Bitmap(bmd);
 			bitmap.smoothing = smoothing;
 			return bitmap;
@@ -281,6 +280,21 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
+		 * Returns a rotated point
+		 * @param	point The original point
+		 * @param	rotation The rotation in radians
+		 * @param	center The center of rotation point
+		 * @return 
+		 */
+		public static function getRotatedPoint(point:Point, rotation:Number, center:Point):Point {
+			var rotX:Number = (point.x-center.x) * Math.cos(rotation) - (point.y-center.y) * Math.sin(rotation);
+			var rotY:Number = (point.y - center.y) * Math.cos(rotation) + (point.x - center.x) * Math.sin(rotation);			
+			rotX += center.x;
+			rotY += center.y;	
+			return new Point(rotX, rotY);
+		}
+		
+		/**
 		 * Returns the first parent of the specified type
 		 * @param	obj
 		 * @return  the parent if the parent of type exists, null otherwise
@@ -295,7 +309,50 @@ package com.gestureworks.cml.utils
 				return parent;
 			else
 				return getParentType(type,parent);			
-		}		
+		}	
+		
+		/**
+		 * Returns an array of ancestors of the specified type
+		 * @param	type The type to search the object hierarchy for
+		 * @param	obj The object to search
+		 * @return
+		 */
+		public static function getAncestorsOfType(type:Class, obj:*):Array {
+			var ancestors:Array = new Array();
+			var parent:*;
+			
+			if (!obj)
+				return ancestors;	
+				
+			parent = getParentType(type, obj);
+			if (parent) {
+				ancestors.push(parent);
+				ancestors = ancestors.concat(getAncestorsOfType(type, parent));
+			}
+			
+			return ancestors;
+		}
+		
+		/**
+		 * Recursively initializes container and all children
+		 * @param	container
+		 */
+		public static function initAll(container:*):void {
+			
+			if ("init" in container) {
+				try{
+					container.init();
+				}
+				catch(e:Error){}
+			}	
+			
+			if (!("numChildren" in container))
+				return;
+				
+			for (var i:int = 0; i < container.numChildren; i++ ) {
+				initAll(container.getChildAt(i));
+			}
+		}
 		
 	}
 

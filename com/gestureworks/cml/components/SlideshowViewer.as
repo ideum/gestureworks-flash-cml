@@ -1,8 +1,7 @@
 package  com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
 	
 	/**
@@ -29,8 +28,8 @@ package  com.gestureworks.cml.components
 	 * 
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Slideshow
-	 * @see com.gestureworks.cml.element.Stack
+	 * @see com.gestureworks.cml.elements.Slideshow
+	 * @see com.gestureworks.cml.elements.Stack
 	 */		
 	public class SlideshowViewer extends Component
 	{
@@ -124,14 +123,6 @@ package  com.gestureworks.cml.components
 		}
 		
 		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void 
-		{
-			init();
-		}
-		
-		/**
 		 * If front and back slideshows can be linked, synchronize the back slideshow properties with the front and
 		 * listen for state changes from each album. 
 		 */
@@ -219,13 +210,13 @@ package  com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Dispose method to nullify the attributes and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{
 			super.dispose();
-			slideshow = null;
-			//slideshows = null;
+			_slideshow = null; 
+			_pageButtons = null;
 		}
 	}
 

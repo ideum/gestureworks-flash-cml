@@ -1,7 +1,7 @@
 package com.gestureworks.cml.utils 
 {
-	import com.gestureworks.cml.element.MP3;
-	import com.gestureworks.cml.element.Sound;
+	import com.gestureworks.cml.elements.MP3;
+	import com.gestureworks.cml.elements.Sound;
 	import com.gestureworks.cml.managers.SoundManager;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.TouchEvent;
@@ -10,17 +10,11 @@ package com.gestureworks.cml.utils
 	 * SoundUtils is a class primarily designed to assist in managing mp3 sounds attached to touch objects.
 	 * Objects and their desired sound sources are passed in, and those are added to a sound dictionary after the sound
 	 * files are initialized, then played on touch down.
-	 * @author josh
+	 * @author Ideum
 	 */
 	public class SoundUtils 
 	{
-		
 		private static var dictionary:Dictionary = new Dictionary();
-		
-		public function SoundUtils() 
-		{
-			
-		}
 		
 		/**
 		 * Writes cml to object sound.

@@ -2,6 +2,7 @@ package com.gestureworks.cml.core
 {
 	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.interfaces.IObject;
+	import com.gestureworks.cml.utils.ChildList;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 	
@@ -13,6 +14,10 @@ package com.gestureworks.cml.core
 	 */	 
 	public class CMLObject extends EventDispatcher implements IObject
 	{
+		private var _cmlIndex:int;		
+		private var _id:String
+		private var _childList:ChildList;
+		
 		/**
 		 * Constructor
 		 */
@@ -21,79 +26,73 @@ package com.gestureworks.cml.core
 			super();
 			state = [];
 			state[0] = new Dictionary(false);
-			this['propertyStates'] = state;
+			_childList = new ChildList;
 		}	
 		
-		/**	
-		 * Dispose method
+		/**
+		 * @inheritDoc
 		 */
-		public function dispose():void 
-		{ 			
+		public function dispose():void { 			
 			state = null;
 		}
 		
 		/**
-		 * property states array
+		 * @inheritDoc
 		 */
 		public var state:Array;
 		
-		[Deprecated(replacement="state")]		
-		public var propertyStates:Array;
 		
-		
-		private var _cmlIndex:int;
 		/**
-		 * sets the index of cml
+		 * @inheritDoc
 		 */
-		public function get cmlIndex():int {return _cmlIndex};
-		public function set cmlIndex(value:int):void
-		{
+		public function get cmlIndex():int { return _cmlIndex };
+		public function set cmlIndex(value:int):void {
 			_cmlIndex = value;
 		}		
 		
-		private var _id:String
 		/**
-		 * sets the id
+		 * @inheritDoc
 		 */
 		public function get id():String {return _id};
-		public function set id(value:String):void
-		{
+		public function set id(value:String):void {
 			_id = value;
 		}
 		
 		/**
-		 * parses cml file
-		 * @param	cml
-		 * @return
+		 * @inheritDoc
 		 */
-		public function parseCML(cml:XMLList):XMLList
-		{			
-			return CMLParser.instance.parseCML(this, cml);
+		public function get childList():ChildList { return _childList; }			
+		public function set childList(value:ChildList):void { _childList = value };		
+		
+		/**
+		 * @inheritDoc
+		 */		
+		public function init():void {}		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function parseCML(cml:XMLList):XMLList {			
+			return CMLParser.parseCML(this, cml);
 		}
 		
 		/**
-		 * postparse method 
-		 * @param	cml
+		 * @inheritDoc
 		 */
 		public function postparseCML(cml:XMLList):void {}
 		
 		/**
-		 * update the properties
-		 * @param	state
+		 * @inheritDoc
 		 */
-		public function updateProperties(state:Number=0):void
-		{
-			CMLParser.instance.updateProperties(this, state);		
+		public function updateProperties(state:*=0):void {
+			CMLParser.updateProperties(this, state);		
 		}	
 	
-				
-		//////////////
-		//  IClone  
-		//////////////		
-		
 		/**
-		 * Returns clone of self
+		 * Clone method.
+		 * @return Clone
 		 */
-		public function clone():* {return new Object};			
+		public function clone():* { return new Object };
+		
 	}
 }

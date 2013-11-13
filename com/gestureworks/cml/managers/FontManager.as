@@ -2,6 +2,9 @@ package com.gestureworks.cml.managers
 {
 	import flash.text.*
 	import flash.text.engine.*
+	import fonts.OpenSansBoldTLF;
+	import fonts.OpenSansItalicTLF;
+	import fonts.OpenSansRegularTLF;
 	
 	/**
 	 * The FontManager loads embedded fonts. 
@@ -15,59 +18,19 @@ package com.gestureworks.cml.managers
 	 * the GML core library: OpenSansRegular, OpenSansBold, and OpenSansItalic</p>
 	 * 
 	 * @author Charles
-	 * @see com.gestureworks.cml.element.TLF
+	 * @see com.gestureworks.cml.elements.TLF
 	 * @see com.gestureworks.text.DefaultFonts
 	 */
 	public class FontManager
 	{
 		// Keep the default fonts to a miminum. OpenSans is the chosen font for Open Exhibits.
 		// For custom projects embed fonts directly into the project, not here.
-		
-		// Open Sans TLF (embedAsCFF='true')
-		[Embed(source = '../../../../../lib/fonts/OpenSansRegular.ttf', 
-			fontName = 'OpenSansRegularTLF', 
-			fontFamily = 'OpenSans', 
-			fontWeight = 'normal', 
-			fontStyle = 'normal', 
-			mimeType = 'application/x-font-truetype', 
-			advancedAntiAliasing = 'true', 
-			embedAsCFF = 'true',
-			unicodeRange='U+0020-007E')]
-		/**
-		 * Specifies the OpenSansRegularTLF font name
-		 */
-		public static var OpenSansRegularTLF:Class;
+
 		Font.registerFont(OpenSansRegularTLF);	
 		
+		Font.registerFont(OpenSansItalicTLF); 
 		
-		[Embed(source = '../../../../../lib/fonts/OpenSansItalic.ttf', 
-			fontName = 'OpenSansItalicTLF', 
-			fontFamily = 'OpenSans', 
-			fontStyle = 'italic', 
-			mimeType = 'application/x-font-truetype', 
-			advancedAntiAliasing = 'true', 
-			embedAsCFF = 'true',
-			unicodeRange='U+0020-007E')]
-		/**
-		 * Specifies the OpenSansItalicTLF font name
-		 */
-		public static var OpenSansItalicTLF:Class;
-		Font.registerFont(OpenSansItalicTLF);
-		
-		
-		[Embed(source = "../../../../../lib/fonts/OpenSansBold.ttf", 
-			fontName = 'OpenSansBoldTLF', 
-			fontFamily = 'OpenSans', 
-			fontStyle = 'bold', 
-			mimeType = 'application/x-font-truetype', 
-			advancedAntiAliasing = 'true', 
-			embedAsCFF = 'true',
-			unicodeRange='U+0020-007E')]
-		/**
-		 *  Specifies the OpenSansBoldTLF font name
-		 */
-		public static var OpenSansBoldTLF:Class;
-		Font.registerFont(OpenSansBoldTLF);
+		Font.registerFont(OpenSansBoldTLF); 
 		
 	}
 }

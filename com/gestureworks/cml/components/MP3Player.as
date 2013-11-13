@@ -1,8 +1,7 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 		
@@ -30,8 +29,8 @@ package com.gestureworks.cml.components
 	 * 
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.element.MP3
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.MP3
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	 	
 	public class MP3Player extends Component 
 	{		
@@ -70,20 +69,6 @@ package com.gestureworks.cml.components
 		 */
 		override public function init():void 
 		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!mp3)
-				mp3 = searchChildren(".mp3_element");
-			/*if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");*/
-			if (!front)
-				front = searchChildren(".image_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");	
-			
 			// automatically try to find elements based on AS3 class
 			if (!mp3)
 				mp3 = searchChildren(MP3);
@@ -92,15 +77,7 @@ package com.gestureworks.cml.components
 				mp3.addEventListener(StateEvent.CHANGE, onStateEvent);
 			}
 			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}			
+		}		
 		
 		override protected function updateLayout(event:*=null):void 
 		{
@@ -142,12 +119,12 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Dispose method to nullify the attributes and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{
-			super.dispose();
-			mp3 = null;					
+			super.dispose();	
+			_mp3 = null;
 		}
 		
 	}

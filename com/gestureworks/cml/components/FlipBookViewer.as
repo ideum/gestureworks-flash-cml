@@ -1,40 +1,33 @@
 package com.gestureworks.cml.components
 {
 	import com.gestureworks.cml.components.Component;
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	
-	public class FlipBookViewer extends Component 
-	{		
+	public class FlipBookViewer extends Component {	
+		private var _flipBook:*;
+		
 		/**
-		 * useless viewer Constructor
+		 * Constructor
 		 */
-		public function FlipBookViewer() 
-		{
+		public function FlipBookViewer() {
 			super();
-			mouseChildren = true;
-			disableNativeTransform = false;
-			disableAffineTransform = false;			
+			nativeTransform = true;
 		}
 		
-		
-		
-		private var _flipBook:*;
-		// Find our Useless machine element.
+		/**
+		 * Sets flipBook element.
+		 */
 		public function get flipBook():* {return _flipBook}
-		public function set flipBook(value:*):void 
-		{
+		public function set flipBook(value:*):void {
 			if (!value) return;
-			
 			_flipBook = value;
 		}			
 	
 		/**
-		 * Initialization function
+		 * @inheritDoc
 		 */
-		override public function init():void 
-		{	
+		override public function init():void {	
 			// automatically try to find elements based on AS3 class
 			if (!flipBook)
 				flipBook = searchChildren(FlipBook);
@@ -45,20 +38,10 @@ package com.gestureworks.cml.components
 			super.init();	
 		}
 		
-		private function uselessComplete(e:StateEvent):void {
-			
-		}
-		
 		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
-					
-		override protected function updateLayout(event:*=null):void 
-		{
+		 * @inheritDoc
+		 */					
+		override protected function updateLayout(event:*=null):void {
 			if (flipBook) {
 				// update width and height to the size of the flipBook, if not already specified
 				if (!width)
@@ -69,18 +52,12 @@ package com.gestureworks.cml.components
 			super.updateLayout();				
 		}	
 		
-		
-		
 		/**
-		 * Dispose method to nullify the attributes and remove listener
+		 * @inheritDoc
 		 */
-		override public function dispose():void 
-		{
+		override public function dispose():void {
 			super.dispose();
-			flipBook.removeEventListener(StateEvent.CHANGE, uselessComplete);
-			//flipBook = null;
-		}
-		
+			_flipBook = null;
+		}	
 	}
-	
 }

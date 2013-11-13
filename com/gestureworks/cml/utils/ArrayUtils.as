@@ -23,7 +23,8 @@ package com.gestureworks.cml.utils
 		 */
 		public static function shuffle(array:Array):Array
 		{
-		  var m = array.length, t, i;
+		  var m:Number = array.length, i:Number;
+		  var t:*;
 
 		  // While there remain elements to shuffle…
 		  while (m) {
@@ -39,6 +40,23 @@ package com.gestureworks.cml.utils
 
 		  return array;
 		}
+		
+		/**
+		 * Removes a value by index
+		 * @param	array
+		 * @param	index
+		 */
+		public static function remove(array:Array, index:int):Array
+		{			
+			var original:Array = array.slice(); 
+			var temp:Array = original.splice(index, 1); 
+			temp.shift();
+			original = original.concat(temp); 
+			array = original;
+			return array;
+		}	
+		
+		
 	}
 
 }

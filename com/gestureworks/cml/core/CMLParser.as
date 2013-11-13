@@ -2,13 +2,14 @@ package com.gestureworks.cml.core
 {
 	import com.gestureworks.cml.core.CMLDisplay; CMLDisplay;	
 	import com.gestureworks.cml.core.*;
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.*;
-	import com.gestureworks.cml.kits.*;
+	import com.gestureworks.cml.layouts.*;
 	import com.gestureworks.cml.managers.*;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
+	import com.gestureworks.interfaces.ITouchObject;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.core.LoaderCore;
 	import com.greensock.loading.LoaderMax;
@@ -25,7 +26,7 @@ package com.gestureworks.cml.core
 	 * @see com.gestureworks.cml.core.CMLObjectList
 	 * @see com.gestureworks.cml.core.CMLDisplay
 	 */		
-	public class CMLParser extends CML_CORE
+	public class CMLParser extends CMLCore
 	{	
 		// private variables
 		
@@ -38,21 +39,21 @@ package com.gestureworks.cml.core
 		private static var GXMLComponent:Class;
 		private static var currentParent:*;			
 		private static var index:int = 0;
-
 		
 		//public variables
 		public static const COMPLETE:String = "COMPLETE";
 		
 		public static var debug:Boolean = false;			
 		
-		public static var rootDirectory:String = "";	
-		public static var relativePaths:Boolean = false;					
+		public static var rootDirectory:String = "";
+		public static var rootHeader:String = "";
+		public static var relativePaths:Boolean = false;
 		
 		public static var cssFile:String;
 		public static var cmlFile:String;
 		public static var cmlData:XML;
 		
-		public static var cmlDisplay:DisplayObjectContainer;
+		public static var cmlDisplay:Container;
 		
 		
 		public function CMLParser() {}
@@ -83,36 +84,28 @@ package com.gestureworks.cml.core
 			// set paths relative to main cml document
 			if (cml.@relativePaths == "true")
 				relativePaths = true;
-			
+
 			// set root directory of file paths
 			if (cml.@rootDirectory != undefined && !relativePaths)
 				rootDirectory = cml.@rootDirectory;
 			else if (cml.@rootDirectory != undefined && relativePaths)
 				rootDirectory = relToAbsPath(rootDirectory.concat(cml.@rootDirectory));	
+			else
+				rootDirectory = "";
 				
+			rootDirectory = combinePaths(rootHeader, rootDirectory);			
+			
 			// set css file
 			var cssStr:String = "";
 			if (cml.@css != undefined)
 				cssStr = cml.@css;			
-			if (cssStr.length)
+			if (cssStr.length) {
 				CMLParser.cssFile = updatePath(cssStr);
-			
-			
-			// set parent display
-			cmlDisplay = parent as DisplayObjectContainer;
-			
-			if (cml.PreloaderKit != undefined) {
-				var preloader:XML =  <cml/>
-				preloader.appendChild(XML(cml.PreloaderKit).copy());
-				
-				cmlData = preloader;
-				
-				preprocess(XMLList(preloader));
-				
-				preloader = XML(cml.PreloaderKit).copy();
-				delete cml["PreloaderKit"];
 			}
-			cmlData = cml;
+
+			// set parent display
+			cmlDisplay = parent as Container;
+			
 			// preprocess
 			preprocess(XMLList(cml));
 		}			
@@ -167,7 +160,7 @@ package com.gestureworks.cml.core
 				if (debug && tag == "cml") trace("");
 				if (debug) trace(dash(XMLList(cml[i])) + tag + "");
 				
-				if (tag == "PreloaderKit")
+				if (tag == "Preloader")
 					ppPreloaderKit(cml[i]);
 				else if (tag == "Include")
 					ppInclude(cml[i]);				
@@ -176,7 +169,9 @@ package com.gestureworks.cml.core
 				else if (tag == "LibraryKit" || tag == "Library")
 					ppLibraryKit(cml[i]);
 				else if (tag == "LayoutKit" || tag == "Layout")
-					ppLayoutKit(cml[i]);					
+					ppLayoutKit(cml[i]);	
+				else if (tag == "Stage")
+					cml[i].setName("StageKit");
 				else if (cml[i].@src != undefined)
 					ppMedia(cml[i]);					
 				
@@ -271,10 +266,12 @@ package com.gestureworks.cml.core
 		}
 		
 		private static function ppPreloaderKit(cml:XML):void 
-		{
-			if (cml.name() != "PreloaderKit") 
-				return;
-			//createObject(cml.name());
+		{	
+			if (cml.Preloader != undefined) {
+				var obj:Object = createObject(cml.name());
+				obj.parseCML();
+				obj.init();
+			}
 		}
 		
 		private static function ppInclude(cml:XML, str:String=""):void 
@@ -336,8 +333,8 @@ package com.gestureworks.cml.core
 			if (cml.name() != "Layout") return;
 			if (cml.parent().name() != "LayoutKit") return; 
 			
-			LayoutKit.instance.parseCML(XMLList(cml));
-			if (debug) trace("0:  Layout found: " + cml.@ref + cml.@classRef);	// deprecate classRef								
+			LayoutKit.instance.parseCML(XMLList(cml)); 
+			if (debug) trace("0:  Layout found: " + cml.@ref);	// deprecate classRef								
 		}	
 		
 		private static function ppMedia(cml:XML, str:String=""):void 
@@ -395,10 +392,7 @@ package com.gestureworks.cml.core
 		
 		
 		
-		
-		
-		
-		
+	
 		
 		private static function process(cml:XMLList):void
 		{
@@ -409,9 +403,7 @@ package com.gestureworks.cml.core
 			loadCSS();			
 		}
 		
-	
-	
-							
+					
 		/**
 		 * Recursive CML parsing
 		 * @param	cml
@@ -425,10 +417,8 @@ package com.gestureworks.cml.core
 			var attr:String;
 			var obj:*;
 			var returned:XMLList=null;
-
 			
-			
-			for each (node in cml) {
+			for each (node in cml) {				
 				tag = node.name();	
 				if (debug) trace(dash(XMLList(node)) + tag + "");
 				
@@ -442,7 +432,7 @@ package com.gestureworks.cml.core
 					}
 					
 					if (FileManager.hasFile(path)) {
-						node = XML(FileManager.cml.getLoader(path).content);
+						node = XML(FileManager.cml.getLoader(path).content).copy();
 					
 						tag = node.name();
 						loopCML(node.*, parent);
@@ -478,14 +468,8 @@ package com.gestureworks.cml.core
 				
 				// assign class values
 				if (node.@['class'] != undefined)
-					obj.class_ = node.@['class'];
-					
-				
-
-				// unique object identifier
-				obj.cmlIndex = CMLObjectList.instance.length;	
-				
-				
+					obj.className = node.@['class'];
+									
 				
 				// run object's parse routine	
 				returned = obj.parseCML(XMLList(node));
@@ -493,32 +477,23 @@ package com.gestureworks.cml.core
 				returned = parseFilter(obj, returned);
 				returned = parseGesture(obj, returned);
 				
-				obj.postparseCML(XMLList(node));
-				
-				
+				obj.postparseCML(XMLList(node));				
 				
 				//target state tag
 				StateManager.registerStateTag(obj, XMLList(node));
 				
 				//target sound tag
 				SoundUtils.parseCML(obj, XMLList(node));
-
-				
-				// add to master object list
-				CMLObjectList.instance.append(obj.id, obj);	
-		
 					
-				if (parent is (IContainer))
-					parent.childToList(obj.id, obj);
+				if ("childList" in parent)
+					parent.childList.append(obj.id, obj);
 				
-				else if (parent == cmlDisplay && obj is DisplayObject)
-					cmlDisplay.addChild(obj);					
-
-					
+				if (parent == cmlDisplay && obj is DisplayObject)
+					cmlDisplay.addChild(obj);
+				
 				//recursion
 				if (returned && returned.length())
 					loopCML(returned, obj);
-					
 			}
 		}		
 		
@@ -546,7 +521,7 @@ package com.gestureworks.cml.core
 				if (renderKit.Renderer.@dataPath == undefined)
 					rendererData = renderKit.RendererData;
 				else {
-					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)))
+					rendererData = XMLList(FileManager.fileList.getKey(String(renderKit.Renderer.@dataPath)).content)
 					if (rendererData.RenderKit == undefined) // makes RenderKit and Renderer optional on dataPath files
 						rendererData = XMLList(<cml><RenderKit><RendererData>{rendererData.*}</RendererData></RenderKit></cml>);					
 					rendererData = rendererData.RenderKit.RendererData;
@@ -557,7 +532,7 @@ package com.gestureworks.cml.core
 					
 					for each (var node:* in rendererData.*) {
 						if (node.name() == "Include")
-							tmp.appendChild( XMLList(FileManager.fileList.getKey(String(node.@src)).children() ));
+							tmp.appendChild( XMLList(FileManager.fileList.getKey(String(node.@src)).content.children() ));
 						else
 							tmp.appendChild(node);
 					}
@@ -703,7 +678,14 @@ package com.gestureworks.cml.core
 		
 		private static function parseGesture(obj:*, node:XMLList):XMLList
 		{
-			if (!(obj is TouchSprite)) return node;
+			if (!(obj is ITouchObject)) {
+				if ("vto" in obj && obj.vto) {
+					obj = obj.vto;
+				}
+				else {
+					return node;
+				}
+			}
 		
 			var tmp:XMLList;
 			
@@ -765,7 +747,7 @@ package com.gestureworks.cml.core
 			//new object reference
 			var obj:* = null;			
 			var as3class:Class;
-			
+						
 			//search for package syntax
 			if (tag.indexOf('.') != -1)
 			{
@@ -780,15 +762,14 @@ package com.gestureworks.cml.core
 			else
 			{
 				//begin search in core class list
-				obj = searchPackages(tag, CML_CORE.CML_CORE_PACKAGES);
 
+				obj = searchPackages(tag, CMLCore.packages);
 				//if search failed, throw an error
 				if (!obj) throw new Error(tag + " failed to load");
 			}
 				
 			return obj;
 		}		
-		
 		
 		
 		
@@ -799,16 +780,23 @@ package com.gestureworks.cml.core
 		 * @param	packageArray
 		 * @return
 		 */
-		private static function searchPackages(tag:String, packageArray:Array):Object
+		public static function searchPackages(tag:String, packageArray:Array):Object
 		{
 			var obj:* = null;
 			var as3class:Class;
 			
 			//search package list
-			for (var i:int=0; i<packageArray.length; i++)
-			{
-				//create object
+			for (var i:int=0; i<packageArray.length; i++) {
+			
 				try {
+					// auto-append period to package names, if not provided
+					if ( packageArray[i].length > 0) {
+						if ( packageArray[i].substr(packageArray[i].length - 1, packageArray[i].length) != "." ) {
+							packageArray[i] = packageArray[i] + ".";
+							//trace( packageArray[i] );
+						}					
+					}
+					//create object
 					as3class = getDefinitionByName(packageArray[i] + tag) as Class;					
 					obj = new as3class();
 					break;
@@ -829,6 +817,7 @@ package com.gestureworks.cml.core
 		 */
 		public static function parseCML(obj:*, cml:XMLList):XMLList
 		{
+			addToObjectList(obj);
 			var returnNode:XMLList = new XMLList;
 			
 			attrLoop(obj, cml);
@@ -837,19 +826,31 @@ package com.gestureworks.cml.core
 				returnNode = cml.*;
 			
 			return returnNode;
-		}		
+		}
 		
+		/**
+		 * Assigns cml index to object and adds object to global CMLObjectList
+		 * @param	obj
+		 */
+		public static function addToObjectList(obj:*):void {
+			// unique object identifier
+			obj.cmlIndex = CMLObjectList.instance.length;	
+			
+			// add to master object list
+			CMLObjectList.instance.append(obj.id, obj);				
+		}		
 		
 		public static function attrLoop(obj:*, cml:XMLList):void
 		{
 			var attr:String;
+			var stateId:String;
 			
 			for each (var attrValue:* in cml.@*) {
 				attr = attrValue.name().toString();
 
 				// check for css keyword
 				if (attr == "class")
-					attr = "class_";				
+					attr = "className";				
 				
 				if (attrValue.search(FileManager.fileTypes) >= 0 && String(attrValue.charAt(0) != "{") ) {
 					// rootDirectory allows you to change root path	
@@ -861,10 +862,19 @@ package com.gestureworks.cml.core
 						attrValue = rootDirectory.concat(attrValue);
 					}					
 				}
-					
-				obj.propertyStates[0][attr] = attrValue;
+				
+				if (attr == "stateId") {
+					stateId = attrValue;
+				}
+				else {
+					obj.state[0][attr] = attrValue;
+				}
+
 			}
-					
+			
+			if (stateId) {
+				obj.state[stateId] = obj.state[0];
+			}
 			attr = null;			
 		}
 		
@@ -897,30 +907,102 @@ package com.gestureworks.cml.core
 			return newString;
 		}
 		
+		public static function combinePaths(absPath:String, relPath:String):String {
+			
+			if (absPath == "") {
+				return relPath;
+			}
+			
+			if (relPath == "") {
+				return absPath;
+			}
+			
+			var absArray:Array = absPath.split("/");
+			var relArray:Array = relPath.split("/");
+			
+			var relCountToDelete:int = 0;
+			for (var i:int = 0; i < relArray.length; ++i) {
+				
+				var relPart:String = relArray[i];
+				
+				switch(relPart) {
+					case ".":
+						relCountToDelete++;
+						break;
+					
+					case "..":
+						relCountToDelete++;
+						if (absArray.length > 0) {
+							var popped:String = absArray.pop();
+							while (popped == "" && absArray.length > 0) {
+								popped = absArray.pop();
+								//trace("popped " + popped);
+							}
+						}
+						break;
+						
+					default:
+						break;
+				}
+			}
+			
+			if(relCountToDelete > 0) {
+				relArray.splice(0, relCountToDelete);
+			}
+			
+			var finalPath:String = absArray.join("\\") + "\\" + relArray.join("\\");
+			
+			return finalPath;
+		}
 		
 		/**
 		 * Default updateProperties routine
 		 * @param	obj
 		 * @param	state
 		 */
-		public static function updateProperties(obj:*, state:Number=0):void
+		public static function updateProperties(obj:*, state:*=0):void
 		{
 			var propertyValue:String;
 			var objType:String;
 			
 			var newValue:*;
+			var isExpression:Boolean;
 			
-			for (var propertyName:String in obj.propertyStates[state]) {				
-				newValue = obj.propertyStates[state][propertyName];
+			for (var propertyName:String in obj.state[state]) {				
+				newValue = obj.state[state][propertyName];
 					
 				if (newValue == "true")
 					newValue = true;
 				else if (newValue == "false")
 					newValue = false
+									
+				if (propertyName == "width" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
+					newValue = String(newValue).replace("%", "");
+					propertyName = "widthPercent";
+				}
+				else if (propertyName == "height" && String(newValue).charAt(	String(newValue).length - 1 ) == "%") {
+					newValue = String(newValue).replace("%", "");
+					propertyName = "heightPercent";
+				}	
+				else if (propertyName == "widthPercent" || propertyName == "heightPercent") {
+					if ( String(newValue).charAt(String(newValue).length - 1 ) == "%") {
+						String(newValue).replace("%", "");
+					}
+				}			
+				
+				isExpression = obj is Key && (propertyName == "text" || propertyName == "shiftText") ? false : String(newValue).charAt(0) == "{"; 
+				
+				if (!isExpression) {
 					
-				//if (obj[propertyName] != newValue && String(newValue).charAt(0) != "{") {
-				if (String(newValue).charAt(0) != "{") {
-					obj[propertyName] = newValue;
+					if (propertyName in obj) {
+						obj[propertyName] = newValue;
+					}
+					
+					if ("vto" in obj) {
+						if (obj.vto &&  propertyName in obj.vto) {
+							obj.vto[propertyName] = newValue;
+						}
+					}
 				}
 				
 				if (debug) {
@@ -928,8 +1010,8 @@ package com.gestureworks.cml.core
 					objType = objType.replace("[object ", "");
 					objType = objType.replace("]", "");
 										
-					if (obj.class_)
-						trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", obj.cmlIndex, objType, obj.id, obj['class_'], propertyName, obj[propertyName]));
+					if (obj.className)
+						trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", obj.cmlIndex, objType, obj.id, obj['className'], propertyName, obj[propertyName]));
 					else
 						trace(StringUtils.printf("%8s %-10s %-20s %-20s %-20s %-20s %-20s", "", obj.cmlIndex, objType, obj.id, "", propertyName, obj[propertyName]));
 				}	
@@ -951,12 +1033,15 @@ package com.gestureworks.cml.core
 			var selector:String;
 			var pp:String;
 			var regExp:RegExp = /[\s\r\n{}]*/gim;
+			var isExpression:Boolean;
 			
 			for each (st in obj.state) {
 				for  (prop in st) {					
 					val = st[prop]; 
 					
-					if ( val.charAt(0) != "{" ) continue;
+					//bypass non expressions
+					isExpression = obj is Key && (prop == "text" || prop == "shiftText") ? false : val.charAt(0) == "{"; 					
+					if (!isExpression) continue;
 					
 					// remove whitepsace and {} characters
 					val = val.replace(regExp, '');
@@ -1056,9 +1141,9 @@ package com.gestureworks.cml.core
 			DisplayManager.instance.layoutCML();
 			
 			if (debug)
-				trace("\n\n++ Call object's displayComplete() method ++");				
+				trace("\n\n++ Call object's init() method ++");				
 			
-			DisplayManager.instance.displayComplete();	
+			DisplayManager.instance.init();	
 			
 			if (debug) trace("\n\n++ Process Complete ++");
 	
@@ -1082,18 +1167,20 @@ package com.gestureworks.cml.core
 		{			
 			var cmlIndex:int;
 			var id:String;
-			var class_:String;
+			var className:String;
 			var object:*;
 			var childArray:Array = [];
 			var found:Boolean = true;
 			
-			trace("\n*********** CMLObjectList Begin **************");
-			trace("  root = no star, 'n'-child = 'n'-star");
+			if(debug){
+				trace("\n*********** CMLObjectList Begin **************");
+				trace("  root = no star, 'n'-child = 'n'-star");
+			}
 			
 			for (var i:int = 0; i < CMLObjectList.instance.length; i++) {	
 				cmlIndex = -1;
 				id = "";
-				class_ = "";
+				className = "";
 				object = null;
 				found = false;
 							
@@ -1101,8 +1188,8 @@ package com.gestureworks.cml.core
 					cmlIndex = CMLObjectList.instance.getIndex(i).cmlIndex;
 				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("id"))
 					id = CMLObjectList.instance.getIndex(i).id;
-				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("class_"))
-					class_ = CMLObjectList.instance.getIndex(i).class_;
+				if (CMLObjectList.instance.getIndex(i).hasOwnProperty("className"))
+					className = CMLObjectList.instance.getIndex(i).className;
 				object = CMLObjectList.instance.getIndex(i);
 										
 				for (var j:int = 0; j < childArray.length; j++) {
@@ -1111,8 +1198,8 @@ package com.gestureworks.cml.core
 				}					
 				
 				if (!found) {
-					trace();
-					trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + class_, " object:" + object);
+					//trace();
+					//trace("cmlIndex:" + cmlIndex, " id:" + id, " class:" + className, " object:" + object);
 				
 					if (CMLObjectList.instance.getIndex(i).hasOwnProperty("childList")) 
 						childLoop(CMLObjectList.instance.getIndex(i), 0);
@@ -1122,21 +1209,21 @@ package com.gestureworks.cml.core
 			function childLoop(obj:*, index:int):void {
 				var cmlIndex:int;
 				var id:String;
-				var class_:String;
+				var className:String;
 				var object:*;
 				
 				for (var i:int = 0; i < obj.childList.length; i++) {
 					cmlIndex = -1;
 					id = "";
-					class_ = "";
+					className = "";
 					object = null;					
 					
 					if (obj.childList.getIndex(i).hasOwnProperty("cmlIndex"))
 						cmlIndex = obj.childList.getIndex(i).cmlIndex;
 					if (obj.childList.getIndex(i).hasOwnProperty("id"))
 						id = obj.childList.getIndex(i).id;
-					if (obj.childList.getIndex(i).hasOwnProperty("class_"))
-						class_ = obj.childList.getIndex(i).class_;
+					if (obj.childList.getIndex(i).hasOwnProperty("className"))
+						className = obj.childList.getIndex(i).className;
 					object = obj.childList.getIndex(i);					
 					
 					childArray.push(cmlIndex);
@@ -1146,7 +1233,7 @@ package com.gestureworks.cml.core
 						str += "*";
 					}
 					
-					if (debug) trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", class_, " object:", object);					
+					if (debug) trace(str, "cmlIndex:", cmlIndex, " id:", id, " class: ", className, " object:", object);					
 					
 					if (obj.childList.getIndex(i).hasOwnProperty("childList"))
 						childLoop(obj.childList.getIndex(i), index + 1); 										
@@ -1154,9 +1241,37 @@ package com.gestureworks.cml.core
 			
 			}
 										
-			trace("\n*********** CMLObjectList End **************");			
+			//trace("\n*********** CMLObjectList End **************");			
 		}	
 		
+		public static function clear():void {
+			
+			if (!cmlDisplay) {
+				return;
+			}
+			
+			while(CMLObjectList.instance.length > 0)  {
+				CMLObjectList.instance.removeIndex(0);
+			}
+			
+			var childrenToIgnore:int = 0;
+			
+			while (cmlDisplay.numChildren > childrenToIgnore) {
+				
+				var child:* = cmlDisplay.getChildAt(childrenToIgnore);
+				
+				if (child is GestureWorks) {
+					childrenToIgnore++;
+					continue;
+				}
+				
+				if (child is DisplayObject) {
+					cmlDisplay.removeChild(child);
+					child.dispose();
+					child = 0;
+				}
+			}
+		}
 		
 		// IEventDispatcher
         private static var _dispatcher:EventDispatcher = new EventDispatcher();

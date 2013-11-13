@@ -181,7 +181,7 @@ package com.gestureworks.cml.utils
 		
 		public static function copyPropertyStates(source:*, destination:*):void 
 		{			
-			destination.state = [];
+			destination.state = new Dictionary();
 			
 			for (var i:int = 0; i < source.state.length; i++) {
 				destination.state[i] = new Dictionary();

@@ -106,16 +106,16 @@ package com.gestureworks.cml.managers
 
 			for (j=0; j<CMLObjectList.instance.length; j++)
 			{
-				if (CMLObjectList.instance.getIndex(j).hasOwnProperty("class_"))
+				if (CMLObjectList.instance.getIndex(j).hasOwnProperty("className"))
 				{
 					//parse class selectors first
 					for (i=0; i<ClassSelectors.length; i++)
 					{
 						targetClass = ClassSelectors[i].substring(1, ClassSelectors[i].length);
 
-						if (CMLObjectList.instance.getIndex(j).hasOwnProperty("class_"))
+						if (CMLObjectList.instance.getIndex(j).hasOwnProperty("className"))
 						{						
-							if (CMLObjectList.instance.getIndex(j).class_ == targetClass)
+							if (CMLObjectList.instance.getIndex(j).className == targetClass)
 							{						
 								properties = styleData.getStyle(ClassSelectors[i]);				
 								for (property in properties)
@@ -131,7 +131,7 @@ package com.gestureworks.cml.managers
 											properties[property] = true;
 											
 										CMLObjectList.instance.getIndex(j)[property] = properties[property];
-										CMLObjectList.instance.getIndex(j)["propertyStates"][0][property] = properties[property];
+										CMLObjectList.instance.getIndex(j)["state"][0][property] = properties[property];
 									}	
 								}
 							}

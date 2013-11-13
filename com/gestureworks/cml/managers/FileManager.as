@@ -2,6 +2,7 @@ package com.gestureworks.cml.managers
 {
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.*;
+	import com.greensock.events.TweenEvent;
 	import com.greensock.loading.core.LoaderCore;
 	import com.greensock.loading.data.SWFLoaderVars;
 	import com.greensock.loading.ImageLoader;
@@ -37,6 +38,7 @@ package com.gestureworks.cml.managers
 	 *  <li>f4v</li>
 	 * 	<li>swf</li>
 	 * 	<li>cml</li>
+	 * 	<li>svg</li>
 	 * </ul></p> 
 	 * 
 	 * @author Charles
@@ -53,9 +55,9 @@ package com.gestureworks.cml.managers
 		public static var cmlType:RegExp = /^.*\.(cml)$/i;
 		public static var cssType:RegExp = /^.*\.(css)$/i;
 		public static var mp3Type:RegExp = /^.*\.(mp3)$/i;
-		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
+		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|svg)$/i;
 		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|m4v|3gpp|mov|flv|f4v)$/i;
-		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg|mp3)$/i;
+		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg)$/i;
 		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
 		public static var cml:LoaderMax = new LoaderMax({name:"cml", onProgress:onProgress, onComplete:onComplete, onError:onError});
@@ -151,23 +153,21 @@ package com.gestureworks.cml.managers
 			return loader;
 		}
 		
-		
-		public static function onProgress(e:LoaderEvent):void
+		private static function onProgress(e:LoaderEvent):void
 		{
-			
+			dispatchEvent(e);
 		}
 		
-		public static function onComplete(e:LoaderEvent):void
+		private static function onComplete(e:LoaderEvent):void
 		{
-			
+			dispatchEvent(e);
 		}
 		
-		public static function onError(e:LoaderEvent):void
+		private static function onError(e:LoaderEvent):void
 		{
-			
+			dispatchEvent(e);
 		}
 				
-		
 		
 		// IEventDispatcher
         private static var _dispatcher:EventDispatcher = new EventDispatcher();

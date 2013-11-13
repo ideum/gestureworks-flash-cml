@@ -16,29 +16,28 @@ package com.gestureworks.cml.utils
 	
 	public class StateUtils 
 	{				
-		
+			
 		/**
 		 * Stores current property values to a provided slot of the object's state array.
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function saveState(obj:Object, stateIndex:Number, recursion:Boolean=false):void 
+		public static function saveState(obj:Object, state:*, recursion:Boolean=false):void 
 		{	
-			if (!stateIndex) stateIndex = 0;
+			if (!state) state = 0;
 			
-			if (!obj.state[stateIndex])
-				obj.state[stateIndex] = new Dictionary(false);
-		
-			for (var item:String in obj.state[stateIndex]) {					
+			if (!obj.state[state])
+				obj.state[state] = new Dictionary(false);
+			
+			for (var item:String in obj.state[state]) {					
 				if (item != "stateId")
-					obj.state[stateIndex][item] = obj[item];	
+					obj.state[state][item] = obj[item];	
 			}	
 			
 			if (obj is DisplayObjectContainer && recursion) {
 				for (var i:int = 0; i < obj.numChildren; i++)
-					StateUtils.saveState(obj.getChildAt(i), stateIndex, recursion);		
-			}
-				
+					StateUtils.saveState(obj.getChildAt(i), state, recursion);		
+			}	
 		}
 
 		
@@ -47,46 +46,46 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function saveStateById(obj:Object, stateId:String, recursion:Boolean=false):void 
-		{
-			var i:int;
-			for (i = 0; i < obj.state.length; i++) {
-				if ("stateId" in obj.state[i]) {
-					if (obj.state[i]["stateId"] == stateId) {
-						for (var item:String in obj.state[i]) {			
-							if (item != "stateId")
-								obj.state[i][item] = obj[item];		
-						}
-						break;
-					}	
-				}	
-			}			
-			
-			if (obj is DisplayObjectContainer && recursion) {
-				for (i=0; i < obj.numChildren; i++)
-					StateUtils.saveStateById(obj.getChildAt(i), stateId, recursion);		
-			}
-		}		
+		//public static function saveStateById(obj:Object, stateId:String, recursion:Boolean=false):void 
+		//{
+			//var i:int;
+			//for (i = 0; i < obj.state.length; i++) {
+				//if ("stateId" in obj.state[i]) {
+					//if (obj.state[i]["stateId"] == stateId) {
+						//for (var item:String in obj.state[i]) {			
+							//if (item != "stateId")
+								//obj.state[i][item] = obj[item];		
+						//}
+						//break;
+					//}	
+				//}	
+			//}			
+			//
+			//if (obj is DisplayObjectContainer && recursion) {
+				//for (i=0; i < obj.numChildren; i++)
+					//StateUtils.saveStateById(obj.getChildAt(i), stateId, recursion);		
+			//}
+		//}		
 		
 		/**
 		 * Loads current property values to a provided slot of the object's state array.
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function loadState(obj:Object, stateIndex:Number, recursion:Boolean=false):Boolean
+		public static function loadState(obj:Object, state:*, recursion:Boolean=false):Boolean
 		{		
 			var success:Boolean = false;
 			
-			if (!stateIndex) stateIndex = 0;
+			if (!state) state = 0;
 			
-			if (obj.state[stateIndex]){
-				obj.updateProperties(stateIndex);
+			if (obj.hasOwnProperty("state") && obj.state[state]){
+				obj.updateProperties(state);
 				success = true;
 			}
 			
 			if (obj is DisplayObjectContainer && recursion) {
 				for (var i:int = 0; i < obj.numChildren; i++) {
-					if (!StateUtils.loadState(obj.getChildAt(i), stateIndex, recursion)) {
+					if (!StateUtils.loadState(obj.getChildAt(i), state, recursion)) {
 						success = false;
 						break;
 					}
@@ -102,17 +101,17 @@ package com.gestureworks.cml.utils
 		 * @param	obj 
 		 * @param	state
 		 */
-		public static function loadStateById(obj:Object, stateId:String, recursion:Boolean=false):Boolean 
-		{
-			return loadState(obj, getStateById(obj,stateId), recursion);				
-		}		
+		//public static function loadStateById(obj:Object, stateId:String, recursion:Boolean=false):Boolean 
+		//{
+			//return loadState(obj, getStateById(obj,stateId), recursion);				
+		//}		
 		
 		/**
 		 * Tween state by state number from current to given state index. 
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */		
-		public static function tweenState(obj:*, state:Number, tweenTime:Number=1):Boolean
+		public static function tweenState(obj:*, state:*, tweenTime:Number=1):Boolean
 		{			
 			var propertyValue:String;
 			var objType:String;
@@ -124,12 +123,12 @@ package com.gestureworks.cml.utils
 			
 			if (!state) state = 0;
 			
-			for (var propertyName:String in obj.propertyStates[state])
+			for (var propertyName:String in obj.state[state])
 			{
-				newValue = obj.propertyStates[state][propertyName];
+				newValue = obj.state[state][propertyName];
 				if (obj[propertyName] != newValue) {
 					
-					if (propertyName != "$x" && propertyName != "$y" && propertyName != "_x" && propertyName != "_y") {				
+					if (propertyName != "_x" && propertyName != "_y") {				
 						
 						if (propertyName.toLowerCase().search("color") > -1) {
 							rgb = ColorUtils.rgbSubtract(newValue, obj[propertyName]);							
@@ -163,10 +162,10 @@ package com.gestureworks.cml.utils
 		 * @param	stateId The id of the state to tween to
 		 * @param	tweenTime Duration of tween
 		 */
-		public static function tweenStateById(obj:*, stateId:String, tweenTime:Number = 1):Boolean
-		{
-			return tweenState(obj, getStateById(obj,stateId), tweenTime);
-		}
+		//public static function tweenStateById(obj:*, stateId:String, tweenTime:Number = 1):Boolean
+		//{
+			//return tweenState(obj, getStateById(obj,stateId), tweenTime);
+		//}
 			
 		/**
 		 * Return state index by id
@@ -174,19 +173,19 @@ package com.gestureworks.cml.utils
 		 * @param	stateId
 		 * @return
 		 */
-		public static function getStateById(obj:*, stateId:String):int
+		public static function getState(obj:*, state:String):int
 		{
-			var i:int;
+			//var i:int;
+			//
+			//for (i = 0; i < obj.state.length; i++) {
+				//if ("stateId" in obj.state[i]) {
+					//if (obj.state[i]["stateId"] == stateId) {
+						//return i;
+					//}	
+				//}	
+			//}			
 			
-			for (i = 0; i < obj.state.length; i++) {
-				if ("stateId" in obj.state[i]) {
-					if (obj.state[i]["stateId"] == stateId) {
-						return i;
-					}	
-				}	
-			}			
-			
-			return 0;			
+			return obj.state;			
 		}
 	
 		// IEventDispatcher

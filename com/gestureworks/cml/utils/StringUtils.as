@@ -364,7 +364,14 @@ package com.gestureworks.cml.utils
 			} else {
 				return -1;
 			}
-		}		
+		}	
+		
+		/**
+		 * Trim white spaces from the front and end of String
+		 */
+		public static function trim(s:String):String {
+			 return s.replace( /^([\s|\t|\n]+)?(.*)([\s|\t|\n]+)?$/gm, "$2" );
+		}
 		
 
 	}

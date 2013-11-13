@@ -1,6 +1,6 @@
 package com.gestureworks.cml.layouts 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.interfaces.*;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -64,7 +64,7 @@ package com.gestureworks.cml.layouts
 	 * @see PointLayout
 	 * @see RandomLayout
 	 * @see com.gestureworks.cml.layouts.Layout
-	 * @see com.gestureworks.cml.element.Container
+	 * @see com.gestureworks.cml.elements.Container
      */
     public class GridLayout extends Layout
     {      

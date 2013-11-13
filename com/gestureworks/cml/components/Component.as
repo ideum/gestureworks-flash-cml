@@ -1,14 +1,13 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.Frame;
-	import com.gestureworks.cml.element.Graphic;
-	import com.gestureworks.cml.element.Menu;
-	import com.gestureworks.cml.element.ScrollPane;
-	import com.gestureworks.cml.element.Text;
-	import com.gestureworks.cml.element.TouchContainer;
+	import com.gestureworks.cml.elements.Frame;
+	import com.gestureworks.cml.elements.Graphic;
+	import com.gestureworks.cml.elements.Menu;
+	import com.gestureworks.cml.elements.ScrollPane;
+	import com.gestureworks.cml.elements.Text;
+	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.plugins.GlowFilterPlugin;
@@ -16,12 +15,9 @@ package com.gestureworks.cml.components
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.events.TouchEvent;
 	import flash.geom.Matrix;
 	import flash.utils.Timer;
-	import org.tuio.TuioTouchEvent;
 
 
 	/**
@@ -42,7 +38,7 @@ package com.gestureworks.cml.components
 	 * </codeblock>
 	 * 
 	 * @author Ideum
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	
 	public class Component extends TouchContainer 
 	{	
@@ -58,6 +54,7 @@ package com.gestureworks.cml.components
 		public function Component() 
 		{
 			super();
+			mouseChildren = true;
 			TweenPlugin.activate([GlowFilterPlugin]);
 		}
 		
@@ -72,28 +69,18 @@ package com.gestureworks.cml.components
 				menu = searchChildren(Menu);
 			if (!frame)
 				frame = searchChildren(Frame);
-			if (!background && back && back.hasOwnProperty("searchChildren"))
-				background = back.searchChildren(Graphic);	
 			
 			textFields = [];
 			textFields = searchChildren(Text, Array);
-			for (var i:int = 0; i < textFields.length; i++)
+			for (var i:int = 0; i < textFields.length; i++) {
 				fontArray.push(textFields[i].fontSize);
+			}
 			
 			scrollPanes = [];
 			scrollPanes = searchChildren(ScrollPane, Array);
 			
 			addEventListener(GWGestureEvent.RELEASE, noActivity);
-			
-			updateLayout();				
-		}
-		
-		/**
-		 * CML Initialisation callback
-		 */
-		override public function displayComplete():void
-		{
-			init();
+			updateLayout();	
 		}
 		
 		private var _fontIncrement:Number = 2;
@@ -237,10 +224,10 @@ package com.gestureworks.cml.components
 		}				
 		
 		
-		private var _autoTextLayout:Boolean = true;
+		private var _autoTextLayout:Boolean = false;
 		/**
 		 * Specifies whether text fields will be automatically adjusted to the component's width
-		 * @default true
+		 * @default false
 		 */		
 		public function get autoTextLayout():Boolean {return _autoTextLayout}
 		public function set autoTextLayout(value:Boolean):void 
@@ -255,7 +242,6 @@ package com.gestureworks.cml.components
 		public function get timeout():Number { return _timeout; }
 		public function set timeout(value:Number):void {
 			_timeout = value;
-			//updateLayout();
 		}
 		
 		private var _fadeoutDuration:Number = 0;
@@ -381,7 +367,7 @@ package com.gestureworks.cml.components
 						textFields[i].y = textFields[i].paddingTop;
 					else
 						textFields[i].y = textFields[i].paddingTop + textFields[i - 1].paddingBottom + textFields[i - 1].height;
-					
+											
 					if (textFields[i].parent is ScrollPane) {
 						formatPane(textFields[i], textFields[i].parent);
 					}
@@ -542,7 +528,7 @@ package com.gestureworks.cml.components
 				}
 				
 				if (scrollPanes) {
-					for (var l:int = 0; l < scrollPanes.length; l++) {
+					for (var a:int = 0; a < scrollPanes.length; a++) {
 						ScrollPane(scrollPanes[l]).reset();
 					}
 				}
@@ -762,7 +748,7 @@ package com.gestureworks.cml.components
 				clone.frame = String(frame.id);	
 			
 			//clone.resetMatrix();
-			clone.displayComplete();
+			clone.init();
 			
 			return clone;
 		}		
@@ -781,33 +767,25 @@ package com.gestureworks.cml.components
 			displayObject.transform.matrix = concatenatedChildMatrix;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void 
 		{
 			super.dispose();
 			textFields = null;
-			front = null;
-			back = null;
-			background = null;
-			menu = null;
-			frame = null;
+			_front = null;
+			_back = null;
+			_background = null;
+			_menu = null;
+			_frame = null;			
+			tween = null; 
+			fontArray = null;
 			
-			tween = null;
 			if (timer){
 				timer.stop();
 				timer = null;
 			}
-			
-			this.removeEventListener(StateEvent.CHANGE, onStateEvent);					
-			this.removeEventListener(TuioTouchEvent.TOUCH_DOWN, onDown);			
-			this.removeEventListener(TouchEvent.TOUCH_BEGIN, onDown);
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
-			this.removeEventListener(TuioTouchEvent.TOUCH_UP, onUp);		
-			this.removeEventListener(TouchEvent.TOUCH_END, onUp);			
-			this.removeEventListener(MouseEvent.MOUSE_UP, onUp);
-			this.removeEventListener(TuioTouchEvent.TOUCH_OUT, onUp);		
-			this.removeEventListener(TouchEvent.TOUCH_OUT, onUp);			
-			this.removeEventListener(MouseEvent.MOUSE_OUT, onUp);			
-			this.removeEventListener(GWGestureEvent.RELEASE, noActivity);
 		}
 	}
 

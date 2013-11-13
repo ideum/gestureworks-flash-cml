@@ -1,8 +1,7 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import flash.display.DisplayObject;
 	
 	/**
@@ -29,8 +28,8 @@ package com.gestureworks.cml.components
 	 * 
 	 * @author Uma and Shaun
 	 * @see Component
-	 * @see com.gestureworks.cml.element.LiveVideo
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.LiveVideo
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class LiveVideoViewer extends Component 
 	{						
@@ -64,32 +63,12 @@ package com.gestureworks.cml.components
 		 */
 		override public function init():void 
 		{			
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front)
-				front = searchChildren(".video_container");
-			if (!back)
-				back = searchChildren(".info_container");				
-			if (!background)
-				background = searchChildren(".info_bg");	
-
 			// automatically try to find elements based on AS3 class
 			if (!liveVideo)
 				liveVideo = searchChildren(LiveVideo);
 				
 			super.init();
-		}
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
+		}	
 			
 		override protected function updateLayout(event:*=null):void 
 		{
@@ -110,12 +89,12 @@ package com.gestureworks.cml.components
 		}
 		
 		/**
-		 * Dispose method to nullify the attributes and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{
 			super.dispose();
-			liveVideo =  null;
+			_liveVideo =  null;
 		}
 		
 	}

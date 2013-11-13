@@ -1,5 +1,4 @@
-package com.gestureworks.cml.utils 
-{
+package com.gestureworks.cml.utils {
 	/**
 	 * The ChildList utility is a data structure that creates an ordered
 	 * map that can store duplicate keys. It has a built-in two-way iterator, 
@@ -26,12 +25,18 @@ package com.gestureworks.cml.utils
 	 * @author Ideum
 	 * @see LinkedMap
 	 */
-	public class ChildList extends LinkedMap 
-	{
-		
-		public function ChildList(weakKeys:Boolean=false)
-		{				
+	public class ChildList extends LinkedMap {
+		public function ChildList(weakKeys:Boolean=false) {				
 			super(weakKeys);
+		}
+		
+		/**
+		 * Returns an object that is associated with the given id
+		 * @param	id
+		 * @return  
+		 */		
+		public function getId(id:String):* {
+			return getKey(id);
 		}
 		
 		/**
@@ -43,25 +48,24 @@ package com.gestureworks.cml.utils
 		 * @param	index
 		 * @return
 		 */
-		public function getCSSClass(value:String, index:int=-1):*
-		{
+		public function getCSSClass(value:String, index:int=-1):* {
 			var tmp:LinkedMap = new LinkedMap(true);
 			
-			for (var i:int = 0; i < this.length; i++) 
-			{
+			for (var i:int = 0; i < this.length; i++) {
 				if (!this.getIndex(i)) continue; // Make sure index is defined; causing error when cloning the ScrollPane.
 				
-				if (this.getIndex(i).hasOwnProperty("class_"))
-				{
-					if (this.getIndex(i).class_ == value)
+				if (this.getIndex(i).hasOwnProperty("className")) {
+					if (this.getIndex(i).className == value)
 						tmp.append(this.getIndex(i).id, this.getIndex(i));
 				}
 			}
 						
-			if (index > -1)
+			if (index > -1) {
 				return tmp.getIndex(index);
-			else
+			}
+			else {
 				return tmp;
+			}
 		}
 		
 		
@@ -74,20 +78,18 @@ package com.gestureworks.cml.utils
 		 * @param	index
 		 * @return
 		 */
-		public function getClass(value:Class, index:int=-1):*
-		{
+		public function getClass(value:Class, index:int=-1):* {
 			var tmp:LinkedMap = new LinkedMap(true);
-			
-			for (var i:int = 0; i < this.length; i++) 
-			{
+			for (var i:int = 0; i < this.length; i++) {
 				if (this.getIndex(i) is value)
 					tmp.append(this.getIndex(i).id, this.getIndex(i));
 			}	
-			
-			if (index > -1)
+			if (index > -1) {
 				return tmp.getIndex(index);
-			else
-				return tmp;				
+			}
+			else {
+				return tmp;	
+			}
 		}			
 		
 	}

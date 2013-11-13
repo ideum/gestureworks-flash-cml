@@ -1,23 +1,19 @@
 package com.gestureworks.cml.interfaces 
 {
+	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.utils.ChildList;
-	import com.gestureworks.cml.utils.LinkedMap;
 	
 	/**
 	 * Implements CML display containers.
 	 * @author Ideum
 	 */
-	public interface IContainer extends IElement
+	public interface IContainer extends IObject
 	{
 		/**
-		 * Returns the CML childlist.
+		 * Searches the childList and adds each child to the display list.
 		 */
-		function get childList():ChildList;
-		
-		/**
-		 * Returns the layout.
-		 */
-		function get layout():*;
+		function addAllChildren():void;		
+	
 	}
 	
 }

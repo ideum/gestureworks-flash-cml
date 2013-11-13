@@ -1,12 +1,9 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.kits.*;
 	import com.gestureworks.cml.utils.CloneUtils;
-	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.Event;
 	
 	/**
 	 * The ImageViewer component is primarily meant to display an Image element and its associated meta-data.
@@ -32,8 +29,8 @@ package com.gestureworks.cml.components
 	 * 
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.element.Image
-	 * @see com.gestureworks.cml.element.TouchContainer
+	 * @see com.gestureworks.cml.elements.Image
+	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class ImageViewer extends Component 
 	{		
@@ -44,8 +41,8 @@ package com.gestureworks.cml.components
 		{
 			super();
 			mouseChildren = true;
-			disableNativeTransform = false;
-			disableAffineTransform = false;			
+			nativeTransform = true;
+			affineTransform = true;			
 		}
 		
 		
@@ -71,22 +68,7 @@ package com.gestureworks.cml.components
 		 * Initialization function
 		 */
 		override public function init():void 
-		{	
-			// automatically try to find elements based on css class - this is the v2.0-v2.1 implementation
-			if (!image)
-				image = searchChildren(".image_element");
-			if (!menu)
-				menu = searchChildren(".menu_container");
-			if (!frame)
-				frame = searchChildren(".frame_element");
-			if (!front && !fronts)
-				front = searchChildren(".image_container");
-			if (!back && !backs) {
-				back = searchChildren(".info_container");
-			}
-			if (!background)
-				background = searchChildren(".info_bg");	
-			
+		{				
 			// automatically try to find elements based on AS3 class
 			if (!image)
 				image = searchChildren(Image);
@@ -108,14 +90,7 @@ package com.gestureworks.cml.components
 		}
 		
 		public var isLoaded:Boolean = true;
-		
-		/**
-		 * CML initialization
-		 */
-		override public function displayComplete():void
-		{
-			init();
-		}		
+	
 					
 		override protected function updateLayout(event:*=null):void 
 		{
@@ -132,7 +107,7 @@ package com.gestureworks.cml.components
 		
 		
 		/**
-		 * Dispose method to nullify the attributes and remove listener
+		 * @inheritDoc
 		 */
 		override public function dispose():void 
 		{
@@ -197,7 +172,7 @@ package com.gestureworks.cml.components
 					}
 				}
 			}
-			clone.displayComplete();				
+			clone.init();				
 			
 			/*for (var i:int = 0; i < clone.textFields.length; i++) {	
 				for (var n:int = 0; n < clone.numChildren; n++) 
