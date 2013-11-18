@@ -21,7 +21,7 @@ language-agnostic and to accelerate the development of multiuser, multitouch app
 * CSS support
 * Away3D support
 * LEAP Motion support
-* TUIO support(UDP, TCP, FLOSC)
+* TUIO support (UDP, TCP, FLOSC)
 * ActionScript 3 API
 
 GestureWorks Flash CML is compatible with the GestureWorks Flash GML framework. The GestureWorks Flash GML framework is a markup driven
