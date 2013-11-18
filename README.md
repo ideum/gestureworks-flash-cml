@@ -8,7 +8,7 @@ Open Exhibits applications. The goals of CML are to create reusable and sharable
 language-agnostic and to accelerate the development of multiuser, multitouch applications. 
 
 ## Feature List
-* 50+ prebuilt ux elements and components
+* 100+ prebuilt ux tags
 * Built-in layout system
 * Web safe infrastructure
 * Database driven content
@@ -19,6 +19,9 @@ language-agnostic and to accelerate the development of multiuser, multitouch app
 * GML support
 * HTML support
 * CSS support
+* Away3D support
+* LEAP Motion support
+* TUIO support(UDP, TCP, FLOSC)
 * ActionScript 3 API
 
 GestureWorks Flash CML is compatible with the GestureWorks Flash GML framework. The GestureWorks Flash GML framework is a markup driven
