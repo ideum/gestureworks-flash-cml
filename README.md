@@ -28,4 +28,4 @@ GestureWorks Flash CML is compatible with the GestureWorks Flash GML framework. 
 gesture analysis engine. It is free for non-commercial use through the Open Exhibits project http://openexhibits.org/ ; it is available for commercial use through
 the GestureWorks website: http://gestureworks.com/pages/flash-home
 
-For more information see the Wiki: http://creativeml.org/wiki/index.php/Main_Page
+For more information see the Wiki: http://creativeml.org/wiki/index.php
