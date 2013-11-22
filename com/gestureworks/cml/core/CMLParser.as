@@ -866,9 +866,7 @@ package com.gestureworks.cml.core
 				if (attr == "stateId") {
 					stateId = attrValue;
 				}
-				else {
-					obj.state[0][attr] = attrValue;
-				}
+				obj.state[0][attr] = attrValue;
 
 			}
 			
