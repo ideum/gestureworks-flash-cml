@@ -46,16 +46,16 @@ package com.gestureworks.cml.elements
 	{
 		private const PItoRAD:Number = Math.PI / 180;
 		
-		[Embed(source = "../../../../../lib/shaders/magnify.pbj", mimeType = "application/octet-stream")]
+		//[Embed(source = "../../../../../lib/shaders/magnify.pbj", mimeType = "application/octet-stream")]
 		private var MagnifierShader:Class;
 		
-		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
+		//[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
 		private var DefaultGraphic:Class;
 		
-		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.mDefaultMagnifier")]
+		//[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.mDefaultMagnifier")]
 		private var mDefaultGraphic:Class;
 		
-		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.NotchMagnifier")]
+		//[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.NotchMagnifier")]
 		private var NotchGraphic:Class;
 		
 		private var _border:Sprite;
