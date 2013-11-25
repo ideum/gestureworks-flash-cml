@@ -52,9 +52,8 @@ package com.gestureworks.cml.elements
 	{
 		private const PItoRAD:Number = Math.PI / 180;
 		
-		//[Embed(source = "lib/shaders/magnify.pbj", mimeType = "application/octet-stream")]
-		//private var MagnifierShader:Class;
-		private var shaderLoader:URLLoader;
+		[Embed(source="../../../../lib/shaders/magnify.pbj", mimeType="application/octet-stream")]
+		private var MagnifierShader:Class;
 		
 		private var _border:Sprite;
 		
@@ -238,10 +237,7 @@ package com.gestureworks.cml.elements
 			
 			readyBitmaps();
 			
-			shaderLoader = new URLLoader();
-			shaderLoader.dataFormat = URLLoaderDataFormat.BINARY;
-			shaderLoader.addEventListener(Event.COMPLETE, applyFilter);
-			shaderLoader.load(new URLRequest("magnify.pbj"));
+			applyFilter();
 		}
 		
 		private function readyBitmaps():void {
@@ -256,9 +252,10 @@ package com.gestureworks.cml.elements
 			addChild(backgroundCanvasContainer);
 		}
 		
-		private function applyFilter(e:Event):void {
+		private function applyFilter():void {
 
-			shader = new Shader(shaderLoader.data);
+			shader = new Shader();
+			shader.byteCode = new MagnifierShader();
 			shaderFilter = new ShaderFilter(shader);
 
 			applyMask();
