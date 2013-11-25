@@ -36,7 +36,7 @@ package com.gestureworks.cml.elements
 	 */
 	public class ModestMap extends TouchContainer
 	{
-		private var map:TweenMap;
+		public var map:TweenMap;
 		
 		private var p1:IMapProvider = new BlueMarbleMapProvider;
 		private var p2:IMapProvider = new MicrosoftAerialMapProvider;
