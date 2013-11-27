@@ -94,15 +94,21 @@ package com.gestureworks.cml.elements
 			{
 				listenToggle();
 				
+				if (hit)
+					addChildAt(hit, numChildren - 1);				
+				
 				if (!initial)
 					initial = childList.getIndex(0);
 				
 				for (var i:int = 0; i < childList.length; i++) {
 					if (childList.getIndex(i) == initial)
 						childList.selectIndex(i).visible = true;
-					else
+					else if(childList.getIndex(i) != hit)
 						childList.getIndex(i).visible = false;
-				}			
+				}
+				
+				if (childList.currentValue == hit)
+					childList.next();
 				
 				return; //if toggle is used, bypass state events
 			}
@@ -1191,17 +1197,11 @@ package com.gestureworks.cml.elements
 		 */
 		protected function onToggle(event:*):void
 		{
-			if (childList.hasNext())
-			{				
-				childList.currentValue.visible = false;
-				childList.next().visible = true;
-			}
-			else
-			{
-				childList.currentValue.visible = false;				
-				childList.reset();
-				childList.currentValue.visible = true;			
-			}							
+			childList.currentValue.visible = false;		
+			next();	
+			if (childList.currentValue == hit)
+				next();
+			childList.currentValue.visible = true;
 			
 			if (dispatchDict["toggle"]) {
 				if (dispatchDict["toggle"] == "{currentIndex}")
@@ -1211,6 +1211,16 @@ package com.gestureworks.cml.elements
 			}
 			else if (dispatchDefault)
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", "toggle", true, true));	
+		}
+		
+		/**
+		 * Increment child list index
+		 */
+		private function next():void {
+			if (childList.hasNext())
+				childList.next();
+			else
+				childList.reset();
 		}
 		
 		public function runToggle():void {
@@ -1263,7 +1273,7 @@ package com.gestureworks.cml.elements
 						addListener(TouchEvent.TOUCH_OUT, onToggle, listen);
 					break;	
 				case "down":
-					addListener(GWTouchEvent.TOUCH_BEGIN, onToggle, listen);
+					addListener(GWTouchEvent.TOUCH_BEGIN, onToggle, listen, hit);
 					break;
 				case "up":
 					addListener(GWTouchEvent.TOUCH_END, onToggle, listen);
