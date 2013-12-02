@@ -2,6 +2,7 @@
     {
 	import com.gestureworks.cml.elements.Text;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.document;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -45,6 +46,8 @@
 		private var radius:Number;
 		private var labelList:Array;
 		private var downStates:Array;
+		private var _nestedButtons:Boolean = false;
+		private var buttons:Array;
 		
 		/**
 		 * RadioButton Constructor. Allows users to define a group of radio buttons by passing a comma delimited string containing
@@ -71,19 +74,25 @@
 		 */
 		override public function init ():void
 		{		
-			if (!_labels) return;
-			
-			draw();
-			
-			addEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
-			
-			if (_graphicsArray && _graphicsArray.length > 0) {
-				_selectedLabel = _graphicsArray[0].name;
-				_graphicsArray[0].alpha = 1;
+			if (nestedButtons) {
+				buttons = getElementsByTagName(Button);				
+				for each (var item:Button in buttons) {
+					item.addEventListener(StateEvent.CHANGE, onButton);
+				}
 			}
-			else {
-				_radioButtons[labelList[0]].addChild(selected);
-				_selectedLabel = _radioButtons[labelList[0]].name;
+			else {	
+				if (!_labels) return;
+
+				draw();
+				addEventListener(GWTouchEvent.TOUCH_BEGIN, buttonSelected);
+				if (_graphicsArray && _graphicsArray.length > 0) {
+					_selectedLabel = _graphicsArray[0].name;
+					_graphicsArray[0].alpha = 1;
+				}
+				else {
+					_radioButtons[labelList[0]].addChild(selected);
+					_selectedLabel = _radioButtons[labelList[0]].name;
+				}
 			}
 		}		
 		
@@ -533,6 +542,18 @@
 		 */
 		public function get selectedLabel():String { return _selectedLabel; }
 		
+		
+		/**
+		 * Specifies whether the children are nested buttons.
+		 */
+		public function get nestedButtons():Boolean {
+			return _nestedButtons;
+		}
+		
+		public function set nestedButtons(value:Boolean):void {
+			_nestedButtons = value;
+		}
+		
 		public function selectButton(s:String):void {
 			
 			if (_graphicsArray) {
@@ -716,6 +737,26 @@
 						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedLabel", _selectedLabel, true));
 						return;
 					}
+				}
+			}
+		}
+		
+		
+		/**
+		 * Event handler used when radio buttons contain nested buttons and the nestButtons flag set to true.
+		 * The nested button must have to children:
+		 * O = off state
+		 * 1 = on state
+		 */
+		private function onButton(e:StateEvent):void {			
+			for each (var item:Button in buttons) {
+				if (item == e.target) {
+					item.childList[0].visible = false;
+					item.childList[1].visible = true;
+				} 
+				else {
+					item.childList[0].visible = true;
+					item.childList[1].visible = false;
 				}
 			}
 		}
