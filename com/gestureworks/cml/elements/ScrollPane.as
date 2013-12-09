@@ -52,7 +52,6 @@ package com.gestureworks.cml.elements
 		private var _scrollThickness:Number = 30;
 		
 		
-		
 		/**
 		 * Constructor
 		 */
@@ -311,7 +310,6 @@ package com.gestureworks.cml.elements
 			addEventListener(GWGestureEvent.SCALE, onScale);
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
 			addEventListener(GWGestureEvent.COMPLETE, onEnd);
-			addEventListener(GWGestureEvent.ROTATE, onRotate);
 			
 			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
@@ -579,9 +577,23 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-		private function onRotate(e:GWGestureEvent):void {
-
+		
+		/**
+		 * Updates / replaces content with given value. If you are only changing the dimensions of the 
+		 * content, such as a string change on a text field, the method updateLayout will be faster.
+		 * @param	value
+		 */
+		public function updateContent(value:DisplayObject):void {			
+			if ( _content && contains(_content)) {
+				removeChild(_content);
+				_content = null;
+			}			
+			_content = value;
+			addChild(_content);
+			init();
+			updateLayout();
 		}
+		
 		
 		/**
 		 * @inheritDoc
