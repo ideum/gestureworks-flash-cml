@@ -20,7 +20,9 @@ package com.gestureworks.cml.managers
 	public class CSSManager extends EventDispatcher
 	{
 		private var loader:LoaderCore;
-		
+		private var _styleSheet:StyleSheet;
+		private static var _instance:CSSManager;
+
 		/**
 		 * Sets the file name that css manger process
 		 */
@@ -31,7 +33,6 @@ package com.gestureworks.cml.managers
 		 */
 		public var debug:Boolean = false;
 
-		private static var _instance:CSSManager;
 		/**
 		 * Returns an instance of the CSSManager class
 		 */
@@ -40,6 +41,13 @@ package com.gestureworks.cml.managers
 			if (_instance == null)
 				_instance = new CSSManager(new SingletonEnforcer());			
 			return _instance; 
+		}
+		
+		/**
+		 * Returns the StyleSheet object that is currently loaded.
+		 */
+		public function get styleSheet():StyleSheet {
+			return _styleSheet;
 		}
 		
 		/**
@@ -72,7 +80,7 @@ package com.gestureworks.cml.managers
 		/**
 		 * Parses the currently loaded CSS file using the CMLObjectList
 		 */
-		public function parseCSS(styleSheet:StyleSheet):void
+		public function parseCSS(value:StyleSheet):void
 		{
 			if (debug) {
 				trace(StringUtils.printf("\n%4sBegin CSS parsing\n", ""));
@@ -81,7 +89,7 @@ package com.gestureworks.cml.managers
 			}
 			
 			// add styles to objects --------------------------------------			
-			var styleData:StyleSheet = styleSheet;
+			_styleSheet = value;
 			
 			var IdSelectors:Array = [];
 			var ClassSelectors:Array = [];
@@ -90,9 +98,9 @@ package com.gestureworks.cml.managers
 			var selector:String;
 			
 			//seperate id and class selectors
-			for (i=0; i<styleData.styleNames.length; i++)
+			for (i=0; i<_styleSheet.styleNames.length; i++)
 			{	
-				selector = styleData.styleNames[i]
+				selector = _styleSheet.styleNames[i]
 					
 				if (selector.charAt(0) == "#")
 					IdSelectors.push(selector);
@@ -117,7 +125,7 @@ package com.gestureworks.cml.managers
 						{						
 							if (CMLObjectList.instance.getIndex(j).className == targetClass)
 							{						
-								properties = styleData.getStyle(ClassSelectors[i]);				
+								properties = _styleSheet.getStyle(ClassSelectors[i]);				
 								for (property in properties)
 								{									
 									if (CMLObjectList.instance.getIndex(j).hasOwnProperty(property))
@@ -150,7 +158,7 @@ package com.gestureworks.cml.managers
 						
 						if (CMLObjectList.instance.getIndex(j).id == targetId)
 						{					
-							properties = styleData.getStyle(IdSelectors[i]);				
+							properties = _styleSheet.getStyle(IdSelectors[i]);				
 							
 							for (property in properties)
 							{									
