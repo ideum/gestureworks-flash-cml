@@ -977,7 +977,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Adds child to display list and, if not already added, the child list
+		 * Removes child from display list and, if not already removed, the child list
 		 * @param	child
 		 * @return
 		 */
@@ -988,7 +988,39 @@ package com.gestureworks.cml.elements
 			}
 			
 			return super.removeChild(child);
-		}		
+		}	
+		
+		/**
+		 * Removes children from display list and, if not already removed, the child list
+		 * @param	beginIndex
+		 * @param	endIndex
+		 */
+		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void {
+			if (endIndex < 0 || endIndex >= numChildren)
+				endIndex = numChildren - 1;
+				
+			for (var i:int = beginIndex; i <= endIndex; i++) {
+				var child:DisplayObject = getChildAt(i);
+				if (childList.search(child) != -1)
+					childList.removeByValue(child);
+			}
+			
+			super.removeChildren(beginIndex, endIndex);
+		}
+		
+		/**
+		 * Removes child from display list and, if not already removed, the child list
+		 * @param	index
+		 * @return
+		 */
+		override public function removeChildAt(index:int):DisplayObject {	
+			var child:DisplayObject = getChildAt(index);
+			if (childList.search(child) != -1) {
+				childList.removeByValue(child);
+			}
+			
+			return super.removeChildAt(index);
+		}
 		
 		private var _toBitmap:Boolean = false;
 		
