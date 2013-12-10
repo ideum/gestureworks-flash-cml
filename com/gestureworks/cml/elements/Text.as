@@ -78,20 +78,33 @@ package com.gestureworks.cml.elements
 			super.init();
 			if (!width) width = 100;
 			if (!height) height = 100;			
-			updateTextFormat();			
+			updateTextFormat();		
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function parseCML(cml:XMLList):XMLList {			
-			// if TextElement has child, then interpret as htmlText
+			
+			// make gesture list
+			var g:XML = <GestureList />;				
+			for each (var item:XML in cml.children()) {
+				if (item.name() == "GestureList") {
+					g.appendChild(item.children().copy());
+				}
+				else if (item.name() == "Gesture") {
+					g.appendChild(item.copy());
+				}
+			}			
+			makeGestureList(XMLList(g));
+			
+			// if TextElement has other children, then interpret as htmlText
 			if (String(cml).length > 0 && cml["State"] == undefined) {
 				CMLParser.attrLoop(this, cml);
 				textField.multiline = true;
 				textField.condenseWhite = true;
 				this.state[0]["htmlText"] = cml.children();
-				cml = new XMLList;				
+				cml = new XMLList;
 			}
 	
 			return CMLParser.parseCML(this, cml);
