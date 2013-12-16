@@ -934,7 +934,6 @@ package com.gestureworks.cml.core
 							var popped:String = absArray.pop();
 							while (popped == "" && absArray.length > 0) {
 								popped = absArray.pop();
-								//trace("popped " + popped);
 							}
 						}
 						break;
@@ -949,6 +948,8 @@ package com.gestureworks.cml.core
 			}
 			
 			var finalPath:String = absArray.join("\\") + "\\" + relArray.join("\\");
+			
+			finalPath = finalPath.replace("\\\\", "\\");
 			
 			return finalPath;
 		}
