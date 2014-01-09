@@ -1,5 +1,6 @@
 package com.gestureworks.cml.utils 
 {
+	import com.gestureworks.cml.elements.State;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
@@ -182,12 +183,11 @@ package com.gestureworks.cml.utils
 		public static function copyPropertyStates(source:*, destination:*):void 
 		{			
 			destination.state = new Dictionary();
-			
-			for (var i:int = 0; i < source.state.length; i++) {
-				destination.state[i] = new Dictionary();
-				
-				for (var item:String in source.state[i]) {					
-					destination.state[i][item] = source.state[i][item];					
+		
+			for (var key:* in source.state) {
+				destination.state[key] = new State();
+				for (var item:* in source.state[key]) {
+					destination.state[key][item] = source.state[key][item];
 				}
 			}
 		}

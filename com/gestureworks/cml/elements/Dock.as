@@ -448,7 +448,13 @@ package com.gestureworks.cml.elements
 				clone.listenLoadComplete();
 				obj.init();	
 			}
-			else obj.open();		
+			else {
+				obj.addEventListener(StateEvent.CHANGE, function loaded(e:StateEvent):void {
+					obj.removeEventListener(StateEvent.CHANGE, loaded);
+					clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, clone.id, "isLoaded", true));
+				});
+				obj.open();		
+			}
 		}
 		
 		
@@ -730,7 +736,7 @@ package com.gestureworks.cml.elements
 		
 		// image load data
 		protected function onCloneLoad(event:StateEvent = null):void 
-		{			
+		{		
 			if (!event || event.property == "isLoaded") {				
 				if (event){
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					

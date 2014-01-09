@@ -967,7 +967,7 @@ package com.gestureworks.cml.elements
 			
 			if (childList.search(child) == -1) {
 				
-				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
+				if (child.hasOwnProperty("id") && child["id"] && String(child["id"]).length > 0)
 					childToList(child["id"], child);
 				else
 					childToList(child.name, child);

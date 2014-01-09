@@ -432,25 +432,36 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Reroutes child additions to the drawer's content holder
+		 * Reroutes non-UI child additions to the drawer's content holder
 		 * @param	child  the child to add to the content holder
 		 * @return  the child added to the content holder
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{
-			childList.removeByValue(child);
-			return contentHolder.addChild(child);
+			try {
+				//is UI
+				super.getChildIndex(child);
+			}
+			catch (e:Error) {
+				return contentHolder.addChild(child);
+			}
+			return child;
 		}
 		
 		/**
-		 * Reroutes child additions to the drawer's content holder
+		 * Reroutes non-UI child additions to the drawer's content holder
 		 * @param	child  the child to add to the content holder
 		 * @return  the child added to the content holder
 		 */		
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{
-			childList.removeByValue(child);
-			return contentHolder.addChildAt(child, index);
+			try {
+				super.getChildIndex(child);
+			}
+			catch (e:Error) {
+				return contentHolder.addChildAt(child, index);	
+			}
+			return child;
 		}
 		
 		/**
