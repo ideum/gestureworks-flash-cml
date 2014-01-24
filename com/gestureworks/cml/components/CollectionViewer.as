@@ -101,14 +101,16 @@ package com.gestureworks.cml.components
 		private function localInit():void {
 						
 			// create hit background, useful for pixel-perfect determinations of whether the object is on or off stage.
-			hitBg = new Sprite;
-			hitBg.name = "hitbg";
-			hitBg.graphics.beginFill(0x000000, 1);
-			hitBg.graphics.drawRect(30, 30, stage.stageWidth - 60, stage.stageHeight - 60);
-			hitBg.graphics.endFill();
-			hitBg.cacheAsBitmap = true;
-			hitBg.visible = false;
-			addChildAt(hitBg, 0);		
+			if(!hitBg){
+				hitBg = new Sprite;
+				hitBg.name = "hitbg";
+				hitBg.graphics.beginFill(0x000000, 1);
+				hitBg.graphics.drawRect(30, 30, stage.stageWidth - 60, stage.stageHeight - 60);
+				hitBg.graphics.endFill();
+				hitBg.cacheAsBitmap = true;
+				hitBg.visible = false;
+				addChildAt(hitBg, 0);		
+			}
 			
 			// create component array to hold all components
 			components = [];			
