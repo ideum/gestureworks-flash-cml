@@ -39,14 +39,14 @@ package com.gestureworks.cml.components
 	public class CollectionViewer extends Component {
 
 		// local file version		
-		private var queue:List;
-		private var shown:List;
+		protected var queue:List;
+		protected var shown:List;
 		
 		private var currentTween:*;
 		public var animateIn:Boolean = false;
 		public var amountToShow:int = -1;
 		private var hitBg:Sprite;
-		private var tweens:Dictionary = new Dictionary(true)
+		private var tweens:Dictionary = new Dictionary(true);
 		private var timer:Timer;
 		private var components:Array;
 		
@@ -171,7 +171,7 @@ package com.gestureworks.cml.components
 		/**
 		 * Adds component.
 		 */
-		protected function addComponent(c:DisplayObject):void {
+		protected function addComponent(c:DisplayObject):void {			
 			queue.remove( queue.search(c) );
 			shown.append(c);
 			c.visible = true;
@@ -226,7 +226,7 @@ package com.gestureworks.cml.components
 			}	
 		}	
 				
-		private function onGestureComplete(event:GWGestureEvent=null):void {
+		protected function onGestureComplete(event:GWGestureEvent=null):void {
 			var onscreen:Boolean = CollisionDetection.isColliding(DisplayObject(event.target), hitBg, this, true, 0);								
 			if (!onscreen)
 				removeComponent(DisplayObject(event.target));	
