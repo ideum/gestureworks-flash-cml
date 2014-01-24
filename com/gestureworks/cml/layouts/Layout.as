@@ -233,6 +233,15 @@ package com.gestureworks.cml.layouts
 			_onComplete = f;
 		}
 		
+		private var _onCompleteParams:Array;
+		/**
+		 * Parameters for onComplete function
+		 */
+		public function get onCompleteParams():Array { return _onCompleteParams; }
+		public function set onCompleteParams(value:Array):void {
+			_onCompleteParams = value;
+		}
+		
 		private var _onUpdate:Function;
 		/**
 		 * Function to call on layout update
@@ -241,6 +250,15 @@ package com.gestureworks.cml.layouts
 		public function set onUpdate(f:Function):void
 		{
 			_onUpdate = f;
+		}	
+		
+		private var _onUpdateParams:Array;
+		/**
+		 * Parameters for onUpdate function
+		 */
+		public function get onUpdateParams():Array { return _onUpdateParams; }
+		public function set onUpdateParams(value:Array):void {
+			_onUpdateParams = value;
 		}
 		
 		private var _continuousTransform:Boolean = true;	
@@ -293,8 +311,8 @@ package com.gestureworks.cml.layouts
 			{				
 				if (layoutTween && layoutTween._active)
 				{
-					layoutTween.eventCallback("onUpdate", onUpdate);
-					layoutTween.eventCallback("onComplete", onComplete);
+					layoutTween.eventCallback("onUpdate", onUpdate, onUpdateParams);
+					layoutTween.eventCallback("onComplete", onComplete, onCompleteParams );
 					return;
 				}
 				
@@ -320,7 +338,7 @@ package com.gestureworks.cml.layouts
 					tIndex++;
 				}
 				
-				layoutTween = new TimelineLite( { onComplete:onComplete, onUpdate:onUpdate } );
+				layoutTween = new TimelineLite( { onComplete:onComplete, onCompleteParams:onCompleteParams, onUpdate:onUpdate, onUpdateParams:onUpdateParams } );
 				layoutTween.appendMultiple(childTweens);
 				layoutTween.play();
 				
@@ -342,8 +360,8 @@ package com.gestureworks.cml.layouts
 					child.alpha = alpha;
 					tIndex++;
 				}
-				if (onComplete != null) onComplete.call();
-				if (onUpdate != null) onUpdate.call();
+				if (onComplete != null) onComplete.call(onCompleteParams);
+				if (onUpdate != null) onUpdate.call(onUpdateParams);
 			}
 			
 			if (!cacheTransforms)
