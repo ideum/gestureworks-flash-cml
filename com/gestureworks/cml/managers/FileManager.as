@@ -57,7 +57,7 @@ package com.gestureworks.cml.managers
 		public static var mp3Type:RegExp = /^.*\.(mp3)$/i;
 		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|svg)$/i;
 		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|m4v|3gpp|mov|flv|f4v)$/i;
-		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg)$/i;
+		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v)$/i;
 		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
 		public static var cml:LoaderMax = new LoaderMax({name:"cml", onProgress:onProgress, onComplete:onComplete, onError:onError});
