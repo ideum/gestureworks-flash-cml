@@ -136,7 +136,7 @@ package com.gestureworks.cml.managers
 		 */
 		public static function append(file:String):LoaderCore
 		{
-			var loader:LoaderCore = LoaderMax.parse(file);
+			var loader:LoaderCore = LoaderMax.parse(file, { autoPlay:false });
 			loader.name = file;
 			if (isCML(file))
 				cml.append(loader);
