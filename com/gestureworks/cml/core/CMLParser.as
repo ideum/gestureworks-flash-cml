@@ -172,8 +172,11 @@ package com.gestureworks.cml.core
 					ppLayoutKit(cml[i]);	
 				else if (tag == "Stage")
 					cml[i].setName("StageKit");
-				else if (cml[i].@src != undefined)
-					ppMedia(cml[i]);					
+				else {
+					for each(var attr:* in cml[i].@ * ) {
+						ppMedia(attr);
+					}
+				}
 				
 				if (cml[i].*.length() > 0)
 					preprocessLoop(cml[i].*);
@@ -344,7 +347,7 @@ package com.gestureworks.cml.core
 			if (str.length)
 				path = str;
 			else
-				path = cml.@src;
+				path = cml;
 			
 			path = updatePath(path);	
 				
