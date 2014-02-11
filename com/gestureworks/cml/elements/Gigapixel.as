@@ -285,6 +285,7 @@
 		override public function dispose():void
 		{
 			super.dispose();
+			image.dispose();
 			sceneNavigator = null;
 			scaleConstraint = null;
 			_hotspots = null;
