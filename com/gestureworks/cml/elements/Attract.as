@@ -3,10 +3,13 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.core.CMLParser;
 	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.core.GestureWorks;
 	import com.gestureworks.events.GWTouchEvent;
+	import com.gestureworks.managers.TouchManager;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
 	import flash.utils.Timer;
@@ -148,6 +151,7 @@ package com.gestureworks.cml.elements
 		{	
 			super.dispose();
 			stage.removeEventListener(TouchEvent.TOUCH_MOVE, resetTimer);
+			stage.removeEventListener(MouseEvent.MOUSE_MOVE, resetTimer);
 			stage.removeEventListener(Event.RESIZE, updateLayout);
 			if (timer) {
 				timer.stop();
@@ -181,9 +185,14 @@ package com.gestureworks.cml.elements
 				visible = false;
 			}
 		
-			if (stage)
-				stage.addEventListener(TouchEvent.TOUCH_MOVE, resetTimer);
-		
+			if (stage) {
+				if (GestureWorks.activeSim) {
+					stage.addEventListener(MouseEvent.MOUSE_MOVE, resetTimer);
+				}
+				else {
+					stage.addEventListener(TouchEvent.TOUCH_MOVE, resetTimer);
+				}
+			}
 			attractState = false;	
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
 		}
@@ -193,7 +202,7 @@ package com.gestureworks.cml.elements
 			visible = false; 
 		}
 		
-		private function resetTimer(e:TouchEvent):void {
+		private function resetTimer(e:Event):void {
 			timer.reset();
 			timer.start();
 		}
