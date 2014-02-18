@@ -62,6 +62,7 @@ package com.gestureworks.cml.elements
 		private var _dimension:String;
 		private var _axis:String;	
 		private var _dragGesture:String = "n-drag-inertia";		
+		private var _flickGesture:String = "n-flick";		
 		private var snapPoints:Array;
 		private var albumMask:Graphic;
 		private var snapTween:TweenLite;
@@ -188,6 +189,17 @@ package com.gestureworks.cml.elements
 		{
 			_dragGesture = g;
 		}
+		
+		/**
+		 * Specifies the GML flick gesture (e.g. n-flick, etc.) to execute next a previous calls based
+		 * on flick direction.
+		 * @default n-flick
+		 */
+		public function get flickGesture():String { return _flickGesture; }
+		public function set flickGesture(g:String):void
+		{
+			_flickGesture = g;
+		}		
 		
 		/**
 		 * A flag instructing the album to continuously cycle through the objects opposed
@@ -362,6 +374,7 @@ package com.gestureworks.cml.elements
 						
 			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
 			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
+			belt.removeEventListener(GWGestureEvent.FLICK, flickMove);
 			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
@@ -386,11 +399,13 @@ package com.gestureworks.cml.elements
 			
 			var gList:Object = new Object();
 			gList[dragGesture] = true;
+			gList[flickGesture] = true;
 			belt.gestureList = gList;
 			
 			//add gesture events
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
+			belt.addEventListener(GWGestureEvent.FLICK, flickMove);
 			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);				
 			belt.addEventListener(GWTouchEvent.TOUCH_BEGIN, resetDrag);
 			
@@ -917,7 +932,11 @@ package com.gestureworks.cml.elements
 			released = true;
 			if (!snapping && (belt[axis] > snapPoints[0] || belt[axis] < snapPoints[snapPoints.length-1]))
 				snap();
-		}		
+		}	
+		
+		protected function flickMove(e:GWGestureEvent):void {
+			trace("flick",e.value.flick_dx, e.value.flick_dy);
+		}
 		
 		/**
 		 * Drag the belt horizontally within the boundaries. If boundaries are exceeded and the
@@ -1009,9 +1028,7 @@ package com.gestureworks.cml.elements
 			if (edge2 < boundary1)
 				headToTail();
 			if (edge3 > boundary2)
-				tailToHead();
-				
-			trace("head", loopQueue[0].getChildAt(0).id, edge1, edge2);					
+				tailToHead();			
 		}
 		
 		/**
