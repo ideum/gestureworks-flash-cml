@@ -76,7 +76,7 @@ package com.gestureworks.cml.elements
 		private var initLoopOrder:Array;	
 		private var _currentObject:*;
 		private var loopClones:Dictionary = new Dictionary();
-		private var tEnd:Boolean = false; //flag to differentiate between gwTouchEnd and gwTouchRollOut according to sequence
+		private var tEnd:Boolean = false; //flag to differentiate between gwTouchEnd and gwTouchRollOut according to sequence	
 				
 		/**
 		 * Constructor
@@ -667,27 +667,33 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Animates a snaping action to the point provided or the closest snap point to the current belt location. 
+		 * Animates a snapping action to the point provided or the closest snap point to the current belt location. 
 		 * @param  e  the drag complete event
 		 * @param  point  the point to snap to
+		 * @param  tween  enable/disable tween
 		 */
-		private function snap(e:*=null, point:Number=NaN):void
-		{	
-			if (snapTween && snapTween._active)
-				return;
-					
+		private function snap(e:*=null, point:Number=NaN, tween:Boolean=true):void
+		{				
 			if (isNaN(point))
-				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);				
-			
-			snapIndex = snapPoints.indexOf(point);
-			var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:dispatchCurrentObject };//horizontal ? { x:point } : { y:point };			
-			if (horizontal)
-				destination["x"] = point;
-			else
-				destination["y"] = point;
-			
-			snapTween = TweenLite.to(belt, .4, destination);
-			snapTween.play();
+				point = horizontal ? getClosestSnapPoint(belt.x) : getClosestSnapPoint(belt.y);					
+				
+			if(tween){
+				if (snapTween && snapTween._active)
+					return;		
+				
+				snapIndex = snapPoints.indexOf(point);
+				var destination:Object = { ease:Expo.easeOut, onUpdate:publishState, onComplete:dispatchCurrentObject };//horizontal ? { x:point } : { y:point };			
+				if (horizontal)
+					destination["x"] = point;
+				else
+					destination["y"] = point;
+				
+				snapTween = TweenLite.to(belt, .4, destination);
+				snapTween.play();
+			}
+			else {
+				belt.x = point;
+			}
 		}		
 		
 		/**
@@ -695,10 +701,11 @@ package com.gestureworks.cml.elements
 		 * necessary to align the closest child with the origin
 		 * @param	e  the drag complete event
 		 * @param   distance  the distance to move the belt
+		 * @param   tween   enable/disable tween
 		 */
-		private function loopSnap(e:*= null, distance:Number=0):void
+		private function loopSnap(e:*= null, distance:Number=0, tween:Boolean = true):void
 		{
-			if (loopSnapTween && loopSnapTween._active) return;			
+			if (tween && loopSnapTween && loopSnapTween._active) return;			
 			var childTweens:Array = new Array();
 			var minDiff:Number = Number.MAX_VALUE;
 			
@@ -717,18 +724,28 @@ package com.gestureworks.cml.elements
 						snapIndex = initLoopOrder.indexOf(child);
 					}				
 				}
-			}	
+			}
 
 			//generate a tween for each child
-			for each(child in loopQueue)
-			{
-				var destination:Object = horizontal ? { x:child.x + distance, ease:Expo.easeOut } : { y:child.y + distance, ease:Expo.easeOut };				
-				childTweens.push(TweenLite.to(child, .4, destination));
+			if(tween){
+				for each(child in loopQueue)
+				{
+					var destination:Object = horizontal ? { x:child.x + distance, ease:Expo.easeOut } : { y:child.y + distance, ease:Expo.easeOut };				
+					childTweens.push(TweenLite.to(child, .4, destination));
+				}
+								
+				loopSnapTween = new TimelineLite( { onComplete:loopSnapComplete, onUpdate:publishState } );
+				loopSnapTween.appendMultiple(childTweens);
+				loopSnapTween.play();					
 			}
-							
-			loopSnapTween = new TimelineLite( { onComplete:loopSnapComplete, onUpdate:publishState } );
-			loopSnapTween.appendMultiple(childTweens);
-			loopSnapTween.play();					
+			else {
+				for each(child in loopQueue) 
+				{
+					child[axis] += distance;
+					processLoop();
+				}
+				dispatchCurrentObject();
+			}
 		}
 		
 		/**
@@ -774,58 +791,75 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * Snap to the next item on the belt
+		 * @param tween  tween to next item
 		 */
-		public function next():void
+		public function next(tween:Boolean = true):void
 		{
 			if (loop)
 			{
 				if (loopSnapTween && loopSnapTween._active) return;
 				loopQueue[0][axis] = -1;
 				processLoop();
-				loopSnap(null, -(this[dimension] + snapOffset + space - 1));				
+				loopSnap(null, -(this[dimension] + snapOffset + space - 1), tween);	
+				snapIndex = snapIndex == loopQueue.length - 1 ? 0 : snapIndex + 1; 
 			}
 			else
 			{
 				if (index < snapPoints.length - 1) 
 					index++;			
-				snap(null, snapPoints[index]);
+				snap(null, snapPoints[index], tween);
 			}
 		}
 		
 		/**
 		 * Snap to the previous item on the belt
+		 * @param tween  tween to previous item
 		 */
-		public function previous():void
+		public function previous(tween:Boolean = true):void
 		{			
 			if (loop)
 			{		
 				if (loopSnapTween && loopSnapTween._active) return;
 				loopQueue[0][axis] = 1;
 				processLoop();
-				loopSnap(null, this[dimension] + snapOffset + space - 1)
+				loopSnap(null, this[dimension] + snapOffset + space - 1, tween)
+				snapIndex = snapIndex == 0 ? loopQueue.length - 1 : snapIndex - 1; 
 			}
 			else
 			{
 				if (index > 0)
 					index--;
-				snap(null, snapPoints[index]);
+				snap(null, snapPoints[index], tween);
 			}
 		}
 		
 		/**
 		 * Snap to a specific child index
-		 * @param	num
+		 * @param  num  child index
+		 * @param  enable/disable tween on snap
 		 */
-		public function snapTo(num:Number):void {
+		public function snapTo(num:Number, tween:Boolean=true):void {
 			if (loop && num >=0 && num < initLoopOrder.length) {
 				//var searchObj:* = initLoopOrder[num];
 				//var qIndex:int = loopQueue.indexOf(searchObj);
 				//var s1:Array = loopQueue.slice(0,qIndex);
 				//var s2:Array = loopQueue.slice(qIndex);
 				//_loopQueue = s2.concat(s1);
+				
+				//TODO: update to work with loop tween by triggering next/previous when prior tween has completed
+				var cnt:Number = Math.abs(num - snapIndex);
+				var nxt:Boolean = num > snapIndex;
+				for (var i:int = 0; i < cnt; i++){
+					if (nxt) {
+						next(false);
+					}
+					else {
+						previous(false);
+					}
+				}
 			}
 			else if(!loop && num >=0 && num < snapPoints.length) {
-				snap(null, snapPoints[num]);
+				snap(null, snapPoints[num], tween);
 			}
 		}
 
@@ -970,12 +1004,14 @@ package com.gestureworks.cml.elements
 			var edge2:Number = head[axis] + head[dimension];
 			var edge3:Number = edge1 + this[dimension];
 			
+			if (edge1 < boundary1)
+				queueNext();			
 			if (edge2 < boundary1)
 				headToTail();
-			if (edge1 < boundary1)
-				queueNext();
 			if (edge3 > boundary2)
 				tailToHead();
+				
+			trace("head", loopQueue[0].getChildAt(0).id, edge1, edge2);					
 		}
 		
 		/**
@@ -1036,7 +1072,7 @@ package com.gestureworks.cml.elements
 					//loopQueue.push(clone);
 				//}
 				if (!loopQueue[i].visible)
-				{
+				{					
 					loopQueue[i].visible = true;
 					loopQueue[i][axis] = loopQueue[i - 1][axis] + loopQueue[i-1][dimension] + space;
 					
