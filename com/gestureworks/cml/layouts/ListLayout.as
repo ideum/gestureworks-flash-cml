@@ -126,7 +126,7 @@ package com.gestureworks.cml.layouts
 			var yVal:Number = originY;
 			var matrix:Matrix;
 			var columnWidth:Number = getMaxWidth(container);
-			var rowHeight:Number = Math.max(getMaxHeight(container), container.height);
+			var rowHeight:Number =  Math.max(getMaxHeight(container), container.height);
 			var sumx:Number = centerColumn ? originX+(columnWidth / 2) : originX;
 			var index:int = 0;
 			
@@ -141,7 +141,7 @@ package com.gestureworks.cml.layouts
 				
 				xVal = useMargins ? sumx + index * (2 * marginX) : index * dx + originX;
 				xVal = centerColumn ? xVal - child.width/2 : xVal;         //adjust spacing for column centering
-				yVal = centerRow ? rowHeight/2 - child.height/2 + yVal: yVal;	   //adjust spacing for row centering
+				yVal = centerRow ? rowHeight/2 - child.height/2 : yVal;	   //adjust spacing for row centering
 				
 				matrix = child.transform.matrix;
 				translateTransform(matrix, xVal, yVal);
@@ -175,7 +175,7 @@ package com.gestureworks.cml.layouts
 							
 				yVal = useMargins ? sumy + index * (2 * marginY) : index * spacingY + originY;
 				yVal = centerRow ? yVal - child.height / 2 : yVal;                //adjust spacing for row centering
-				xVal = centerColumn ? columnWidth/2 - child.width/2 + xVal: xVal;		  //adjust spacing for column centering		
+				xVal = centerColumn ? columnWidth/2 - child.width/2 : xVal;		  //adjust spacing for column centering		
 				
 				matrix = child.transform.matrix;
 				translateTransform(matrix, xVal, yVal);
