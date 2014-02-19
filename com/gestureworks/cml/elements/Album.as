@@ -62,7 +62,7 @@ package com.gestureworks.cml.elements
 		private var _dimension:String;
 		private var _axis:String;	
 		private var _dragGesture:String = "n-drag-inertia";		
-		private var _flickGesture:String = "n-flick";		
+		private var _flickGesture:String;		
 		private var snapPoints:Array;
 		private var albumMask:Graphic;
 		private var snapTween:TweenLite;
@@ -104,7 +104,15 @@ package com.gestureworks.cml.elements
 			
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, inBounds);
 			addEventListener(GWTouchEvent.TOUCH_END, outOfBounds);
-			addEventListener(GWTouchEvent.TOUCH_ROLL_OVER, inBounds);							
+			addEventListener(GWTouchEvent.TOUCH_ROLL_OVER, inBounds);	
+			
+			if(flickGesture){
+				clusterBubbling = true;
+				var gList:Object = new Object();
+				gList[flickGesture] = true;
+				gestureList = gList;
+				addEventListener(GWGestureEvent.FLICK, flickSnap);
+			}
 			
 			if (snapOffset) {
 				if(loop)
@@ -374,7 +382,7 @@ package com.gestureworks.cml.elements
 						
 			belt.removeEventListener(GWGestureEvent.DRAG, scrollH);
 			belt.removeEventListener(GWGestureEvent.DRAG, scrollV);
-			belt.removeEventListener(GWGestureEvent.FLICK, flickMove);
+			belt.removeEventListener(GWGestureEvent.FLICK, flickSnap);
 			belt.removeEventListener(GWGestureEvent.RELEASE, onRelease);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, snap);
 			belt.removeEventListener(GWGestureEvent.COMPLETE, loopSnap);
@@ -399,13 +407,11 @@ package com.gestureworks.cml.elements
 			
 			var gList:Object = new Object();
 			gList[dragGesture] = true;
-			gList[flickGesture] = true;
 			belt.gestureList = gList;
 			
 			//add gesture events
 			var scrollType:Function = horizontal ? scrollH : scrollV;
 			belt.addEventListener(GWGestureEvent.DRAG, scrollType);
-			belt.addEventListener(GWGestureEvent.FLICK, flickMove);
 			belt.addEventListener(GWGestureEvent.RELEASE, onRelease);				
 			belt.addEventListener(GWTouchEvent.TOUCH_BEGIN, resetDrag);
 			
@@ -934,8 +940,18 @@ package com.gestureworks.cml.elements
 				snap();
 		}	
 		
-		protected function flickMove(e:GWGestureEvent):void {
-			trace("flick",e.value.flick_dx, e.value.flick_dy);
+		/**
+		 * Snap to next or previous depending on flick direction
+		 * @param	e
+		 */
+		protected function flickSnap(e:GWGestureEvent):void {
+			var val:Number = horizontal ? e.value.flick_dx : e.value.flick_dy;
+			if (val < 0) {
+				next();
+			}
+			else {
+				previous();
+			}
 		}
 		
 		/**
