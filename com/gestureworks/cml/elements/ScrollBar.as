@@ -705,6 +705,9 @@ package com.gestureworks.cml.elements
 		 * @param	newDimension
 		 */
 		public function resize(newDimension:Number):void {
+			if (!thumb) {
+				return;
+			}
 			if (_orientation == "vertical") {
 				contentHeight = newDimension;
 				thumb.width = width;
