@@ -10,6 +10,7 @@ package com.gestureworks.cml.elements
 	import com.greensock.TweenMax;
 	import flash.display.DisplayObject;
 	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 		
 	/**
 	 * The ScrollPane creates a masked viewing area of a display object and dynamically updates two scrollbars as that content is optionally dragged or scaled inside the viewing area.
@@ -347,17 +348,18 @@ package com.gestureworks.cml.elements
 				_mask.width = width;
 				_mask.height = height;
 			}
-			
+			var display:DisplayObject = _content as DisplayObject;
+			var rect:Rectangle = display.getBounds(display);
 			if (_verticalScroll) {
 				_verticalScroll.x = width + scrollMargin;
 				_verticalScroll.height = height;
-				_verticalScroll.resize(_content.height * _content.scaleY);
-				_verticalMovement = _content.height * _content.scaleY - height;
+				_verticalScroll.resize(rect.height * _content.scaleY);
+				_verticalMovement = rect.height * _content.scaleY - height;
 				_verticalScroll.thumbPosition = _content.y / _verticalMovement;
 				
-				if (_content.height * _content.scaleY > height) {
+				if (rect.height * _content.scaleY > height) {
 					if (!(contains(_verticalScroll))) addChild(_verticalScroll);
-				} else if (_content.height * _content.scaleY < height) {
+				} else if (rect.height * _content.scaleY < height) {
 					if (contains(_verticalScroll)) removeChild(_verticalScroll);
 				}
 			}
@@ -365,13 +367,13 @@ package com.gestureworks.cml.elements
 			if (_horizontalScroll) {
 				_horizontalScroll.y = height + scrollMargin;
 				_horizontalScroll.width = width;
-				_horizontalScroll.resize(_content.width * _content.scaleX);
-				_horizontalMovement = _content.width * _content.scaleX - width;
+				_horizontalScroll.resize(rect.width * _content.scaleX);
+				_horizontalMovement = rect.width * _content.scaleX - width;
 				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
 				
-				if (_content.width * _content.scaleX > width) {
+				if (rect.width * _content.scaleX > width) {
 					if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
-				} else if (_content.width * _content.scaleX < width) {
+				} else if (rect.height * _content.scaleX < width) {
 					if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
 				}
 			}
