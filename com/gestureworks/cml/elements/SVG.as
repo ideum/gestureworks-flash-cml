@@ -13,7 +13,7 @@ package com.gestureworks.cml.elements
 	
 	public class SVG extends TouchContainer {
 		
-		private var _svg:SVGDocument;
+		public var _svg:SVGDocument;
 		private var _stage:Stage;
 		
 		public function SVG(st:Stage = null) {
