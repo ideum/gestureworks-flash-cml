@@ -35,9 +35,7 @@ package com.gestureworks.cml.core
 		private static var paths:Dictionary;
 		private static var data:Array = [];
 		private static var fileCnt:int;
-		
-		private static var index:int = 0;
-		
+				
 		//public variables
 		public static const COMPLETE:String = "COMPLETE";
 		
