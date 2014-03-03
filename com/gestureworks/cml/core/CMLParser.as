@@ -36,7 +36,6 @@ package com.gestureworks.cml.core
 		private static var data:Array = [];
 		private static var fileCnt:int;
 		
-		private static var GXMLComponent:Class;
 		private static var currentParent:*;			
 		private static var index:int = 0;
 		
