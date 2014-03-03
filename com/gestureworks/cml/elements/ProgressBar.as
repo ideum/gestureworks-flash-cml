@@ -112,8 +112,10 @@ package com.gestureworks.cml.elements
 			{
 				bar = rail.clone();
 				bar.color = barColor;				
-				addChildAt(bar, getChildIndex(hit));
-			}
+			}			
+				
+			isHorizontal() ? bar.scaleX = 0 : bar.scaleY = 0;			
+			addChildAt(bar, getChildIndex(hit));			
 		}
 		
 		/**

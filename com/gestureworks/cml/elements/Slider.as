@@ -99,6 +99,15 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
+		private var _railLineColor:uint = 0x333333;
+		/**
+		 * Color of default rail line
+		 */
+		public function get railLineColor():uint { return _railLineColor; }
+		public function set railLineColor(c:uint):void {
+			_railLineColor = c;
+		}
+		
 		private var _railColor:uint = 0x000000;
 		/**
 		 * Color of default rail
@@ -351,7 +360,7 @@ package com.gestureworks.cml.elements
 				railGraphic.lineStroke = 1;
 				railGraphic.color = railColor;
 				railGraphic.alpha = railAlpha;
-				railGraphic.lineColor = 0x333333;
+				railGraphic.lineColor = railLineColor;
 				addChild(railGraphic);
 				rail = DisplayObject(railGraphic);
 			}
