@@ -66,12 +66,6 @@ package com.gestureworks.cml.elements
 				_bar = searchChildren(b);
 				_bar = CMLObjectList.instance.getId(b);
 			}
-			
-			if (_bar)		
-			{
-				_bar.width = isHorizontal() ? 0 : width;
-				_bar.height = isHorizontal() ? height: 0;
-			}
 		}
 		
 		/**
@@ -179,9 +173,9 @@ package com.gestureworks.cml.elements
 			else 
 			{
 				if(isHorizontal())
-					bar.width = width * val;
+					bar.scaleX = val;
 				else
-					bar.height = height * val;
+					bar.scaleY = val;
 			}
 		}
 		
