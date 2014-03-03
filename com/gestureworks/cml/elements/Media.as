@@ -55,7 +55,7 @@ package com.gestureworks.cml.elements
 			{
 				dictionary[file] = new Image;
 				dictionary[file].src = src;
-				
+				dictionary[file].resample = _resample;
 				
 				if ( FileManager.media.getContent(file) ) {
 					dictionary[file].addEventListener(Event.COMPLETE, onComplete);					
@@ -75,6 +75,7 @@ package com.gestureworks.cml.elements
 			{	
 				dictionary[file] = new Video;
 				dictionary[file].src = src;
+				dictionary[file].resample = _resample;
 				//dictionary[file].open();
 				dictionary[file].addEventListener(Event.COMPLETE, onComplete);	
 				if (playButton) dictionary[file].addChild(playButton);
@@ -256,6 +257,7 @@ package com.gestureworks.cml.elements
 			{
 				dictionary[file] = new Image;
 				dictionary[file].src = src;
+				dictionary[file].resample = _resample;
 				dictionary[file].bitmapDataCache = false;
 				dictionary[file].addEventListener(StateEvent.CHANGE, function(e:StateEvent):void { dispatchEvent(e);});
 				
@@ -276,7 +278,9 @@ package com.gestureworks.cml.elements
 			else if (file.search(videoTypes) >= 0)
 			{	
 				dictionary[file] = new Video;
-				dictionary[file].src = src;				
+				dictionary[file].src = src;
+				dictionary[file].resample = _resample;
+				
 				dictionary[file].width = width;				
 				dictionary[file].height = height;				
 				//dictionary[file].open();
@@ -295,8 +299,7 @@ package com.gestureworks.cml.elements
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "loadError"));				
 				return;
 			}
-				
-				
+			
 			if (dictionary[file].hasOwnProperty("width") && _width != 0)	dictionary[file].width = _width;
 			if (dictionary[file].hasOwnProperty("height") && _height != 0)	dictionary[file].height = _height;
 			if (dictionary[file].hasOwnProperty("loop"))					dictionary[file].loop = loop;
