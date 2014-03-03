@@ -21,7 +21,7 @@ package com.gestureworks.cml.core
 	 *
 	 *
 	 * @author Ideum
-	 * @see com.gestureworks.cml.core.CMLRegistry
+	 * @see com.gestureworks.cml.core.CMLCore
 	 */	 
 	public class CMLAir{ }
 
