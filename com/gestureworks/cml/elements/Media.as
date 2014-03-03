@@ -114,8 +114,20 @@ package com.gestureworks.cml.elements
 		 */
 		override public function dispose():void
 		{
-			super.dispose();
-			dictionary = null;
+						
+			for (var i:* in dictionary)
+            {
+				if (dictionary[i].hasOwnProperty("close"))				
+					dictionary[i].close();
+				if (dictionary[i].hasOwnProperty('dispose')) {
+					dictionary[i].dispose();
+				}
+				if (this.contains(dictionary[i]))
+					removeChild(dictionary[i]);
+				dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
+				dictionary[i] = null;
+				delete dictionary[i];
+			}
 			imageTypes = null;
 			videoTypes = null;
 			mp3Types = null;
@@ -123,19 +135,8 @@ package com.gestureworks.cml.elements
 			playButton = null;
 			progressBar = null;
 			_current = null;
-						
-			for each (var i:Object in dictionary)
-            {
-				if (dictionary[i].hasOwnProperty("close"))				
-					dictionary[i].close();
-				if (this.contains(dictionary[i]))
-					removeChild(dictionary[i]);
-				dictionary[i].removeEventListener(Event.COMPLETE, onComplete);	
-				dictionary[i] = null;
-				delete dictionary[i];
-			}
-			
 			dictionary = null;
+			super.dispose();
 		}
 		
 		private var _width:Number=0;

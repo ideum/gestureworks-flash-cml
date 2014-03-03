@@ -299,9 +299,9 @@ package com.gestureworks.cml.elements
 				netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				netStream.close();
-
-				if (netStream.hasOwnProperty("dispose"))
+				if (netStream.hasOwnProperty("dispose")) {
 					netStream['dispose'](); // only works in fp 11+	
+				}
 				
 				netStream = null;
 			}
@@ -614,34 +614,43 @@ package com.gestureworks.cml.elements
 		 */
 		override public function dispose():void
 		{
-			super.dispose();
+			if (positionTimer) {
+				positionTimer.stop();
+				positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
+				positionTimer = null;
+			}
 			
-			positionTimer.stop();
-			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
-			positionTimer = null;
+			if (progressTimer) {
+				progressTimer.stop();
+				progressTimer = null;
+			}
 			
-			progressTimer.stop();
-			progressTimer = null;
+			if (video) {
+				video.attachNetStream(null);
+			}
 			
-			video.attachNetStream(null);
+			if (netConnection) {
+				netConnection.close();
+				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+				netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+				netConnection = null;
+			}
 			
-			netConnection.close();
-			netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			netConnection = null;
+			if (netStream) {
+				netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+				netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+				netStream.dispose();
+				netStream = null;
+			}
 			
-			netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			netStream.dispose();
-			netStream = null;
 			
 			video = null;
 			videoObject = null;
 			customClient = null;			
 			playButton = null;
 			_progressBar = null;
-			
+			super.dispose();
 		}
 
 	}
