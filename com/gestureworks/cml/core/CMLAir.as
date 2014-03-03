@@ -29,4 +29,5 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.components.WAVPlayer; WAVPlayer;
 	import com.gestureworks.cml.elements.HTML; HTML;
 	import com.gestureworks.cml.components.HTMLViewer; HTMLViewer;
+	import com.gestureworks.cml.elements.Window; Window;
 }

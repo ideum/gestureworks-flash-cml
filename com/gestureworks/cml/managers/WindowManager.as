@@ -1,41 +1,35 @@
 package com.gestureworks.cml.managers
 {
-	import com.gestureworks.cml.element.SystemWindow;
+	import com.gestureworks.cml.elements.Window;
 	import com.gestureworks.cml.utils.DefaultStage;
-	import com.gestureworks.utils.List;
-	import com.gestureworks.utils.Map;
-	
+	import com.gestureworks.cml.utils.LinkedMap;
+	import com.gestureworks.cml.utils.List;
 	import flash.display.DisplayObject;
 	import flash.display.NativeWindowInitOptions;
-	import flash.display.NativeWindowRenderMode;
-	import flash.display.NativeWindowResize;
 	import flash.display.NativeWindowSystemChrome;
 	import flash.display.NativeWindowType;
 	import flash.display.Shape;
-	import flash.display.Stage;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
+	
 	
 	/**
 	 * Window Manager, Singleton
 	 * Creates and manages system windows
-	 * @author Charles Veasey 
+	 * @author Ideum
 	 */	
-	
 	public class WindowManager
 	{		
-		private var windows:Map;
+		private var windows:LinkedMap;
 		private var displays:List;
 		private var background:Shape;		
 		public var nativeWindowInitOptions:NativeWindowInitOptions;
 		
-		public function WindowManager(enforcer:SingletonEnforcer)
+		public function WindowManager()
 		{
-			windows = new Map;
+			windows = new LinkedMap;
 			displays = new List;
 			nativeWindowInitOptions = new NativeWindowInitOptions;
 			nativeWindowInitOptions.maximizable = true;
@@ -71,7 +65,7 @@ package com.gestureworks.cml.managers
 		 */		
 		public function createWindow(windowId:String):void
 		{
-			var window:SystemWindow = new SystemWindow(nativeWindowInitOptions);			
+			var window:Window = new Window(nativeWindowInitOptions);			
 			window.stage.scaleMode = StageScaleMode.NO_SCALE;
 			window.stage.align = StageAlign.TOP_LEFT;
 			window.bounds = new Rectangle(0, 0, 500, 400);
