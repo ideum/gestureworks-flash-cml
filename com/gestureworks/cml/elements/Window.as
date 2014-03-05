@@ -1,88 +1,113 @@
 package com.gestureworks.cml.elements
 {		
-	import com.gestureworks.cml.managers.WindowManager;
+	import com.gestureworks.cml.core.CMLObject;
+	import com.gestureworks.cml.core.CMLParser;
+	import com.gestureworks.cml.utils.DefaultStage;
+	import flash.display.DisplayObject;
 	import flash.display.NativeWindow;
 	import flash.display.NativeWindowInitOptions;
-	import flash.display.Shape;
-	import flash.display.Stage;
-	import flash.display.StageDisplayState;
-	import flash.events.Event;
+	import flash.display.Screen;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 
 	/**
-	 * Operating system window, CML wrapper for AS3's NativeWindow class. 
+	 * Operating system window, CML proxy for AS3's NativeWindow class. 
 	 * @author Ideum
-	 */	
-	public class Window extends NativeWindow
+	 */
+	public class Window extends CMLObject
 	{
-		private var _id:String;
-		private var _backgroundColor:int;
-		private var background:Shape;
-			
-		public function Window(initOptions:NativeWindowInitOptions)
-		{
-			super(initOptions);
+		private var _screen:int;
+		private var _nativeWindow:NativeWindow;
+		private var _name:String;
+		private var isDefault:Boolean = false;
+		private var initOptions:NativeWindowInitOptions;
+		
+		public function Window(initOptions:NativeWindowInitOptions=null) {
+			if (initOptions) {
+				this.initOptions = initOptions;
+			}
 		}
 		
-		public function parseCML(cml:XMLList):void
-		{						
-			var window:Object;
-
-			for each (var node:* in cml.*)
-			{
-				if (node.@id != "default")
-					WindowManager.instance.createWindow(node.@id);
-				
-				window = WindowManager.instance.getWindowKey(node.@id);
-								
-				for each (var attr:* in node.@*)
-				{
-					if (attr.name() == "screen") 
-						ScreenManager.instance.addWindow(window, attr);					
-					else if (attr.name() == "fullscreen" && attr == "true")
-						window.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
-					else if (attr.name() == "backgroundColor")
-						WindowManager.instance.setBackgroundColor(node.@id, attr);
-					else if (attr.name() == "ref")
-					{
-						if (DisplayList.object[attr.toString()])
-							WindowManager.instance.appendDisplay(DisplayList.object[attr.toString()], node.@id);						
-					}
-					else if (window.hasOwnProperty(attr.name().toString()))
-						window[attr.name().toString()] = attr;						
+		/**
+		 * @inheritDoc
+		 */
+		override public function updateProperties(key:* = 0):void {
+			if ( state[key]["isDefault"] && state[key]["isDefault"] == "true" ) {
+				isDefault = true;
+				nativeWindow = DefaultStage.instance.stage.nativeWindow;
+			}
+			else {
+				if (!initOptions) {
+					initOptions = new NativeWindowInitOptions();
+					CMLParser.updateProperties(initOptions, key, state);
 				}
-								
-				if (node.@id != "default")
-					WindowManager.instance.activateWindow(node.@id);
+				nativeWindow = new NativeWindow(initOptions);
+				nativeWindow.activate();
+				
+				// default stage properties
+				nativeWindow.stage.scaleMode = StageScaleMode.NO_SCALE;
+				nativeWindow.stage.align = StageAlign.TOP_LEFT;		
 			}
-		}			
-		
-		public function get id():String {return _id;}
-		public function set id(value:String):void 
-		{ 
-			_id = value; 
+			CMLParser.updateProperties(nativeWindow, key, state);
+			CMLParser.updateProperties(this, key, state);
 		}
 		
-		public function get backgroundColor():int {return _backgroundColor;}
-		public function set backgroundColor(value:int):void 
-		{
-			_backgroundColor = value; 
-			
-			if (background == null)
-			{
-				background = new Shape;
-				this.stage.addChildAt(background, 0);
-				this.stage.addEventListener(Event.RESIZE, onResize);
+		/**
+		 * @inheritDoc
+		 */
+		override public function init():void {
+			var item:*;					
+			if (isDefault) {
+				for each (item in childList) {
+					if (item is DisplayObject) {
+						CMLParser.cmlDisplay.addChild(item);					
+					}
+				}
 			}
-			background.graphics.clear();			
-			background.graphics.beginFill(_backgroundColor, 1);
-			background.graphics.drawRect(0, 0, this.width, this.height);
-			background.graphics.endFill();			
+			else {
+				for each (item in childList) {
+					if (item is DisplayObject) {
+						nativeWindow.stage.addChild(item);					
+					}
+				}
+			}
+		}	
+		
+		//////////////////////////////////////////////////////////////
+		// WINDOW
+		//////////////////////////////////////////////////////////////	
+		
+		/**
+		 * Sets screen index. This will set the x, y position based on the screen 
+		 * position as determined by the operating system.
+		 */
+		public function get screen():int {
+			return _screen;
+		}
+		public function set screen(value:int):void {
+			nativeWindow.x = Screen.screens[value].bounds.left;			
+			nativeWindow.y = Screen.screens[value].bounds.top;		
+			_screen = value;
 		}
 		
-		private function onResize(event:Event):void
-		{
-			background.width = this.width;
-			background.height = this.height;
+		/**
+		 * Reference to the AS3 NativeWindow object that this represents.
+		 */
+		public function get nativeWindow():NativeWindow {
+			return _nativeWindow;
+		}
+		public function set nativeWindow(value:NativeWindow):void {
+			_nativeWindow = value;
+		}
+		
+		/**
+		 * Associates a name with this object.
+		 */
+		public function get name():String {
+			return _name;
+		}
+		public function set name(value:String):void {
+			_name = value;
 		}
 		
 	}

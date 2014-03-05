@@ -69,6 +69,13 @@ package com.gestureworks.cml.core
 		{
 			if (debug) trace('\n========================== CML Parser Initialized ===============================\n');				
 			
+			if (CONFIG::air) {
+				if (debug) {
+					trace("AIR platform detected");
+					CMLAir; // make reference to AIR-exclusive CML classes
+				}
+			}
+			
 			FileManager.init();
 			
 			// required for TLF
@@ -140,8 +147,8 @@ package com.gestureworks.cml.core
 		{
 			var tag:String;
 			var i:int;
-			var j:int;
-		
+			var j:int;			
+			
 			for (i = 0; i < cml.length(); i++) {
 				tag = cml[i].name();
 				
@@ -176,8 +183,7 @@ package com.gestureworks.cml.core
 				
 				if (cml[i].*.length() > 0)
 					preprocessLoop(cml[i].*);
-			}
-			
+			}			
 		}							
 		
 		
@@ -333,7 +339,7 @@ package com.gestureworks.cml.core
 			if (cml.parent().name() != "LayoutKit") return; 
 			
 			LayoutKit.instance.parseCML(XMLList(cml)); 
-			if (debug) trace("0:  Layout found: " + cml.@ref);	// deprecate classRef								
+			if (debug) trace("0:  Layout found: " + cml.@ref);							
 		}	
 		
 		private static function ppMedia(cml:XML, str:String=""):void 
@@ -385,7 +391,7 @@ package com.gestureworks.cml.core
 		
 		
 		// ************************************************** //		
-		// ***************** processing stages ***************** //
+		// ***************** processing stages ************** //
 		// ************************************************** //		
 		
 		
@@ -956,18 +962,33 @@ package com.gestureworks.cml.core
 		/**
 		 * Default updateProperties routine
 		 * @param	obj
-		 * @param	state
+		 * @param	stateKey
+		 * @param	stateObj
 		 */
-		public static function updateProperties(obj:*, state:*=0):void
+		public static function updateProperties(obj:*, stateKey:*=0, stateObj:*=null ):void
 		{
 			var propertyValue:String;
 			var objType:String;
 			
 			var newValue:*;
 			var isExpression:Boolean;
+			var state:*;
 			
-			for (var propertyName:String in obj.state[state]) {				
-				newValue = obj.state[state][propertyName];
+			if (stateObj) {
+				state = stateObj;
+			}
+			else if ("state" in obj) {
+				state = obj.state;
+			}
+			else {
+				if (debug) {
+					trace("state object not found for:", obj);
+				}
+				return;
+			}
+						
+			for (var propertyName:String in state[stateKey]) {	
+				newValue = state[stateKey][propertyName];
 					
 				if (newValue == "true")
 					newValue = true;
@@ -991,11 +1012,12 @@ package com.gestureworks.cml.core
 				isExpression = obj is Key && (propertyName == "text" || propertyName == "shiftText") ? false : String(newValue).charAt(0) == "{"; 
 				
 				if (!isExpression) {
-					
 					if (propertyName in obj) {
-						obj[propertyName] = newValue;
+						try {
+							obj[propertyName] = newValue;
+						}
+						catch(error:Error){}
 					}
-					
 					if ("vto" in obj) {
 						if (obj.vto &&  propertyName in obj.vto) {
 							obj.vto[propertyName] = newValue;
