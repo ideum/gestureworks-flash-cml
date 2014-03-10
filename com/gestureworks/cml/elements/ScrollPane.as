@@ -379,13 +379,21 @@ package com.gestureworks.cml.elements
 			}
 			
 			if ( _horizontalScroll || _verticalScroll) {
-				if (contains(_horizontalScroll) || contains(_verticalScroll)) {
-					addEventListener(GWGestureEvent.DRAG, onDrag);
-					content.addEventListener(GWGestureEvent.DRAG, onDrag);
-				}
-				else {
-					removeEventListener(GWGestureEvent.DRAG, onDrag);
-				}
+				enableScroll = contains(_horizontalScroll) || contains(_verticalScroll)
+			}
+		}
+		
+		/**
+		 * Drag event registration
+		 */
+		public function set enableScroll(value:Boolean):void {
+			if (value) {
+				addEventListener(GWGestureEvent.DRAG, onDrag);
+				content.addEventListener(GWGestureEvent.DRAG, onDrag);
+			}
+			else {
+				removeEventListener(GWGestureEvent.DRAG, onDrag);
+				content.removeEventListener(GWGestureEvent.DRAG, onDrag);
 			}
 		}
 		
