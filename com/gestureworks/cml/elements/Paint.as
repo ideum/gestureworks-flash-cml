@@ -27,7 +27,7 @@ package com.gestureworks.cml.elements
 		private var lineColor:Array;
 		private var history:Array;
 		private var _color:uint 	= 0xff00cc;
-		private var lastColor:uint 		= 0xff00cc;
+		private var lastColor:uint 	= 0xff00cc;
 		private var image:Bitmap;
 		private var fileR:FileReference;
 				
@@ -231,6 +231,13 @@ package com.gestureworks.cml.elements
 			}
 			lines = tmpLines;
 			redraw();
+			
+			//filter empty or 1 point lines
+			for (var i:Number = lines.length-1; i >= 0; i--) {
+				if (lines[i].length <= 1) {
+					lines.splice(i, 1);
+				}
+			}
 		}
 		
 		private function subset(points:Array, start:Number, end:Number):Array {
@@ -238,7 +245,10 @@ package com.gestureworks.cml.elements
 			for (var i:Number = start; i < end && i < points.length ; i++ ) {
 				ret.push(points[i]);
 			}
-			return ret;
+			if (ret.length <= 2)
+				return [];
+			else
+				return ret;
 		}
 		
 		private function prependZero(n:Number):String {
