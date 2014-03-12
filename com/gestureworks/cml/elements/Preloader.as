@@ -1,7 +1,7 @@
-package com.gestureworks.cml.element 
+package com.gestureworks.cml.elements 
 {
 	import com.gestureworks.cml.core.CMLParser;
-	import com.gestureworks.cml.element.*;
+	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.FileEvent;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.managers.FileManager;

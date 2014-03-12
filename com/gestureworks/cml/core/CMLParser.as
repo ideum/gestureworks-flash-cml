@@ -69,13 +69,6 @@ package com.gestureworks.cml.core
 		{
 			if (debug) trace('\n========================== CML Parser Initialized ===============================\n');				
 			
-			if (CONFIG::air) {
-				if (debug) {
-					trace("AIR platform detected");
-					CMLAir; // make reference to AIR-exclusive CML classes
-				}
-			}
-			
 			FileManager.init();
 			
 			// required for TLF

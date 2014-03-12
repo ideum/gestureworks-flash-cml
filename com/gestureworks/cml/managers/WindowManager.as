@@ -30,7 +30,7 @@ package com.gestureworks.cml.managers
 		 * @param windowId
 		 */		
 		public function registerWindow(window:Window):void {
-			windows.push(append);
+			windows.push(window);
 		}	
 	}
 }
