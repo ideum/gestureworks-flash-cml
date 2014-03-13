@@ -103,7 +103,7 @@
 		/**
 		 * Sets the src xml file
 		 */		
-		public function get src():String{return _srcXML;}
+		public function get src():String{return _src;}
 		public function set src(value:String):void
 		{			
 			_src = value;
@@ -178,17 +178,13 @@
 		 */
 		override public function init():void
 		{ 
-						while (this.numChildren > 0) {
+			while (this.numChildren > 0) {
 				if (this.getChildAt(0) is Hotspot) {
 					_hotspots.push(this.getChildAt(0));
 				}
 				removeChildAt(0);
 			}
-			
-			/*if (image)
-				image.dispose();*/
-			
-			
+
 			image = new MultiScaleImage();
 			image.mouseChildren = true;
 			if (!image.hasEventListener(Event.COMPLETE))
