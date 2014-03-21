@@ -308,7 +308,8 @@ package com.gestureworks.cml.managers
 				attrCopy = copyAttributes(attr);
 				if (!lookUp[stateId])
 					lookUp[stateId] = new Array();
-				lookUp[stateId].push(object);
+				if(lookUp[stateId].indexOf(object) == -1)
+					lookUp[stateId].push(object);
 				
 				attrCopy["stateId"] = stateId;
 				
