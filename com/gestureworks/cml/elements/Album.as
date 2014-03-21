@@ -363,8 +363,10 @@ package com.gestureworks.cml.elements
 		public function clear():void
 		{
 			while (belt.numChildren > 0) {
-				while(DisplayObjectContainer(belt.getChildAt(0)).numChildren > 0){
-					DisplayObjectContainer(belt.getChildAt(0)).removeChildAt(0);
+				if(loop){
+					while(DisplayObjectContainer(belt.getChildAt(0)).numChildren > 0){
+						DisplayObjectContainer(belt.getChildAt(0)).removeChildAt(0);
+					}
 				}
 				belt.removeChildAt(0);
 			}
@@ -560,8 +562,9 @@ package com.gestureworks.cml.elements
 			belt.layout.type = horizontal ? "horizontal" : "vertical";	
 			belt.layout.centerColumn = centerContent;			
 			belt.layout.centerRow = centerContent;	
+			belt.layout.continuousTransform = false; 
 			applyLoopLayout();
-			belt.applyLayout();
+			belt.applyLayout();			
 		}
 		
 		/**
