@@ -215,6 +215,12 @@ package com.gestureworks.cml.elements
 			_titleFill = value;
 		}
 		
+		protected var _titleFillAlpha:Number = 1;
+		public function get titleFillAlpha():Number { return _titleFillAlpha; }
+		public function set titleFillAlpha(value:Number):void {
+			_titleFillAlpha = value;
+		}		
+		
 		protected var _titleStroke:Number = 0;
 		public function get titleStroke():Number { return _titleStroke; }
 		public function set titleStroke(value:Number):void {
@@ -320,6 +326,12 @@ package com.gestureworks.cml.elements
 		public function get itemFill():uint { return _itemFill; }
 		public function set itemFill(value:uint):void {
 			_itemFill = value;
+		}
+		
+		protected var _itemFillAlpha:Number = 1;
+		public function get itemFillAlpha():Number { return _itemFillAlpha; }
+		public function set itemFillAlpha(value:Number):void {
+			_itemFillAlpha = value;
 		}
 		
 		protected var _itemStroke:Number = 0;
@@ -585,7 +597,7 @@ package com.gestureworks.cml.elements
 			}
 			// solid fill
 			else {
-				_title.graphics.beginFill(_titleFill);
+				_title.graphics.beginFill(_titleFill, _titleFillAlpha);
 			}
 			
 			_title.graphics.lineStyle(_titleStroke, _titleStrokeColor);
@@ -650,7 +662,7 @@ package com.gestureworks.cml.elements
 			}
 			// solid fill
 			else {
-				_item.graphics.beginFill(_itemFill);
+				_item.graphics.beginFill(_itemFill, itemFillAlpha);
 				_selected.graphics.beginFill(_selectedFill);
 			}
 			
