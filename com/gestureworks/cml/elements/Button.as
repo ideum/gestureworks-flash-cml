@@ -8,6 +8,7 @@ package com.gestureworks.cml.elements
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import org.tuio.TuioTouchEvent;
 	
@@ -74,6 +75,7 @@ package com.gestureworks.cml.elements
 		private var dispatchDict:Dictionary;
 		private var buttonId:int = 0;
 		private var _hideOnToggle:Boolean = true;
+		private var _bitmapHitTest:Boolean = false; 
 		
 		/**
 		 * Contructor
@@ -737,6 +739,26 @@ package com.gestureworks.cml.elements
 			_hideOnToggle = value;
 		}
 		
+		/**
+		 * If hit is an Image, this flag indicates the a bitmap hit test instead of bounding box
+		 */
+		public function get bitmapHitTest():Boolean { return _bitmapHitTest; }
+		public function set bitmapHitTest(value:Boolean):void {
+			_bitmapHitTest = value;
+		}
+		
+		/**
+		 * Performs bitmap hit test if hit is Image and bitmapHitTest is enabled
+		 * @param	event
+		 * @return
+		 */
+		private function bitmapHit(event:*):Boolean {
+			if (hit is Image && bitmapHitTest) {
+				return Image(hit).bitmapData.hitTest(new Point(0, 0), 0xFF, Image(hit).globalToLocal(new Point(event.stageX, event.stageY)));
+			}
+			return true;
+		}
+		
 		////////////////////////////////////////////////////
 		/// MOUSE EVENT HANDLERS
 		///////////////////////////////////////////////////			
@@ -750,6 +772,9 @@ package com.gestureworks.cml.elements
 		{
 			if (debug)
 				trace("mouseDown");
+				
+			if (!bitmapHit(event))
+				return; 				
 			
 			listenMouseDown(false);
 			for each (var state:*in buttonStates)
@@ -951,6 +976,9 @@ package com.gestureworks.cml.elements
 		{
 			if (debug)
 				trace("touchDown");
+				
+			if (!bitmapHit(event))
+				return; 				
 			
 			listenTouchDown(false);
 			for each (var state:*in buttonStates)
@@ -1144,6 +1172,9 @@ package com.gestureworks.cml.elements
 		{
 			if (debug)
 				trace("down");
+				
+			if (!bitmapHit(event))
+				return; 
 			
 			listenDown(false);
 			for each (var state:*in buttonStates)
