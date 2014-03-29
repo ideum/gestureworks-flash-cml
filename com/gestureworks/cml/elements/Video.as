@@ -36,7 +36,7 @@ package com.gestureworks.cml.elements
 		private var sizeLoaded:Boolean = false;
 		private var playButton:Button;
 		private var unmuteVolume:Number = 1;
-		
+		private var _resample:Boolean;
 		/**
 		 * Constructor
 		 */
@@ -241,6 +241,14 @@ package com.gestureworks.cml.elements
 				unmuteVolume = volume;
 			volume = _mute ? 0 : unmuteVolume;								
 		}		
+		
+		public function get resample():Boolean {
+			return _resample;
+		}
+		
+		public function set resample(value:Boolean):void {
+			_resample = value;
+		}
    		
 		/**
 		 * Flag central alignment of the play button
@@ -268,6 +276,37 @@ package com.gestureworks.cml.elements
 		
 		/// PUBLIC METHODS ///
 		
+		public function resize():void {
+			if (video.videoWidth != 0 && video.videoHeight != 0) {
+				fitContent(video.videoWidth, video.videoHeight);
+			} else {
+				fitContent(_width, _height);
+			}
+		}
+		
+		public function fitContent(aspectWidth:Number, aspectHeight:Number):void {
+			if (_resample) {
+				if ((width != 0 && height != 0) && (aspectWidth != 0 && aspectHeight != 0)) {
+					var relLength:Number = 0;
+					if (aspectHeight > aspectWidth) {
+						relLength = aspectWidth / aspectHeight;
+						video.height = _height;
+						video.width = _height * relLength;
+					} else {
+						relLength = aspectHeight / aspectWidth;
+						video.width = _width;
+						video.height = _width * relLength;
+					}
+					video.x = (_width - video.width) / 2;
+					video.y = (_height - video.height) / 2;
+				} else {
+					trace('not enough info to fit content...');
+				}
+			} else {
+				video.width = _width;
+				video.height = _height;
+			}
+		}
 		
 		/**
 		 * Sets the src property and loads the video
@@ -299,9 +338,9 @@ package com.gestureworks.cml.elements
 				netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				netStream.close();
-
-				if (netStream.hasOwnProperty("dispose"))
+				if (netStream.hasOwnProperty("dispose")) {
 					netStream['dispose'](); // only works in fp 11+	
+				}
 				
 				netStream = null;
 			}
@@ -486,10 +525,13 @@ package com.gestureworks.cml.elements
 				video.width = _width;
 			else if (!width)
 				width = video.width;
+			
 			if (height > 0)
 				video.height = _height;
 			else if (!height)
 				height = video.height;
+			
+			resize();
 				
 			addChild(video);						
 			play();
@@ -508,11 +550,10 @@ package com.gestureworks.cml.elements
 				}	
 			}
 			
-
+		
 			if (meta.width != null && meta.height != null && !sizeLoaded)
 			{
-				
-				if (width > 0)
+				/*if (width > 0)
 					video.width = width;
 				else
 					video.width = meta.width;
@@ -520,7 +561,9 @@ package com.gestureworks.cml.elements
 				if (height > 0)
 					video.height = height;
 				else
-					video.height = meta.height;
+					video.height = meta.height;*/
+					
+				fitContent(meta.width, meta.height);
 											
 				if (debug) {
 					trace("video width: " + meta.width);
@@ -614,34 +657,43 @@ package com.gestureworks.cml.elements
 		 */
 		override public function dispose():void
 		{
-			super.dispose();
+			if (positionTimer) {
+				positionTimer.stop();
+				positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
+				positionTimer = null;
+			}
 			
-			positionTimer.stop();
-			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
-			positionTimer = null;
+			if (progressTimer) {
+				progressTimer.stop();
+				progressTimer = null;
+			}
 			
-			progressTimer.stop();
-			progressTimer = null;
+			if (video) {
+				video.attachNetStream(null);
+			}
 			
-			video.attachNetStream(null);
+			if (netConnection) {
+				netConnection.close();
+				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+				netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+				netConnection = null;
+			}
 			
-			netConnection.close();
-			netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			netConnection = null;
+			if (netStream) {
+				netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+				netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+				netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+				netStream.dispose();
+				netStream = null;
+			}
 			
-			netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			netStream.dispose();
-			netStream = null;
 			
 			video = null;
 			videoObject = null;
 			customClient = null;			
 			playButton = null;
 			_progressBar = null;
-			
+			super.dispose();
 		}
 
 	}

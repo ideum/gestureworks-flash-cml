@@ -651,26 +651,6 @@ package com.gestureworks.cml.elements
 			}
 		}	
 		
-		private var _layoutComplete:Function;		
-		/**
-		 * Sets the function to call when the layout is complete
-		 */
-		public function get layoutComplete():Function { return _layoutComplete; }
-		public function set layoutComplete(f:Function):void
-		{
-			_layoutComplete = f;
-		}				
-		
-		private var _layoutUpdate:Function;		
-		/**
-		 * Sets the function to call when the layout updates
-		 */
-		public function get layoutUpdate():Function { return _layoutUpdate; }
-		public function set layoutUpdate(f:Function):void
-		{
-			_layoutUpdate = f;
-		}	
-		
 		private var _cloneExclusions:Vector.<String> = new <String>
 			["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
 			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
@@ -906,27 +886,19 @@ package com.gestureworks.cml.elements
 		{			
 			if (!value && layout is ILayout)
 			{
-				layout.onComplete = layoutComplete;
-				layout.onUpdate = layoutUpdate;
 				ILayout(layout).layout(this);
 			}
 			else if (!value) {
-				layoutList[String(layout)].onComplete = layoutComplete;								
-				layoutList[String(layout)].onUpdate = layoutUpdate;
 				layoutList[String(layout)].layout(this);
 			}
 			else {
 				layout = value;					
 				if (value is ILayout)
 				{
-					value.onComplete = layoutComplete;
-					value.onUpdate = layoutUpdate;;
 					value.layout(this);
 				}
 				else
 				{
-					layoutList[value].onComplete = layoutComplete;
-					layoutList[value].onUpdate = layoutUpdate;
 					layoutList[value].layout(this);
 				}
 			}
@@ -967,7 +939,7 @@ package com.gestureworks.cml.elements
 			
 			if (childList.search(child) == -1) {
 				
-				if (child.hasOwnProperty("id") && String(child["id"]).length > 0)
+				if (child.hasOwnProperty("id") && child["id"] && String(child["id"]).length > 0)
 					childToList(child["id"], child);
 				else
 					childToList(child.name, child);

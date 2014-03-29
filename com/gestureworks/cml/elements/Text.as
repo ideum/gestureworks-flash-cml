@@ -1002,7 +1002,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function get leading():Object { return textFormat.leading; }
 		public function set leading(value:Object):void {
-			textFormat.leading;
+			textFormat.leading = value;
 			updateTextFormat();			
 		}
 		
