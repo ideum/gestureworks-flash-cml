@@ -788,7 +788,7 @@ package com.gestureworks.cml.elements
 			touchBtn1 = null;
 			scrollBtn1 = null;			
 			touchBtn2 = null;
-			scrollBtn2 = null;			
+			scrollBtn2 = null; 
 			thumbTouch = null;
 			thumb = null;			
 			railTouch = null;

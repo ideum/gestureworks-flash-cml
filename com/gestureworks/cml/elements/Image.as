@@ -483,7 +483,7 @@ package com.gestureworks.cml.elements
 			
 			else if (width)
 			{
-				if (width != bitmapData.width)
+				if (width != bitmap.width)
 				{
 					percentX = width / bitmap.width;
 					percentY = percentX;

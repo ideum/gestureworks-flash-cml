@@ -6,12 +6,18 @@ package com.gestureworks.cml.elements
 	import flash.display.BitmapData;
 	import flash.display.Shader;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.filters.ShaderFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
 	import flash.utils.Timer;
+	import gui.DefaultMagnifier;
+	import gui.NotchMagnifier;
 	import org.tuio.*;
 	
 	/**
@@ -46,17 +52,8 @@ package com.gestureworks.cml.elements
 	{
 		private const PItoRAD:Number = Math.PI / 180;
 		
-		[Embed(source = "../../../../../lib/shaders/magnify.pbj", mimeType = "application/octet-stream")]
+		[Embed(source="../../../../lib/shaders/magnify.pbj", mimeType="application/octet-stream")]
 		private var MagnifierShader:Class;
-		
-		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.DefaultMagnifier")]
-		private var DefaultGraphic:Class;
-		
-		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.mDefaultMagnifier")]
-		private var mDefaultGraphic:Class;
-		
-		[Embed(source = "../../../../../lib/assets/openexhibits_assets.swf", symbol = "org.openexhibits.assets.NotchMagnifier")]
-		private var NotchGraphic:Class;
 		
 		private var _border:Sprite;
 		
@@ -208,7 +205,7 @@ package com.gestureworks.cml.elements
 			gestureEvents = true;
 			
 			if (_graphic == "notch") {
-				_border = new NotchGraphic as Sprite;
+				_border = new NotchMagnifier();
 				_radiusOffset = 15;
 				_radiusOffsetHeight = 15;
 				var nRad:Number = _radius + _radiusOffset;
@@ -222,7 +219,7 @@ package com.gestureworks.cml.elements
 				
 			} else if (_graphic == "default") {
 				
-				_border = new DefaultGraphic as Sprite;
+				_border = new DefaultMagnifier();
 				_radiusOffset = 15;
 				_radiusOffsetHeight = _radiusOffset * 3;
 				var dRad:Number = _radius + _radiusOffset;
