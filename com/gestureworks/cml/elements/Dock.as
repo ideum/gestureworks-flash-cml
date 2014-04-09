@@ -440,6 +440,10 @@ package com.gestureworks.cml.elements
 		{
 			var clone:* = cloneMap.key;
 			
+			if (clone is ImageViewer) {
+				ImageViewer(clone).image = obj;
+			}
+			
 			addSrc(src, clone); 							
 			obj.close();
 			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);

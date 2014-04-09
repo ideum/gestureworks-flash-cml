@@ -208,7 +208,9 @@ package  com.gestureworks.cml.elements
 			
 			if (index >= 0) {
 				obj.alpha = initialAlpha;
-				obj.searchChildren("sText").visible = false;
+				if(obj.searchChildren("sText")){
+					obj.searchChildren("sText").visible = false;
+				}
 				selections.remove(index);
 			}
 		}
