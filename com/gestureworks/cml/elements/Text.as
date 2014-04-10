@@ -51,7 +51,7 @@ package com.gestureworks.cml.elements
 			mouseChildren = true;
 			_textField = new TextField;
 			_textFormat = new TextFormat;
-			addChild(textField);			
+			super.addChild(textField);			
 
 			textFormat.font = "OpenSansRegular";
 			textFormat.color = 0x000000;
@@ -79,6 +79,15 @@ package com.gestureworks.cml.elements
 			if (!width) width = 100;
 			if (!height) height = 100;			
 			updateTextFormat();		
+		}
+		
+		/**
+		 * Prevent external addition of child objects
+		 * @param	child
+		 * @return
+		 */
+		override public function addChild(child:DisplayObject):DisplayObject {
+			return null;
 		}
 		
 		/**
@@ -1197,7 +1206,7 @@ package com.gestureworks.cml.elements
 					removeChild(b);
 				}
 				textField.visible = false;
-				addChild(b);
+				super.addChild(b);
 			}
 			
 			//if (scrollable) {
