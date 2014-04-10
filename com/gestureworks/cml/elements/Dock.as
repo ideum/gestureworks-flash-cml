@@ -439,11 +439,7 @@ package com.gestureworks.cml.elements
 		private function processSrc(src:String, obj:Object):void
 		{
 			var clone:* = cloneMap.key;
-			
-			if (clone is ImageViewer) {
-				ImageViewer(clone).image = obj;
-			}
-			
+
 			addSrc(src, clone); 							
 			obj.close();
 			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);
