@@ -2,6 +2,7 @@ package com.gestureworks.cml.layouts
 {
 	import com.gestureworks.cml.core.CMLObject;
 	import com.gestureworks.cml.interfaces.ILayout;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.greensock.easing.Ease;
 	import com.greensock.plugins.TransformMatrixPlugin;
 	import com.greensock.plugins.TweenPlugin;
@@ -25,6 +26,7 @@ package com.gestureworks.cml.layouts
 		protected var childTransformations:Array;
 		private var layoutTween:TimelineLite;
 		private var tweenedObjects:Array;
+		public var children:Array;
 		
 		/**
 		 * Constructor
@@ -307,6 +309,9 @@ package com.gestureworks.cml.layouts
 			var tIndex:int = 0;
 			var transformation:Matrix;
 			
+			if (!children)
+				children = DisplayUtils.getAllChildren(container);
+			
 			if (tween)
 			{				
 				if (layoutTween && layoutTween._active)
@@ -319,9 +324,9 @@ package com.gestureworks.cml.layouts
 				childTweens = new Array();
 				tweenedObjects = new Array();
 				
-				for (var i:int = 0; i < container.numChildren; i++) 
+				for (var i:int = 0; i < children.length; i++) 
 				{				
-					var child:* = container.getChildAt(i);
+					var child:* = children[i];
 					if(!validObject(child)) continue;
 					
 					if (tIndex < childTransformations.length)
