@@ -15,12 +15,13 @@ package com.gestureworks.cml.layouts {
 		private var _maxAngle:Number;
 		private var _variation:Number;
 		
-		public function RadialLayout(radius:Number=100, minAngle:Number = 0, maxAngle:Number = 360, variation:Number = 0) {
+		public function RadialLayout(radius:Number=100, minAngle:Number = 0, maxAngle:Number = 360, variation:Number = 0, scale:Number = 1) {
 			super();
 			this.radius = radius;
 			this.minAngle = minAngle;
 			this.maxAngle = maxAngle;
 			this.variation = variation;
+			this.scale = scale;
 		}
 		
 		override public function layout(container:DisplayObjectContainer):void {
@@ -54,6 +55,7 @@ package com.gestureworks.cml.layouts {
 				dy = -Math.sin(variedAngle) * _radius;
 				matrix = child.transform.matrix;
 				translateTransform(matrix, originX + dx, originY + dy);
+				scaleTransform(matrix, scale);
 				childTransformations.push(matrix);
 				curAngle += angleIter;
 			}
