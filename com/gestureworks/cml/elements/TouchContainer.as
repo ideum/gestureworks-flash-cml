@@ -933,9 +933,9 @@ package com.gestureworks.cml.elements
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{	
-			if (child.parent) {
-				child.parent.removeChild(child);
-			}
+			//if (child.parent) {
+				//child.parent.removeChild(child);
+			//}
 			
 			if (childList.search(child) == -1) {
 				
