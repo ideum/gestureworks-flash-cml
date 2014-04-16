@@ -153,7 +153,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.layouts.PointLayout; PointLayout;
 	import com.gestureworks.cml.layouts.PileLayout; PileLayout;
 	import com.gestureworks.cml.layouts.FanLayout; FanLayout;
-	import com.gestureworks.cml.layouts.LayoutKit; LayoutKit;		
+	import com.gestureworks.cml.layouts.LayoutKit; LayoutKit;
+	import com.gestureworks.cml.layouts.RadialLayout; RadialLayout;
 	
 
 	

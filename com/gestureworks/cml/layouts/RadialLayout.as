@@ -12,12 +12,14 @@ package com.gestureworks.cml.layouts {
 		private var _radius:Number;
 		private var _minAngle:Number;
 		private var _maxAngle:Number;
+		private var _variation:Number;
 		
-		public function RadialLayout(radius:Number=100, minAngle:Number = 0, maxAngle:Number = TAU) {
+		public function RadialLayout(radius:Number=100, minAngle:Number = 0, maxAngle:Number = 360, variation:Number = 0) {
 			super();
-			_radius = radius;
-			_minAngle = minAngle;
-			_maxAngle = maxAngle;
+			this.radius = radius;
+			this.minAngle = minAngle;
+			this.maxAngle = maxAngle;
+			this.variation = variation;
 		}
 		
 		override public function layout(container:DisplayObjectContainer):void {
@@ -25,17 +27,23 @@ package com.gestureworks.cml.layouts {
 			var len:int = container.numChildren;
 			var angleIter:Number = range / len;
 			var curAngle:Number = _minAngle;
+			var variedAngle:Number;
 			var child:DisplayObject;
 			var dx:Number;
 			var dy:Number;
 			var matrix:Matrix;
-			for (var i:int = childTransformations.length; i < len; i++) {
+			for (var i:int =0; i < len; i++) {
 				child = container.getChildAt(i);
 				if (child == null) {
 					continue;
 				}
-				dx = Math.cos(curAngle) * _radius;
-				dy = -Math.sin(curAngle) * _radius;
+				if(_variation!=0) {
+					variedAngle = curAngle + Math.random() * _variation - _variation / 2;
+				} else {
+					variedAngle = curAngle;
+				}
+				dx = Math.cos(variedAngle) * _radius;
+				dy = -Math.sin(variedAngle) * _radius;
 				matrix = child.transform.matrix;
 				translateTransform(matrix, originX + dx, originY + dy);
 				childTransformations.push(matrix);
@@ -53,19 +61,27 @@ package com.gestureworks.cml.layouts {
 		}
 		
 		public function get minAngle():Number {
-			return _minAngle;
+			return _minAngle * 360 / TAU;
 		}
 		
 		public function set minAngle(value:Number):void {
-			_minAngle = value;
+			_minAngle = value * TAU / 360;
 		}
 		
 		public function get maxAngle():Number {
-			return _maxAngle;
+			return _maxAngle * 360 / TAU;
 		}
 		
 		public function set maxAngle(value:Number):void {
-			_maxAngle = value;
+			_maxAngle = value * TAU / 360;
+		}
+		
+		public function get variation():Number {
+			return _variation * 360 / TAU;
+		}
+		
+		public function set variation(value:Number):void {
+			_variation = value * TAU / 360;
 		}
 	}
 
