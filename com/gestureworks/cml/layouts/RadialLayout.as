@@ -1,4 +1,5 @@
 package com.gestureworks.cml.layouts {
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
@@ -32,8 +33,15 @@ package com.gestureworks.cml.layouts {
 			var dx:Number;
 			var dy:Number;
 			var matrix:Matrix;
-			for (var i:int =0; i < len; i++) {
-				child = container.getChildAt(i);
+			childTransformations.length = 0;
+			var cnt:int;
+			
+			if (!children)
+				children = DisplayUtils.getAllChildren(container);
+			
+			cnt = children.length;
+			for (var i:int =0; i < cnt; i++) {
+				child = children[i]
 				if (child == null) {
 					continue;
 				}
