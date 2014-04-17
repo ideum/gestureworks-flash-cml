@@ -236,14 +236,13 @@ package com.gestureworks.cml.elements
 		 */
 		public function get pan():Number { return _pan; }
 		public function set pan(value:Number):void {
-			if (value <= 1.0 || value >= -1.0) {
+			if (Math.abs(value) <= 1) {
 				_pan = value;
 				var soundTransform:SoundTransform = netStream.soundTransform;
 				soundTransform.pan = _pan;
 				netStream.soundTransform = soundTransform;
 			} else {
 				trace("You must set pan limits within 1.0 to -1.0");
-				//throw new Error("You must set pan limits within 1.0 to -1.0");
 			}
 		}
 		
