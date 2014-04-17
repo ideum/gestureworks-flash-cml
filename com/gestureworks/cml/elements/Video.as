@@ -229,6 +229,23 @@ package com.gestureworks.cml.elements
 			netStream.soundTransform = soundTransform;	
 		}
 		
+		private var _pan:Number = 0.0;
+		/**
+		 * Sets the audio pan (L=1.0; R=-1.0)
+		 * @default 0.0
+		 */
+		public function get pan():Number { return _volume; }
+		public function set pan(value:Number):void {
+			if (value <= 1 || value >= -1) {
+				_pan = value;
+				var soundTransform:SoundTransform = netStream.soundTransform;
+				soundTransform.pan = _pan;
+				netStream.soundTransform = soundTransform;
+			} else {
+				throw new Error("You must set pan limits within 1.0 to -1.0");
+			}
+		}
+		
 		private var _mute:Boolean;
 		/**
 		 * Turns the volume all the way down when true and returns it to volume prior to muting when false
