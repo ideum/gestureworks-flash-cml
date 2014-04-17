@@ -231,18 +231,19 @@ package com.gestureworks.cml.elements
 		
 		private var _pan:Number = 0.0;
 		/**
-		 * Sets the audio pan (L=1.0; R=-1.0)
+		 * Sets the audio pan (L=-1.0; R=1.0)
 		 * @default 0.0
 		 */
-		public function get pan():Number { return _volume; }
+		public function get pan():Number { return _pan; }
 		public function set pan(value:Number):void {
-			if (value <= 1 || value >= -1) {
+			if (value <= 1.0 || value >= -1.0) {
 				_pan = value;
 				var soundTransform:SoundTransform = netStream.soundTransform;
 				soundTransform.pan = _pan;
 				netStream.soundTransform = soundTransform;
 			} else {
-				throw new Error("You must set pan limits within 1.0 to -1.0");
+				trace("You must set pan limits within 1.0 to -1.0");
+				//throw new Error("You must set pan limits within 1.0 to -1.0");
 			}
 		}
 		
