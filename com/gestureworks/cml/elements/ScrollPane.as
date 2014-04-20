@@ -632,6 +632,10 @@ package com.gestureworks.cml.elements
 			return clone;
 		}
 		
+		public function get scrollEnabled():Boolean {
+			return contains(_verticalScroll) || contains(_horizontalScroll);
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
