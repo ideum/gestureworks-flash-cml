@@ -556,7 +556,7 @@ package com.gestureworks.cml.elements
 			_isLoaded = true;
 		}
 		
-		private function onMetaData(meta:Object):void
+		protected function onMetaData(meta:Object):void
 		{
 			if (meta.duration != null )
 			{
