@@ -148,6 +148,11 @@ package com.gestureworks.cml.elements
 		 */	
 		public function get duration():Number { return _duration; }
 		
+		/**
+		 * Elapsed net stream time
+		 */
+		public function get elapsedTime():Number { return netStream.time; }
+		
 		private var _percentLoaded:Number = 0;
 		/**
 		 * Percent of file loaded 
@@ -628,14 +633,14 @@ package com.gestureworks.cml.elements
 			}	
 		}
 		
-		private function onPosition(event:TimerEvent):void
+		protected function onPosition(event:TimerEvent):void
 		{			
 			if (!netStream) return;
 			_position = netStream.time / _duration;
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
 		
-		private function end():void
+		protected function end():void
 		{
 			if (loop) play();
 			else stop();
