@@ -1,5 +1,6 @@
 package com.gestureworks.cml.utils 
 {	
+	import com.gestureworks.core.TouchSprite;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
@@ -122,7 +123,24 @@ package com.gestureworks.cml.utils
 
 			return children;
 		}
-				
+		
+		public static function getAllActiveChildren(container:DisplayObjectContainer, recursive:Boolean=false):Vector.<TouchSprite>
+		{
+			var children:Vector.<TouchSprite> = new Vector.<TouchSprite>();
+			
+			recursiveSearch(container, recursive)
+			
+			function recursiveSearch(container:DisplayObjectContainer, recursive:Boolean):void {
+				for (var i:int = 0; i < container.numChildren; i++) {
+					if (container.getChildAt(i) is TouchSprite && TouchSprite(container.getChildAt(i)).active)
+						children.push(container.getChildAt(i) as TouchSprite);
+					if (recursive && container.getChildAt(i) is DisplayObjectContainer && DisplayObjectContainer(container.getChildAt(i)).numChildren > 0)
+						recursiveSearch(container.getChildAt(i), recursive);
+				}
+			}
+
+			return children;
+		}		
 		
 		
 		/**
