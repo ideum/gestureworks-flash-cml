@@ -13,9 +13,10 @@ package com.gestureworks.cml.elements
 	 */
 	public class ProgressBar extends Slider
 	{
-		private var _source:*;
+		private var _source:Video;
 		private var _bar:*;
 		private var _barColor:uint = 0xFF0000;
+		private var _dragging:Boolean = false; 
 				
 		public function ProgressBar() 
 		{
@@ -83,8 +84,7 @@ package com.gestureworks.cml.elements
 		{
 			if (!source) return;
 			
-			if (source is Video)
-				source.addEventListener(StateEvent.CHANGE, videoProgress);
+			source.addEventListener(StateEvent.CHANGE, videoProgress);
 			
 			//TODO: register loader source
 		}
@@ -115,7 +115,7 @@ package com.gestureworks.cml.elements
 			}			
 				
 			isHorizontal() ? bar.scaleX = 0 : bar.scaleY = 0;			
-			addChildAt(bar, getChildIndex(hit));			
+			addChildAt(bar, getChildIndex(hit));
 		}
 		
 		/**
@@ -124,20 +124,10 @@ package com.gestureworks.cml.elements
 		 */
 		override protected function onDrag(event:GWGestureEvent):void 
 		{
-			if(knob){
-				super.onDrag(event);
-				synchBar();
-			}
-			else if (event)
-			{
-				if(isHorizontal())
-					bar.width += event.value.drag_dx;
-				else
-					bar.height += event.value.drag_dy;
-			}
-			
-			seek();
+			knob.x += event.value.drag_dx;
+			source.seek((knob.x / bar.width)*100);
 		}
+		
 		
 		/**
 		 * Expands or contracts the bar on hit touch
@@ -145,18 +135,7 @@ package com.gestureworks.cml.elements
 		 */
 		override protected function onDownHit(event:*):void 
 		{
-			if (knob)
-			{
-				super.onDownHit(event);
-				synchBar();
-			}
-			else
-			{
-				bar.width = isHorizontal() ? event.localX : bar.width;
-				bar.height = isHorizontal() ? bar.height : event.localY;				
-			}
-			
-			seek();
+			source.seek((event.localX / bar.width) * 100);
 		}
 		
 		/**
@@ -167,17 +146,12 @@ package com.gestureworks.cml.elements
 		{
 			if (val < 0) 
 				return;
-			if (knob)
-			{
-				super.input(val);
-				synchBar();
-			}
-			else 
-			{
-				if(isHorizontal())
-					bar.scaleX = val;
-				else
-					bar.scaleY = val;
+				
+			if(isHorizontal()){
+				bar.scaleX = val;
+				if (knob) {
+					knob.x = (bar.width * bar.scaleX) - knob.width/2; 
+				}
 			}
 		}
 		
@@ -205,11 +179,9 @@ package com.gestureworks.cml.elements
 		 */
 		private function seek():void
 		{
-			if (source is Video) {
-				source.seek((bar.width / width) * 100);
-				if(source.isPlaying)
-					source.resume();
-			}
+			//source.seek((bar.width / width) * 100);
+			//if(source.isPlaying)
+				//source.resume();
 		}
 		
 		/**
@@ -223,6 +195,7 @@ package com.gestureworks.cml.elements
 				_source = null;
 			}
 		}
+				
 	}
 
 }
