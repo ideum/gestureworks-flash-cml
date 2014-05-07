@@ -22,7 +22,7 @@ package com.gestureworks.cml.elements
 		private var isDefault:Boolean = false;
 		private var initOptions:NativeWindowInitOptions;
 		
-		public function Window(initOptions:NativeWindowInitOptions=null) {
+		public function Window(initOptions:NativeWindowInitOptions = null) {
 			if (initOptions) {
 				this.initOptions = initOptions;
 			}
@@ -85,8 +85,8 @@ package com.gestureworks.cml.elements
 			return _screen;
 		}
 		public function set screen(value:int):void {
-			nativeWindow.x = Screen.screens[value].bounds.left;			
-			nativeWindow.y = Screen.screens[value].bounds.top;		
+			nativeWindow.x = Screen.screens[value-1].bounds.left;			
+			nativeWindow.y = Screen.screens[value-1].bounds.top;		
 			_screen = value;
 		}
 		
