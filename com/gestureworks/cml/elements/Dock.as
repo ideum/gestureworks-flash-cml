@@ -504,13 +504,13 @@ package com.gestureworks.cml.elements
 			
 			if (!flickrQuery){
 				if (index == 0)
-					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+					searchTerms[index] = _searchFieldsArray[index] + ":" + e.value;
 				
 				else if (index == 1)
-					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value+ "\"";
 				
 				else if (index == 2)
-					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\""; 
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value+ "\""; 
 
 			}
 			// If this were Flickr...
@@ -580,6 +580,7 @@ package com.gestureworks.cml.elements
 		
 			//if (!e || e.keyCode == 13) {
 			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "large");				
+			//connection.call("./AMFTest.search_choose_return", responder, searchTerms, returnFields, "large");				
 				//connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
 				//connection.call("./AMFTest.getalldata", responder, entry.text);
@@ -711,7 +712,7 @@ package com.gestureworks.cml.elements
 		
 		private function onFault(fault:Object):void
 		{
-			dockText[1].text = fault.description;
+			dockText[1].text = fault.faultString;
 			dockText[1].visible = true;
 		}		
 		
