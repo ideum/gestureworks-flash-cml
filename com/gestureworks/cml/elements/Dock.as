@@ -489,7 +489,7 @@ package com.gestureworks.cml.elements
 			// Get the total results of the Collective Access collection. firstResult() will set up the appropriate responder.
 			responder = new Responder(firstResult, onFault);
 			//connection.call("./ObjectSearchTest.search_choose_return", responder);
-			connection.call("./ObjectSearchTest.search_choose_return", responder, "", returnFields, "large");
+			connection.call("./ObjectSearchTest.search_choose_return", responder, "", returnFields, "original");
 		}
 		
 		/**
@@ -579,7 +579,7 @@ package com.gestureworks.cml.elements
 			// etc -- see collective access
 		
 			//if (!e || e.keyCode == 13) {
-			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "large");				
+			connection.call("./ObjectSearchTest.search_choose_return", responder, searchTerms, returnFields, "original");				
 			//connection.call("./AMFTest.search_choose_return", responder, searchTerms, returnFields, "large");				
 				//connection.call("./AMFTest.search_choose_return", responder, "crystal", null, null, returnFields);
 				//connection.call("./AMFTest.search_and_return", responder, searchString, null, null);
@@ -740,7 +740,7 @@ package com.gestureworks.cml.elements
 		{		
 			if (!event || event.property == "isLoaded") {				
 				if (event){
-					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
+					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);										
 					addPreview(Component(event.target), getPreview(event.target));
 					
 					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken	
