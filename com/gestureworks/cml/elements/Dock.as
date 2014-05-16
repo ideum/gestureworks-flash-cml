@@ -453,6 +453,8 @@ package com.gestureworks.cml.elements
 					obj.removeEventListener(StateEvent.CHANGE, loaded);
 					clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, clone.id, "isLoaded", true));
 				});
+				obj.width = 0;
+				obj.height = 0;
 				obj.open();		
 			}
 		}
@@ -749,7 +751,10 @@ package com.gestureworks.cml.elements
 						c.init();
 					}
 					else 
-						event.target.init();											
+						event.target.init();	
+					event.target.scale = 300 / event.target.width;
+					
+					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale);
 				}
 				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;			
@@ -948,7 +953,7 @@ package com.gestureworks.cml.elements
 			//if ("scale" in obj["state"][0])
 			//	obj.scale = obj["state"][0]["scale"];
 			//else
-				obj.scale = .6;
+				obj.resetScale();
 					
 			if (position == "top") {
 				//if ("rotation" in obj["state"][0])

@@ -3,6 +3,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.CloneUtils;
+	import com.gestureworks.cml.utils.document;
 	import flash.display.DisplayObject;
 	
 	/**
@@ -34,6 +35,11 @@ package com.gestureworks.cml.components
 	 */
 	public class ImageViewer extends Component 
 	{		
+		
+		private var initialScale:Number; 
+		private var infoBtn:Button;
+		private var closeBtn:Button;
+		
 		/**
 		 * image viewer Constructor
 		 */
@@ -75,8 +81,11 @@ package com.gestureworks.cml.components
 			
 			if (image)
 				image.addEventListener(StateEvent.CHANGE, onLoadComplete);
-			
+				
 			super.init();	
+			
+			infoBtn = menu.getChildAt(0);
+			closeBtn = menu.getChildAt(1);
 		}
 		
 		
@@ -176,7 +185,25 @@ package com.gestureworks.cml.components
 			clone.updateLayout();	
 			
 			return clone;
-		}			
+		}
+		
+		override public function set scale(value:Number):void {
+			super.scale = value;
+			if (!initialScale) {
+				initialScale = value;
+				
+				minScale = value;
+				maxScale = 920 / width;
+				
+				infoBtn.scale = .5 / value;
+				
+				closeBtn.scale = .5 / value;
+			}
+		}
+		
+		public function resetScale():void {
+			scale = initialScale;
+		}
 	}
 	
 }
