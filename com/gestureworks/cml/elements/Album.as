@@ -64,7 +64,7 @@ package com.gestureworks.cml.elements
 		private var _dragGesture:String = "n-drag-inertia";		
 		private var _flickGesture:String;		
 		private var snapPoints:Array;
-		private var albumMask:Graphic;
+		protected var albumMask:Graphic;
 		private var snapTween:TweenLite;
 		private var loopSnapTween:TimelineLite;
 		private var boundary1:Number;
