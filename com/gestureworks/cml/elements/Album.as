@@ -2,6 +2,7 @@ package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.ListLayout;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
@@ -461,7 +462,7 @@ package com.gestureworks.cml.elements
 		 * are wrapped in a TouchSprite to enable interactivity.
 		 */		
 		override public function addChild(child:DisplayObject):DisplayObject 
-		{			
+		{		
 			width = child.width > width ? child.width : width;
 			height = child.height > height ? child.height: height;			
 			frame.width = child.width > frame.width ? child.width: frame.width;
@@ -1136,6 +1137,39 @@ package com.gestureworks.cml.elements
 			initLoopOrder = null;
 			_currentObject = null;
 			loopClones = null;
+		}		
+		
+		override public function clone():* {
+			
+			//exclude mask
+			cloneExclusions.push("mask");						
+			cloneExclusions.push("childList");	
+			belt.cloneExclusions.push("childList");
+			
+			//bypass ui child clones since they are auto-generated at initialization
+			this.removeChildren(); 
+			
+			//clone album
+			var clone:Album = CloneUtils.clone(this, this.parent, cloneExclusions) as Album;  
+			//clone belt
+			belt.cloneExclusions.push("childList");
+			var beltClone:TouchContainer = CloneUtils.clone(belt, null, belt.cloneExclusions); 
+			
+			//re-add ui elements to source
+			addUIComponent(belt);			
+			addUIComponent(albumMask);
+			
+			//add album items
+			while(beltClone.numChildren > 1){
+				clone.addChild(beltClone.getChildAt(1));
+			}
+			
+			//initialize clone
+			clone.addUIComponent(clone.belt);
+			clone.addUIComponent(clone.albumMask);
+			clone.init();
+			
+			return clone;
 		}
 				
 	}
