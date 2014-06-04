@@ -247,6 +247,13 @@ package com.gestureworks.cml.utils
 			_currentIndex = 0;			
 		}
 
+		/**
+		 * Clear the list
+		 */
+		public function clear():void {
+			reset();
+			vector.length = 0;
+		}
 		
 		/**
 		 * Returns true if the iteration can return one more than the current index
