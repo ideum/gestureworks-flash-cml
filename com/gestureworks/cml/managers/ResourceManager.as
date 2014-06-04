@@ -9,7 +9,7 @@ package com.gestureworks.cml.managers
 	 */
 	public class ResourceManager 
 	{		
-		private static var _instance:ResourceManager;
+		protected static var _instance:ResourceManager;
 		private var _resources:Array = new Array();
 		public var debug:Boolean = false;
 		
