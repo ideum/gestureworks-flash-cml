@@ -460,7 +460,7 @@ package com.gestureworks.cml.components
 		
 		private var textCount:Number = 4;
 				
-		private function textSize():void
+		protected function textSize():void
 		{
 			if (textFields)
 			{
