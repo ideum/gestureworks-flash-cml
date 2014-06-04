@@ -37,8 +37,7 @@ package com.gestureworks.cml.utils
 		 * Constructor
 		 * @param	weakKeys
 		 */
-		public function LinkedMap(weakKeys:Boolean=false)
-		{
+		public function LinkedMap(weakKeys:Boolean=false)		{
 			keys = new List;
 			values = new List;
 		}
@@ -348,6 +347,16 @@ package com.gestureworks.cml.utils
 			currentIndex = 0;
 			keys.reset();
 			values.reset();
+		}
+		
+		/**
+		 * Clear map
+		 */
+		public function clear():void
+		{
+			reset();
+			keys.clear();
+			values.clear();
 		}
 		
 		/**
