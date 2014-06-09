@@ -599,6 +599,7 @@ package com.gestureworks.cml.elements
 				_content = null;
 			}			
 			_content = value;
+			_content.y = _content.x = 0;
 			addChild(_content);
 			init();
 			updateLayout();
