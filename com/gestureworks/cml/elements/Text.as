@@ -1215,7 +1215,7 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function clone():* { 
-			var clone:Text = CloneUtils.clone(this, this.parent);
+			var clone:Text = CloneUtils.clone(this, this.parent, cloneExclusions, true);
 			clone.updateTextFormat();
 			return clone;
 		}	
