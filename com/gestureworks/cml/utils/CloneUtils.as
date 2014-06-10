@@ -39,10 +39,13 @@ package com.gestureworks.cml.utils
 	
 		/**
 		 * Returns a clone from the source parameter
-		 * @param	source
+		 * @param source object to clone
+		 * @param parent to add clone to
+		 * @param list of attributes to exclude from cloning
+		 * @param shallow flag indicating a shallow (source clone only) or deep (clone children) copy
 		 * @return 
 		 */
-		public static function clone(source:*, parent:DisplayObjectContainer=null, pExclusions:Vector.<String>=null):* 
+		public static function clone(source:*, parent:DisplayObjectContainer=null, pExclusions:Vector.<String>=null, shallow:Boolean=false):* 
 		{
 			var cloneObj:*;
 			var childClone:DisplayObject;
@@ -67,7 +70,7 @@ package com.gestureworks.cml.utils
 				parent.addChild(cloneObj);				
 			
 				
-			if (source is DisplayObjectContainer) {
+			if (source is DisplayObjectContainer && !shallow) {
 				if (DisplayObjectContainer(source).numChildren > 0){
 					for (var i:int = 0; i < DisplayObjectContainer(source).numChildren; i++) {
 						
