@@ -74,7 +74,7 @@ package com.gestureworks.cml.elements
 		private var index:int = 0;
 		private var frame:Rectangle;  //the dimensions of the largest object
 		private var beltMouseChildren:Boolean = false;
-		private var snapIndex:Number = 0;
+		protected var snapIndex:Number = 0;
 		private var initLoopOrder:Array;	
 		private var _currentObject:*;
 		private var loopClones:Dictionary = new Dictionary();
@@ -493,7 +493,7 @@ package com.gestureworks.cml.elements
 		 * Adds a child directly to the album object
 		 * @param	child
 		 */
-		private function addUIComponent(child:DisplayObject):void
+		protected function addUIComponent(child:DisplayObject):void
 		{
 			super.addChild(child);
 		}
@@ -777,7 +777,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Dispatch an event on snap complete with the object at the current snap point
 		 */
-		private function dispatchCurrentObject():void
+		protected function dispatchCurrentObject():void
 		{
 			_currentObject = objectAtSnapPoint(snapIndex);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", _currentObject, true));
@@ -1167,7 +1167,6 @@ package com.gestureworks.cml.elements
 			//initialize clone
 			clone.addUIComponent(clone.belt);
 			clone.addUIComponent(clone.albumMask);
-			clone.init();
 			
 			return clone;
 		}
