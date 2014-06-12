@@ -381,6 +381,7 @@ package com.gestureworks.cml.elements
 			src = "";
 			
 			sizeLoaded = false;
+			_isLoaded = false; 
 		}		
 		
 		/**
