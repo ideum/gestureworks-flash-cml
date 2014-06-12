@@ -424,7 +424,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		
-		private function onDrag(e:GWGestureEvent):void {
+		protected function onDrag(e:GWGestureEvent):void {
 			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
 				if (_verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
 					_verticalScroll.onDrag(e);
