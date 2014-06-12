@@ -938,7 +938,7 @@ package com.gestureworks.cml.elements
 		 * Turns the released flag on to indicate the belt is not being touched
 		 * @param	e the release event
 		 */
-		private function onRelease(e:GWGestureEvent):void
+		protected function onRelease(e:GWGestureEvent):void
 		{
 			released = true;
 			if (!snapping && (belt[axis] > snapPoints[0] || belt[axis] < snapPoints[snapPoints.length-1]))
