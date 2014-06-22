@@ -202,7 +202,7 @@ package com.gestureworks.cml.elements
 			visible = false; 
 		}
 		
-		private function resetTimer(e:Event):void {
+		public function resetTimer(e:Event):void {
 			timer.reset();
 			timer.start();
 		}
