@@ -696,8 +696,6 @@ package com.gestureworks.cml.components
 			glowTween.eventCallback("onComplete", glowOut);
 		}
 		
-		
-
 		public function glowOut(dur:Number=1):void
 		{
 			if (glowTween && glowTween._active)
@@ -713,9 +711,7 @@ package com.gestureworks.cml.components
 			
 			glowTween.play();		
 		}			
-		
-		
-		
+				
 		public function restartTimer():void
 		{
 			timer.reset();

@@ -51,8 +51,6 @@ package com.gestureworks.cml.components
 			affineTransform = true;			
 		}
 		
-		
-		
 		private var _image:*;
 		/**
 		 * Sets the image element.
@@ -88,7 +86,6 @@ package com.gestureworks.cml.components
 			closeBtn = menu.getChildAt(1);
 		}
 		
-		
 		private function onLoadComplete(e:StateEvent):void
 		{
 			if (e.property == "isLoaded") {
@@ -99,8 +96,7 @@ package com.gestureworks.cml.components
 		}
 		
 		public var isLoaded:Boolean = true;
-	
-					
+			
 		override protected function updateLayout(event:*=null):void 
 		{
 			if (image) {
@@ -113,8 +109,6 @@ package com.gestureworks.cml.components
 			super.updateLayout();				
 		}	
 		
-		
-		
 		/**
 		 * @inheritDoc
 		 */
@@ -123,7 +117,6 @@ package com.gestureworks.cml.components
 			super.dispose();
 			image = null;
 		}
-		
 		
 		override public function clone():* 
 		{	

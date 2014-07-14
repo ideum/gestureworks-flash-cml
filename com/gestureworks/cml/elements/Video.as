@@ -1,7 +1,10 @@
+// a custom scaling gesture, vidviewer-scale, has a larger boundary_max, serves as a hack to enable larger video scaling - Rob
+
 package com.gestureworks.cml.elements
 {	
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.events.*;
 	import flash.media.*;
 	import flash.net.*;
@@ -33,8 +36,14 @@ package com.gestureworks.cml.elements
 		private var customClient:Object;
 		private var positionTimer:Timer;
 		private var progressTimer:Timer;
-		private var sizeLoaded:Boolean = false;
-		private var playButton:Button;
+		
+		
+		
+		public var sizeLoaded:Boolean = false; // should be renamed to metaCallbackSizeLoaded
+		public var playButton:Button;
+		
+		
+		
 		private var unmuteVolume:Number = 1;
 		
 		/**
@@ -187,11 +196,12 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-		private var _isLoaded:Boolean = false;
+		public var _isLoaded:Boolean = false;
 		/**
 		 * Returns video loaded status
 		 */
-		public function get isLoaded():Boolean { return _isLoaded;}
+		public function get isLoaded():Boolean { return _isLoaded; }
+		
 		
 		private var _isPlaying:Boolean = false;
 		/**
@@ -410,8 +420,7 @@ package com.gestureworks.cml.elements
 				netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			
 			netConnection.connect(null);
-			
-		}		
+		}	
 		
 		private function onNetStatus(event:NetStatusEvent):void
 		{
@@ -482,6 +491,9 @@ package com.gestureworks.cml.elements
 			video.attachNetStream(netStream);
 			
 			//the meta data callback seems unrealiable, so give the option to specify video diemensions here as well
+			// ^^ appears reliable so far, added ratio scaling to the callback - Rob 7/13/2014 
+			
+			if (!sizeLoaded) {
 			if (width > 0)
 				video.width = _width;
 			else if (!width)
@@ -490,8 +502,9 @@ package com.gestureworks.cml.elements
 				video.height = _height;
 			else if (!height)
 				height = video.height;
-				
-			addChild(video);						
+			}
+			
+			addChild(video);
 			play();
 			_isLoaded = true;
 		}
@@ -508,20 +521,16 @@ package com.gestureworks.cml.elements
 				}	
 			}
 			
-
 			if (meta.width != null && meta.height != null && !sizeLoaded)
 			{
+				// scale video to fit it's initial on stage size
+				var ratio:* = Math.min(width / meta.width, height / meta.height);
+				video.width = ratio * meta.width;
+				video.height = ratio * meta.height;
+				width = video.width;
+				height = video.height;
+
 				
-				if (width > 0)
-					video.width = width;
-				else
-					video.width = meta.width;
-				
-				if (height > 0)
-					video.height = height;
-				else
-					video.height = meta.height;
-											
 				if (debug) {
 					trace("video width: " + meta.width);
 					trace("video height: " + meta.height);				
@@ -530,7 +539,12 @@ package com.gestureworks.cml.elements
 				sizeLoaded = true;
 				
 				// file and all metadata loaded
-				if (!autoplay) stop();
+				//if (!autoplay) stop();
+				
+				// for the Collection Viewer we always auto play - Rob
+				stop();
+				// play() will be  called in Dock().selectItem() - Rob
+				
 				this.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
@@ -585,7 +599,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Toggles between play and pause states
 		 */
-		private function updatePlayButton():void
+		public function updatePlayButton():void
 		{
 			if (!playButton) return;
 			
@@ -643,6 +657,27 @@ package com.gestureworks.cml.elements
 			_progressBar = null;
 			
 		}
-
+		
+		/**
+		 * Returns a clone of this Video
+		 * @return
+		 */
+		
+		 // appears to not be needed - Rob
+		/*override public function clone():* 
+		{
+			var clone:Video = CloneUtils.clone(this, null);
+			
+			//if (netConnection)
+			//	clone.netConnection = new NetConnection();
+				
+			//if (netStream)
+			//	clone.netStream = new NetStream(clone.netConnection);
+			
+			//if (vid)
+			//	clone.vid = new VideoLoader(clone.src);
+			
+			return clone;			
+		}*/
 	}
 }

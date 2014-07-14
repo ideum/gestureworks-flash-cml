@@ -11,13 +11,13 @@ package  com.gestureworks.cml.elements
 	import flash.display.DisplayObject;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	
 	/**
 	 * ...
 	 * @author 
 	 */
 	public class MenuAlbum extends Album
 	{
-		
 		private var _initialAlpha:Number = 1;
 		private var _selectedAlpha:Number = .4;
 		private var _selectedItem:*;

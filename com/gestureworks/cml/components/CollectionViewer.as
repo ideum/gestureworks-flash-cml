@@ -330,7 +330,8 @@ package com.gestureworks.cml.components
 			for (var i:int = 0; i < docks.length; i++) {
 				docks[i].gateway = gateway;
 				docks[i].connect();	
-				totalProgress += docks[i].maxClones;
+				//totalProgress += docks[i].maxClones;
+				totalProgress += docks[i].maxClones * templates.length;
 				docks[i].addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
 					if (e.property == "preloaded")
 					{
@@ -622,11 +623,13 @@ package com.gestureworks.cml.components
 				setChildIndex(obj, this.numChildren - 1);
 			}
 		}
-		
+		/*****************************************************
+		 ***************************************************/
+		// commented out for clone visibility testing
 		private function hideAll():void {			
 			for (var i:int = 0; i < numChildren; i++)
 			{
-				if(getChildAt(i) is Component)
+				if (getChildAt(i) is Component)
 					getChildAt(i).visible = false;
 			}
 		}

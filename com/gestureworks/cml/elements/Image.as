@@ -3,15 +3,15 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.managers.*;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.ImageLoader;
 	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.Bitmap;
 	import flash.display.PixelSnapping;
-	import flash.events.*;	
+	import flash.events.*;
+	import flash.geom.*;
+	import flash.utils.Dictionary;
 	
 	/** 
 	 * The Image class loads and displays an external bitmap file.	 
@@ -40,7 +40,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function Image() 
 		{
-			super();	
+			super();
 			mouseChildren = false;
 		}
 			
@@ -50,6 +50,7 @@ package com.gestureworks.cml.elements
 		 */
 		override public function init():void 
 		{
+			//super.init();
 		}	
 		
 		/**
@@ -460,8 +461,6 @@ package com.gestureworks.cml.elements
 			}
 			
 			bitmapComplete();	
-			
-			
 		}		
 		
 		
@@ -535,7 +534,7 @@ package com.gestureworks.cml.elements
 		// Private Methods
 		////////////////////////////////////////////////////////////////////////////////		
 				
-		private function createBitmapDataArray():void
+		public function createBitmapDataArray():void
 		{
 			var avatarNum:int = _sizeArray.length;
 			var resizeMatrix:Matrix;

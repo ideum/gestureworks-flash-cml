@@ -56,14 +56,16 @@ package com.gestureworks.cml.managers
 		public static var cssType:RegExp = /^.*\.(css)$/i;
 		public static var mp3Type:RegExp = /^.*\.(mp3)$/i;
 		public static var fileTypes:RegExp = /^.*\.(xml|css|cml|swf|mp3|wav|png|gif|jpg|mpeg-4|mp4|m4v|3gpp|mov|flv|f4v|svg)$/i;
-		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|m4v|3gpp|mov|flv|f4v)$/i;
+		public static var mediaTypes:RegExp = /^.*\.(mp3|wav|png|gif|jpg|mpeg-4|3gpp|mov|flv|f4v)$/i;
 		public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg)$/i;
+		// original: public static var mediaPreloadTypes:RegExp = /^.*\.(png|gif|jpg)$/i;
 		public static var libraryTypes:RegExp = /^.*\.(swf|swc)$/i;
 		
 		public static var cml:LoaderMax = new LoaderMax({name:"cml", onProgress:onProgress, onComplete:onComplete, onError:onError});
-		public static var css:LoaderMax = new LoaderMax( { name:"css", onProgress:onProgress, onComplete:onComplete, onError:onError } );
+		public static var css:LoaderMax = new LoaderMax({name:"css", onProgress:onProgress, onComplete:onComplete, onError:onError});
 		public static var swf:LoaderMax = new LoaderMax({name:"swf", onProgress:onProgress, onComplete:onComplete, onError:onError});		
 		public static var media:LoaderMax = new LoaderMax({name:"media", onProgress:onProgress, onComplete:onComplete, onError:onError});
+		public static var video:LoaderMax = new LoaderMax({name:"video", onProgress:onProgress, onComplete:onComplete, onError:onError});
 		
 		public static var fileList:LinkedMap = new LinkedMap;
 		public static function get fileCount():Number { return fileList.length; }
@@ -91,12 +93,28 @@ package com.gestureworks.cml.managers
 		}
 		
 		/**
+		 * Returns true if the given file path is an image type
+		 */
+		public static function isImage(file:String):Boolean
+		{
+			return file.search(imageType) != -1;
+		}	
+		
+		/**
 		 * Returns true if the given file path is a media type
 		 */
 		public static function isMedia(file:String):Boolean
 		{
 			return file.search(mediaTypes) != -1;
-		}		
+		}
+		
+		/**
+		 * Returns true if the given file path is a video type
+		 */
+		public static function isVideo(file:String):Boolean
+		{
+			return file.search(videoType) != -1;
+		}	
 
 		/**
 		 * Returns true if the given file path is a preloaded media type
