@@ -34,7 +34,7 @@ package com.gestureworks.cml.managers
 			return resources.length ? resources[0] : null;
 		}
 		
-		private function queue():void {
+		protected function queue():void {
 			for each(var res:* in resources) {
 				if (res is Component) {
 					res.addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
