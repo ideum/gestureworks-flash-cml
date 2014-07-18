@@ -73,7 +73,6 @@ package com.gestureworks.cml.elements
 		private var released:Boolean = false;
 		private var index:int = 0;
 		private var frame:Rectangle;  //the dimensions of the largest object
-		private var beltMouseChildren:Boolean = false;
 		protected var snapIndex:Number = 0;
 		private var initLoopOrder:Array;	
 		private var _currentObject:*;
@@ -85,7 +84,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function Album() 
 		{
-			super.mouseChildren = true;
+			mouseChildren = true;
 			albumMask = new Graphic();
 			albumMask.shape = "rectangle";	
 			frame = new Rectangle(0, 0, 0, 0);  
@@ -406,7 +405,6 @@ package com.gestureworks.cml.elements
 			belt.gestureReleaseInertia = true;
 			belt.nativeTransform = false;
 			belt.affineTransform = false;
-			belt.mouseChildren = beltMouseChildren;
 			belt.clusterBubbling = clusterBubbling;
 			
 			var gList:Object = new Object();
@@ -433,27 +431,6 @@ package com.gestureworks.cml.elements
 			setBoundaries();
 			addUIComponent(belt);
 			_currentObject = belt.numChildren > 1 ? belt.getChildAt(1): null;
-		}
-						
-		/**
-		 * Redirect clusterBubbling setting to the belt
-		 */	
-		override public function set clusterBubbling(value:Boolean):void 
-		{
-			super.clusterBubbling = value;
-			if(belt)
-				belt.clusterBubbling = value;
-		}
-						
-		/**
-		 * Redirect mouseChidren setting to the belt
-		 */
-		override public function get mouseChildren():Boolean { return beltMouseChildren; }
-		override public function set mouseChildren(value:Boolean):void 
-		{
-			beltMouseChildren = value;
-			if(belt)
-				belt.mouseChildren = value;
 		}
 		
 		/**
