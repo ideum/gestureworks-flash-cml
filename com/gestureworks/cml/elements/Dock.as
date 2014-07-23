@@ -13,6 +13,7 @@ package com.gestureworks.cml.elements
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
+	import flash.system.System;
 	import flash.utils.*;
 	
 	/**
@@ -37,7 +38,7 @@ package com.gestureworks.cml.elements
 		public var isLoading:Boolean = false;
 		public var loadText:Text;
 		
-		public var maxClones:int = 30;
+		public var maxClones:int = 15;
 		
 		private var srcMap:Dictionary;
 		private var cloneMap:LinkedMap;
@@ -198,7 +199,7 @@ package com.gestureworks.cml.elements
 			
 			searchTermFiltering();
 			
-			srcMap = new Dictionary;
+			srcMap = new Dictionary();
 			cloneMap = new LinkedMap(false);
 		
 			//preloadClones(maxClones);
@@ -422,14 +423,23 @@ package com.gestureworks.cml.elements
 			
 			// TODO: handle cloneMap.reset()... may get same type twice
 			
-			if (FileManager.isVideo(res["primary_content"]) && cloneMap.key is ImageViewer)
+			if (FileManager.isVideo(res["primary_content"]))
 			{
-				_incrementCloneMap();
+				while (!(cloneMap.key is VideoViewer)) { _incrementCloneMap(); }
 			}
-			else if (FileManager.isImage(res["primary_content"]) && cloneMap.key is VideoViewer)
+			else if (FileManager.isImage(res["primary_content"]))
 			{
-				_incrementCloneMap();
-			}
+				if (res["static_visual_content"] && FileManager.isAudio(res["static_visual_content"])) {
+					while (!(cloneMap.key is ImageAudioViewer)) { _incrementCloneMap(); }
+				} 
+				else {
+					while (!(cloneMap.key is ImageViewer)) { _incrementCloneMap(); }
+				}
+			} 
+			/*else if (FileManager.isAudio(res["primary_content"]))
+			{
+				
+			}*/
 		}
 		
 		private function availableClone(res:*):void
@@ -465,7 +475,6 @@ package com.gestureworks.cml.elements
 			{
 				incrementCloneMap(res);
 			}
-		
 		}
 		
 		private function nextClone(res:*):void
@@ -519,12 +528,11 @@ package com.gestureworks.cml.elements
 		private function processSrc(src:String, obj:Object):void
 		{
 			var clone:* = cloneMap.key;
-			
 			addSrc(src, clone);
-			
-			// don't call close() on objects with netStream and netConnection...
-			if (obj is Video) { obj.stop(); }
-			else { obj.close(); }
+			obj.close();
+
+			/*System.gc();
+			System.gc();*/
 			
 			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);
 			
@@ -533,7 +541,7 @@ package com.gestureworks.cml.elements
 				clone.listenLoadComplete();
 				obj.init();
 			}
-			else
+			else //if (obj is Image)
 			{
 				obj.addEventListener(StateEvent.CHANGE, function loaded(e:StateEvent):void
 					{
@@ -542,18 +550,18 @@ package com.gestureworks.cml.elements
 					});
 				
 				// not sure why the two below lines are here, they don't affect size or scaling behavior... - Rob
-				//obj.width = 0;
-				//obj.height = 0;
+				obj.width = 0;
+				obj.height = 0;
+						
+				// after closing a VideoViewer, we need to GC or we'll get network buffer utilization spikes leading to a crash
+				// determined using Adobe Scout - Rob
 				
-				if (obj is Video)
-				{
-					// for Video()s, open() -> load() which returns if isLoaded, so we set this to false to
-					// cause netStream and netConnection to be reinitialized when open() is subsequently called - Rob
-					obj._isLoaded = false; 
-				}
+				//if (!(obj is Video)) {
+				//if (obj is Video) obj._isLoaded = true;
 				
 				obj.open();
-			}
+				//}
+			} 
 		}
 		
 		// used as flag for dial listeners to skip default selections
@@ -843,7 +851,7 @@ package com.gestureworks.cml.elements
 			
 			for (var i:int = loadCnt; i < num; i++)
 			{
-				resolveExp(result[i]);
+ 				resolveExp(result[i]);
 			}
 		}
 		
@@ -864,10 +872,9 @@ package com.gestureworks.cml.elements
 						c.init();
 					}
 					else { event.target.init(); }
-					
-					//if (!(event.target is VideoViewer))
-						event.target.scale = 300 / event.target.width;
-					
+										
+					event.target.scale = 300 / event.target.width;
+						
 					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale);
 				}
 				
@@ -997,32 +1004,34 @@ package com.gestureworks.cml.elements
 			   Those events don't excute untill after this stack frame is popped... - Rob 7/14/2014
 			 */
 			
-			if (obj is ImageViewer) {
+			//if (obj is ImageViewer || obj is ImageAudioViewer) {
+			if (!(obj is VideoViewer)) {
+				if (obj is ImageAudioViewer) { obj.staticVisualUrl = obj.searchChildren("staticVisualUrl").text; }
 				img = obj.image.clone();
 				img.width = 0;
 				img.height = 140;
 				img.resample = true; // if false, drag clone image offsets are way off...
 				img.resize();
 			} 
-			else if (obj is VideoViewer)
+			else //if (obj is VideoViewer) // NOTE: currently only two other compatible types in use
 			{
 				if (obj.staticVisual) { 
 					img = obj.staticVisual.clone();
-					img.width = 140;
+					img.width = 0;
 					img.height = 140;
 					img.resample = true; // if false, drag clone image offsets are way off...
 					img.resize(); // CAN resize because events dispatched by img.open() HAVE executed
 				} else {
 					img = new Image();
-					obj.staticVisual = img;
+					obj.staticVisual = img; // hold onto a reference
 					img.src = obj.searchChildren("staticVisualUrl").text;
-					img.open();
 					img.width = 140; // we can't resize(), so use values appropriate for aspect ratio
 					img.height = 140;
 					img.resample = true; // if false, drag clone image offsets are way off...
+					img.open();
 					//img.resize(); // can't resize because events dispatched by img.open() haven't executed yet
 				}
-			} 
+			}
 	
 			var title:Text;
 			if (obj.back || obj.backs.length == 1)
@@ -1043,10 +1052,10 @@ package com.gestureworks.cml.elements
 			
 			fadein(img, 1);
 			
-			prv.width = img.width;
-			prv.height = img.height + 30;
 			prv.addChild(img);
 			prv.addChild(title);
+			prv.width = img.width;
+			prv.height = img.height + 30;
 			
 			return prv;
 		}
@@ -1102,6 +1111,9 @@ package com.gestureworks.cml.elements
 		
 		private function selectItem(obj:*):void
 		{
+			/*System.gc();
+			System.gc();*/
+			
 			// if object is already on the stage
 			if (obj.visible)
 			{
@@ -1151,7 +1163,7 @@ package com.gestureworks.cml.elements
 			fadein(obj);
 			
 			obj.visible = true;
-			if (obj is VideoViewer && obj.video.autoplay) { obj.video.play(); } // autoplay check
+			if (obj is VideoViewer && obj.video.autoplay) { obj.video.stop(); obj.video.play(); } // enforce autoplay (and force playback from the beginning) even if we're re using a clone
 			
 			placeHolderIndex++;
 		}
@@ -1243,7 +1255,7 @@ package com.gestureworks.cml.elements
 				var aCon:* = searchChildren("#album-container");
 				aCon.searchChildren("#menu1").select(e.value);
 			}
-		
+
 		}
 		
 		private function moveB(e:*):void
@@ -1262,8 +1274,7 @@ package com.gestureworks.cml.elements
 				parent.setChildIndex(obj, (parent.getChildIndex(this) - 1));
 			else
 			{
-				parent.setChildIndex(obj, (parent.getChildIndex(this) - 2));
-				
+				parent.setChildIndex(obj, (parent.getChildIndex(this) - 2));				
 			}
 		}
 		

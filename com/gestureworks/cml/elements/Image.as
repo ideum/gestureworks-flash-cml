@@ -78,6 +78,7 @@ package com.gestureworks.cml.elements
 		 * Returns a clone of this Image
 		 * @return
 		 */
+		// appears to be used on in MenuAlbum for making drag clones
 		override public function clone():* 
 		{
 			var clone:Image = CloneUtils.clone(this, null);

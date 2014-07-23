@@ -1,5 +1,3 @@
-// a custom scaling gesture, vidviewer-scale, has a larger boundary_max, serves as a hack to enable larger video scaling - Rob
-
 package com.gestureworks.cml.elements
 {	
 	import com.gestureworks.cml.events.*;
@@ -8,7 +6,9 @@ package com.gestureworks.cml.elements
 	import flash.events.*;
 	import flash.media.*;
 	import flash.net.*;
+	import flash.system.System;
 	import flash.utils.*;
+	
 	
 	/**
 	 * The Video element loads a video and plays it, and provides access to play, pause, stop, and seek methods.
@@ -36,14 +36,9 @@ package com.gestureworks.cml.elements
 		private var customClient:Object;
 		private var positionTimer:Timer;
 		private var progressTimer:Timer;
-		
-		
-		
-		public var sizeLoaded:Boolean = false; // should be renamed to metaCallbackSizeLoaded
-		public var playButton:Button;
-		
-		
-		
+		private var _resample:Boolean;
+		private var sizeLoaded:Boolean = false; // should be renamed to metaCallbackSizeLoaded
+		private var playButton:Button;
 		private var unmuteVolume:Number = 1;
 		
 		/**
@@ -55,7 +50,7 @@ package com.gestureworks.cml.elements
 		  mouseChildren = true;
 		}
 		
-		private var _debug:Boolean=false;
+		private var _debug:Boolean=true;
 		/**
 		 * Prints status message to console
 		 */	
@@ -107,7 +102,6 @@ package com.gestureworks.cml.elements
 		public function set autoplay(value:Boolean):void 
 		{	
 			_autoplay = value;
-			
 		}
 					
 		private var _loop:Boolean = false;
@@ -126,7 +120,7 @@ package com.gestureworks.cml.elements
 		{
 			if (src == value) return;					
 			_src = value;
-			if (autoLoad) load();
+			//if (autoLoad) load();
 		}		
 		
 		private var _deblocking:int;
@@ -255,7 +249,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Flag central alignment of the play button
 		 */
-		public var centerPlayButton:Boolean = true;
+		public var centerPlayButton:Boolean = false;
 	
 		override public function init():void 
 		{
@@ -290,6 +284,10 @@ package com.gestureworks.cml.elements
 				load();
 		}
 
+		public function pseudoClose():void {
+			_isLoaded = false;
+			sizeLoaded = false;
+		}
 		
 		/**
 		 * Closes video 
@@ -332,10 +330,11 @@ package com.gestureworks.cml.elements
 				positionTimer = null;
 			}
 			
-			src = "";
 			
+			//src = ""; // DON'T clear the source!!!
+			_isLoaded = false;
 			sizeLoaded = false;
-		}		
+		}
 		
 		/**
 		 * Plays the video from the beginning
@@ -348,8 +347,8 @@ package com.gestureworks.cml.elements
 			positionTimer.reset();
 			positionTimer.start();
 			_position = 0;
-			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
-			positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
+			//positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
+			//positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
 		}
 		
 		/**
@@ -405,11 +404,11 @@ package com.gestureworks.cml.elements
 		/// PRIVATE METHODS ///	
 		private function load():void
 		{
-			if (isLoaded) return;
+			//if (isLoaded) return;
 			if (netConnection) {
 				netConnection.close();
-				//netConnection.removeEventListener((NetStatusEvent.NET_STATUS, onNetStatus);
-				//netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+				netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			}
 			else
 				netConnection = new NetConnection;
@@ -469,10 +468,10 @@ package com.gestureworks.cml.elements
 					 break;
 			}	
 				if (debug)
-					trace(event.info.code);
+					trace(event.info.code + " " + src);
 		}
 		
-		private function connectNetStream():void
+		public function connectNetStream():void
 		{
 			progressTimer = new Timer(1000);
 			if (!positionTimer)
@@ -493,7 +492,7 @@ package com.gestureworks.cml.elements
 			//the meta data callback seems unrealiable, so give the option to specify video diemensions here as well
 			// ^^ appears reliable so far, added ratio scaling to the callback - Rob 7/13/2014 
 			
-			if (!sizeLoaded) {
+			//if (!sizeLoaded) {
 			if (width > 0)
 				video.width = _width;
 			else if (!width)
@@ -502,9 +501,12 @@ package com.gestureworks.cml.elements
 				video.height = _height;
 			else if (!height)
 				height = video.height;
-			}
+			//}
 			
-			addChild(video);
+			//addChild(video);
+			
+			// cause a metadata callback, which dispatches an Event.COMPLETE
+			// needed for getting and adding a preview to the MenuAlbum in Dock
 			play();
 			_isLoaded = true;
 		}
@@ -529,25 +531,55 @@ package com.gestureworks.cml.elements
 				video.height = ratio * meta.height;
 				width = video.width;
 				height = video.height;
-
+				//fitContent(meta.width, meta.height);
 				
 				if (debug) {
 					trace("video width: " + meta.width);
 					trace("video height: " + meta.height);				
 				}
-				
-				sizeLoaded = true;
+
+				//if (!autoplay) stop(); 
+				stop();
 				
 				// file and all metadata loaded
-				//if (!autoplay) stop();
-				
-				// for the Collection Viewer we always auto play - Rob
-				stop();
-				// play() will be  called in Dock().selectItem() - Rob
-				
-				this.dispatchEvent(new Event(Event.COMPLETE));
+				sizeLoaded = true;
+				_isLoaded = true;
+				dispatchEvent(new Event(Event.COMPLETE, false, false));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 			}
 		}
+		
+		/*public function resize():void {
+			if (video.videoWidth != 0 && video.videoHeight != 0) {
+				fitContent(video.videoWidth, video.videoHeight);
+			} else {
+				fitContent(_width, _height);
+			}
+		}
+
+		public function fitContent(aspectWidth:Number, aspectHeight:Number):void {
+			if (_resample) {
+				if ((width != 0 && height != 0) && (aspectWidth != 0 && aspectHeight != 0)) {
+					var relLength:Number = 0;
+					if (aspectHeight > aspectWidth) {
+						relLength = aspectWidth / aspectHeight;
+						video.height = _height;
+						video.width = _height * relLength;
+					} else {
+						relLength = aspectHeight / aspectWidth;
+						video.width = _width;
+						video.height = _width * relLength;
+					}
+					video.x = (_width - video.width) / 2;
+					video.y = (_height - video.height) / 2;
+				} else {
+					trace('not enough info to fit content...');
+				}
+			} else {
+				video.width = _width;
+				video.height = _height;
+			}
+		}*/
 		
 		private function onSecurityError(event:SecurityErrorEvent):void
 		{
@@ -585,11 +617,13 @@ package com.gestureworks.cml.elements
 		{			
 			if (!netStream) return;
 			_position = netStream.time / _duration;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
 		
 		private function end():void
 		{
+			//System.gc();
+			//System.gc();
 			if (loop) play();
 			else stop();
 			
@@ -647,6 +681,7 @@ package com.gestureworks.cml.elements
 			netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netStream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			
 			netStream.dispose();
 			netStream = null;
 			

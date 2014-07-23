@@ -65,7 +65,7 @@ package com.gestureworks.cml.managers
 		public static var css:LoaderMax = new LoaderMax({name:"css", onProgress:onProgress, onComplete:onComplete, onError:onError});
 		public static var swf:LoaderMax = new LoaderMax({name:"swf", onProgress:onProgress, onComplete:onComplete, onError:onError});		
 		public static var media:LoaderMax = new LoaderMax({name:"media", onProgress:onProgress, onComplete:onComplete, onError:onError});
-		public static var video:LoaderMax = new LoaderMax({name:"video", onProgress:onProgress, onComplete:onComplete, onError:onError});
+		//public static var video:LoaderMax = new LoaderMax({name:"video", onProgress:onProgress, onComplete:onComplete, onError:onError});
 		
 		public static var fileList:LinkedMap = new LinkedMap;
 		public static function get fileCount():Number { return fileList.length; }
@@ -89,7 +89,16 @@ package com.gestureworks.cml.managers
 			swfLoaderContext.applicationDomain = ApplicationDomain.currentDomain;	
 			
 			LoaderMax.registerFileType("cml", XMLLoader);
-			LoaderMax.activate([ImageLoader, SWFLoader, XMLLoader, MP3Loader, CSSLoader, DataLoader, BinaryDataLoader, VideoLoader]);
+			LoaderMax.activate([ImageLoader, SWFLoader, XMLLoader, MP3Loader, CSSLoader, DataLoader, BinaryDataLoader]); // , VideoLoader]);
+		}
+		
+		
+		/**
+		 * Returns true if the given file path is a media type
+		 */
+		public static function isAudio(file:String):Boolean
+		{
+			return file.search(audioType) != -1;
 		}
 		
 		/**

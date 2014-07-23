@@ -34,7 +34,7 @@ package com.gestureworks.cml.components
 	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */			
 	public class VideoViewer extends Component 
-	{		
+	{				
 		private var initialScale:Number;
 		private var infoBtn:Button;
 		private var playBtn:Button;
@@ -51,7 +51,6 @@ package com.gestureworks.cml.components
 		{
 			super();
 		}
-		
 		
 		///////////////////////////////////////////////////////////////////////
 		// Public Properties
@@ -101,6 +100,8 @@ package com.gestureworks.cml.components
 			// automatically try to find elements based on AS3 class
 			if (!video)
 				video = searchChildren(Video);
+				
+				
 			video.addEventListener(StateEvent.CHANGE, onStateEvent);
 			
 			// automatically try to find elements based on AS3 class
@@ -160,6 +161,9 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
+			this.removeAllListeners();
+			staticVisual.removeAllListeners();
+			staticVisual = null;
 			_video = null;
 			_slider = null;
 		}
@@ -170,7 +174,7 @@ package com.gestureworks.cml.components
 				initialScale = value;
 				
 				minScale = value;
-				maxScale = 1920 / width;
+				maxScale = 920 / width;
 				
 				infoBtn.scale = .5 / value;
 				playBtn.scale = .5 / value;
@@ -201,8 +205,9 @@ package com.gestureworks.cml.components
 			
 			if (video) {
 				clone.video = String(video.id);
+				//clone.video = video.clone();
 			}
-			
+	
 			if (front){
 				clone.front = String(front.id);
 			}
@@ -254,5 +259,18 @@ package com.gestureworks.cml.components
 			
 			return clone;
 		}
+		
+		
+		
+		/*private function onLoadComplete(e:StateEvent):void
+		{
+			if (e.property == "isLoaded") {
+				video.removeEventListener(StateEvent.CHANGE, onLoadComplete);
+				isLoaded = true;
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+			}
+		}
+		
+		public var isLoaded:Boolean = true;*/
 	}
 }
