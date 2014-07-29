@@ -41,6 +41,8 @@ package com.gestureworks.cml.elements
 		private var playButton:Button;
 		private var unmuteVolume:Number = 1;
 		
+		private var progressText:Text;
+		
 		/**
 		 * Constructor
 		 */
@@ -150,6 +152,11 @@ package com.gestureworks.cml.elements
 		 * Total video duration
 		 */	
 		public function get duration():Number { return _duration; }
+		
+		/**
+		 * Elapsed net stream time
+		 */
+		public function get elapsedTime():Number { return netStream.time; }		
 		
 		private var _percentLoaded:Number = 0;
 		/**
@@ -267,7 +274,7 @@ package com.gestureworks.cml.elements
 				}
 			}
 			
-			progressBar = searchChildren(ProgressBar);
+			progressBar = searchChildren(ProgressBar);	
 		}
 		
 		/// PUBLIC METHODS ///
@@ -347,8 +354,8 @@ package com.gestureworks.cml.elements
 			positionTimer.reset();
 			positionTimer.start();
 			_position = 0;
-			//positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
-			//positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
+			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
+			positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
 		}
 		
 		/**
@@ -505,6 +512,14 @@ package com.gestureworks.cml.elements
 			
 			addChild(video);
 			
+			if (CONFIG::debug) {
+				progressText = new Text();
+				progressText.color = 0xFFFFFF;
+				progressText.fontSize = 20;
+				progressText.autosize = true; 
+				addChild(progressText);
+			}			
+			
 			// cause a metadata callback, which dispatches an Event.COMPLETE
 			// needed for getting and adding a preview to the MenuAlbum in Dock
 			play();
@@ -617,8 +632,24 @@ package com.gestureworks.cml.elements
 		{			
 			if (!netStream) return;
 			_position = netStream.time / _duration;
+			
+			if (progressText) {
+				progressText.str = convertTimeMS(elapsedTime) + " / " + convertTimeMS(duration);
+			}
 			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
+		
+		/**
+		 * Converts time froms seconds to Minutes:Seconds
+		 * @param	secs
+		 * @return string (00:00)
+		 */
+		public static function convertTimeMS(secs:Number):String {
+			var m:Number=Math.floor((secs%3600)/60);
+			var s:Number=Math.floor((secs%3600)%60);
+			//return((m<10?"0"+m.toString():m.toString())+":"+(s<10?"0"+s.toString():s.toString()));
+			return((m.toString())+":"+(s<10?"0"+s.toString():s.toString()));
+		}			
 		
 		private function end():void
 		{
