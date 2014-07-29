@@ -126,7 +126,6 @@ package com.gestureworks.cml.core
 			paths["Include"] = [];
 			paths["Library"] = [];
 			paths["Media"] = [];
-			paths["Video"] = [];
 			
 			preprocessLoop(cml);
 			state = "Include";			
@@ -173,8 +172,6 @@ package com.gestureworks.cml.core
 					ppLayoutKit(cml[i]);	
 				else if (tag == "Stage")
 					cml[i].setName("StageKit");
-				else if (tag == "VideoViewer")
-					ppVideo(cml[i]);
 				else if (cml[i].@src != undefined)
 					ppMedia(cml[i]);					
 				
@@ -219,10 +216,6 @@ package com.gestureworks.cml.core
 				FileManager.media.addEventListener(LoaderEvent.COMPLETE, filesLoaded);
 				FileManager.media.load();				
 			}
-			else if (state == "Video") {
-				FileManager.video.addEventListener(LoaderEvent.COMPLETE, filesLoaded);
-				FileManager.video.load();				
-			}			
 		}
 		
 		
@@ -265,11 +258,6 @@ package com.gestureworks.cml.core
 					return;
 				}					
 				else if (state == "Media"){
-					state = "Video";
-					processPaths(paths[state]);
-					return;
-				}
-				else if (state == "Video"){
 					ppComplete();
 					return;
 				}
@@ -365,24 +353,6 @@ package com.gestureworks.cml.core
 			if (paths["Media"].indexOf(path) == -1)
 				paths["Media"].push(path);
 			if (debug) trace("0:   Media found: " + path);				
-		}
-		
-		private static function ppVideo(cml:XML, str:String=""):void 
-		{	
-			var path:String; 
-			
-			if (str.length)
-				path = str;
-			else
-				path = cml.@src;
-			
-			path = updatePath(path);	
-				
-			if (!FileManager.isPreloadMedia(path)) return;				
-				
-			if (paths["Video"].indexOf(path) == -1)
-				paths["Video"].push(path);
-			if (debug) trace("0:   Video found: " + path);				
 		}
 		
 		private static function dash(cml:XMLList):String

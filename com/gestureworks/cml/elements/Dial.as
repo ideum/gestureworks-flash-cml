@@ -254,7 +254,7 @@ package com.gestureworks.cml.elements
 		{
 			var rex:RegExp = /(\t|\n|\r)/gi;
 			_text = value.replace(rex, '');
-			textArray = _text.split(",");
+			textArray = _text.split(",,");
 		}
 		
 		private var _fontSize:Number = 20;

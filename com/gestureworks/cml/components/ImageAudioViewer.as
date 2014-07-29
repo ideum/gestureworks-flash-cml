@@ -43,7 +43,7 @@ package com.gestureworks.cml.components
 		private var closeBtn:Button;
 		
 		public var audio:MP3;
-		public var staticVisualUrl:String;
+		public var secondaryContentURL:String;
 		
 		/**
 		 * image viewer Constructor
@@ -126,7 +126,7 @@ package com.gestureworks.cml.components
 			}
 			else if (event.value == "play") {
 				if (audio) { audio.stop();  audio.play(); }
-				else { audio = new MP3(); audio.src = staticVisualUrl; audio.autoplay = true; audio.open();  }
+				else { audio = new MP3(); audio.src = secondaryContentURL; audio.autoplay = true; audio.open();  }
 			}
 			else if (event.value == "pause") {
 				if (audio) { audio.stop(); }

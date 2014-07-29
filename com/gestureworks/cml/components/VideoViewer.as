@@ -42,7 +42,7 @@ package com.gestureworks.cml.components
 		private var closeBtn:Button;
 		
 		public var staticVisual:Image;
-		public var staticVisualUrl:String;
+		public var secondaryContentURL:String;
 		
 		/**
 		 * Constructor

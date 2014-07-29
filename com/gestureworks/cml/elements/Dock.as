@@ -38,7 +38,7 @@ package com.gestureworks.cml.elements
 		public var isLoading:Boolean = false;
 		public var loadText:Text;
 		
-		public var maxClones:int = 15;
+		public var maxClones:int = 30;
 		
 		private var srcMap:Dictionary;
 		private var cloneMap:LinkedMap;
@@ -86,7 +86,6 @@ package com.gestureworks.cml.elements
 		public function Dock()
 		{
 			super();
-		
 		}
 		
 		private var _nextArrow:*;
@@ -429,17 +428,13 @@ package com.gestureworks.cml.elements
 			}
 			else if (FileManager.isImage(res["primary_content"]))
 			{
-				if (res["static_visual_content"] && FileManager.isAudio(res["static_visual_content"])) {
+				if (res["secondary_content"] && FileManager.isAudio(res["secondary_content"])) {
 					while (!(cloneMap.key is ImageAudioViewer)) { _incrementCloneMap(); }
 				} 
 				else {
 					while (!(cloneMap.key is ImageViewer)) { _incrementCloneMap(); }
 				}
 			} 
-			/*else if (FileManager.isAudio(res["primary_content"]))
-			{
-				
-			}*/
 		}
 		
 		private function availableClone(res:*):void
@@ -614,13 +609,15 @@ package com.gestureworks.cml.elements
 			if (!flickrQuery)
 			{
 				if (index == 0)
-					searchTerms[index] = _searchFieldsArray[index] + ":" + e.value;
+					searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
+					//searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
 				
 				else if (index == 1)
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
 				
 				else if (index == 2)
-					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
+					searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
+					//searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
 				
 			}
 			// If this were Flickr...
@@ -1006,7 +1003,7 @@ package com.gestureworks.cml.elements
 			
 			//if (obj is ImageViewer || obj is ImageAudioViewer) {
 			if (!(obj is VideoViewer)) {
-				if (obj is ImageAudioViewer) { obj.staticVisualUrl = obj.searchChildren("staticVisualUrl").text; }
+				if (obj is ImageAudioViewer) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
 				img = obj.image.clone();
 				img.width = 0;
 				img.height = 140;
@@ -1024,7 +1021,7 @@ package com.gestureworks.cml.elements
 				} else {
 					img = new Image();
 					obj.staticVisual = img; // hold onto a reference
-					img.src = obj.searchChildren("staticVisualUrl").text;
+					img.src = obj.searchChildren("secondaryContentURL").text;
 					img.width = 140; // we can't resize(), so use values appropriate for aspect ratio
 					img.height = 140;
 					img.resample = true; // if false, drag clone image offsets are way off...
@@ -1134,7 +1131,9 @@ package com.gestureworks.cml.elements
 			//else
 			
 			obj.resetScale(); 
-			if (obj is VideoViewer) { obj.manualLayoutUpdate(); }
+			if (obj is VideoViewer) { 
+				obj.manualLayoutUpdate();
+			}
 	
 			if (position == "top")
 			{

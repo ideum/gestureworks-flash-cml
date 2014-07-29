@@ -503,7 +503,7 @@ package com.gestureworks.cml.elements
 				height = video.height;
 			//}
 			
-			//addChild(video);
+			addChild(video);
 			
 			// cause a metadata callback, which dispatches an Event.COMPLETE
 			// needed for getting and adding a preview to the MenuAlbum in Dock
