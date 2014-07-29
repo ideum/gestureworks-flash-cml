@@ -347,7 +347,7 @@ package com.gestureworks.cml.elements
 		 * Plays the video from the beginning
 		 */		
 		public function play(e:StateEvent=null):void
-		{			
+		{		
 			if (e && e.value != playButtonState) return;
 			netStream.seek(0);				
 			netStream.play(src);
@@ -485,6 +485,8 @@ package com.gestureworks.cml.elements
 				positionTimer = new Timer(20);
 			
 			netStream = new NetStream(netConnection);
+			netStream.inBufferSeek = true; 
+			netStream.bufferTime = 5; 
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
