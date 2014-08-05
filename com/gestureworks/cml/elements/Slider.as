@@ -251,11 +251,16 @@ package com.gestureworks.cml.elements
 		public function createEvents():void {
 			hit.addEventListener(GWTouchEvent.TOUCH_BEGIN, onDownHit);
 			
-			//if (knob)
-			//{
-				//knob.addEventListener(GWGestureEvent.DRAG, onDrag);
-				//knob.addEventListener(GWGestureEvent.RELEASE, onRelease);
-			//}
+			if (touchKnob)
+			{
+				touchKnob.addEventListener(GWGestureEvent.DRAG, onDrag);
+				if (gestureReleaseInertia)
+				  touchKnob.addEventListener(GWGestureEvent.COMPLETE, onComplete);
+				else{
+					touchKnob.addEventListener(GWTouchEvent.TOUCH_END, onComplete);
+					hit.addEventListener(GWTouchEvent.TOUCH_OUT, onComplete);
+				}
+			}
 		}
 		
 		/**
@@ -281,11 +286,16 @@ package com.gestureworks.cml.elements
 			{
 				if (mouseEnabled) {
 					
-					//knob.affineTransform = false;
-					//knob.nativeTransform = false;	
-					//knob.gestureList = { "n-drag": true };
+					touchKnob = new TouchContainer;
+					touchKnob.mouseChildren = false;
+					touchKnob.affineTransform = false;
+					touchKnob.nativeTransform = false;	
+					touchKnob.gestureEvents = true;
+					touchKnob.gestureList = { "n-drag-inertia": true };
+					touchKnob.gestureReleaseInertia = gestureReleaseInertia;
 					
-					addChild(knob);					
+					touchKnob.addChild(knob);
+					addChild(touchKnob);					
 				}
 				
 				
@@ -344,16 +354,13 @@ package com.gestureworks.cml.elements
 			if (!rail)
 			{
 				var railGraphic:Graphic = new Graphic();
-				railGraphic.shape = "roundRectangle";
-				railGraphic.cornerWidth = 60;
-				railGraphic.cornerHeight = 60;
+				railGraphic.shape = "rectangle";
 				railGraphic.width = isHorizontal() ? width: height;
 				railGraphic.height = isHorizontal() ? height: width;
-				railGraphic.lineStroke = 2;
+				railGraphic.lineStroke = 1;
 				railGraphic.color = railColor;
 				railGraphic.alpha = railAlpha;
 				railGraphic.lineColor = railLineColor;
-				railGraphic.cacheAsBitmap = true;
 				addChild(railGraphic);
 				rail = DisplayObject(railGraphic);
 			}
@@ -468,10 +475,6 @@ package com.gestureworks.cml.elements
 			}
 			
 			updateValues();
-		}
-		
-		protected function onRelease(event:GWGestureEvent):void {
-			
 		}
 	
 		
