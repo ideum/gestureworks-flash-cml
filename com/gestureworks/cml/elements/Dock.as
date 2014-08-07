@@ -420,17 +420,19 @@ package com.gestureworks.cml.elements
 		{
 			_incrementCloneMap();
 			
-			// TODO: handle cloneMap.reset()... may get same type twice
-			
-			if (FileManager.isVideo(res["primary_content"]))
+			/*if (FileManager.isVideo(res["primary_content"]))
 			{
 				while (!(cloneMap.key is VideoViewer)) { _incrementCloneMap(); }
 			}
-			else if (FileManager.isImage(res["primary_content"]))
+			else*/ 
+			if (FileManager.isImage(res["primary_content"]))
 			{
 				if (res["secondary_content"] && FileManager.isAudio(res["secondary_content"])) {
 					while (!(cloneMap.key is ImageAudioViewer)) { _incrementCloneMap(); }
 				} 
+				else if (res["secondary_content"] && FileManager.isVideo(res["secondary_content"])) {
+					while (!(cloneMap.key is ImageVideoViewer)) { _incrementCloneMap(); }
+				}
 				else {
 					while (!(cloneMap.key is ImageViewer)) { _incrementCloneMap(); }
 				}
@@ -457,17 +459,43 @@ package com.gestureworks.cml.elements
 		
 		private function unlockedClone(res:*):void
 		{
-			// we have no locked clones, so we simply return the first one of the correct type
-			// see TODO in incrementCloneMap(res:*)
+			// if the current clone is unlocked, we make sure it is of the correct type
+			// if not we increment the clonemap until we get a clone of the correct type, minding those currently locked
 			if (locked.indexOf(cloneMap.index) == -1)
 			{
-				incrementCloneMap(res);
+				/*if (FileManager.isVideo(res["primary_content"]))
+				{
+					if (!(cloneMap.key is VideoViewer)) { unlockedCloneCorrectType(res); }
+				}
+				else*/ 
+				if (FileManager.isImage(res["primary_content"]))
+				{
+					if (res["secondary_content"] && FileManager.isAudio(res["secondary_content"])) {
+						if (!(cloneMap.key is ImageAudioViewer)) { unlockedCloneCorrectType(res); }
+					}  
+					else if (res["secondary_content"] && FileManager.isVideo(res["secondary_content"])) {
+						if (!(cloneMap.key is ImageVideoViewer)) { unlockedCloneCorrectType(res); }
+					} 
+					else {
+						if (!(cloneMap.key is ImageViewer)) { unlockedCloneCorrectType(res); }
+					}
+				}
+				
 				return;
 			}
 			
-			// otherwise there is at least one locked clone
+			// there is at least one locked clone
 			while (locked.indexOf(cloneMap.index) != -1)
-			{
+			{	
+				incrementCloneMap(res);
+			}
+		}
+		
+		
+		private function unlockedCloneCorrectType(res:*):void {
+			incrementCloneMap(res);
+			while (locked.indexOf(cloneMap.index) != -1)
+			{	
 				incrementCloneMap(res);
 			}
 		}
@@ -605,20 +633,35 @@ package com.gestureworks.cml.elements
 			cancelLoading();
 			
 			var index:int = dials.indexOf(e.target);
-			
+			//var splitArray:* = e.value.split("'s ")
+			var str:* = "";
 			if (!flickrQuery)
 			{
-				if (index == 0)
-					searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
-					//searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
+				/*// TODO handle strings with more than one apostrophe
+				if (splitArray.length > 1)
+				{
+					for (var i:int = 0; i < splitArray.length - 1; ++i)
+					{
+						str += _searchFieldsArray[index] + ":\"" + splitArray[i] + "'\"" + " and ";
+					}
+					str += "\"" + splitArray[splitArray.length - 1] + "\"";
+					searchTerms[index] = str;
+				}
+				else*/
+				//{
+					searchTerms[index] = _searchFieldsArray[index] + ":\"" + e.value + "\"";
+				//}
 				
+				/*if (index == 0)
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
+					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
 				else if (index == 1)
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
-				
+					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
 				else if (index == 2)
-					searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
-					//searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
-				
+					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
+					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;*/
+				trace(index, searchTerms[index]);
 			}
 			// If this were Flickr...
 			// FlickrQuery -- generate search?
@@ -848,7 +891,7 @@ package com.gestureworks.cml.elements
 			
 			for (var i:int = loadCnt; i < num; i++)
 			{
- 				resolveExp(result[i]);
+				if (result[i]) { resolveExp(result[i]); }
 			}
 		}
 		
@@ -869,8 +912,19 @@ package com.gestureworks.cml.elements
 						c.init();
 					}
 					else { event.target.init(); }
-										
-					event.target.scale = 300 / event.target.width;
+					
+					// mind aspect ratio when sizing object for placeholder
+					if (event.target.image.portrait == true) {
+						event.target.scale = 300 / event.target.height;						
+						var textElement:* = event.target.searchChildren(".info_description");
+						if (textElement) { // implies existaence of a parent scrollpane...
+							textElement.fontSize = 14; // most of the time, portrait objects have too large of a font
+							event.target.searchChildren("back2").updateContent(textElement); // scrollpane woes
+						} else { trace("no .info_description"); } 
+					} 
+					else { event.target.scale = 300 / event.target.width; }
+					
+					//event.target.scale = 300 / event.target.width;
 						
 					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale);
 				}
@@ -912,16 +966,16 @@ package com.gestureworks.cml.elements
 			{
 				resultTxt.text = resultCnt + " Results";
 			}
-			if (flickrQuery && flickrQuery.pages > 1)
+			/*if (flickrQuery && flickrQuery.pages > 1)
 			{
 				resultTxt.text += " (Page " + flickrQuery.pageNumber + " of " + flickrQuery.pages + ")";
 			}
-			else if (resultsDict && resultsDict.length > 1)
+			else*/ if (resultsDict && resultsDict.length > 1)
 			{
 				resultTxt.text += " (Page " + (currentPage + 1) + " of " + pageCount + ")";
 			}
 			
-			if (flickrQuery && flickrQuery.pages > 1)
+			/*if (flickrQuery && flickrQuery.pages > 1)
 			{
 				if (flickrQuery.pageNumber > 1)
 				{
@@ -934,12 +988,13 @@ package com.gestureworks.cml.elements
 						// else...auto-generate one?
 				}
 			}
-			else if (resultsDict && resultsDict.length > 1 && currentPage > 0)
+			else*/ if (resultsDict && resultsDict.length > 1 && currentPage > 0)
 			{
 				if (_previousArrow)
 				{
 					if (!album.contains(_previousArrow))
 						album.addChild(_previousArrow);
+					//else
 					album.backButton = _previousArrow;
 				}
 			}
@@ -952,8 +1007,7 @@ package com.gestureworks.cml.elements
 			{
 				album.addChild(preview);
 			}
-			
-			if (flickrQuery && flickrQuery.pages > 1)
+			/*if (flickrQuery && flickrQuery.pages > 1)
 			{
 				// Add a next arrow.
 				if (flickrQuery.pageNumber < flickrQuery.pages)
@@ -967,19 +1021,23 @@ package com.gestureworks.cml.elements
 						// else...auto-generate one?
 				}
 			}
-			else if (resultsDict && resultsDict.length > 1 && currentPage < resultsDict.length - 1)
+			else*/ if (resultsDict && resultsDict.length > 1 && currentPage < resultsDict.length - 1)
 			{
 				if (_nextArrow)
 				{
-					if (!album.contains(_nextArrow))
-						album.addChild(_nextArrow);
+					if (!album.contains(_nextArrow)) {
+						//album.addChildAt(_nextArrow, previews.length);
+						album.addChild(_nextArrow); // , previews.length);
+					}
 					album.forwardButton = _nextArrow;
+					
 				}
 			}
 			
 			album.margin = 15;
 			album.init();
 			
+			// mark visbile clones as on stage
 			for each (preview in previews)
 			{
 				src = srcMap[preview];
@@ -993,42 +1051,21 @@ package com.gestureworks.cml.elements
 			var prv:TouchContainer = new TouchContainer();
 			var img:*;
 			
-			/* Anything with a primary media representation that IS NOT a static image needs something that IS a static image
-			   for previews and dragClones. Further, image instantation must only occur when the preview clone is first instantiated,
-			   otherwise we get scaling bugs of the previews in the MenuAlbum(). Therefore we add a field to VideoViewer(), 
-			   or other non-static image viewer types, and store this static image instance for later use. This is needed because the
-			   call to img.resize(), which resolves the scaling bugs, causes a NPE unless events dispatched by img.open() have completed. 
-			   Those events don't excute untill after this stack frame is popped... - Rob 7/14/2014
+			/* 
+			 * Collective Access Note:
+			 * Anything with a primary media representation that IS NOT a static image needs something that IS a static image
+			 * for previews and dragClones. So, for CA objects with sound or video clips, we use a modified ImageViewer with an
+			 * additional child element (of the appropriate type for the non-static "secondary" media representation). This
+			 * additional element becomes visible, etc. when we select an item in the dock.
 			 */
 			
-			//if (obj is ImageViewer || obj is ImageAudioViewer) {
-			if (!(obj is VideoViewer)) {
-				if (obj is ImageAudioViewer) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
-				img = obj.image.clone();
-				img.width = 0;
-				img.height = 140;
-				img.resample = true; // if false, drag clone image offsets are way off...
-				img.resize();
-			} 
-			else //if (obj is VideoViewer) // NOTE: currently only two other compatible types in use
-			{
-				if (obj.staticVisual) { 
-					img = obj.staticVisual.clone();
-					img.width = 0;
-					img.height = 140;
-					img.resample = true; // if false, drag clone image offsets are way off...
-					img.resize(); // CAN resize because events dispatched by img.open() HAVE executed
-				} else {
-					img = new Image();
-					obj.staticVisual = img; // hold onto a reference
-					img.src = obj.searchChildren("secondaryContentURL").text;
-					img.width = 140; // we can't resize(), so use values appropriate for aspect ratio
-					img.height = 140;
-					img.resample = true; // if false, drag clone image offsets are way off...
-					img.open();
-					//img.resize(); // can't resize because events dispatched by img.open() haven't executed yet
-				}
-			}
+			if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
+			img = obj.image.clone();
+			img.width = 0;
+			img.height = 140;
+			img.resample = true; // if false, drag clone image offsets are way off...
+			img.resize();
+		
 	
 			var title:Text;
 			if (obj.back || obj.backs.length == 1)
@@ -1108,9 +1145,6 @@ package com.gestureworks.cml.elements
 		
 		private function selectItem(obj:*):void
 		{
-			/*System.gc();
-			System.gc();*/
-			
 			// if object is already on the stage
 			if (obj.visible)
 			{
@@ -1131,8 +1165,10 @@ package com.gestureworks.cml.elements
 			//else
 			
 			obj.resetScale(); 
-			if (obj is VideoViewer) { 
-				obj.manualLayoutUpdate();
+			if (obj is ImageVideoViewer) {
+				obj.image.visible = false;
+				//obj.manualLayoutUpdate();
+				obj.startVideo();
 			}
 	
 			if (position == "top")
@@ -1162,7 +1198,7 @@ package com.gestureworks.cml.elements
 			fadein(obj);
 			
 			obj.visible = true;
-			if (obj is VideoViewer && obj.video.autoplay) { obj.video.stop(); obj.video.play(); } // enforce autoplay (and force playback from the beginning) even if we're re using a clone
+			//if (obj is VideoViewer && obj.video.autoplay) { obj.video.stop(); obj.video.play(); } // enforce autoplay (and force playback from the beginning) even if we're re using a clone
 			
 			placeHolderIndex++;
 		}
@@ -1175,9 +1211,15 @@ package com.gestureworks.cml.elements
 			previews = [];
 			locked = [];
 			result = resultsDict[currentPage];
-			//resultCnt = 0;		
-			loadCnt = 0;
 			
+			//resultCnt = 0;
+			// this probably breaks Flickr stuff...
+			resultCnt = 0;	
+			for (var i:* = 0; i < result.length; ++i) {
+				if (result[i]) { ++resultCnt; }
+			}
+			
+			loadCnt = 0;			
 			loadClone();
 		}
 		
@@ -1189,9 +1231,15 @@ package com.gestureworks.cml.elements
 			previews = [];
 			locked = [];
 			result = resultsDict[currentPage];
-			//resultCnt = 0;		
-			loadCnt = 0;
 			
+			//resultCnt = 0;		
+			// this probably breaks Flickr stuff...
+			resultCnt = 0;	
+			for (var i:* = 0; i < result.length; ++i) {
+				if (result[i]) { ++resultCnt; }
+			}
+			
+			loadCnt = 0;
 			loadClone();
 		}
 		
@@ -1254,7 +1302,6 @@ package com.gestureworks.cml.elements
 				var aCon:* = searchChildren("#album-container");
 				aCon.searchChildren("#menu1").select(e.value);
 			}
-
 		}
 		
 		private function moveB(e:*):void
@@ -1378,7 +1425,7 @@ package com.gestureworks.cml.elements
 		//
 		/**
 		 * Mechanism to preprocess defined queries and automate the generation of filtered lists for flickrQueries.
-		 * TODO: Exapand to work with collective access queries and flickr text searches
+		 * TODO: Exapand to work with collective access queries AND flickr text searches
 		 */
 		private function searchTermFiltering():void
 		{
@@ -1475,46 +1522,46 @@ package com.gestureworks.cml.elements
 			//translate the valid maps into the dial's filter syntax and apply the filters to
 			//the filtered dials
 			addEventListener(StateEvent.CHANGE, function(e:StateEvent):void
+			{
+				if (e.property == "filters_generated")
 				{
-					if (e.property == "filters_generated")
+					var dial2Text:String;
+					for (var d2Key:String in dial2Filters)
 					{
-						var dial2Text:String;
-						for (var d2Key:String in dial2Filters)
-						{
-							if (!dial2Text)
-								dial2Text = d2Key + ",";
-							else
-								dial2Text = d2Key + ",\n\t" + dial2Text;
-							for each (var d2Val:String in dial2Filters[d2Key])
-								dial2Text = d2Val + ":" + dial2Text;
-						}
-						
-						var dial3Text:String;
-						for (var d3Key:String in dial3Filters)
-						{
-							if (!dial3Text)
-								dial3Text = d3Key + ",";
-							else
-								dial3Text = d3Key + ",\n\t" + dial3Text;
-							
-							for each (var d3Val:String in dial3Filters[d3Key])
-								dial3Text = d3Val + ":" + dial3Text;
-						}
-						
-						dial2Text = dial2Text.substr(0, dial2Text.length - 1);
-						dial3Text = dial3Text.substr(0, dial3Text.length - 1);
-						
-						dials[1].text = dial2Text;
-						dials[1].filterDial = dials[0];
-						dials[1].init();
-						
-						dials[2].text = dial3Text;
-						dials[2].filterDial = dials[1];
-						dials[2].init();
-						
-						dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "filters_complete"));
+						if (!dial2Text)
+							dial2Text = d2Key + ",";
+						else
+							dial2Text = d2Key + ",\n\t" + dial2Text;
+						for each (var d2Val:String in dial2Filters[d2Key])
+							dial2Text = d2Val + ":" + dial2Text;
 					}
-				});
+					
+					var dial3Text:String;
+					for (var d3Key:String in dial3Filters)
+					{
+						if (!dial3Text)
+							dial3Text = d3Key + ",";
+						else
+							dial3Text = d3Key + ",\n\t" + dial3Text;
+						
+						for each (var d3Val:String in dial3Filters[d3Key])
+							dial3Text = d3Val + ":" + dial3Text;
+					}
+					
+					dial2Text = dial2Text.substr(0, dial2Text.length - 1);
+					dial3Text = dial3Text.substr(0, dial3Text.length - 1);
+					
+					dials[1].text = dial2Text;
+					dials[1].filterDial = dials[0];
+					dials[1].init();
+					
+					dials[2].text = dial3Text;
+					dials[2].filterDial = dials[1];
+					dials[2].init();
+					
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "filters_complete"));
+				}
+			});
 		}
 		
 		/**

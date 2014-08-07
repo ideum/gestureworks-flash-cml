@@ -355,12 +355,17 @@ package com.gestureworks.cml.components
 				for (i=0; i < textFields.length; i++) 
 				{					
 					textFields[i].x = textFields[i].paddingLeft;
-					Text(textFields[i]).fontSize = Text(textFields[i]).fontSize;
+					//Text(textFields[i]).fontSize = Text(textFields[i]).fontSize; // ...
+					textFields[i].fontSize = textFields[i].fontSize;
 					textFields[i].autoSize = "left";
-					//Text(textFields[i]).textAlign = _autoAlign;
-					if (textFields[i] == searchChildren(".info_title"))
+					//Text(textFields[i]).textAlign = _autoAlign; // ...
+					if (textFields[i] == searchChildren(".info_title")) {
 						textFields[i].textAlign = "center";
-					else textFields[i].textAlign = "left";
+					}
+					else {
+						textFields[i].textAlign = "left";
+					}
+					
 					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
 					
 					if (i == 0)
@@ -390,7 +395,7 @@ package com.gestureworks.cml.components
 		private function formatPane(t:Text, sp:ScrollPane):void {
 			sp.y = t.y;
 			t.y = 0;
-			sp.width = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
+			sp.width = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;			
 			sp.x = t.paddingLeft;
 			t.width = sp.width - ((t.paddingLeft + t.paddingRight));
 			t.x = t.paddingLeft;

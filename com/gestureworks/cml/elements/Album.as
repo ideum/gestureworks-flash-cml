@@ -342,6 +342,24 @@ package com.gestureworks.cml.elements
 		 */
 		public function clear():void
 		{
+			/*for (var i:* = 0; i < belt.numChildren; ++i) {
+				//while (DisplayObjectContainer(belt.getChildAt(i)).numChildren > 0) {
+				for (var j:* = 0; j < DisplayObjectContainer(belt.getChildAt(i)).numChildren; ++j) {
+					if ("id" in belt.getChildAt(i) && belt.getChildAt(i)["id"] == "forward-btn") {
+						trace("forward-btn");
+					} else
+						DisplayObjectContainer(belt.getChildAt(i)).removeChildAt(j);
+				}
+				
+				belt.removeChildAt(i);
+			}*/
+			
+			var f:* = belt.searchChildren("forward-btn");
+			var b:* = belt.searchChildren("back-btn");
+			
+			if (f != null) { belt.removeChild(f); } //f = null; }
+			if (b != null) { belt.removeChild(b); } //b = null; }
+						
 			while (belt.numChildren > 0) {
 				while(DisplayObjectContainer(belt.getChildAt(0)).numChildren > 0){
 					DisplayObjectContainer(belt.getChildAt(0)).removeChildAt(0);

@@ -478,6 +478,7 @@ package com.gestureworks.cml.elements
 				positionTimer = new Timer(20);
 			
 			netStream = new NetStream(netConnection);
+			netStream.bufferTime = 1;
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -537,14 +538,16 @@ package com.gestureworks.cml.elements
 					trace("video width: " + meta.width);
 					trace("video height: " + meta.height);				
 				}
-
-				//if (!autoplay) stop(); 
-				stop();
+				
+				if (!autoplay) stop(); 
+				//stop();
+				//this.parent.manualLayoutUpdate();
 				
 				// file and all metadata loaded
 				sizeLoaded = true;
 				_isLoaded = true;
 				dispatchEvent(new Event(Event.COMPLETE, false, false));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "sizeLoaded", true));
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 			}
 		}

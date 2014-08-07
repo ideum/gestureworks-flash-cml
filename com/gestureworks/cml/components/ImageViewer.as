@@ -106,7 +106,8 @@ package com.gestureworks.cml.components
 				//if (!height && image)
 					height = image.height;	
 			}	
-			super.updateLayout();				
+			super.updateLayout();
+			menu.updateLayout(width, height);
 		}	
 		
 		/**
@@ -186,11 +187,14 @@ package com.gestureworks.cml.components
 				initialScale = value;
 				
 				minScale = value;
-				maxScale = 920 / width;
+				if (_image.landscape == true)
+					maxScale = 1920 / width;
+				else
+					maxScale = 1920 / height;
 				
-				infoBtn.scale = .5 / value;
-				
-				closeBtn.scale = .5 / value;
+				//maxScale = 920 / width;
+				//infoBtn.scale = .5 / value;
+				//closeBtn.scale = .5 / value;
 			}
 		}
 		

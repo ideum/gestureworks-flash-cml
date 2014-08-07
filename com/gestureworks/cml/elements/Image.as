@@ -406,21 +406,16 @@ package com.gestureworks.cml.elements
 				scaleX *= percentX;
 				scaleY *= percentY;
 			}
-
-		
-			
 						
 			// very important to set width and height!
 			width = _bitmap.width * scaleX;
 			height = _bitmap.height * scaleY;
 		
-
-			
 			
 			// establish orientation			
 			_aspectRatio = width / height;
 			
-			if (_aspectRatio > 1) 
+			if (_aspectRatio < 1) 
 			{
 				_portrait = true;
 				_landscape = false;
@@ -431,12 +426,8 @@ package com.gestureworks.cml.elements
 				_landscape = true; 
 			}
 			
-			
 			_bitmap.smoothing = true;
 			addChild(_bitmap);
-				
-			
-			
 			
 			// Do this if it loaded itself. If using the preloader, the preloader handles unloading
 			if (img &&  !_bitmapDataCache) 
@@ -445,7 +436,6 @@ package com.gestureworks.cml.elements
 				img = null;
 				fileData = null;
 			}
-			
 			
 			// send complete event
 			

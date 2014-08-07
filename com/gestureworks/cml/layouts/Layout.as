@@ -243,7 +243,7 @@ package com.gestureworks.cml.layouts
 			_onUpdate = f;
 		}
 		
-		private var _continuousTransform:Boolean = true;	
+		private var _continuousTransform:Boolean = false; // messes up pagination buttons in the dock
 		/**
 		 * Flag indicating the application of a transform relative to the current transform. If this flag is turned off, the transformation is 
 		 * reset with the principle layout attributes. (e.g. Given an object with a rotation of 45 degrees, applying a rotation of 10 in continuous mode

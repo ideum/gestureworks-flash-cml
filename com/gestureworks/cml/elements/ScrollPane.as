@@ -243,11 +243,11 @@ package com.gestureworks.cml.elements
 			}
 			_horizontalScroll.y = height + scrollMargin;
 			
-			if (_content.width > width) {
+			/*if (_content.width > width) {
 				addChild(_horizontalScroll);
 				
 				_horizontal = true;
-			} else { _horizontal = false; }
+			} else {*/ _horizontal = false; //}
 			
 			
 			// create mask
@@ -325,7 +325,8 @@ package com.gestureworks.cml.elements
 			}
 			removeEventListener(GWGestureEvent.SCALE, onScale);
 			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);			
+			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);		
+			removeEventListener(GWGestureEvent.COMPLETE, onEnd);
 			_verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 		}
@@ -377,14 +378,14 @@ package com.gestureworks.cml.elements
 				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
 				
 				if (rect.width * _content.scaleX > width) {
-					if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
-				} else if (rect.height * _content.scaleX < width) {
+					//if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
+				} else if (rect.width * _content.scaleX < width) {
 					if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
 				}
 			}
 			
 			if ( _horizontalScroll || _verticalScroll) {
-				enableScroll = contains(_horizontalScroll) || contains(_verticalScroll)
+				enableScroll = contains(_horizontalScroll) || contains(_verticalScroll);
 			}
 		}
 		

@@ -130,7 +130,6 @@ package  com.gestureworks.cml.elements
 			configureItems();
 			collectionViewer = DisplayUtils.getParentType(CollectionViewer,this);
 			dock = DisplayUtils.getParentType(Dock, this);
-			
 		}
 		
 		/**
@@ -145,16 +144,18 @@ package  com.gestureworks.cml.elements
 				var ts:TouchSprite = TouchSprite(belt.getChildAt(i));
 				ts.alpha = initialAlpha;
 				ts.nativeTransform = false;
-				ts.gestureList = { "n-tap":true, "n-drag":true};
-				ts.addEventListener(GWGestureEvent.TAP, selection);	
-				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
-				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
+				ts.gestureList = { "n-tap":true, "n-drag":true };
+				ts.addEventListener(GWGestureEvent.TAP, selection);
 				
+				// prevent dragging of the pagination buttons
 				if (forwardButton && ts.contains(forwardButton))
 					continue;
 				else if (backButton && ts.contains(backButton))
 					continue;
-				
+					
+				ts.addEventListener(GWGestureEvent.DRAG, dragItem);
+				ts.addEventListener(GWGestureEvent.RELEASE, dropItem);
+								
 				var selectedText:Text = new Text();
 				selectedText.id = "sText";
 				selectedText.autoSize = "left";
@@ -176,19 +177,16 @@ package  com.gestureworks.cml.elements
 		 * Update selected item
 		 * @param	e state event
 		 */
+		
+		private var lastItem:* = null;
 		private function selection(e:GWGestureEvent):void
-		{			
-			_selectedItem = e.target;	
-			select(_selectedItem);
-			if (forwardButton && _selectedItem.contains(forwardButton)) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));
-				return;
-			}
-			else if (backButton && _selectedItem.contains(backButton)) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));
-				return;
-			}
+		{
+			// hack for the issue with a pagination button single tap to cause two calls to this function
+			if (lastItem == e.target) { lastItem = null; return; }
+			else { lastItem = e.target; }
 			
+			_selectedItem = e.target;
+			select(_selectedItem);
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));			
 		}
 		
@@ -198,8 +196,11 @@ package  com.gestureworks.cml.elements
 				return;
 							
 			obj.alpha = selectedAlpha;
-			selections.append(obj);		
-			obj.searchChildren("sText").visible = true;
+			
+			if(obj.searchChildren("sText")){
+				obj.searchChildren("sText").visible = true;
+				selections.append(obj);	
+			}
 		}
 				
 		public function unSelect(obj:*):void
@@ -233,8 +234,10 @@ package  com.gestureworks.cml.elements
 			targetIndex = belt.getChildIndex(DisplayObject(e.target));
 				
 			var dragClone:*;
-			if (dragClones[e.target])
+			if (dragClones[e.target]) {
 				dragClone = dragClones[e.target];
+			}
+						
 			else
 			{
 				var img:Image = e.target.searchChildren(Image);
@@ -244,6 +247,17 @@ package  com.gestureworks.cml.elements
 				dragClone.bitmap.height = 750;
 				dragClone.width = 0;
 				dragClone.resize();
+				
+				/*// .. and some more KLUDGE to minde aspect ratio - Rob
+				if (dragClone.bitmap.height < dragClone.bitmap.width) {
+					dragClone.bitmap.height = 750;
+					dragClone.width = 0;
+				} else {
+					dragClone.bitmap.width = 750;
+					dragClone.height = 0;
+				}
+				dragClone.resize();	*/			
+				// end kludge
 				
 				if (collectionViewer)
 				{
@@ -318,7 +332,5 @@ package  com.gestureworks.cml.elements
 			_backButton = null;
 			selections = null;
 		}
-				
 	}
-
 }
