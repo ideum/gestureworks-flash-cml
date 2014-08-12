@@ -86,29 +86,26 @@ package com.gestureworks.cml.components
 					height = image.height;	
 			}
 			super.updateLayout();
-			//menu.updateLayout(width, height);
+			menu.updateLayout(width, height);
 		}
 		
 		// Should only be called after child video has recieved a metadata callback!
-		public function manualLayoutUpdate(event:StateEvent):void {
+		public function videoLayoutUpdate(event:StateEvent):void {
 			if ( !(event.property == "sizeLoaded" && event.value == true )) {
 				return;
 			}
 			
 			super.onStateEvent(event);
-			/*if (event.value == "isLoaded") {
-				trace("IVV isLoaded");
-			} else {
-				trace("IVV wtf");
-			}*/
-			
 			if (video) {
 				width = video.width;
 				height = video.height;
 			}
 			
+			scale = 300 / width;
 			super.updateLayout();
 			menu.updateLayout(width, height);
+			
+			
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void
@@ -132,7 +129,7 @@ package com.gestureworks.cml.components
 		public function startVideo():void {
 			if (!video) {
 				video = new Video();
-				video.addEventListener(StateEvent.CHANGE, manualLayoutUpdate);
+				video.addEventListener(StateEvent.CHANGE, videoLayoutUpdate);
 				addChildAt(video, 0);
 				video.src = secondaryContentURL;
 				video.autoplay = true;
@@ -219,6 +216,10 @@ package com.gestureworks.cml.components
 				initialScale = value;
 				
 				minScale = value;
+				/*if (_image.landscape == true)
+					maxScale = 920 / width;
+				else
+					maxScale = 920 / height;*/
 				maxScale = 1920 / width;
 				
 				/*infoBtn.scale = .5 / value;

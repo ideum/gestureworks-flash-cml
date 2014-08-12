@@ -224,7 +224,7 @@ package com.gestureworks.cml.components
 		}				
 		
 		
-		private var _autoTextLayout:Boolean = false;
+		private var _autoTextLayout:Boolean = true;
 		/**
 		 * Specifies whether text fields will be automatically adjusted to the component's width
 		 * @default false
@@ -463,14 +463,14 @@ package com.gestureworks.cml.components
 			activity = false;
 		}
 		
-		private var textCount:Number = 4;
+		//private var textCount:Number = 4;
 				
 		private function textSize():void
 		{
 			if (textFields)
 			{
-				if (textCount >= 3)
-				{
+				//if (textCount >= 3)
+				//{
 					for (var j:int = 0; j < textFields.length; j++)
 					{
 						if( textFields[j] != searchChildren(".info_title")){
@@ -478,12 +478,13 @@ package com.gestureworks.cml.components
 							if (textFields[j].parent is ScrollPane) {
 								//var w:Number = width - sp.scrollMargin - sp.scrollThickness - t.paddingRight - t.paddingLeft;
 								textFields[j].parent.updateLayout(textFields[j].parent.width, textFields[j].parent.height);
+								//textFields[j].parent.updateContent(textFields[j]);
 							}
 						}
 					}
-					textCount = 0;
-				}
-				else
+					//textCount = 0;
+				//}
+				/*else
 				{
 					for (var i:int = 0; i < textFields.length; i++)
 					{
@@ -495,7 +496,7 @@ package com.gestureworks.cml.components
 							}
 						}
 					}
-				}
+				} */
             }
 			//updateLayout();
 		}
@@ -504,8 +505,8 @@ package com.gestureworks.cml.components
 		{
 			if (event.value == "fontSize")
 			{
-				textSize();
-				textCount++;
+				//textSize();
+				//textCount++;
 			}
 			
 

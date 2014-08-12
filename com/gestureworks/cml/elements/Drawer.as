@@ -876,10 +876,11 @@ package com.gestureworks.cml.elements
 				dragOpen = handleOrientation == "left" ? dragDelta < 0 : dragDelta > 0;
 			}
 			else {
-				dragDelta = e.value.drag_dy * Math.cos(dragAngle) - e.value.drag_dx * Math.sin(dragAngle);				
+				// turn off sliding open of the dock
+				/*dragDelta = e.value.drag_dy * Math.cos(dragAngle) - e.value.drag_dx * Math.sin(dragAngle);				
 				handle.y += dragDelta;
 				contentHolder.y = handle.y + handle.height;
-				dragOpen = handleOrientation == "top" ? dragDelta < 0 : dragDelta > 0;
+				dragOpen = handleOrientation == "top" ? dragDelta < 0 : dragDelta > 0;*/
 			}
 		}
 		

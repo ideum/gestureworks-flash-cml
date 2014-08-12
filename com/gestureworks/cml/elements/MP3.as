@@ -340,6 +340,7 @@ package com.gestureworks.cml.elements
 		{	
 			loading = true;
 			
+			/*
 			if (display == "waveform") 
 			{
 				bgGraphic = new Sprite;
@@ -377,7 +378,7 @@ package com.gestureworks.cml.elements
 						height = image.height;
 					}
 				}
-			}
+			} */
 			
 			//update timer
 			timer = new Timer(10);

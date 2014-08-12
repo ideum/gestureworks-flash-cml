@@ -62,8 +62,6 @@ package com.gestureworks.cml.elements
 			nativeTransform = false;
 		}	
 		
-		
-		
 		/**
 		 * Sets whether to auto-hides scroll bars.
 		 * @default false
@@ -146,9 +144,8 @@ package com.gestureworks.cml.elements
 		public function get content():* {
 			return _content;
 		}
-		
-		
 
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -172,7 +169,6 @@ package com.gestureworks.cml.elements
 					}
 				}
 			}			
-			
 		
 			// get scrollbars
 			var scrollBars:Array = searchChildren(ScrollBar, Array);
@@ -243,11 +239,11 @@ package com.gestureworks.cml.elements
 			}
 			_horizontalScroll.y = height + scrollMargin;
 			
-			/*if (_content.width > width) {
+			if (_content.width > width) {
 				addChild(_horizontalScroll);
 				
 				_horizontal = true;
-			} else {*/ _horizontal = false; //}
+			} else { _horizontal = false; }
 			
 			
 			// create mask
@@ -360,12 +356,12 @@ package com.gestureworks.cml.elements
 				_verticalScroll.x = width + scrollMargin;
 				_verticalScroll.height = height;
 				_verticalScroll.resize(rect.height * _content.scaleY);
-				_verticalMovement = rect.height * _content.scaleY - height;
+				_verticalMovement = (rect.height * _content.scaleY) - height;
 				_verticalScroll.thumbPosition = _content.y / _verticalMovement;
 				
 				if (rect.height * _content.scaleY > height) {
 					if (!(contains(_verticalScroll))) addChild(_verticalScroll);
-				} else if (rect.height * _content.scaleY < height) {
+				} else if (rect.height * _content.scaleY <= height) {
 					if (contains(_verticalScroll)) removeChild(_verticalScroll);
 				}
 			}
@@ -374,12 +370,12 @@ package com.gestureworks.cml.elements
 				_horizontalScroll.y = height + scrollMargin;
 				_horizontalScroll.width = width;
 				_horizontalScroll.resize(rect.width * _content.scaleX);
-				_horizontalMovement = rect.width * _content.scaleX - width;
+				_horizontalMovement = (rect.width * _content.scaleX) - width;
 				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
 				
 				if (rect.width * _content.scaleX > width) {
-					//if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
-				} else if (rect.width * _content.scaleX < width) {
+					if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
+				} else if (rect.width * _content.scaleX <= width) {
 					if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
 				}
 			}
@@ -567,10 +563,11 @@ package com.gestureworks.cml.elements
 				}
 				
 			} 
-			else if (_content.height * c.scaleY < height) {
+			else if (_content.height * c.scaleY <= height) {
 				if (contains(_verticalScroll)) 
 					removeChild(_verticalScroll);
 			}
+			
 			if (c.width * c.scaleX > width) {
 				_horizontalScroll.resize(c.width * c.scaleX);
 				_horizontalMovement = c.width * c.scaleX - width;
@@ -580,7 +577,7 @@ package com.gestureworks.cml.elements
 					addChild(_horizontalScroll);
 				}
 			} 
-			else if (c.width * c.scaleX < width) {
+			else if (c.width * c.scaleX <= width) {
 				if (contains(_horizontalScroll)) {
 					removeChild(_horizontalScroll);
 				}	
@@ -593,7 +590,6 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-		
 		/**
 		 * Updates / replaces content with given value. If you are only changing the dimensions of the 
 		 * content, such as a string change on a text field, the method updateLayout will be faster.
@@ -605,6 +601,7 @@ package com.gestureworks.cml.elements
 				_content = null;
 			}			
 			_content = value;
+			
 			addChild(_content);
 			init();
 			updateLayout();
@@ -619,9 +616,9 @@ package com.gestureworks.cml.elements
 			this.removeEvents();
 			var v:Vector.<String> = cloneExclusions;
 			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
-			var clone:ScrollPane = CloneUtils.clone(this, null, v);
+			var clone:ScrollPane = CloneUtils.clone(this, this.parent, v);
 			
-			CloneUtils.copyChildList(this, clone);	
+			//CloneUtils.copyChildList(this, clone);	
 			
 			if (clone.parent)
 				clone.parent.addChild(clone);
@@ -633,6 +630,7 @@ package com.gestureworks.cml.elements
 			this.createEvents();
 			
 			clone.init();
+			//clone.updateLayout();
 			
 			return clone;
 		}

@@ -187,14 +187,6 @@ package com.gestureworks.cml.components
 			scale = initialScale;
 		}
 		
-		// Should only be called after child video has recieved a metadata callback!
-		public function manualLayoutUpdate():void {
-			width = video.width;
-			height = video.height;
-				
-			super.updateLayout();
-		}
-		
 		override public function clone():* 
 		{	
 			cloneExclusions.push("backs", "textFields");

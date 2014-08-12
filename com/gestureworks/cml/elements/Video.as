@@ -284,11 +284,6 @@ package com.gestureworks.cml.elements
 				load();
 		}
 
-		public function pseudoClose():void {
-			_isLoaded = false;
-			sizeLoaded = false;
-		}
-		
 		/**
 		 * Closes video 
 		 */	
@@ -541,14 +536,14 @@ package com.gestureworks.cml.elements
 				
 				if (!autoplay) stop(); 
 				//stop();
-				//this.parent.manualLayoutUpdate();
 				
 				// file and all metadata loaded
 				sizeLoaded = true;
 				_isLoaded = true;
 				dispatchEvent(new Event(Event.COMPLETE, false, false));
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "sizeLoaded", true));
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+				
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "sizeLoaded", sizeLoaded));
 			}
 		}
 		

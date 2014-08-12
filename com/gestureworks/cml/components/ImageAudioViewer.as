@@ -43,6 +43,7 @@ package com.gestureworks.cml.components
 		private var closeBtn:Button;
 		
 		public var audio:MP3;
+		private var pos:*;
 		public var secondaryContentURL:String;
 		
 		/**
@@ -114,7 +115,8 @@ package com.gestureworks.cml.components
 				//if (!height && image)
 					height = image.height;	
 			}	
-			super.updateLayout();				
+			super.updateLayout();
+			menu.updateLayout(width, height);
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void
@@ -124,13 +126,28 @@ package com.gestureworks.cml.components
 			if (event.value == "close" && audio) {
 				audio.stop(); 
 			}
-			else if (event.value == "play") {
-				if (audio) { audio.stop();  audio.play(); }
-				else { audio = new MP3(); audio.src = secondaryContentURL; audio.autoplay = true; audio.open();  }
+			else if (event.value == "play" && audio) {
+				if (!audio.isPlaying) { 
+					audio.seek(pos);
+					audio.resume();
+				}		
+				
 			}
-			else if (event.value == "pause") {
-				if (audio) { audio.stop(); }
+			else if (event.value == "pause" && audio) {
+				pos = audio.mp3.position;
+				audio.pause();
 			}
+		}
+		
+		public function startAudio():void {
+			if (!audio) {
+				audio = new MP3();
+				addChildAt(audio, 0);
+				audio.src = secondaryContentURL;
+				audio.autoplay = true;
+			}
+			audio.open();
+			position = 0;
 		}
 		
 		/**
@@ -212,12 +229,16 @@ package com.gestureworks.cml.components
 				initialScale = value;
 				
 				minScale = value;
-				maxScale = 920 / width;
+				if (_image.landscape == true)
+					maxScale = 920 / width;
+				else
+					maxScale = 920 / height;
+				//maxScale = 1920 / width;
 				
-				infoBtn.scale = .5 / value;
+				/*infoBtn.scale = .5 / value;
 				playBtn.scale = .5 / value;
 				pauseBtn.scale = .5 / value;
-				closeBtn.scale = .5 / value;
+				closeBtn.scale = .5 / value;*/
 			}
 		}
 		

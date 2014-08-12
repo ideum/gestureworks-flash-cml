@@ -176,7 +176,7 @@ package com.gestureworks.cml.components
 				}
 			}
 			clone.init();				
-			clone.updateLayout();	
+			//clone.updateLayout();	
 			
 			return clone;
 		}
@@ -188,13 +188,16 @@ package com.gestureworks.cml.components
 				
 				minScale = value;
 				if (_image.landscape == true)
-					maxScale = 1920 / width;
+					maxScale = 920 / width;
 				else
-					maxScale = 1920 / height;
-				
+					maxScale = 920 / height;
 				//maxScale = 920 / width;
+				
 				//infoBtn.scale = .5 / value;
 				//closeBtn.scale = .5 / value;
+				
+				/*infoBtn.x = -1* infoBtn.width / 2;
+				closeBtn.x = -1 * closeBtn.width / 2;*/
 			}
 		}
 		

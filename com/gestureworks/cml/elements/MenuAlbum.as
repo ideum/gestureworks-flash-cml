@@ -181,7 +181,7 @@ package  com.gestureworks.cml.elements
 		private var lastItem:* = null;
 		private function selection(e:GWGestureEvent):void
 		{
-			// hack for the issue with a pagination button single tap to cause two calls to this function
+			// hack for the issue with a pagination button single tap causing two calls to this function
 			if (lastItem == e.target) { lastItem = null; return; }
 			else { lastItem = e.target; }
 			
@@ -197,10 +197,11 @@ package  com.gestureworks.cml.elements
 							
 			obj.alpha = selectedAlpha;
 			
-			if(obj.searchChildren("sText")){
+			if (obj.searchChildren("sText")){
 				obj.searchChildren("sText").visible = true;
-				selections.append(obj);	
 			}
+			
+			selections.append(obj);	
 		}
 				
 		public function unSelect(obj:*):void
@@ -209,9 +210,10 @@ package  com.gestureworks.cml.elements
 			
 			if (index >= 0) {
 				obj.alpha = initialAlpha;
-				if(obj.searchChildren("sText")){
+				if (obj.searchChildren("sText")){
 					obj.searchChildren("sText").visible = false;
 				}
+				
 				selections.remove(index);
 			}
 		}
@@ -237,18 +239,18 @@ package  com.gestureworks.cml.elements
 			if (dragClones[e.target]) {
 				dragClone = dragClones[e.target];
 			}
-						
+
 			else
 			{
 				var img:Image = e.target.searchChildren(Image);
 				dragClone = img.clone();
 				
 				//temporary kluge to resolve clone resizing issue
-				dragClone.bitmap.height = 750;
+				/*dragClone.bitmap.height = 750;
 				dragClone.width = 0;
-				dragClone.resize();
+				dragClone.resize();*/
 				
-				/*// .. and some more KLUDGE to minde aspect ratio - Rob
+				// .. and some more KLUDGE to mind aspect ratio - Rob
 				if (dragClone.bitmap.height < dragClone.bitmap.width) {
 					dragClone.bitmap.height = 750;
 					dragClone.width = 0;
@@ -256,7 +258,8 @@ package  com.gestureworks.cml.elements
 					dragClone.bitmap.width = 750;
 					dragClone.height = 0;
 				}
-				dragClone.resize();	*/			
+				
+				dragClone.resize();				
 				// end kludge
 				
 				if (collectionViewer)

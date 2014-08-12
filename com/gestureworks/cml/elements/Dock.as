@@ -285,11 +285,10 @@ package com.gestureworks.cml.elements
 		{
 			var src:String = srcMap[clone];
 			var oldPrev:TouchContainer = srcMap[src]["preview"];
-			if (oldPrev)
+			if (oldPrev) {
 				delete srcMap[oldPrev];
-			
+			}
 			srcMap[src]["preview"] = preview;
-			
 			srcMap[preview] = src;
 			
 			if (previews.indexOf(preview) == -1)
@@ -420,11 +419,6 @@ package com.gestureworks.cml.elements
 		{
 			_incrementCloneMap();
 			
-			/*if (FileManager.isVideo(res["primary_content"]))
-			{
-				while (!(cloneMap.key is VideoViewer)) { _incrementCloneMap(); }
-			}
-			else*/ 
 			if (FileManager.isImage(res["primary_content"]))
 			{
 				if (res["secondary_content"] && FileManager.isAudio(res["secondary_content"])) {
@@ -463,11 +457,6 @@ package com.gestureworks.cml.elements
 			// if not we increment the clonemap until we get a clone of the correct type, minding those currently locked
 			if (locked.indexOf(cloneMap.index) == -1)
 			{
-				/*if (FileManager.isVideo(res["primary_content"]))
-				{
-					if (!(cloneMap.key is VideoViewer)) { unlockedCloneCorrectType(res); }
-				}
-				else*/ 
 				if (FileManager.isImage(res["primary_content"]))
 				{
 					if (res["secondary_content"] && FileManager.isAudio(res["secondary_content"])) {
@@ -490,7 +479,6 @@ package com.gestureworks.cml.elements
 				incrementCloneMap(res);
 			}
 		}
-		
 		
 		private function unlockedCloneCorrectType(res:*):void {
 			incrementCloneMap(res);
@@ -553,9 +541,6 @@ package com.gestureworks.cml.elements
 			var clone:* = cloneMap.key;
 			addSrc(src, clone);
 			obj.close();
-
-			/*System.gc();
-			System.gc();*/
 			
 			clone.addEventListener(StateEvent.CHANGE, onCloneLoad);
 			
@@ -564,7 +549,7 @@ package com.gestureworks.cml.elements
 				clone.listenLoadComplete();
 				obj.init();
 			}
-			else //if (obj is Image)
+			else if (obj is Image)
 			{
 				obj.addEventListener(StateEvent.CHANGE, function loaded(e:StateEvent):void
 					{
@@ -575,15 +560,7 @@ package com.gestureworks.cml.elements
 				// not sure why the two below lines are here, they don't affect size or scaling behavior... - Rob
 				obj.width = 0;
 				obj.height = 0;
-						
-				// after closing a VideoViewer, we need to GC or we'll get network buffer utilization spikes leading to a crash
-				// determined using Adobe Scout - Rob
-				
-				//if (!(obj is Video)) {
-				//if (obj is Video) obj._isLoaded = true;
-				
 				obj.open();
-				//}
 			} 
 		}
 		
@@ -661,7 +638,7 @@ package com.gestureworks.cml.elements
 				else if (index == 2)
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
 					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;*/
-				trace(index, searchTerms[index]);
+				//trace(index, searchTerms[index]);
 			}
 			// If this were Flickr...
 			// FlickrQuery -- generate search?
@@ -912,20 +889,22 @@ package com.gestureworks.cml.elements
 						c.init();
 					}
 					else { event.target.init(); }
-					
+											
 					// mind aspect ratio when sizing object for placeholder
 					if (event.target.image.portrait == true) {
 						event.target.scale = 300 / event.target.height;						
-						var textElement:* = event.target.searchChildren(".info_description");
-						if (textElement) { // implies existaence of a parent scrollpane...
-							textElement.fontSize = 14; // most of the time, portrait objects have too large of a font
-							event.target.searchChildren("back2").updateContent(textElement); // scrollpane woes
-						} else { trace("no .info_description"); } 
-					} 
-					else { event.target.scale = 300 / event.target.width; }
+					} else { event.target.scale = 300 / event.target.width; }
 					
 					//event.target.scale = 300 / event.target.width;
-						
+					
+					var textElement:* = event.target.searchChildren(".info_description");
+					if (textElement) { // implies existaence of a parent scrollpane...
+						//textElement.fontSize = 14; // most of the time, portrait objects have too large of a font
+						/*textElement.width = event.target.width;
+						textElement.height = event.target.height;*/
+						event.target.childList.getKey("back2").updateContent(textElement); // scrollpane woes
+					} //else { trace("no .info_description"); }
+					
 					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale);
 				}
 				
@@ -1007,6 +986,7 @@ package com.gestureworks.cml.elements
 			{
 				album.addChild(preview);
 			}
+			
 			/*if (flickrQuery && flickrQuery.pages > 1)
 			{
 				// Add a next arrow.
@@ -1059,7 +1039,9 @@ package com.gestureworks.cml.elements
 			 * additional element becomes visible, etc. when we select an item in the dock.
 			 */
 			
-			if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
+			//if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
+			if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.childList.getKey("secondaryContentURL").text; }
+			
 			img = obj.image.clone();
 			img.width = 0;
 			img.height = 140;
@@ -1159,17 +1141,29 @@ package com.gestureworks.cml.elements
 			
 			if (autoShuffle)
 				obj.addEventListener(GWTouchEvent.TOUCH_BEGIN, moveB);
+					
+			obj.resetScale();
 			
-			//if ("scale" in obj["state"][0])
-			//	obj.scale = obj["state"][0]["scale"];
-			//else
-			
-			obj.resetScale(); 
 			if (obj is ImageVideoViewer) {
-				obj.image.visible = false;
-				//obj.manualLayoutUpdate();
-				obj.startVideo();
+				// hide the image seen in the dock
+				obj.image.visible = false; 
+				
+				// Maxwell single onscreen video enforcement
+				var clone:*;
+				var cloneArray:Array = cloneMap.getKeyArray();
+				for (var index:* in cloneArray) {
+					clone = cloneArray[index];
+					if (clone != obj && clone is ImageVideoViewer && clone.visible == true) {
+						clone.video.close();
+						clone.image.visible = true; // without this, sometimes the drag clone image stays invisible
+						clone.visible = false;
+						break; // we only ever allow one video onscreen at a time
+					}
+				}
+				obj.startVideo(); 
 			}
+			
+			if (obj is ImageAudioViewer) { obj.startAudio(); }
 	
 			if (position == "top")
 			{
@@ -1198,8 +1192,7 @@ package com.gestureworks.cml.elements
 			fadein(obj);
 			
 			obj.visible = true;
-			//if (obj is VideoViewer && obj.video.autoplay) { obj.video.stop(); obj.video.play(); } // enforce autoplay (and force playback from the beginning) even if we're re using a clone
-			
+					
 			placeHolderIndex++;
 		}
 		
@@ -1345,7 +1338,12 @@ package com.gestureworks.cml.elements
 						else
 							removeSrc(src);
 					}
+					
+					
+				
+					
 					target.visible = false;
+					
 				}
 			}
 		}
