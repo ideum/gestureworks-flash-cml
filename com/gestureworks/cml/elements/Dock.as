@@ -497,6 +497,7 @@ package com.gestureworks.cml.elements
 			var prop:String;
 			var exp:*;
 			var src:String;
+			var srcObj:* = null;
 			
 			if (clone.visible)
 				onCloneChange(null, clone);
@@ -529,11 +530,14 @@ package com.gestureworks.cml.elements
 						if (prop == "src")
 						{
 							src = obj[prop];
-							processSrc(src, obj);
+							srcObj = obj;
+							//processSrc(src, obj);
 						}
 					}
 				}
 			}
+			
+			if (src != null) { processSrc(src, srcObj); }
 		}
 		
 		private function processSrc(src:String, obj:Object):void
@@ -560,6 +564,7 @@ package com.gestureworks.cml.elements
 				// not sure why the two below lines are here, they don't affect size or scaling behavior... - Rob
 				obj.width = 0;
 				obj.height = 0;
+				
 				obj.open();
 			} 
 		}
@@ -889,23 +894,22 @@ package com.gestureworks.cml.elements
 						c.init();
 					}
 					else { event.target.init(); }
-											
-					// mind aspect ratio when sizing object for placeholder
-					if (event.target.image.portrait == true) {
-						event.target.scale = 300 / event.target.height;						
-					} else { event.target.scale = 300 / event.target.width; }
-					
-					//event.target.scale = 300 / event.target.width;
-					
+
 					var textElement:* = event.target.searchChildren(".info_description");
 					if (textElement) { // implies existaence of a parent scrollpane...
-						//textElement.fontSize = 14; // most of the time, portrait objects have too large of a font
-						/*textElement.width = event.target.width;
-						textElement.height = event.target.height;*/
+						
+						// dynamic font swap
+						if (event.target is ImageViewer && event.target.hasChineseFont == true) {
+							textElement.font = "SimSongLight";
+							 // reset the flag
+							event.target.hasChineseFont = false;
+						} else { textElement.font = "OpenSansBold"; }
+						
 						event.target.childList.getKey("back2").updateContent(textElement); // scrollpane woes
-					} //else { trace("no .info_description"); }
+					} else { trace("no .info_description"); }
 					
-					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale);
+					event.target.scale = 300 / event.target.width;
+					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale); // only safe for ImageViewer...
 				}
 				
 				dockText[1].text = "loading " + (String)(loadCnt + 1) + " of " + resultCnt;
@@ -1038,9 +1042,14 @@ package com.gestureworks.cml.elements
 			 * additional child element (of the appropriate type for the non-static "secondary" media representation). This
 			 * additional element becomes visible, etc. when we select an item in the dock.
 			 */
-			
+			 
 			//if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
 			if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.childList.getKey("secondaryContentURL").text; }
+			else {
+				if (obj.childList.getKey("hasChineseFont") != null) {
+					obj.hasChineseFont =  obj.childList.getKey("hasChineseFont").text == "0" ? true : false;
+				}
+			}
 			
 			img = obj.image.clone();
 			img.width = 0;
@@ -1142,11 +1151,15 @@ package com.gestureworks.cml.elements
 			if (autoShuffle)
 				obj.addEventListener(GWTouchEvent.TOUCH_BEGIN, moveB);
 					
-			obj.resetScale();
+			//obj.resetScale();
 			
 			if (obj is ImageVideoViewer) {
 				// hide the image seen in the dock
-				obj.image.visible = false; 
+				obj.image.width = 0;
+				obj.image.height = 0;
+				obj.image.visible = false;
+				
+				//obj.removeChild(obj.image);
 				
 				// Maxwell single onscreen video enforcement
 				var clone:*;
@@ -1163,7 +1176,7 @@ package com.gestureworks.cml.elements
 				obj.startVideo(); 
 			}
 			
-			if (obj is ImageAudioViewer) { obj.startAudio(); }
+			else if (obj is ImageAudioViewer) { obj.startAudio(); }
 	
 			if (position == "top")
 			{

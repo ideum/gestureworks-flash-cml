@@ -112,7 +112,7 @@ package com.gestureworks.cml.elements
 			_waveColor = value;
 		}
 		
-		private var _display:String = "waveform";
+		private var _display:String = "none";
 		/**
 		 * Visualization display type, can be set to "waveform", "none", or an image URL.
 		 * @default waveform
@@ -340,7 +340,6 @@ package com.gestureworks.cml.elements
 		{	
 			loading = true;
 			
-			/*
 			if (display == "waveform") 
 			{
 				bgGraphic = new Sprite;
@@ -378,7 +377,7 @@ package com.gestureworks.cml.elements
 						height = image.height;
 					}
 				}
-			} */
+			}
 			
 			//update timer
 			timer = new Timer(10);

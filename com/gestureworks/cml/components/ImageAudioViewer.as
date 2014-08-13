@@ -127,14 +127,14 @@ package com.gestureworks.cml.components
 				audio.stop(); 
 			}
 			else if (event.value == "play" && audio) {
-				if (!audio.isPlaying) { 
+				/*if (!audio.isPlaying) { 
 					audio.seek(pos);
 					audio.resume();
-				}		
-				
+				}	*/	
+				audio.resume();
 			}
 			else if (event.value == "pause" && audio) {
-				pos = audio.mp3.position;
+				//pos = audio.mp3.position;
 				audio.pause();
 			}
 		}
@@ -142,12 +142,13 @@ package com.gestureworks.cml.components
 		public function startAudio():void {
 			if (!audio) {
 				audio = new MP3();
-				addChildAt(audio, 0);
-				audio.src = secondaryContentURL;
+				addChild(audio);
 				audio.autoplay = true;
 			}
+			// update the source if we're not using a fresh clone (i.e. already has an audio())
+			audio.src = secondaryContentURL;
 			audio.open();
-			position = 0;
+			//trace("IAV.startAudio(): " + searchChildren("title").text + " " + secondaryContentURL);
 		}
 		
 		/**

@@ -343,7 +343,7 @@ package com.gestureworks.cml.components
 			{
 				for (i=0; i < textFields.length; i++) {
 					for (var n:int = 0; n < textFields.length; n++) {
-						if (n == i) continue;
+						if (n == i) { continue; }
 						else if (textFields[i].name == textFields[n].name) {
 							textFields.splice(n, 1);
 							//i--;
@@ -352,8 +352,7 @@ package com.gestureworks.cml.components
 					}
 				}
 				
-				for (i=0; i < textFields.length; i++) 
-				{					
+				for (i=0; i < textFields.length; i++) {					
 					textFields[i].x = textFields[i].paddingLeft;
 					//Text(textFields[i]).fontSize = Text(textFields[i]).fontSize; // ...
 					textFields[i].fontSize = textFields[i].fontSize;
@@ -368,11 +367,12 @@ package com.gestureworks.cml.components
 					
 					textFields[i].width = width - textFields[i].paddingLeft - textFields[i].paddingRight;
 					
-					if (i == 0)
+					if (i == 0) {
 						textFields[i].y = textFields[i].paddingTop;
-					else
+					}
+					else {
 						textFields[i].y = textFields[i].paddingTop + textFields[i - 1].paddingBottom + textFields[i - 1].height;
-											
+					}
 					if (textFields[i].parent is ScrollPane) {
 						formatPane(textFields[i], textFields[i].parent);
 					}

@@ -39,6 +39,7 @@ package com.gestureworks.cml.components
 		private var initialScale:Number; 
 		private var infoBtn:Button;
 		private var closeBtn:Button;
+		public var hasChineseFont:Boolean = false;
 		
 		/**
 		 * image viewer Constructor
@@ -183,21 +184,23 @@ package com.gestureworks.cml.components
 		
 		override public function set scale(value:Number):void {
 			super.scale = value;
+			trace("IV.scale(): "+ searchChildren("title").text + " " + value);
 			if (!initialScale) {
 				initialScale = value;
 				
-				minScale = value;
-				if (_image.landscape == true)
+				minScale = 0;// value;
+				/*if (_image.landscape == true)
 					maxScale = 920 / width;
 				else
-					maxScale = 920 / height;
-				//maxScale = 920 / width;
+					maxScale = 920 / height;*/
+				maxScale = 920 / width;
 				
 				//infoBtn.scale = .5 / value;
 				//closeBtn.scale = .5 / value;
 				
 				/*infoBtn.x = -1* infoBtn.width / 2;
 				closeBtn.x = -1 * closeBtn.width / 2;*/
+				trace(searchChildren("title").text + " passed !initialScale condition");
 			}
 		}
 		

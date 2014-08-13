@@ -90,22 +90,21 @@ package com.gestureworks.cml.components
 		}
 		
 		// Should only be called after child video has recieved a metadata callback!
-		public function videoLayoutUpdate(event:StateEvent):void {
-			if ( !(event.property == "sizeLoaded" && event.value == true )) {
-				return;
-			}
+		public function videoLayoutUpdate(event:StateEvent=null):void {
+			if ( !(event.property == "sizeLoaded" && event.value == true ) ) { return; }
+			else { video.removeEventListener(StateEvent.CHANGE, videoLayoutUpdate); }
 			
-			super.onStateEvent(event);
+			//super.onStateEvent(event);
 			if (video) {
 				width = video.width;
 				height = video.height;
 			}
 			
-			scale = 300 / width;
 			super.updateLayout();
 			menu.updateLayout(width, height);
 			
-			
+			initialScale = null;
+			scale = 300 / width;
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void
@@ -131,10 +130,13 @@ package com.gestureworks.cml.components
 				video = new Video();
 				video.addEventListener(StateEvent.CHANGE, videoLayoutUpdate);
 				addChildAt(video, 0);
-				video.src = secondaryContentURL;
+				//addChild(video);
 				video.autoplay = true;
 			}
+			// update the source if we're not using a fresh clone (i.e. already has an audio())
+			video.src = secondaryContentURL;
 			video.open();
+			trace("IVV.startVideo(): " + searchChildren("title").text + " " + secondaryContentURL);
 		}
 		
 		/**
@@ -211,21 +213,23 @@ package com.gestureworks.cml.components
 		}
 		
 		override public function set scale(value:Number):void {
+			trace("IVV.scale(): " + value);
 			super.scale = value;
 			if (!initialScale) {
 				initialScale = value;
 				
-				minScale = value;
+				minScale = 0; // value;
 				/*if (_image.landscape == true)
 					maxScale = 920 / width;
 				else
 					maxScale = 920 / height;*/
-				maxScale = 1920 / width;
+				maxScale = 920 / width;
 				
 				/*infoBtn.scale = .5 / value;
 				playBtn.scale = .5 / value;
 				pauseBtn.scale = .5 / value;
 				closeBtn.scale = .5 / value;*/
+				trace("Passed !initialScale condition");
 			}
 		}
 		

@@ -144,7 +144,6 @@ package com.gestureworks.cml.elements
 		public function get content():* {
 			return _content;
 		}
-
 		
 		/**
 		 * @inheritDoc
@@ -321,7 +320,7 @@ package com.gestureworks.cml.elements
 			}
 			removeEventListener(GWGestureEvent.SCALE, onScale);
 			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);		
+			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);	// ... this event listener is never added, at least not in this class	
 			removeEventListener(GWGestureEvent.COMPLETE, onEnd);
 			_verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
 			_horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);

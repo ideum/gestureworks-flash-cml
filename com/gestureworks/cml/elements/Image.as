@@ -415,7 +415,7 @@ package com.gestureworks.cml.elements
 			// establish orientation			
 			_aspectRatio = width / height;
 			
-			if (_aspectRatio > 1) 
+			if (_aspectRatio < 1) 
 			{
 				_portrait = true;
 				_landscape = false;
