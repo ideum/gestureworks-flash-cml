@@ -1,5 +1,6 @@
 package com.gestureworks.cml.elements
 {	
+	import com.gestureworks.cml.components.ImageVideoViewer;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.cml.utils.CloneUtils;
@@ -50,7 +51,7 @@ package com.gestureworks.cml.elements
 		  mouseChildren = true;
 		}
 		
-		private var _debug:Boolean=true;
+		private var _debug:Boolean=false;
 		/**
 		 * Prints status message to console
 		 */	
@@ -473,7 +474,7 @@ package com.gestureworks.cml.elements
 				positionTimer = new Timer(20);
 			
 			netStream = new NetStream(netConnection);
-			netStream.bufferTime = 1;
+			netStream.bufferTime = 10;
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			netStream.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -521,6 +522,14 @@ package com.gestureworks.cml.elements
 			
 			if (meta.width != null && meta.height != null && !sizeLoaded)
 			{
+				/*var parent:* = (parent as ImageVideoViewer);
+				var img:* = parent.image;
+				var index:* = parent.childList.length;
+				parent.removeChild(img);
+				parent.addChildAt(img, index);*/
+				
+				(parent as ImageVideoViewer).image.visible = false;
+				
 				// scale video to fit it's initial on stage size
 				var ratio:* = Math.min(width / meta.width, height / meta.height);
 				video.width = ratio * meta.width;
@@ -534,7 +543,7 @@ package com.gestureworks.cml.elements
 					trace("video height: " + meta.height);				
 				}
 				
-				if (!autoplay) stop(); 
+				//if (!autoplay) stop(); // always autoplay
 				//stop();
 				
 				// file and all metadata loaded
@@ -570,8 +579,8 @@ package com.gestureworks.cml.elements
 					}
 					video.x = (_width - video.width) / 2;
 					video.y = (_height - video.height) / 2;
-				} else {
 					trace('not enough info to fit content...');
+				} else {
 				}
 			} else {
 				video.width = _width;
@@ -620,8 +629,6 @@ package com.gestureworks.cml.elements
 		
 		private function end():void
 		{
-			//System.gc();
-			//System.gc();
 			if (loop) play();
 			else stop();
 			

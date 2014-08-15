@@ -542,6 +542,8 @@ package com.gestureworks.cml.components
 			var layoutComplete:Function = function ():void {
 					for each(var child:* in containerTags[top])
 					{
+						// rescale containers to fit placeholder
+						child.scale = 300 / child.width;
 						addChild(child);
 						dock.moveBelowDock(child);				
 					}

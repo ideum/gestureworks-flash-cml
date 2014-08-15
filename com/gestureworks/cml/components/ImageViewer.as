@@ -25,7 +25,6 @@ package com.gestureworks.cml.components
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 	  
 
-			
 	 * </codeblock>
 	 * 
 	 * @author Ideum
@@ -184,7 +183,7 @@ package com.gestureworks.cml.components
 		
 		override public function set scale(value:Number):void {
 			super.scale = value;
-			trace("IV.scale(): "+ searchChildren("title").text + " " + value);
+			//trace("IV.scale(): "+ searchChildren("title").text + " " + value);
 			if (!initialScale) {
 				initialScale = value;
 				
@@ -195,17 +194,23 @@ package com.gestureworks.cml.components
 					maxScale = 920 / height;*/
 				maxScale = 920 / width;
 				
-				//infoBtn.scale = .5 / value;
-				//closeBtn.scale = .5 / value;
+				//infoBtn.scale = 1; // .5 / value;
+				//closeBtn.scale = 1; // .5 / value;
 				
 				/*infoBtn.x = -1* infoBtn.width / 2;
 				closeBtn.x = -1 * closeBtn.width / 2;*/
-				trace(searchChildren("title").text + " passed !initialScale condition");
+				//trace(searchChildren("title").text + " passed !initialScale condition");
 			}
 		}
 		
 		public function resetScale():void {
 			scale = initialScale;
+		}
+		
+		public function resetButtonScale():void {
+			var newScale:* = 1 / scale;
+			menu.scale = newScale;
+			menu.updateLayout(width / newScale, height / newScale);
 		}
 	}
 	

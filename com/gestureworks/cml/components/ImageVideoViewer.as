@@ -101,10 +101,12 @@ package com.gestureworks.cml.components
 			}
 			
 			super.updateLayout();
-			menu.updateLayout(width, height);
 			
-			initialScale = null;
+			//initialScale = null;
 			scale = 300 / width;
+			var newScale:* = 1 / scale;
+			menu.scale = newScale;
+			menu.updateLayout(width / newScale, height / newScale);
 		}
 		
 		override protected function onStateEvent(event:StateEvent):void
@@ -112,7 +114,7 @@ package com.gestureworks.cml.components
 			super.onStateEvent(event);
 				
 			if (event.value == "close" && video) {
-				video.stop(); 
+				video.stop();
 			}
 			else if (event.value == "play") {
 				if (video) { 
@@ -136,7 +138,7 @@ package com.gestureworks.cml.components
 			// update the source if we're not using a fresh clone (i.e. already has an audio())
 			video.src = secondaryContentURL;
 			video.open();
-			trace("IVV.startVideo(): " + searchChildren("title").text + " " + secondaryContentURL);
+			//trace("IVV.startVideo(): " + searchChildren("title").text + " " + secondaryContentURL);
 		}
 		
 		/**
@@ -213,7 +215,7 @@ package com.gestureworks.cml.components
 		}
 		
 		override public function set scale(value:Number):void {
-			trace("IVV.scale(): " + value);
+			//trace("IVV.scale(): " + value);
 			super.scale = value;
 			if (!initialScale) {
 				initialScale = value;
@@ -229,7 +231,7 @@ package com.gestureworks.cml.components
 				playBtn.scale = .5 / value;
 				pauseBtn.scale = .5 / value;
 				closeBtn.scale = .5 / value;*/
-				trace("Passed !initialScale condition");
+				//trace("Passed !initialScale condition");
 			}
 		}
 		

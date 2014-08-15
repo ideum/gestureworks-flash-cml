@@ -42,6 +42,7 @@ package com.gestureworks.cml.components
 		private var pauseBtn:Button;
 		private var closeBtn:Button;
 		
+		public var hasAudioFocus:Boolean = false;
 		public var audio:MP3;
 		private var pos:*;
 		public var secondaryContentURL:String;
@@ -123,7 +124,7 @@ package com.gestureworks.cml.components
 		{	
 			super.onStateEvent(event);
 
-			if (event.value == "close" && audio) {
+			if (event.property == "close" && audio) {
 				audio.stop(); 
 			}
 			else if (event.value == "play" && audio) {
@@ -158,7 +159,7 @@ package com.gestureworks.cml.components
 		{
 			super.dispose();
 			image = null;
-			//if (audio) { audio.close(); }
+			if (audio) { audio.close(); }
 			audio = null;
 		}
 		
@@ -229,12 +230,13 @@ package com.gestureworks.cml.components
 			if (!initialScale) {
 				initialScale = value;
 				
-				minScale = value;
-				if (_image.landscape == true)
+				minScale = 0; // value;
+				/*if (_image.landscape == true)
 					maxScale = 920 / width;
 				else
-					maxScale = 920 / height;
-				//maxScale = 1920 / width;
+					maxScale = 920 / height;*/
+				
+				maxScale = 920 / width;
 				
 				/*infoBtn.scale = .5 / value;
 				playBtn.scale = .5 / value;

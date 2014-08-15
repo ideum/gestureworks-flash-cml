@@ -901,14 +901,15 @@ package com.gestureworks.cml.elements
 						// dynamic font swap
 						if (event.target is ImageViewer && event.target.hasChineseFont == true) {
 							textElement.font = "SimSongLight";
-							 // reset the flag
-							event.target.hasChineseFont = false;
+							 textElement.fontSize = textElement.fontSize + 5;
+							event.target.hasChineseFont = false;  // reset the flag
 						} else { textElement.font = "OpenSansBold"; }
 						
 						event.target.childList.getKey("back2").updateContent(textElement); // scrollpane woes
-					} else { trace("no .info_description"); }
+					} //else { trace("no .info_description"); }
 					
-					event.target.scale = 300 / event.target.width;
+					// moved to selectItem so we ALWAYS scale a dock selection 
+					//event.target.scale = 300 / event.target.width;
 					//trace(event.target.getChildAt(1).getChildAt(1).str, event.target.width, event.target.scale); // only safe for ImageViewer...
 				}
 				
@@ -1052,6 +1053,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			img = obj.image.clone();
+			if (obj is ImageVideoViewer) {img.visible = true; }
 			img.width = 0;
 			img.height = 140;
 			img.resample = true; // if false, drag clone image offsets are way off...
@@ -1152,23 +1154,22 @@ package com.gestureworks.cml.elements
 				obj.addEventListener(GWTouchEvent.TOUCH_BEGIN, moveB);
 					
 			//obj.resetScale();
+			obj.scale = 300 / obj.width;
+			var newScale:* = 1 / obj.scale;
+			obj.menu.scale = newScale;
+			obj.menu.updateLayout(obj.width / newScale, obj.height / newScale);
+			
 			
 			if (obj is ImageVideoViewer) {
-				// hide the image seen in the dock
-				obj.image.width = 0;
-				obj.image.height = 0;
-				obj.image.visible = false;
-				
-				//obj.removeChild(obj.image);
-				
 				// Maxwell single onscreen video enforcement
 				var clone:*;
 				var cloneArray:Array = cloneMap.getKeyArray();
 				for (var index:* in cloneArray) {
 					clone = cloneArray[index];
 					if (clone != obj && clone is ImageVideoViewer && clone.visible == true) {
+						clone.video.stop();
 						clone.video.close();
-						clone.image.visible = true; // without this, sometimes the drag clone image stays invisible
+						//clone.image.visible = true; // without this, sometimes the drag clone image stays invisible
 						clone.visible = false;
 						break; // we only ever allow one video onscreen at a time
 					}
@@ -1176,7 +1177,10 @@ package com.gestureworks.cml.elements
 				obj.startVideo(); 
 			}
 			
-			else if (obj is ImageAudioViewer) { obj.startAudio(); }
+			// TODO use event dispatch to silence other IAVs
+			else if (obj is ImageAudioViewer) { 
+				obj.startAudio(); 
+			}
 	
 			if (position == "top")
 			{
