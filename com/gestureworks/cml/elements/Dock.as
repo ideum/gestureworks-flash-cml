@@ -1136,6 +1136,8 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
+		
+	
 		private function selectItem(obj:*):void
 		{
 			// if object is already on the stage
@@ -1159,7 +1161,6 @@ package com.gestureworks.cml.elements
 			obj.menu.scale = newScale;
 			obj.menu.updateLayout(obj.width / newScale, obj.height / newScale);
 			
-			
 			if (obj is ImageVideoViewer) {
 				// Maxwell single onscreen video enforcement
 				var clone:*;
@@ -1177,9 +1178,12 @@ package com.gestureworks.cml.elements
 				obj.startVideo(); 
 			}
 			
-			// TODO use event dispatch to silence other IAVs
-			else if (obj is ImageAudioViewer) { 
-				obj.startAudio(); 
+			else if (obj is ImageAudioViewer) {
+				obj.instantiateAudio();
+				//obj.audio.stop();
+				//obj.startAudio();
+				//if ((parent as CollectionViewer).currentPlayingMP3 == null) { (parent as CollectionViewer).currentPlayingMP3 = obj.audio; }
+				//obj.audio.play();
 			}
 	
 			if (position == "top")
@@ -1355,9 +1359,6 @@ package com.gestureworks.cml.elements
 						else
 							removeSrc(src);
 					}
-					
-					
-				
 					
 					target.visible = false;
 					

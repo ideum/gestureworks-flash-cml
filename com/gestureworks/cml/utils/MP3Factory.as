@@ -326,8 +326,8 @@ package com.gestureworks.cml.utils
 				soundData = (FileManager.media.getContent(soundSrc)) as Sound;			
 			}
 			
-			if (autoplay) 
-				play()
+			//if (autoplay) 
+				//play()
 			
 		}
 		

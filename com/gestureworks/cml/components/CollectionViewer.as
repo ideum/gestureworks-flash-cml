@@ -64,7 +64,15 @@ package com.gestureworks.cml.components
 		private var layoutThreshold:Boolean = true;
 		private var totalProgress:Number = 0;		
 		private var _gateway:String;		
-
+		
+		
+		//Maxwell Single Audio Source
+		public var currentPlayingMP3:String = null;
+		public function resetCurrentPlayingMP3():void {
+			//if (e.type == "clear_mp3") {
+				currentPlayingMP3 = null;
+			//}
+		}
 		
 		/**
 		 * Constructor
@@ -345,6 +353,7 @@ package com.gestureworks.cml.components
 					}
 				});
 			}
+			
 		}		
 
 		/**

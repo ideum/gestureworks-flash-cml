@@ -42,7 +42,6 @@ package com.gestureworks.cml.components
 		private var pauseBtn:Button;
 		private var closeBtn:Button;
 		
-		public var hasAudioFocus:Boolean = false;
 		public var audio:MP3;
 		private var pos:*;
 		public var secondaryContentURL:String;
@@ -123,33 +122,78 @@ package com.gestureworks.cml.components
 		override protected function onStateEvent(event:StateEvent):void
 		{	
 			super.onStateEvent(event);
-
-			if (event.property == "close" && audio) {
-				audio.stop(); 
+			
+			// also triggered by timeout
+			if (event.property == "close" && audio) { // also triggered by timeout
+				audio.stop();
+				resetCurrentPlayingMP3();
 			}
 			else if (event.value == "play" && audio) {
-				/*if (!audio.isPlaying) { 
-					audio.seek(pos);
-					audio.resume();
-				}	*/	
-				audio.resume();
+				playIfNoOtherAudio();
 			}
-			else if (event.value == "pause" && audio) {
-				//pos = audio.mp3.position;
+			/*else if (event.value == "pause" && audio) {
 				audio.pause();
+			}*/
+		}
+		
+		public function resetCurrentPlayingMP3():void {
+			if (canGetAudioLock() == true) {
+			//if ((parent as CollectionViewer).currentPlayingMP3 == audio) {
+				(parent as CollectionViewer).resetCurrentPlayingMP3();
 			}
 		}
 		
-		public function startAudio():void {
+		private function canGetAudioLock():Boolean {
+			if ((parent as CollectionViewer).currentPlayingMP3 == null || 
+				(parent as CollectionViewer).currentPlayingMP3 == audio.src) { return true; }
+			return false;
+		}
+		
+		private function getAudioLock():Boolean {
+			if (canGetAudioLock() == true) { 
+				(parent as CollectionViewer).currentPlayingMP3 = audio.src;
+				return true;
+			}
+			
+			return false;
+		}
+		
+		private function playIfNoOtherAudio():void {
+			if (getAudioLock() == true) {
+				//audio.open();
+				audio.play();
+			}
+		}
+		
+		//private var currentPlayingMP3:*;
+		public function instantiateAudio():void {
+			//this.currentPlayingMP3 = currentPlayingMP3;
 			if (!audio) {
 				audio = new MP3();
 				addChild(audio);
-				audio.autoplay = true;
+				audio.autoplay = false; // don't autoplay
 			}
+			
 			// update the source if we're not using a fresh clone (i.e. already has an audio())
-			audio.src = secondaryContentURL;
-			audio.open();
+			if (audio.src != secondaryContentURL) {
+				audio.src = secondaryContentURL;
+				audio.init();
+				audio.open();
+			}
+			
+			//audio.init();
+			//if (getAudioLock() == true) { audio.open(); }
+			
+			//playIfNoOtherAudio();
+			
 			//trace("IAV.startAudio(): " + searchChildren("title").text + " " + secondaryContentURL);
+		}
+		
+		
+		public function startAudio():void {
+			//if (getAudioLock() == true) { audio.open(); }
+			
+			playIfNoOtherAudio();
 		}
 		
 		/**
@@ -158,6 +202,7 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
+			image.removeAllEventListeners();
 			image = null;
 			if (audio) { audio.close(); }
 			audio = null;
