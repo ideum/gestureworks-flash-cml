@@ -894,6 +894,10 @@ package com.gestureworks.cml.elements
 						c.init();
 					}
 					else { event.target.init(); }
+					
+					if (event.target is ImageAudioViewer) {
+						event.target.instantiateAudio();
+					}
 
 					var textElement:* = event.target.searchChildren(".info_description");
 					if (textElement) { // implies existaence of a parent scrollpane...
@@ -1044,12 +1048,9 @@ package com.gestureworks.cml.elements
 			 * additional element becomes visible, etc. when we select an item in the dock.
 			 */
 			 
-			//if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.searchChildren("secondaryContentURL").text; }
 			if (!(obj is ImageViewer)) { obj.secondaryContentURL = obj.childList.getKey("secondaryContentURL").text; }
-			else {
-				if (obj.childList.getKey("hasChineseFont") != null) {
-					obj.hasChineseFont =  obj.childList.getKey("hasChineseFont").text == "0" ? true : false;
-				}
+			else if (obj.childList.getKey("hasChineseFont") != null) {
+				obj.hasChineseFont =  obj.childList.getKey("hasChineseFont").text == "0" ? true : false;
 			}
 			
 			img = obj.image.clone();
@@ -1059,7 +1060,6 @@ package com.gestureworks.cml.elements
 			img.resample = true; // if false, drag clone image offsets are way off...
 			img.resize();
 		
-	
 			var title:Text;
 			if (obj.back || obj.backs.length == 1)
 			{
@@ -1136,6 +1136,8 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
+		
+	
 		private function selectItem(obj:*):void
 		{
 			// if object is already on the stage
@@ -1159,7 +1161,6 @@ package com.gestureworks.cml.elements
 			obj.menu.scale = newScale;
 			obj.menu.updateLayout(obj.width / newScale, obj.height / newScale);
 			
-			
 			if (obj is ImageVideoViewer) {
 				// Maxwell single onscreen video enforcement
 				var clone:*;
@@ -1175,12 +1176,7 @@ package com.gestureworks.cml.elements
 					}
 				}
 				obj.startVideo(); 
-			}
-			
-			// TODO use event dispatch to silence other IAVs
-			else if (obj is ImageAudioViewer) { 
-				obj.startAudio(); 
-			}
+			} else if (obj is ImageAudioViewer) { obj.playIfNoOtherAudio(); }
 	
 			if (position == "top")
 			{
@@ -1355,9 +1351,6 @@ package com.gestureworks.cml.elements
 						else
 							removeSrc(src);
 					}
-					
-					
-				
 					
 					target.visible = false;
 					

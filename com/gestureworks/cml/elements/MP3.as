@@ -1,5 +1,7 @@
 package com.gestureworks.cml.elements 
 {	
+	import com.gestureworks.cml.components.CollectionViewer;
+	import com.gestureworks.cml.components.ImageAudioViewer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.*;
 	import flash.display.*;
@@ -126,7 +128,7 @@ package com.gestureworks.cml.elements
 		public function get isPlaying():Boolean { return _mp3.isPlaying; }
 		
 		
-		private var _autoplay:Boolean = false;
+		private var _autoplay:Boolean = true;
 		/**
 		 * Indicates whether the mp3 file plays upon load
 		 */	
@@ -239,8 +241,8 @@ package com.gestureworks.cml.elements
 				timer = null;
 			}			
 			if (_mp3) {
-				_mp3.addEventListener(Event.ID3, id3Handler);
-				_mp3.addEventListener(StateEvent.CHANGE, playbackHandler);				
+				_mp3.removeEventListener(Event.ID3, id3Handler);
+				_mp3.removeEventListener(StateEvent.CHANGE, playbackHandler);				
 				_mp3 = null;
 			}
 			_id3 = null;
@@ -336,7 +338,7 @@ package com.gestureworks.cml.elements
 		
 		// private methods //
 		
-		protected function load():void
+		public function load():void
 		{	
 			loading = true;
 			
@@ -391,17 +393,28 @@ package com.gestureworks.cml.elements
 			_mp3.init();
 		}		
 		
-		private function playbackHandler(e:StateEvent):void {
+		public function playbackHandler(e:StateEvent):void {
 			switch(e.property) {
 				case "isPlaying":
 					if (isPlaying)
 						timer.start();
 					else
 						timer.stop();
+						//(parent as ImageAudioViewer).resetCurrentPlayingMP3();
 					break;
 					
 				case "Position":
 					// Do something about position?
+					break;
+				case "Complete":
+					trace("playbackHandler complete");
+					(parent as ImageAudioViewer).resetCurrentPlayingMP3();
+					
+					/*var temp:* = parent as ImageAudioViewer;
+					if ( (temp.parent as CollectionViewer) != null) {
+						(temp.parent as CollectionViewer).resetCurrentPlayingMP3();
+					}*/
+					
 					break;
 			}
 		}

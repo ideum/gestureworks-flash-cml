@@ -66,7 +66,7 @@ package com.gestureworks.cml.utils
 			_preload = value; 
 		}
 		
-		private var _preload:Boolean = true;
+		private var _preload:Boolean = false;
 		/**
 		 * Indicates whether the mp3 file is loaded when the src property is set
 		 */	
@@ -159,7 +159,7 @@ package com.gestureworks.cml.utils
 		
 		override public function init():void
 		{
-			//if (preload)
+			if (preload)
 				load();
 				
 			if (preload && FileManager.media.getContent(_src)) {
@@ -323,20 +323,20 @@ package com.gestureworks.cml.utils
 				if (!FileManager.media.getContent(soundSrc))
 					return;
 					
-				soundData = (FileManager.media.getContent(soundSrc)) as Sound;			
+				soundData = (FileManager.media.getContent(soundSrc)) as Sound;	
+				
 			}
 			
-			if (autoplay) 
-				play()
-			
+			if (autoplay == true) { play(); }
 		}
 		
 		protected function soundComplete(event:Event):void
 		{
 			pause();
 			Position = 0;
-			if (_loop) play();
-			else _isPlaying = false;
+			/*if (_loop) play();
+			else _isPlaying = false;*/
+			_isPlaying = false;
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Complete" , "complete"));
 		}

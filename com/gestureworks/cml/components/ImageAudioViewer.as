@@ -42,7 +42,6 @@ package com.gestureworks.cml.components
 		private var pauseBtn:Button;
 		private var closeBtn:Button;
 		
-		public var hasAudioFocus:Boolean = false;
 		public var audio:MP3;
 		private var pos:*;
 		public var secondaryContentURL:String;
@@ -91,9 +90,8 @@ package com.gestureworks.cml.components
 			
 			infoBtn = menu.getChildAt(0);
 			playBtn = menu.getChildAt(1);
-			pauseBtn = menu.getChildAt(2);
-			closeBtn = menu.getChildAt(3);
-
+			//pauseBtn = menu.getChildAt(2);
+			closeBtn = menu.getChildAt(2);
 		}
 		
 		private function onLoadComplete(e:StateEvent):void
@@ -123,32 +121,58 @@ package com.gestureworks.cml.components
 		override protected function onStateEvent(event:StateEvent):void
 		{	
 			super.onStateEvent(event);
-
-			if (event.property == "close" && audio) {
-				audio.stop(); 
+			
+			// also triggered by timeout
+			if (event.property == "close" && audio) { // also triggered by timeout
+				audio.stop();
+				resetCurrentPlayingMP3();
 			}
 			else if (event.value == "play" && audio) {
-				/*if (!audio.isPlaying) { 
-					audio.seek(pos);
-					audio.resume();
-				}	*/	
-				audio.resume();
-			}
-			else if (event.value == "pause" && audio) {
-				//pos = audio.mp3.position;
-				audio.pause();
+				playIfNoOtherAudio();
 			}
 		}
 		
-		public function startAudio():void {
+		public function resetCurrentPlayingMP3():void {
+			if (canGetAudioLock() == true) {
+				(parent as CollectionViewer).resetCurrentPlayingMP3();
+			}
+		}
+		
+		private function canGetAudioLock():Boolean {
+			if ((parent as CollectionViewer).currentPlayingMP3 == null || 
+				(parent as CollectionViewer).currentPlayingMP3 == audio.src) { return true; }
+			return false;
+		}
+		
+		private function getAudioLock():Boolean {
+			if (canGetAudioLock() == true) { 
+				(parent as CollectionViewer).currentPlayingMP3 = audio.src;
+				return true;
+			}
+			return false;
+		}
+		
+		public function playIfNoOtherAudio():void {
+			if (getAudioLock() == true) { audio.play(); }
+		}
+		
+		public function instantiateAudio():void {
 			if (!audio) {
 				audio = new MP3();
 				addChild(audio);
-				audio.autoplay = true;
+				audio.autoplay = false;
 			}
+			
 			// update the source if we're not using a fresh clone (i.e. already has an audio())
-			audio.src = secondaryContentURL;
-			audio.open();
+			if (audio.src != secondaryContentURL) {
+				audio.src = secondaryContentURL;
+				audio.init();
+				audio.open();
+			}
+			
+			// we can't call play until we return from this stack frame and underlying "load complete" events are dispatched 
+			// so we call this method in Dock.onCloneLoad() and call playIfNoOtherAudio() in Dock.selectItem()
+			
 			//trace("IAV.startAudio(): " + searchChildren("title").text + " " + secondaryContentURL);
 		}
 		
@@ -158,6 +182,7 @@ package com.gestureworks.cml.components
 		override public function dispose():void 
 		{
 			super.dispose();
+			image.removeAllEventListeners();
 			image = null;
 			if (audio) { audio.close(); }
 			audio = null;
