@@ -155,7 +155,7 @@ package com.gestureworks.cml.components
 		public function playIfNoOtherAudio():void {
 			if (getAudioLock() == true) { audio.play(); }
 		}
-		
+
 		public function instantiateAudio():void {
 			if (!audio) {
 				audio = new MP3();
@@ -174,6 +174,13 @@ package com.gestureworks.cml.components
 			// so we call this method in Dock.onCloneLoad() and call playIfNoOtherAudio() in Dock.selectItem()
 			
 			//trace("IAV.startAudio(): " + searchChildren("title").text + " " + secondaryContentURL);
+		}
+		
+		
+		public function startAudio():void {
+			//if (getAudioLock() == true) { audio.open(); }
+			
+			playIfNoOtherAudio();
 		}
 		
 		/**
