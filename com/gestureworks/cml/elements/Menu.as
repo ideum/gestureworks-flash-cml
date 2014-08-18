@@ -151,31 +151,7 @@ package com.gestureworks.cml.elements
 					Button(getChildAt(i)).onFlip(e);
 				}
 			}
-		}
-		
-		/**
-		 * Returns clone of self
-		 */
-		override public function clone():* 
-		{
-			var v:Vector.<String> = new <String>[];						
-			var clone:Menu = CloneUtils.clone(this, null, v);
-			
-			CloneUtils.copyChildList(this, clone);
-			
-			for (var i:int = 0; i < childList.length; i++) 
-			{
-				if (!(contains(childList.getIndex(i)))){
-					childList.removeIndex(i);
-					i--;
-				}
-				
-			}
-			
-			clone.init();
-
-			return clone;
-		}		
+		}	
 		
 		public function reset():void { 
 			StateUtils.loadState(this, 0, true);
