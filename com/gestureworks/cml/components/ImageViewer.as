@@ -147,7 +147,7 @@ package com.gestureworks.cml.components
 				clone.frame = String(frame.id);
 			}
 			
-			if (fronts.length > 1) {
+			if (fronts && fronts.length > 1) {
 				clone.fronts = [];
 				for (var l:int = 0; l < fronts.length; l++) 
 				{
@@ -160,7 +160,7 @@ package com.gestureworks.cml.components
 				}
 			}
 			
-			if (backs.length > 1) {
+			if (backs && backs.length > 1) {
 				clone.backs = [];
 				for (var j:int = 0; j < backs.length; j++) 
 				{
