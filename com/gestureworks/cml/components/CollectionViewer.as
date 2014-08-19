@@ -198,7 +198,7 @@ package com.gestureworks.cml.components
 				c.y = -500;
 				addChild(c);
 				if (animateIn) {
-					tweens[c] = TweenLite.to(c, 4, { x:(stage.stageWidth/2-c.width/2), y:(stage.stageHeight/2-c.height/2), ease:Expo.easeOut, onComplete:onTweenEnd } ); 
+					tweens[c] = TweenLite.to(c, 4, { x:(stage.stageWidth/2-(c.width/2*c.scaleX)), y:(stage.stageHeight/2-(c.height/2*c.scaleY)), ease:Expo.easeOut, onComplete:onTweenEnd } ); 
 					tweens[c].play();	
 				}
 				addComponent(c);
