@@ -528,8 +528,9 @@ package com.gestureworks.cml.elements
 				parent.removeChild(img);
 				parent.addChildAt(img, index);*/
 				
-				(parent as ImageVideoViewer).image.visible = false;
-				
+				// hide the thumbnail preview
+				//(parent as ImageVideoViewer).image.visible = false;
+								
 				// scale video to fit it's initial on stage size
 				var ratio:* = Math.min(width / meta.width, height / meta.height);
 				video.width = ratio * meta.width;
@@ -551,7 +552,7 @@ package com.gestureworks.cml.elements
 				_isLoaded = true;
 				dispatchEvent(new Event(Event.COMPLETE, false, false));
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
-				
+				// callback to update IVV layout
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "sizeLoaded", sizeLoaded));
 			}
 		}

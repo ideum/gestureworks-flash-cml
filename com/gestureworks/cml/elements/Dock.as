@@ -339,20 +339,43 @@ package com.gestureworks.cml.elements
 		/**
 		 * Preloads the maxClones value of template clones
 		 */
+		
+		private var videoCloneCnt:Number = 0;
 		public function preloadClones():void
 		{
 			//if (loadIndex == maxClones) return;
 			if (loadIndex == maxClones * templates.length)
 				return;
 			
-			var clone:Component;
+			// image bugs if we don't have 2n clones for n results per "page"
+			// also allows some items to remain on stage if the next page has n results
+			// for Maxwell we only need one ImageVideoViewer (and their two videos have different dial combinations)
+			//var clone:Component;
 			for (var i:int = 0; i < templates.length; ++i)
 			{
-				clone = templates[i].clone();
+				if (templates[i] is ImageVideoViewer) {
+					if (videoCloneCnt < 2) {
+						++videoCloneCnt;
+						preloadClone(templates[i]);
+					}
+					continue;
+				}
+				
+				preloadClone(templates[i]);
+				
+				/*clone = templates[i].clone();
 				cloneMap.append(clone, preloadExp(clone, new LinkedMap()));
 				loadIndex++;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));*/
 			}
+		}
+		
+		private function preloadClone(template:*):void {
+			var clone:Component;
+			clone = template.clone();
+			cloneMap.append(clone, preloadExp(clone, new LinkedMap()));
+			loadIndex++;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));
 		}
 		
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap
@@ -392,10 +415,10 @@ package com.gestureworks.cml.elements
 			var exp:* = obj["state"][0][prop];
 			var src:String = res[exp];
 			
-			if ("updateLayout" in obj)
-				obj["updateLayout"]();
+			/*if ("updateLayout" in obj)
+				obj["updateLayout"]();*/
 			
-			if (srcMap[src])
+			if (srcMap[src]) // && srcMap[src]["clone"].visible == false)
 			{
 				addPreview(srcMap[src]["clone"], getPreview(srcMap[src]["clone"]));
 				onCloneLoad();
@@ -615,34 +638,42 @@ package com.gestureworks.cml.elements
 			cancelLoading();
 			
 			var index:int = dials.indexOf(e.target);
-			//var splitArray:* = e.value.split("'s ")
-			var str:* = "";
+			var str:String = "";
+			var str1:*;
+			var str2:*;
+			var splitIndex:*;
+			
 			if (!flickrQuery)
-			{
-				/*// TODO handle strings with more than one apostrophe
-				if (splitArray.length > 1)
-				{
-					for (var i:int = 0; i < splitArray.length - 1; ++i)
-					{
-						str += _searchFieldsArray[index] + ":\"" + splitArray[i] + "'\"" + " and ";
-					}
-					str += "\"" + splitArray[splitArray.length - 1] + "\"";
-					searchTerms[index] = str;
-				}
-				else*/
-				//{
-					searchTerms[index] = _searchFieldsArray[index] + ":\"" + e.value + "\"";
-				//}
+			{				
+				// hack for CA 1.3 search syntax bug (if a dial field has whitespace)
+				// example: ca_objects.dial_3:"Phase III" returns 4 results, but should only return one (for Maxwell's CA db)
+				// To get the correct results use: ca_objects.dial_3:"Phase" and ca_objects.dial_3:"III"
+	
+				//trace("Dial Index" + index);
 				
-				/*if (index == 0)
+				if (searchTerms.length > 3) { searchTerms.pop(); } // discard the second dial three term
+				
+				if (index == 0 || index == 1) {
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
-					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
-				else if (index == 1)
-					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
-					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;
-				else if (index == 2)
-					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
-					//searchTerms[index] = _searchFieldsArray[index] + ": " + e.value;*/
+				} else if (index == 2) {
+					str = e.value;
+					if ((splitIndex = str.search(/( [\w]+){1}/)) != -1) { // get index of the whitespace
+						str1 = str.substring(0, splitIndex);
+						str2 = str.substring(splitIndex + 1, str.length);
+						
+						//trace("Orig: " + str);
+						//trace("Str 1: " + str1);
+						//trace("Str 2: " + str2);
+						
+						searchTerms[index] = _searchFieldsArray[index] + ":\"" + str1 + "\"";
+						searchTerms.push(_searchFieldsArray[index] + ":\"" + str2 + "\"");
+						
+						//trace(searchTerms[index]);
+						//trace(searchTerms[index+1]);
+					} else {
+						searchTerms[index] = _searchFieldsArray[index] + ":\"" + str + "\"";
+					}
+				}
 				//trace(index, searchTerms[index]);
 			}
 			// If this were Flickr...
@@ -904,7 +935,7 @@ package com.gestureworks.cml.elements
 						
 						// dynamic font swap
 						if (event.target is ImageViewer && event.target.hasChineseFont == true) {
-							textElement.font = "SimSongLight";
+							textElement.font = "SimSun"; // "SimSongLight";
 							 textElement.fontSize = textElement.fontSize + 5;
 							event.target.hasChineseFont = false;  // reset the flag
 						} else { textElement.font = "OpenSansBold"; }
@@ -1176,7 +1207,14 @@ package com.gestureworks.cml.elements
 					}
 				}
 				obj.startVideo(); 
-			} else if (obj is ImageAudioViewer) { obj.playIfNoOtherAudio(); }
+			} 
+			else if (obj is ImageAudioViewer) { 
+				obj.playIfNoOtherAudio();
+				
+				// by request, show menu on IAVs when selected (set visibility in CML)
+				// so we manually start the autohide timer
+				obj.menu.startTimer();
+			}
 	
 			if (position == "top")
 			{

@@ -94,18 +94,20 @@ package com.gestureworks.cml.components
 			if ( !(event.property == "sizeLoaded" && event.value == true ) ) { return; }
 			else { video.removeEventListener(StateEvent.CHANGE, videoLayoutUpdate); }
 			
+			image.visible = false;
+			
 			//super.onStateEvent(event);
 			if (video) {
 				width = video.width;
 				height = video.height;
 			}
 			
-			super.updateLayout();
-			
 			//initialScale = null;
 			scale = 300 / width;
 			var newScale:* = 1 / scale;
 			menu.scale = newScale;
+			
+			super.updateLayout();
 			menu.updateLayout(width / newScale, height / newScale);
 		}
 		
@@ -225,7 +227,7 @@ package com.gestureworks.cml.components
 					maxScale = 920 / width;
 				else
 					maxScale = 920 / height;*/
-				maxScale = 920 / width;
+				maxScale = 4; // 1280 / width;
 				
 				/*infoBtn.scale = .5 / value;
 				playBtn.scale = .5 / value;

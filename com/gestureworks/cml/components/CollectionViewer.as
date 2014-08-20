@@ -339,7 +339,8 @@ package com.gestureworks.cml.components
 				docks[i].gateway = gateway;
 				docks[i].connect();	
 				//totalProgress += docks[i].maxClones;
-				totalProgress += docks[i].maxClones * templates.length;
+				totalProgress += docks[i].maxClones * (templates.length - 1);
+				totalProgress += 2; // for Maxwell, two ImageVideoViewer clones max
 				docks[i].addEventListener(StateEvent.CHANGE, function(e:StateEvent):void {
 					if (e.property == "preloaded")
 					{
