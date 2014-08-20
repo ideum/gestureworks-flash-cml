@@ -203,6 +203,15 @@ package com.gestureworks.cml.layouts
 		{
 			_tweenTime = t;
 		}
+		
+		private var _tweenDelay:Number = 0;		
+		/**
+		 * Tween's initial delay which is the length of time in seconds before the animation should begin.
+		 */
+		public function get tweenDelay():Number { return _tweenDelay; }
+		public function set tweenDelay(d:Number):void {
+			_tweenDelay = d; 
+		}
 
 		private var _easing:Ease;
 		/**
@@ -343,7 +352,7 @@ package com.gestureworks.cml.layouts
 					tIndex++;
 				}
 				
-				layoutTween = new TimelineLite( { onComplete:onComplete, onCompleteParams:onCompleteParams, onUpdate:onUpdate, onUpdateParams:onUpdateParams } );
+				layoutTween = new TimelineLite( { onComplete:onComplete, onCompleteParams:onCompleteParams, onUpdate:onUpdate, onUpdateParams:onUpdateParams, delay:tweenDelay } );
 				layoutTween.appendMultiple(childTweens);
 				layoutTween.play();
 				
