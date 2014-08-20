@@ -309,7 +309,7 @@ package com.gestureworks.cml.layouts
 			var tIndex:int = 0;
 			var transformation:Matrix;
 			
-			if (!children)
+			if (!children || !children.length)
 				children = DisplayUtils.getAllChildren(container);
 			
 			if (tween)
