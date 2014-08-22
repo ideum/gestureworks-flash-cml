@@ -109,7 +109,7 @@ package com.gestureworks.cml.components
 				hitBg.graphics.endFill();
 				hitBg.cacheAsBitmap = true;
 				hitBg.visible = false;
-				//addChildAt(hitBg, 0);		
+				addChildAt(hitBg, 0);		
 			}
 			
 			// create component array to hold all components
