@@ -430,7 +430,7 @@ package com.gestureworks.cml.core
 					}
 					
 					if (FileManager.hasFile(path)) {
-						node = resolveIncludeVars(node, XML(FileManager.cml.getLoader(path).content).copy());
+						node = XML(FileManager.cml.getLoader(path).content).copy();
 						tag = node.name();
 						loopCML(node.*, parent);
 					}
@@ -493,44 +493,6 @@ package com.gestureworks.cml.core
 					loopCML(returned, obj);
 			}
 		}		
-		
-		private static function resolveIncludeVars(main:XML, inc:XML):XML
-		{
-			var vars:Dictionary = new Dictionary(true);
-			var item:*;
-			var regExp:RegExp = /[\s\r\n{}]*/gim;
-
-			for each (item in main.@ * ) {
-				if (item != "src") {
-					vars["$" + String(item.name())] = item;
-				}
-			}
-						
-			loopInc(XMLList(inc.*));
-			
-			function loopInc(node:XMLList):void {
-				var val:String;
-				var name:String;
-				var item:*;
-				
-				for each (var child:XML in node) {					
-					for each (item in child.@*) {
-						val = String(item);		
-						val = val.replace(regExp, ''); // strip optional {} characters
-						name = String(item.name());
-						if (vars[val]) {
-							child.@[name] = vars[val]; 
-						}						
-					}	
-					
-					if (node.*.length()) {
-						loopInc(XMLList(node.*));
-					}					
-				}
-			}
-			return inc;
-		}
-		
 		
 		private static function pRenderKit(renderKit:XML):XMLList
 		{						
