@@ -651,7 +651,7 @@ package com.gestureworks.cml.elements
 	
 				//trace("Dial Index" + index);
 				
-				if (searchTerms.length > 3) { searchTerms.pop(); } // discard the second dial three term
+				
 				
 				if (index == 0 || index == 1) {
 					searchTerms[index] = _searchFieldsArray[index] + ": \"" + e.value + "\"";
@@ -666,12 +666,13 @@ package com.gestureworks.cml.elements
 						//trace("Str 2: " + str2);
 						
 						searchTerms[index] = _searchFieldsArray[index] + ":\"" + str1 + "\"";
-						searchTerms.push(_searchFieldsArray[index] + ":\"" + str2 + "\"");
+						searchTerms[index+1] = _searchFieldsArray[index] + ":\"" + str2 + "\"";
 						
 						//trace(searchTerms[index]);
 						//trace(searchTerms[index+1]);
 					} else {
 						searchTerms[index] = _searchFieldsArray[index] + ":\"" + str + "\"";
+						if (searchTerms.length > 3) { searchTerms.pop(); } // discard the second dial three term
 					}
 				}
 				//trace(index, searchTerms[index]);
@@ -929,7 +930,13 @@ package com.gestureworks.cml.elements
 					if (event.target is ImageAudioViewer) {
 						event.target.instantiateAudio();
 					}
-
+					
+					// re-enable wordWrap to prevent textAlign from making the "title" Text too tall
+					// this bug is very hard to reproduce, and usually only occurs in RELEASE builds...
+					var titleText:* = event.target.searchChildren(".info_title");
+					titleText.wordWrap = true;
+					titleText.updateTextFormat();
+					
 					var textElement:* = event.target.searchChildren(".info_description");
 					if (textElement) { // implies existaence of a parent scrollpane...
 						
@@ -1105,6 +1112,7 @@ package com.gestureworks.cml.elements
 			title.width = img.width;
 			title.y = img.height;
 			title.x = img.x;
+			title.wordWrap = true;
 			title.textAlign = "center";
 			title.fontSize = 10;
 			
