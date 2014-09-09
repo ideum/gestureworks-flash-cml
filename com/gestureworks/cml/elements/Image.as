@@ -308,6 +308,8 @@ package com.gestureworks.cml.elements
 			_aspectRatio = 0;
 			_landscape = false;
 			_portrait = false;
+			height = 0;
+			width = 0;
 			
 			if (_bitmapData && !_bitmapDataCache)
 			{
