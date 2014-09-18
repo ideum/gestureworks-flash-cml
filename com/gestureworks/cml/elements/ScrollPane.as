@@ -26,32 +26,26 @@ package com.gestureworks.cml.elements
 		private var oldY:Number;
 		private var oldX:Number;
 		
-		private var _content:*;
-		
 		public var _mask:Graphic;
 		
-		public var _verticalScroll:ScrollBar;
-		public var _horizontalScroll:ScrollBar;
-		
-		public var _vertical:Boolean = false;
-		public var _horizontal:Boolean = false;	
-		public var _vertStyleSet:Boolean = false;
-		public var _horizStyleSet:Boolean = false;
 		public var _horizontalMovement:Number;
 		public var _verticalMovement:Number;
 		
-		private var _invertDrag:Boolean = false;
+		private var _invertDrag:Boolean = true;
 		
 		private var _autohide:Boolean = false;
 		private var _autohideSpeed:Number = 0.5;
+		
+		private var _fill:String = "0x333333";
+		private var _buttonFill:String = "0x222222";
+		private var _thumbFill:String = "0x222222";
 		
 		private var _paneStroke:Number = 1;
 		private var _paneStrokeColor:uint = 0x777777;
 		private var _paneStrokeMargin:Number = 0;
 
 		private var _scrollMargin:Number = 5;
-		private var _scrollThickness:Number = 30;
-		
+		private var _scrollThickness:Number = 20;
 		
 		/**
 		 * Constructor
@@ -59,10 +53,16 @@ package com.gestureworks.cml.elements
 		public function ScrollPane() {
 			super();	
 			mouseChildren = true;
-			nativeTransform = false;
+			nativeTransform = true;
+			
+			_content = new TouchContainer();
+			
+			// Drag and scale gestures on _content are applied programatically
+			// by this class. This resolves jerky behavior from nativeTransforms, which
+			// would otherwise enable moving _content OOBs of the scrollpane (an
+			// inevitable call to updateLayout would cause them to "snap" back in bounds).
+			_content.nativeTransform = false;
 		}	
-		
-		
 		
 		/**
 		 * Sets whether to auto-hides scroll bars.
@@ -138,117 +138,71 @@ package com.gestureworks.cml.elements
 			_invertDrag = value;
 		}
 		
-		
-		
+		private var _content:TouchContainer;
 		/**
 		 * Returns content of pane.
 		 */
-		public function get content():* {
-			return _content;
+		public function get content():TouchContainer { return _content; }
+		
+		private var _vBar:ScrollBar;
+		public function get vBar():ScrollBar { return _vBar; }
+		public function set vBar(value:*):void {
+			if (value is XML) { _vBar = getElementById(value); }
+			else if (value is ScrollBar) { _vBar = value; }
 		}
 		
+		private var _hBar:ScrollBar;
+		public function get hBar():ScrollBar { return _hBar; }
+		public function set hBar(value:*):void {
+			if (value is XML) { _hBar = getElementById(value); }
+			else if (value is ScrollBar) { _hBar = value; }
+		}
 		
-
+		//private var _contentGestures:Object;
+		public function get contentGestures():Object { return _content.gestureList; }
+		/**
+		 * Setter for the GestureList array. Takes a comma separated list and converts
+		 * it into an array.
+		 *
+		 * Gestures to apply to the ScrollPane's content container.
+		 * If contentGestures is set, nativeTransform on the ScrollPane will be disabled 
+		 * (many gestures on actual ScrollPane will not work). Leave it blank to allow dragging
+		 * or scaling of the entire ScrollPane rather than its "contents"
+		 */
+		public function set contentGestures(value:Object):void {
+			if (!value || value.length == 0) {
+				nativeTransform = true;
+				return;
+			}
+			
+			var gArray:* = value.split(",");
+			var gestureList:Object = new Object();
+			for (var i:* in gArray) {
+				gestureList[gArray[i]] = true;
+			}
+			_content.gestureList = gestureList;
+			nativeTransform = false;
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
 		override public function init():void {
-			// Check the child list. 
-			// Iterate through each item, getting position, width, and height.
-			// Check if total items width are larger than the container.
+			_content.init();
 			
-			if (!numChildren) { return; }
-			
-			// search for content
-			if (!_content){
-				for (var j:int = 0; j < numChildren; j++) {
-					if (getChildAt(j) is ScrollBar || 
-						getChildAt(j) is GestureList || 
-						getChildAt(j) == _mask) {
-						continue;
-						}
-					else { 
-						_content = getChildAt(j);
-					}
-				}
-			}			
-			
+			// prevent gestures from directly moving the content
+			super.addChild(_content);
 		
-			// get scrollbars
-			var scrollBars:Array = searchChildren(ScrollBar, Array);
+			// "setup" the Scrollpane's ScrollBars, which are hidden when the content is smaller than the SrollPane
+			if (!_vBar) { _vBar = createDefaultScrollBar(true); } // create a default vertical scrollbar
+			initScrollBarLayout(_vBar, true);
+			_vBar.init(); 
+			super.addChild(_vBar);
 			
-			// set up scroll bars
-			if (scrollBars.length > 0){
-				for (var i:int = 0; i < scrollBars.length; i++) {
-					if (ScrollBar(scrollBars[i]).orientation == "vertical") {
-						_vertStyleSet = true;
-						_verticalScroll = scrollBars[i];
-					}
-					else if (ScrollBar(scrollBars[i]).orientation == "horizontal") {
-						_horizStyleSet = true;
-						_horizontalScroll = scrollBars[i];
-					}
-				}
-			}
-			
-			// If one bar is set but not the other, set the other to match.
-			if (_verticalScroll && !_horizontalScroll) {
-				createHorizontal();
-			}
-			if (!_verticalScroll && _horizontalScroll) {
-				createVertical();
-			}
-			
-			// Create the scroll bars if they haven't been caught anywhere else.			
-			if (!_verticalScroll && !_horizontalScroll) {
-				_verticalScroll = new ScrollBar();
-				_horizontalScroll = new ScrollBar();
-			}
-			
-			// Create the scroll bar properties that would not be affected by setting out a style.
-			_vertical = true;
-			_verticalScroll.contentHeight = _content.height;
-			_verticalScroll.height = height;
-			_verticalMovement = _content.height - height;
-			
-			// Check if the scroll's thickness has already been set. If not, use the default or thickness listed in CML.
-			if (!_verticalScroll.width || _verticalScroll.width <= 0){
-				_verticalScroll.width = _scrollThickness;
-			}
-			if(!_vertStyleSet){
-				_verticalScroll.init();
-			}
-			_verticalScroll.x = width + scrollMargin;
-			
-			// Check if the scroll bar is needed. If so, add to display list.
-			if (_content.height > height) {
-				addChild(_verticalScroll);
-				_vertical = true;
-			} else { _vertical = false; }
-						
-			_horizontalMovement = _content.width - width;
-			_horizontal = true;
-			_horizontalScroll.orientation = "horizontal";
-			
-			// Check if the scroll's thickness has already been set. If not, use the default or thickness listed in CML.
-			if (!_horizontalScroll.height || _horizontalScroll.height <= 0 ){
-				_horizontalScroll.height = _scrollThickness;
-			}
-			
-			_horizontalScroll.contentWidth = _content.width;
-			_horizontalScroll.width = width;
-			
-			if(!_horizStyleSet) {
-				_horizontalScroll.init();
-			}
-			_horizontalScroll.y = height + scrollMargin;
-			
-			if (_content.width > width) {
-				addChild(_horizontalScroll);
-				
-				_horizontal = true;
-			} else { _horizontal = false; }
-			
+			if (!_hBar) { _hBar = createDefaultScrollBar(false); } // create a default horizontal scrollbar
+			initScrollBarLayout(_hBar, false);
+			_hBar.init(); 
+			super.addChild(_hBar);
 			
 			// create mask
 			if (!_mask){
@@ -256,204 +210,240 @@ package com.gestureworks.cml.elements
 				_mask.shape = "rectangle";
 				_mask.width = width;
 				_mask.height = height;
-				addChild(_mask);
+				super.addChild(_mask);
 			}
 			_content.mask = _mask;
-			
-			
+
 			// create events
 			createEvents();
 			
-			
 			// set up autohide
 			if (_autohide) {
-				_verticalScroll.alpha = 0;
-				_horizontalScroll.alpha = 0;
+				_vBar.alpha = 0;
+				_hBar.alpha = 0;
 			}
 			
-			// loaded
-			loaded = true;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded"));
+			updateLayout();
+			
+			// use to prevent calls to updateLayout in overriden addChild and removeChild before initialization
+			loaded = true; 
+			
+			// ¿¿¿ use if there's an embedded greensock, etc., loader ???
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded")); 
 		}		
 		
+		private function initScrollBarLayout(bar:ScrollBar, isVertical:Boolean):void {
+			if (isVertical) {
+				bar.contentHeight = _content.height;
+				bar.height = height;
+				_verticalMovement = bar.contentHeight - bar.height;
+
+				// set default thickness, if needed
+				if (!bar.width || bar.width <= 0) { bar.width = _scrollThickness; }
+				bar.x = width + scrollMargin;
+				bar.orientation = "vertical";
+				bar.scrollCallback = onScroll;
+				return;
+			}
+			
+			bar.contentWidth = _content.width;
+			bar.width = width;
+			_horizontalMovement = bar.contentWidth - bar.width;
+
+			// set default thickness, if needed
+			if (!bar.height || bar.height <= 0) { bar.height = _scrollThickness; }
+			bar.y = height + scrollMargin;
+			bar.orientation = "horizontal";
+			bar.scrollCallback = onScroll;
+		}
 		
 		// create vertical scroll bar
-		private function createVertical():void {
-			_verticalScroll = new ScrollBar();
-			_verticalScroll.height = _horizontalScroll.width;
-			_verticalScroll.fill = _horizontalScroll.fill;
-			_verticalScroll.buttonFill = _horizontalScroll.buttonFill;
-			if (_verticalScroll.thumbFill)
-				_verticalScroll.thumbFill = _horizontalScroll.thumbFill;
+		private function createDefaultScrollBar(isVertical:Boolean):ScrollBar {
+			var bar:* = new ScrollBar();
+			if (isVertical) {
+				bar.height = height;
+				bar.width = _scrollThickness;
+			} else {
+				bar.height = _scrollThickness;
+				bar.width = width;
+			}
+			bar.fill = _fill;
+			bar.buttonFill = _buttonFill;
+			bar.thumbFill = _thumbFill;
+			
+			return bar;
 		}
 		
-		// create horizontal scroll bar
-		private function createHorizontal():void {
-			_horizontalScroll = new ScrollBar();
-			_horizontalScroll.orientation = "horizontal";
-			_horizontalScroll.height = _verticalScroll.width;
-			_horizontalScroll.fill = _verticalScroll.fill;
-			_horizontalScroll.buttonFill = _verticalScroll.buttonFill;
-			if (_verticalScroll.thumbFill)
-				_horizontalScroll.thumbFill = _verticalScroll.thumbFill;
+		// after intitialization, child additions are redirected to the content container
+		override public function addChild(child:DisplayObject):flash.display.DisplayObject {
+			var retVal:*;
+			if (_content && !(child is ScrollBar)) { retVal = _content.addChild(child); }
+			else { retVal = super.addChild(child); }
+			
+			// only updateLayout once we've called init()
+			if (loaded) { updateLayout(); } 
+
+			return retVal;
 		}
 		
-		
+		override public function removeChild(child:DisplayObject):flash.display.DisplayObject {
+			var retVal:*;
+			if (_content && !(child is ScrollBar)) { retVal = _content.removeChild(child); }
+			else { retVal = super.removeChild(child); }
+			
+			// only updateLayout once we've called init()
+			if (loaded) { updateLayout(); } 
+
+			return retVal;
+		}
 		
 		/**
 		 * Creates scroll pane events
 		 */
-		public function createEvents():void {
-			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
-				addEventListener(GWGestureEvent.DRAG, onDrag);
-				content.addEventListener(GWGestureEvent.DRAG, onDrag);
+		public function createEvents():void {		
+			if (contentGestures) {
+				_content.addEventListener(GWGestureEvent.DRAG, onDrag);
+				_content.addEventListener(GWGestureEvent.SCALE, onScale);
 			}
-			addEventListener(GWGestureEvent.SCALE, onScale);
-			addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			addEventListener(GWGestureEvent.COMPLETE, onEnd);
 			
-			_verticalScroll.addEventListener(StateEvent.CHANGE, onScroll);
-			_horizontalScroll.addEventListener(StateEvent.CHANGE, onScroll);
+			// only deal with tweening...
+			//addEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+			//addEventListener(GWGestureEvent.COMPLETE, onEnd);
 		}
 		
 		/**
 		 * Removes scroll pane events
 		 */
 		public function removeEvents():void {
-			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
-				this.removeEventListener(GWGestureEvent.DRAG, onDrag);
+			if (contentGestures) {
+				_content.removeEventListener(GWGestureEvent.DRAG, onDrag);			
+				_content.removeEventListener(GWGestureEvent.SCALE, onScale);
 			}
-			removeEventListener(GWGestureEvent.SCALE, onScale);
-			removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
-			removeEventListener(GWTouchEvent.TOUCH_END, onEnd);			
-			_verticalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
-			_horizontalScroll.removeEventListener(StateEvent.CHANGE, onScroll);
+			
+			// only deal with tweening...
+			//removeEventListener(GWTouchEvent.TOUCH_BEGIN, onBegin);
+			//removeEventListener(GWGestureEvent.COMPLETE, onEnd);
 		}
-		
 		
 		/**
 		 * Updates scroll pane layout
 		 * @param	inWidth
 		 * @param	inHeight
 		 */
-		public function updateLayout(inWidth:Number=NaN, inHeight:Number=NaN):void {
-			if (!isNaN(inWidth)) {
-				width = inWidth; 
-			}
-			if (!isNaN(inHeight)) {
-				height = inHeight; 
-			}
+		public function updateLayout(inWidth:Number = NaN, inHeight:Number = NaN):void {
+			var display:DisplayObject = _content as DisplayObject;
+			//if (!display) { return; } ... we instantiate _content in the constructor ...
+			var rect:Rectangle = display.getBounds(display);
+			
+			if (!isNaN(inWidth)) { width = inWidth; }
+			if (!isNaN(inHeight)) { height = inHeight; }
 			
 			if (_mask){
 				_mask.width = width;
 				_mask.height = height;
 			}
-			var display:DisplayObject = _content as DisplayObject;
-			var rect:Rectangle = display.getBounds(display);
-			if (_verticalScroll) {
-				_verticalScroll.x = width + scrollMargin;
-				_verticalScroll.height = height;
-				_verticalScroll.resize(rect.height * _content.scaleY);
-				_verticalMovement = rect.height * _content.scaleY - height;
-				_verticalScroll.thumbPosition = _content.y / _verticalMovement;
-				
-				if (rect.height * _content.scaleY > height) {
-					if (!(contains(_verticalScroll))) addChild(_verticalScroll);
-				} else if (rect.height * _content.scaleY < height) {
-					if (contains(_verticalScroll)) removeChild(_verticalScroll);
-				}
-			}
 			
-			if (_horizontalScroll) {
-				_horizontalScroll.y = height + scrollMargin;
-				_horizontalScroll.width = width;
-				_horizontalScroll.resize(rect.width * _content.scaleX);
-				_horizontalMovement = rect.width * _content.scaleX - width;
-				_horizontalScroll.thumbPosition = _content.x / _horizontalMovement;
-				
-				if (rect.width * _content.scaleX > width) {
-					if (!(contains(_horizontalScroll))) addChild(_horizontalScroll);
-				} else if (rect.height * _content.scaleX < width) {
-					if (contains(_horizontalScroll)) removeChild(_horizontalScroll);
-				}
+			// reset content size and position
+			if (_content) {
+				_content.width = rect.width;
+				_content.height = rect.height;
+				_content.x = 0;
+				_content.y = 0;
 			}
+
+			// reset scrollbars to initial position
+			_vBar.reset();
+			_hBar.reset();
 			
-			if ( _horizontalScroll || _verticalScroll) {
-				enableScroll = contains(_horizontalScroll) || contains(_verticalScroll)
-			}
+			// update scrollbars
+			if (rect.height * _content.scaleY > height) { 
+				_vBar.x = width + scrollMargin;
+				_vBar.height = height;
+				_vBar.resize(rect.height * _content.scaleY);
+				_verticalMovement = (rect.height * _content.scaleY) - height;
+				_vBar.visible = true;
+			} else { _vBar.visible = false; }
+			
+			if (rect.width * _content.scaleX > width) { 
+				_hBar.y = height + scrollMargin;
+				_hBar.width = width;
+				_hBar.resize(rect.width * _content.scaleX);
+				_horizontalMovement = (rect.width * _content.scaleX) - width;
+				_hBar.visible = true;
+			} else { _hBar.visible = false; }
+	
+			// no longer needed as we use y_lock and x_lock to disable direct translation of _content.
+			//enableScroll = _vBar.visible || _hBar.visible;
 		}
 		
-		/**
-		 * Drag event registration
-		 */
-		public function set enableScroll(value:Boolean):void {
+		/*public function set enableScroll(value:Boolean):void {
 			if (value) {
-				addEventListener(GWGestureEvent.DRAG, onDrag);
-				content.addEventListener(GWGestureEvent.DRAG, onDrag);
+				//addEventListener(GWGestureEvent.DRAG, onDrag);
+				//_content.addEventListener(GWGestureEvent.DRAG, onDrag);
+				_content.gestureList["n-drag"] = true;
+				//_content.gestureList["n-scale"] = true;
 			}
 			else {
-				removeEventListener(GWGestureEvent.DRAG, onDrag);
-				content.removeEventListener(GWGestureEvent.DRAG, onDrag);
+				//removeEventListener(GWGestureEvent.DRAG, onDrag);
+				//_content.removeEventListener(GWGestureEvent.DRAG, onDrag);
+				_content.gestureList["n-drag"] = false;
+				//_content.gestureList["n-scale"] = false; // uncomment and and enjoy the show...
 			}
-		}
+		}*/
 		
 		/**
-		 * Resets scroll positions.
+		 * Reset scroll positions
 		 */
 		public function reset():void {
-			if (_verticalScroll)
-				_verticalScroll.reset();
-			if (_horizontalScroll)
-				_horizontalScroll.reset();
+			if (_vBar)
+				_vBar.reset();
+			if (_hBar)
+				_hBar.reset();
 				
 			_content.x = 0;
 			_content.y = 0;
 		}
 		
-		
-		
 		// events
+		//
 		
-		
-		private function onScroll(e:StateEvent):void {
-			if (e.target == _verticalScroll) {
-				_content.y = _verticalMovement * e.value * -1;
-			} else if (e.target == _horizontalScroll) {
-				_content.x = _horizontalMovement * e.value * -1;
+		// thumb drag callback
+		private function onScroll(orientation:String, value:Number):void {
+			if (orientation == "vertical") {
+				_content.y = _verticalMovement * value * -1;
+			} else if (orientation == "horizontal") {
+				_content.x = _horizontalMovement * value * -1;
 			}
 		}
 		
-		
-		protected function onDrag(e:GWGestureEvent):void {
-			if (_verticalScroll && contains(_verticalScroll) && _verticalScroll.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
-				if (_verticalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
-					_verticalScroll.onDrag(e);
+		private function onDrag(e:GWGestureEvent):void {
+			if (_vBar.visible == true && _vBar.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+				if (_vBar.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true)) // check if hit on thumb
+					_vBar.onDrag(e);
 				return;
 			}
-			else if (_horizontalScroll && contains(_horizontalScroll) && _horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
-				if (_horizontalScroll.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
-					_horizontalScroll.onDrag(e);
+			else if (_hBar.visible == true && _hBar.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true) ) {
+				if (_hBar.thumb.hitTestPoint(e.value.stageX, e.value.stageY, true))
+					_hBar.onDrag(e);
 				return;
 			}
-								
+			
 			var newXPos:Number;
 			var newYPos:Number;
-					
-			if (contains(_verticalScroll)) {
+			
+			if (_vBar.visible == true) {
 				// Check the new position won't be further than the limits, and if so, clamp it.
 				newYPos = _content.y;
 				
 				if (!releaseInertia) {
 					if (!oldY) {
 						oldY = e.value.localY;
-					}
-					else if (oldY) {
+					} else if (oldY) {
 						if (!invertDrag) newYPos -= e.value.localY - oldY;
 						else newYPos += e.value.localY - oldY;
 						oldY = e.value.localY;
 					}
-				}
-				else {
+				} else {
 					if (!invertDrag) newYPos -= e.value.drag_dy;
 					else newYPos += e.value.drag_dy;
 				}
@@ -469,23 +459,24 @@ package com.gestureworks.cml.elements
 				
 				// Apply the new position.
 				_content.y = newYPos;
-				_verticalScroll.thumbPosition = -newYPos / _verticalMovement;
-			}
+				_vBar.thumbPosition = -newYPos / _verticalMovement;
+			} 
+			// not needed if nativeTransform is disabled on _content
+			// prevent dragging OOB if content is wide enough to have an hBar (dragging still enabled)
+			//else if ( _content.y < 0 || _content.y > height - _content.height) { _content.y = 0; }
 			
-			if (contains(_horizontalScroll)) {
+			if (_hBar.visible == true) {
 				newXPos = _content.x;
 				
 				if (!releaseInertia) {
 					if (!oldX) {
 						oldX = e.value.localX;
-					}
-					else if (oldX) {
+					} else if (oldX) {
 						if (!invertDrag) newXPos -= e.value.localX  - oldX;
 						else newXPos += e.value.localX - oldX;
 						oldX = e.value.localX;
 					}
-				}
-				else {
+				} else {
 					if (!invertDrag) newXPos -= e.value.drag_dx;
 					else newXPos += e.value.drag_dx;
 				}
@@ -498,41 +489,40 @@ package com.gestureworks.cml.elements
 				// Now clamp and apply differential.
 				
 				newXPos = clampPos(newXPos, "horizontal");
-				
-				
+
 				// Apply the new position.
 				_content.x = newXPos;
-				_horizontalScroll.thumbPosition = -newXPos / _horizontalMovement;
+				_hBar.thumbPosition = -newXPos / _horizontalMovement;
 			}
+			// not needed if nativeTransform is disabled on _content
+			// prevent dragging OOB if content is tall enough to have an vBar (dragging still enabled)
+			//else if ( _content.x < 0 || _content.x > width - _content.width) { _content.x = 0; }
 		}
 		
-		private function onBegin(e:GWTouchEvent):void {
+		/*private function onBegin(e:GWTouchEvent):void {
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
 			if (_autohide) {
-				if (tweening)
-					TweenMax.killAll();
+				if (tweening) { TweenMax.killAll(); }
 				tweening = true;
-				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autohideSpeed, { alpha:1, onComplete:function():void { tweening = false;} } );
+				TweenMax.allTo([_vBar, _hBar], _autohideSpeed, { alpha:1, onComplete:function():void { tweening = false;} } );
 			}
 		}
 		
 		private function onEnd(e:GWGestureEvent):void {
 			if (_autohide) {
-				if (tweening)
-					TweenMax.killAll();
-				
-				TweenMax.allTo([_verticalScroll, _horizontalScroll], _autohideSpeed, { alpha:0, onComplete:function():void { tweening = false;} } );
+				if (tweening) { TweenMax.killAll(); }
+				TweenMax.allTo([_vBar, _hBar], _autohideSpeed, { alpha:0, onComplete:function():void { tweening = false;} } );
 			}
-		}
+		}*/
 		
 		private function clampPos(pos:Number, direction:String):Number {
 			if (direction == "vertical") {
 				if (pos < -_verticalMovement) pos = -_verticalMovement;
 				else if (pos > 0) pos = 0;
 			}
-			if(direction == "horizontal"){
+			if (direction == "horizontal"){
 				if (pos < -_horizontalMovement) pos = -_horizontalMovement;
 				else if (pos > 0) pos = 0;
 			}
@@ -541,7 +531,6 @@ package com.gestureworks.cml.elements
 		
 		protected function onScale(e:GWGestureEvent):void {
 			var c:DisplayObject = DisplayObject(content);
-			
 			var dsx:Number = e.value.scale_dsx;
 			var dsy:Number = e.value.scale_dsy;
 			
@@ -551,89 +540,38 @@ package com.gestureworks.cml.elements
 			m.translate(e.value.localX, e.value.localY);
 			c.transform.matrix = m;
 			
-			if (c.height * c.scaleY > height) {
-				_verticalScroll.resize(c.height * c.scaleY);
+			/*if (c.height * c.scaleY > height) {
+				_vBar.resize(c.height * c.scaleY);
 				_verticalMovement = c.height * c.scaleY - height;
-				_vertical = true;
-				
-				if (!(contains(_verticalScroll))) {
-					addChild(_verticalScroll);
-				}
-				
-			} 
-			else if (_content.height * c.scaleY < height) {
-				if (contains(_verticalScroll)) 
-					removeChild(_verticalScroll);
-			}
+				_vBar.visible = true;	
+			} else { _vBar.visible = false; }
+
 			if (c.width * c.scaleX > width) {
-				_horizontalScroll.resize(c.width * c.scaleX);
+				_hBar.resize(c.width * c.scaleX);
 				_horizontalMovement = c.width * c.scaleX - width;
-				_horizontal = true;
-				
-				if (!(contains(_horizontalScroll))) {
-					addChild(_horizontalScroll);
-				}
-			} 
-			else if (c.width * c.scaleX < width) {
-				if (contains(_horizontalScroll)) {
-					removeChild(_horizontalScroll);
-				}	
-			}
+				_hBar.visible = true;
+			} else { _hBar.visible = false; }*/
 			
-			if (contains(_horizontalScroll) || contains(_verticalScroll)) {
-				addEventListener(GWGestureEvent.DRAG, onDrag);
-			} else {
-				removeEventListener(GWGestureEvent.DRAG, onDrag);
-			}
-		}
-		
-		
-		/**
-		 * Updates / replaces content with given value. If you are only changing the dimensions of the 
-		 * content, such as a string change on a text field, the method updateLayout will be faster.
-		 * @param	value
-		 */
-		public function updateContent(value:DisplayObject):void {			
-			if ( _content && contains(_content)) {
-				removeChild(_content);
-				_content = null;
-			}			
-			_content = value;
-			_content.y = _content.x = 0;
-			addChild(_content);
-			init();
+			
+			// keeps ScrollBars in sync, has desirable side effect of causing 
+			// _content to scale to and from (0, 0) and (+inf, +inf).
+			// Without this scaled content may end up OOB
 			updateLayout();
 		}
-		
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():*{
-			this.removeChild(_mask);
-			this.removeEvents();
+		override public function clone():* {
 			var v:Vector.<String> = cloneExclusions;
-			v.push("childList", "_verticalScroll", "_horizontalScroll", "_mask", "_content");
-			var clone:ScrollPane = CloneUtils.clone(this, null, v);
+			v.push("childList", "_vBar", "_hBar", "_mask");// , "_content");
+			var clone:ScrollPane = CloneUtils.clone(this, this.parent, v);
+			//CloneUtils.copyChildList(this, clone);	
 			
-			CloneUtils.copyChildList(this, clone);	
-			
-			if (clone.parent)
-				clone.parent.addChild(clone);
-			else
-				this.parent.addChild(clone);
-			
-			this.addChild(_mask);
-			this.content.mask = _mask;
-			this.createEvents();
-			
-			clone.init();
-			
+			clone.vBar = _vBar.clone();
+			clone.hBar = _hBar.clone();
+			clone.init();			
 			return clone;
-		}
-		
-		public function get scrollEnabled():Boolean {
-			return contains(_verticalScroll) || contains(_horizontalScroll);
 		}
 		
 		/**
@@ -641,10 +579,12 @@ package com.gestureworks.cml.elements
 		 */
 		override public function dispose():void {
 			super.dispose();
+			
+			// TODO remove content children
 			_content = null;
 			_mask = null;
-			_verticalScroll = null;
-			_horizontalScroll = null;		
+			_vBar = null;
+			_hBar = null;		
 		}		
 	}
 }

@@ -32,6 +32,8 @@ package com.gestureworks.cml.elements
 		public var movementRail:Number;
 		
 		
+		public var scrollCallback:Function;
+		
 		/**
 		 * Constructor
 		 */
@@ -40,9 +42,8 @@ package com.gestureworks.cml.elements
 			super();
 			
 			this.mouseChildren = true;
+			nativeTransform = false;
 		}		
-		
-				
 		
 		private var _scrollPosition:Number;
 		/**
@@ -53,10 +54,10 @@ package com.gestureworks.cml.elements
 		public function get scrollPosition():Number { return _scrollPosition; }
 		public function set scrollPosition(value:Number):void {
 			_scrollPosition = value;			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _scrollPosition, true));
+			if (scrollCallback != null) {
+				scrollCallback.call(null, _orientation, _scrollPosition);
+			}
 		}
-		
-		
 		
 		/**
 		 * This sets the thumbPosition, this is not to be accessed externally in CML or used in Actionscript,
@@ -139,26 +140,22 @@ package com.gestureworks.cml.elements
 			_buttonFill = value;
 		}
 		
-		
 		private var _buttonAlpha:Number = 1.0;
-		/**
-		 * The color of the button's background.
-		 */
 		public function get buttonAlpha():Number { return _buttonAlpha; }
 		public function set buttonAlpha(value:Number):void {
 			_buttonAlpha = value;
 		}
 		
-		
-		private var _buttonVisible:Boolean = true;
+		private var _buttonVisible:Boolean = false;
 		/**
-		 * The color of the button's background.
+		 * Toggle the tap increment buttons at the end of a scroll bar.
+		 * Enabling will register tap gestures and event listeners, which
+		 * has some overhead...
 		 */
 		public function get buttonVisible():Boolean { return _buttonVisible; }
 		public function set buttonVisible(value:Boolean):void {
 			_buttonVisible = value;
 		}			
-		
 		
 		// TO DO: Button stroke, button triangle
 		
@@ -185,7 +182,7 @@ package com.gestureworks.cml.elements
 			_shape = value;
 		}
 		
-		private var _railShape:String = "rectangle";
+		private var _railShape:String = "roundRectangle";
 		/**
 		 * Sets the shape of the rail grpahic, either "rectangle" or "roundRectangle".
 		 */
@@ -194,7 +191,7 @@ package com.gestureworks.cml.elements
 			_railShape = value;
 		}
 		
-		private var _cornerHeight:Number = 10;
+		private var _cornerHeight:Number = 15;
 		/**
 		 * Sets part of the corner radius for the ellipse used to round the rectangle of the thumb. Shape must be "roundRectangle" for this to be used.
 		 * @default 10
@@ -204,7 +201,7 @@ package com.gestureworks.cml.elements
 			_cornerHeight = value;
 		}
 		
-		private var _cornerWidth:Number = 10;
+		private var _cornerWidth:Number = 15;
 		/**
 		 * Sets part of the corner radius for the ellipse used to round the rectangle of the thumb. Shape must be "roundRectangle" for this to be used.
 		 * @default 10
@@ -250,27 +247,29 @@ package com.gestureworks.cml.elements
 		{ 
 			if(!railTouch){
 				railTouch = new TouchContainer();
-				railTouch.gestureEvents = true;
+				//railTouch.gestureEvents = true;
 				addChild(railTouch);
 			}
 			
-			if(!touchBtn1){
-				touchBtn1 = new TouchContainer();
-				touchBtn1.gestureEvents = true;
-				touchBtn1.gestureList = { "n-tap":true };
-				addChild(touchBtn1);
-			}
-			
-			if (!touchBtn2) {
-				touchBtn2 = new TouchContainer();
-				touchBtn2.gestureEvents = true;
-				touchBtn2.gestureList = { "n-tap":true };
-				addChild(touchBtn2);
+			if (_buttonVisible == true) {
+				if(!touchBtn1){
+					touchBtn1 = new TouchContainer();
+					//touchBtn1.gestureEvents = true;
+					touchBtn1.gestureList = { "n-tap":true };
+					addChild(touchBtn1);
+				}
+					
+				if (!touchBtn2) {
+					touchBtn2 = new TouchContainer();
+					//touchBtn2.gestureEvents = true;
+					touchBtn2.gestureList = { "n-tap":true };
+					addChild(touchBtn2);
+				}
 			}
 			
 			if (!thumbTouch){
 				thumbTouch = new TouchContainer();
-				thumbTouch.gestureEvents = true;
+				//thumbTouch.gestureEvents = true;
 				thumbTouch.gestureList = { "n-drag":true };
 				thumbTouch.nativeTransform = false;
 				addChild(thumbTouch);
@@ -289,7 +288,7 @@ package com.gestureworks.cml.elements
 			// Create and position buttons based upon either orientation.
 			if (_orientation == "vertical" && !scrollBtn1 && !scrollBtn2) {
 				
-				if (buttonVisible) {
+				if (buttonVisible == true) {
 					scrollBtn1 = new Graphic();
 					scrollBtn1.color = _buttonFill;
 					scrollBtn1.alpha = buttonAlpha;
@@ -306,9 +305,9 @@ package com.gestureworks.cml.elements
 					scrollBtn2.shape = "rectangle";
 					scrollBtn2.lineStroke = 0;
 					scrollBtn2.y = this.height - scrollBtn2.height;
-				}
+				//}
 				
-				if (buttonVisible) {
+				//if (buttonVisible == true) {
 					railGraphic.height = this.height - scrollBtn1.height - scrollBtn2.height;
 					railGraphic.y = scrollBtn1.height;
 				}
@@ -318,12 +317,12 @@ package com.gestureworks.cml.elements
 			}
 			else if (_orientation == "horizontal" && !scrollBtn1 && !scrollBtn2) {
 				
-				if (buttonVisible) {
+				if (buttonVisible == true) {
 					scrollBtn1 = new Graphic();
 					scrollBtn1.shape = "rectangle";
 					scrollBtn1.color = _buttonFill;
 					scrollBtn1.alpha = buttonAlpha;				
-					scrollBtn1.fill = "color";
+					//scrollBtn1.fill = "color";
 					scrollBtn1.width = this.height;
 					scrollBtn1.height = this.height;
 					scrollBtn1.lineStroke = 0;
@@ -338,22 +337,19 @@ package com.gestureworks.cml.elements
 					scrollBtn2.x = this.width - scrollBtn2.width;
 					scrollBtn2.lineStroke = 0;
 					scrollBtn2.y = railGraphic.y;
-				}
+				//}
 				
-				if (buttonVisible) {
+				//if (buttonVisible == true) {
 					railGraphic.width = this.width - scrollBtn1.width - scrollBtn2.width;
 					railGraphic.x = scrollBtn1.width;
 				}
-				else {
-					railGraphic.width = this.width;
-				}				
-
+				else { railGraphic.width = this.width; }				
 			}
 			
-			if(!(railTouch.contains(railGraphic)))
+			if(!(railTouch.contains(railGraphic))) {
 				railTouch.addChild(railGraphic);
-				
-			if (buttonVisible) {	
+			}
+			if (buttonVisible == true) {	
 				if(!(touchBtn1.contains(scrollBtn1)))
 					touchBtn1.addChild(scrollBtn1);
 				if(!(touchBtn2.contains(scrollBtn2)))
@@ -383,10 +379,11 @@ package com.gestureworks.cml.elements
 			else if (_orientation == "horizontal") {
 				thumb.height = this.height;
 				thumb.width = (this.width / contentWidth) * railGraphic.width;
-				movementRail = railGraphic.width - thumb.width;
+				
 				if (thumb.width < _thumbMin) {
 					thumb.width = _thumbMin;
 				}
+				movementRail = railGraphic.width - thumb.width;
 				thumb.x = railGraphic.x;
 			}
 			
@@ -413,19 +410,19 @@ package com.gestureworks.cml.elements
 		}
 		
 		public function createEvents():void {
-			if (buttonVisible) {
+			if (buttonVisible == true) {
 				touchBtn1.addEventListener(GWGestureEvent.TAP, onTap1);
 				touchBtn2.addEventListener(GWGestureEvent.TAP, onTap2);
 			}			
 			thumbTouch.addEventListener(GWGestureEvent.DRAG, onDrag);
-			thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onDragBegin);
-			thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);	
-			railTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onRailTouch);
+			//thumbTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onDragBegin);
+			//thumbTouch.addEventListener(GWGestureEvent.COMPLETE, onComplete);	
+			//railTouch.addEventListener(GWTouchEvent.TOUCH_BEGIN, onRailTouch);
 		}
 		
 		//{ region Gesture events
 		
-		private function onDragBegin(e:GWTouchEvent):void {
+		/*private function onDragBegin(e:GWTouchEvent):void {
 			
 			if (this.parent) {
 				var p:* = parent;
@@ -464,7 +461,7 @@ package com.gestureworks.cml.elements
 					newYPos = thumb.y;
 					break;
 			}
-		}
+		}*/
 		
 		private function onTap1(e:GWGestureEvent):void {
 			switch(_orientation) {
@@ -587,7 +584,7 @@ package com.gestureworks.cml.elements
 		private var oldY:Number = 0;
 		private var parentList:Object;
 		
-		private function onComplete(e:GWGestureEvent):void {
+		/*private function onComplete(e:GWGestureEvent):void {
 			//Reset the position values so the scrollPane will move cumulatively.
 			oldX = 0;
 			oldY = 0;
@@ -613,7 +610,7 @@ package com.gestureworks.cml.elements
 				}
 				
 			}
-		}
+		}*/
 		
 		//} endregion
 		
@@ -639,7 +636,6 @@ package com.gestureworks.cml.elements
 			return pos;
 		}
 		
-			
 		private function clampThumb():void {
 			// Check the orientation, and make sure the thumb hasn't slid off the rail.
 			
@@ -748,10 +744,10 @@ package com.gestureworks.cml.elements
 			
 			var clone:ScrollBar = CloneUtils.clone(this, null, v);
 			
-			if (clone.parent)
+			/*if (clone.parent)
 				clone.parent.addChild(clone);
 			else if (this.parent)
-				this.parent.addChild(clone);
+				this.parent.addChild(clone);*/
 			
 			for (var i:Number = 0; i < clone.numChildren; i++) {
 				if (railTouch && clone.getChildAt(i).name == railTouch.name) {
@@ -773,8 +769,8 @@ package com.gestureworks.cml.elements
 					clone.thumb = clone.thumbTouch.getChildAt(0) as Graphic;
 				}
 			}
-			
-			clone.createEvents();
+			clone.init();
+			//clone.createEvents();
 			
 			return clone;
 		}
@@ -788,7 +784,7 @@ package com.gestureworks.cml.elements
 			touchBtn1 = null;
 			scrollBtn1 = null;			
 			touchBtn2 = null;
-			scrollBtn2 = null; 
+			scrollBtn2 = null;			
 			thumbTouch = null;
 			thumb = null;			
 			railTouch = null;
