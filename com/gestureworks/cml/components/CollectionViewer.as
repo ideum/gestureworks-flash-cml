@@ -226,10 +226,16 @@ package com.gestureworks.cml.components
 			}	
 		}	
 				
-		protected function onGestureComplete(event:GWGestureEvent=null):void {
-			var onscreen:Boolean = CollisionDetection.isColliding(DisplayObject(event.target), hitBg, this, true, 0);								
-			if (!onscreen)
-				removeComponent(DisplayObject(event.target));	
+		/**
+		 * Custom position check to remedy standard collision test failures
+		 * @param	event
+		 */
+		protected function onGestureComplete(event:GWGestureEvent = null):void {
+			var v:TouchContainer = event.target as TouchContainer;
+			var hCheck:Boolean = (v.x > 60 - v.width*v.scale) && (v.x < stage.stageWidth - 60);
+			var vCheck:Boolean = (v.y > 60 - v.height*v.scale) && (v.y < stage.stageHeight - 60);
+			if (!(hCheck && vCheck))
+				removeComponent(DisplayObject(event.target));
 		}
 		  
 		/**
