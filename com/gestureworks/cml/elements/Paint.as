@@ -207,8 +207,9 @@ package com.gestureworks.cml.elements
 		
 		private function eraseLines(eraserPath:Array):void {
 			var tmpLines:Array = lines;
+			var i:Number; 
 			
-			for (var i:Number = 0; i < eraserPath.length-2; i++ ){
+			for (i = 0; i < eraserPath.length-2; i++ ){
 				var p1:Point = eraserPath[i];
 				var p2:Point = eraserPath[i + 1];
 				if (p1 == p2)
@@ -233,9 +234,15 @@ package com.gestureworks.cml.elements
 			redraw();
 			
 			//filter empty or 1 point lines
+<<<<<<< HEAD
 			for (var ii:Number = lines.length-1; ii >= 0; ii--) {
 				if (lines[ii].length <= 1) {
 					lines.splice(ii, 1);
+=======
+			for (i = lines.length-1; i >= 0; i--) {
+				if (lines[i].length <= 1) {
+					lines.splice(i, 1);
+>>>>>>> origin/cs012
 				}
 			}
 		}

@@ -45,14 +45,6 @@ package  com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Prevent disabling of mouseChildren
-		 */
-		override public function set mouseChildren(value:Boolean):void 
-		{
-			super.mouseChildren = true;
-		}
-		
-		/**
 		 * The initial alpha value of the album content
 		 */
 		public function get initialAlpha():Number { return _initialAlpha; }
@@ -130,7 +122,7 @@ package  com.gestureworks.cml.elements
 			configureItems();
 			collectionViewer = DisplayUtils.getParentType(CollectionViewer,this);
 			dock = DisplayUtils.getParentType(Dock, this);
-			
+			belt.mouseChildren = true; 
 		}
 		
 		/**
