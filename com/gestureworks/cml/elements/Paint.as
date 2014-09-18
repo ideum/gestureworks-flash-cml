@@ -234,15 +234,9 @@ package com.gestureworks.cml.elements
 			redraw();
 			
 			//filter empty or 1 point lines
-<<<<<<< HEAD
-			for (var ii:Number = lines.length-1; ii >= 0; ii--) {
-				if (lines[ii].length <= 1) {
-					lines.splice(ii, 1);
-=======
 			for (i = lines.length-1; i >= 0; i--) {
 				if (lines[i].length <= 1) {
 					lines.splice(i, 1);
->>>>>>> origin/cs012
 				}
 			}
 		}
