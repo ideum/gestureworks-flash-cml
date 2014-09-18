@@ -227,7 +227,7 @@ package com.gestureworks.cml.components
 		}	
 				
 		/**
-		 * Custom position check to remedy standard collision test failures
+		 * Remove component when boundary check fails
 		 * @param	event
 		 */
 		protected function onGestureComplete(event:GWGestureEvent = null):void {
