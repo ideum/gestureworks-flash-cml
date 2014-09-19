@@ -29,12 +29,10 @@ package com.gestureworks.cml.elements
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;
 		private var video:flash.media.Video;
-		private var videoObject:Object;
 		private var customClient:Object;
 		private var positionTimer:Timer;
 		private var progressTimer:Timer;
 		private var sizeLoaded:Boolean = false;
-		private var playButton:Button;
 		private var unmuteVolume:Number = 1;
 		private var _resample:Boolean;
 		/**
@@ -45,6 +43,15 @@ package com.gestureworks.cml.elements
 		  positionTimer = new Timer(20);
 		  mouseChildren = true;
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function init():void 
+		{
+			super.init();			
+			progressBar = searchChildren(ProgressBar);
+		}		
 		
 		private var _debug:Boolean=false;
 		/**
@@ -64,8 +71,7 @@ package com.gestureworks.cml.elements
 		override public function set width(value:Number):void
 		{
 			_width = value;
-			if (video) video.width = value;
-			if (playButton) playButton.x = width / 2 - playButton.width / 2;				
+			if (video) video.width = value;			
 		}
 		
 		private var _height:Number = 0;
@@ -77,7 +83,6 @@ package com.gestureworks.cml.elements
 		{
 			_height = value;
 			if (video) video.height = value;
-			if (playButton) playButton.y = height / 2 - playButton.height / 2;
 		}		
 		
 		private var _autoLoad:Boolean = true;
@@ -208,18 +213,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Returns video paused status
 		 */
-		public function get isPaused():Boolean { return _isPaused; }
-		
-		private var _playButtonState:String = "down";
-		/**
-		 * Specifies the button state to execute the play operation
-		 * @default down
-		 */
-		public function get playButtonState():String { return _playButtonState; }
-		public function set playButtonState(s:String):void
-		{
-			_playButtonState = s;
-		}
+		public function get isPaused():Boolean { return _isPaused; }		
 				
 		private var _volume:Number = 1;
 		/**
@@ -270,31 +264,7 @@ package com.gestureworks.cml.elements
 		
 		public function set resample(value:Boolean):void {
 			_resample = value;
-		}
-   		
-		/**
-		 * Flag central alignment of the play button
-		 */
-		public var centerPlayButton:Boolean = true;
-	
-		override public function init():void 
-		{
-			super.init();
-			
-			playButton = searchChildren(Button);
-			if (playButton) {				
-				mouseChildren = true;								
-				if(centerPlayButton){				
-					var tempRot:Number = playButton.rotation;				
-					playButton.rotation = 0;
-					playButton.x = width / 2 - playButton.width / 2;
-					playButton.y = height / 2 - playButton.height / 2;				
-					DisplayUtils.rotateAroundCenter(playButton, tempRot);
-				}
-			}
-			
-			progressBar = searchChildren(ProgressBar);
-		}
+		}   		
 		
 		/// PUBLIC METHODS ///
 		
@@ -392,9 +362,8 @@ package com.gestureworks.cml.elements
 		/**
 		 * Plays the video from the beginning
 		 */		
-		public function play(e:StateEvent=null):void
+		public function play():void
 		{			
-			if (e && e.value != playButtonState) return;
 			netStream.seek(0);				
 			netStream.play(src);
 			positionTimer.reset();
@@ -407,9 +376,8 @@ package com.gestureworks.cml.elements
 		/**
 		 * Resumes video playback from paused position
 		 */			
-		public function resume(e:StateEvent=null):void
+		public function resume():void
 		{
-			if (e && e.value != playButtonState) return;
 			netStream.resume();
 			positionTimer.start();
 	   	}
@@ -417,9 +385,8 @@ package com.gestureworks.cml.elements
 		/**
 		 * Pauses video
 		 */			
-		public function pause(e:StateEvent=null):void
+		public function pause():void
 		{
-			if (e && e.value != playButtonState) return;
 			netStream.pause();
 			positionTimer.stop();
 		}
@@ -494,27 +461,23 @@ package com.gestureworks.cml.elements
 				case "NetStream.Play.Start":
 					 _isPlaying = true;
 					 _isPaused = false;
-					 updatePlayButton();
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;	
 				case "NetStream.Play.Stop":
 					 end();
 				     _isPlaying = false;
 					 _isPaused = false;
-					 updatePlayButton();
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "ended", true));
 					 break;
 				case "NetStream.Pause.Notify":
 					 _isPlaying = false;
 					 _isPaused = true;
-					 updatePlayButton();
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;
 				case "NetStream.Unpause.Notify":
 					_isPlaying = true;
 					_isPaused = false;
-					updatePlayButton();
 					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					break;
 				case "NetStream.Seek.Notify":
@@ -646,34 +609,7 @@ package com.gestureworks.cml.elements
 			else stop();
 			
 			// Dispatch event for playlist here.
-		}	
-		
-		/**
-		 * Toggles between play and pause states
-		 */
-		private function updatePlayButton():void
-		{
-			if (!playButton) return;
-			
-			if (isPlaying){
-				playButton.alpha = 0;
-				playButton.removeEventListener(StateEvent.CHANGE, resume);
-				playButton.removeEventListener(StateEvent.CHANGE, play);				
-				playButton.addEventListener(StateEvent.CHANGE, pause);				
-			}
-			else{
-				playButton.alpha = 1;
-				
-				//move to top
-				if (getChildIndex(playButton) != numChildren - 1)
-					addChild(playButton);
-				if (isPaused)
-					playButton.addEventListener(StateEvent.CHANGE, resume);
-				else
-					playButton.addEventListener(StateEvent.CHANGE, play);
-				playButton.removeEventListener(StateEvent.CHANGE, pause);					
-			}
-		}
+		}			
 		
 		/**
 		 * @inheritDoc
@@ -712,9 +648,7 @@ package com.gestureworks.cml.elements
 			
 			
 			video = null;
-			videoObject = null;
 			customClient = null;			
-			playButton = null;
 			_progressBar = null;
 			super.dispose();
 		}
