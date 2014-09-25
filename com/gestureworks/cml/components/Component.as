@@ -422,7 +422,6 @@ package com.gestureworks.cml.components
 				timer.stop();
 			}			
 			if (menu){
-				menu.visible = true;
 				menu.startTimer();
 			}
 			if(tween && tween._active){
