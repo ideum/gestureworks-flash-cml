@@ -164,6 +164,12 @@ package com.gestureworks.cml.elements
 			//enable visibility of current media element
 			if (_current) {
 				_current.visible = true; 
+				if (!width) {
+					width = _current.width;
+				}
+				if (!height) {
+					height = current.height;
+				}
 			}
 						
 			syncStreamSettings();			

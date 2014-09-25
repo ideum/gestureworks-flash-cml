@@ -101,7 +101,7 @@ package com.gestureworks.cml.elements
 			if (dictionary[file].hasOwnProperty("loop"))					dictionary[file].loop = loop;
 			if (dictionary[file].hasOwnProperty("autoplay"))				dictionary[file].autoplay = autoplay;
 			
-			dictionary[file].open();
+			dictionary[file].src = file;
 			
 			if (dictionary[file] is Video) dictionary[file].init();
 			else if (dictionary[file] is MP3) dictionary[file].init();
