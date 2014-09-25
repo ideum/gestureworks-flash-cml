@@ -118,25 +118,11 @@ package  com.gestureworks.cml.elements
 					e.data.photo.secret + ".jpg";
 	
 				if (!isLoaded)	
-					open(url);
+					src = url;
 
 			}
 			else { trace("Image " + _src + " failed to load. Please check your image ID and make sure it is accurate.");}
-		}
-		
-		/*
-		 * Opens an external image file
-		 * @param	file
-		 */
-		override public function open(file:String=null):void
-		{
-			if (file) url = file;
-			img = new ImageLoader(url);
-			img.load(); 
-			img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
-			img.addEventListener(StateEvent.CHANGE, onPercentLoad);
-		}			
-					
+		}				
 		
 		/*
 		 * @inheritDoc
