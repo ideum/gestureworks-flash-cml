@@ -479,6 +479,7 @@ package com.gestureworks.cml.elements
 			addChild(video);						
 			play();
 			_isLoaded = true;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));			
 		}
 		
 		protected function onMetaData(meta:Object):void
