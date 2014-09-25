@@ -61,8 +61,16 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function init():void {
-			
+		override public function init():void {			
+			sizeMedia();
+			DisplayUtils.removeAllChildrenByType(this, [Image, Video]);			
+			DisplayUtils.addChildren(this, [image, video]);			
+		}	
+		
+		/**
+		 * Sync dimensions of media element's with Media's
+		 */
+		private function sizeMedia():void {
 			if (width) {
 				image.width = width;
 				video.width = width;
@@ -70,11 +78,8 @@ package com.gestureworks.cml.elements
 			if (height) {
 				image.height = height;
 				video.height = height;
-			}
-			
-			DisplayUtils.removeAllChildrenByType(this, [Image, Video]);			
-			DisplayUtils.addChildren(this, [image, video]);			
-		}	
+			}			
+		}
 		
 		/**
 		 * Reference to current media element
@@ -119,7 +124,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			_src = value;
-			processSrc(_src);
+			processSrc(_src);			
 		}
 			
 		/**
@@ -143,13 +148,12 @@ package com.gestureworks.cml.elements
 			
 			//evaluate media type
 			if (value.search(imageType) > -1) {
-				image.src = value;
-				_current = image; 
+				_current = image; 				
+				image.src = value; 
 			}
-			else if (value.search(videoType) > -1) {
-				video.src = value;
-				_current = video; 
-				
+			else if (value.search(videoType) > -1) {				
+				_current = video; 				
+				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
 				
@@ -159,20 +163,20 @@ package com.gestureworks.cml.elements
 			}
 			
 			//set stream flag
-			_streamMedia = _current is IStream;
+			_streamMedia = _current is IStream;								
+			syncStreamSettings();	
 			
-			//enable visibility of current media element
 			if (_current) {
+				//enable visibility of current media element
 				_current.visible = true; 
-				if (!width) {
-					width = _current.width;
-				}
-				if (!height) {
-					height = current.height;
-				}
+				
+				//default to current dimensions when undefined
+				width = width ? width : _current.width;
+				height = height ? height : _current.height;
+				
+				//sync media dimensions to Media's
+				sizeMedia();				
 			}
-						
-			syncStreamSettings();			
 		}
 		
 		/**
