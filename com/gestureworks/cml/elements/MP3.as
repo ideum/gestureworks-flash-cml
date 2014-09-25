@@ -30,19 +30,14 @@ package com.gestureworks.cml.elements
 	 *
 	 * </codeblock>
 	 */		
-	public class MP3 extends TouchContainer
+	public class MP3 extends TouchContainer 
 	{
 		private var _mp3:MP3Factory = new MP3Factory();
 		/**
 		 * Exposes read-only access for the mp3 factory element.
 		 */
 		public function get mp3():MP3Factory { return _mp3; }
-		
-		// audio	
-		//private var sound:Sound;
-		//private var channel:SoundChannel;
-		//private var soundTrans:SoundTransform;
-		//private var Position:uint;		
+			
 		private var loading:Boolean = false;
 		private var waveForm:Waveform;
 		
@@ -170,10 +165,6 @@ package com.gestureworks.cml.elements
 			_mp3.pan = _pan;
 		}
 		
-//} endregion
-		
-
-//{ region ID3 properties
 		private var _id3:ID3Info;
 		/**
 		 * ID3 info object
@@ -222,7 +213,6 @@ package com.gestureworks.cml.elements
 		 */
 		public function get id3Comment():String { return _id3Comment; }	
 		 
-//} endregion
 		
 		// public methods // 
 		
@@ -282,14 +272,7 @@ package com.gestureworks.cml.elements
 		 */		
 		public function play():void
 		{
-			_mp3.play();
-			
-			//if (isPlaying) 
-			//{	
-				//timer.start();
-				//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
-			//}
-		
+			_mp3.play();			
 		}
 				
 		/**
@@ -298,12 +281,6 @@ package com.gestureworks.cml.elements
 		public function resume():void
 		{
 			_mp3.resume();
-			
-			//if (isPlaying) 
-			//{				
-				//timer.start();
-				//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
-			//}
 		}
 		
 		/**
@@ -312,9 +289,6 @@ package com.gestureworks.cml.elements
 		public function pause():void
 		{
 			_mp3.pause();
-			
-			//timer.stop();
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 		}
 		
 		/**
@@ -323,15 +297,11 @@ package com.gestureworks.cml.elements
 		public function stop():void
 		{
 			_mp3.stop();
-			
-			//timer.stop();
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", isPlaying));
 		}
 		
 		public function seek(pos:Number):void
 		{
 			_mp3.seek(pos);
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "Position" , Position));
 		}
 		
 		// private methods //
@@ -365,7 +335,7 @@ package com.gestureworks.cml.elements
 					image.height = this.height
 				}
 				image.addEventListener(Event.COMPLETE, imageComplete);
-				image.open(image.src);
+				image.src = image.src;
 				
 				function imageComplete(e:Event):void {
 					image.removeEventListener(Event.COMPLETE, imageComplete);
@@ -415,7 +385,6 @@ package com.gestureworks.cml.elements
 		private function soundComplete(event:Event):void
 		{
 			timer.stop();
-			//super.soundComplete(event);
 		}
 		
 		//graphic
