@@ -2,10 +2,11 @@
 {
 	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import flash.display.DisplayObject;
 	
 	/**
-	 * The MediaViewer component is primarily meant to display a Media element and its associated meta-data.
+	 * The MediaViewerNew component is primarily meant to display a Media element and its associated meta-data.
 	 * 
 	 * <p>It is composed of the following: 
 	 * <ul>
@@ -33,7 +34,7 @@
 	 */	 
 	public class MediaViewer extends Component 
 	{
-		private var _media:*;
+		private var _media:Media;
 		
 		/**
 		 * Constructor
@@ -43,18 +44,17 @@
 		}
 		
 		/**
-		 * Sets the media element.
-		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 * Regardless of how this set, a corresponding display object is always returned. 
+		 * Media element
 		 */		
 		public function get media():* { return _media; }
 		public function set media(value:*):void {
-			if (!value) return;
+			if (value is XML || value is String) {
+				value = getElementById(value);
+			}
 			
-			if (value is DisplayObject)
-				_media = value;
-			else 
-				_media = searchChildren(value);					
+			if (value is Media) {
+				_media = value; 
+			}
 		}				
 		
 		/**
@@ -84,7 +84,7 @@
 		/**
 		 * @inheritDoc
 		 */
-		override protected function onStateEvent(event:StateEvent):void {				
+		override protected function onStateEvent(event:StateEvent):void {	
 			super.onStateEvent(event);
 			if (event.value == "close" && media)
 				media.stop();
@@ -102,5 +102,13 @@
 			_media = null;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
+			var clone:MediaViewer = super.clone();
+			clone.media = DisplayUtils.getAllChildrenByType(clone, Media)[0];
+			return clone;
+		}		
 	}
 }
