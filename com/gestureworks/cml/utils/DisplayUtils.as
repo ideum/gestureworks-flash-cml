@@ -68,17 +68,17 @@ package com.gestureworks.cml.utils
 		 * </listing>
 		 *   
 		 * 	@param container Container to remove from
-		 *  @param the type of children to remove
-		 *  @author John Lindquist
+		 *  @param the type(s) of children to remove
+		 *  @author Iduem
 		 */
-		public static function removeAllChildrenByType(container:DisplayObjectContainer, type:Class):Array
+		public static function removeAllChildrenByType(container:DisplayObjectContainer, types:Array):Array
 		{
 			var removed:Array = [];
-			for (var i:int = container.numChildren - 1; i >= 0; i--)
-			{
-				if(container.getChildAt(i) is type)
-				{
-					removed.push(container.removeChildAt(i));
+			for each(var type:Class in types) {
+				for (var i:int = container.numChildren -1; i >= 0; i--) {
+					if (container.getChildAt(i) is type) {
+						removed.push(container.removeChildAt(i));
+					}
 				}
 			}
 			return removed;
