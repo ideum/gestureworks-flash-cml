@@ -79,7 +79,8 @@ package com.gestureworks.cml.elements
 		 */
 		override public function clone():* 
 		{
-			var clone:Image = CloneUtils.clone(this, null);
+			cloneExclusions.push("bitmap","bitmapData");
+			var clone:Image = CloneUtils.clone(this, parent, cloneExclusions, true);
 			
 			if (bitmapData) {			
 				clone.bitmapData = bitmapData.clone();
@@ -117,14 +118,28 @@ package com.gestureworks.cml.elements
 		
 		private var _src:String;
 		/**
-		 * Sets the file source path
-		 * @default null
+		 * Image file path
 		 */
 		public function get src():String{return _src;}
 		public function set src(value:String):void
 		{
-			if (src == value) return;
-				_src = value;
+			if (_src == value) {
+				return; 
+			}
+			
+			close();			
+			_src = value;				
+				
+			if (FileManager.media.getContent(_src)) {
+				loadComplete();
+			} 
+			else {
+				img = new ImageLoader(_src);
+				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
+				img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+				img.addEventListener(LoaderEvent.ERROR, onError);
+				img.load();
+			}				
 		}
 
 		
@@ -258,28 +273,6 @@ package com.gestureworks.cml.elements
 		////////////////////////////////////////////////////////////////////////////////
 		
 		
-		/**
-		 * Opens an external image file
-		 * @param	file
-		 */
-		public function open(file:String=null):void
-		{
-			if(file)
-				src = file;
-				
-			if (FileManager.media.getContent(src)) {
-				loadComplete();
-			} 
-			else {
-				img = new ImageLoader(src);
-				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
-				img.addEventListener(LoaderEvent.ERROR, onError);
-				img.load();
-			}
-		}	
-		
-		
 		public var percentLoaded:Number;
 		protected function onPercentLoad(event:LoaderEvent):void
 		{
@@ -304,7 +297,7 @@ package com.gestureworks.cml.elements
 		public function close():void
 		{
 			isLoaded = false;
-			//_src = null;
+			_src = null;
 			_aspectRatio = 0;
 			_landscape = false;
 			_portrait = false;
