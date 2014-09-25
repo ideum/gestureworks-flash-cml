@@ -118,18 +118,6 @@ package com.gestureworks.cml.components
 				video.resume();
 			else if (event.value == "pause" && video)
 				video.pause();				
-			else if (event.property == "position" && video) {
-				if (menu) {
-					if (menu.slider && Video(video).isPlaying) {
-						Slider(menu.slider).input(event.value * 100);
-					}
-				}
-			}
-			else if (menu.slider && event.target is Slider) {
-				video.pause();
-				video.seek(event.value);
-				addEventListener(GWTouchEvent.TOUCH_END, onRelease);
-			}
 		}
 		
 		private function onRelease(e:*):void {
