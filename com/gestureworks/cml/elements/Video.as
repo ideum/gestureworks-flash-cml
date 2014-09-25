@@ -2,6 +2,7 @@ package com.gestureworks.cml.elements
 {	
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.interfaces.IStream
 	import flash.events.*;
 	import flash.media.*;
 	import flash.net.*;
@@ -24,7 +25,7 @@ package com.gestureworks.cml.elements
 	 * </codeblock>
 	 */
 
-	public class Video extends TouchContainer
+	public class Video extends TouchContainer implements IStream
 	{
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;
@@ -84,20 +85,10 @@ package com.gestureworks.cml.elements
 			_height = value;
 			if (video) video.height = value;
 		}		
-		
-		private var _autoLoad:Boolean = true;
-		/**
-		 * Indicates whether the video file is loaded when the src property is set
-		 */	
-		public function get autoLoad():Boolean { return _autoLoad; }
-		public function set autoLoad(value:Boolean):void 
-		{ 
-			_autoLoad = value; 
-		}
 			
 		private var _autoplay:Boolean = false;
 		/**
-		 * Indicates whether the video file plays upon load
+		 * @inheritDoc
 		 */	
 		public function get autoplay():Boolean { return _autoplay; }
 		public function set autoplay(value:Boolean):void 
@@ -108,21 +99,29 @@ package com.gestureworks.cml.elements
 					
 		private var _loop:Boolean = false;
 		/**
-		 * Video loop play
+		 * @inheritDoc
 		 */	
 		public function get loop():Boolean { return _loop; }
 		public function set loop(value:Boolean):void { _loop = value; }		
 			
 		private var _src:String;
 		/**
-		 * Sets the video file path
+		 * Video file path
 		 */	
 		public function get src():String { return _src; }
 		public function set src(value:String):void
 		{
-			if (src == value) return;					
+			if (_src == value) {
+				return; 
+			}
+			
+			close();			
 			_src = value;
-			if (autoLoad) load();
+			
+			netConnection = new NetConnection;			
+			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+			netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);			
+			netConnection.connect(null);			
 		}		
 		
 		private var _deblocking:int;
@@ -205,7 +204,7 @@ package com.gestureworks.cml.elements
 		
 		private var _isPlaying:Boolean = false;
 		/**
-		 * Returns video playing status
+		 * @inheritDoc
 		 */	
 		public function get isPlaying():Boolean { return _isPlaying; }
 		
@@ -223,9 +222,12 @@ package com.gestureworks.cml.elements
 		public function get volume():Number { return _volume; }
 		public function set volume(value:Number):void {
 			_volume = value;
-			var soundTransform:SoundTransform = netStream.soundTransform;
-			soundTransform.volume = _volume;
-			netStream.soundTransform = soundTransform;	
+			
+			if(netStream){
+				var soundTransform:SoundTransform = netStream.soundTransform;
+				soundTransform.volume = _volume;
+				netStream.soundTransform = soundTransform;	
+			}
 		}
 		
 		private var _pan:Number = 0.0;
@@ -235,14 +237,12 @@ package com.gestureworks.cml.elements
 		 */
 		public function get pan():Number { return _pan; }
 		public function set pan(value:Number):void {
-			if (Math.abs(value) <= 1) {
-				_pan = value;
+			if (netStream) {				
+				_pan = value > 1 ? 1 : value < -1 ? -1 : value; 
 				var soundTransform:SoundTransform = netStream.soundTransform;
 				soundTransform.pan = _pan;
 				netStream.soundTransform = soundTransform;
-			} else {
-				trace("You must set pan limits within 1.0 to -1.0");
-			}
+			} 
 		}
 		
 		private var _mute:Boolean;
@@ -258,10 +258,7 @@ package com.gestureworks.cml.elements
 			volume = _mute ? 0 : unmuteVolume;								
 		}		
 		
-		public function get resample():Boolean {
-			return _resample;
-		}
-		
+		public function get resample():Boolean { return _resample; }		
 		public function set resample(value:Boolean):void {
 			_resample = value;
 		}   		
@@ -299,19 +296,7 @@ package com.gestureworks.cml.elements
 				video.height = _height;
 			}
 		}
-		
-		/**
-		 * Sets the src property and loads the video
-		 * @param file
-		 */		
-		public function open(file:String=null):void
-		{			
-			src = file ? file: src;
-			if(src)
-				load();
-		}
 
-		
 		/**
 		 * Closes video 
 		 */	
@@ -353,14 +338,14 @@ package com.gestureworks.cml.elements
 				positionTimer = null;
 			}
 			
-			src = "";
+			_src = null;
 			
 			sizeLoaded = false;
 			_isLoaded = false; 
 		}		
 		
 		/**
-		 * Plays the video from the beginning
+		 * @inheritDoc
 		 */		
 		public function play():void
 		{			
@@ -374,7 +359,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Resumes video playback from paused position
+		 * @inheritDoc
 		 */			
 		public function resume():void
 		{
@@ -383,7 +368,7 @@ package com.gestureworks.cml.elements
 	   	}
 		
 		/**
-		 * Pauses video
+		 * @inheritDoc
 		 */			
 		public function pause():void
 		{
@@ -392,7 +377,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Pauses video and returns to the beginning
+		 * @inheritDoc
 		 */			
 		public function stop():void
 		{
@@ -404,43 +389,15 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Sets the video playhead position
-		 * @param offset
+		 * @inheritDoc
 		 */
 		public function seek(offset:Number):void
 		{
 			var goTo:Number = Math.floor((offset / 100) * duration);
 			
 			_position = goTo;
-			netStream.seek(goTo);
-			/*netStream.seek(offset);
-			
-			if (position < 0)
-				position == 0;
-			_position += offset;*/
-		
+			netStream.seek(goTo);		
 		}
-
-		/// PRIVATE METHODS ///	
-		private function load():void
-		{
-			if (isLoaded) return;
-			if (netConnection) {
-				netConnection.close();
-				//netConnection.removeEventListener((NetStatusEvent.NET_STATUS, onNetStatus);
-				//netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			}
-			else
-				netConnection = new NetConnection;
-			
-			if (!netConnection.hasEventListener(NetStatusEvent.NET_STATUS))
-				netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			if (!netConnection.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
-				netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			
-			netConnection.connect(null);
-			
-		}		
 		
 		private function onNetStatus(event:NetStatusEvent):void
 		{
@@ -538,17 +495,7 @@ package com.gestureworks.cml.elements
 			
 		
 			if (meta.width != null && meta.height != null && !sizeLoaded)
-			{
-				/*if (width > 0)
-					video.width = width;
-				else
-					video.width = meta.width;
-				
-				if (height > 0)
-					video.height = height;
-				else
-					video.height = meta.height;*/
-					
+			{				
 				fitContent(meta.width, meta.height);
 											
 				if (debug) {
@@ -606,9 +553,7 @@ package com.gestureworks.cml.elements
 		protected function end():void
 		{
 			if (loop) play();
-			else stop();
-			
-			// Dispatch event for playlist here.
+			else stop();			
 		}			
 		
 		/**
