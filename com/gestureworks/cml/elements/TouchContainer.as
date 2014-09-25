@@ -73,7 +73,7 @@ package com.gestureworks.cml.elements
 		}
 
 		/**
-		 * Initialisation method
+		 * Initialization function
 		 */
 		public function init():void
 		{
