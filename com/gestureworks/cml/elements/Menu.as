@@ -2,12 +2,16 @@ package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.elements.Button;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.layouts.Layout;
+	import com.gestureworks.cml.layouts.ListLayout;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.cml.utils.StateUtils;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
 	import flash.display.DisplayObject;
 	import flash.events.*;
+	import flash.geom.Rectangle;
+	import flash.utils.Timer;
 	
 	/**
 	 * The Menu element constructs a custom menu using nested Buttons(s).
@@ -20,11 +24,20 @@ package com.gestureworks.cml.elements
 	 */
 	public class Menu extends TouchContainer 
 	{
-		private var frameCount:int = 0;
-		public var buttonArray:Array = [];
-		public var slider:Slider;
+		//position constants
+		public static const TOP_LEFT:String = "topLeft";
+		public static const TOP_RIGHT:String = "topRight";
+		public static const BOTTOM_LEFT:String = "bottomLeft";
+		public static const BOTTOM_RIGHT:String = "bottomRight";
 		
-		private var _layoutComplete:Boolean = false;
+		private var hideTimer:Timer;
+		private var _autoHide:Boolean = false;		
+		private var _autoHideTime:Number = 2500;
+		private var _position:String = "bottomLeft";	
+		private var _horizontal:Boolean = true; 
+		
+		private var containerWidth:Number; 
+		private var containerHeight:Number; 
  
 		/**
 		 * Constructor
@@ -34,21 +47,22 @@ package com.gestureworks.cml.elements
 			super();
 			mouseChildren = true;
 		}
-
-		/**
-		 * Dispose method
-		 */
-		override public function dispose():void
-		{
-			super.dispose();
-			buttonArray = null;		
-			slider = null;
-			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);
-		}
 		
-		private var _autoHide:Boolean = false;
+		/**
+		 * @inheritDoc
+		 */
+		override public function init():void {						
+			addEventListener(StateEvent.CHANGE, onStateEvent);
+			
+			if (autoHide) {
+				hideTimer = new Timer(autoHideTime);
+				hideTimer.addEventListener(TimerEvent.TIMER, hideMenu);
+			}
+		}		
+		
 		/**
 		 * Specifies whether the menu automatically hides when not in use
+		 * @default false
 		 */			
 		public function get autoHide():Boolean { return _autoHide; }
 		public function set autoHide(value:Boolean):void 
@@ -56,107 +70,92 @@ package com.gestureworks.cml.elements
 			_autoHide = value;
 			
 			if (autoHide) 
-				addEventListener(GWTouchEvent.TOUCH_BEGIN, onClick);
+				addEventListener(GWTouchEvent.TOUCH_BEGIN, startTimer);
 		}
 		
-		public function get autohide():Boolean { return _autoHide; }
-		public function set autohide(value:Boolean):void 
-		{ 
-			_autoHide = value;
+		/**
+		 * Specifies whether the menu automatically hides when not in use
+		 * @default false
+		 */			
+		public function get autoide():Boolean { return autoHide; }
+		public function set autohide(value:Boolean):void {
+			autoHide = value; 
 		}
 		
-		private var _autoHideTime:Number = 2500;
 		/**
 		 * Specifies the auto-hide time
+		 * @default 2500
 		 */	 		
 		public function get autoHideTime():Number { return _autoHideTime; }
-		public function set autoHideTime(value:Number):void 
-		{ 
+		public function set autoHideTime(value:Number):void { 
 			_autoHideTime = value; 
 		}
 		
-		private var _position:String = "bottom";
 		/**
-		 * Specifies the position alogorithm of the menu. 
-		 * This includes the position of the buttons with in the menu.
-		 * The button must be a child of the menu.
-		 * @default bottom
+		 * Specifies where to position the menu relative to its parent. 
+		 * @default bottomLeft
 		 */	 		
 		override public function get position():* { return _position; }
-		override public function set position(value:*):void 
-		{ 
-			_position = value; 
-		}		
-
-		/**
-		 * Initialisation method
-		 */
-		override public function init():void {
-			
-			for (var i:int = 0; i < childList.length; i++) 
-			{
-				if (!(childList.getIndex(i) is DisplayObject) || childList.getIndex(i) is String)
-					childList.removeIndex(i);
-			}
-			
-			if (!_layoutComplete)
-				updateLayout(this.width, this.height);	
-			addEventListener(StateEvent.CHANGE, onStateEvent);
-		}
+		override public function set position(value:*):void { 
+			switch(String(value)) {
+				case BOTTOM_LEFT:
+				case BOTTOM_RIGHT:
+				case TOP_LEFT:
+				case TOP_RIGHT:
+					_position = value;
+					break;
+				default:
+					trace("Unsupported position: " + value + "; Reverting to default");
+					break;
+			} 
+		}	
 		
-		private function onClick(event:*):void
-		{
-			startTimer();
+		/**
+		 * Determines if layout is horizontal or vertical. Setting is ignored for custom layouts. 
+		 * @default true
+		 */
+		public function get horizontal():Boolean { return _horizontal; }
+		public function set horizontal(value:Boolean):void {
+			_horizontal = value; 
 		}
 		
 		/**
-		 * if autohide on, adds the listener 
+		 * If autoHide on, starts timer
 		 */
-		public function startTimer():void
-		{	
-			if (autoHide)
-			{
-				GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);				
-				GestureWorks.application.addEventListener(GWEvent.ENTER_FRAME, onFrame);
-				frameCount = 0;
+		public function startTimer(event:* = null):void {	
+			visible = true; 
+			if (autoHide) {
+				hideTimer.reset();
+				hideTimer.start();
 			}
+		}	
+		
+		/**
+		 * Hide menu when <code>autoHide</code> is enabled and <code>autoHideTime</code> expires
+		 * @param	e
+		 */
+		private function hideMenu(e:TimerEvent):void {
+			visible = false; 
 		}
 		
-		private function onTimerComplete(event:TimerEvent):void
-		{			
-			GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);				
-			this.visible = false;
-		}
-		
-		
-		private function onFrame(event:GWEvent):void
-		{
-			frameCount++;
-			
-			if(stage){
-				if (1000 / stage.frameRate * frameCount >= autoHideTime)
-				{
-					GestureWorks.application.removeEventListener(GWEvent.ENTER_FRAME, onFrame);				
-					this.visible = false;
-					this.mouseChildren = false;
-					frameCount = 0;
-				}
-			}
-		}
-		
+		/**
+		 * Handle menu button states
+		 * @param	e
+		 */
 		private function onStateEvent(e:StateEvent):void {
-			for (var i:int = 0; i < numChildren; i++) 
-			{
+			for (var i:int = 0; i < numChildren; i++) {
 				if(getChildAt(i) is Button) {
 					Button(getChildAt(i)).onFlip(e);
 				}
 			}
 		}	
 		
+		/**
+		 * Reset menu buttons
+		 */
 		public function reset():void { 
 			StateUtils.loadState(this, 0, true);
-			for (var i:int = 0; i < this.numChildren; i++) 
-			{
+			for (var i:int = 0; i < this.numChildren; i++) {
 				if (getChildAt(i) is Button) {
 					Button(getChildAt(i)).reset();
 				}
@@ -164,151 +163,83 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * sets the layout depending on the position
+		 * Sets the layout depending on the position and provided dimensions
 		 * @param	containerWidth
 		 * @param	containerHeight
 		 */
-		public function updateLayout(containerWidth:Number, containerHeight:Number):void
-		{	
-			var margin:Number = paddingLeft + paddingRight;
-			var i:int = 0;
-			var itemCount:Number = 0;
-			for (i = 0; i < this.numChildren; i++) {
-				if ( getChildAt(i) is Button) {
-					Button(getChildAt(i)).updateLayout();
-					margin += getChildAt(i).width;
-					itemCount++;
-				}
-				else if (getChildAt(i) is Slider) {
-					Slider(getChildAt(i)).updateLayout();
-					slider = getChildAt(i) as Slider;
-					margin += getChildAt(i).width;
-					itemCount++;
-				}
-			}
-			
-			margin = containerWidth - margin;
-			//margin /= buttonArray.length - 1;
-			margin /= (itemCount - 1);
-			
-			//Experimental code
-			var num:Number
-			
-			if (position == "bottom" || position == "top")	
-			{						
-				// Find the margin.
-				
-				// position all but last buttons			
-				for (i = 0; i < numChildren; i++) 
-				{
-					//if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						//num = getChildIndex(childList.getIndex(i));
-						num = i;
-						// position first button
-						if (num == 0) 
-							getChildAt(num).x = paddingLeft;
-							
-						// position middle buttons
-						else
-							getChildAt(num).x = getChildAt(num - 1).x + getChildAt(num - 1).width + margin;
-						// position y
-						if (position == "bottom")
-							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;		
-						else if (position == "top")
-							getChildAt(num).y = paddingTop;
-					//}
-				}
-				
-				
-				// position last button, if more than one
-				/*if (childList.length > 1 && childList.getIndex(childList.length - 1) is DisplayObject)  {
-					var num2:Number = getChildIndex(childList.getIndex(childList.length - 1));
-					if (getChildAt(num2) is Button || getChildAt(num2) is Slider) {
-						getChildAt(num2).x = containerWidth - paddingRight - getChildAt(num2).width;	
-						
-						// position y
-						if (position == "bottom")
-							getChildAt(num2).y = containerHeight - getChildAt(num2).height - paddingBottom;				
-						
-						else if (position == "top")
-							getChildAt(num2).y = paddingTop;
-					}
-					
-				}*/
-				
-				if (numChildren > 1 && getChildAt(numChildren - 1) is DisplayObject)  {
-					var num2:Number = numChildren - 1;
-					if (getChildAt(num2) is Button || getChildAt(num2) is Slider) {
-						getChildAt(num2).x = containerWidth - paddingRight - getChildAt(num2).width;	
-						
-						// position y
-						if (position == "bottom")
-							getChildAt(num2).y = containerHeight - getChildAt(num2).height - paddingBottom;				
-						
-						else if (position == "top")
-							getChildAt(num2).y = paddingTop;
-					}
-					
-				}
-				
-			}
-			
-			else if (position == "bottomLeft" || position == "topLeft")	
-			{
-				
-				// position buttons		
-				for (i = 0; i < childList.length; i++) 
-				{
-					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						num = getChildIndex(childList.getIndex(i));
-						// position first button
-						if (i == 0) 
-							getChildAt(num).x = paddingLeft;
-							
-						// position the rest
-						else
-							getChildAt(num).x = getChildAt(num - 1).x + getChildAt(num - 1).width + paddingLeft + paddingRight;
-							
-						// position y
-						if (position == "bottomLeft")
-							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;				
-						
-						else if (position == "topLeft")
-							getChildAt(num).y = paddingTop;
-					}
-											
-				}	
-				
-			}	
-			
-			else if (position == "bottomRight" || position == "topRight")	
-			{																
-				// position buttons		
-				
-				for (i = numChildren - 1; i >= 0; i--) 
-				{
-					if (childList.getIndex(i) is Button || childList.getIndex(i) is Slider) {
-						num = getChildIndex(childList.getIndex(i));
-						
-						if (i == numChildren-1) 
-							getChildAt(num).x = containerWidth - getChildAt(num).width - paddingRight;
-							
-						// position the rest
-						else
-							getChildAt(num).x = getChildAt(num + 1).x - getChildAt(num + 1).width - paddingLeft - paddingRight;										
-						
-						// position y
-						if (position == "bottomRight")	
-							getChildAt(num).y = containerHeight - getChildAt(num).height - paddingBottom;
-						
-						else if (position == "topRight")
-							getChildAt(num).y = paddingTop;
-					}
-				}	
-			}
-			
-			i = 0;
-			_layoutComplete = true;
+		public function updateLayout(containerWidth:Number = NaN, containerHeight:Number = NaN):void {	
+			this.containerWidth = containerWidth;
+			this.containerHeight = containerHeight;
+			applyLayout();
 		}
+		
+		/**
+		 * When layout is not provided, generate default layout based on <code>position</code> and padding 
+		 * @param	value
+		 */
+		override public function applyLayout(value:* = null):void {
+			if (!layout) {				
+				layout = new ListLayout();
+				layout.type = horizontal ? "horizontal" : "vertical";
+				layout.useMargins = true; 
+				layout.marginX = paddingLeft + paddingRight;
+				layout.marginY = paddingTop + paddingBottom;
+			}
+			Layout(layout).onComplete = positionMenu;
+			super.applyLayout(value);
+		}
+		
+		/**
+		 * Positions menu after layout is applied according to <code>position</code> and padding 
+		 */
+		private function positionMenu():void {
+			
+			//default to parent dimensions when not specified
+			if (isNaN(containerWidth) && parent) {
+				containerWidth = parent.width;
+			}
+			if (isNaN(containerHeight) && parent) {
+				containerHeight = parent.height;
+			}
+			
+			var rect:Rectangle = getRect(this);
+			switch(position) {
+				case BOTTOM_LEFT:	
+					x = paddingLeft;
+					y = containerHeight - rect.height - paddingBottom;
+					break;
+				case BOTTOM_RIGHT:
+					x = containerWidth - rect.width - paddingRight;
+					y = containerHeight - rect.height - paddingBottom;
+					break;
+				case TOP_LEFT:
+					x = paddingLeft;
+					y = paddingTop;					
+					break;
+				case TOP_RIGHT:
+					x = containerWidth - rect.width - paddingRight;
+					y = paddingTop;
+					break;
+				default:
+					break;
+			}			
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
+			var clone:Menu = super.clone();			
+			return clone;
+		}		
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			hideTimer.stop();
+			hideTimer = null;
+			super.dispose();
+		}		
 	}
 }
