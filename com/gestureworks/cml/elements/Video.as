@@ -340,6 +340,8 @@ package com.gestureworks.cml.elements
 			
 			_src = null;
 			
+			width = 0;
+			height = 0;
 			sizeLoaded = false;
 			_isLoaded = false; 
 		}		
