@@ -1,5 +1,7 @@
 package com.gestureworks.cml.elements
 {
+	import com.gestureworks.cml.components.MediaViewer;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.managers.FileManager;
 	import com.gestureworks.cml.utils.DisplayUtils;
@@ -42,6 +44,13 @@ package com.gestureworks.cml.elements
 		private var _loop:Boolean;
 		private var _volume:Number;
 		private var _pan:Number;
+					
+		//when dimensions are undefined, the <code>Media</code> wrapper inherits dimensions from current media element
+		//when dimensions are defined, the media element dimensions are resized to the <code>Media</code> wrapper's
+		private var sizeToContent:Boolean = true; 
+		
+		//initialized state
+		private var initialized:Boolean;
 		
 		/**
 		 * Constructor
@@ -50,6 +59,7 @@ package com.gestureworks.cml.elements
 			super();
 			
 			image = new Image();
+			image.resample = true; 
 			video = new Video();
 			
 			//access supported types from FileManager
@@ -61,24 +71,42 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function init():void {			
-			sizeMedia();
+		override public function init():void {	
+			if (!initialized) {
+				sizeToContent = !width && !height;
+				initialized = true; 
+				src = src; 
+			}
 			DisplayUtils.removeAllChildrenByType(this, [Image, Video]);			
 			DisplayUtils.addChildren(this, [image, video]);			
-		}	
+		}
 		
 		/**
-		 * Sync dimensions of media element's with Media's
+		 * Sync current media element and wrapper dimensions
 		 */
 		private function sizeMedia():void {
-			if (width) {
-				image.width = width;
-				video.width = width;
+			if (!current) {
+				return; 
 			}
-			if (height) {
-				image.height = height;
-				video.height = height;
-			}			
+			
+			//inherit dimensions from current media element
+			if (sizeToContent) {
+				width = current.width;
+				height = current.height;
+				
+				if (parent is MediaViewer) {
+					MediaViewer(parent).contentUpdate();
+				}
+			}
+			//apply dimensions to current media element
+			else{
+				current.width = width;
+				current.height = height;
+				
+				if (current == image) {
+					image.resize();
+				}
+			}
 		}
 		
 		/**
@@ -133,6 +161,10 @@ package com.gestureworks.cml.elements
 		 */
 		private function processSrc(value:String):void {
 			
+			if (!initialized) {
+				return; 
+			}
+			
 			//clear previous
 			if (_current) {				
 				_current.visible = false; 
@@ -148,11 +180,13 @@ package com.gestureworks.cml.elements
 			
 			//evaluate media type
 			if (value.search(imageType) > -1) {
-				_current = image; 				
+				_current = image; 	
+				image.addEventListener(StateEvent.CHANGE, mediaLoaded);
 				image.src = value; 
 			}
 			else if (value.search(videoType) > -1) {				
 				_current = video; 				
+				video.addEventListener(StateEvent.CHANGE, mediaLoaded);
 				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
@@ -165,17 +199,21 @@ package com.gestureworks.cml.elements
 			//set stream flag
 			_streamMedia = _current is IStream;								
 			syncStreamSettings();	
-			
-			if (_current) {
-				//enable visibility of current media element
-				_current.visible = true; 
+		}
+		
+		/**
+		 * Post load updates
+		 * @param	e
+		 */
+		private function mediaLoaded(e:StateEvent):void {
+			if (e.property == "isLoaded") {
+				_current.removeEventListener(StateEvent.CHANGE, mediaLoaded);
 				
-				//default to current dimensions when undefined
-				width = width ? width : _current.width;
-				height = height ? height : _current.height;
-				
-				//sync media dimensions to Media's
+				//sync current media and wrapper dimensions
 				sizeMedia();				
+				
+				//enable visibility of current media element
+				_current.visible = true; 				
 			}
 		}
 		
@@ -308,6 +346,20 @@ package com.gestureworks.cml.elements
 			init();
 			
 			return clone;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {			
+			super.dispose();			
+			_image = null;
+			_video = null;
+			_audio = null;			
+			_current = null;
+			imageType = null;
+			videoType = null;
+			audioType = null;			
 		}
 	}
 }
