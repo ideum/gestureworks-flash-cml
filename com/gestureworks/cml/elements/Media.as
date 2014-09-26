@@ -1,6 +1,5 @@
 package com.gestureworks.cml.elements
 {
-	import com.gestureworks.cml.components.MediaViewer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.managers.FileManager;
@@ -53,6 +52,11 @@ package com.gestureworks.cml.elements
 		private var initialized:Boolean;
 		
 		/**
+		 * Callback excuted when media has been updated
+		 */
+		public var mediaUpdate:Function;
+		
+		/**
 		 * Constructor
 		 */
 		public function Media(){
@@ -93,10 +97,6 @@ package com.gestureworks.cml.elements
 			if (sizeToContent) {
 				width = current.width;
 				height = current.height;
-				
-				if (parent is MediaViewer) {
-					MediaViewer(parent).contentUpdate();
-				}
 			}
 			//apply dimensions to current media element
 			else{
@@ -210,7 +210,12 @@ package com.gestureworks.cml.elements
 				_current.removeEventListener(StateEvent.CHANGE, mediaLoaded);
 				
 				//sync current media and wrapper dimensions
-				sizeMedia();				
+				sizeMedia();	
+				
+				//execute media update callback
+				if (mediaUpdate != null) {
+					mediaUpdate.call();
+				}
 				
 				//enable visibility of current media element
 				_current.visible = true; 				

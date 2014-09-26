@@ -53,7 +53,8 @@
 			}
 			
 			if (value is Media) {
-				_media = value; 
+				_media = value;
+				_media.mediaUpdate = mediaUpdate;
 			}
 		}				
 		
@@ -66,7 +67,18 @@
 				media = searchChildren(Media);
 
 			super.init();
-		}				
+		}	
+		
+		/**
+		 * Update layout when media dimensions have changed
+		 */
+		private function mediaUpdate():void {
+			if (width != media.width || height != media.height) {
+				width = 0;
+				height = 0;
+				updateLayout();
+			}
+		}
 		
 		/**
 		 * @inheritDoc
