@@ -2,8 +2,8 @@
 {
 	import com.gestureworks.cml.elements.*;
 	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.utils.DisplayUtils;
-	import flash.display.DisplayObject;
 	
 	/**
 	 * The MediaViewerNew component is primarily meant to display a Media element and its associated meta-data.
@@ -35,13 +35,27 @@
 	public class MediaViewer extends Component 
 	{
 		private var _media:Media;
+		private var streamOps:RegExp = /(play|pause|stop|resume|seek|volume|pan)$/i;  
+		private var streamControls:Array
 		
 		/**
 		 * Constructor
 		 */
 		public function MediaViewer() {
 			super();			
+			streamControls = [];
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function init():void {			
+			// automatically try to find elements based on AS3 class
+			if (!media){
+				media = searchChildren(Media);
+			}
+			super.init();		
+		}			
 		
 		/**
 		 * Media element
@@ -54,25 +68,47 @@
 			
 			if (value is Media) {
 				_media = value;
-				_media.mediaUpdate = mediaUpdate;
+				_media.mediaUpdate = mediaUpdate
 			}
-		}				
+		}					
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function init():void {			
-			// automatically try to find elements based on AS3 class
-			if (!media)
-				media = searchChildren(Media);
-
-			super.init();
-		}	
+		override public function set menu(value:*):void {
+			super.menu = value;
+			if (menu) {
+				storeStreamControls();
+			}
+		}
 		
 		/**
-		 * Update layout when media dimensions have changed
+		 * Store stream controls to toggle visibility based on the media type
+		 */
+		private function storeStreamControls():void {
+			streamControls.length = 0;
+			var controls:Array = DisplayUtils.getAllChildrenByType(menu, Button);
+			
+			//evaluate button dispatch instruction to identify stream control
+			for each(var control:Button in controls) {				
+				if (control.dispatch.search(streamOps) > -1){
+					streamControls.push(control);
+				}
+			}
+		}
+		
+		/**
+		 * Media change actions
 		 */
 		private function mediaUpdate():void {
+			
+			//update controls
+			var displayStreamControls:Boolean = media.current is IStream;
+			for each(var control:Button in streamControls) {
+				control.visible = displayStreamControls;
+			}
+			
+			//update layout when media dimensions have changed			
 			if (width != media.width || height != media.height) {
 				width = 0;
 				height = 0;
@@ -118,6 +154,7 @@
 		 * @inheritDoc
 		 */
 		override public function clone():* {
+			cloneExclusions.push("media");
 			var clone:MediaViewer = super.clone();
 			clone.media = DisplayUtils.getAllChildrenByType(clone, Media)[0];
 			return clone;

@@ -339,6 +339,7 @@ package com.gestureworks.cml.elements
 		 */
 		override public function clone():* {
 
+			cloneExclusions.push("mediaUpdate");
 			var clone:Media = super.clone();
 			clone.image = image.clone();
 			clone.video = video.clone();
