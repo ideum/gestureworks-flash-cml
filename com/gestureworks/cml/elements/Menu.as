@@ -35,6 +35,9 @@ package com.gestureworks.cml.elements
 		private var _autoHideTime:Number = 2500;
 		private var _position:String = "bottomLeft";	
 		private var _horizontal:Boolean = true; 
+		private var _margin:Number = 0;
+		private var _offsetX:Number = 0;
+		private var _offsetY:Number = 0;
 		
 		private var containerWidth:Number; 
 		private var containerHeight:Number; 
@@ -92,7 +95,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Specifies where to position the menu relative to its parent. 
+		 * Specifies which corner to position the menu relative to its parent. 
 		 * @default bottomLeft
 		 */	 		
 		override public function get position():* { return _position; }
@@ -111,12 +114,39 @@ package com.gestureworks.cml.elements
 		}	
 		
 		/**
+		 * Position offset on x
+		 * @default 0 
+		 */
+		public function get offsetX():Number { return _offsetX; }
+		public function set offsetX(value:Number):void {
+			_offsetX = value; 
+		}
+		
+		/**
+		 * Position offset on y
+		 * @default 0 
+		 */
+		public function get offsetY():Number { return _offsetY; }
+		public function set offsetY(value:Number):void {
+			_offsetY = value; 
+		}
+		
+		/**
 		 * Determines if layout is horizontal or vertical. Setting is ignored for custom layouts. 
 		 * @default true
 		 */
 		public function get horizontal():Boolean { return _horizontal; }
 		public function set horizontal(value:Boolean):void {
 			_horizontal = value; 
+		}
+		
+		/**
+		 * The margin between children. Setting is ingnored for custom layouts;
+		 * @default 0
+		 */
+		public function get margin():Number { return _margin; }
+		public function set margin(value:Number):void {
+			_margin = value; 
 		}
 		
 		/**
@@ -182,15 +212,16 @@ package com.gestureworks.cml.elements
 				layout = new ListLayout();
 				layout.type = horizontal ? "horizontal" : "vertical";
 				layout.useMargins = true; 
-				layout.marginX = paddingLeft + paddingRight;
-				layout.marginY = paddingTop + paddingBottom;
+				layout.marginX = margin;
+				layout.marginY = margin;
 			}
 			Layout(layout).onComplete = positionMenu;
 			super.applyLayout(value);
 		}
 		
 		/**
-		 * Positions menu after layout is applied according to <code>position</code> and padding 
+		 * Positions menu after layout is applied according to <code>position</code> 
+		 * and coordinate offsets 
 		 */
 		private function positionMenu():void {
 			
@@ -206,23 +237,26 @@ package com.gestureworks.cml.elements
 			switch(position) {
 				case BOTTOM_LEFT:	
 					x = paddingLeft;
-					y = containerHeight - rect.height - paddingBottom;
+					y = containerHeight - rect.height;
 					break;
 				case BOTTOM_RIGHT:
-					x = containerWidth - rect.width - paddingRight;
-					y = containerHeight - rect.height - paddingBottom;
+					x = containerWidth - rect.width;
+					y = containerHeight - rect.height;
 					break;
 				case TOP_LEFT:
 					x = paddingLeft;
 					y = paddingTop;					
 					break;
 				case TOP_RIGHT:
-					x = containerWidth - rect.width - paddingRight;
+					x = containerWidth - rect.width;
 					y = paddingTop;
 					break;
 				default:
 					break;
-			}			
+			}	
+			
+			x += offsetX;
+			y += offsetY;
 		}
 		
 		/**
