@@ -344,6 +344,11 @@ package com.gestureworks.cml.core
 			else
 				path = cml;
 			
+			//ignore extensions without prefixed filenames
+			if (path.indexOf(".") == 0) {
+				return;
+			}
+			
 			path = updatePath(path);	
 				
 			if (!FileManager.isPreloadMedia(path)) return;				
