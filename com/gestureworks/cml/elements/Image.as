@@ -3,6 +3,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.managers.*;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.ImageLoader;
 	import flash.display.*;
@@ -84,7 +85,9 @@ package com.gestureworks.cml.elements
 			
 			if (bitmapData) {			
 				clone.bitmapData = bitmapData.clone();
-				clone.bitmap = new Bitmap(clone.bitmapData, PixelSnapping.NEVER, true);				
+				clone.bitmap = new Bitmap(clone.bitmapData, PixelSnapping.NEVER, true);	
+				DisplayUtils.removeAllChildrenByType(clone, [Bitmap]);
+				clone.addChild(clone.bitmap);
 			}	
 			
 			return clone;			
