@@ -235,8 +235,8 @@ package com.gestureworks.cml.elements
 			for each(var m:IStream in sMedia) {
 				m.autoplay = autoplay;
 				m.loop = loop;
-				m.volume = volume;
-				m.pan = pan;
+				m.volume = isNaN(volume) ? 1: volume;
+				m.pan = isNaN(pan) ? 0 : pan;
 			}
 		}
 		
