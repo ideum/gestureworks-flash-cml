@@ -341,10 +341,13 @@ package com.gestureworks.cml.elements
 
 			cloneExclusions.push("mediaUpdate");
 			var clone:Media = super.clone();
+			clone.initialized = false; 
 			clone.image = image.clone();
 			clone.video = video.clone();
 			clone.src = null;
 			clone.src = src;
+			clone.width = sizeToContent ? 0 : clone.width;
+			clone.height = sizeToContent ? 0 : clone.height;
 			clone.init();
 			
 			src = null;
