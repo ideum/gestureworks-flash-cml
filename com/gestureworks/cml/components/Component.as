@@ -85,7 +85,7 @@ package com.gestureworks.cml.components
 			super.init();
 		}
 		
-		private var _fontIncrement:Number = 2;
+		private var _fontIncrement:Number = 0;
 		/**
 		 * font increment
 		 * @default 2;
