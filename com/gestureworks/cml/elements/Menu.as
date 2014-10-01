@@ -39,8 +39,8 @@ package com.gestureworks.cml.elements
 		private var _offsetX:Number = 0;
 		private var _offsetY:Number = 0;
 		
-		private var containerWidth:Number; 
-		private var containerHeight:Number; 
+		private var _containerWidth:Number; 
+		private var _containerHeight:Number; 
  
 		/**
 		 * Constructor
@@ -112,6 +112,30 @@ package com.gestureworks.cml.elements
 					break;
 			} 
 		}	
+		
+		/**
+		 * Layout width specified through <code>updateLayout</code>. Defaults to parent's
+		 * width when not provided. 
+		 */
+		private function get containerWidth():Number { return _containerWidth; }
+		private function set containerWidth(value:Number):void {
+			if (!value && parent) {
+				value = parent.width;
+			}
+			_containerWidth = value; 
+		}
+
+		/**
+		 * Layout height specified through <code>updateLayout</code>. Defaults to parent's
+		 * height when not provided. 
+		 */		
+		private function get containerHeight():Number { return _containerHeight; }
+		private function set containerHeight(value:Number):void {
+			if (!value && parent) {
+				value = parent.height;
+			}
+			_containerHeight = value; 
+		}		
 		
 		/**
 		 * Position offset on x
@@ -204,7 +228,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * When layout is not provided, generate default layout based on <code>position</code> and padding 
+		 * When layout is not provided, generate default layout based on <code>position</code> and <code>margin</code> settings 
 		 * @param	value
 		 */
 		override public function applyLayout(value:* = null):void {
@@ -225,18 +249,10 @@ package com.gestureworks.cml.elements
 		 */
 		private function positionMenu():void {
 			
-			//default to parent dimensions when not specified
-			if (isNaN(containerWidth) && parent) {
-				containerWidth = parent.width;
-			}
-			if (isNaN(containerHeight) && parent) {
-				containerHeight = parent.height;
-			}
-			
 			var rect:Rectangle = getRect(this);
 			switch(position) {
 				case BOTTOM_LEFT:	
-					x = paddingLeft;
+					x = 0;
 					y = containerHeight - rect.height;
 					break;
 				case BOTTOM_RIGHT:
@@ -244,12 +260,12 @@ package com.gestureworks.cml.elements
 					y = containerHeight - rect.height;
 					break;
 				case TOP_LEFT:
-					x = paddingLeft;
-					y = paddingTop;					
+					x = 0;
+					y = 0;					
 					break;
 				case TOP_RIGHT:
 					x = containerWidth - rect.width;
-					y = paddingTop;
+					y = 0;
 					break;
 				default:
 					break;
