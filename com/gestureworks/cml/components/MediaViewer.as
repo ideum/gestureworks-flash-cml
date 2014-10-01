@@ -97,6 +97,7 @@
 			}
 		}
 		
+		//TODO: Abstract content update to Component
 		/**
 		 * Media change actions
 		 */
@@ -110,9 +111,14 @@
 			
 			//update layout when media dimensions have changed			
 			if (width != media.width || height != media.height) {
+				
 				width = 0;
 				height = 0;
-				updateLayout();
+				init();
+				
+				if (back) {
+					DisplayUtils.initAll(back);
+				}
 			}
 		}
 		
