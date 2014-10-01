@@ -71,6 +71,7 @@ package com.gestureworks.cml.components
 				frame = searchChildren(Frame);
 			
 			textFields = [];
+			fontArray = [];
 			textFields = searchChildren(Text, Array);
 			for (var i:int = 0; i < textFields.length; i++) {
 				fontArray.push(textFields[i].fontSize);
@@ -81,6 +82,7 @@ package com.gestureworks.cml.components
 			
 			addEventListener(GWGestureEvent.RELEASE, noActivity);
 			updateLayout();	
+			super.init();
 		}
 		
 		private var _fontIncrement:Number = 2;
