@@ -399,7 +399,7 @@ package com.gestureworks.cml.elements
 					}					
 					if (child.heightPercent) {
 						h = Number(child.heightPercent);
-						child.height = parent.height * h / 100;			
+						child.height = height * h / 100;			
 					}
 				}
 			}
