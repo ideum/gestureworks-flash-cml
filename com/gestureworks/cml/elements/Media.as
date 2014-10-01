@@ -79,7 +79,7 @@ package com.gestureworks.cml.elements
 			if (!initialized) {
 				sizeToContent = !width && !height;
 				initialized = true; 
-				src = src; 
+				processSrc(src);
 			}
 			DisplayUtils.removeAllChildrenByType(this, [Image, Video]);			
 			DisplayUtils.addChildren(this, [image, video]);			
