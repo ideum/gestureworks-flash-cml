@@ -98,8 +98,8 @@ package com.gestureworks.cml.elements
 		 * Specifies which corner to position the menu relative to its parent. 
 		 * @default bottomLeft
 		 */	 		
-		override public function get position():* { return _position; }
-		override public function set position(value:*):void { 
+		public function get position():* { return _position; }
+		public function set position(value:*):void { 
 			switch(String(value)) {
 				case BOTTOM_LEFT:
 				case BOTTOM_RIGHT:
