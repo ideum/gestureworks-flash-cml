@@ -232,17 +232,6 @@ package com.gestureworks.cml.elements
 			}
 		}		
 		
-		
-		private var _position:*;
-		/**
-		 * Sets the position 
-		 */
-		public function get position():* {return _position;}
-		public function set position(value:*):void 
-		{
-			_position = value;
-		}
-		
 		private var _paddingLeft:Number=0;
 		/**
 		 * Sets the number of pixels between the component's left border and the left edge of its content area.

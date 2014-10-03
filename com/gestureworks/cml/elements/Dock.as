@@ -77,6 +77,7 @@ package com.gestureworks.cml.elements
 		private var resultsDict:Array;
 		private var currentPage:int;
 		private var pageCount:int;
+		public var position:String; 
 		
 		/**
 		 * Constructor
