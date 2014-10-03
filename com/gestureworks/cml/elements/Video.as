@@ -1,8 +1,8 @@
 package com.gestureworks.cml.elements
 {	
 	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.utils.DisplayUtils;
-	import com.gestureworks.cml.interfaces.IStream
+	import com.gestureworks.cml.interfaces.IStream;
+	import com.gestureworks.cml.utils.TimeUtils;
 	import flash.events.*;
 	import flash.media.*;
 	import flash.net.*;
@@ -51,7 +51,6 @@ package com.gestureworks.cml.elements
 		override public function init():void 
 		{
 			super.init();			
-			progressBar = searchChildren(ProgressBar);
 		}		
 		
 		private var _debug:Boolean=false;
@@ -152,11 +151,6 @@ package com.gestureworks.cml.elements
 		 */	
 		public function get duration():Number { return _duration; }
 		
-		/**
-		 * Elapsed net stream time
-		 */
-		public function get elapsedTime():Number { return netStream.time; }
-		
 		private var _percentLoaded:Number = 0;
 		/**
 		 * Percent of file loaded 
@@ -167,38 +161,26 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */	
-		public function get position():Number { return _position; }
+		public function get position():Number { return netStream.time; }
 		
-		private var _progressBar:ProgressBar;
 		/**
-		 * Links a progress bar to the video process
+		 * @inheritDoc
 		 */
-		public function get progressBar():* {return _progressBar;}
-		public function set progressBar(pb:*):void {
-			if (!pb) return;
-			
-			if (!(pb is ProgressBar))
-				pb = childList.getKey(pb.toString());
-			if (pb is ProgressBar)
-			{
-				_progressBar = pb;
-				_progressBar.source = this;				
-				mouseChildren = true;
-				
-				if (!_progressBar.width)
-					_progressBar.width = width;
-				if (!_progressBar.height)
-					_progressBar.height = height*.06;
-				if (!_progressBar.y)
-					_progressBar.y = height;
-				
-				addChildAt(_progressBar, numChildren - 1);
-			}
-		}
+		public function get progress():Number { return position / duration; }
 		
-		private var _isLoaded:Boolean = false;
 		/**
-		 * Returns video loaded status
+		 * @inheritDoc
+		 */
+		public function get elapsedTime():String { return TimeUtils.msToMinSec(position); }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get totalTime():String { return TimeUtils.msToMinSec(position); }
+		
+		private var _isLoaded:Boolean = false;		
+		/**
+		 * @inheritDoc
 		 */
 		public function get isLoaded():Boolean { return _isLoaded;}
 		
@@ -357,11 +339,10 @@ package com.gestureworks.cml.elements
 		 */		
 		public function play():void
 		{			
-			netStream.seek(0);				
+			netStream.seek(_position);				
 			netStream.play(src);
 			positionTimer.reset();
 			positionTimer.start();
-			_position = 0;
 			positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);
 			positionTimer.addEventListener(TimerEvent.TIMER, onPosition);	
 		}
@@ -399,12 +380,9 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function seek(offset:Number):void
-		{
-			var goTo:Number = Math.floor((offset / 100) * duration);
-			
-			_position = goTo;
-			netStream.seek(goTo);		
+		public function seek(pos:Number):void{
+			_position = pos;
+			netStream.seek(_position);		
 		}
 		
 		private function onNetStatus(event:NetStatusEvent):void
@@ -605,7 +583,6 @@ package com.gestureworks.cml.elements
 			
 			video = null;
 			customClient = null;			
-			_progressBar = null;
 			super.dispose();
 		}
 
