@@ -40,7 +40,6 @@ package com.gestureworks.cml.utils
 		private var invalidError:Error;	
 		
 		private var cueStreamStart:Number;
-		private var cueStart:Number = 0;	
 		private var averageGain:Array;		
 		
 		private var _byteRate:uint = 0;		
@@ -93,8 +92,8 @@ package com.gestureworks.cml.utils
 		 * @inheritDoc
 		 */
 		override protected function soundLoaded(event:Event = null):void {
-			super.soundLoaded(event);
 			traverseFile();						
+			super.soundLoaded(event);			
 		}
 
 		/**
@@ -282,10 +281,10 @@ package com.gestureworks.cml.utils
 					stream.position = cueStreamStart;
 					
 					_isComplete = true; 
-					publishStatus();
+					publishStatus("isComplete", isComplete);
 					
 					_isComplete = false; 
-					publishStatus();
+					publishStatus("isComplete", isComplete);
 				}
 				
 				//currently use to create graphical waveform
@@ -351,7 +350,7 @@ package com.gestureworks.cml.utils
 				if(!isPaused) {
 				
 					//skip to audio data + cue start point
-					cueStreamStart = cueStart * byteRate / 1000 + audioStreamStart;
+					cueStreamStart = _position * byteRate / 1000 + audioStreamStart;
 					
 					//make sure number is equally divisible by the block align
 					var err:Number = cueStreamStart % blockAlign;
@@ -386,25 +385,35 @@ package com.gestureworks.cml.utils
 		 * @inheritDoc
 		 */
 		override public function stop():void {
-			stream.position = 0;
-			readData = false; 
-			super.stop();			
+			if(stream){
+				stream.position = 0;
+				readData = false; 
+				super.stop();			
+			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function seek(pos:Number):void {
-			super.seek(pos);
-			pause();
-			stream.position = pos;
-			play();			
+			_position = pos;
+			if(stream){
+				pause();
+				stream.position = _position;
+				play();		
+			}
+			super.seek(pos);			
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function get position():Number { return stream ? stream.position : _position; }
+		override public function get position():Number { return duration*progress; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get progress():Number { return audioStreamPosition / audioStreamSize; }
 		
 		/**
 		 * Number of audio channels

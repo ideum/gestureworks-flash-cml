@@ -347,12 +347,32 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
+		public function get isLoaded():Boolean { return streamMedia ? IStream(current).isLoaded : false; }
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function get position():Number { return streamMedia ? IStream(current).position : 0; }
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get duration():Number { return streamMedia ? IStream(current).duration : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get progress():Number { return streamMedia ? IStream(current).progress : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get elapsedTime():String { return streamMedia ? IStream(current).elapsedTime : "00:00"; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get totalTime():String { return streamMedia ? IStream(current).totalTime : "00:00"; }
 		
 		/**
 		 * @inheritDoc

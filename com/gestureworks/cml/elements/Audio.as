@@ -5,14 +5,17 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.utils.AudioFactory;
 	import com.gestureworks.cml.utils.MP3FactoryNew;
+	import com.gestureworks.cml.utils.TimeUtils;
 	import com.gestureworks.cml.utils.Waveform;
 	import com.gestureworks.cml.utils.WAVFactory;
 	import flash.events.TimerEvent;
-	import flash.utils.ByteArray;
+	import flash.system.Capabilities;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.Timer;
 
 	/**
-	 * The Audio element loads and plays audio files and provides access to audio data. 
+	 * The Audio element loads and plays audio files and provides access to audio data. Note .wav support is
+	 * exlusive to AIR runtime. 
 	 * <p>It support the following file types: .mp3 and .wav</p>
 	 * @author Ideum
 	 */
@@ -20,20 +23,27 @@ package com.gestureworks.cml.elements
 	{		
 		private var _src:String; 
 		private var mp3:MP3FactoryNew;	
-		private var wav:WAVFactory;
+		private var wav:AudioFactory;
 		private var audio:AudioFactory;
 		
 		private var _autoplay:Boolean;
 		private var _loop:Boolean;
 		private var _volume:Number = 1;
 		private var _pan:Number = 0.0;
+		private var _position:Number = 0;
 		
 		private var waveForm:Waveform;
-		private var bytes:ByteArray;
 		private var displayTimer:Timer;
+		
+		private var isAIR:Boolean; 
 		
 		//init function has been called
 		private var initialized:Boolean;	
+		
+		/**
+		 * Callback to receive progress updates
+		 */
+		public var onProgress:Function;		
 		
 		/**
 		 * Waveform visualization
@@ -71,7 +81,16 @@ package com.gestureworks.cml.elements
 		public function Audio() {
 			mouseChildren = true; 			
 			mp3 = new MP3FactoryNew();
-			wav = new WAVFactory();
+			isAIR = Capabilities.playerType == "Desktop";
+			if (isAIR) {
+				try{
+					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.utils.WAVFactory") as Class;
+				}
+				catch (e:Error) {
+					throw Error("Document class must extend GestureWorksAIR to import/activate AIR exclusive objects");
+				}
+				wav = new sourceClass;
+			}
 		}
 		
 		/**
@@ -123,7 +142,12 @@ package com.gestureworks.cml.elements
 					audio = mp3;
 					break;
 				case "wav":
-					audio = wav; 
+					if(isAIR){
+						audio = wav; 
+					}
+					else {
+						throw Error(".wav support requires AIR");
+					}
 					break;
 				default:
 					throw Error("Unspported audio file: " + value);
@@ -145,6 +169,7 @@ package com.gestureworks.cml.elements
 			loop = loop;
 			volume = volume;
 			pan = pan; 
+			seek(_position);
 		}
 		
 		/**
@@ -187,6 +212,7 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		public function seek(pos:Number):void {
+			_position = pos; 
 			if(audio){
 				audio.seek(pos);
 			}
@@ -254,12 +280,32 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
+		public function get isLoaded():Boolean { return audio ? audio.isLoaded : false; }
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function get position():Number { return audio ? audio.position : 0; }				
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get duration():Number { return audio ? audio.duration : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get progress():Number { return audio ? audio.position / audio.duration : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get elapsedTime():String { return audio ? TimeUtils.msToMinSec(audio.position) : "00:00"; }
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get totalTime():String { return audio ? TimeUtils.msToMinSec(audio.duration) : "00:00"; }		
 		
 		/**
 		 * @inheritDoc
@@ -312,20 +358,10 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * Dispatch current status
+		 * @param status current status
+		 * @param value  value of current status
 		 */
-		private function onStatus():void {
-			var status:String = "isPlaying";
-			var value:Boolean = isPlaying;
-			
-			if (isComplete) {
-				status = "isComplete";
-				value = isComplete;
-			}
-			else if (isPaused) {
-				status = "isPaused";
-				value = isPaused;
-			}
-			
+		private function onStatus(status:String, value:Boolean):void {
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, status, value));
 			
 			//update display timer based on play status
@@ -356,21 +392,31 @@ package com.gestureworks.cml.elements
 				waveForm.waveWidth = width;
 				waveForm.waveHeight = height;				
 				addChild(waveForm);
-				bytes = new ByteArray();
 			}
 			else {
 				waveForm = null;
 			}
 			
-			displayTimer = new Timer(10);
-			displayTimer.addEventListener(TimerEvent.TIMER, updateDisplay);
+			//initialize display timer
+			if(waveform || onProgress != null){
+				displayTimer = new Timer(5);
+				displayTimer.addEventListener(TimerEvent.TIMER, update);
+			}
+			else if (displayTimer) {
+				displayTimer.stop();
+				displayTimer.removeEventListener(TimerEvent.TIMER, update);								
+				displayTimer = null;
+			}
 		}
 		
 		/**
-		 * Update audio display
+		 * Update audio display and/or publish progess
 		 * @param	e
 		 */
-		private function updateDisplay(e:TimerEvent):void {
+		private function update(e:TimerEvent):void {
+			if (onProgress != null) {
+				onProgress.call();
+			}
 			visualize(waveForm);
 		}
 	}

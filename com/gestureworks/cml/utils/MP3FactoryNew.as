@@ -64,7 +64,6 @@ package com.gestureworks.cml.utils
 		 * @inheritDoc
 		 */
 		override protected function soundLoaded(event:Event = null):void {
-			super.soundLoaded(event);
 			if (soundLoader){
 				soundLoader.removeEventListener(LoaderEvent.COMPLETE, soundLoaded);
 				_soundData = soundLoader.content;
@@ -87,7 +86,8 @@ package com.gestureworks.cml.utils
 			
 			if (autoplay){ 
 				play();		
-			}			
+			}	
+			super.soundLoaded(event);			
 		}
 		
 		/**
@@ -113,7 +113,7 @@ package com.gestureworks.cml.utils
 		 */
 		override public function play():void {
 			if (!isPlaying) {	
-				_channel = _soundData.play(0, 0, _soundTransform);
+				_channel = _soundData.play(_position, 0, _soundTransform);
 				listenComplete = true;
 			}			
 			super.play();			
@@ -124,7 +124,7 @@ package com.gestureworks.cml.utils
 		 */
 		override public function resume():void {
 			if (!isPlaying) {				
-				_channel = _soundData.play(position, 0, _soundTransform);
+				_channel = _soundData.play(_position, 0, _soundTransform);
 				listenComplete = true;
 			}			
 			super.resume();			
@@ -154,7 +154,7 @@ package com.gestureworks.cml.utils
 		 */
 		override public function seek(pos:Number):void {
 			pause();
-			_position = (pos / 100) * _soundData.length;	
+			_position = pos; 
 			super.seek(pos);			
 		}
 		

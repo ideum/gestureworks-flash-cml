@@ -62,22 +62,28 @@ package com.gestureworks.cml.interfaces
 		function set pan(value:Number):void;	
 		
 		/**
-		 * Returns media play status
+		 * Media play status
 		 * @default false
 		 */
 		function get isPlaying():Boolean;
 		
 		/**
-		 * Returns media paused status
+		 * Media paused status
 		 * @default false
 		 */
 		function get isPaused():Boolean; 
 		
 		/**
-		 * Returns media complete status
+		 * Media complete status
 		 * @default false
 		 */
 		function get isComplete():Boolean;
+		
+		/**
+		 * Media loaded status
+		 * @default false
+		 */
+		function get isLoaded():Boolean;
 		
 		/**
 		 * Current playback position in ms
@@ -92,7 +98,26 @@ package com.gestureworks.cml.interfaces
 		function get duration():Number;
 		
 		/**
+		 * Position relative to duration
+		 * @default 0
+		 */
+		function get progress():Number;
+		
+		/**
+		 * Formatted string of the position (min:sec)
+		 * @default "00:00"
+		 */
+		function get elapsedTime():String;
+		
+		/**
+		 * Formatted string of the duration (min:sec)
+		 * @default "00:00"
+		 */
+		function get totalTime():String;
+		
+		/**
 		 * Percentage of bytes loaded
+		 * @default 0
 		 */
 		function get percentLoaded():Number;
 	}

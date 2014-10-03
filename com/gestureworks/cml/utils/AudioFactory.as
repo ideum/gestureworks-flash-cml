@@ -42,13 +42,17 @@ package com.gestureworks.cml.utils
 		protected var _loop:Boolean;	
 		protected var _volume:Number = 1;	
 		protected var _pan:Number = 0;
-		protected var _duration:Number = 0;		
+		protected var _duration:Number = 0;	
+		protected var _progress:Number = 0;
+		protected var _elapsedTime:String = "00:00";
+		protected var _totalTime:String = "00:00";
 		
 		protected var _percentLoaded:Number = 0;	
 		protected var _position:Number = 0;	
 		protected var _isPlaying:Boolean;	
 		protected var _isPaused:Boolean;
 		protected var _isComplete:Boolean;
+		protected var _isLoaded:Boolean;
 		
 		protected var _metadata:*;
 		protected var _title:String;
@@ -58,6 +62,9 @@ package com.gestureworks.cml.utils
 		protected var _publisher:String;
 		protected var _comment:String;
 		
+		/**
+		 * Callback function fired on status change
+		 */
 		public var statusCallback:Function;
 		
 		/**
@@ -87,10 +94,12 @@ package com.gestureworks.cml.utils
 		
 		/**
 		 * Execute status callback
+		 * @param status  current status
+		 * @param value  value of current status
 		 */
-		protected function publishStatus():void {
+		protected function publishStatus(status:String, value:Boolean):void {
 			if (statusCallback != null) {
-				statusCallback.call();
+				statusCallback.call(null, status, value);
 			}
 		}
 		
@@ -103,6 +112,7 @@ package com.gestureworks.cml.utils
 				return; 
 			}
 			
+			close();
 			_src = value;			
 			if (FileManager.media.getContent(_src)) {
 				soundLoaded();
@@ -130,6 +140,8 @@ package com.gestureworks.cml.utils
 		protected function soundLoaded(event:Event=null):void {    
 			_soundTransform.volume = volume;
 			_soundTransform.pan = pan;
+			_isLoaded = true; 
+			publishStatus("isLoaded", isLoaded);
 		}
 		
 		/**
@@ -137,7 +149,8 @@ package com.gestureworks.cml.utils
 		 * @param	event
 		 */
 		protected function soundComplete(event:Event = null):void {
-			_isComplete = true; 			
+			_isComplete = true; 
+			publishStatus("isComplete", isComplete);
 			stop();								
 		}	
 		
@@ -146,7 +159,11 @@ package com.gestureworks.cml.utils
 		 */	
 		public function close():void {
 			stop();
-			_channel.stop();					
+			_channel.stop();	
+			_isLoaded = false;
+			_isPlaying = false; 
+			_isPaused = false; 
+			_isComplete = false; 
 		}			
 		
 		/**
@@ -156,7 +173,7 @@ package com.gestureworks.cml.utils
 			_isPlaying = true; 
 			_isPaused = false; 
 			_isComplete = false; 
-			publishStatus();
+			publishStatus("isPlaying", isPlaying);
 		}
 		
 		/**
@@ -165,7 +182,7 @@ package com.gestureworks.cml.utils
 		public function resume():void {
 			_isPlaying = true;  
 			_isPaused = false; 
-			publishStatus();			
+			publishStatus("isPlaying", isPlaying);			
 		}
 		
 		/**
@@ -174,7 +191,7 @@ package com.gestureworks.cml.utils
 		public function pause():void {
 			_isPlaying = false; 
 			_isPaused = true; 
-			publishStatus();			
+			publishStatus("isPaused", isPaused);			
 		}
 		
 		/**
@@ -184,7 +201,7 @@ package com.gestureworks.cml.utils
 			_isPlaying = false; 
 			_isPaused = false; 
 			_position = 0;
-			publishStatus();			
+			publishStatus("isPlaying", isPlaying);			
 		}
 		
 		/**
@@ -241,18 +258,38 @@ package com.gestureworks.cml.utils
 		
 		/**
 		 * @inheritDoc
+		 */
+		public function get isLoaded():Boolean { return _isLoaded; }
+		
+		/**
+		 * @inheritDoc
+		 */	
+		public function get position():Number { return _position; }			
+		
+		/**
+		 * @inheritDoc
 		 */		
 		public function get duration():Number { return _duration; }
 		
 		/**
 		 * @inheritDoc
-		 */		
-		public function get percentLoaded():Number { return _percentLoaded; }
-				
+		 */
+		public function get progress():Number { return _progress; }
+		
 		/**
 		 * @inheritDoc
-		 */	
-		public function get position():Number { return _position; }		
+		 */
+		public function get elapsedTime():String { return _elapsedTime; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get totalTime():String { return _totalTime; }
+		
+		/**
+		 * @inheritDoc
+		 */		
+		public function get percentLoaded():Number { return _percentLoaded; }	
 		
 		/**
 		 * @inheritDoc
@@ -290,8 +327,7 @@ package com.gestureworks.cml.utils
 		public function get comment():String { return _comment; }
 		
 		/**
-		 * Draw audio visualization
-		 * @param	value Waveform object
+		 * @inheritDoc
 		 */
 		public function visualize(value:Waveform):void {}
 		
