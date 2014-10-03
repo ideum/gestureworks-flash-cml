@@ -1,8 +1,7 @@
-package com.gestureworks.cml.utils
-{	
+package com.gestureworks.cml.utils 
+{
 	/**
-	 * The Timestamp utility returns the time and date in a variety of formats.
-	 * 
+	 * The TimeUtils utility is a collection of static methods for working with time. 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 
 		var t:TimeStamp = new TimeStamp();
@@ -10,26 +9,21 @@ package com.gestureworks.cml.utils
 		trace(t.getHrsMinSec());
 	 
 	 * </codeblock>
-	 * 
 	 * @author Ideum
-	 */	
-	public class Timestamp
+	 */	 
+	public class TimeUtils 
 	{
-		private var date:Date;
-		
+		private static var date:Date;		
 		/**
 		 * Constructor
 		 */
-		public function Timestamp()
-		{
-			date = new Date;
-		}
+		public function TimeUtils():void {}
 		
 		/**
 		 * Returns the current full date
 		 * @return full date
 		 */		
-		public function getDateTime():String
+		public static function getDateTime():String
 		{
 			date = new Date;
 			return date.toString();
@@ -39,7 +33,7 @@ package com.gestureworks.cml.utils
 		 * Returns the current time in hrs:min:sec 
 		 * @return time
 		 */		
-		public function getHrsMinSec():String
+		public static function getHrsMinSec():String
 		{
 			date = new Date;
 			
@@ -58,11 +52,30 @@ package com.gestureworks.cml.utils
 		}
 		
 		/**
+		 * Converts provided millisecond value into formatted string (min:sec)
+		 * @param	t time in ms
+		 */
+		public static function msToMinSec(t:int):String {
+			var s:int=Math.round(t/1000);
+			var m:int=0;
+			if (s>0)
+			{
+				while (s > 59)
+				{
+					m++;
+					s-=60;
+				}
+				return String((m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s);
+			}
+			else return "00:00";			
+		}		
+		
+		/**
 		 * Returns the month abbreviation for a given month index
 		 * @param	num
 		 * @return
 		 */
-		public function getMonthAbbreviation(num:int):String
+		public static function getMonthAbbreviation(num:int):String
 		{
 			var month:String = "";
 			
@@ -90,7 +103,7 @@ package com.gestureworks.cml.utils
 		 * @param	num
 		 * @return
 		 */
-		public function getNumberSuffix(num:int):String
+		public static function getNumberSuffix(num:int):String
 		{
 			if (num == 0) return "";
 			if (Math.floor(num / 10) % 10 === 1) return "th";
@@ -100,7 +113,7 @@ package com.gestureworks.cml.utils
 			if (num === 1) return "st";
 			if (num === 2) return "nd";
 			return "rd";
-		}
-		
+		}		
+				
 	}
 }
