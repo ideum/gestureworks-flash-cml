@@ -337,6 +337,31 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
+		public function get isPaused():Boolean { return streamMedia ? IStream(current).isPaused : false; }			
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get isComplete():Boolean { return streamMedia ? IStream(current).isComplete : false; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get position():Number { return streamMedia ? IStream(current).position : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get duration():Number { return streamMedia ? IStream(current).duration : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get percentLoaded():Number { return streamMedia ? IStream(current).percentLoaded : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
 		override public function clone():* {
 
 			cloneExclusions.push("mediaUpdate");

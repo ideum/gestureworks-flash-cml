@@ -148,7 +148,7 @@ package com.gestureworks.cml.elements
 		
 		private var _duration:Number = 0;
 		/**
-		 * Total video duration
+		 * @inheritDoc
 		 */	
 		public function get duration():Number { return _duration; }
 		
@@ -165,9 +165,9 @@ package com.gestureworks.cml.elements
 			
 		private var _position:Number = 0;
 		/**
-		 * Playhead position in ms
+		 * @inheritDoc
 		 */	
-		override public function get position():* { return _position; }
+		public function get position():Number { return _position; }
 		
 		private var _progressBar:ProgressBar;
 		/**
@@ -210,9 +210,15 @@ package com.gestureworks.cml.elements
 		
 		private var _isPaused:Boolean = false;
 		/**
-		 * Returns video paused status
+		 * @inheritDoc
 		 */
-		public function get isPaused():Boolean { return _isPaused; }		
+		public function get isPaused():Boolean { return _isPaused; }
+		
+		private var _isComplete:Boolean;		
+		/**
+		 * @inheritDoc
+		 */
+		public function get isComplete():Boolean { return _isComplete; }
 				
 		private var _volume:Number = 1;
 		/**
@@ -420,12 +426,14 @@ package com.gestureworks.cml.elements
 				case "NetStream.Play.Start":
 					 _isPlaying = true;
 					 _isPaused = false;
+					 _isComplete = false; 
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 break;	
 				case "NetStream.Play.Stop":
 					 end();
 				     _isPlaying = false;
 					 _isPaused = false;
+					 _isComplete = true; 
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "ended", true));
 					 break;

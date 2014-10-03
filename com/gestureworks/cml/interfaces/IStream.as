@@ -35,31 +35,65 @@ package com.gestureworks.cml.interfaces
 		
 		/**
 		 * Plays media on load
+		 * @default false
 		 */
 		function get autoplay():Boolean;
 		function set autoplay(value:Boolean):void; 		
 		
 		/**
 		 * Auto-plays the media on end
+		 * @default false
 		 */
 		function get loop():Boolean;
 		function set loop(value:Boolean):void;
 		
 		/**
 		 * Audio volume
+		 * @default 1
 		 */
 		function get volume():Number;
 		function set volume(value:Number):void;
 		
 		/**
 		 * Audio pan
+		 * @default 0
 		 */
 		function get pan():Number;
-		function set pan(value:Number):void;		
+		function set pan(value:Number):void;	
 		
 		/**
 		 * Returns media play status
+		 * @default false
 		 */
 		function get isPlaying():Boolean;
+		
+		/**
+		 * Returns media paused status
+		 * @default false
+		 */
+		function get isPaused():Boolean; 
+		
+		/**
+		 * Returns media complete status
+		 * @default false
+		 */
+		function get isComplete():Boolean;
+		
+		/**
+		 * Current playback position in ms
+		 * @default 0
+		 */
+		function get position():Number; 
+		
+		/**
+		 * Total length of media in ms
+		 * @default 0
+		 */
+		function get duration():Number;
+		
+		/**
+		 * Percentage of bytes loaded
+		 */
+		function get percentLoaded():Number;
 	}
 }

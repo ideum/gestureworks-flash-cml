@@ -100,7 +100,7 @@ package com.gestureworks.cml.utils
 		 * @param none
 		 * @return none 
 		 */		
-		public function Dispose():void {
+		public function dispose():void {
 			
 			//removeChild(_sp);
 			_sp = null;
