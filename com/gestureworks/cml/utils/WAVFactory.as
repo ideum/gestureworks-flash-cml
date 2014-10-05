@@ -325,7 +325,20 @@ package com.gestureworks.cml.utils
 		 */
 		override public function close():void {
 			super.close();
-			readData = false; 	
+			if(stream){
+				stream.close();
+			}
+			audioStreamStart = 0;			
+			audioStreamEnd = 0;
+			audioStreamPosition = 0;						
+			audioStreamAvailable = 0;
+			audioStreamSize = 0;				
+			msByteRate = 0;		
+			blockAlign = 0;		
+			fileSize = 0;	
+			varBufferSize = 0;			
+			stream = null;
+			file = null;
 		}		
 		
 		/**
@@ -463,6 +476,12 @@ package com.gestureworks.cml.utils
 		 */
 		override public function dispose():void {
 			super.dispose();
+			bytes = null;		
+			invalidError = null;	
+			averageGain = null;			
+			stream = null;	
+			file = null;			
+			xmp = null;			
 		}
 	}
 }

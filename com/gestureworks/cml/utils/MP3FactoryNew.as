@@ -201,6 +201,8 @@ package com.gestureworks.cml.utils
 		 */
 		override public function dispose():void {
 			super.dispose();
+			soundLoader = null;	
+			bytes = null;				
 		}
 	}
 }

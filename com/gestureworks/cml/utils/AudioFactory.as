@@ -334,6 +334,11 @@ package com.gestureworks.cml.utils
 		/**
 		 * Disposal function
 		 */				
-		public function dispose():void{}		
+		public function dispose():void {
+			_soundData = null;
+			_channel= null;
+			_soundTransform = null;		
+			_metadata = null;			
+		}		
 	}
 }

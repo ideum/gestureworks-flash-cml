@@ -87,7 +87,7 @@ package com.gestureworks.cml.elements
 					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.utils.WAVFactory") as Class;
 				}
 				catch (e:Error) {
-					throw Error("Document class must extend GestureWorksAIR to import/activate AIR exclusive objects");
+					throw Error("Use the following import syntax to activate AIR exclusive objects: com.gestureworks.cml.core.CMLAir;CMLAir");
 				}
 				wav = new sourceClass;
 			}
@@ -418,6 +418,24 @@ package com.gestureworks.cml.elements
 				onProgress.call();
 			}
 			visualize(waveForm);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			mp3.dispose();
+			mp3 = null;
+			wav.dispose();
+			wav = null;
+			audio = null;
+			waveForm = null;
+			onProgress = null;
+			if (displayTimer) {
+				displayTimer.stop();
+				displayTimer = null;
+			}
 		}
 	}
 }
