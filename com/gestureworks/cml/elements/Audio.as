@@ -7,7 +7,6 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.utils.MP3FactoryNew;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import com.gestureworks.cml.utils.Waveform;
-	import com.gestureworks.cml.utils.WAVFactory;
 	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
 	import flash.utils.getDefinitionByName;
@@ -85,11 +84,9 @@ package com.gestureworks.cml.elements
 			if (isAIR) {
 				try{
 					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.utils.WAVFactory") as Class;
+					wav = new sourceClass;
 				}
-				catch (e:Error) {
-					throw Error("Use the following import syntax to activate AIR exclusive objects: com.gestureworks.cml.core.CMLAir;CMLAir");
-				}
-				wav = new sourceClass;
+				catch (e:Error) {}
 			}
 		}
 		
@@ -127,7 +124,7 @@ package com.gestureworks.cml.elements
 			//clear previous
 			if (audio) {
 				audio = null;
-				mp3.close();
+				close();
 			}
 			
 			//abort process
@@ -418,6 +415,16 @@ package com.gestureworks.cml.elements
 				onProgress.call();
 			}
 			visualize(waveForm);
+		}
+		
+		/**
+		 * Close audio elements
+		 */
+		public function close():void {
+			mp3.close();
+			if (wav) {
+				wav.close();
+			}
 		}
 		
 		/**

@@ -332,6 +332,14 @@ package com.gestureworks.cml.utils
 		public function visualize(value:Waveform):void {}
 		
 		/**
+		 * Clone function
+		 * @return copy of object
+		 */
+		public function clone():AudioFactory {
+			return CloneUtils.clone(this);
+		}
+		
+		/**
 		 * Disposal function
 		 */				
 		public function dispose():void {
