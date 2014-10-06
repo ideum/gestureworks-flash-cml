@@ -396,6 +396,9 @@ package com.gestureworks.cml.utils
 		 * @inheritDoc
 		 */
 		override public function resume():void {
+			if (!isPlaying) {	
+				play();
+			}				
 			super.resume();
 		}
 		
