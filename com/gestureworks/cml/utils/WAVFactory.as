@@ -23,6 +23,7 @@ package com.gestureworks.cml.utils
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
+	import flash.media.Sound;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
@@ -271,6 +272,7 @@ package com.gestureworks.cml.utils
 				//update audio stream position
 				audioStreamPosition = stream.position - audioStreamStart;
 				
+				
 								
 				//compute the amount of audio data remaining
 				audioStreamAvailable = audioStreamSize - audioStreamPosition;
@@ -288,7 +290,7 @@ package com.gestureworks.cml.utils
 				}
 				
 				//currently use to create graphical waveform
-				averageGain[j] = leftAmp + rightAmp * .5;				
+				averageGain[j] = leftAmp + rightAmp * .5;	
 				j++
 			}
 			
@@ -325,20 +327,31 @@ package com.gestureworks.cml.utils
 		 */
 		override public function close():void {
 			super.close();
+			stop();
+			
 			if(stream){
 				stream.close();
+				stream = null;
 			}
-			audioStreamStart = 0;			
+
+			bytes = null;	
+			cueStreamStart = 0;
+			averageGain.length = 0;		
+			_byteRate = 0;		
+			_bitDepth = 0;		
+			_sampleRate = 0;			
+			
+			audioStreamStart = 0;
 			audioStreamEnd = 0;
-			audioStreamPosition = 0;						
+			audioStreamPosition = 0;			
 			audioStreamAvailable = 0;
-			audioStreamSize = 0;				
-			msByteRate = 0;		
+			audioStreamSize = 0;	
+			msByteRate = 0;
+			
 			blockAlign = 0;		
 			fileSize = 0;	
-			varBufferSize = 0;			
-			stream = null;
-			file = null;
+			varBufferSize = 0;				
+			xmp = null;		
 		}		
 		
 		/**
@@ -374,7 +387,7 @@ package com.gestureworks.cml.utils
 					
 				}												
 				readData = true; 				
-				_soundData.play();
+				_channel = _soundData.play();
 			}
 			super.play();
 		}
@@ -400,9 +413,10 @@ package com.gestureworks.cml.utils
 		override public function stop():void {
 			if(stream){
 				stream.position = 0;
-				readData = false; 
-				super.stop();			
+				readData = false; 			
 			}
+			_channel.stop();			
+			super.stop();			
 		}
 		
 		/**
