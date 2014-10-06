@@ -134,9 +134,9 @@ package com.gestureworks.cml.utils
 		 * @inheritDoc
 		 */
 		override public function pause():void {
+			_position = _channel.position;				
 			_channel.stop();
 			listenComplete = false;
-			_position = _channel.position;	
 			super.pause();			
 		}
 		
@@ -194,14 +194,6 @@ package com.gestureworks.cml.utils
 				}
 				cnt++;
 			}
-		}	
-		
-		/**
-		 * Clone function
-		 * @return
-		 */
-		public function clone():MP3FactoryNew {
-			return CloneUtils.clone(this);
 		}
 		
 		/**
