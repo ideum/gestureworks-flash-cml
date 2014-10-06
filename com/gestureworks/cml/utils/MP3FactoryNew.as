@@ -197,6 +197,14 @@ package com.gestureworks.cml.utils
 		}	
 		
 		/**
+		 * Clone function
+		 * @return
+		 */
+		public function clone():MP3FactoryNew {
+			return CloneUtils.clone(this);
+		}
+		
+		/**
 		 * @inheritDoc
 		 */
 		override public function dispose():void {

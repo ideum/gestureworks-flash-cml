@@ -64,9 +64,8 @@ package com.gestureworks.cml.utils
 				}
 			}
 			
-			
 			// add to clone's parent if cloning nested objects
-			if (!cloneObj.parent && parent)
+			if (cloneObj.hasOwnProperty("parent") && !cloneObj.parent && parent)
 				parent.addChild(cloneObj);				
 			
 				
