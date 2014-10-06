@@ -22,7 +22,7 @@ package com.gestureworks.cml.elements
 		//supported media types
 		private var _image:Image; 
 		private var _video:Video;
-		private var _audio:TouchContainer;
+		private var _audio:Audio;
 		
 		//current media
 		private var _current:TouchContainer; 
@@ -63,8 +63,8 @@ package com.gestureworks.cml.elements
 			super();
 			
 			image = new Image();
-			image.resample = true; 
-			video = new Video();
+			video = new Video();			
+			audio = new Audio();
 			
 			//access supported types from FileManager
 			imageType = FileManager.imageType;
@@ -79,10 +79,11 @@ package com.gestureworks.cml.elements
 			if (!initialized) {
 				sizeToContent = !width && !height;
 				initialized = true; 
+				audio.init();
 				processSrc(src);
 			}
-			DisplayUtils.removeAllChildrenByType(this, [Image, Video]);			
-			DisplayUtils.addChildren(this, [image, video]);			
+			DisplayUtils.removeAllChildrenByType(this, [Image, Video, Audio]);			
+			DisplayUtils.addChildren(this, [image, video, audio]);			
 		}
 		
 		/**
@@ -140,7 +141,21 @@ package com.gestureworks.cml.elements
 				_video = value; 
 				_video.visible = false; 				
 			}
-		}		
+		}	
+		
+		/**
+		 * Audio element
+		 */
+		public function get audio():* { return _audio; }
+		public function set audio(value:*):void {
+			if (value is XML) {
+				value = getElementById(value);
+			}
+			if (value is Audio) {
+				_audio = value;
+				_audio.visible = false; 
+			}
+		}
 		
 		/**
 		 * Media file path
@@ -171,6 +186,7 @@ package com.gestureworks.cml.elements
 				_current = null;				
 				image.close();
 				video.close();
+				audio.close();
 			}
 			
 			//abort process
@@ -190,7 +206,9 @@ package com.gestureworks.cml.elements
 				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
-				
+				_current = audio;
+				audio.addEventListener(StateEvent.CHANGE, mediaLoaded);
+				audio.src = value; 
 			}
 			else {
 				throw new Error("Unsupported media type: " + value);
@@ -389,6 +407,7 @@ package com.gestureworks.cml.elements
 			clone.initialized = false; 
 			clone.image = image.clone();
 			clone.video = video.clone();
+			clone.audio = audio.clone();
 			clone.src = null;
 			clone.src = src;
 			clone.width = sizeToContent ? 0 : clone.width;
