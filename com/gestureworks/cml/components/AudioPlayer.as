@@ -43,6 +43,7 @@ package com.gestureworks.cml.components
 			}
 			if (value is Audio) {
 				_audio = value; 
+				front = audio;
 			}
 		}				
 		
