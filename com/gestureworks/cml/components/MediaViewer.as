@@ -21,11 +21,6 @@
 	 * <p>The width and height of the component are automatically set to the dimensions of the Media element unless it is 
 	 * previously specifed by the component.</p>
 	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	  
-
-			
-	 * </codeblock>
 	 * 
 	 * @author Ideum
 	 * @see Component
@@ -69,6 +64,7 @@
 			if (value is Media) {
 				_media = value;
 				_media.mediaUpdate = mediaUpdate
+				front = _media;
 			}
 		}					
 		
