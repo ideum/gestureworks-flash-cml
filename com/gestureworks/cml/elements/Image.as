@@ -182,12 +182,12 @@ package com.gestureworks.cml.elements
 		}			
 		
 		
-		private var _resample:Boolean = false;
+		private var _resample:Boolean = true;
 		/**
 		 * Specifies whether a loaded image is resampled to the provided width and/or height.
 		 * In order for resampling to work, this must be set to true, and a width and/or height 
 		 * must be set prior to calling open.
-		 * @default false
+		 * @default true
 		 */
 		public function get resample():Boolean{return _resample;}
 		public function set resample(value:Boolean):void
@@ -304,8 +304,6 @@ package com.gestureworks.cml.elements
 			_aspectRatio = 0;
 			_landscape = false;
 			_portrait = false;
-			height = 0;
-			width = 0;
 			
 			if (_bitmapData && !_bitmapDataCache)
 			{
