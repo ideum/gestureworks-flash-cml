@@ -16,13 +16,11 @@ package com.gestureworks.cml.elements
 	{
 		
 		private var loaded:Boolean = false;
-		//private var dispatch:String = "down";
 		private var _triggerArray:Array;
 		
 		public function Sound() 
 		{
 			super();
-			preload = true;
 			autoplay = false;
 		}
 		
@@ -87,10 +85,6 @@ package com.gestureworks.cml.elements
 		public function get importance():int { return _importance; }
 		public function set importance(value:int):void {
 			_importance = value;
-		}
-		
-		override public function init():void {
-			super.init();
 		}
 		
 		override protected function soundLoaded(e:Event=null):void {

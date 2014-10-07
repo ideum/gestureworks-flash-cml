@@ -25,8 +25,6 @@ package com.gestureworks.cml.core
 	 */	 
 	public class CMLAir {}
 
-	import com.gestureworks.cml.elements.WAV; WAV;
-	import com.gestureworks.cml.components.WAVPlayer; WAVPlayer;
 	import com.gestureworks.cml.elements.HTML; HTML;
 	import com.gestureworks.cml.components.HTMLViewer; HTMLViewer;
 	import com.gestureworks.cml.elements.Window; Window;	

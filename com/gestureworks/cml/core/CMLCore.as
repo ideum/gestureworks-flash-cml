@@ -65,7 +65,6 @@ package com.gestureworks.cml.core
 	/////////////////////	
 	import com.gestureworks.cml.components.MediaViewer; MediaViewer;
 	import com.gestureworks.cml.components.CollectionViewer; CollectionViewer;	
-	import com.gestureworks.cml.components.MP3Player; MP3Player;	
 	import com.gestureworks.cml.components.VideoViewer; VideoViewer;	
 	import com.gestureworks.cml.components.ImageViewer; ImageViewer;
 	import com.gestureworks.cml.components.AlbumViewer; AlbumViewer;
@@ -112,7 +111,6 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.elements.SWF; SWF;	
 	import com.gestureworks.cml.elements.Frame; Frame;
 	import com.gestureworks.cml.elements.Video; Video;
-	import com.gestureworks.cml.elements.MP3; MP3;
 	import com.gestureworks.cml.elements.Graphic; Graphic;	
 	import com.gestureworks.cml.elements.Image; Image;
 	import com.gestureworks.cml.elements.Media; Media;

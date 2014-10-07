@@ -49,8 +49,6 @@ package com.gestureworks.cml.managers
 			
 			sound.target = target;
 			
-			sound.init();
-			
 			createEvents(sound);
 		}
 		
@@ -125,7 +123,7 @@ package com.gestureworks.cml.managers
 		
 		private static function createEvents(sound:Sound):void {
 			
-			sound.addEventListener(StateEvent.CHANGE, onComplete);
+			//sound.addEventListener(StateEvent.CHANGE, onComplete);
 			if (sound.eventlessNotification)
 				return;
 			
