@@ -4,7 +4,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.interfaces.IAudio;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.utils.AudioFactory;
-	import com.gestureworks.cml.utils.MP3FactoryNew;
+	import com.gestureworks.cml.utils.MP3Factory;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import com.gestureworks.cml.utils.Waveform;
 	import flash.events.TimerEvent;
@@ -21,7 +21,7 @@ package com.gestureworks.cml.elements
 	public class Audio extends TouchContainer implements IStream, IAudio
 	{		
 		private var _src:String; 
-		private var mp3:MP3FactoryNew;	
+		private var mp3:MP3Factory;	
 		private var wav:AudioFactory;
 		private var audio:AudioFactory;
 		
@@ -46,9 +46,9 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * Waveform visualization
-		 * @default false
+		 * @default true
 		 */
-		public var waveform:Boolean;		
+		public var waveform:Boolean = true;		
 		
 		/**
 		 * Color of the waveform
@@ -58,9 +58,9 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * Displays background graphic
-		 * @default false
+		 * @default true
 		 */
-		public var background:Boolean;
+		public var background:Boolean = true;
 		
 		/**
 		 * The background's alpha transparency
@@ -79,7 +79,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function Audio() {
 			mouseChildren = true; 			
-			mp3 = new MP3FactoryNew();
+			mp3 = new MP3Factory();
 			isAIR = Capabilities.playerType == "Desktop";
 			if (isAIR) {
 				try{
@@ -139,8 +139,13 @@ package com.gestureworks.cml.elements
 					audio = mp3;
 					break;
 				case "wav":
-					if(isAIR){
-						audio = wav; 
+					if (isAIR) {
+						if (!wav) {
+							throw Error("The following import statement is required to load AIR-exclusive classes: import com.gestureworks.cml.core.CMLAir; CMLAir;");
+						}
+						else{
+							audio = wav; 
+						}
 					}
 					else {
 						throw Error(".wav support requires AIR");
@@ -372,6 +377,12 @@ package com.gestureworks.cml.elements
 		 */
 		private function setDisplay():void {
 			
+			//default dimensions
+			if (background || waveform) {
+				width = width ? width : 500;
+				height = height ? height : 350;
+			}			
+			
 			//background graphic
 			if (background) {
 				graphics.beginFill(backgroundColor, backgroundAlpha);
@@ -421,6 +432,7 @@ package com.gestureworks.cml.elements
 		 * Close audio elements
 		 */
 		public function close():void {
+			_src = null; 
 			mp3.close();
 			if (wav) {
 				wav.close();
