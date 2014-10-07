@@ -159,6 +159,7 @@ package com.gestureworks.cml.utils
 		 */	
 		public function close():void {
 			stop();
+			_src = null;
 			_channel.stop();	
 			_isLoaded = false;
 			_isPlaying = false; 
