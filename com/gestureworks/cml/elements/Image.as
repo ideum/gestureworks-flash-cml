@@ -90,6 +90,8 @@ package com.gestureworks.cml.elements
 				clone.addChild(clone.bitmap);
 			}	
 			
+			clone.init();
+			
 			return clone;			
 		}		
 		
