@@ -346,7 +346,9 @@ package com.gestureworks.cml.elements
 		public function get stateId():* {return _stateId};
 		public function set stateId(value:*):void
 		{
-			_stateId = value;
+			if(value){
+				_stateId = value;
+			}
 		}
 		
 		/**
@@ -354,7 +356,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function loadState(sId:* = null, recursion:Boolean = false):void { 
 			if (StateUtils.loadState(this, sId, recursion)){
-				_stateId = sId;
+				stateId = sId;
 			}
 		}	
 		
@@ -366,9 +368,9 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function tweenState(sId:*= null, tweenTime:Number = 1):void {
-			if (StateUtils.tweenState(this, sId, tweenTime))
-				_stateId = sId;
+		public function tweenState(sId:*= null, tweenTime:Number = 1, onComplete:Function= null):void {
+			if (StateUtils.tweenState(this, sId, tweenTime, onComplete))
+				stateId = sId;
 		}			
 			
 		/**
@@ -900,9 +902,8 @@ package com.gestureworks.cml.elements
 		 */
 		override public function addChildAt(child:DisplayObject, index:int):flash.display.DisplayObject 
 		{	
-			//child transfer
-			if (child.parent is TouchContainer && TouchContainer(child.parent).childList.search(child) != -1) {
-				childList.removeByValue(child);
+			if (child.parent) {
+				child.parent.removeChild(child);
 			}
 			
 			if (childList.search(child) == -1) {
@@ -923,9 +924,8 @@ package com.gestureworks.cml.elements
 		 */
 		override public function addChild(child:DisplayObject):flash.display.DisplayObject 
 		{	
-			//child transfer
-			if (child.parent is TouchContainer && TouchContainer(child.parent).childList.search(child) != -1) {
-				childList.removeByValue(child);
+			if (child.parent) {
+				child.parent.removeChild(child);
 			}
 			
 			if (childList.search(child) == -1) {
