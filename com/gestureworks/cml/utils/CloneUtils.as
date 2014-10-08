@@ -1,9 +1,11 @@
 package com.gestureworks.cml.utils 
 {
 	import com.gestureworks.cml.elements.State;
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.geom.Matrix;
+	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	import flash.utils.Dictionary;
@@ -63,6 +65,7 @@ package com.gestureworks.cml.utils
 					copyData(source, cloneObj, pExclusions);	
 				}
 			}
+			
 			
 			// add to clone's parent if cloning nested objects
 			if (cloneObj.hasOwnProperty("parent") && !cloneObj.parent && parent)
@@ -182,6 +185,11 @@ package com.gestureworks.cml.utils
 			}
 		}
 		
+		/**
+		 * Copy object states
+		 * @param	source
+		 * @param	destination
+		 */
 		public static function copyPropertyStates(source:*, destination:*):void 
 		{			
 			destination.state = new Dictionary();
@@ -194,14 +202,41 @@ package com.gestureworks.cml.utils
 			}
 		}
 		
-		
+		/**
+		 * ByteArray copy
+		 * @param	source
+		 * @return
+		 */
 		public static function deepCopyObject(source:Object):Object
 		{			
+			registerClassAlias(getQualifiedClassName(source), source.constructor);
+			
 			var myBA:ByteArray = new ByteArray(); 
 			myBA.writeObject(source); 
 			myBA.position = 0; 
 			return(myBA.readObject()); 	
 		}
-		//test
+		
+		/**
+		 * Dictionary clone utility
+		 * @param	source
+		 * @return
+		 */
+		public static function dictionaryClone(source:Dictionary):Dictionary 
+		{
+			var clone:Dictionary = new Dictionary();
+			for (var key:Object in source) {
+				clone[key] = source[key];
+			}
+			return clone;
+		}
+		
+		/**
+		 * Bitmap clone utility
+		 * @param	source
+		 */
+		public static function bitmapClone(source:Bitmap):Bitmap {
+			return new Bitmap(source.bitmapData.clone());
+		}
 	}
 }
