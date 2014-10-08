@@ -337,7 +337,33 @@ package com.gestureworks.cml.managers
 			var obj:*;
 			for each(obj in lookUp[stateId])
 				obj.saveState(stateId);
-		}		
+		}	
+		
+		/**
+		 * Tweens to specified states of applicable objects
+		 * @param	stateId
+		 * @param	tweenTime
+		 * @param	onComplete
+		 */
+		public static function tweenState(stateId:*, tweenTime:Number = 1, onComplete:Function = null):void {
+			
+			var objects:Array = lookUp[stateId] as Array;
+			var objCnt:int = objects.length;			
+			var obj:*;
+			
+			//fire complete callback after each tween is complete
+			function innerComplete():void { 
+				objCnt--;
+				if (!objCnt && onComplete != null) {
+					onComplete.call();
+				}
+			}
+			
+			//tween each object
+			for each(obj in objects) {
+				obj.tweenState(stateId, tweenTime, innerComplete);
+			}
+		}
 		
 		/**
 		 * Returns all objects with states associated with the provided state id

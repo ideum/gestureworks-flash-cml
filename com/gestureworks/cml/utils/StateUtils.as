@@ -111,7 +111,7 @@ package com.gestureworks.cml.utils
 		 * @param sIndex State index to tween.
 		 * @param tweenTime Duration of tween
 		 */		
-		public static function tweenState(obj:*, state:*, tweenTime:Number=1):Boolean
+		public static function tweenState(obj:*, state:*, tweenTime:Number=1, onComplete:Function = null):Boolean
 		{			
 			var propertyValue:String;
 			var objType:String;
@@ -132,7 +132,15 @@ package com.gestureworks.cml.utils
 						
 						if (propertyName.toLowerCase().search("color") > -1) {
 							rgb = ColorUtils.rgbSubtract(newValue, obj[propertyName]);							
-							tweenArray.push(TweenLite.to(obj, 1, {colorTransform:{redOffset:rgb[0], greenOffset:rgb[1], blueOffset:rgb[2]}, onComplete:function():void { obj.color = newValue }}));							
+							tweenArray.push(TweenLite.to(obj, 1, { colorTransform: { redOffset:rgb[0], greenOffset:rgb[1], blueOffset:rgb[2] }, onComplete: colorComplete}));							
+							
+							//color tween complete function
+							function colorComplete():void {								
+								obj.color = newValue 
+								if (onComplete != null) {
+									onComplete.call();
+								}
+							}
 						}
 						else tweenArray.push(
 							TweenLite.to(obj, tweenTime, { (propertyName.valueOf()):(Number(newValue)) } ));
@@ -144,10 +152,20 @@ package com.gestureworks.cml.utils
 				}
 			}
 			
-			var tweens:TimelineLite = new TimelineLite({onComplete:function():void { 
+			//tween complete function
+			function tweenComplete():void {
 				for (var p:String in noTweenDict) {
-					obj[p] = noTweenDict[p];
-			}}});
+					obj[p] = noTweenDict[p]; 
+				}
+				
+				loadState(obj, state);
+				
+				if (onComplete != null) {
+					onComplete.call();
+				}
+			}
+			
+			var tweens:TimelineLite = new TimelineLite({onComplete:tweenComplete});
 			tweens.appendMultiple(tweenArray);
 			tweens.play();
 				
