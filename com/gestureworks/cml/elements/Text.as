@@ -590,9 +590,38 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * The height of the text in pixels.
+		 * The line height of the text field. The line height is its ascent (font's height above baseline), 
+		 * descent (font's height below baseline) and leading (space between lines) combined.
 		 */
 		public function get textHeight():Number { return textField.textHeight; }
+		
+		/**
+		 * Pixel height of rendered text
+		 */
+		public function get pixelHeight():Number {
+			var tbmd:BitmapData;
+			var pHeight:Number; 
+			
+			if (b && b.bitmapData) {
+				tbmd = b.bitmapData.clone();
+			}
+			else {
+				try{
+					tbmd = new BitmapData(textField.width, textField.height, true, 0x00ffffff);
+					tbmd.draw(textField);
+				}
+				catch(e:Error) {
+					return textHeight;
+				}
+			}
+			
+			var rect:Rectangle = tbmd.getColorBoundsRect(0xff000000, 0x00000000, false);
+			pHeight = rect.height;
+			tbmd.dispose();
+			
+			return pHeight;
+		}
+		
 		/**
 		 * The interaction mode property, Default value is TextInteractionMode.NORMAL. 
 		 * On mobile platforms, the normal mode implies that the text can be scrolled but not selected.
@@ -1216,7 +1245,7 @@ package com.gestureworks.cml.elements
 		 */
 		override public function clone():* { 
 			var clone:Text = CloneUtils.clone(this, this.parent, cloneExclusions, true);
-			clone.updateTextFormat();
+			clone.init();
 			return clone;
 		}	
 		
