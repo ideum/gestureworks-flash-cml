@@ -56,7 +56,7 @@ package com.gestureworks.cml.elements
 		public function Graphic() 
 		{ 
 			super();
-			mouseChildren = true;
+			mouseChildren = true;  
 		}
 		
 		/**
