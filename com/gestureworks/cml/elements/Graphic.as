@@ -206,21 +206,10 @@ package com.gestureworks.cml.elements
 				
 				case "triangle":
 				{
-					// Convert the angle between the sides from degrees to radians.
-					var nAngle:Number = _angleA * Math.PI / 180;
-
-					// Calculate the coordinates of points b and c.
-					var nBx:Number = Math.cos(nAngle) * _ab;
-					var nBy:Number = Math.sin(nAngle) * _ab;
-					
-					var nCx:Number = Math.cos(0) * _ac;
-					var nCy:Number = Math.sin(0) * _ac;
-
-					// Move to point a, then draw line ac, then line cb, and finally ba (ab).
-					graphics.moveTo(0, 0);
-					graphics.lineTo(nCx, nCy);
-					graphics.lineTo(nBx, nBy);
-					graphics.lineTo(0,0);
+		   			graphics.moveTo(height/2, 0);
+                    graphics.lineTo(height, height);
+                    graphics.lineTo(0, height);
+                    graphics.lineTo(height/2, 0);
 					break;
 				}
 				
@@ -1367,43 +1356,6 @@ package com.gestureworks.cml.elements
 		public function set bottomRightRadius(r:Number):void
 		{
 			_bottomRightRadius = r;
-			updateGraphic();
-		}
-		
-		////////////////////
-		// DRAW TRIANGLES //
-		////////////////////
-		
-		private var _ab:Number = 10;
-		/**
-		 * length of the side formed between points A and B
-		 * @default 0;
-		 */
-		public function get ab():Number { return _ab; }
-		public function set ab(l:Number):void {
-			_ab = l;
-			updateGraphic();
-		}
-		
-		private var _ac:Number = 10;
-		/**
-		 * length of the side formed between points A and C
-		 * @default 0;
-		 */
-		public function get ac():Number { return _ac; }
-		public function set ac(l:Number):void {
-			_ac = l;
-			updateGraphic();
-		}
-		
-		private var _angleA:Number = 90;
-		/**
-		 * The interior angle (in degrees) at point A between sides AB and AC
-		 * @default 0;
-		 */
-		public function get angleA():Number { return _angleA; }
-		public function set angleA(a:Number):void {
-			_angleA = a;
 			updateGraphic();
 		}
 		
