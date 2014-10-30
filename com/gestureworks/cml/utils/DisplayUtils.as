@@ -5,10 +5,13 @@ package com.gestureworks.cml.utils
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.IBitmapDrawable;
+	import flash.display.PixelSnapping;
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
 	
 	/**
@@ -40,17 +43,85 @@ package com.gestureworks.cml.utils
 		}	
 
 		/**
-		 * Converts display object to bitmap data and return bitmap
-		 * @param	obj		
-		 * @param	smoothing
+		 * Generate Bitmap instance of the provided object. Setting one of the dimensions to zero (or NaN), maintains the aspect ratio relative
+		 * to the non-zero dimension.
+		 * @param	source  source object to convert to bitmap
+		 * @param	width  width to resample to
+		 * @param	height  height to resample to
+		 * @param	smoothing  determines whether a BitmapData object is smoothed when scaled or rotated
+		 * @return  the resulting bitmap
 		 */
-		public static function toBitmap(obj:DisplayObject, smoothing:Boolean=true):Bitmap 
-		{
-			var bmd:BitmapData = new BitmapData(obj.width, obj.height, true, 0xffffff);
-			bmd.draw(DisplayObject(obj));
-			var bitmap:Bitmap = new Bitmap(bmd);
-			bitmap.smoothing = smoothing;
-			return bitmap;
+		public static function resampledBitmap(source:IBitmapDrawable, width:Number, height:Number, smoothing:Boolean = true):Bitmap {
+			var bmp:Bitmap = new Bitmap(resampledBitmapData(source, width, height, smoothing), PixelSnapping.NEVER, smoothing);
+			return bmp; 
+		}
+		
+		/**
+		 * Generate BitmapData instance of the provided object. Setting one of the dimensions to zero (or NaN), maintains the aspect ratio relative
+		 * to the non-zero dimension.
+		 * @param	source source object to convert to bitmap data
+		 * @param	width  width to resample to
+		 * @param	height  height to resample to
+		 * @param	smoothing  determines whether a BitmapData object is smoothed when scaled or rotated
+		 * @return  the resulting bitmap data
+		 */
+		public static function resampledBitmapData(source:IBitmapDrawable, width:Number, height:Number, smoothing:Boolean = true):BitmapData {
+			var bmd:BitmapData;		
+			
+			//retrieve source bitmap data
+			if (source is DisplayObject) {
+				bmd = displayObjectBitmapData(DisplayObject(source));				
+			}
+			else if (source is BitmapData) {
+				bmd = source as BitmapData;
+			}
+			else {
+				return null; 
+			}
+			
+			//dimension scale percentages
+			var percentX:Number = 1; 
+			var percentY:Number = 1; 			
+			if (width && height) {
+				percentX = width / bmd.width;
+				percentY = height / bmd.height;
+			}
+			else if (width) {
+				percentX = percentY = width / bmd.width;				
+			}
+			else if (height) {
+				percentY = percentX = height / bmd.height;
+			}
+			
+			//set scale for the draw operation
+			var matrix:Matrix = new Matrix();
+			matrix.scale(percentX, percentY);
+			
+			//resampled bitmap data
+			var rbmd:BitmapData = new BitmapData(bmd.width * percentX, bmd.height * percentY, true, 0x00000000);
+			rbmd.draw(bmd, matrix, null, null, null, smoothing);
+			
+			//dispose of temporary bitmap
+			if (source is DisplayObject) {
+				bmd.dispose();
+			}
+			
+			return rbmd; 
+		}
+		
+		/**
+		 * Generate BitmapData instance from provided display object.
+		 * @param	source  source object
+		 * @param	smoothing  determines whether a BitmapData object is smoothed when scaled or rotated
+		 * @return  the resulting bitmap data
+		 */
+		protected static function displayObjectBitmapData(source:DisplayObject, smoothing:Boolean = true):BitmapData {
+			var rect:Rectangle = source.getBounds(source);
+			var bmd:BitmapData = new BitmapData(rect.width, rect.height, true, 0x00000000);
+			var matrix:Matrix = new Matrix();
+			matrix.translate( -rect.x, -rect.y);
+			bmd.draw(source, matrix, null, null, null, smoothing);
+			return bmd;			
 		}
 		
 		/**
@@ -69,7 +140,6 @@ package com.gestureworks.cml.utils
 		 *   
 		 * 	@param container Container to remove from
 		 *  @param the type(s) of children to remove
-		 *  @author Iduem
 		 */
 		public static function removeAllChildrenByType(container:DisplayObjectContainer, types:Array):Array
 		{
@@ -88,7 +158,6 @@ package com.gestureworks.cml.utils
 		 *   Removes all children from a container and leave the bottom few
 		 *   @param container Container to remove from
 		 *   @param leave (optional) Number of bottom children to leave
-		 *   @author Jackson Dunstan
 		 */
 		public static function removeAllChildren(container:DisplayObjectContainer, leave:int = 0):Array
 		{
@@ -124,6 +193,12 @@ package com.gestureworks.cml.utils
 			return children;
 		}
 		
+		/**
+		 * Returns a list of all gesture-active children
+		 * @param	container
+		 * @param	recursive
+		 * @return
+		 */
 		public static function getAllActiveChildren(container:DisplayObjectContainer, recursive:Boolean=false):Vector.<TouchSprite>
 		{
 			var children:Vector.<TouchSprite> = new Vector.<TouchSprite>();
@@ -172,7 +247,6 @@ package com.gestureworks.cml.utils
 		 *	 Returns relative position as a point between two display objects  
 		 *   @param obj1
 		 *   @param obj2
-		 *   @author Jackson Dunstan
 		 */		
 		public static function relativePos(obj1:DisplayObject, obj2:DisplayObject):Point
 		{
@@ -187,7 +261,6 @@ package com.gestureworks.cml.utils
 		 *   Check if a display object is visible. This checks all of its
 		 *   parents' visibilities.
 		 *   @param obj Display object to check
-		 *   @author Jackson Dunstan
 		 */
 		public static function isVisible(obj:DisplayObject):Boolean
 		{
@@ -205,7 +278,6 @@ package com.gestureworks.cml.utils
 		 * Wait for a next frame.
 		 * Prevents high CPU state, when AVM doesn't send ENTER_FRAMES. It just simply waits until it gets one.
 		 * @param callback Function to call once when next frame is displayed
-		 * @author Vaclav Vancura (http://vancura.org, http://twitter.com/vancura)
 		 */
 		public static function scheduleForNextFrame(callback:Function):void {
 			var obj:Shape = new Shape();

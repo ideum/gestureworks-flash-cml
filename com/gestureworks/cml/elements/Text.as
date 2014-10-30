@@ -1221,7 +1221,7 @@ package com.gestureworks.cml.elements
 			}					
 			
 			if (textBitmap) {
-				b = DisplayUtils.toBitmap(textField);
+				b = DisplayUtils.resampledBitmap(textField, textField.width, textField.height);
 				if (contains(b)) {
 					removeChild(b);
 				}

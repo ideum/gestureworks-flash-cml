@@ -859,7 +859,7 @@ package com.gestureworks.cml.elements
 			}
 					
 			if (toBitmap) {
-				b = DisplayUtils.toBitmap(this);					
+				b = DisplayUtils.resampledBitmap(this, width, height);					
 				b.x = this.x;
 				b.y = this.y;
 				store = DisplayUtils.removeAllChildren(this);
