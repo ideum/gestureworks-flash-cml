@@ -17,7 +17,7 @@ package com.gestureworks.cml.layouts
 	 * The Layout is the base class for all Layouts.
 	 * It is an abstract class that is not meant to be called directly.
 	 *
-	 * @author Charles and Shaun
+	 * @author Ideum 
 	 * @see com.gestureworks.cml.elements.Container
 	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	

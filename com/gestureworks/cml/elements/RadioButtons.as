@@ -35,7 +35,7 @@
 
 	 * </codeblock>
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see Button
 	 * @see DropDownMenu
 	 */

@@ -9,7 +9,7 @@ package com.gestureworks.cml.elements
 	
 	/**
 	 * The ProgressBar provides a visual representation of the progress of a task over time.
-	 * @author Shaun 
+	 * @author Ideum 
 	 */
 	public class ProgressBar extends Slider
 	{

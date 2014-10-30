@@ -27,7 +27,7 @@ package com.gestureworks.cml.elements
 	 * 
 	 * </codeblock>	
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see TabbedContainer
 	 */
 	public class Tab extends TouchContainer

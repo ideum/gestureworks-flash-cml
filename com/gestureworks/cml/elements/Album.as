@@ -42,7 +42,7 @@ package com.gestureworks.cml.elements
 			
 	 * </codeblock>
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see TouchContainer
 	 */
 	public class Album extends TouchContainer

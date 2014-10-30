@@ -10,7 +10,7 @@ package com.gestureworks.cml.managers
 	 * The DisplayManager utlizes the CMLObjectList to make global updates
 	 * to all of the CML objects.
 	 * 
-	 * @author Charles
+	 * @author Ideum
 	 * @see com.gestureworks.cml.core.CMLObjectList
 	 */
 	public class DisplayManager extends EventDispatcher

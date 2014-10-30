@@ -22,7 +22,7 @@ package com.gestureworks.cml.elements
 			addChild(html);
 
 	 * </codeblock>
-	 * @author Ideum/cyancdesign
+	 * @author Ideum
 	 */
 	
 	public class HTML extends Container {	

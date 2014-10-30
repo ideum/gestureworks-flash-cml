@@ -41,7 +41,7 @@ package com.gestureworks.cml.managers
 	 * 	<li>svg</li>
 	 * </ul></p> 
 	 * 
-	 * @author Charles
+	 * @author Ideum
 	 * @see com.gestureworks.cml.loaders.CSSManager
 	 */
 	public class FileManager

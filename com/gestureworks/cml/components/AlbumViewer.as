@@ -27,7 +27,7 @@ package com.gestureworks.cml.components
 			
 	 * </codeblock>
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see Component 
 	 * @see com.gestureworks.cml.elements.Album 
 	 * @see com.gestureworks.cml.elements.TouchContainer

@@ -17,7 +17,7 @@ package com.gestureworks.cml.managers
 	 * <p>The non-TLF versions of these fonts, embedAsCFF="false", are loaded through 
 	 * the GML core library: OpenSansRegular, OpenSansBold, and OpenSansItalic</p>
 	 * 
-	 * @author Charles
+	 * @author Ideum
 	 * @see com.gestureworks.cml.elements.TLF
 	 * @see com.gestureworks.text.DefaultFonts
 	 */

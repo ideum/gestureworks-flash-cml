@@ -8,7 +8,7 @@ package com.gestureworks.cml.managers
 	 * Manages the storage and loading of object states through the RenderKit or the State tag. Through the RenderKit, passing a state to the StateManager is done by assigning a stateId to 
 	 * a RenderData object. To register a state through a "State" tag, nest the tag inside the CML object node and assign attributes. If a stateId is not defined on a state tag, one is automatically 
 	 * generated. To load the object state, pass the stateId to the StateManager through the loadState function (StateManager.loadState("first state")).
-	 * @author shaun
+	 * @author Ideum
 	 */
 	public class StateManager 
 	{		

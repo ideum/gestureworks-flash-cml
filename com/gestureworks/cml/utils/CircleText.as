@@ -14,7 +14,7 @@ package com.gestureworks.cml.utils
 		
 	 * </codeblock>
 	 * 
-	 * @author Uma
+	 * @author Ideum
 	 * @see com.gestureworks.cml.elements.Text
 	 * @see com.gestureworks.cml.elements.TLF
 	 */

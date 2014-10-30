@@ -136,7 +136,7 @@ package com.gestureworks.cml.elements
 	 *
 	 * </codeblock>
 	 * 
-	 * @author Uma
+	 * @author Ideum
 	 * @see Menu
 	 * @see DropDownMenu
 	 * @see OrbMenu

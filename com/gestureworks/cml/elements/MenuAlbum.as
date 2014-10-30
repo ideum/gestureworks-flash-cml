@@ -13,7 +13,7 @@ package  com.gestureworks.cml.elements
 	import flash.utils.Dictionary;
 	/**
 	 * ...
-	 * @author 
+	 * @author Ideum
 	 */
 	public class MenuAlbum extends Album
 	{

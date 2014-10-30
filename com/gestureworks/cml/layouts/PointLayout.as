@@ -47,7 +47,7 @@ package com.gestureworks.cml.layouts
 		
 	 * </codeblock>
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see GridLayout
 	 * @see FanLayout 
 	 * @see ListLayout

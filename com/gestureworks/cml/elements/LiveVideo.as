@@ -22,7 +22,7 @@ package com.gestureworks.cml.elements
 	
 	 *
 	 * </codeblock>
-	 * @author Uma and shaun
+	 * @author Ideum
 	 */
 	
 	public class LiveVideo extends TouchContainer

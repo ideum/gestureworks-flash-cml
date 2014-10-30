@@ -11,7 +11,7 @@ package com.gestureworks.cml.layouts
 	 * <p>This class is meant to be used within CML and is not compatible 
 	 * with AS3.</p>
 	 * 
-	 * @author Charles
+	 * @author Ideum
 	 * @see Container
 	 * @see LayoutFactory
 	 */

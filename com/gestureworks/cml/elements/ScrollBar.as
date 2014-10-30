@@ -13,7 +13,7 @@ package com.gestureworks.cml.elements
 	 * and actual scroll size. The ScrollBar then dispatches position events when moved.
 	 * 
 	 * See also: ScrollPane
-	 * @author Ideumua
+	 * @author Ideum
 	 */
 	public class ScrollBar extends TouchContainer
 	{

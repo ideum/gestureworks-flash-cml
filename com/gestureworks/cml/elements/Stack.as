@@ -29,7 +29,7 @@ package com.gestureworks.cml.elements
 		addChild(stack);
 	 *
 	 * </codeblock>
-	 * @author ...
+	 * @author Ideum
 	 */
 	public class Stack extends TouchContainer
 	{

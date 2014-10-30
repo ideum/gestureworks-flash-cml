@@ -32,7 +32,7 @@ package com.gestureworks.cml.elements
 
 	 * </codeblock>
 	 * 
-	 * @author Uma
+	 * @author Ideum
 	 * @see Toggle
 	 * @see Button
 	 */

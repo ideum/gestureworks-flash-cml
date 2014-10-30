@@ -33,7 +33,7 @@ package com.gestureworks.cml.elements
 	 * 
 	 * </codeblock>
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see Key
 	 */
 	public class TouchKeyboard extends TouchContainer

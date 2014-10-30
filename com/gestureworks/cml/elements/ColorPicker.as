@@ -34,7 +34,7 @@ package com.gestureworks.cml.elements
 		}		
 	 * </codeblock>
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * @see DatePicker
 	 */
 	public class ColorPicker extends TouchContainer

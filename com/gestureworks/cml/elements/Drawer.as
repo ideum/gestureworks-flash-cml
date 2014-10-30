@@ -16,7 +16,7 @@ package com.gestureworks.cml.elements
 	/**
 	 * The <code>Drawer</code> is a container that animates down to conceal its contents (closed state) and animates up to
 	 * reveal its contents (open state). The open and closed states are toggled by tapping the top of the drawer (handle).
-	 * @author Shaun
+	 * @author Ideum
 	 */
 	public class Drawer extends Container
 	{

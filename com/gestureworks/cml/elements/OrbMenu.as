@@ -203,7 +203,7 @@ package com.gestureworks.cml.elements
 	
 	 *
 	 * </codeblock>
-	 * @author Uma
+	 * @author Ideum
 	 */
 	
 	public class OrbMenu extends Menu

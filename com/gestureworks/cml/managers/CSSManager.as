@@ -13,7 +13,7 @@ package com.gestureworks.cml.managers
 	 * The CSSManager processes external CSS files. It utilizes the
 	 * CMLObjectList to apply the loaded style definitions.
 	 * 
-	 * @author Charles
+	 * @author Ideum
 	 * @see com.gestureworks.cml.loaders.CMLObjectList
 	 * @see com.gestureworks.cml.loaders.CSSLoader
 	 */

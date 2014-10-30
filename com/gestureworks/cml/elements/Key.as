@@ -22,7 +22,7 @@ package  com.gestureworks.cml.elements
 	 * </codeblock>
 	 *
 	 * 
-	 * @author Shaun
+	 * @author Ideum
 	 * 
 	 * @see TouchKeyboard
 	 * @see Button

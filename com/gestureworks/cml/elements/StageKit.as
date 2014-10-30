@@ -14,7 +14,7 @@ package com.gestureworks.cml.elements
 	 * <p>This class is meant to be used within CML and is not compatible 
 	 * with AS3.</p>
 	 * 
-	 * @author Charles
+	 * @author Ideum
 	 * @see flash.display.stage
 	 */
 	public class StageKit extends TouchContainer
