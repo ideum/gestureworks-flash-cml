@@ -1,6 +1,7 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.elements.*;
+	import com.gestureworks.cml.elements.Image;
+	import com.gestureworks.cml.elements.Image;
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
@@ -21,107 +22,77 @@ package com.gestureworks.cml.components
 	 * <p>The width and height of the component are automatically set to the dimensions of the Image element unless it is 
 	 * previously specifed by the component.</p>
 	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	  
-
-			
-	 * </codeblock>
-	 * 
 	 * @author Ideum
 	 * @see Component
 	 * @see com.gestureworks.cml.elements.Image
 	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */
 	public class ImageViewer extends Component 
-	{		
+	{				
+		private var _image:Image;		
+		
 		/**
-		 * image viewer Constructor
+		 * Constructor
 		 */
-		public function ImageViewer() 
-		{
-			super();
-			mouseChildren = true;
-			nativeTransform = true;
-			affineTransform = true;			
+		public function ImageViewer() {
+			super();	
 		}
-		
-		
-		
-		private var _image:*;
-		/**
-		 * Sets the image element.
-		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 * Regardless of how this set, a corresponding display object is always returned. 
-		 */		
-		public function get image():* {return _image}
-		public function set image(value:*):void 
-		{
-			if (!value) return;
-			
-			if (value is DisplayObject)
-				_image = value;
-			else 
-				_image = searchChildren(value);					
-		}			
-	
-		/**
-		 * Initialization function
-		 */
-		override public function init():void 
-		{				
-			// automatically try to find elements based on AS3 class
-			if (!image)
-				image = searchChildren(Image);
-			
-			if (image)
-				image.addEventListener(StateEvent.CHANGE, onLoadComplete);
-			
-			super.init();	
-		}
-		
-		
-		private function onLoadComplete(e:StateEvent):void
-		{
-			if (e.property == "isLoaded") {
-				image.removeEventListener(StateEvent.CHANGE, onLoadComplete);
-				isLoaded = true;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
-			}
-		}
-		
-		public var isLoaded:Boolean = true;
-	
-					
-		override protected function updateLayout(event:*=null):void 
-		{
-			if (image) {
-				// update width and height to the size of the image, if not already specified
-				//if (!width && image)
-					width = image.width;
-				//if (!height && image)
-					height = image.height;	
-			}	
-			super.updateLayout();				
-		}	
-		
-		
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function dispose():void 
-		{
+		override public function init():void {				
+			// automatically try to find elements based on AS3 class
+			if (!image){
+				image = searchChildren(Image);
+			}
+			
+			super.init();	
+		}		
+						
+		/**
+		 * Image element
+		 */
+		public function get image():* {return _image}
+		public function set image(value:*):void {
+			if (value is XML || value is String) {
+				value = getElementById(value);
+			}
+			
+			if (value is Image) {
+				_image = value;
+				front = _image; 
+			}
+		}	
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function updateLayout(event:* = null):void {
+			//if not set, update dimensions to image size
+			if (!width && image) {
+				width = image.width;
+			}
+			if (!height && image) {
+				height = image.height; 
+			}			
+			super.updateLayout(event);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
 			super.dispose();
 			image = null;
 		}
 		
-		
-		override public function clone():* 
-		{	
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {	
 			cloneExclusions.push("backs", "textFields");
-			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);		
-				
-			//CloneUtils.copyChildList(this, clone);	// commented out b/c it was duplicating childlist (2012/2/6)
+			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);						
 			
 			if (image) {
 				clone.image = String(image.id);
@@ -172,38 +143,8 @@ package com.gestureworks.cml.components
 					}
 				}
 			}
-			clone.init();				
 			
-			/*for (var i:int = 0; i < clone.textFields.length; i++) {	
-				for (var n:int = 0; n < clone.numChildren; n++) 
-				{
-					if (textFields[i].name == clone.getChildAt(n).name) {
-						clone.textFields[i] = clone.getChildAt(n).name;
-						if (i > 1 && clone.textFields[i] == clone.textFields[i - 1])
-							clone.textFields.splice(i, 1);
-					}
-				}*/
-				
-				//if (i < textFields.length){
-					//clone.textFields[i].x = textFields[i].x;
-					//clone.textFields[i].y = textFields[i].y;
-				//}
-			//}
-			// Hack to get around text field cloning bug:
-			//for (var i:int = 0; i < clone.textFields.length; i++) {
-				//for (var n:int = 0; n < clone.textFields.length; n++) {
-					//if (n == i) continue;
-					//else if (clone.textFields[i].name == clone.textFields[n].name) {
-						//clone.textFields.splice(n, 1);
-						//i--;
-						//n--;
-					//}
-				//}
-			//}
-				
-
-			//clone.updateLayout();	
-			
+			clone.init();							
 			return clone;
 		}			
 	}
