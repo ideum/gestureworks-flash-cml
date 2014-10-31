@@ -41,6 +41,7 @@ package com.gestureworks.cml.utils
 		protected var _autoplay:Boolean;
 		protected var _loop:Boolean;	
 		protected var _volume:Number = 1;	
+		private var _mute:Boolean;				
 		protected var _pan:Number = 0;
 		protected var _duration:Number = 0;	
 		protected var _progress:Number = 0;
@@ -61,6 +62,8 @@ package com.gestureworks.cml.utils
 		protected var _date:String;
 		protected var _publisher:String;
 		protected var _comment:String;
+		
+		private var unmuteVolume:Number = 1;		
 		
 		/**
 		 * Callback function fired on status change
@@ -233,6 +236,18 @@ package com.gestureworks.cml.utils
 		public function set volume(value:Number):void{
 			_volume = value < 0 ? 0 : value > 1 ? 1 : value; 
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get mute():Boolean { return _mute; }
+		public function set mute(value:Boolean):void {
+			_mute = value;
+			if (_mute){
+				unmuteVolume = volume;
+			}
+			volume = _mute ? 0 : unmuteVolume;								
+		}			
 		
 		/**
 		 * @inheritDoc

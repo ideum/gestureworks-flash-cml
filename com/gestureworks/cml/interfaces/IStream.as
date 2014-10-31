@@ -55,7 +55,14 @@ package com.gestureworks.cml.interfaces
 		function set volume(value:Number):void;
 		
 		/**
-		 * Audio pan
+		 * Sets volume to 0 when true, and returns volume to setting prior to muting when false
+		 * @default false
+		 */		
+		function get mute():Boolean;
+		function set mute(value:Boolean):void;
+		
+		/**
+		 * Audio pan {L=-1, R=1}
 		 * @default 0
 		 */
 		function get pan():Number;

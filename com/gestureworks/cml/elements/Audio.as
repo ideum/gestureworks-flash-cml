@@ -28,8 +28,10 @@ package com.gestureworks.cml.elements
 		private var _autoplay:Boolean;
 		private var _loop:Boolean;
 		private var _volume:Number = 1;
+		private var _mute:Boolean;
 		private var _pan:Number = 0.0;
 		private var _position:Number = 0;
+		private var unmuteVolume:Number = 1; 
 		
 		private var waveForm:Waveform;
 		private var displayTimer:Timer;
@@ -252,6 +254,18 @@ package com.gestureworks.cml.elements
 				audio.volume = value; 
 			}									
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get mute():Boolean { return _mute; }
+		public function set mute(value:Boolean):void {
+			_mute = value;
+			if (_mute){
+				unmuteVolume = volume;
+			}
+			volume = _mute ? 0 : unmuteVolume;								
+		}					
 		
 		/**
 		 * @inheritDoc
