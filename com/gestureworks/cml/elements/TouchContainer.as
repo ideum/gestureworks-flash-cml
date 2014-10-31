@@ -181,9 +181,10 @@ package com.gestureworks.cml.elements
 		 * sets the width of the container
 		 */
 		override public function get width():Number{return _width;}
-		override public function set width(value:Number):void
-		{
-			_width = value;
+		override public function set width(value:Number):void{
+			if (value >= 0) {
+				_width = value; 
+			}
 		}
 		
 		private var _height:Number = 0;
@@ -191,9 +192,10 @@ package com.gestureworks.cml.elements
 		 * sets the height of the container
 		 */
 		override public function get height():Number{return _height;}
-		override public function set height(value:Number):void
-		{
-			_height = value;
+		override public function set height(value:Number):void {
+			if(value >= 0){
+				_height = value;
+			}
 		}
 		
 		private var _widthPercent:Number;
