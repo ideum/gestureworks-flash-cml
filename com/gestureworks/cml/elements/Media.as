@@ -43,6 +43,7 @@ package com.gestureworks.cml.elements
 		private var _loop:Boolean;
 		private var _volume:Number;
 		private var _pan:Number;
+		private var _mute:Boolean;								
 					
 		//when dimensions are undefined, the <code>Media</code> wrapper inherits dimensions from current media element
 		//when dimensions are defined, the media element dimensions are resized to the <code>Media</code> wrapper's
@@ -335,6 +336,17 @@ package com.gestureworks.cml.elements
 				IStream(current).volume = _volume;
 			}			
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get mute():Boolean { return _mute; }
+		public function set mute(value:Boolean):void {
+			_mute = value;
+			if (streamMedia) {
+				IStream(current).mute = _mute; 
+			}
+		}			
 		
 		/**
 		 * @inheritDoc
