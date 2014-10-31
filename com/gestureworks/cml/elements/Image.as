@@ -66,11 +66,6 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-		override public function set width(value:Number):void 
-		{
-			super.width = value;
-		}
-		
 		/**
 		 * Image file path
 		 */
