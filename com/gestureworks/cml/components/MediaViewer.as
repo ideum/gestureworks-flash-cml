@@ -128,7 +128,7 @@
 			if (!height && media)
 				height = media.height;
 				
-			super.updateLayout();
+			super.updateLayout(event);
 		}		
 		
 		/**
