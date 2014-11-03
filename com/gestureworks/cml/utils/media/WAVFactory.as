@@ -14,7 +14,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.gestureworks.cml.utils 
+package com.gestureworks.cml.utils.media 
 {	
 	import com.adobe.xmp.core.XMPConst;
 	import com.adobe.xmp.core.XMPMeta;

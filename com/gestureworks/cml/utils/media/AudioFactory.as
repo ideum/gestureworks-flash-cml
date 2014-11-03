@@ -14,16 +14,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.gestureworks.cml.utils 
+package com.gestureworks.cml.utils.media 
 {	
 	import com.gestureworks.cml.interfaces.IAudio;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.managers.FileManager;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.media.*;
-	import flash.net.*;
-	import flash.utils.*;
+	import com.gestureworks.cml.utils.media.Waveform;
+	import com.gestureworks.cml.utils.CloneUtils;
+	import flash.events.Event;
+	import flash.media.Sound;
+	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
 	
 	/** 
 	 * The AudioFactory is the base class for all audio factories. 

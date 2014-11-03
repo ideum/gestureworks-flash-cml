@@ -14,7 +14,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.gestureworks.cml.utils 
+package com.gestureworks.cml.utils.media 
 {		
 	import com.gestureworks.cml.managers.FileManager;
 	import com.greensock.events.LoaderEvent;
@@ -105,7 +105,7 @@ package com.gestureworks.cml.utils
 		 */
 		override public function close():void {
 			super.close();
-			listenComplete = false;			
+			listenComplete = false;		
 		}		
 		
 		/**

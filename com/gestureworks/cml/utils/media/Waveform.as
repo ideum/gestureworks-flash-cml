@@ -1,4 +1,4 @@
-package com.gestureworks.cml.utils 
+package com.gestureworks.cml.utils.media 
 {	
 	import flash.display.Graphics;
 	import flash.display.Sprite;
