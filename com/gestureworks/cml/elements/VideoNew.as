@@ -47,7 +47,8 @@ package com.gestureworks.cml.elements
 		private var _isComplete:Boolean;
 		private var _loop:Boolean;
 		private var _percentLoaded:Number = 0;
-		private var _mute:Boolean;		
+		private var _mute:Boolean;	
+		private var _aspectRatio:Number = 0;			
 		
 		/**
 		 * Prints status messages to console
@@ -88,6 +89,11 @@ package com.gestureworks.cml.elements
 				video.smoothing = value;
 			}
 		}
+		
+		/**
+		 * Aspect ratio (width/height) 
+		 */
+		public function get aspectRatio():Number { return _aspectRatio; }		
 		
 		/**
 		 * Video file path
@@ -325,10 +331,14 @@ package com.gestureworks.cml.elements
 					percentY = percentX = h / video.videoHeight;
 				}
 				
+				//update dimensions
 				width = video.videoWidth * percentX;
 				video.width = width;				
 				height = video.videoHeight * percentY;
 				video.height = height;
+				
+				//update aspect ratio
+				_aspectRatio = width / height;
 			}
 		}		
 		
