@@ -1,17 +1,16 @@
 package com.gestureworks.cml.elements 
 {	
-	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.managers.FileManager;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.media.MediaBase;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.ImageLoader;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.PixelSnapping;
 	import flash.events.Event;
-	import flash.geom.Matrix;
 	
 	/** 
 	 * The ImageNew class loads and displays an external bitmap file.	 
@@ -27,12 +26,10 @@ package com.gestureworks.cml.elements
 	 * 
 	 * @author Ideum
 	 */	  	
-	public class Image extends TouchContainer
+	public class Image extends MediaBase
 	{			
 		private var img:ImageLoader;	
-		private var initialized:Boolean;
 		
-		private var _src:String;	
 		private var _fileData:Bitmap;		
 		private var _bitmap:Bitmap;	
 		private var _bitmapData:BitmapData;		
@@ -40,7 +37,6 @@ package com.gestureworks.cml.elements
 		private var _portrait:Boolean;
 		private var _landscape:Boolean;
 		private var _aspectRatio:Number = 0;	
-		private var _isLoaded:Boolean;
 				
 		/**
 		 * Callback to receive load progress
@@ -53,38 +49,20 @@ package com.gestureworks.cml.elements
 		 */
 		public function Image() {
 			super();
-			onProgress = onPercentLoad;
 		}			
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function init():void {
-			if (!initialized) {
-				initialized = true; 
-				processSrc(src);
-			}
-		}
-		
-		/**
-		 * Image file path
-		 */
-		public function get src():String{ return _src; }
-		public function set src(value:String):void{
-			if (value == _src) {
-				return; 
-			}
-
-			close();
-			_src = value;				
-			processSrc(_src);
+			super.init();
 		}
 		
 		/**
 		 * Load image file at provided source path
 		 * @param	value  path to file
 		 */
-		private function processSrc(value:String):void {
+		override protected function processSrc(value:String):void {
 			if (!initialized) {
 				return; 
 			}
@@ -97,7 +75,7 @@ package com.gestureworks.cml.elements
 			else {
 				img = new ImageLoader(value);
 				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.addEventListener(LoaderEvent.PROGRESS, onProgress);
+				img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
 				img.addEventListener(LoaderEvent.ERROR, onError);
 				img.load();
 			}							
@@ -152,11 +130,6 @@ package com.gestureworks.cml.elements
 		public function get aspectRatio():Number { return _aspectRatio; }
 		
 		/**
-		 * Flag indicating the image is loaded
-		 */
-		public function get isLoaded():Boolean { return _isLoaded; }
-		
-		/**
 		 * Outputs loader error event
 		 * @param	event
 		 */
@@ -169,7 +142,12 @@ package com.gestureworks.cml.elements
 		 * @param	event
 		 */
 		private function onPercentLoad(event:LoaderEvent):void {
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", event.target.progress, true, true));
+			_percentLoaded = event.target.progress; 			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", _percentLoaded, true, true));
+			
+			if (onProgress != null) {
+				onProgress.call();
+			}
 		}
 		
 		/**
@@ -181,7 +159,7 @@ package com.gestureworks.cml.elements
 			if (img && img.rawContent){
 				_fileData = img.rawContent;
 				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.removeEventListener(LoaderEvent.PROGRESS, onProgress);
+				img.removeEventListener(LoaderEvent.PROGRESS, onPercentLoad);
 				img.removeEventListener(LoaderEvent.ERROR, onError);
 			}
 			else if(FileManager.hasFile(src)){
@@ -244,7 +222,7 @@ package com.gestureworks.cml.elements
 		{
 			if (img) {
 				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.removeEventListener(LoaderEvent.PROGRESS, onProgress);
+				img.removeEventListener(LoaderEvent.PROGRESS, onPercentLoad);
 				img.removeEventListener(LoaderEvent.ERROR, onError);				
 				img = null;				
 			}
@@ -255,11 +233,11 @@ package com.gestureworks.cml.elements
 		}	
 		
 		/**
-		 * Closes the image file
+		 * @inheritDoc
 		 */
-		public function close():void{
+		override public function close():void {
+			super.close();
 			_isLoaded = false;
-			_src = null;
 			_aspectRatio = 0;
 			_landscape = false;
 			_portrait = false;

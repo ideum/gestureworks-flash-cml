@@ -5,7 +5,7 @@ package com.gestureworks.cml.interfaces
 	 * @author Ideum
 	 */
 	
-	public interface IStream
+	public interface IStream 
 	{
 		/**
 		 * Plays the media from the beginning
@@ -87,12 +87,6 @@ package com.gestureworks.cml.interfaces
 		function get isComplete():Boolean;
 		
 		/**
-		 * Media loaded status
-		 * @default false
-		 */
-		function get isLoaded():Boolean;
-		
-		/**
 		 * Current playback position in ms
 		 * @default 0
 		 */
@@ -121,11 +115,5 @@ package com.gestureworks.cml.interfaces
 		 * @default "00:00"
 		 */
 		function get totalTime():String;
-		
-		/**
-		 * Percentage of bytes loaded
-		 * @default 0
-		 */
-		function get percentLoaded():Number;
 	}
 }

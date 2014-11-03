@@ -1,7 +1,7 @@
 package com.gestureworks.cml.elements 
 {
 	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.utils.MP3Factory;
+	import com.gestureworks.cml.utils.media.MP3Factory;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObjectContainer;

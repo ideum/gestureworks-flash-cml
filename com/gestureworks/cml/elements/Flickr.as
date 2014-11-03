@@ -57,16 +57,6 @@ package  com.gestureworks.cml.elements
 			_API_KEY = value;
 		}
 		
-		
-		private var _src:String;
-		/**
-		 * A string for the image id.
-		 */
-		override public function get src():String { return _src; }
-		override public function set src(value:String):void {
-			_src = value;
-		}
-		
 		private var _url:String;
 		/**
 		 * A string for the image url.
@@ -98,7 +88,7 @@ package  com.gestureworks.cml.elements
 				service = new FlickrService(_API_KEY);
 				service.addEventListener(FlickrResultEvent.PHOTOS_GET_INFO, loadImage);
 				service.addEventListener(IOErrorEvent.IO_ERROR, errorEvent);
-				service.photos.getInfo(_src);
+				service.photos.getInfo(src);
 			}
 		}
 		
@@ -121,7 +111,7 @@ package  com.gestureworks.cml.elements
 					src = url;
 
 			}
-			else { trace("Image " + _src + " failed to load. Please check your image ID and make sure it is accurate.");}
+			else { trace("Image " + src + " failed to load. Please check your image ID and make sure it is accurate.");}
 		}				
 		
 		/*

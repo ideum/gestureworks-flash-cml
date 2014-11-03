@@ -3,10 +3,11 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.IAudio;
 	import com.gestureworks.cml.interfaces.IStream;
-	import com.gestureworks.cml.utils.AudioFactory;
-	import com.gestureworks.cml.utils.MP3Factory;
+	import com.gestureworks.cml.utils.media.AudioFactory;
+	import com.gestureworks.cml.utils.media.MediaBase;
+	import com.gestureworks.cml.utils.media.MP3Factory;
 	import com.gestureworks.cml.utils.TimeUtils;
-	import com.gestureworks.cml.utils.Waveform;
+	import com.gestureworks.cml.utils.media.Waveform;
 	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
 	import flash.utils.getDefinitionByName;
@@ -18,9 +19,8 @@ package com.gestureworks.cml.elements
 	 * <p>It support the following file types: .mp3 and .wav</p>
 	 * @author Ideum
 	 */
-	public class Audio extends TouchContainer implements IStream, IAudio
+	public class Audio extends MediaBase implements IStream, IAudio
 	{		
-		private var _src:String; 
 		private var mp3:MP3Factory;	
 		private var wav:AudioFactory;
 		private var audio:AudioFactory;
@@ -37,9 +37,6 @@ package com.gestureworks.cml.elements
 		private var displayTimer:Timer;
 		
 		private var isAIR:Boolean; 
-		
-		//init function has been called
-		private var initialized:Boolean;	
 		
 		/**
 		 * Callback to receive progress updates
@@ -79,8 +76,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Constructor
 		 */
-		public function Audio() {
-			mouseChildren = true; 			
+		public function Audio() {			
 			mp3 = new MP3Factory();
 			isAIR = Capabilities.playerType == "Desktop";
 			if (isAIR) {
@@ -103,30 +99,12 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Audio file path
-		 */
-		public function get src():String { return _src; }
-		public function set src(value:String):void {
-			if (value == _src) {
-				return; 
-			}			
-			_src = value; 
-			processSrc(_src);
-		}
-		
-		/**
 		 * Evaluate audio type and activate correct audio factory
 		 * @param	value
 		 */
-		private function processSrc(value:String):void {
+		override protected function processSrc(value:String):void {
 			if (!initialized) {
 				return; 
-			}
-			
-			//clear previous
-			if (audio) {
-				audio = null;
-				close();
 			}
 			
 			//abort process
@@ -291,12 +269,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function get isComplete():Boolean { return audio ? audio.isComplete : false; }
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get isLoaded():Boolean { return audio ? audio.isLoaded : false; }
+		public function get isComplete():Boolean { return audio ? audio.isComplete : false; }		
 		
 		/**
 		 * @inheritDoc
@@ -326,7 +299,12 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function get percentLoaded():Number { return audio ? audio.percentLoaded : 0; }
+		override public function get isLoaded():Boolean { return audio ? audio.isLoaded : false; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get percentLoaded():Number { return audio ? audio.percentLoaded : 0; }			
 				
 		/**
 		 * @inheritDoc
@@ -443,10 +421,11 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Close audio elements
+		 * @inheritDoc
 		 */
-		public function close():void {
-			_src = null; 
+		override public function close():void {
+			super.close();
+			audio = null;
 			mp3.close();
 			if (wav) {
 				wav.close();

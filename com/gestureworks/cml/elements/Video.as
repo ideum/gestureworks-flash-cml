@@ -2,6 +2,7 @@ package com.gestureworks.cml.elements
 {	
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.IStream;
+	import com.gestureworks.cml.utils.media.MediaBase;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import flash.events.*;
 	import flash.media.*;
@@ -24,8 +25,8 @@ package com.gestureworks.cml.elements
 	 * </codeblock>
 	 */
 
-	public class Video extends TouchContainer implements IStream
-	{
+	   public class Video extends MediaBase implements IStream {
+		   
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;
 		private var video:flash.media.Video;
@@ -35,18 +36,15 @@ package com.gestureworks.cml.elements
 		private var unmuteVolume:Number = 1;
 		
 		private var _debug:Boolean;	
-		private var _autoplay:Boolean;	
-		private var _src:String;		
+		private var _autoplay:Boolean;		
 		private var _duration:Number = 0;	
 		private var _position:Number = 0;	
 		private var _volume:Number = 1;		
 		private var _pan:Number = 0.0;		
-		private var _isLoaded:Boolean;	
 		private var _isPlaying:Boolean;		
 		private var _isPaused:Boolean;		
 		private var _isComplete:Boolean;
 		private var _loop:Boolean;
-		private var _percentLoaded:Number = 0;
 		private var _mute:Boolean;	
 		private var _aspectRatio:Number = 0;			
 		
@@ -60,7 +58,6 @@ package com.gestureworks.cml.elements
 		 */
 		public function Video(){
 		  positionTimer = new Timer(20);
-		  mouseChildren = true;
 		}
 		
 		/**
@@ -96,22 +93,15 @@ package com.gestureworks.cml.elements
 		public function get aspectRatio():Number { return _aspectRatio; }		
 		
 		/**
-		 * Video file path
-		 */	
-		public function get src():String { return _src; }
-		public function set src(value:String):void{
-			if (_src == value) {
-				return; 
-			}
-			
-			close();			
-			_src = value;
-			
+		 * Initialize net connection
+		 * @param	value
+		 */
+		override protected function processSrc(value:String):void {
 			netConnection = new NetConnection;			
 			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);			
 			netConnection.connect(null);			
-		}			
+		}
 		
 		/**
 		 * @inheritDoc
@@ -225,12 +215,7 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		public function get isComplete():Boolean { return _isComplete; }		
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get isLoaded():Boolean { return _isLoaded;}		
-		
+				
 		/**
 		 * @inheritDoc
 		 */	
@@ -255,11 +240,6 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		public function get totalTime():String { return TimeUtils.msToMinSec(duration); }	
-		
-		/**
-		 * @inheritDoc
-		 */	
-		public function get percentLoaded():Number { return _percentLoaded; }	
 		
 		/**
 		 * Initialize net stream and video object
@@ -472,10 +452,11 @@ package com.gestureworks.cml.elements
 		}			
 
 		/**
-		 * Closes video 
+		 * @inheritDoc
 		 */	
-		public function close():void 
+		override public function close():void 
 		{
+			super.close();
 			if (netConnection) 
 			{
 				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
@@ -511,11 +492,7 @@ package com.gestureworks.cml.elements
 				positionTimer.stop();
 				positionTimer = null;
 			}
-			
-			_src = null;
-			
-			width = 0;
-			height = 0;
+					
 			_isLoaded = false; 
 		}								
 		

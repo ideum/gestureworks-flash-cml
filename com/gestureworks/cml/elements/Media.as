@@ -4,6 +4,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.managers.FileManager;
 	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.media.MediaBase;
 	import flash.events.*;
 	import flash.utils.*;
 	 
@@ -17,7 +18,7 @@ package com.gestureworks.cml.elements
 	 * @see MP3
 	 * @see WAV
 	 */	 
-	public class Media extends TouchContainer implements IStream
+	public class Media extends MediaBase implements IStream
 	{			
 		//supported media types
 		private var _image:Image; 
@@ -25,10 +26,7 @@ package com.gestureworks.cml.elements
 		private var _audio:Audio;
 		
 		//current media
-		private var _current:TouchContainer; 
-		
-		//media source file
-		private var _src:String; 
+		private var _current:MediaBase; 
 		
 		//supported media types
 		private var imageType:RegExp;
@@ -47,10 +45,7 @@ package com.gestureworks.cml.elements
 					
 		//when dimensions are undefined, the <code>Media</code> wrapper inherits dimensions from current media element
 		//when dimensions are defined, the media element dimensions are resized to the <code>Media</code> wrapper's
-		private var sizeToContent:Boolean = true; 
-		
-		//initialized state
-		private var initialized:Boolean;
+		private var sizeToContent:Boolean = true; 		
 		
 		/**
 		 * Callback excuted when media has been updated
@@ -114,7 +109,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Reference to current media element
 		 */
-		public function get current():TouchContainer { return _current; }
+		public function get current():MediaBase { return _current; }
 		
 		/**
 		 * Image element
@@ -157,37 +152,15 @@ package com.gestureworks.cml.elements
 				_audio.visible = false; 
 			}
 		}
-		
-		/**
-		 * Media file path
-		 */
-		public function get src():String { return _src; }
-		public function set src(value:String):void {
-			if (value == _src) {
-				return; 
-			}
-			
-			_src = value;
-			processSrc(_src);			
-		}
 			
 		/**
 		 * Update current media with new media at provided source path
 		 * @param	value
 		 */
-		private function processSrc(value:String):void {
+		override protected function processSrc(value:String):void {
 			
 			if (!initialized) {
 				return; 
-			}
-			
-			//clear previous
-			if (_current) {				
-				_current.visible = false; 
-				_current = null;				
-				image.close();
-				video.close();
-				audio.close();
 			}
 			
 			//abort process
@@ -377,11 +350,6 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function get isLoaded():Boolean { return streamMedia ? IStream(current).isLoaded : false; }
-		
-		/**
-		 * @inheritDoc
-		 */
 		public function get position():Number { return streamMedia ? IStream(current).position : 0; }
 		
 		/**
@@ -407,7 +375,26 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function get percentLoaded():Number { return streamMedia ? IStream(current).percentLoaded : 0; }
+		override public function get isLoaded():Boolean { return current ? current.isLoaded : false; }		
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get percentLoaded():Number { return current ? current.percentLoaded : 0; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function close():void {
+			super.close();
+			if (_current) {				
+				_current.visible = false; 
+				_current = null;				
+				image.close();
+				video.close();
+				audio.close();
+			}			
+		}
 		
 		/**
 		 * @inheritDoc
