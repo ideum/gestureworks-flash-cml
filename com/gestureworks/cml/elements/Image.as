@@ -212,14 +212,17 @@ package com.gestureworks.cml.elements
 		}	
 						
 		/**
-		 * Resample loaded image
+		 * Resize loaded image to the provided dimensions. Setting one of the dimensions to zero (or NaN), maintains the aspect ratio relative
+		 * to the non-zero dimension. Setting both values to 0, sets dimension to the resolution of the loaded image file. 
+		 * @param	w  resize width
+		 * @param	h  resize height
 		 */
-		public function resize():void {
+		public function resize(w:Number = 0, h:Number = 0):void {
 			if (resample && isLoaded) {		
 			
 				//update bitmap
 				removeChild(_bitmap);				
-				_bitmap = DisplayUtils.resampledBitmap(fileData, width, height);
+				_bitmap = DisplayUtils.resampledBitmap(fileData, w, h);
 				_bitmapData = _bitmap.bitmapData;
 				addChild(bitmap);
 				
