@@ -21,11 +21,6 @@ package com.gestureworks.cml.components
 	 * <p>The width and height of the component are automatically set to the dimensions of the Video element unless it is 
 	 * previously specifed by the component.</p>
 	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	  
-
-			
-	 * </codeblock>
 	 * 
 	 * @author Ideum
 	 * @see Component 
@@ -34,83 +29,63 @@ package com.gestureworks.cml.components
 	 */			
 	public class VideoViewer extends Component 
 	{		
+		private var _video:Video;
+		
 		/**
 		 * Constructor
 		 */
-		public function VideoViewer() 
-		{
+		public function VideoViewer() {
 			super();		
 		}
 		
-		
-		///////////////////////////////////////////////////////////////////////
-		// Public Properties
-		//////////////////////////////////////////////////////////////////////
-		
-		private var _video:*;
 		/**
-		 * Sets the video element.
-		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 * Regardless of how this set, a corresponding display object is always returned. 
+		 * @inheritDoc
+		 */
+		override public function init():void {			
+			// automatically try to find elements based on AS3 class
+			if (!video){
+				video = searchChildren(Video);
+			}
+			
+			video.addEventListener(StateEvent.CHANGE, onStateEvent);											
+			super.init();
+		}
+		
+		/**
+		 * Video element
 		 */		
 		public function get video():* {return _video}
-		public function set video(value:*):void 
-		{
-			if (!value) return;
+		public function set video(value:*):void {
+			if (value is XML || value is String) {
+				value = getElementById(value);
+			}
 			
-			if (value is DisplayObject)
-				_video = value;
-			else 
-				_video = searchChildren(value);		
-		}
-				
-		private var _slider:*;
-		/**
-		 * Sets the slider element.
-		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 * Regardless of how this set, a corresponding display object is always returned. 
-		 */		
-		public function get slider():* {return _slider}
-		public function set slider(value:*):void 
-		{
-			if (!value) return;
-			
-			if (value is DisplayObject)
-				_slider = value;
-			else 
-				_slider = searchChildren(value);		
-		}
-
-		/**
-		 * Initialization function
-		 */
-		override public function init():void 
-		{			
-			// automatically try to find elements based on AS3 class
-			if (!video)
-				video = searchChildren(Video);
-			video.addEventListener(StateEvent.CHANGE, onStateEvent);
-			
-			// automatically try to find elements based on AS3 class
-			if (!slider)
-				slider = searchChildren(Slider);
-									
-			super.init();
+			if (value is Video) {
+				_video = value; 
+				front = _video;
+			}
 		}	
 			
-		override protected function updateLayout(event:*=null):void 
-		{
-			// update width and height to the size of the video, if not already specified
-			if (!width && video)
+		/**
+		 * @inheritDoc
+		 */
+		override protected function updateLayout(event:*=null):void {
+			//if not set, update dimensions to image size
+			if (!width && video){
 				width = video.width;
-			if (!height && video)
+			}
+			if (!height && video){
 				height = video.height;
+			}
 				
 			super.updateLayout();
 		}
 		
-		override protected function onStateEvent(event:StateEvent):void
-		{	
+		/**
+		 * Playback event handler
+		 * @param	event
+		 */
+		override protected function onStateEvent(event:StateEvent):void{	
 			super.onStateEvent(event);
 			if (event.value == "close" && video)
 				video.stop();
@@ -118,22 +93,14 @@ package com.gestureworks.cml.components
 				video.resume();
 			else if (event.value == "pause" && video)
 				video.pause();				
-		}
-		
-		private function onRelease(e:*):void {
-			removeEventListener(GWTouchEvent.TOUCH_END, onRelease);
-			video.resume();
-		}
-			
+		}		
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function dispose():void 
-		{
+		override public function dispose():void {
 			super.dispose();
 			_video = null;
-			_slider = null;
 		}
 	}
 }
