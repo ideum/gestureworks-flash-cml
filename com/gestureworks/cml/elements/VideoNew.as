@@ -304,15 +304,16 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * Resize loaded video to the provided dimensions. Setting one of the dimensions to zero (or NaN), maintains the aspect ratio relative
-		 * to the non-zero dimension.
+		 * to the non-zero dimension. Setting both values to 0, sets dimension to the resolution of the loaded video file. 
 		 * @param	w  resize width
 		 * @param	h  resize height
 		 */
-		public function resize(w:Number, h:Number):void {
+		public function resize(w:Number = 0, h:Number = 0):void {
 			if (isLoaded) {
-				
+								
 				//calculate scale percentages
-				var percentX:Number, percentY:Number = 1; 
+				var percentX:Number = 1;
+				var percentY:Number = 1; 
 				if (w && h) {
 					percentX = w / video.videoWidth;
 					percentY = h / video.videoHeight;
