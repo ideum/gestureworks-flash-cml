@@ -351,17 +351,15 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Dispatch current status
+		 * Invoke status callback
 		 * @param status current status
 		 * @param value  value of current status
 		 */
-		private function onStatus(status:String, value:Boolean):void {
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, status, value));
-			
+		private function onStatus(status:String, value:Boolean):void {						
 			//update display timer based on play status
 			if (displayTimer) {
 				isPlaying ? displayTimer.start() : displayTimer.stop();
-			}			
+			}						
 		}
 		
 		/**

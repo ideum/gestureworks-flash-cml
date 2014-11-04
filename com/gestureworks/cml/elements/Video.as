@@ -97,6 +97,10 @@ package com.gestureworks.cml.elements
 		 * @param	value
 		 */
 		override protected function processSrc(value:String):void {
+			if (!initialized) {
+				return; 
+			}
+			
 			netConnection = new NetConnection;			
 			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);			
@@ -271,8 +275,8 @@ package com.gestureworks.cml.elements
 		 * @param	h initial video height
 		 */
 		private function addVideo(w:Number, h:Number):void {
-			if (!_isLoaded) {				
-				_isLoaded = true;				
+			if (isLoaded) {				
+				loadComplete();
 				
 				//apply wrapper dimension to video
 				if(width || height){
@@ -283,8 +287,7 @@ package com.gestureworks.cml.elements
 					resize(w, h);
 				}
 				
-				addChild(video);
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", _isLoaded));						
+				addChild(video);					
 			}
 		}
 		
@@ -335,9 +338,7 @@ package com.gestureworks.cml.elements
 			
 			if (!autoplay) {
 				stop();
-			}
-			
-			this.dispatchEvent(new Event(Event.COMPLETE));			
+			}		
 		}
 		
 		/**
@@ -383,7 +384,6 @@ package com.gestureworks.cml.elements
 				return;
 			}
 			_position = netStream.time / _duration;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));	
 		}
 		
 		/**
@@ -491,9 +491,7 @@ package com.gestureworks.cml.elements
 				positionTimer.removeEventListener(TimerEvent.TIMER, onPosition);					
 				positionTimer.stop();
 				positionTimer = null;
-			}
-					
-			_isLoaded = false; 
+			}					
 		}								
 		
 		/**

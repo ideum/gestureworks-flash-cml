@@ -171,22 +171,22 @@ package com.gestureworks.cml.elements
 			//evaluate media type
 			if (value.search(imageType) > -1) {
 				_current = image; 	
-				image.addEventListener(StateEvent.CHANGE, mediaLoaded);
 				image.src = value; 
 			}
 			else if (value.search(videoType) > -1) {				
 				_current = video; 				
-				video.addEventListener(StateEvent.CHANGE, mediaLoaded);
 				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
 				_current = audio;
-				audio.addEventListener(StateEvent.CHANGE, mediaLoaded);
 				audio.src = value; 
 			}
 			else {
 				throw new Error("Unsupported media type: " + value);
 			}
+			
+			//media load handler
+			current.onLoad = mediaLoaded;
 			
 			//set stream flag
 			_streamMedia = _current is IStream;								
@@ -198,20 +198,19 @@ package com.gestureworks.cml.elements
 		 * @param	e
 		 */
 		private function mediaLoaded(e:StateEvent):void {
-			if (e.property == "isLoaded") {
-				_current.removeEventListener(StateEvent.CHANGE, mediaLoaded);
-				
-				//sync current media and wrapper dimensions
-				sizeMedia();	
-				
-				//execute media update callback
-				if (mediaUpdate != null) {
-					mediaUpdate.call();
-				}
-				
-				//enable visibility of current media element
-				_current.visible = true; 				
+			
+			//sync current media and wrapper dimensions
+			sizeMedia();	
+			
+			//execute media update callback
+			if (mediaUpdate != null) {
+				mediaUpdate.call();
 			}
+			
+			//enable visibility of current media element
+			_current.visible = true; 
+			
+			loadComplete();
 		}
 		
 		/**

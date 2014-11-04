@@ -138,13 +138,11 @@ package com.gestureworks.cml.elements
 		}	
 		
 		/**
-		 * Default load progress function; dispatches state event
+		 * Load progress update
 		 * @param	event
 		 */
 		private function onPercentLoad(event:LoaderEvent):void {
-			_percentLoaded = event.target.progress; 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "percentLoaded", _percentLoaded, true, true));
-			
+			_percentLoaded = event.target.progress; 						
 			if (onProgress != null) {
 				onProgress.call();
 			}
@@ -153,7 +151,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Process loaded bitmap data
 		 */		
-		private function loadComplete(event:Event = null):void {				
+		override protected function loadComplete(event:Event = null):void {				
 			
 			//retrieve file data
 			if (img && img.rawContent){
@@ -185,7 +183,7 @@ package com.gestureworks.cml.elements
 			_bitmap.smoothing = true;
 			addChild(_bitmap);
 			
-			//dispatch complete event
+			//update loaded state
 			bitmapComplete();							
 		}	
 						
@@ -216,7 +214,7 @@ package com.gestureworks.cml.elements
 		}		
 		
 		/**
-		 * Update loaded state and dispatch complete events
+		 * Update loaded state 
 		 */
 		protected function bitmapComplete():void 
 		{
@@ -227,9 +225,7 @@ package com.gestureworks.cml.elements
 				img = null;				
 			}
 			
-			_isLoaded = true;
-			dispatchEvent(new Event(Event.COMPLETE, false, false));
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", _isLoaded));
+			super.loadComplete();
 		}	
 		
 		/**
@@ -237,7 +233,6 @@ package com.gestureworks.cml.elements
 		 */
 		override public function close():void {
 			super.close();
-			_isLoaded = false;
 			_aspectRatio = 0;
 			_landscape = false;
 			_portrait = false;
