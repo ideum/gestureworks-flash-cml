@@ -167,9 +167,7 @@ package com.gestureworks.cml.elements
 		 */			
 		public function stop():void{
 			netStream.pause();
-			if(netStream.time){
-				netStream.seek(0);
-			}
+			netStream.seek(0);
 			positionTimer.stop();	
 			positionTimer.reset();
 			_position = 0;
@@ -488,8 +486,7 @@ package com.gestureworks.cml.elements
 			
 			//update position
 			_position = netStream.time;			
-			onStatus(MediaStatus.PLAYBACK_PROGRESS, progress); 
-			seekComplete();			
+			onStatus(MediaStatus.PLAYBACK_PROGRESS, progress); 	
 		}
 		
 		/**
