@@ -47,7 +47,9 @@ package com.gestureworks.cml.elements
 		private var _isComplete:Boolean;
 		private var _loop:Boolean;
 		private var _mute:Boolean;	
-		private var _aspectRatio:Number = 0;			
+		private var _aspectRatio:Number = 0;	
+		private var _previewAtPosition:Number = 0;
+		private var _previewAtProgress:Number = 0.1;
 		
 		/**
 		 * Prints status messages to console
@@ -66,10 +68,29 @@ package com.gestureworks.cml.elements
 		 */
 		override public function init():void {
 			super.init();			
-		}	
+		}
 		
 		/**
-		 * Indicates the type of filter applied to decoded video as part of post-processing. 
+		 * Playhead position (in milliseconds) to generate a snapshot when the <code>preview</code> flag is enabled
+		 * @default 0
+		 */		
+		public function get previewAtPosition():Number { return _previewAtPosition; }
+		public function set previewAtPosition(value:Number):void {
+			_previewAtPosition = value < 0 ? 0 : value > duration ? duration : value; 
+		}
+		
+		/**
+		 * Percentage of video duration to to generate a snapshot when the <code>preview</code> flag is enabled; overwrites
+		 * <code>previewAtPosition</code>
+		 * @default 0.1
+		 */
+		public function get previewAtProgress():Number { return _previewAtProgress; }
+		public function set previewAtProgress(value:Number):void {
+			_previewAtProgress = value < 0 ? 0 : value > 1 ? 1 : value;
+		}
+		
+		/**
+		 * Indicates the type of filter applied to the decoded video as part of post-processing. 
 		 */
 		public function get deblocking():int { return video ? video.deblocking : 0; }
 		public function set deblocking(value:int):void { 
@@ -280,8 +301,8 @@ package com.gestureworks.cml.elements
 		 * @param	h initial video height
 		 */
 		private function addVideo(w:Number, h:Number):void {
-			if (!isLoaded) {				
-				loadComplete();
+			if (!isLoaded) {	
+				_isLoaded = true; 
 				
 				//apply wrapper dimension to video
 				if(width || height){
@@ -292,7 +313,8 @@ package com.gestureworks.cml.elements
 					resize(w, h);
 				}
 				
-				addChild(video);					
+				addChild(video);	
+				onStatus(MediaStatus.LOADED, _isLoaded);				
 			}
 		}
 		

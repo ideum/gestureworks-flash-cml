@@ -16,13 +16,13 @@ package com.gestureworks.cml.utils.media
 	public class MediaBase extends TouchContainer
 	{
 		private var _src:String; 
-		private var _isLoaded:Boolean;		
 		private var _thumbnail:Bitmap;	
 		private var _thumbLoaded:Boolean;
 		private var thumbScaleX:Number;
 		private var thumbScaleY:Number; 
-		
+				
 		protected var initialized:Boolean;	
+		protected var _isLoaded:Boolean;				
 		protected var _percentLoaded:Number = 0;		
 		
 		/**
@@ -160,7 +160,7 @@ package com.gestureworks.cml.utils.media
 		/**
 		 * Load or generate thumbnail
 		 */
-		private function updateThumbnail():void {			
+		protected function updateThumbnail():void {			
 			if (thumbnail) {
 				loadThumbComplete();
 			}
