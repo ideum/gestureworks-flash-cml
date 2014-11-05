@@ -52,6 +52,7 @@ package com.gestureworks.cml.utils.media
 		protected var _percentLoaded:Number = 0;	
 		protected var _position:Number = 0;	
 		protected var _isPlaying:Boolean;	
+		protected var _isSeeking:Boolean;
 		protected var _isPaused:Boolean;
 		protected var _isComplete:Boolean;
 		protected var _isLoaded:Boolean;
@@ -167,6 +168,7 @@ package com.gestureworks.cml.utils.media
 			_channel.stop();	
 			_isLoaded = false;
 			_isPlaying = false; 
+			_isSeeking = false; 
 			_isPaused = false; 
 			_isComplete = false; 
 		}			
@@ -262,6 +264,11 @@ package com.gestureworks.cml.utils.media
 		 * @inheritDoc
 		 */
 		public function get isPlaying():Boolean { return _isPlaying; }	
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get isSeeking():Boolean { return _isSeeking; }
 		
 		/**
 		 * @inheritDoc

@@ -179,7 +179,7 @@ package com.gestureworks.cml.utils.media
 		/**
 		 * Auto-generate snapshot of the media element
 		 */
-		private function generateThumb():void {				
+		protected function generateThumb():void {				
 			thumbnail = DisplayUtils.resampledBitmap(this, width, height);			
 			loadThumbComplete();
 		}

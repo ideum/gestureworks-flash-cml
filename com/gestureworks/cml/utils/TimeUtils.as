@@ -56,7 +56,15 @@ package com.gestureworks.cml.utils
 		 * @param	t time in ms
 		 */
 		public static function msToMinSec(t:int):String {
-			var s:int=Math.round(t/1000);
+			return secToMinSec(t / 1000);
+		}
+		
+		/**
+		 * Converts provided second value into formatted string (min:sec)
+		 * @param t time in seconds
+		 */
+		public static function secToMinSec(t:int):String {
+			var s:int=Math.round(t);
 			var m:int=0;
 			if (s>0)
 			{
@@ -67,8 +75,8 @@ package com.gestureworks.cml.utils
 				}
 				return String((m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s);
 			}
-			else return "00:00";			
-		}		
+			else return "00:00";				
+		}
 		
 		/**
 		 * Returns the month abbreviation for a given month index

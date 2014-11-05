@@ -343,6 +343,11 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
+		public function get isSeeking():Boolean { return streamMedia ? IStream(current).isSeeking : false; }
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function get isPaused():Boolean { return streamMedia ? IStream(current).isPaused : false; }			
 		
 		/**

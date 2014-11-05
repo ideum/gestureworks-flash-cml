@@ -255,7 +255,12 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function get isPlaying():Boolean { return audio ? audio.isPlaying : false; }		
+		public function get isPlaying():Boolean { return audio ? audio.isPlaying : false; }	
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get isSeeking():Boolean { return audio ? audio.isSeeking : false; }
 		
 		/**
 		 * @inheritDoc

@@ -75,6 +75,12 @@ package com.gestureworks.cml.interfaces
 		function get isPlaying():Boolean;
 		
 		/**
+		 * Media seeking status
+		 * @default false
+		 */
+		function get isSeeking():Boolean; 		
+		
+		/**
 		 * Media paused status
 		 * @default false
 		 */

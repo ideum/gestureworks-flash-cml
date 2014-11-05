@@ -6,6 +6,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.utils.media.MediaStatus;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import flash.events.*;
+	import flash.geom.Matrix;
 	import flash.media.*;
 	import flash.net.*;
 	import flash.utils.*;
@@ -33,8 +34,11 @@ package com.gestureworks.cml.elements
 		private var video:flash.media.Video;
 		private var customClient:Object;
 		private var positionTimer:Timer;
-		private var progressTimer:Timer;
-		private var unmuteVolume:Number = 1;
+		private var progressTimer:Timer;		
+		private var unmuteVolume:Number = 1;		
+		private var preSeek:Number; 		
+		private var previewSeekComplete:Function;
+		private var previewRevert:Matrix;
 		
 		private var _debug:Boolean;	
 		private var _autoplay:Boolean;		
@@ -42,14 +46,15 @@ package com.gestureworks.cml.elements
 		private var _position:Number = 0;	
 		private var _volume:Number = 1;		
 		private var _pan:Number = 0.0;		
-		private var _isPlaying:Boolean;		
+		private var _isPlaying:Boolean;	
+		private var _isSeeking:Boolean;
 		private var _isPaused:Boolean;		
 		private var _isComplete:Boolean;
 		private var _loop:Boolean;
 		private var _mute:Boolean;	
 		private var _aspectRatio:Number = 0;	
-		private var _previewAtPosition:Number = 0;
-		private var _previewAtProgress:Number = 0.1;
+		private var _previewAtPosition:Number = 60;
+		private var _previewAtProgress:Number = 0.1;		
 		
 		/**
 		 * Prints status messages to console
@@ -71,7 +76,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Playhead position (in milliseconds) to generate a snapshot when the <code>preview</code> flag is enabled
+		 * Playhead position (in seconds) to generate a snapshot at when the <code>preview</code> flag is enabled
 		 * @default 0
 		 */		
 		public function get previewAtPosition():Number { return _previewAtPosition; }
@@ -80,7 +85,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Percentage of video duration to to generate a snapshot when the <code>preview</code> flag is enabled; overwrites
+		 * Percentage of video duration to generate a snapshot at when the <code>preview</code> flag is enabled; overwrites
 		 * <code>previewAtPosition</code>
 		 * @default 0.1
 		 */
@@ -162,19 +167,41 @@ package com.gestureworks.cml.elements
 		 */			
 		public function stop():void{
 			netStream.pause();
-			netStream.seek(0);
+			if(netStream.time){
+				netStream.seek(0);
+			}
 			positionTimer.stop();	
 			positionTimer.reset();
 			_position = 0;
 		}
 		
 		/**
-		 * @inheritDoc
+		 * Seeks video playhead position in seconds
+		 * @param	pos offset in seconds
 		 */
-		public function seek(pos:Number):void{
-			_position = pos;
-			netStream.seek(_position);		
-		}		
+		public function seek(pos:Number):void {
+			if (!isSeeking) {
+				_isSeeking = true; 
+				preSeek = position; 
+				netStream.seek(pos);	
+				onStatus(MediaStatus.SEEKING, _isSeeking);
+			}
+		}
+		
+		/**
+		 * 
+		 */
+		private function seekComplete():void {
+			if (isSeeking && position != preSeek) { //position update
+				_isSeeking = false; 
+				onStatus(MediaStatus.SEEKING, _isSeeking);				
+			}
+			
+			//preview thumnail generation
+			if (previewSeekComplete != null) {
+				previewSeekComplete.call();
+			}
+		}
 		
 		/**
 		 * @inheritDoc
@@ -235,6 +262,11 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
+		public function get isSeeking():Boolean { return _isSeeking; }
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function get isPaused():Boolean { return _isPaused; }
 				
 		/**
@@ -243,12 +275,12 @@ package com.gestureworks.cml.elements
 		public function get isComplete():Boolean { return _isComplete; }		
 				
 		/**
-		 * @inheritDoc
+		 * Video playback position in seconds
 		 */	
 		public function get position():Number { return netStream.time; }
 		
 		/**
-		 * @inheritDoc
+		 * Total length of video in seconds
 		 */	
 		public function get duration():Number { return _duration; }
 		
@@ -260,12 +292,12 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		public function get elapsedTime():String { return TimeUtils.msToMinSec(position); }
+		public function get elapsedTime():String { return TimeUtils.secToMinSec(position); }
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function get totalTime():String { return TimeUtils.msToMinSec(duration); }	
+		public function get totalTime():String { return TimeUtils.secToMinSec(duration); }	
 		
 		/**
 		 * Initialize net stream and video object
@@ -273,7 +305,7 @@ package com.gestureworks.cml.elements
 		private function connectNetStream():void{
 			
 			if (!positionTimer)
-				positionTimer = new Timer(20);
+				positionTimer = new Timer(10);
 			
 			progressTimer = new Timer(20);
 			progressTimer.addEventListener(TimerEvent.TIMER, loading);			
@@ -285,7 +317,7 @@ package com.gestureworks.cml.elements
 			netStream.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			
 			customClient = new Object;			
-			customClient.onMetaData = onMetaData;		
+			customClient.onMetaData = onMetaData;	
 			netStream.client = customClient;
 
 			video = new flash.media.Video;
@@ -301,7 +333,7 @@ package com.gestureworks.cml.elements
 		 * @param	h initial video height
 		 */
 		private function addVideo(w:Number, h:Number):void {
-			if (!isLoaded) {	
+			if (!isLoaded) {									
 				_isLoaded = true; 
 				
 				//apply wrapper dimension to video
@@ -311,10 +343,52 @@ package com.gestureworks.cml.elements
 				//apply video dimension to wrapper
 				else {
 					resize(w, h);
-				}
+				}							
 				
-				addChild(video);	
-				onStatus(MediaStatus.LOADED, _isLoaded);				
+				addChild(video);
+				loadComplete();				
+			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function generateThumb():void {							
+			//seek preview position
+			if (!isSeeking) {
+				
+				//since non-rendered objects cannot be converted to bitmap and preview seeking should be hidden,
+				//the quickest solution is to translate the video offscreen until the preview is generated
+				mute = true; 
+				previewRevert = transform.matrix; 
+				transform.matrix = new Matrix(1, 0, 0, 1, -10000, -10000); 
+				previewSeekComplete = seekPreview;
+				
+				//seek preview position
+				resume();
+				seek(previewAtPosition);
+			}			
+		}
+		
+		/**
+		 * Once preview position is reached, generate thumbnail
+		 */
+		private function seekPreview():void {
+			if (position >= previewAtPosition) {
+				
+				//restore initial video state
+				addEventListener(StateEvent.CHANGE, function previewLoaded(e:StateEvent):void {
+					if (e.property == MediaStatus.THUMB_LOADED && e.value) {
+						removeEventListener(StateEvent.CHANGE, previewLoaded);
+						seek(preSeek);
+						mute = false; 
+						transform.matrix = previewRevert;
+						previewRevert = null;
+					}					
+				});
+				
+				previewSeekComplete = null;
+				super.generateThumb();
 			}
 		}
 		
@@ -359,12 +433,12 @@ package com.gestureworks.cml.elements
 		protected function onMetaData(meta:Object):void {			
 			_duration = meta.duration ? meta.duration : 0; 			
 		
-			if (meta.width && meta.height){		
-				addVideo(meta.width, meta.height);
-			}
-			
 			if (!autoplay) {
 				stop();
+			}
+			
+			if (meta.width && meta.height){		
+				addVideo(meta.width, meta.height);
 			}		
 		}
 		
@@ -410,9 +484,12 @@ package com.gestureworks.cml.elements
 		protected function onPosition(event:TimerEvent):void{			
 			if (!netStream) {
 				return;
-			}
-			_position = netStream.time / _duration;
+			}	
+			
+			//update position
+			_position = netStream.time;			
 			onStatus(MediaStatus.PLAYBACK_PROGRESS, progress); 
+			seekComplete();			
 		}
 		
 		/**
@@ -467,9 +544,8 @@ package com.gestureworks.cml.elements
 				case "NetStream.Unpause.Notify":
 					_isPlaying = true;
 					_isPaused = false;
+					onStatus(MediaStatus.PLAYING, _isPlaying);
 					break;
-				case "NetStream.Seek.Notify":
-					 break;
 			}	
 			
 			if (debug){
