@@ -5,6 +5,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.managers.FileManager;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.gestureworks.cml.utils.media.MediaBase;
+	import com.gestureworks.cml.utils.media.MediaStatus;
 	import flash.events.*;
 	import flash.utils.*;
 	 
@@ -186,7 +187,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			//media load handler
-			current.onLoad = mediaLoaded;
+			current.addEventListener(StateEvent.CHANGE, mediaLoaded);
 			
 			//set stream flag
 			_streamMedia = _current is IStream;								
@@ -197,20 +198,23 @@ package com.gestureworks.cml.elements
 		 * Post load updates
 		 * @param	e
 		 */
-		private function mediaLoaded(e:StateEvent):void {
-			
-			//sync current media and wrapper dimensions
-			sizeMedia();	
-			
-			//execute media update callback
-			if (mediaUpdate != null) {
-				mediaUpdate.call();
+		private function mediaLoaded(e:StateEvent):void {			
+			if (e.property == MediaStatus.LOADED && e.value) {
+				current.removeEventListener(StateEvent.CHANGE, mediaLoaded);
+				
+				//sync current media and wrapper dimensions
+				sizeMedia();	
+				
+				//execute media update callback
+				if (mediaUpdate != null) {
+					mediaUpdate.call();
+				}
+				
+				//enable visibility of current media element
+				_current.visible = true; 
+				
+				loadComplete();
 			}
-			
-			//enable visibility of current media element
-			_current.visible = true; 
-			
-			loadComplete();
 		}
 		
 		/**

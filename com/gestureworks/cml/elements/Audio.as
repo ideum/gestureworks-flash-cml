@@ -5,6 +5,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.utils.media.AudioFactory;
 	import com.gestureworks.cml.utils.media.MediaBase;
+	import com.gestureworks.cml.utils.media.MediaStatus;
 	import com.gestureworks.cml.utils.media.MP3Factory;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import com.gestureworks.cml.utils.media.Waveform;
@@ -37,11 +38,6 @@ package com.gestureworks.cml.elements
 		private var displayTimer:Timer;
 		
 		private var isAIR:Boolean; 
-		
-		/**
-		 * Callback to receive progress updates
-		 */
-		public var onProgress:Function;		
 		
 		/**
 		 * Waveform visualization
@@ -81,7 +77,7 @@ package com.gestureworks.cml.elements
 			isAIR = Capabilities.playerType == "Desktop";
 			if (isAIR) {
 				try{
-					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.utils.WAVFactory") as Class;
+					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.utils.media.WAVFactory") as Class;
 					wav = new sourceClass;
 				}
 				catch (e:Error) {}
@@ -351,15 +347,14 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Invoke status callback
-		 * @param status current status
-		 * @param value  value of current status
+		 * @inheritDoc
 		 */
-		private function onStatus(status:String, value:Boolean):void {						
+		override protected function onStatus(status:String, value:*):void {
+			super.onStatus(status, value);
 			//update display timer based on play status
 			if (displayTimer) {
 				isPlaying ? displayTimer.start() : displayTimer.stop();
-			}						
+			}									
 		}
 		
 		/**
@@ -396,7 +391,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			//initialize display timer
-			if(waveform || onProgress != null){
+			if(waveform || playbackProgress){
 				displayTimer = new Timer(5);
 				displayTimer.addEventListener(TimerEvent.TIMER, update);
 			}
@@ -412,9 +407,7 @@ package com.gestureworks.cml.elements
 		 * @param	e
 		 */
 		private function update(e:TimerEvent):void {
-			if (onProgress != null) {
-				onProgress.call();
-			}
+			onStatus(MediaStatus.PLAYBACK_PROGRESS, progress);
 			visualize(waveForm);
 		}
 		
@@ -441,7 +434,6 @@ package com.gestureworks.cml.elements
 			wav = null;
 			audio = null;
 			waveForm = null;
-			onProgress = null;
 			if (displayTimer) {
 				displayTimer.stop();
 				displayTimer = null;

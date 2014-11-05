@@ -145,7 +145,7 @@ package com.gestureworks.cml.utils.media
 			_soundTransform.volume = volume;
 			_soundTransform.pan = pan;
 			_isLoaded = true; 
-			publishStatus("isLoaded", isLoaded);
+			publishStatus(MediaStatus.LOADED, isLoaded);
 		}
 		
 		/**
@@ -154,7 +154,7 @@ package com.gestureworks.cml.utils.media
 		 */
 		protected function soundComplete(event:Event = null):void {
 			_isComplete = true; 
-			publishStatus("isComplete", isComplete);
+			publishStatus(MediaStatus.PLAYBACK_COMPLETE, isComplete);
 			stop();								
 		}	
 		
@@ -178,7 +178,7 @@ package com.gestureworks.cml.utils.media
 			_isPlaying = true; 
 			_isPaused = false; 
 			_isComplete = false; 
-			publishStatus("isPlaying", isPlaying);
+			publishStatus(MediaStatus.PLAYING, isPlaying);
 		}
 		
 		/**
@@ -187,7 +187,7 @@ package com.gestureworks.cml.utils.media
 		public function resume():void {
 			_isPlaying = true;  
 			_isPaused = false; 
-			publishStatus("isPlaying", isPlaying);			
+			publishStatus(MediaStatus.PLAYING, isPlaying);			
 		}
 		
 		/**
@@ -196,7 +196,7 @@ package com.gestureworks.cml.utils.media
 		public function pause():void {
 			_isPlaying = false; 
 			_isPaused = true; 
-			publishStatus("isPaused", isPaused);			
+			publishStatus(MediaStatus.PAUSED, isPaused);			
 		}
 		
 		/**
@@ -206,7 +206,7 @@ package com.gestureworks.cml.utils.media
 			_isPlaying = false; 
 			_isPaused = false; 
 			_position = 0;
-			publishStatus("isPlaying", isPlaying);			
+			publishStatus(MediaStatus.PLAYING, isPlaying);			
 		}
 		
 		/**

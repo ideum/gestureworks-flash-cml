@@ -1,6 +1,7 @@
 package com.gestureworks.cml.utils.media 
 {
 	import com.gestureworks.cml.elements.TouchContainer;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.managers.FileManager;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.greensock.events.LoaderEvent;
@@ -16,22 +17,13 @@ package com.gestureworks.cml.utils.media
 	{
 		private var _src:String; 
 		private var _isLoaded:Boolean;		
-		protected var initialized:Boolean;	
-		protected var _percentLoaded:Number = 0;
-		private var _thumbnail:Bitmap;
-		
+		private var _thumbnail:Bitmap;	
+		private var _thumbLoaded:Boolean;
 		private var thumbScaleX:Number;
 		private var thumbScaleY:Number; 
 		
-		/**
-		 * Function invoked when media is loaded. This function must accept a <code>MediaBase</code> argument.
-		 */
-		public var onLoad:Function
-		
-		/**
-		 * Function invoked when thumbnail is loaded. The function must accept a <code>MediaBase</code> argument. 
-		 */
-		public var onThumbLoad:Function;
+		protected var initialized:Boolean;	
+		protected var _percentLoaded:Number = 0;		
 		
 		/**
 		 * Enables auto-generation of a media snapshot thumbnail. If undefined, the <code>thumbnail</code> attribute will reference the
@@ -63,6 +55,17 @@ package com.gestureworks.cml.utils.media
 		 */				
 		public var thumbHeight:Number = 100;
 		
+		/**
+		 * Flag indicating the dimensions are cleared on close and, by extension, reassignment of the <code>src</code> attribute
+		 * @default true
+		 */
+		public var resetDimensions:Boolean = true; 
+		
+		/**
+		 * Dispatch playback progress events
+		 * @default false
+		 */
+		public var playbackProgress:Boolean = false; 		
 		
 		/**
 		 * @inheritDoc
@@ -73,6 +76,18 @@ package com.gestureworks.cml.utils.media
 				initialized = true; 
 				processSrc(src);
 			}
+		}
+		
+		/**
+		 * Dispatch media status state event
+		 * @param status current status
+		 * @param value  value of current status
+		 */
+		protected function onStatus(status:String, value:*):void {
+			if (status == MediaStatus.PLAYBACK_PROGRESS && !playbackProgress) {
+				return; 
+			}
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, status, value));
 		}
 		
 		/**
@@ -106,7 +121,7 @@ package com.gestureworks.cml.utils.media
 		 * Process media source file
 		 * @param	value  path to media file
 		 */
-		protected function processSrc(value:String):void { }
+		protected function processSrc(value:String):void {}
 		
 		/**
 		 * Media loaded status
@@ -118,19 +133,27 @@ package com.gestureworks.cml.utils.media
 		 * Percentage of bytes loaded
 		 * @default 0
 		 */
-		public function get percentLoaded():Number { return _percentLoaded; }	
+		public function get percentLoaded():Number { return _percentLoaded; }
+		
+		/**
+		 * Thumbnail loaded status
+		 */
+		public function get thumbLoaded():Boolean { return _thumbLoaded; }
+		
+		/**
+		 * Load progress update
+		 */
+		protected function loading(event:Event = null):void {
+			onStatus(MediaStatus.PERCENT_LOADED, _percentLoaded);
+		}
 		
 		/**
 		 * Post-load handler
 		 * @param	event
 		 */
 		protected function loadComplete(event:Event = null):void {
-			_isLoaded = true; 
-			
-			if (onLoad != null) {
-				onLoad.call(null, this);
-			}
-			
+			_isLoaded = true; 			
+			onStatus(MediaStatus.LOADED, _isLoaded);
 			updateThumbnail();
 		}
 		
@@ -188,9 +211,8 @@ package com.gestureworks.cml.utils.media
 			}			
 			scalePercentages();
 			thumbnail = DisplayUtils.resampledBitmap(thumbnail, thumbnail.width * thumbScaleX, thumbnail.height * thumbScaleY);
-			if (onThumbLoad != null) {
-				onThumbLoad.call(null, this);
-			}
+			_thumbLoaded = true; 
+			onStatus(MediaStatus.THUMB_LOADED, _thumbLoaded);
 		}
 		
 		/**
@@ -219,9 +241,27 @@ package com.gestureworks.cml.utils.media
 		 * Closes media
 		 */
 		public function close():void {
+			
+			//clear source path
 			_src = null;
-			thumbnail = null; 
+			
+			//clear thumbnail
+			if(thumbnail){
+				thumbnail = null; 
+				_thumbLoaded = false; 
+				onStatus(MediaStatus.THUMB_LOADED, _thumbLoaded);
+			}
+			
+			//update loaded status
+			_percentLoaded = 0;
 			_isLoaded = false; 
+			onStatus(MediaStatus.LOADED, _isLoaded);
+			
+			//clear dimensions
+			if (resetDimensions) {
+				width = 0;
+				height = 0;
+			}
 		}
 	}
 

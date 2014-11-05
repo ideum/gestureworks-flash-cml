@@ -36,13 +36,7 @@ package com.gestureworks.cml.elements
 		private var _resample:Boolean = true;	
 		private var _portrait:Boolean;
 		private var _landscape:Boolean;
-		private var _aspectRatio:Number = 0;	
-				
-		/**
-		 * Callback to receive load progress
-		 */
-		public var onProgress:Function;
-		
+		private var _aspectRatio:Number = 0;			
 		
 		/**
 		 * Constructor
@@ -75,7 +69,7 @@ package com.gestureworks.cml.elements
 			else {
 				img = new ImageLoader(value);
 				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.addEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+				img.addEventListener(LoaderEvent.PROGRESS, loading);
 				img.addEventListener(LoaderEvent.ERROR, onError);
 				img.load();
 			}							
@@ -138,14 +132,11 @@ package com.gestureworks.cml.elements
 		}	
 		
 		/**
-		 * Load progress update
-		 * @param	event
+		 * @inheritDoc
 		 */
-		private function onPercentLoad(event:LoaderEvent):void {
-			_percentLoaded = event.target.progress; 						
-			if (onProgress != null) {
-				onProgress.call();
-			}
+		override protected function loading(event:Event = null):void {
+			_percentLoaded = event.target.progress; 									
+			super.loading(event);
 		}
 		
 		/**
@@ -157,7 +148,7 @@ package com.gestureworks.cml.elements
 			if (img && img.rawContent){
 				_fileData = img.rawContent;
 				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.removeEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+				img.removeEventListener(LoaderEvent.PROGRESS, loading);
 				img.removeEventListener(LoaderEvent.ERROR, onError);
 			}
 			else if(FileManager.hasFile(src)){
@@ -220,7 +211,7 @@ package com.gestureworks.cml.elements
 		{
 			if (img) {
 				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.removeEventListener(LoaderEvent.PROGRESS, onPercentLoad);
+				img.removeEventListener(LoaderEvent.PROGRESS, loading);
 				img.removeEventListener(LoaderEvent.ERROR, onError);				
 				img = null;				
 			}

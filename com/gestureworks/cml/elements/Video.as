@@ -3,6 +3,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.utils.media.MediaBase;
+	import com.gestureworks.cml.utils.media.MediaStatus;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import flash.events.*;
 	import flash.media.*;
@@ -249,9 +250,13 @@ package com.gestureworks.cml.elements
 		 * Initialize net stream and video object
 		 */
 		private function connectNetStream():void{
-			progressTimer = new Timer(1000);
+			
 			if (!positionTimer)
 				positionTimer = new Timer(20);
+			
+			progressTimer = new Timer(20);
+			progressTimer.addEventListener(TimerEvent.TIMER, loading);			
+			progressTimer.start();				
 			
 			netStream = new NetStream(netConnection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
@@ -275,7 +280,7 @@ package com.gestureworks.cml.elements
 		 * @param	h initial video height
 		 */
 		private function addVideo(w:Number, h:Number):void {
-			if (isLoaded) {				
+			if (!isLoaded) {				
 				loadComplete();
 				
 				//apply wrapper dimension to video
@@ -360,19 +365,20 @@ package com.gestureworks.cml.elements
 		private function onIOError(event:IOErrorEvent):void { trace("io error: " + event.text); }		
 		
 		/**
-		 * Load progress
-		 * @param	event
+		 * @inheritDoc
 		 */
-		private function onProgress(event:TimerEvent):void{
+		override protected function loading(event:Event = null):void{
 			_percentLoaded = Math.round(netStream.bytesLoaded/netStream.bytesTotal * 100);
 			
 			if (percentLoaded >= 100){	
 				progressTimer.stop();
 				progressTimer.reset();
-				progressTimer.removeEventListener(TimerEvent.TIMER, onProgress);
+				progressTimer.removeEventListener(TimerEvent.TIMER, loading);
 			}
 			
-			if(debug){ trace(src + " percent loaded: " + percentLoaded); }	
+			if (debug) { trace(src + " percent loaded: " + percentLoaded); }	
+			
+			super.loading(event);
 		}
 		
 		/**
@@ -384,12 +390,13 @@ package com.gestureworks.cml.elements
 				return;
 			}
 			_position = netStream.time / _duration;
+			onStatus(MediaStatus.PLAYBACK_PROGRESS, progress); 
 		}
 		
 		/**
 		 * End of playback
 		 */
-		protected function onEnd():void{
+		protected function onEnd():void {
 			if (loop) {
 				play();
 			}
@@ -412,7 +419,7 @@ package com.gestureworks.cml.elements
 					 break;
 				case "NetStream.Buffer.Full":
 					 if (progressTimer){
-						progressTimer.removeEventListener(TimerEvent.TIMER, onProgress);
+						progressTimer.removeEventListener(TimerEvent.TIMER, loading);
 						progressTimer.stop();
 					 }
 					 addVideo(video.videoHeight, video.videoWidth);
@@ -421,28 +428,25 @@ package com.gestureworks.cml.elements
 					 _isPlaying = true;
 					 _isPaused = false;
 					 _isComplete = false; 
-					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					 onStatus(MediaStatus.PLAYING, _isPlaying);
 					 break;	
 				case "NetStream.Play.Stop":
 					 onEnd();
 				     _isPlaying = false;
 					 _isPaused = false;
 					 _isComplete = true; 
-					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
-					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "ended", true));
+					 onStatus(MediaStatus.PLAYBACK_COMPLETE, _isComplete);					 
 					 break;
 				case "NetStream.Pause.Notify":
 					 _isPlaying = false;
 					 _isPaused = true;
-					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
+					 onStatus(MediaStatus.PAUSED, _isPaused);
 					 break;
 				case "NetStream.Unpause.Notify":
 					_isPlaying = true;
 					_isPaused = false;
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isPlaying", _isPlaying ));
 					break;
 				case "NetStream.Seek.Notify":
-					 dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
 					 break;
 			}	
 			

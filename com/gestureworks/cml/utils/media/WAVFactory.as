@@ -283,10 +283,10 @@ package com.gestureworks.cml.utils.media
 					stream.position = cueStreamStart;
 					
 					_isComplete = true; 
-					publishStatus("isComplete", isComplete);
+					publishStatus(MediaStatus.PLAYBACK_COMPLETE, isComplete);
 					
 					_isComplete = false; 
-					publishStatus("isComplete", isComplete);
+					publishStatus(MediaStatus.PLAYBACK_COMPLETE, isComplete);
 				}
 				
 				//currently use to create graphical waveform
