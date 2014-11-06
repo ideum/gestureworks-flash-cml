@@ -88,10 +88,8 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function init():void {
-			super.init();
-			initialized = true; 
 			setDisplay();
-			processSrc(src);
+			super.init();			
 		}
 		
 		/**
@@ -421,6 +419,13 @@ package com.gestureworks.cml.elements
 		 */
 		override public function close():void {
 			super.close();
+			
+			//update dimensions
+			if (background || waveform) {
+				width = width ? width : 500;
+				height = height ? height : 350;
+			}		
+			
 			audio = null;
 			mp3.close();
 			if (wav) {
@@ -432,7 +437,7 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function dispose():void {
-			super.dispose();
+			super.dispose();						
 			mp3.dispose();
 			mp3 = null;
 			wav.dispose();

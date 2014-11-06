@@ -268,7 +268,7 @@ package com.gestureworks.cml.components
 		public function get activity():Boolean { return _activity; }
 		public function set activity(a:Boolean):void {
 			_activity = a;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "activity", _activity));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "activity", _activity));
 		}
 				
 		/**
@@ -286,7 +286,7 @@ package com.gestureworks.cml.components
 					timer.stop();
 			}
 				
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "visible", value));								
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "visible", value));								
 		}
 		
 		protected function updateLayout(event:*=null):void
@@ -560,7 +560,7 @@ package com.gestureworks.cml.components
 			else if (event.value == "close")
 			{
 				this.visible = false;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "quit"));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "close", "quit"));
 			}
 			else if (event.property == "selectedLabel") {
 				if (!isNaN(Number(event.value))) {
@@ -600,7 +600,7 @@ package com.gestureworks.cml.components
 			}
 			else { 
 				this.visible = false; 
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "close", "timeout"));
 			}
 		}
 	
@@ -657,7 +657,7 @@ package com.gestureworks.cml.components
 				
 			tween = TweenLite.to(this, dur, { alpha:0, onComplete:function():void { 
 					visible = false;
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "close", "timeout"));
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "close", "timeout"));
 				}} );
 			tween.play();
 		}			

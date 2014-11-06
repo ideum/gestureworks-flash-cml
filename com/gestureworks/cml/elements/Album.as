@@ -100,7 +100,7 @@ package com.gestureworks.cml.elements
 			if (loop && belt.numChildren < 2) loop = false;
 			initBelt();
 			checkMask();
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "isLoaded", true, true));	
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", true, true));	
 			
 			addEventListener(GWTouchEvent.TOUCH_BEGIN, inBounds);
 			addEventListener(GWTouchEvent.TOUCH_END, outOfBounds);
@@ -644,7 +644,7 @@ package com.gestureworks.cml.elements
 		 */
 		private function publishState():void
 		{
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "albumState", this, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "albumState", this, true));
 		}
 		
 		/**
@@ -757,7 +757,7 @@ package com.gestureworks.cml.elements
 		protected function dispatchCurrentObject():void
 		{
 			_currentObject = objectAtSnapPoint(snapIndex);
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "complete", _currentObject, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "complete", _currentObject, true));
 		}		
 		
 		/**

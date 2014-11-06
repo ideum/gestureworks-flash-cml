@@ -1,5 +1,6 @@
 package com.gestureworks.cml.events
 {
+	import com.gestureworks.cml.elements.TouchContainer;
 	import flash.events.Event;
 	
 	/**
@@ -17,14 +18,11 @@ package com.gestureworks.cml.events
 		 */	
 		public static const CHANGE:String = "CHANGE";
 		
-		
 		/**
-		 * Event initiator's id
-		 * @default null
-		 */	
-		private var _id:String;
-		public function get id():String { return _id; }		
-
+		 * Event initiator
+		 */
+		private var _target:*;
+		override public function get target():Object { return _target; }
 		
 		/**
 		 * Event initiator's property
@@ -45,19 +43,19 @@ package com.gestureworks.cml.events
 		/**
 		 * Creates a StateEvent object and sets defaults
 		 * @param type
-		 * @param id
+		 * @param target
 		 * @param property
 		 * @param bubbles
 		 * @param cancelelable
 		 * @return none
 		 */		
-		public function StateEvent(type:String, id:String=null, property:String=null, value:*=null, bubbles:Boolean=false, cancelable:Boolean = false):void 
+		public function StateEvent(type:String, target:*=null, property:String=null, value:*=null, bubbles:Boolean=false, cancelable:Boolean = false):void 
 		{
 			//calls the super class Event
 			super(type, bubbles, cancelable);
 
 			//sets custom values
-			_id = id;
+			_target = target;
 			_property = property;
 			_value = value;
 		}
@@ -70,7 +68,7 @@ package com.gestureworks.cml.events
 		 */		
 		override public function clone():Event
 		{
-			return new StateEvent(type, _id, _property, _value, bubbles, cancelable);
+			return new StateEvent(type, _target, _property, _value, bubbles, cancelable);
 		}		
 	
 		

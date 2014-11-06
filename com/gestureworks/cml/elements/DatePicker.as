@@ -315,7 +315,7 @@ package com.gestureworks.cml.elements
 		 */
 		private function onDateSelect(e:*):void{
 			selectedDate = e.target.name;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedDate", _selectedDate));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "selectedDate", _selectedDate));			
 		}
 
 		//************************** UTILITIES **************************//

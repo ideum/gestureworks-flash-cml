@@ -216,7 +216,7 @@ package  com.gestureworks.cml.elements
 		
 		private function onTimer(e:TimerEvent):void {
 			var position:Number = player.getCurrentTime() / player.getDuration();
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "position", position));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "position", position));
 		}
 		
 		/**

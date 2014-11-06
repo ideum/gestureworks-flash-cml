@@ -85,7 +85,7 @@ package com.gestureworks.cml.components {
 			if (e.property == "isLoaded") {
 				html.removeEventListener(StateEvent.CHANGE, onLoadComplete);
 				isLoaded = true;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", isLoaded));
 			}
 		}
 		

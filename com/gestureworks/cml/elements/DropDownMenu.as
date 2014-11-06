@@ -306,7 +306,7 @@ package com.gestureworks.cml.elements
 		
 		protected function onItemSelected(event:*):void {
 			_currentSelection = event.target.text;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "itemSelected", event.target.text, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "itemSelected", event.target.text, true));
 			hideMenu();
 		}
 		
@@ -342,7 +342,7 @@ package com.gestureworks.cml.elements
 			_hit.addEventListener(GWTouchEvent.TOUCH_OUT, onMenuOut);
 			
 			if(!noDispatch)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "menu", "open", true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "menu", "open", true));
 		}
 		
 		public function hideMenu(noDispatch:Boolean = false):void {
@@ -370,7 +370,7 @@ package com.gestureworks.cml.elements
 			
 			_hit.removeEventListener(GWTouchEvent.TOUCH_OUT, onMenuOut);					
 			if(!noDispatch)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "menu", "close", true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "menu", "close", true));
 		}
 		
 		/**

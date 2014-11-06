@@ -194,7 +194,7 @@ package com.gestureworks.cml.elements
 				}
 			}
 			attractState = false;	
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "attractState", attractState));
 		}
 		
 		
@@ -232,7 +232,7 @@ package com.gestureworks.cml.elements
 			parent.setChildIndex(this, parent.numChildren - 1);
 		
 			_attractState = true;	
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "attractState", attractState));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "attractState", attractState));
 		}
 		
 		private function checkChildren(target:DisplayObjectContainer, method:String):void {

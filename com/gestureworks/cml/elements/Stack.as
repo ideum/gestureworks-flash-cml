@@ -131,7 +131,7 @@ package com.gestureworks.cml.elements
 				childList.currentValue.visible = true				
 			}
 							
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "toggle", cmlIndex, true, true));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "toggle", cmlIndex, true, true));			
 		}
 		
 		/**

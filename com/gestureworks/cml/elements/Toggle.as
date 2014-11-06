@@ -240,7 +240,7 @@ package com.gestureworks.cml.elements
 		private function onTouchBegin(event:GWTouchEvent):void
 		{
 			toggleGraphic.visible = !toggleGraphic.visible;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", value));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", value));			
 		}
 		
 		/**

@@ -664,7 +664,7 @@ package com.gestureworks.cml.elements
 			// New
 			trackPoint = shape.globalToLocal(pointToTrack);
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "flipping"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "pageEvent", "flipping"));
 		}
 		
 		private function onTouchEnd(e:*):void {
@@ -865,7 +865,7 @@ package com.gestureworks.cml.elements
 			//trace("Current page.", _currentPage);
 			currentCorner = null;
 			tweening = false;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "complete"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "pageEvent", "complete"));
 		}
 		
 		public function reset():void {
@@ -915,7 +915,7 @@ package com.gestureworks.cml.elements
 				shadows[_currentPage].visible = true;
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "reset"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "pageEvent", "reset"));
 		}
 		
 		

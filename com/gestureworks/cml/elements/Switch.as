@@ -446,7 +446,7 @@ package com.gestureworks.cml.elements
 				button.x = minButtonPos;
 				toggleState = false;
 			}
-		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", toggleState));
+		    dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "state", toggleState));
 		}
 		
 		private function onEnd(event:* = null):void
@@ -460,7 +460,7 @@ package com.gestureworks.cml.elements
 				toggleState = false;
 			}
 				
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "state", toggleState));				
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "state", toggleState));				
 		}
 		
 	

@@ -193,7 +193,7 @@ package com.gestureworks.cml.elements
 				return;
 				
 			addTab(tab);
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "selectedIndex", selectedIndex)); 
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "selectedIndex", selectedIndex)); 
 		}
 		
 		

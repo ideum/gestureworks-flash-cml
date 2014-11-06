@@ -267,7 +267,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			if (this.parent) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", LOADED));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", LOADED));
 			}
 		}
 		
@@ -289,7 +289,7 @@ package com.gestureworks.cml.elements
 			graphicArray.selectIndex(_counter).visible = true;
 			//graphicArray.selectIndex(_counter).alpha = tempAlpha;
 			graphicArray.selectIndex(_counter).alpha = 1
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _counter));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", _counter));
 		}
 		
 		public function alphaHandler(e:GWGestureEvent):void {

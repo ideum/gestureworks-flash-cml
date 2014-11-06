@@ -286,7 +286,7 @@ package com.gestureworks.cml.elements
 			if (compX) _component.x = compX;
 			if (compY) _component.y = compY;
 			
-			_component.dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "hotspot", "visible", true));			
+			_component.dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "hotspot", "visible", true));			
 			
 		}
 		

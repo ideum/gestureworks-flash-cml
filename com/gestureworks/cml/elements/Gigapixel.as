@@ -260,7 +260,7 @@
 				panTo(image.viewportX, _viewportY, true);
 				
 			_loaded = true;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "loaded", loaded));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "loaded", loaded));
 		}
 		
 		private function flipHotspots(onOff:Boolean):void {

@@ -229,7 +229,7 @@ package com.gestureworks.cml.elements
 			loaded = true; 
 			
 			// ¿¿¿ use if there's an embedded greensock, etc., loader ???
-			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded")); 
+			//dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", "loaded")); 
 		}		
 		
 		private function initScrollBarLayout(bar:ScrollBar, isVertical:Boolean):void {

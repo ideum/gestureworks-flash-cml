@@ -87,7 +87,7 @@ package com.gestureworks.cml.utils.media
 			if (status == MediaStatus.PLAYBACK_PROGRESS && !playbackProgress) {
 				return; 
 			}
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, id, status, value));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, status, value));
 		}
 		
 		/**

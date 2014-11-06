@@ -527,7 +527,7 @@ package com.gestureworks.cml.elements
 			selectedColorRec.transform.colorTransform = selectedColorTransform;	
 			
 			//dispatches a state event with the hexadecimal of the selected color
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedColor", "0x"+getSelectedHexValue(), true))
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "selectedColor", "0x"+getSelectedHexValue(), true))
 		}
 		
 		/**

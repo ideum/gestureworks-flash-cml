@@ -71,7 +71,7 @@ package com.gestureworks.cml.elements
 		
 		override protected function onItemSelected(event:*):void {
 			_currentSelection = event.target.text;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "itemSelected", event.target.text, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "itemSelected", event.target.text, true));
 			hideMenu();
 			_menuTitle.text = _currentSelection;
 		}

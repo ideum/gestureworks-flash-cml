@@ -798,9 +798,9 @@ package com.gestureworks.cml.elements
 				listenMouseOver(false);
 			
 			if (dispatchDict["mouseDown"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseDown"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["mouseDown"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseDown", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "mouseDown", true, true));
 		}
 		
 		/**
@@ -835,9 +835,9 @@ package com.gestureworks.cml.elements
 				listenMouseOut(false);
 			
 			if (dispatchDict["mouseUp"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseUp"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["mouseUp"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseUp", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "mouseUp", true, true));
 		}
 		
 		/**
@@ -868,9 +868,9 @@ package com.gestureworks.cml.elements
 				listenMouseOut();
 			
 			if (dispatchDict["mouseOver"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseOver"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["mouseOver"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOver", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "mouseOver", true, true));
 		
 		}
 		
@@ -902,9 +902,9 @@ package com.gestureworks.cml.elements
 				listenMouseDown();
 			
 			if (dispatchDict["mouseOut"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["mouseOut"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["mouseOut"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "mouseOut", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "mouseOut", true, true));
 		}
 		
 		protected function onTap(event:*):void
@@ -913,9 +913,9 @@ package com.gestureworks.cml.elements
 				trace("tap");
 			
 			if (dispatchDict["tap"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["tap"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["tap"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "tap", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "tap", true, true));
 		}
 		
 		/**
@@ -1002,9 +1002,9 @@ package com.gestureworks.cml.elements
 				listenTouchOver(false);
 			
 			if (dispatchDict["touchDown"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchDown"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["touchDown"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchDown", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "touchDown", true, true));
 		}
 		
 		/**
@@ -1035,9 +1035,9 @@ package com.gestureworks.cml.elements
 				listenTouchOut();
 			
 			if (dispatchDict["touchOver"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchOver"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["touchOver"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchOver", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "touchOver", true, true));
 		
 		}
 		
@@ -1073,9 +1073,9 @@ package com.gestureworks.cml.elements
 				listenTouchOut(false);
 			
 			if (dispatchDict["touchUp"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchUp"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["touchUp"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchUp", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "touchUp", true, true));
 		}
 		
 		/**
@@ -1106,9 +1106,9 @@ package com.gestureworks.cml.elements
 				listenTouchDown();
 			
 			if (dispatchDict["touchOut"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["touchOut"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["touchOut"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "touchOut", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "touchOut", true, true));
 		}
 		
 		/**
@@ -1198,9 +1198,9 @@ package com.gestureworks.cml.elements
 				listenOver(false);
 			
 			if (dispatchDict["down"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["down"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["down"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "down", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "down", true, true));
 		}
 		
 		/**
@@ -1231,9 +1231,9 @@ package com.gestureworks.cml.elements
 				listenOut();
 			
 			if (dispatchDict["over"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["over"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["over"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "over", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "over", true, true));
 		
 		}
 		
@@ -1269,9 +1269,9 @@ package com.gestureworks.cml.elements
 				listenOut(false);
 			
 			if (dispatchDict["up"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["up"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["up"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "up", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "up", true, true));
 		}
 		
 		/**
@@ -1302,9 +1302,9 @@ package com.gestureworks.cml.elements
 				listenDown();
 			
 			if (dispatchDict["out"])
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", dispatchDict["out"], true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", dispatchDict["out"], true, true));
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "buttonState", "out", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "out", true, true));
 		}
 		
 		/**
@@ -1366,12 +1366,12 @@ package com.gestureworks.cml.elements
 			if (dispatchDict["toggle"])
 			{
 				if (dispatchDict["toggle"] == "{currentIndex}")
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", childList.currentIndex, true, true));
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "toggle", childList.currentIndex, true, true));
 				else
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", dispatchDict["toggle"], true, true));
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "toggle", dispatchDict["toggle"], true, true));
 			}
 			else if (dispatchDefault)
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "toggle", "toggle", true, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "toggle", "toggle", true, true));
 		}
 		
 		/**

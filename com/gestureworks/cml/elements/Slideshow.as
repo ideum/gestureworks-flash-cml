@@ -133,7 +133,7 @@ package com.gestureworks.cml.elements
 				removeChildAt(slideshowItems.getIndex(i));
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "loaded", true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", "loaded", true));
 			
 			showNext();
 			//init();
@@ -267,7 +267,7 @@ package com.gestureworks.cml.elements
 					removeChild(slideshowItems.getIndex(index));
 				}
 				tween = null;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideshowState", this, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "slideshowState", this, true));
 			}				
 		}
 		

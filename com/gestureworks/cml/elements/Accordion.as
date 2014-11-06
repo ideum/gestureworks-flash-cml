@@ -336,7 +336,7 @@ package com.gestureworks.cml.elements
 				tweenArray.push(TweenLite.to(contents[i], 0.3,{ y:snapLow[i] + tabs[i].height - 4}));
 			}	
 			
-			tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); }} );
+			tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "accordionState", "selected")); }} );
 			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();			
 		}
@@ -347,7 +347,7 @@ package com.gestureworks.cml.elements
 			var tweenSpeed:Number = 0.3;
 			
 			if (collapsed) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "opening"));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "accordionState", "opening"));
 				if (!immediately) {
 					tweenArray.push(TweenLite.to(tabs[0], tweenSpeed, { y:snapLow[0] }));
 					tweenArray.push(TweenLite.to(contents[0], tweenSpeed, { y:snapLow[0] + tabs[0].height - 4 }));
@@ -387,7 +387,7 @@ package com.gestureworks.cml.elements
 				
 			}
 			else {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "closing"));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "accordionState", "closing"));
 				
 				if (!immediately) {
 					if (twirlIndicator)
@@ -413,7 +413,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			if (!immediately){
-				tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); } } );
+				tweenGroup = new TimelineLite( { onComplete:function():void { isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "accordionState", "selected")); } } );
 				tweenGroup.appendMultiple(tweenArray);
 				tweenGroup.play();
 			}
@@ -722,7 +722,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			tweenGroup = new TimelineLite( { onComplete: function():void { 
-				isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "accordionState", "selected")); }} );
+				isTweening = false; dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "accordionState", "selected")); }} );
 			tweenGroup.appendMultiple(tweenArray);
 			tweenGroup.play();
 		}

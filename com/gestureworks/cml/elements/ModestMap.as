@@ -185,7 +185,7 @@ package com.gestureworks.cml.elements
 			
 			_loaded = "loaded";
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _loaded, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", _loaded, true));
 		}
 		
 		private function createEvents():void {

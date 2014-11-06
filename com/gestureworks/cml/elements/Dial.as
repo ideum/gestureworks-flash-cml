@@ -871,7 +871,7 @@ package com.gestureworks.cml.elements
 									
 			processFilters(e.value);
 			updateTextFields();
-			onEnd(e.id);
+			onEnd(e.target);
 		}
 		
 		/**
@@ -1116,9 +1116,9 @@ package com.gestureworks.cml.elements
 			currentIndex = closestIndex;
 			
 			if (textFieldArray[currentIndex].text != currentString) {
-				var dispatchID:String = event is String ? event : this.id;
+				var dispatcher:Dial = event is Dial ? event : this;
 				currentString = textFieldArray[currentIndex].text;				
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, dispatchID, "currentString", currentString));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, dispatcher, "currentString", currentString));
 			}	
 		}
 		

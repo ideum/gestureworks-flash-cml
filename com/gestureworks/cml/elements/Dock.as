@@ -311,7 +311,7 @@ package com.gestureworks.cml.elements
 			clone = templates[0].clone();
 			cloneMap.append(clone, preloadExp( clone, new LinkedMap() ));
 			loadIndex++;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "preloaded", loadIndex));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "preloaded", loadIndex));
 		}
 		
 		private function preloadExp(obj:*, lm:LinkedMap):LinkedMap 
@@ -452,7 +452,7 @@ package com.gestureworks.cml.elements
 			else {
 				obj.addEventListener(StateEvent.CHANGE, function loaded(e:StateEvent):void {
 					obj.removeEventListener(StateEvent.CHANGE, loaded);
-					clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, clone.id, "isLoaded", true));
+					clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, clone, "isLoaded", true));
 				});
 				obj.open();		
 			}
@@ -545,7 +545,7 @@ package com.gestureworks.cml.elements
 			//verify the cml has been initialized and the event was triggered
 			//by the target (second condition is for filtering)
 			
-			if (cmlIni && e.target.id == e.id) {
+			if (cmlIni && e.target.id == Dial(e.target).id) {
 				
 				checkServerTimer();
 				if (flickrQuery)
@@ -1257,7 +1257,7 @@ package com.gestureworks.cml.elements
 					if(e.value < queries.length)
 						queries[e.value].flickrSearch();
 					else
-						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "filters_generated"));
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "filters_generated"));
 				}
 			});
 			
@@ -1300,7 +1300,7 @@ package com.gestureworks.cml.elements
 					dials[2].filterDial = dials[1];
 					dials[2].init();
 					
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "filters_complete"));
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "filters_complete"));
 				}
 			});
 		}
@@ -1332,7 +1332,7 @@ package com.gestureworks.cml.elements
 				}
 				
 				combinations++;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "query_complete", combinations));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "query_complete", combinations));
 			}
 		}		
 					

@@ -550,7 +550,7 @@ package com.gestureworks.cml.elements
 				trace("value:", _value)				
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", _value, true));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", _value, true));			
 		}
 		
 		override public function clone():*{

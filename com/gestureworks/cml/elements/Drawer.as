@@ -831,7 +831,7 @@ package com.gestureworks.cml.elements
 			
 			_isOpen = true;
 			handleTransition();			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "open", _isOpen));			
 		}
 
 		/**
@@ -861,7 +861,7 @@ package com.gestureworks.cml.elements
 			handle.addEventListener(GWGestureEvent.FLICK, open);	
 			
 			_isOpen = false;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "open", _isOpen));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "open", _isOpen));			
 		}
 		
 		/**

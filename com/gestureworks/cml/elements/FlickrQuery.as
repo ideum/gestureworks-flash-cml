@@ -187,14 +187,14 @@ package  com.gestureworks.cml.elements
 			_pages = e.data.photos.pages;
 			_total = e.data.total;
 			resultPhotos = e.data.photos.photos;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", "flickrResult"));
 			
 		}
 		
 		private function onSetComplete(e:FlickrResultEvent):void {
 			service.removeEventListener(FlickrResultEvent.PHOTOSETS_GET_PHOTOS, onSetComplete);
 			resultPhotos = e.data.photoset.photos;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrResult"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", "flickrResult"));
 		}
 		
 		private function onSetInfoComplete(e:FlickrResultEvent):void {
@@ -203,7 +203,7 @@ package  com.gestureworks.cml.elements
 			// TO DO: Add field or way to get set info.
 			_total = e.data.photoSet.photoCount;
 			_setDescription = e.data.photoSet.description;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "value", "flickrInfoResult"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", "flickrInfoResult"));
 		}
 		
 		// Update photo page.

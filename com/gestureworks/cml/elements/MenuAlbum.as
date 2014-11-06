@@ -173,15 +173,15 @@ package  com.gestureworks.cml.elements
 			_selectedItem = e.target;	
 			select(_selectedItem);
 			if (forwardButton && _selectedItem.contains(forwardButton)) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "selectedItem", _selectedItem, true));
 				return;
 			}
 			else if (backButton && _selectedItem.contains(backButton)) {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "selectedItem", _selectedItem, true));
 				return;
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "selectedItem", _selectedItem, true));			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "selectedItem", _selectedItem, true));			
 		}
 		
 		public function select(obj:*):void
@@ -251,7 +251,7 @@ package  com.gestureworks.cml.elements
 			dragClone.y += e.value.drag_dy;
 			
 			if(!inDockBounds(dragClone))
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "draggedItem", dragClone, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "draggedItem", dragClone, true));
 		}
 		
 		/**
@@ -265,7 +265,7 @@ package  com.gestureworks.cml.elements
 			if (dragClone)
 			{
 				if (!inDockBounds(dragClone)) {
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "droppedItem", e.target, true));			
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "droppedItem", e.target, true));			
 				}
 				
 				delete dragClones[e.target];

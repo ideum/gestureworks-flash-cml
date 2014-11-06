@@ -980,7 +980,7 @@ package com.gestureworks.cml.elements
 																			} } );
 			}
 			else {
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", target.name, true));
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "slideMenuState", target.name, true));
 			}
 		}
 		
@@ -1005,7 +1005,7 @@ package com.gestureworks.cml.elements
 					_subMenu = null;
 				}
 			}
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", selectedItem, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "slideMenuState", selectedItem, true));
 		}
 		
 		protected function dispatchBackMenu(subParent:*):void {
@@ -1017,7 +1017,7 @@ package com.gestureworks.cml.elements
 				_subMenu = null;
 				_menuState = _label;
 			}
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", _menuState, true));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "slideMenuState", _menuState, true));
 		}
 		
 		
@@ -1047,7 +1047,7 @@ package com.gestureworks.cml.elements
 			this.x = 0;
 			_subMenu = null;
 			_menuState = _label;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "slideMenuState", "reset"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "slideMenuState", "reset"));
 		}
 		
 		/**
