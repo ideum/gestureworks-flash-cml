@@ -73,14 +73,20 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function init():void {	
+			
+			//only allow internally constructed media objects
+			DisplayUtils.removeAllChildrenByType(this, [Image, Video, Audio]);			
+			DisplayUtils.addChildren(this, [image, video, audio]);	
+			
+			//initialized media
 			if (!initialized) {
 				sizeToContent = !width && !height;
-				initialized = true; 
+				image.init();
+				video.init();
 				audio.init();
-				processSrc(src);
 			}
-			DisplayUtils.removeAllChildrenByType(this, [Image, Video, Audio]);			
-			DisplayUtils.addChildren(this, [image, video, audio]);			
+			
+			super.init();		
 		}
 		
 		/**
@@ -97,12 +103,16 @@ package com.gestureworks.cml.elements
 				height = current.height;
 			}
 			//apply dimensions to current media element
-			else{
-				current.width = width;
-				current.height = height;
-				
+			else{				
 				if (current == image) {
-					image.resize();
+					image.resize(width, height);
+				}
+				else if (current == video) {
+					video.resize(width, height);
+				}
+				else{
+					current.width = width;
+					current.height = height;				
 				}
 			}
 		}
@@ -169,25 +179,26 @@ package com.gestureworks.cml.elements
 				return; 
 			}
 			
+			trace(this);
 			//evaluate media type
 			if (value.search(imageType) > -1) {
 				_current = image; 	
+				_current.addEventListener(StateEvent.CHANGE, mediaLoaded);				
 				image.src = value; 
 			}
 			else if (value.search(videoType) > -1) {				
 				_current = video; 				
+				_current.addEventListener(StateEvent.CHANGE, mediaLoaded);								
 				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
 				_current = audio;
+				_current.addEventListener(StateEvent.CHANGE, mediaLoaded);								
 				audio.src = value; 
 			}
 			else {
 				throw new Error("Unsupported media type: " + value);
 			}
-			
-			//media load handler
-			current.addEventListener(StateEvent.CHANGE, mediaLoaded);
 			
 			//set stream flag
 			_streamMedia = _current is IStream;								
@@ -395,6 +406,7 @@ package com.gestureworks.cml.elements
 		 */
 		override public function close():void {
 			super.close();
+			sizeToContent = !width && !height;			
 			if (_current) {				
 				_current.visible = false; 
 				_current = null;				

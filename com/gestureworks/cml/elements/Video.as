@@ -128,6 +128,11 @@ package com.gestureworks.cml.elements
 				return; 
 			}
 			
+			//abort process
+			if (!value || !value.length) {
+				return; 
+			}			
+			
 			netConnection = new NetConnection;			
 			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);			
@@ -333,6 +338,11 @@ package com.gestureworks.cml.elements
 		private function addVideo(w:Number, h:Number):void {
 			if (!isLoaded) {									
 				_isLoaded = true; 
+
+				//handle autoplay
+				if (!autoplay) {
+					stop();
+				}				
 				
 				//apply wrapper dimension to video
 				if(width || height){
@@ -351,22 +361,22 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override protected function generateThumb():void {							
+		//override protected function generateThumb():void {							
 			//seek preview position
-			if (!isSeeking) {
-				
+			//if (!isSeeking) {
+				//
 				//since non-rendered objects cannot be converted to bitmap and preview seeking should be hidden,
 				//the quickest solution is to translate the video offscreen until the preview is generated
-				mute = true; 
-				previewRevert = transform.matrix; 
-				transform.matrix = new Matrix(1, 0, 0, 1, -10000, -10000); 
-				previewSeekComplete = seekPreview;
-				
+				//mute = true; 
+				//previewRevert = transform.matrix; 
+				//transform.matrix = new Matrix(1, 0, 0, 1, -10000, -10000); 
+				//previewSeekComplete = seekPreview;
+				//
 				//seek preview position
-				resume();
-				seek(previewAtPosition);
-			}			
-		}
+				//resume();
+				//seek(previewAtPosition);
+			//}			
+		//}
 		
 		/**
 		 * Once preview position is reached, generate thumbnail
@@ -430,10 +440,6 @@ package com.gestureworks.cml.elements
 		 */
 		protected function onMetaData(meta:Object):void {			
 			_duration = meta.duration ? meta.duration : 0; 			
-		
-			if (!autoplay) {
-				stop();
-			}
 			
 			if (meta.width && meta.height){		
 				addVideo(meta.width, meta.height);

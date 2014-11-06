@@ -65,7 +65,7 @@ package com.gestureworks.cml.utils.media
 		 */
 		override protected function soundLoaded(event:Event = null):void {
 			if (soundLoader){
-				soundLoader.removeEventListener(LoaderEvent.COMPLETE, soundLoaded);
+				soundLoader.vars.onComplete = null; 
 				_soundData = soundLoader.content;
 				soundLoader.pauseSound();
 			}

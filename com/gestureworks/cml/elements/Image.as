@@ -60,6 +60,11 @@ package com.gestureworks.cml.elements
 			if (!initialized) {
 				return; 
 			}
+			
+			//abort process
+			if (!value || !value.length) {
+				return; 
+			}			
 						
 			//preloaded
 			if (FileManager.media.getContent(value)) {
