@@ -57,6 +57,13 @@ package com.gestureworks.cml.elements
 		private var oldX:Number;
 		
 		/**
+		 * Percentage of the page width the corner must meet to register a page turn
+		 * @default 1
+		 */
+		public var turnThreshold:Number = 1; 
+		private var rightCorner:Boolean = true; 
+		
+		/**
 		 * Constructor
 		 */
 		public function FlipBook() 
@@ -397,6 +404,7 @@ package com.gestureworks.cml.elements
 			
 			//trackPoint = flipPoint(e.target, e.localX, e.localY, this);
 			trackPoint = this.globalToLocal(new Point(e.stageX, e.stageY));
+			rightCorner = trackPoint.x > _pw;
 			
 			// Have our trackPoint, check if it's in a corner.
 			checkCurrentCorner();
@@ -664,7 +672,7 @@ package com.gestureworks.cml.elements
 			// New
 			trackPoint = shape.globalToLocal(pointToTrack);
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "pageEvent", "flipping"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "flipping"));
 		}
 		
 		private function onTouchEnd(e:*):void {
@@ -685,7 +693,10 @@ package com.gestureworks.cml.elements
 			
 			var duration:Number = 0.5;
 			tweening = true;
-			if (trackPoint.x < 0) {
+			
+			var threshold:Number = rightCorner ? _pw - _pw * turnThreshold : -_pw + (_pw * turnThreshold);
+			
+			if (trackPoint.x < threshold) {
 				duration = (trackPoint.x + _pw) / _pw * 0.5;
 				OPEN = true;
 				
@@ -865,7 +876,7 @@ package com.gestureworks.cml.elements
 			//trace("Current page.", _currentPage);
 			currentCorner = null;
 			tweening = false;
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "pageEvent", "complete"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "complete"));
 		}
 		
 		public function reset():void {
@@ -915,7 +926,7 @@ package com.gestureworks.cml.elements
 				shadows[_currentPage].visible = true;
 			}
 			
-			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "pageEvent", "reset"));
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "pageEvent", "reset"));
 		}
 		
 		
