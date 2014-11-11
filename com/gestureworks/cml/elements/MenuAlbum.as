@@ -156,8 +156,8 @@ package  com.gestureworks.cml.elements
 				selectedText.visible = false;
 				selectedText.fontSize = 24;
 				ts.addChild(selectedText);
-				selectedText.x = (ts.width / 2) - (selectedText.width / 2);
-				selectedText.y = (ts.height / 2) - (selectedText.height);
+				selectedText.x = (ts.width / 2) - (selectedText.textWidth / 2);
+				selectedText.y = (ts.height / 2) - (selectedText.textHeight);
 			}
 		}
 		
