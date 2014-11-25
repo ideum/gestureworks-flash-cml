@@ -373,7 +373,7 @@ package com.gestureworks.cml.elements
 			
 			if (_orientation == "vertical"){
 				thumb.width = this.width;
-				thumb.height = (this.height / contentHeight) * railGraphic.height;
+				thumb.height = this.width; // (this.height / contentHeight) * railGraphic.height;
 				if (thumb.height < _thumbMin) {
 					thumb.height = _thumbMin;
 				}
@@ -708,7 +708,7 @@ package com.gestureworks.cml.elements
 			if (_orientation == "vertical") {
 				contentHeight = newDimension;
 				thumb.width = width;
-				thumb.height = (height / contentHeight) * railGraphic.height;
+				thumb.height = width;// (height / contentHeight) * railGraphic.height;
 				movementRail = railGraphic.height - thumb.height;
 				
 				if (thumb.height < _thumbMin) {

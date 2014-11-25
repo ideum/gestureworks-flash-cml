@@ -349,6 +349,7 @@ package com.gestureworks.cml.elements
 				_mask.height = height;
 			}
 			var display:DisplayObject = _content as DisplayObject;
+			if (!display) return; 
 			var rect:Rectangle = display.getBounds(display);
 			if (_verticalScroll) {
 				_verticalScroll.x = width + scrollMargin;

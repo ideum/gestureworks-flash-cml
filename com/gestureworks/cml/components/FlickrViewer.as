@@ -63,6 +63,14 @@ package com.gestureworks.cml.components
 				_flickr = searchChildren(value);
 		}
 		
+		public function get image():* { return _flickr; }
+		
+		override public function set visible(value:Boolean):void 
+		{
+			super.visible = value;
+			trace(value);
+		}
+		
 		/**
 		 * Returns the whether is the Flickr element is loaded
 		 */
@@ -111,7 +119,6 @@ package com.gestureworks.cml.components
 				_isLoaded = true;
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "isLoaded", isLoaded));
 				updateLayout();
-				visible = true;
 			}
 		}
 		
@@ -179,12 +186,12 @@ package com.gestureworks.cml.components
 			}
 			clone.init();
 			
-			if (clone.textFields) {
-				for (var i:int = 0; i < clone.textFields.length; i++) {
-					clone.textFields[i].x = textFields[i].x;
-					clone.textFields[i].y = textFields[i].y;
-				}
-			}
+			//if (clone.textFields) {
+				//for (var i:int = 0; i < clone.textFields.length; i++) {
+					//clone.textFields[i].x = textFields[i].x;
+					//clone.textFields[i].y = textFields[i].y;
+				//}
+			//}
 			return clone;
 		}
 		

@@ -36,11 +36,11 @@ package  com.gestureworks.cml.elements
 		{
 			super();
 			mouseChildren = true;
-			Security.loadPolicyFile("http://farm1.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm2.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm3.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm4.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm5.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm1.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm2.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm3.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm4.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm5.static.flickr.com/crossdomain.xml");
 		}
 		
 		private var _API_KEY:String;
@@ -167,7 +167,7 @@ package  com.gestureworks.cml.elements
 		}
 		
 		public function flickrSearch():void {
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, 1, "date-posted-desc");
+			search();
 		}
 		
 		public function flickrSet():void {
@@ -214,7 +214,7 @@ package  com.gestureworks.cml.elements
 			if (pageNumber > _pages)
 				pageNumber = _pages;
 			
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, 2, "date-posted-desc");
+			search(2);
 			
 			//resultPhotos = _data.photos.photos;
 		}
@@ -226,7 +226,11 @@ package  com.gestureworks.cml.elements
 			if (pageNumber < 1)
 				pageNumber = 1;
 			
-			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "", _resultsPerPage, pageNumber, "date-posted-desc");
+			search();
+		}
+		
+		private function search(pageNumber:int = 1):void {
+			service.photos.search(_user_id, _tags, _tag_mode, _text, null, null, null, null, -1, "date-posted-desc", -1, "", -1, -1, -1, "", "", "", "", "", "", "", false, "", "", -1, -1, "", _resultsPerPage, pageNumber);			
 		}
 		
 		/**

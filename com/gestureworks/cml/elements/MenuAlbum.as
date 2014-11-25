@@ -129,8 +129,7 @@ package  com.gestureworks.cml.elements
 			super.init();
 			configureItems();
 			collectionViewer = DisplayUtils.getParentType(CollectionViewer,this);
-			dock = DisplayUtils.getParentType(Dock, this);
-			
+			dock = DisplayUtils.getParentType(Dock, this);			
 		}
 		
 		/**
@@ -199,7 +198,10 @@ package  com.gestureworks.cml.elements
 							
 			obj.alpha = selectedAlpha;
 			selections.append(obj);		
-			obj.searchChildren("sText").visible = true;
+			
+			if(obj.searchChildren("sText")){
+				obj.searchChildren("sText").visible = true;
+			}
 		}
 				
 		public function unSelect(obj:*):void

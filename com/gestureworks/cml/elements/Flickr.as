@@ -40,11 +40,11 @@ package  com.gestureworks.cml.elements
 		{
 			super();
 			
-			Security.loadPolicyFile("http://farm1.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm2.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm3.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm4.static.flickr.com/crossdomain.xml");
-			Security.loadPolicyFile("http://farm5.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm1.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm2.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm3.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm4.static.flickr.com/crossdomain.xml");
+			Security.loadPolicyFile("https://farm5.static.flickr.com/crossdomain.xml");
 		}
 		
 		private var _API_KEY:String;

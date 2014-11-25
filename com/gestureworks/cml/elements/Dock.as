@@ -77,6 +77,7 @@ package com.gestureworks.cml.elements
 		private var resultsDict:Array;
 		private var currentPage:int;
 		private var pageCount:int;
+		//public var position:String; 
 		
 		/**
 		 * Constructor
@@ -185,6 +186,7 @@ package com.gestureworks.cml.elements
 		private function flickrSetup(e:StateEvent):void 
 		{
 			flickrQuery.removeEventListener(StateEvent.CHANGE, flickrSetup);
+			flickrQuery.addEventListener(StateEvent.CHANGE, resultCount);
 			TOTAL_RESULTS = flickrQuery.total;
 			dockText[1].text = "Use the dials to make a selection. Tap on the thumbnails to load them onto the table.\n" + TOTAL_RESULTS + " items in Collection."
 			// TO-DO: retrieve info description of FlickrGroup;
@@ -451,7 +453,7 @@ package com.gestureworks.cml.elements
 			else {
 				obj.addEventListener(StateEvent.CHANGE, function loaded(e:StateEvent):void {
 					obj.removeEventListener(StateEvent.CHANGE, loaded);
-					clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, clone.id, "isLoaded", true));
+					clone.dispatchEvent(new StateEvent(StateEvent.CHANGE, clone, "isLoaded", true));
 				});
 				obj.open();		
 			}
@@ -544,7 +546,7 @@ package com.gestureworks.cml.elements
 			//verify the cml has been initialized and the event was triggered
 			//by the target (second condition is for filtering)
 			
-			if (cmlIni && e.target.id == e.id) {
+			if (cmlIni && e.target.id == Dial(e.target).id) {
 				
 				checkServerTimer();
 				if (flickrQuery)
@@ -743,8 +745,8 @@ package com.gestureworks.cml.elements
 					addPreview(Component(event.target), getPreview(event.target));
 					
 					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken	
-						var c:* = event.target.childList.getKey("back2");
-						c.searchChildren(".info_description").htmlText = event.target.image.description;
+						var c:TouchContainer = event.target.childList.getKey("back2");
+						c.getElementsByClassName("Text").htmlText = event.target.image.description;
 						c.init();
 					}
 					else 
@@ -849,8 +851,7 @@ package com.gestureworks.cml.elements
 					album.select(preview);	
 			}			
 		}
-		
-		
+				
 		private function getPreview(obj:*):TouchContainer
 		{
 			var prv:TouchContainer = new TouchContainer();
@@ -1256,7 +1257,7 @@ package com.gestureworks.cml.elements
 					if(e.value < queries.length)
 						queries[e.value].flickrSearch();
 					else
-						dispatchEvent(new StateEvent(StateEvent.CHANGE, this.id, "filters_generated"));
+						dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "filters_generated"));
 				}
 			});
 			
@@ -1299,7 +1300,7 @@ package com.gestureworks.cml.elements
 					dials[2].filterDial = dials[1];
 					dials[2].init();
 					
-					dispatchEvent(new StateEvent(StateEvent.CHANGE, id, "filters_complete"));
+					dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "filters_complete"));
 				}
 			});
 		}
