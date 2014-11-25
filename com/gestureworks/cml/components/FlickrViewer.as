@@ -65,12 +65,6 @@ package com.gestureworks.cml.components
 		
 		public function get image():* { return _flickr; }
 		
-		override public function set visible(value:Boolean):void 
-		{
-			super.visible = value;
-			trace(value);
-		}
-		
 		/**
 		 * Returns the whether is the Flickr element is loaded
 		 */
