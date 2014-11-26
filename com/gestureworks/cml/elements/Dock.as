@@ -744,10 +744,16 @@ package com.gestureworks.cml.elements
 					event.target.removeEventListener(StateEvent.CHANGE, onCloneLoad);					
 					addPreview(Component(event.target), getPreview(event.target));
 					
-					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken	
-						var c:TouchContainer = event.target.childList.getKey("back2");
-						c.getElementsByClassName("Text").htmlText = event.target.image.description;
-						c.init();
+					if (event.target is FlickrViewer) {	// this hack b/c Flickr API is broken		
+						var b1:TouchContainer = event.target.childList.getKey("back1");
+						var t:Text = b1.getElementById("title");						
+						t.width = event.target.image.width; 
+						t.text = event.target.image.title; 
+						
+						var c:ScrollPane = event.target.childList.getKey("back2");
+						c.width = event.target.image.width - 55; 
+						c.height = event.target.image.height - 125;
+						c.updateText(event.target.image.description);
 					}
 					else 
 						event.target.init();											

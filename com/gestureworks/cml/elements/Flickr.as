@@ -87,6 +87,9 @@ package  com.gestureworks.cml.elements
 		private var _description:String = "";
 		public function get description():String { return _description; }
 		
+		private var _title:String = "";
+		public function get title():String { return _title; };
+		
 		/**
 		 * Initialisation method
 		 */
@@ -113,6 +116,7 @@ package  com.gestureworks.cml.elements
 			e.target.removeEventListener(IOErrorEvent.IO_ERROR, errorEvent);
 			
 			if (e.success) {
+				_title = e.data.photo.title; 
 				_description = e.data.photo.description;
 				url = "http://farm1.staticflickr.com/" + e.data.photo.server + "/" + e.data.photo.id + "_" + 
 					e.data.photo.secret + ".jpg";

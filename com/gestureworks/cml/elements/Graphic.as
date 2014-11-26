@@ -170,7 +170,7 @@ package com.gestureworks.cml.elements
 				
 				case "roundRectangle":
 				{
-					graphics.drawRoundRect(0, 0, width, height, cornerWidth, cornerHeight);
+					graphics.drawRoundRect(0, 0, width, height ? height : width, cornerWidth, cornerHeight);
 					break;
 				}
 				
