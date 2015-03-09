@@ -28,5 +28,5 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.elements.HTML; HTML;
 	import com.gestureworks.cml.components.HTMLViewer; HTMLViewer;
 	import com.gestureworks.cml.elements.Window; Window;	
-	import com.gestureworks.cml.utils.media.WAVFactory;WAVFactory	
+	import com.gestureworks.cml.base.media.WAVFactory;WAVFactory	
 }

@@ -3,12 +3,12 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.IAudio;
 	import com.gestureworks.cml.interfaces.IStream;
-	import com.gestureworks.cml.utils.media.AudioFactory;
-	import com.gestureworks.cml.utils.media.MediaBase;
-	import com.gestureworks.cml.utils.media.MediaStatus;
-	import com.gestureworks.cml.utils.media.MP3Factory;
+	import com.gestureworks.cml.base.media.AudioFactory;
+	import com.gestureworks.cml.base.media.MediaBase;
+	import com.gestureworks.cml.base.media.MediaStatus;
+	import com.gestureworks.cml.base.media.MP3Factory;
 	import com.gestureworks.cml.utils.TimeUtils;
-	import com.gestureworks.cml.utils.media.Waveform;
+	import com.gestureworks.cml.base.media.Waveform;
 	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
 	import flash.utils.getDefinitionByName;
@@ -77,7 +77,7 @@ package com.gestureworks.cml.elements
 			isAIR = Capabilities.playerType == "Desktop";
 			if (isAIR) {
 				try{
-					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.utils.media.WAVFactory") as Class;
+					var sourceClass:Class = getDefinitionByName("com.gestureworks.cml.base.media.WAVFactory") as Class;
 					wav = new sourceClass;
 				}
 				catch (e:Error) {}

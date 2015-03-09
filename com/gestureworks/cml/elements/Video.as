@@ -2,8 +2,8 @@ package com.gestureworks.cml.elements
 {	
 	import com.gestureworks.cml.events.*;
 	import com.gestureworks.cml.interfaces.IStream;
-	import com.gestureworks.cml.utils.media.MediaBase;
-	import com.gestureworks.cml.utils.media.MediaStatus;
+	import com.gestureworks.cml.base.media.MediaBase;
+	import com.gestureworks.cml.base.media.MediaStatus;
 	import com.gestureworks.cml.utils.TimeUtils;
 	import flash.events.*;
 	import flash.geom.Matrix;

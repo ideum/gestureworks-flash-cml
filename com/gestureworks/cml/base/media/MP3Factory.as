@@ -14,7 +14,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.gestureworks.cml.utils.media 
+package com.gestureworks.cml.base.media 
 {		
 	import com.gestureworks.cml.managers.FileManager;
 	import com.greensock.events.LoaderEvent;

@@ -4,8 +4,8 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.managers.FileManager;
 	import com.gestureworks.cml.utils.DisplayUtils;
-	import com.gestureworks.cml.utils.media.MediaBase;
-	import com.gestureworks.cml.utils.media.MediaStatus;
+	import com.gestureworks.cml.base.media.MediaBase;
+	import com.gestureworks.cml.base.media.MediaStatus;
 	import flash.events.*;
 	import flash.utils.*;
 	 

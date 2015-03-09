@@ -14,12 +14,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.gestureworks.cml.utils.media 
+package com.gestureworks.cml.base.media 
 {	
 	import com.gestureworks.cml.interfaces.IAudio;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.managers.FileManager;
-	import com.gestureworks.cml.utils.media.Waveform;
+	import com.gestureworks.cml.base.media.Waveform;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.events.Event;
 	import flash.media.Sound;

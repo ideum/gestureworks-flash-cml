@@ -1,4 +1,4 @@
-package com.gestureworks.cml.utils.media 
+package com.gestureworks.cml.base.media 
 {
 	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.events.StateEvent;

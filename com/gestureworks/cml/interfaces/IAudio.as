@@ -1,6 +1,6 @@
 package com.gestureworks.cml.interfaces
 {
-	import com.gestureworks.cml.utils.media.Waveform;
+	import com.gestureworks.cml.base.media.Waveform
 	/**
 	 * Implements audio specific functions
 	 * @author Ideum
