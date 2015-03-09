@@ -2,7 +2,7 @@ package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.DisplayUtils;
-	import com.gestureworks.cml.utils.PageFlip;
+	import com.gestureworks.cml.base.PageFlip;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.*;
