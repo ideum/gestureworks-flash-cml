@@ -942,7 +942,7 @@ package com.gestureworks.cml.elements
 			obj.addEventListener(StateEvent.CHANGE, onCloneChange);
 			
 			
-			if (autoShuffle) 
+			//if (autoShuffle) 
 				obj.addEventListener(GWTouchEvent.TOUCH_BEGIN, moveB);
 			
 			//if ("scale" in obj["state"][0])

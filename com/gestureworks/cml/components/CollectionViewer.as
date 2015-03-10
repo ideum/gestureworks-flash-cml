@@ -141,9 +141,9 @@ package com.gestureworks.cml.components
 				// add component event listeners
 				c.addEventListener(StateEvent.CHANGE, onStateEvent, false, -1);
 				c.addEventListener(GWGestureEvent.COMPLETE, onGestureComplete);
-				if (autoShuffle) {
+				//if (autoShuffle) {
 					c.addEventListener(GWTouchEvent.TOUCH_BEGIN, updateLayout);
-				}
+				//}
 				
 				// set currently active components
 				if (i < amountToShow) {					
@@ -318,7 +318,7 @@ package com.gestureworks.cml.components
 			//set up docks
 			for (i = 0; i < docks.length; i++) {		
 				docks[i].amountToShow = amountToShow;
-				docks[i].autoShuffle = autoShuffle;
+				//docks[i].autoShuffle = autoShuffle;
 				docks[i].templates = templates;
 			}			
 			

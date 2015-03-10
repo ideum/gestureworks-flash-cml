@@ -1,6 +1,7 @@
 package com.gestureworks.cml.elements 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.layouts.ListLayout;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.TouchSprite;
@@ -288,7 +289,7 @@ package com.gestureworks.cml.elements
 		 * set by the "horizontal" attribute and the spacing can be adjusted through the
 		 * "margin" attribute. 
 		 */
-		override public function applyLayout(value:* = null):void { }
+		override public function applyLayout(value:Layout = null):void { }
 		
 		/**
 		 * Synchronize the drag angle with the album's rotation

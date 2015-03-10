@@ -231,7 +231,7 @@ package com.gestureworks.cml.elements
 		 * When layout is not provided, generate default layout based on <code>position</code> and <code>margin</code> settings 
 		 * @param	value
 		 */
-		override public function applyLayout(value:* = null):void {
+		override public function applyLayout(value:Layout = null):void {
 			if (!layout) {				
 				layout = new ListLayout();
 				layout.type = horizontal ? "horizontal" : "vertical";

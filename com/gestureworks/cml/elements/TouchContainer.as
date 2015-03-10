@@ -2,6 +2,7 @@ package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.core.*;
 	import com.gestureworks.cml.interfaces.*;
+	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
@@ -11,35 +12,16 @@ package com.gestureworks.cml.elements
 	import flash.utils.*;
 	
 	/**
-	 * TouchContainer can be used to create interative display containers.
+	 * TouchContainer_New is the base interactive CML display container that all CML display objects extend. 
 	 * It is the CML version of TouchSprite. It keeps track of children through the childlist property.
 	 * 
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
 
-		var tc:TouchContainer = new TouchContainer();
+		var tc:TouchContainer_New = new TouchContainer_New();
+		tc.graphics.beginFill(0x0);
+		tc.graphics.drawRect(0,0,300,300);
 		
-		tc.x = 700;
-		tc.y = 300;
-		tc.alpha = .25;
-		tc.scale = 1;
-		
-		//touch interactions
 		tc.gestureList = { "n-drag":true, "n-scale":true, "n-rotate":true };
-		
-		//loading an image through image element
-		var img:Image = new Image();
-		img.open("orchid.jpg");
-		img.x = 0;
-		img.y = 0;
-		img.width = 200;
-		img.rotation = -20;
-		img.id = "img1";
-		img.scale = 2;
-		tc.addChild(img);
-		
-		//initialise touch container
-		tc.init();
-		addChild(tc);
 		
 	 * </codeblock>
 	 * 
@@ -50,87 +32,80 @@ package com.gestureworks.cml.elements
 	 */ 
 	public class TouchContainer extends TouchSprite implements IContainer, ICSS, IState
 	{
-		public var layoutList:Dictionary = new Dictionary(true);
 		private var b:Bitmap;
 		private var store:Array;
-		
+		private var dropShadowFilter:DropShadowFilter;
+		private var _cloneExclusions:Vector.<String> = new < String > ["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", "tt", "tp", "tg", "td", "clusterID", "pointCount",
+																	   "dN", "N", "_dN", "_N", "touchObjectID", "_touchObjectID", "pointArray", "transformPoint", "transform",
+																	   "childList"];				
+		private var _id:String		
+		private var _cmlIndex:int;		
 		private var _relativeX:Boolean = false;
 		private var _relativeY:Boolean = false;
 		private var _childList:ChildList;
+		private var _width:Number = 0;	
+		private var _height:Number = 0;	
+		private var _widthPercent:Number;	
+		private var _heightPercent:Number;		
+		private var _paddingLeft:Number=0;
+		private var _paddingRight:Number=0;
+		private var _paddingTop:Number=0;
+		private var _paddingBottom:Number=0;
+		private var _dropShadow:Boolean = false;
+		private var _layout:Layout;
+		private var _className:String;
+		private var _stateId:String
+		private var _dimensionsTo:Object;
+		private var _toBitmap:Boolean = false;		
+		
+		protected var cmlGestureList:Object;
+		
+		public var state:Dictionary;			
 				
 		/**
 		 * Constructor
-		 */		
-		public function TouchContainer(_vto:Object=null)
-		{
+		 * @param	_vto The vto(virtual transform object) will receive all gesture transformation updates applied to the touch container. 
+		 */
+		public function TouchContainer(_vto:Object=null){
 			super(_vto);
+			
+			//state tracking
 			state = new Dictionary(false);
 			state[0] = new State(false);
+			
+			//all CML children including non display objects
 			_childList = new ChildList;			
+			
+			//default child interaction
 			mouseChildren = false;
-			affineTransform = false; 
+			
+			//internal gesture transformations
 			nativeTransform = true;	
 		}
 
 		/**
 		 * Initialization function
 		 */
-		public function init():void
-		{
+		public function init():void{
 			updatePercentDim();
 			updateRelativePos();	
 			updatePadding();
 			contentToBitmap();
-		}
-
-				
-		//////////////////////////////////////////////////////////////
-		// IOBJECT
-		//////////////////////////////////////////////////////////////		
-				
-		
-		/**
-		 * Destructor
-		 */
-		override public function dispose():void 		
-		{			
-			super.dispose();
-			state = null; 
-			_childList = null; 
-			layout = null;
-			layoutList = null;							
-			cmlGestureList = null;					
-			
-			if (childList) {
-				for (var i:int = 0; i < childList.length; i++) {	
-					var child:Object = childList.getIndex(i);
-					if (child.hasOwnProperty("dispose"))
-						child["dispose"]();
-					childList.removeIndex(i);					
-				}
-			}
-				
-			CMLObjectList.instance.removeByValue(this);
-		}
-		
+		}						
 					
-		private var _id:String
 		/**
 		 * @inheritDoc
 		 */
-		public function get id():String {return _id};
-		public function set id(value:String):void
-		{
+		public function get id():String { return _id };
+		public function set id(value:String):void{
 			_id = value;
 		}
 		
-		private var _cmlIndex:int;
 		/**
 		 * @inheritDoc
 		 */
-		public function get cmlIndex():int {return _cmlIndex};
-		public function set cmlIndex(value:int):void
-		{
+		public function get cmlIndex():int { return _cmlIndex };
+		public function set cmlIndex(value:int):void{
 			_cmlIndex = value;
 		}	
 		
@@ -141,12 +116,6 @@ package com.gestureworks.cml.elements
 		public function set childList(value:ChildList):void {
 			_childList = value;
 		}	
-				
-		
-		/**
-		 * @inheritDoc
-		 */	
-		public var state:Dictionary;
 		
 		/**
 		 * @inheritDoc
@@ -156,55 +125,35 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */	
-		public function updateProperties(state:*=0):void
-		{
+		public function updateProperties(state:*=0):void{
 			CMLParser.updateProperties(this, state);		
-		}		
-			
-		/////////////////////////////////////////
-		private var _group:String
+		}									
+		
 		/**
-		 * 
+		 * Sets the width of the container
 		 */
-		public function get group():String {return _group};
-		public function set group(value:String):void
-		{
-			_group = value;
-		}
-		///////////////////////////////////////////////////
-		
-		
-		
-		
-		private var _width:Number = 0;
-		/**
-		 * sets the width of the container
-		 */
-		override public function get width():Number{return _width;}
+		override public function get width():Number{ return _width; }
 		override public function set width(value:Number):void{
 			if (value >= 0) {
 				_width = value; 
 			}
 		}
 		
-		private var _height:Number = 0;
 		/**
-		 * sets the height of the container
+		 * Sets the height of the container
 		 */
-		override public function get height():Number{return _height;}
+		override public function get height():Number{ return _height; }
 		override public function set height(value:Number):void {
 			if(value >= 0){
 				_height = value;
 			}
 		}
 		
-		private var _widthPercent:Number;
 		/**
-		 * sets the width of the container
+		 * Sets width to a specified percentage of the parent's width
 		 */
-		public function get widthPercent():Number{return _widthPercent;}
-		public function set widthPercent(value:Number):void
-		{
+		public function get widthPercent():Number{ return _widthPercent; }
+		public function set widthPercent(value:Number):void{
 			_widthPercent = value;
 			if (parent) {
 				if ( (width + x) > parent.width - parent['paddingLeft']) {
@@ -216,10 +165,9 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-		private var _heightPercent:Number;
 		/**
-		 * sets the height of the container
-		 */
+		 * Sets height to a specified percentage of the parent's height
+		 */				
 		public function get heightPercent():Number{return _heightPercent;}
 		public function set heightPercent(value:Number):void
 		{
@@ -234,120 +182,95 @@ package com.gestureworks.cml.elements
 			}
 		}		
 		
-		private var _paddingLeft:Number=0;
 		/**
 		 * Sets the number of pixels between the component's left border and the left edge of its content area.
 		 * @default 0
 		 */
-		public function get paddingLeft():Number {return _paddingLeft;}
-		public function set paddingLeft(value:Number):void 
-		{
+		public function get paddingLeft():Number { return _paddingLeft; }
+		public function set paddingLeft(value:Number):void {
 			_paddingLeft = value;
-		}	
+		}			
 		
-		private var _paddingRight:Number=0;
 		/**
 		 * Sets the number of pixels between the component's right border and the right edge of its content area.
 		 * @default 0
 		 */
-		public function get paddingRight():Number {return _paddingRight;}
-		public function set paddingRight(value:Number):void 
-		{
+		public function get paddingRight():Number { return _paddingRight; }
+		public function set paddingRight(value:Number):void {
 			_paddingRight = value;
 		}	
-		
-		private var _paddingTop:Number=0;
+				
 		/**
 		 * Sets the number of pixels between the container's top border and the top of its content area.
 		 * @default 0
 		 */
-		public function get paddingTop():Number {return _paddingTop;}
-		public function set paddingTop(value:Number):void 
-		{
+		public function get paddingTop():Number { return _paddingTop; }
+		public function set paddingTop(value:Number):void {
 			_paddingTop = value;
 		}	
-		
-		private var _paddingBottom:Number=0;
+				
 		/**
 		 * Sets the number of pixels between the container's bottom border and the bottom of its content area.
 		 * @default 0
 		 */
-		public function get paddingBottom():Number {return _paddingBottom;}
-		public function set paddingBottom(value:Number):void 
-		{
+		public function get paddingBottom():Number { return _paddingBottom; }
+		public function set paddingBottom(value:Number):void {
 			_paddingBottom = value;
-		}		
-				
+		}							
 		
-		private var dropShadowfilter:DropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);		
-		private var _dropShadow:Boolean = false;
 		/**
 		 * Sets the drop shadow effect
 		 * @default false
 		 */
 		public function get dropShadow():Boolean { return _dropShadow; }		
-		public function set dropShadow(value:Boolean):void 
-		{ 			
-			if (value)
-				this.filters = new Array(dropShadowfilter);
-			else	
+		public function set dropShadow(value:Boolean):void { 		
+			_dropShadow = value;			
+			if (_dropShadow) {
+				if (!dropShadowFilter) {
+					 dropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);						
+				}
+				this.filters = new Array(dropShadowFilter);				
+			}
+			else{	
 				this.filters = [];
-				
-			_dropShadow = value;
-		}
-		
+			}			
+		}				
+
 		/**
-		 * Override targetList assignment to allow CML assignment
-		 */
-		//override public function set targetList(value:*):void 
-		//{
-			//if (value is XML) {				
-				//var ids:Array = String(value).split(",");
-				//for each(var id:String in ids) 					
-					//super.targetList.push(document.getElementById(StringUtils.trim(id))); 
-			//}
-			//else if(value is Array)
-				//super.targetList = value;
-		//}
-		
-		private var _layout:*;
-		/**
-		 * specifies the type of layout
+		 * Positions child display objects based on layout type
 		 */
 		public function get layout():* {return _layout;}
-		public function set layout(value:*):void 
-		{
-			_layout = value;
+		public function set layout(value:*):void {
+			if (value is XML || value is String) {
+				document.getElementById(value);
+			}
+			if(value is Layout){
+				_layout = value;
+			}
 		}			
 		
 		//////////////////////////////////////////////////////////////
 		//  ICSS 
 		//////////////////////////////////////////////////////////////
 		
-
-		private var _className:String;
 		/**
-		 * sets the class name of displayobject
+		 * Grouping id
 		 */
 		public function get className():String { return _className ; }
-		public function set className(value:String):void
-		{
+		public function set className(value:String):void{
 			_className = value;
 		}			
 			
 		
 		//////////////////////////////////////////////////////////////
 		// ISTATE
-		//////////////////////////////////////////////////////////////				
-		
-		private var _stateId:String
+		//////////////////////////////////////////////////////////////							
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function get stateId():* {return _stateId};
-		public function set stateId(value:*):void
-		{
+		public function get stateId():* { return _stateId };
+		public function set stateId(value:*):void{
 			if(value){
 				_stateId = value;
 			}
@@ -449,48 +372,34 @@ package com.gestureworks.cml.elements
 			}			
 		}
 		
-		private var _dimensionsTo:Object;
+		
 		/**
-		 * Sets the dimensions of TouchContainer to given object
+		 * Sets the dimensions to given object
 		 */
 		public function get dimensionsTo():Object { return _dimensionsTo ; }
-		public function set dimensionsTo(value:Object):void
-		{
+		public function set dimensionsTo(value:Object):void{
 			_dimensionsTo = value;
 			this.width = value.width;
 			this.height = value.height;
 			this.length = value.length;
-		}		
-		
-		private var _autoShuffle:Boolean = false;
-		/**
-		 * autoshuffles
-		 */
-		public function get autoShuffle():Boolean{return _autoShuffle;}
-		public function set autoShuffle(value:Boolean):void
-		{
-			_autoShuffle = value;			
-		}
-		
+		}				
 
 		/**
-		 * child appended to the childlist
+		 * Add child to childList
 		 * @param	id
 		 * @param	child
 		 */
-		public function childToList(id:String, child:*):void
-		{			
+		public function childToList(id:String, child:*):void{			
 			childList.append(id, child);			
 		}		
 		
 		/**
-		 * method searches the child and adds to the list
+		 * Method searches the child and adds to the list
 		 */
 		public function addAllChildren():void
 		{		
 			var n:int = childList.length;
-			for (var i:int = 0; i < childList.length; i++) 
-			{
+			for (var i:int = 0; i < childList.length; i++) {
 				if (childList.getIndex(i) is DisplayObject)				
 				addChild(_childList.getIndex(i));
 				if (n != childList.length)
@@ -498,35 +407,17 @@ package com.gestureworks.cml.elements
 			}
 		}		
 
-		// called in layoutCML() method of DisplayManager
 		/**
-		 * method sets the dimensions of each child
+		 * Sets the dimensions of each child
 		 */
-		public function setDimensionsToChild():void
-		{
-			for (var i:int = 0; i < childList.length; i++) 
-			{
-				if (childList.getIndex(i).hasOwnProperty("id") && childList.getIndex(i).id == dimensionsTo)
-				{
+		public function setDimensionsToChild():void{
+			for (var i:int = 0; i < childList.length; i++) {
+				if (childList.getIndex(i).hasOwnProperty("id") && childList.getIndex(i).id == dimensionsTo){
 					this.width = childList.getIndex(i).width;
 					this.height = childList.getIndex(i).height;					
 				}
 			}
 		}	
-		
-		/**
-		 * sets the mousechildren value to true or false.
-		 */
-		override public function get mouseChildren():Boolean 
-		{
-			return super.mouseChildren;
-		}
-		override public function set mouseChildren(value:Boolean):void 
-		{
-			super.mouseChildren = value;
-		}
-
-		protected var cmlGestureList:Object;
 		
 		/**
 		 * Creates gestureList object from XML
@@ -536,10 +427,8 @@ package com.gestureworks.cml.elements
 		public function makeGestureList(value:XMLList):Object
 		{			
 			var gl:*;			
-			gl = value.Gesture;
-			
-			var go:Boolean;
-			
+			gl = value.Gesture;			
+			var go:Boolean;			
 			var object:Object = new Object();
 			
 			for (var i:int; i < gl.length(); i++)
@@ -552,23 +441,20 @@ package com.gestureworks.cml.elements
 				object[String((gl[i].@ref))] = go;
 			}
 			
-			cmlGestureList = object;
-			
+			cmlGestureList = object;			
 			return object;
-		}	
-				
-
+		}		
+		
+		/**
+		 * Assigns CML declared gesture list
+		 */
 		public function activateTouch():void
 		{
-			// checks if object is empty
 			for (var s:String in cmlGestureList) {
 				this.gestureList = cmlGestureList;
 				break;
-			}
-			
-		}
-		
-		
+			}			
+		}		
 
 		//////////////////////////////////////////////////////////////
 		// DOM methods
@@ -580,8 +466,7 @@ package com.gestureworks.cml.elements
 		 * @param	id
 		 * @return
 		 */
-		public function getElementById(id:String):*
-		{
+		public function getElementById(id:String):*{
 			return childList.getKey(id);
 		}
 	
@@ -590,8 +475,7 @@ package com.gestureworks.cml.elements
 		 * @param	className
 		 * @return
 		 */
-		public function getElementsByClassName(className:String):Array
-		{
+		public function getElementsByClassName(className:String):Array{
 			return childList.getCSSClass(className).getValueArray();
 		}		
 		
@@ -600,8 +484,7 @@ package com.gestureworks.cml.elements
 		 * @param	tagName
 		 * @return
 		 */
-		public function getElementsByTagName(tagName:Class):Array
-		{
+		public function getElementsByTagName(tagName:Class):Array{
 			return childList.getClass(tagName).getValueArray();
 		}			
 		
@@ -610,8 +493,7 @@ package com.gestureworks.cml.elements
 		 * @param	selector
 		 * @return
 		 */
-		public function querySelector(selector:String):* 
-		{			
+		public function querySelector(selector:String):* {			
 			return searchChildren(selector);
 		}		
 
@@ -620,34 +502,10 @@ package com.gestureworks.cml.elements
 		 * @param	selector
 		 * @return
 		 */
-		public function querySelectorAll(selector:*):Array 
-		{
+		public function querySelectorAll(selector:*):Array {
 			return searchChildren(selector, Array);
-		}			
-		
-		private function updateChildren():void
-		{			
-			for (var i:int = 0; i < childList.length; i++)
-			{
-				if (childList.getIndex(i).hasOwnProperty("updateProperties")) 
-					childList.getIndex(i).updateProperties();
-			}
-		}
-				
+		}								
 	
-		private var _sound:String;
-		public function get sound():String { return _sound; }
-		public function set sound(value:String):void {
-			_sound = value;
-			if (_sound) {
-				//SoundUtils.attachSound(this, _sound);
-			}
-		}	
-		
-		private var _cloneExclusions:Vector.<String> = new <String>
-			["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", 
-			"tt", "tp", "tg", "td", "clusterID", "pointCount", "dN", "N", "_dN", "_N", 
-		"touchObjectID", "_touchObjectID", "pointArray", "transformPoint", "transform", "childList"];
 		/**
 		 * Returns a list of properties to exclude when cloning this object
 		 */
@@ -784,67 +642,36 @@ package com.gestureworks.cml.elements
 	
 		
 		/**
-		 * Parse cml for local layouts.
+		 * Default parseCML routine
 		 * @param	cml
 		 * @return
 		 */
-		public function parseCML(cml:XMLList):XMLList {
-			//cmlGestureList = makeGestureList(cml.GestureList);			
+		public function parseCML(cml:XMLList):XMLList {			
 			
 			var node:XML = XML(cml);
-			var obj:Object;
-			var layoutId:String;
-			var layoutCnt:int = 0;
+			var obj:Layout;
 			var attrName:String;
-			var returnNode:XMLList = new XMLList;
 			var ref:String = "";
 			
-			for each (var item:XML in node.*) {
-				if (item.name() == "Layout") {
-										
-					if (item.@ref != undefined) {
-						ref = String(item.@ref);
-					} 
-					else if (item.@classRef != undefined) {
-						ref = String(item.@classRef);
-					}	
-					
-					if (ref.length) {
-						if (ref.search("Layout") == -1) {
-							ref = ref + "Layout";
-						}
-						obj = CMLParser.createObject(ref);
+			//Search for CML declared layout
+			for each (var item:XML in node.*) {				
+				if (item.name() == "Layout") {				
+					ref = String(item.@ref);										
+					if (ref) {
+						obj = Layout(CMLParser.createObject(ref));
 					}
 					else
-						throw new Error("The Layout tag requires the 'ref' attribute");							
+						throw new Error("The Layout tag must reference a qualified layout class name through the 'ref' attribute");							
 					
 					//apply attributes
 					for each (var attrValue:* in item.@*) {				
-						attrName = attrValue.name().toString();						
-						if (attrValue == "true")
-							attrValue = true;
-						else if (attrValue == "false")
-							attrValue = false;
+						attrName = attrValue.name().toString();	
+						attrValue = attrValue == "true" ? true : attrValue == "false" ? false : attrValue;
 						if (attrName != "ref" && attrName != "classRef")
 							obj[attrName] = attrValue;							
 					}					
-					
-					//layout id is either user defined or index
-					if (item.@id != undefined)
-						layoutId = item.@id;
-					else 
-						layoutId = layoutCnt.toString();					
-					layoutList[layoutId] = obj;
-					
-					//by default layout is the first local layout child, the user can specify the initial
-					//layout through the container's layout property
-					if (layoutCnt == 0)
-						layout = layoutId;
-					
-					//increment index	
-					layoutCnt++;						
-				}
-								
+					layout = obj; 
+				}								
 			}
 			
 			//remove processed 
@@ -854,6 +681,9 @@ package com.gestureworks.cml.elements
 			return cml.*;
 		}
 		
+		/**
+		 * Converts container to bitmap
+		 */
 		private function contentToBitmap():void {
 			if(b && b.bitmapData) {
 				b.bitmapData.dispose();
@@ -867,34 +697,17 @@ package com.gestureworks.cml.elements
 				store = DisplayUtils.removeAllChildren(this);
 				addChild(b);
 			}
-			
-
 		}
 				
 		/**
 		 * Apply the containers layout
 		 * @param	value
 		 */		
-		public function applyLayout(value:*=null):void
-		{			
-			if (!value && layout is ILayout)
-			{
-				ILayout(layout).layout(this);
-			}
-			else if (!value) {
-				layoutList[String(layout)].layout(this);
-			}
-			else {
-				layout = value;					
-				if (value is ILayout)
-				{
-					value.layout(this);
-				}
-				else
-				{
-					layoutList[value].layout(this);
-				}
-			}
+		public function applyLayout(value:Layout = null):void {			
+			layout = value ? value : layout; 
+			if(layout){
+				layout.layout(this);
+			}			
 		}			
 		
 		/**
@@ -987,8 +800,9 @@ package com.gestureworks.cml.elements
 			return super.removeChildAt(index);
 		}
 		
-		private var _toBitmap:Boolean = false;
-		
+		/**
+		 * Convert container to bitmap on initialization
+		 */		
 		public function get toBitmap():Boolean { return _toBitmap; }
 		public function set toBitmap(value:Boolean):void {
 			_toBitmap = value;
@@ -998,10 +812,7 @@ package com.gestureworks.cml.elements
 		 * When set true this containers children's x position will be laid out relatively 
 		 * to each other.
 		 */
-		public function get relativeX():Boolean {
-			return _relativeX;
-		}
-		
+		public function get relativeX():Boolean { return _relativeX; }		
 		public function set relativeX(value:Boolean):void {
 			_relativeX = value;
 		}
@@ -1010,10 +821,7 @@ package com.gestureworks.cml.elements
 		 * When set true this containers children's y position will be laid out relatively 
 		 * to each other.
 		 */		
-		public function get relativeY():Boolean {
-			return _relativeY;
-		}
-		
+		public function get relativeY():Boolean { return _relativeY; }		
 		public function set relativeY(value:Boolean):void {
 			_relativeY = value;
 		}
@@ -1030,7 +838,27 @@ package com.gestureworks.cml.elements
 			return clone;
 		}	
 		
-		
+		/**
+		 * Destructor
+		 */
+		override public function dispose():void 		
+		{			
+			super.dispose();
+			state = null; 
+			_childList = null; 
+			layout = null;				
+			
+			if (childList) {
+				for (var i:int = 0; i < childList.length; i++) {	
+					var child:Object = childList.getIndex(i);
+					if (child.hasOwnProperty("dispose"))
+						child["dispose"]();
+					childList.removeIndex(i);					
+				}
+			}
+				
+			CMLObjectList.instance.removeByValue(this);
+		}		
 
 	}
 }

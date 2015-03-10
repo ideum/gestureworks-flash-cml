@@ -1,6 +1,7 @@
 package com.gestureworks.cml.elements 
 {
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -409,14 +410,13 @@ package com.gestureworks.cml.elements
 		override public function set layout(value:*):void 
 		{
 			contentContainer.layout = value;
-			contentContainer.layoutList = layoutList;
 		}
 		
 		/**
 		 * Apply layout to content container
 		 * @param	value
 		 */
-		override public function applyLayout(value:* = null):void 
+		override public function applyLayout(value:Layout = null):void 
 		{
 			contentContainer.applyLayout(value);
 		}
