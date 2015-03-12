@@ -259,7 +259,7 @@ package com.gestureworks.cml.elements
 			if (!(value is DisplayObject)) {
 				value = getElementById(value);
 			}
-			return value; 
+			return value as DisplayObject; 
 		}
 
 		/**
@@ -272,7 +272,7 @@ package com.gestureworks.cml.elements
 			if (!(value is DisplayObject)) {
 				value = getElementsByTagName(value);
 			}
-			return value;
+			return value as DisplayObject;
 		}
 		
 		/**
@@ -285,7 +285,7 @@ package com.gestureworks.cml.elements
 			if (!(value is DisplayObject)) {
 				value = getElementsByClassName(value);
 			}
-			return value; 
+			return value as DisplayObject; 
 		}
 		
 		//////////////////////////////////////////////////////////////
