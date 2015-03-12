@@ -1,10 +1,6 @@
 package com.gestureworks.cml.components 
 {
 	import com.gestureworks.cml.elements.Image;
-	import com.gestureworks.cml.elements.Image;
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.utils.CloneUtils;
-	import flash.display.DisplayObject;
 	
 	/**
 	 * The ImageViewer component is primarily meant to display an Image element and its associated meta-data.
@@ -68,7 +64,7 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:* = null):void {
+		override public function updateLayout():void {
 			//if not set, update dimensions to image size
 			if (!width && image) {
 				width = image.width;
@@ -76,7 +72,7 @@ package com.gestureworks.cml.components
 			if (!height && image) {
 				height = image.height; 
 			}			
-			super.updateLayout(event);
+			super.updateLayout();
 		}
 		
 		/**
@@ -86,67 +82,6 @@ package com.gestureworks.cml.components
 			super.dispose();
 			image = null;
 		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function clone():* {	
-			cloneExclusions.push("backs", "textFields");
-			var clone:ImageViewer = CloneUtils.clone(this, this.parent, cloneExclusions);						
-			
-			if (image) {
-				clone.image = String(image.id);
-			}
-			
-			if (front){
-				clone.front = String(front.id);
-			}
-			
-			if (back) {
-				clone.back = String(back.id);
-			}
-			
-			if (background){
-				clone.background = String(background.id);
-			}
-			
-			if (menu)	{
-				clone.menu = String(menu.id);
-			}
-			
-			if (frame) {
-				clone.frame = String(frame.id);
-			}
-			
-			if (fronts && fronts.length > 1) {
-				clone.fronts = [];
-				for (var l:int = 0; l < fronts.length; l++) 
-				{
-					for (var m:int = 0; m < clone.numChildren; m++) 
-					{
-						if (fronts[l].name == clone.getChildAt(m).name) {
-							clone.fronts[l] = clone.getChildAt(m);
-						}
-					}
-				}
-			}
-			
-			if (backs && backs.length > 1) {
-				clone.backs = [];
-				for (var j:int = 0; j < backs.length; j++) 
-				{
-					for (var k:int = 0; k < clone.numChildren; k++) 
-					{
-						if (backs[j].name == clone.getChildAt(k).name) {
-							clone.backs[j] = clone.getChildAt(k);
-						}
-					}
-				}
-			}
-			
-			clone.init();							
-			return clone;
-		}			
 	}
 	
 }

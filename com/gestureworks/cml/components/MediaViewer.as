@@ -1,7 +1,8 @@
 ﻿package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.elements.Button;
+	import com.gestureworks.cml.elements.Media;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.utils.DisplayUtils;
 	
@@ -121,14 +122,14 @@
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:*=null):void {
+		override public function updateLayout():void {
 			// update width and height to the size of the media, if not already specified
 			if (!width && media)
 				width = media.width;
 			if (!height && media)
 				height = media.height;
 				
-			super.updateLayout(event);
+			super.updateLayout();
 		}		
 		
 		/**
@@ -150,16 +151,6 @@
 		override public function dispose():void {
 			super.dispose();	
 			_media = null;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function clone():* {
-			cloneExclusions.push("media");
-			var clone:MediaViewer = super.clone();
-			clone.media = DisplayUtils.getAllChildrenByType(clone, Media)[0];
-			return clone;
-		}		
+		}	
 	}
 }

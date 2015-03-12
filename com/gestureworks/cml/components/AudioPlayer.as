@@ -1,7 +1,7 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.elements.Audio;
+	import com.gestureworks.cml.events.StateEvent;
 		
 	/**
 	 * The AudioPlayer component is primarily meant to display an Audio element and its associated meta-data.
@@ -65,7 +65,7 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:*=null):void {
+		override public function updateLayout():void {
 			// update width and height to the size of the audio, if not already specified
 			if (!width && audio){
 				width = audio.width;

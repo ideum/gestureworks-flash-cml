@@ -1,9 +1,8 @@
 package com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.components.Component;
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
-	
+	import com.gestureworks.cml.elements.ColorPicker;
+	import com.gestureworks.cml.elements.Paint;
+	import com.gestureworks.cml.events.StateEvent;
 	
 	public class PaintViewer extends Component 
 	{	
@@ -44,7 +43,7 @@ package com.gestureworks.cml.components
 			//trace("Painter Started");
 		}	
 					
-		override protected function updateLayout(event:*=null):void 
+		override public function updateLayout():void 
 		{
 			if (_painter) {
 				width = _painter.width;

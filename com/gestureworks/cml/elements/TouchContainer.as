@@ -247,7 +247,46 @@ package com.gestureworks.cml.elements
 			if(value is Layout){
 				_layout = value;
 			}
-		}			
+		}
+		
+		/**
+		 * If provided object is not an instance of <code>DisplayObject</code>, attempt to retrieve child display
+		 * by id
+		 * @param	value Object to evaluate
+		 * @return
+		 */
+		public function displayById(value:*):DisplayObject {
+			if (!(value is DisplayObject)) {
+				value = getElementById(value);
+			}
+			return value; 
+		}
+
+		/**
+		 * If provided object is not an instance of <code>DisplayObject</code>, attempt to retrieve child display
+		 * by tag name (or object type)
+		 * @param	value Object to evaluate
+		 * @return
+		 */		
+		public function displayByTagName(value:*):DisplayObject {
+			if (!(value is DisplayObject)) {
+				value = getElementsByTagName(value);
+			}
+			return value;
+		}
+		
+		/**
+		 * If provided object is not an instance of <code>DisplayObject</code>, attempt to retrieve child display
+		 * by class name
+		 * @param	value Object to evaluate
+		 * @return
+		 */		
+		public function displayByClassName(value:*):DisplayObject {
+			if (!(value is DisplayObject)) {
+				value = getElementsByClassName(value);
+			}
+			return value; 
+		}
 		
 		//////////////////////////////////////////////////////////////
 		//  ICSS 

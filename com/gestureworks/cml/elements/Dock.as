@@ -1,18 +1,25 @@
 package com.gestureworks.cml.elements 
 {
-	import com.gestureworks.cml.components.*;
-	import com.gestureworks.cml.core.*;
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.cml.utils.*;
-	import com.gestureworks.core.*;
-	import com.gestureworks.events.*;
+	import com.gestureworks.cml.components.CollectionViewer;
+	import com.gestureworks.cml.components.Component;
+	import com.gestureworks.cml.components.FlickrViewer;
+	import com.gestureworks.cml.core.CMLParser;
+	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.CollisionDetection;
+	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.LinkedMap;
+	import com.gestureworks.cml.utils.StateUtils;
+	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.TweenLite;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.net.*;
-	import flash.utils.*;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.events.TimerEvent;
+	import flash.net.NetConnection;
+	import flash.net.Responder;
+	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 	
 	/**
 	 * Designed for the database version of the <code>CollectionViewer</code>, the <code>Dock</code> is a retractable control station intended to guide users through 

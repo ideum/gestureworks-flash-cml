@@ -1,7 +1,8 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.elements.Album;
+	import com.gestureworks.cml.elements.RadioButtons;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 	
@@ -168,10 +169,8 @@ package com.gestureworks.cml.components
 		/**
 		 * Updates dimensions and other attributes
 		 */
-		override protected function updateLayout(event:*=null):void 
-		{
-			
-			
+		override public function updateLayout():void 
+		{						
 			// update width and height to the size of the album, if not already specified
 			if (!width && album)
 				width = album.width;
@@ -194,13 +193,13 @@ package com.gestureworks.cml.components
 				}
 			}
 			else if (event.value == "forward") {
-				if (side == "back" && back is Album)
+				if (flipped && back is Album)
 					back.next();
 				else
 					album.next();
 			}
 			else if (event.value == "back") {
-				if (side == "back" && back is Album)
+				if (flipped && back is Album)
 					back.previous();
 				else
 					album.previous();

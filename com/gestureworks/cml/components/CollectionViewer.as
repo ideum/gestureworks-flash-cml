@@ -1,23 +1,31 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.core.*;
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.core.CMLObjectList;
+	import com.gestureworks.cml.elements.Dock;
+	import com.gestureworks.cml.elements.Graphic;
+	import com.gestureworks.cml.elements.Text;
+	import com.gestureworks.cml.elements.TouchContainer;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.FanLayout;
 	import com.gestureworks.cml.layouts.ListLayout;
 	import com.gestureworks.cml.layouts.PileLayout;
 	import com.gestureworks.cml.layouts.PointLayout;
-	import com.gestureworks.cml.utils.*;
-	import com.gestureworks.core.*;
-	import com.gestureworks.events.*;
+	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.List;
+	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.easing.Expo;
 	import com.greensock.TweenLite;
-	import flash.display.*;
-	import flash.events.*;
-	import flash.geom.*;
-	import flash.net.*;
-	import flash.utils.*;
-	import org.tuio.*;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
+	import flash.utils.Timer;
 	
 	
 	/**
@@ -241,14 +249,14 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:* = null):void {			
-			var target:DisplayObject = event.target;
-			if (tweens[target.parent]) {
-				tweens[target.parent].kill();
-				tweens[target.parent] = null;
-				delete tweens[target.parent];
-			}			
-			moveToTop(target);
+		override public function updateLayout():void {			
+			//var target:DisplayObject = event.target;
+			//if (tweens[target.parent]) {
+				//tweens[target.parent].kill();
+				//tweens[target.parent] = null;
+				//delete tweens[target.parent];
+			//}			
+			//moveToTop(target);
 		}			
 		
 		

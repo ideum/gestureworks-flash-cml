@@ -1,7 +1,8 @@
 package  com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.elements.Slider;
+	import com.gestureworks.cml.elements.YouTube;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	
@@ -75,7 +76,7 @@ package  com.gestureworks.cml.components
 			super.init();
 		}
 		
-		override protected function updateLayout(event:*=null):void 
+		override public function updateLayout():void 
 		{
 			// update width and height to the size of the video, if not already specified
 			if (!width && video)

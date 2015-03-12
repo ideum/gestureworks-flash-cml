@@ -1,14 +1,10 @@
 ﻿package com.gestureworks.cml.components
-{
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.core.*;
-	import flash.display.*;
-	import flash.events.*;
-	import org.openzoom.flash.components.*;
-	import org.openzoom.flash.viewport.constraints.*;
-	import org.tuio.*;
-	
+{	
+	import com.gestureworks.cml.elements.Gigapixel;
+	import com.gestureworks.cml.events.StateEvent;
+	import flash.display.DisplayObject;
+	import org.openzoom.flash.components.SceneNavigator;
+	import org.openzoom.flash.viewport.constraints.ScaleConstraint;
 	/**
 	 * The GigapixelViewer component is primarily meant to display a Gigapixel element and its associated meta-data.
 	 * 
@@ -104,7 +100,7 @@
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:* = null):void {
+		override public function updateLayout():void {
 			
 			if (!width) {
 				width = gigapixel.width;
@@ -112,7 +108,7 @@
 			if (!height) {
 				height = gigapixel.height;	
 			}
-			super.updateLayout(event);
+			super.updateLayout();
 		}
 		
 		/**

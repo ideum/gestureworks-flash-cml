@@ -1,7 +1,7 @@
 package com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.elements.Flickr;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.utils.CloneUtils;
 	import flash.display.DisplayObject;
 	
@@ -92,7 +92,7 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:*= null):void {
+		override public function updateLayout():void {
 			if (flickr) {
 				width = flickr.width;
 				height = flickr.height;	
@@ -122,71 +122,7 @@ package com.gestureworks.cml.components
 			if (flickr) {
 				flickr.addEventListener(StateEvent.CHANGE, onLoadComplete);		
 			}
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function clone():* {
-			cloneExclusions.push("backs", "fronts");
-			var clone:FlickrViewer = CloneUtils.clone(this, this.parent, cloneExclusions);
-						
-			if (flickr) {
-				clone.flickr = String(flickr.id);
-			}
-			
-			if (front) {
-				clone.front = String(front.id);
-			}
-			
-			if (back) {
-				clone.back = String(back.id);
-			}
-			
-			if (background) {
-				clone.background = String(background.id);
-			}
-			
-			if (menu) {
-				clone.menu = String(menu.id);
-			}
-			
-			if (frame) {
-				clone.frame = String(frame.id);
-			}
-			
-			if (fronts && fronts.length > 1) {
-				clone.fronts = [];
-				for (var l:int = 0; l < fronts.length; l++) {
-					for (var m:int = 0; m < clone.numChildren; m++) {
-						if (fronts[l].name == clone.getChildAt(m).name) {
-							clone.fronts[l] = clone.getChildAt(m);
-						}
-					}
-				}
-			}
-			
-			if (backs && backs.length > 1) {
-				clone.backs = [];
-				for (var j:int = 0; j < backs.length; j++) {
-					for (var k:int = 0; k < clone.numChildren; k++) {
-						if (backs[j].name == clone.getChildAt(k).name) {
-							clone.backs[j] = clone.getChildAt(k);
-						}
-					}
-				}
-			}
-			clone.init();
-			
-			if (clone.textFields) {
-				for (var i:int = 0; i < clone.textFields.length; i++) {
-					clone.textFields[i].x = textFields[i].x;
-					clone.textFields[i].y = textFields[i].y;
-				}
-			}
-			return clone;
-		}
+		}				
 		
 		/**
 		 * @inheritDoc

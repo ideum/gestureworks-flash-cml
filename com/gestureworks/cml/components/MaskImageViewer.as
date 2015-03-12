@@ -1,11 +1,9 @@
 ﻿package com.gestureworks.cml.components
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
+	import com.gestureworks.cml.elements.MaskContainer;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
-	import flash.events.*;
-	import flash.utils.*;
 
 	/**
 	 * The MaskImageViewer component is primarily meant to display a MaskContainer element and its associated meta-data.
@@ -81,7 +79,7 @@
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:* = null):void 
+		override public function updateLayout():void 
 		{
 			// update width and height to the size of the image, if not already specified
 			if (!width && maskCon)
@@ -89,7 +87,7 @@
 			if (!height && maskCon)
 				height = maskCon.height;
 				
-			super.updateLayout(event);
+			super.updateLayout();
 		}
 		
 		/**

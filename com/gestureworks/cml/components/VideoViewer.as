@@ -1,9 +1,7 @@
 package com.gestureworks.cml.components 
 {
-	import com.gestureworks.cml.elements.*;
-	import com.gestureworks.cml.events.*;
-	import com.gestureworks.events.GWTouchEvent;
-	import flash.display.DisplayObject;
+	import com.gestureworks.cml.elements.Video;
+	import com.gestureworks.cml.events.StateEvent;
 	
 	/**
 	 * The VideoViewer component is primarily meant to display a Video element and its associated meta-data.
@@ -69,7 +67,7 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override protected function updateLayout(event:*=null):void {
+		override public function updateLayout():void {
 			//if not set, update dimensions to image size
 			if (!width && video){
 				width = video.width;
