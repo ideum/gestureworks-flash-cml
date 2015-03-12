@@ -11,16 +11,9 @@ package com.gestureworks.cml.components
 
 
 	/**
-	 * The Component manages a group of elements to create a high-level interactive touch container.
-	 * 
-	 * <p>It is composed of the following: 
-	 * <ul>
-	 * 	<li>front</li>
-	 * 	<li>back</li>
-	 * 	<li>menu</li>
-	 * 	<li>frame</li>
-	 * </ul></p>
-	 *  
+	 * The Component manages a group of elements to create a high-level interactive touch container. It's fundamental composition includes
+	 * a primary display element on the @see #front side, a secondary display on the @see #back side, a @see #menu for display controls, and
+	 * a ui @see #frame.
 	 * @author Ideum
 	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	
@@ -32,7 +25,7 @@ package com.gestureworks.cml.components
 		private var _frame:DisplayObject;
 		private var _hideFrontOnFlip:Boolean = true;
 		private var _timeout:Number = 0;
-		private var _fadeoutDuration:Number = 0;
+		private var _fadeDuration:Number = 0;
 		private var _flipped:Boolean; 
 		private var _trackActivity:Boolean; 
 		
@@ -53,7 +46,7 @@ package com.gestureworks.cml.components
 			
 			addEventListener(StateEvent.CHANGE, onStateEvent);					
 			
-			//search for first child instances
+			//search for local instances
 			if(!menu){
 				menu = displayByTagName(Menu);
 			}
@@ -69,8 +62,8 @@ package com.gestureworks.cml.components
 			}
 			
 			//fade out animation
-			if (fadeoutDuration > 0) {
-				fadeTween = TweenLite.to(this, fadeoutDuration, { alpha:0, paused:true }); 
+			if (fadeDuration > 0) {
+				fadeTween = TweenLite.to(this, fadeDuration, { alpha:0, paused:true, onComplete:close }); 
 			}
 			
 			updateLayout();	
@@ -120,7 +113,7 @@ package com.gestureworks.cml.components
 		
 		/**
 		 * Inactivity time(seconds) limit permitted before component auto-closes. A time of zero disables auto-closing. 
-		 * Override @see #close to customize close behavior.
+		 * Override @see #onTimeout to customize auto-close behavior.
 		 * @default 0
 		 */
 		public function get timeout():Number { return _timeout; }
@@ -134,16 +127,21 @@ package com.gestureworks.cml.components
 		 * @param	e
 		 */
 		protected function onTimeout(e:TimerEvent):void {
-			close();
+			if (fadeTween) {
+				fadeTween.play();
+			}
+			else{
+				close();
+			}
 		}		
 		
 		/**
 		 * When set above 0 seconds, enables a fade animation on @see #timeout
 		 * @default 0
 		 */
-		public function get fadeoutDuration():Number { return _fadeoutDuration; }
-		public function set fadeoutDuration(value:Number):void {
-			_fadeoutDuration = value;
+		public function get fadeDuration():Number { return _fadeDuration; }
+		public function set fadeDuration(value:Number):void {
+			_fadeDuration = value;
 		}	
 		
 		/**
@@ -249,8 +247,8 @@ package com.gestureworks.cml.components
 			if(front && back){
 				_flipped = !_flipped;
 				
-				front.visible = !hideFrontOnFlip && !_flipped;
-				back.visble = _flipped;
+				front.visible =  hideFrontOnFlip ? !_flipped : true;
+				back.visible = _flipped;
 			}
 		}
 		
@@ -260,12 +258,13 @@ package com.gestureworks.cml.components
 		public function get flipped():Boolean { return _flipped; }
 		
 		/**
-		 * Synchronize element dimensions with component's
+		 * Equalize element and component dimensions. If component dimensions are undefined, 
+		 * dimensions are set to the main(front) element.
 		 */
-		public function updateLayout():void{	
-			if (front){
-				front.width = width;
-				front.height = height;				
+		public function updateLayout():void {
+			if (front) {
+				width ? front.width = width : width = front.width; 
+				height ? front.height = height : height = front.height; 
 			}						
 			if (back){
 				back.width = width;
@@ -285,7 +284,7 @@ package com.gestureworks.cml.components
 		 */
 		override public function set totalPointCount(value:int):void {
 			super.totalPointCount = value;
-			trackActivity = value > 0; 
+			trackActivity = true; 
 		}	
 		
 		/**
