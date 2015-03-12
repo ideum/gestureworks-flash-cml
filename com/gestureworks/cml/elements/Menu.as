@@ -178,7 +178,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function startTimer(event:* = null):void {	
 			visible = true; 
-			if (autoHide) {
+			if (autoHide && hideTimer) {
 				hideTimer.reset();
 				hideTimer.start();
 			}
