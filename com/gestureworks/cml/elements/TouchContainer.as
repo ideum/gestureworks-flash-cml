@@ -270,7 +270,7 @@ package com.gestureworks.cml.elements
 		 */		
 		public function displayByTagName(value:*):DisplayObject {
 			if (!(value is DisplayObject)) {
-				value = getElementsByTagName(value);
+				value = getElementsByTagName(value)[0];
 			}
 			return value as DisplayObject;
 		}
@@ -506,6 +506,7 @@ package com.gestureworks.cml.elements
 		 * @return
 		 */
 		public function getElementById(id:String):*{
+			id = id && id.charAt(0) == "#" ? id.substring(1) : id;
 			return childList.getKey(id);
 		}
 	
@@ -514,7 +515,8 @@ package com.gestureworks.cml.elements
 		 * @param	className
 		 * @return
 		 */
-		public function getElementsByClassName(className:String):Array{
+		public function getElementsByClassName(className:String):Array {
+			className = className && className.charAt(0) == "." ? className.substring(1) : className;
 			return childList.getCSSClass(className).getValueArray();
 		}		
 		
