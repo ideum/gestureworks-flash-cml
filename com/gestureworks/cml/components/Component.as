@@ -30,7 +30,7 @@ package com.gestureworks.cml.components
 		private var _trackActivity:Boolean; 
 		
 		protected var inactivityTimer:Timer;
-		protected var fadeTween:TweenLite;		
+		protected var fadeTween:TweenLite;
 		
 		/**
 		 * Component Constructor
@@ -324,8 +324,34 @@ package com.gestureworks.cml.components
 				var gestures:Object = gestureList;
 				gestureList = gestures;
 			}
-		}			
+		}	
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
+			
+			//component clone 
+			cloneExclusions.push("front", "back", "frame", "menu");			
+			var clone:Component = super.clone();
+		
+			//verify element references
+			if (!clone.front && front) {
+				clone.front = clone.getChildAt(getChildIndex(front));
+			}
+			if (!clone.back && back) {
+				clone.back = clone.getChildAt(getChildIndex(back));
+			}
+			if (!clone.menu && menu) {
+				clone.menu = clone.getChildAt(getChildIndex(menu));
+			}
+			if (!clone.frame && frame) {
+				clone.frame = clone.getChildAt(getChildIndex(frame));
+			}
+			
+			clone.init();
+			return clone;
+		}
 		/**
 		 * @inheritDoc
 		 */

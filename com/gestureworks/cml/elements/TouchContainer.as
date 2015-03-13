@@ -874,6 +874,7 @@ package com.gestureworks.cml.elements
 		{		
 			var clone:TouchContainer = CloneUtils.clone(this, this.parent, cloneExclusions);
 			clone.graphics.copyFrom(this.graphics);
+			clone.gestureList = CloneUtils.deepCopyObject(gestureList); 
 			clone.init();			
 			
 			return clone;

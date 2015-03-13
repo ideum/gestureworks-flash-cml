@@ -33,7 +33,12 @@ package com.gestureworks.cml.components
 			
 			//listen for image load
 			if (front) {
-				front.addEventListener(StateEvent.CHANGE, onLoad);
+				if (Image(front).isLoaded) {
+					Image(front).resize(front.width, front.height);
+				}
+				else{
+					front.addEventListener(StateEvent.CHANGE, onLoad);
+				}
 			}
 			
 			super.init();	
