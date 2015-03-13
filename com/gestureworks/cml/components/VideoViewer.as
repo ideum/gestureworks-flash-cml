@@ -14,13 +14,6 @@ package com.gestureworks.cml.components
 	public class VideoViewer extends Component 
 	{		
 		/**
-		 * Constructor
-		 */
-		public function VideoViewer() {
-			super();		
-		}
-		
-		/**
 		 * @inheritDoc
 		 */
 		override public function init():void {			
@@ -30,10 +23,8 @@ package com.gestureworks.cml.components
 				front = displayByTagName(Video);
 			}
 			
-			if (front) {
-				if (!(Video(front).isLoaded)) {
-					front.addEventListener(StateEvent.CHANGE, onLoad);
-				}
+			if (front && !(Video(front).isLoaded)) {
+				front.addEventListener(StateEvent.CHANGE, onLoad);
 			}
 				
 			super.init();

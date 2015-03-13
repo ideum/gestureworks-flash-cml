@@ -13,20 +13,13 @@ package com.gestureworks.cml.components
 	 * @see com.gestureworks.cml.elements.Image
 	 */
 	public class ImageViewer extends Component 
-	{						
-		/**
-		 * Constructor
-		 */
-		public function ImageViewer() {
-			super();	
-		}
-		
+	{								
 		/**
 		 * @inheritDoc
 		 */
 		override public function init():void {							
 			
-			//search for local instances
+			//search for local instance
 			if (!front){
 				front = displayByTagName(Image);
 			}	
