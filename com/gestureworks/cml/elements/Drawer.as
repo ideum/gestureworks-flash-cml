@@ -62,9 +62,6 @@ package com.gestureworks.cml.elements
 		private var upDestination:Dictionary = new Dictionary();
 		private var downDestination:Dictionary = new Dictionary();			
 		
-		private var initialized:Boolean = false;
-
-		
 		/**
 		 * Constructor
 		 */
@@ -108,7 +105,7 @@ package com.gestureworks.cml.elements
 			//threshold timer to allow tweening to process
 			timer = new Timer(500);
 			timer.addEventListener(TimerEvent.TIMER, thresholdCheck);
-			initialized = true;
+			super.init();
 		}
 		
 		/**

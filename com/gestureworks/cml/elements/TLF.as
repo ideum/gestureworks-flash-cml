@@ -46,7 +46,6 @@ package com.gestureworks.cml.elements
 		private var configuration:Configuration;
 		private var textFlow:TextFlow;
 		private var container:ContainerController;
-		private var initialized:Boolean = false;
 		private var inputVal:XMLList;
 		private var editManager:EditManager;
 		private var selectionManager:SelectionManager;

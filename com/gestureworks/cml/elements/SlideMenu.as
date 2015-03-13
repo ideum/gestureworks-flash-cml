@@ -476,9 +476,6 @@ package com.gestureworks.cml.elements
 		protected var _subMenus:Dictionary = new Dictionary();
 		public function get subMenus():Dictionary { return _subMenus; }
 		
-		protected var _initialized:Boolean = false;
-		public function get initialized():Boolean { return _initialized; }
-		
 		protected var _totalHeight:Number = 0;
 		public function get totalHeight():Number { return _totalHeight; }
 		
@@ -494,7 +491,7 @@ package com.gestureworks.cml.elements
 		
 		override public function init():void {
 			
-			if (_initialized)
+			if (initialized)
 				return;
 						
 			if (!(parent is SlideMenu) && level > 0) { 
@@ -580,7 +577,7 @@ package com.gestureworks.cml.elements
 			mouseChildren = false;
 			
 			_menuState = _label;
-			_initialized = true;
+			super.init();
 		}
 		
 		//{ region Object creation

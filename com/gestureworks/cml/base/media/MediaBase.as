@@ -21,7 +21,6 @@ package com.gestureworks.cml.base.media
 		private var thumbScaleX:Number;
 		private var thumbScaleY:Number; 
 				
-		protected var initialized:Boolean;	
 		protected var _isLoaded:Boolean;				
 		protected var _percentLoaded:Number = 0;		
 		
@@ -71,9 +70,8 @@ package com.gestureworks.cml.base.media
 		 * @inheritDoc
 		 */
 		override public function init():void {
-			super.init();
 			if (!initialized) {
-				initialized = true; 
+				super.init();
 				processSrc(src);
 			}
 		}
@@ -241,6 +239,11 @@ package com.gestureworks.cml.base.media
 		 * Closes media
 		 */
 		public function close():void {
+			
+			//has not been opened
+			if (!initialized) {
+				return; 
+			}
 			
 			//clear source path
 			_src = null;

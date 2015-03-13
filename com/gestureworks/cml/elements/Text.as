@@ -40,6 +40,7 @@ package com.gestureworks.cml.elements
 
 		private var b:Bitmap;
 		private var bmd:BitmapData;		
+		private var setY:Number = 0;		
 		
 		/**
 		 * Constructor
@@ -1092,7 +1093,6 @@ package com.gestureworks.cml.elements
 			return _textFormat;
 		}		
 		
-		private var setY:Number = 0;
 		/**
 		 * Sets y position of text.
 		 */
@@ -1100,7 +1100,7 @@ package com.gestureworks.cml.elements
 		override public function set y(value:Number):void {
 			super.y = value;
 			setY = value;
-		}			
+		}	
 		
 		/**
 		 * @inheritDoc
@@ -1244,8 +1244,9 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function clone():* { 
-			var clone:Text = CloneUtils.clone(this, this.parent, cloneExclusions, true);
-			clone.init();
+			removeChild(textField);			
+			var clone:Text = super.clone();	
+			addChild(textField);
 			return clone;
 		}	
 		

@@ -38,6 +38,7 @@ package com.gestureworks.cml.elements
 		private var _cloneExclusions:Vector.<String> = new < String > ["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", "tt", "tp", "tg", "td", "clusterID", "pointCount",
 																	   "dN", "N", "_dN", "_N", "touchObjectID", "_touchObjectID", "pointArray", "transformPoint", "transform",
 																	   "childList"];				
+																	   
 		private var _id:String		
 		private var _cmlIndex:int;		
 		private var _relativeX:Boolean = false;
@@ -60,6 +61,7 @@ package com.gestureworks.cml.elements
 		
 		protected var cmlGestureList:Object;
 		
+		public var initialized:Boolean;			
 		public var state:Dictionary;			
 				
 		/**
@@ -86,11 +88,14 @@ package com.gestureworks.cml.elements
 		/**
 		 * Initialization function
 		 */
-		public function init():void{
-			updatePercentDim();
-			updateRelativePos();	
-			updatePadding();
-			contentToBitmap();
+		public function init():void {
+			if(!initialized){
+				updatePercentDim();
+				updateRelativePos();	
+				updatePadding();
+				contentToBitmap();
+				initialized = true; 
+			}
 		}						
 					
 		/**
