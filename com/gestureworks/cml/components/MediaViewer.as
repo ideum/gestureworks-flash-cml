@@ -1,5 +1,6 @@
 ﻿package com.gestureworks.cml.components 
 {
+	import com.gestureworks.cml.base.media.MediaStatus;
 	import com.gestureworks.cml.elements.Button;
 	import com.gestureworks.cml.elements.Media;
 	import com.gestureworks.cml.events.StateEvent;
@@ -7,30 +8,15 @@
 	import com.gestureworks.cml.utils.DisplayUtils;
 	
 	/**
-	 * The MediaViewerNew component is primarily meant to display a Media element and its associated meta-data.
-	 * 
-	 * <p>It is composed of the following: 
-	 * <ul>
-	 * 	<li>media</li>
-	 * 	<li>front</li>
-	 * 	<li>back</li>
-	 * 	<li>menu</li>
-	 * 	<li>frame</li>
-	 * 	<li>background</li>
-	 * </ul></p>
-	 *  
-	 * <p>The width and height of the component are automatically set to the dimensions of the Media element unless it is 
-	 * previously specifed by the component.</p>
-	 * 
-	 * 
+	 * The MediaViewer component displays an Media on the front side and meta-data on the back side.
+	 * The width and height of the component are automatically set to the dimensions of the Media element unless it is 
+	 * previously specifed by the component.
 	 * @author Ideum
 	 * @see Component
 	 * @see com.gestureworks.cml.elements.Media
-	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	 
 	public class MediaViewer extends Component 
 	{
-		private var _media:Media;
 		private var streamOps:RegExp = /(play|pause|stop|resume|seek|volume|pan)$/i;  
 		private var streamControls:Array
 		
@@ -46,28 +32,35 @@
 		 * @inheritDoc
 		 */
 		override public function init():void {			
-			// automatically try to find elements based on AS3 class
-			if (!media){
-				media = searchChildren(Media);
-			}
-			super.init();		
-		}			
-		
-		/**
-		 * Media element
-		 */		
-		public function get media():* { return _media; }
-		public function set media(value:*):void {
-			if (value is XML || value is String) {
-				value = getElementById(value);
+			
+			//search for local instance
+			if (!front){
+				front = displayByTagName(Media);
+			}	
+			
+			//listen for image load
+			if (front) {
+				if (Media(front).isLoaded) {
+					Media(front).image.resize(front.width, front.height);
+				}
+				else{
+					front.addEventListener(StateEvent.CHANGE, onLoad);
+				}
 			}
 			
-			if (value is Media) {
-				_media = value;
-				_media.mediaUpdate = mediaUpdate
-				front = _media;
+			super.init();	
+		}	
+		
+		/**
+		 * Update layout on image load
+		 * @param	event
+		 */
+		private function onLoad(event:StateEvent):void {
+			if (event.property == MediaStatus.LOADED) {
+				front.removeEventListener(StateEvent.CHANGE, onLoad);
+				updateLayout();
 			}
-		}					
+		}		
 		
 		/**
 		 * @inheritDoc
@@ -101,13 +94,13 @@
 		private function mediaUpdate():void {
 			
 			//update controls
-			var displayStreamControls:Boolean = media.current is IStream;
+			var displayStreamControls:Boolean = Media(front).current is IStream;
 			for each(var control:Button in streamControls) {
 				control.visible = displayStreamControls;
 			}
 			
 			//update layout when media dimensions have changed			
-			if (width != media.width || height != media.height) {
+			if (width != Media(front).width || height != Media(front).height) {
 				
 				width = 0;
 				height = 0;
@@ -117,40 +110,26 @@
 					DisplayUtils.initAll(back);
 				}
 			}
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function updateLayout():void {
-			// update width and height to the size of the media, if not already specified
-			if (!width && media)
-				width = media.width;
-			if (!height && media)
-				height = media.height;
-				
-			super.updateLayout();
-		}		
+		}	
 		
 		/**
 		 * @inheritDoc
 		 */
 		override protected function onStateEvent(event:StateEvent):void {	
+			
 			super.onStateEvent(event);
-			if (event.value == "close" && media)
-				media.stop();
-			else if (event.value == "play" && media)
-				media.resume();
-			else if (event.value == "pause" && media)
-				media.pause();				
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function dispose():void {
-			super.dispose();	
-			_media = null;
+			
+			if(front){
+				if (event.value == "close"){
+					Media(front).stop();
+				}
+				else if (event.value == "play"){
+					Media(front).resume();
+				}
+				else if (event.value == "pause"){
+					Media(front).pause();		
+				}
+			}
 		}	
 	}
 }
