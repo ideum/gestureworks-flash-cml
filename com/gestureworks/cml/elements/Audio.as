@@ -366,7 +366,7 @@ package com.gestureworks.cml.elements
 		private function setDisplay():void {
 			
 			//default dimensions
-			if (background || waveform) {
+			if (background || waveform) {			
 				width = width ? width : 500;
 				height = height ? height : 350;
 			}			
@@ -386,7 +386,7 @@ package com.gestureworks.cml.elements
 				waveForm = new Waveform();
 				waveForm.waveColor = waveColor;
 				waveForm.waveWidth = width;
-				waveForm.waveHeight = height;				
+				waveForm.waveHeight = height;	
 				addChild(waveForm);
 			}
 			else {
@@ -431,6 +431,26 @@ package com.gestureworks.cml.elements
 			if (wav) {
 				wav.close();
 			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
+			
+			//pre clone state
+			removeChild(waveForm);			
+			var tmp:Boolean = resetDimensions;
+			resetDimensions = false; 
+			
+			//clone
+			var c:Audio = super.clone();
+			
+			//restore state
+			addChild(waveForm);
+			resetDimensions = tmp; 
+			
+			return c;
 		}
 		
 		/**
