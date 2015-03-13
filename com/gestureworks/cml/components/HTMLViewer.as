@@ -1,111 +1,24 @@
 package com.gestureworks.cml.components {
-	import flash.display.DisplayObject;
+	import com.gestureworks.cml.elements.HTML;
 	
 	/**
-	 * The HTMLViewer used the HTMLElement to display a webpage/website on screen.
-	 * 	
-	 * <p>It is composed of the following: 
-	 * <ul>
-	 * 	<li>image</li>
-	 * 	<li>front</li>
-	 * 	<li>back</li>
-	 * 	<li>menu</li>
-	 * 	<li>frame</li>
-	 * 	<li>background</li>
-	 * </ul></p>
-	 * <p>The width and height of the component are automatically set to the dimensions of the HTML element unless it is 
-	 * previously specifed by the component.</p>
-	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	  
-
-			
-	 * </codeblock>
-	 * 
+	 * The HTMLViewer component displays an HTML element on the front side and meta-data on the back side.
+	 * The width and height of the component are automatically set to the dimensions of the HTML element unless it is 
+	 * previously specifed by the component.
 	 * @author Ideum
 	 * @see Component
 	 * @see com.gestureworks.cml.elements.HTML
-	 * @see com.gestureworks.cml.elements.TouchContainer
 	 */	
 	public class HTMLViewer extends Component {
-		private var backBtnTxt:Text;
-		private var backBtn:Button;
-		private var forwardBtnTxt:Text;
-		private var forwardBtn:Button;
-		public var isLoaded:Boolean = true;		
-		private var _html:*;
-
-		/**
-		 * Contructor
-		 */
-		public function HTMLViewer() {
-			super();
-			mouseChildren = true;
-			nativeTransform = true;
-		}
-		
-		/**
-		 * Sets the video element.
-		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 */		
-		public function get html():* { return _html }
-		public function set html(value:*):void {
-			if (!value) return;
-			
-			if (value is DisplayObject)
-				_html = value;
-			else 
-				_html = searchChildren(value);		
-		}
-		
 		/**
 		 * @inheritDoc
 		 */
-		override public function init():void {	
-			// automatically try to find elements based on AS3 class
-			if (!html)
-				html = searchChildren(HTML);
-			if (!menu)
-				menu = searchChildren(Menu);
-			if (!frame)
-				frame = searchChildren(Frame);
-			if (html)
-				html.addEventListener(StateEvent.CHANGE, onLoadComplete);
-				
-			super.init();
-		}
-		
-		/**
-		 * Load complete event handler
-		 * @param	e
-		 */
-		private function onLoadComplete(e:StateEvent):void {
-			if (e.property == "isLoaded") {
-				html.removeEventListener(StateEvent.CHANGE, onLoadComplete);
-				isLoaded = true;
-				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", isLoaded));
-			}
-		}
-		
-		/**
-		 * @inheritDoc
-		 * @param	event
-		 */
-		override protected function updateLayout(event:*=null):void {
-			if (html) {
-				width = html.width;
-				height = html.height;	
+		override public function init():void {					
+			//search for local instance
+			if (!front){
+				front = displayByTagName(HTML);
 			}	
-			super.updateLayout();				
-		}	
-				
-		/**
-		 * Dispose method to nullify the attributes and remove listener
-		 */
-		override public function dispose():void {
-			super.dispose();
-			html = null;
-		}
-		
+			super.init();
+		}		
 	}
 }
