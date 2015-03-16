@@ -32,7 +32,7 @@ package com.gestureworks.cml.components
 		}		
 		
 		/**
-		 * Update layout on image load
+		 * Update layout on audio load
 		 * @param	event
 		 */
 		private function onLoad(event:StateEvent):void {

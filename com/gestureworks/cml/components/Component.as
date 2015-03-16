@@ -37,6 +37,7 @@ package com.gestureworks.cml.components
 		 */
 		public function Component() {
 			super();
+			mouseChildren = true; 
 		}
 		
 		/**

@@ -52,7 +52,7 @@
 		}	
 		
 		/**
-		 * Update layout on image load
+		 * Update layout on media load
 		 * @param	event
 		 */
 		private function onLoad(event:StateEvent):void {

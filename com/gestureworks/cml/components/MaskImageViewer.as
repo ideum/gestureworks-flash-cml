@@ -1,118 +1,56 @@
 ﻿package com.gestureworks.cml.components
 {
+	import com.gestureworks.cml.base.media.MediaStatus;
 	import com.gestureworks.cml.elements.MaskContainer;
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import flash.display.DisplayObject;
 
 	/**
-	 * The MaskImageViewer component is primarily meant to display a MaskContainer element and its associated meta-data.
-	 * 
-	 * <p>It is composed of the following: 
-	 * <ul>
-	 * 	<li>maskCon</li>
-	 * 	<li>front</li>
-	 * 	<li>back</li>
-	 * 	<li>menu</li>
-	 * 	<li>frame</li>
-	 * 	<li>background</li>
-	 * </ul></p>
-	 * 
-	 * <p>The width and height of the component are automatically set to the dimensions of the MaskContainer element unless it is 
-	 * previously specifed by the component.</p>
-	 * 
-	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	  
-
-			
-	 * </codeblock>
-	 * 
+	 * The MaskImageViewer component displays an MaskImage on the front side and meta-data on the back side.
+	 * The width and height of the component are automatically set to the dimensions of the MaskImage element unless it is 
+	 * previously specifed by the component.
 	 * @author Ideum
 	 * @see Component
-	 * @see com.gestureworks.cml.elements.MaskContainer
-	 * @see com.gestureworks.cml.elements.TouchContainer
-	 */	 
-	public class MaskImageViewer extends Component//ComponentKit
-	{	
-		private var _maskCon:*;
-		
+	 * @see com.gestureworks.cml.elements.MaskImage
+	 */
+	public class MaskImageViewer extends Component
+	{				
 		/**
-		 * Constructor
+		 * @inheritDoc
 		 */
-		public function MaskImageViewer() {
-			super();
-		}
-		
-		/**
-		 * Sets the image mask element.
-		 * This can be set using a simple CSS selector (id or class) or directly to a display object.
-		 * Regardless of how this set, a corresponding display object is always returned. 
-		 */		
-		public function get maskCon():* {return _maskCon}
-		public function set maskCon(value:*):void 
-		{
-			if (!value) return;
+		override public function init():void{						
 			
-			if (value is DisplayObject)
-				_maskCon = value;
-			else 
-				_maskCon = searchChildren(value);					
-		}			
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function init():void 
-		{			
-			// automatically try to find elements based on AS3 class
-			if (!maskCon){
-				_maskCon = searchChildren(MaskContainer);
-				addEventListener(GWGestureEvent.ROTATE, onRotate);
-				addEventListener(GWGestureEvent.MANIPULATE, onRotate);
+			//search for local instance
+			if (!front){
+				front = displayByTagName(MaskContainer);
 			}	
-			if (maskCon) {
-				maskCon.addEventListener(StateEvent.CHANGE, onStateEvent);
+			
+			//listen for image load
+			if (front) {
+				front.addEventListener(StateEvent.CHANGE, onLoad);
 			}
-			super.init();
+			
+			super.init();			
 		}
 		
 		/**
-		 * @inheritDoc
+		 * Update layout on image load
+		 * @param	event
 		 */
-		override public function updateLayout():void 
-		{
-			// update width and height to the size of the image, if not already specified
-			if (!width && maskCon)
-				width = maskCon.width;
-			if (!height && maskCon)
-				height = maskCon.height;
-				
-			super.updateLayout();
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function onStateEvent(event:StateEvent):void
-		{	
-			super.onStateEvent(event);
-			if (event.value == "LOADED") {
-				maskCon.removeEventListener(StateEvent.CHANGE, onStateEvent);
+		private function onLoad(event:StateEvent):void {
+			if (event.property == MediaStatus.LOADED) {
+				front.removeEventListener(StateEvent.CHANGE, onLoad);
 				updateLayout();
 			}
 		}
 		
-		private function onRotate(e:GWGestureEvent):void {
-			_maskCon.dragAngle = this.rotation;
-		}
-		
 		/**
 		 * @inheritDoc
 		 */
-		override public function dispose():void
-		{
-			super.dispose();
-			_maskCon = null;
+		override public function set rotation(value:Number):void {
+			super.rotation = value;
+			MaskContainer(front).dragAngle = value; 
 		}
 	}
 }

@@ -183,7 +183,7 @@ package com.gestureworks.cml.elements
 			
 			createEvents();
 			
-			_loaded = "loaded";
+			_loaded = "isLoaded";
 			
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", _loaded, true));
 		}
