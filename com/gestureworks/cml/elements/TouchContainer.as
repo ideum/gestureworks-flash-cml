@@ -89,9 +89,9 @@ package com.gestureworks.cml.elements
 		 * Initialization function
 		 */
 		public function init():void {
-			updatePercentDim();
-			updateRelativePos();	
+			updatePercentDim();	
 			updatePadding();
+			updateRelativePos();			
 			contentToBitmap();
 			initialized = true; 
 		}						
@@ -379,7 +379,6 @@ package com.gestureworks.cml.elements
 			}	
 			if (relativeY) {
 				for (i = 1; i < numChildren; i++) {			
-					getChildAt(i - 1)['autosize'] = "true";
 					getChildAt(i).y = getChildAt(i - 1).height + getChildAt(i - 1).y;
 					if ( getChildAt(i)['state'][0]['y'] ) {
 						getChildAt(i).y += Number(getChildAt(i)['state'][0].y);
