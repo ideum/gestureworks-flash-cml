@@ -179,7 +179,6 @@ package com.gestureworks.cml.elements
 				return; 
 			}
 			
-			trace(this);
 			//evaluate media type
 			if (value.search(imageType) > -1) {
 				_current = image; 	
