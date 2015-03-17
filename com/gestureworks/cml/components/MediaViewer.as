@@ -87,30 +87,15 @@
 			}
 		}
 		
-		//TODO: Abstract content update to Component
 		/**
-		 * Media change actions
+		 * @inheritDoc
 		 */
-		private function mediaUpdate():void {
-			
-			//update controls
-			var displayStreamControls:Boolean = Media(front).current is IStream;
+		override public function updateLayout():void {
 			for each(var control:Button in streamControls) {
-				control.visible = displayStreamControls;
-			}
-			
-			//update layout when media dimensions have changed			
-			if (width != Media(front).width || height != Media(front).height) {
-				
-				width = 0;
-				height = 0;
-				init();
-				
-				if (back) {
-					DisplayUtils.initAll(back);
-				}
-			}
-		}	
+				control.visible =  Media(front).current is IStream;
+			}			
+			super.updateLayout();
+		}
 		
 		/**
 		 * @inheritDoc
