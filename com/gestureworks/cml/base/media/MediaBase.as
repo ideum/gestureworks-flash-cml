@@ -250,9 +250,9 @@ package com.gestureworks.cml.base.media
 			
 			//clear thumbnail
 			if(thumbnail){
-				thumbnail = null; 
 				_thumbLoaded = false; 
 				onStatus(MediaStatus.THUMB_LOADED, _thumbLoaded);
+				thumbnail = null; 
 			}
 			
 			//update loaded status
