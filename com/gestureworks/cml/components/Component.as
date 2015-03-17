@@ -4,6 +4,7 @@ package com.gestureworks.cml.components
 	import com.gestureworks.cml.elements.Frame;
 	import com.gestureworks.cml.elements.Menu;
 	import com.gestureworks.cml.events.StateEvent;
+	import com.gestureworks.cml.utils.DisplayUtils;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.events.TimerEvent;
@@ -270,6 +271,7 @@ package com.gestureworks.cml.components
 			if (back){
 				back.width = width;
 				back.height = height;
+				DisplayUtils.initAll(back);
 			}				
 			if (frame){
 				frame.width = width;
