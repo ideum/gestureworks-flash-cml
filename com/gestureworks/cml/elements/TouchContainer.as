@@ -89,13 +89,11 @@ package com.gestureworks.cml.elements
 		 * Initialization function
 		 */
 		public function init():void {
-			if(!initialized){
-				updatePercentDim();
-				updateRelativePos();	
-				updatePadding();
-				contentToBitmap();
-				initialized = true; 
-			}
+			updatePercentDim();
+			updateRelativePos();	
+			updatePadding();
+			contentToBitmap();
+			initialized = true; 
 		}						
 					
 		/**
@@ -343,8 +341,8 @@ package com.gestureworks.cml.elements
 		}			
 			
 		/**
-		 *	Updates child percent dimensions within this container
-		 */		
+		 * Sets child dimensions to specified percentages of the container's
+		 */	
 		public function updatePercentDim():void {	
 			var i:int;
 			var w:Number;
@@ -392,27 +390,26 @@ package com.gestureworks.cml.elements
 
 				
 		/**
-		 *	Updates child padding within this container
+		 * Overwrites child coordinates and dimensions with padding values
 		 */
 		public function updatePadding():void {
 			var i:int;
 			var child:DisplayObject;
 			for (i = 0; i < numChildren; i++) {
 				child = getChildAt(i);
-				child.x += paddingLeft;
-				child.y += paddingTop;
-				if ( (child.width + child.x) > width - paddingLeft) {
-					child.width -= paddingLeft;
+				
+				if(paddingLeft){
+					child.x = paddingLeft;
 				}
-				if ( (child.width + child.x) > width - paddingRight) {
-					child.width -= paddingRight;
+				if (paddingRight) {
+					child.width = width - paddingRight - child.x;
 				}
-				if ( (child.height + child.y) > height - paddingTop) {
-					child.height -= paddingTop;
+				if(paddingTop){
+					child.y = paddingTop;
 				}
-				if ( (child.height + child.y) > height - paddingBottom) {
-					child.height -= paddingBottom;
-				}				
+				if (paddingBottom) {
+					child.height = height - paddingBottom - child.y; 
+				}						
 			}			
 		}
 		
