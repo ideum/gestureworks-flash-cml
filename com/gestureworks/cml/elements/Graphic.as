@@ -65,6 +65,7 @@ package com.gestureworks.cml.elements
 		override public function init():void
 		{ 
 			updateGraphic();
+			super.init();
 		}		
 		
 		/**
