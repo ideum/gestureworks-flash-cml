@@ -14,21 +14,17 @@ package com.gestureworks.cml.elements
 	
 	/**
 	 * The Video element loads a video and plays it, and provides access to play, pause, stop, and seek methods.
-	 * 
 	 * <p>It support the following file types are: .mp4, .FLV, .MPEG-4, .m4v, .3GPP, .MOV, .F4V</p>
 	 *
 	 * <codeblock xml:space="preserve" class="+ topic/pre pr-d/codeblock ">
-	 *
-	   var video:VideoElement = new VideoElement();
-		video.src = "path/to/video.mp4";
-		video.autoplay = true;
-		video.init();
-		addChild(video);		
-	 *
+	 *  var video:VideoElement = new VideoElement();
+	 * 	video.src = "path/to/video.mp4";
+	 *	video.autoplay = true;
+	 *	video.init();
+	 *	addChild(video);			 
 	 * </codeblock>
-	 */
-
-	   public class Video extends MediaBase implements IStream {
+	 */		
+	 public class Video extends MediaBase implements IStream {
 		   
 		private var netConnection:NetConnection;
 		private var netStream:NetStream;
@@ -366,9 +362,8 @@ package com.gestureworks.cml.elements
 		private function capturePreview(vis:Boolean, pos:Number):void {			
 			super.updateThumbnail();
 			seek(pos);
-			TweenLite.delayedCall(duration * .005, function() { //delay to simulate seek complete (net status is inaccurate)				
-				visible = vis; 
-			
+			TweenLite.delayedCall(duration * .005, function():void { //delay to simulate seek complete (net status is inaccurate)				
+				visible = vis; 			
 				//handle autoplay
 				if (autoplay) {
 					resume();
