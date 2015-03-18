@@ -1,14 +1,18 @@
 package com.gestureworks.cml.elements 
 {
-	import com.gestureworks.cml.events.StateEvent;
-	import com.gestureworks.cml.interfaces.IAudio;
-	import com.gestureworks.cml.interfaces.IStream;
 	import com.gestureworks.cml.base.media.AudioFactory;
 	import com.gestureworks.cml.base.media.MediaBase;
 	import com.gestureworks.cml.base.media.MediaStatus;
 	import com.gestureworks.cml.base.media.MP3Factory;
-	import com.gestureworks.cml.utils.TimeUtils;
 	import com.gestureworks.cml.base.media.Waveform;
+	import com.gestureworks.cml.interfaces.IAudio;
+	import com.gestureworks.cml.interfaces.IStream;
+	import com.gestureworks.cml.managers.FileManager;
+	import com.gestureworks.cml.utils.DisplayUtils;
+	import com.gestureworks.cml.utils.TimeUtils;
+	import com.greensock.events.LoaderEvent;
+	import com.greensock.loading.ImageLoader;
+	import flash.display.Bitmap;
 	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
 	import flash.utils.getDefinitionByName;
@@ -33,6 +37,7 @@ package com.gestureworks.cml.elements
 		private var _pan:Number = 0.0;
 		private var _position:Number = 0;
 		private var unmuteVolume:Number = 1; 
+		private var _backgroundSrc:String;		
 		
 		private var waveForm:Waveform;
 		private var displayTimer:Timer;
@@ -70,6 +75,11 @@ package com.gestureworks.cml.elements
 		public var backgroundColor:uint = 0x333333;
 		
 		/**
+		 * Inserts a background image in place of the basic graphic generated through the @see #background flag
+		 */
+		public var backgroundImage:Bitmap;
+		
+		/**
 		 * Constructor
 		 */
 		public function Audio() {			
@@ -88,8 +98,7 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function init():void {
-			setDisplay();
-			super.init();			
+			setDisplay(); //super init invoked after display				
 		}
 		
 		/**
@@ -136,7 +145,7 @@ package com.gestureworks.cml.elements
 				audio.src = value; 
 			}
 		}
-		
+				
 		/**
 		 * Apply media stream settings to current audio
 		 */
@@ -353,11 +362,41 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override protected function onStatus(status:String, value:*):void {
+			if (status == MediaStatus.LOADED && value) {
+				updateThumbnail();
+			}			
 			super.onStatus(status, value);
 			//update display timer based on play status
 			if (displayTimer) {
 				isPlaying ? displayTimer.start() : displayTimer.stop();
 			}									
+		}
+				
+		/**
+		 * Sepcifies an external image file to use as the background display; resulting Bitmap is assigned to @see #backgroundImage 
+		 */	
+		public function get backgroundSrc():String { return _backgroundSrc; }
+		public function set backgroundSrc(value:String):void {
+			
+			if (value == _backgroundSrc) {
+				return; 
+			}
+			
+			_backgroundSrc = value; 
+			
+			//preloaded
+			if (FileManager.media.getContent(_backgroundSrc)) {
+				backgroundImage = FileManager.media.getLoader(_backgroundSrc).rawContent; 
+			} 
+			//load file
+			else {
+				var img:ImageLoader = new ImageLoader(_backgroundSrc);
+				img.addEventListener(LoaderEvent.COMPLETE, function(e:LoaderEvent):void {
+					backgroundImage = e.target.rawContent;
+					setDisplay();
+				});
+				img.load();
+			}				
 		}
 		
 		/**
@@ -365,14 +404,30 @@ package com.gestureworks.cml.elements
 		 */
 		private function setDisplay():void {
 			
-			//default dimensions
-			if (background || waveform) {			
-				width = width ? width : 500;
-				height = height ? height : 350;
-			}			
-			
+			//postpone for background image load
+			if (backgroundSrc && !backgroundImage) {
+				return; 
+			}
+						
+			//dimension resolution
+			if (backgroundImage) {				
+				
+				//background dimensions to audio
+				if (width || height) {  
+					backgroundImage = DisplayUtils.resampledBitmap(backgroundImage, width, height);
+				}				
+				//audio to background dimensions
+				else {
+					width = backgroundImage.width; 
+					height = backgroundImage.height;
+				}	
+				
+				//add background
+				backgroundImage.alpha = backgroundAlpha;
+				addChild(backgroundImage);
+			}	
 			//background graphic
-			if (background) {
+			else if (background) {
 				graphics.beginFill(backgroundColor, backgroundAlpha);
 				graphics.drawRect(0, 0, width, height);
 				graphics.endFill();
@@ -403,7 +458,10 @@ package com.gestureworks.cml.elements
 				displayTimer.removeEventListener(TimerEvent.TIMER, update);								
 				displayTimer = null;
 			}
-		}
+			
+			//initialize audio
+			super.init();
+		}		
 		
 		/**
 		 * Update audio display and/or publish progess
@@ -418,14 +476,7 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function close():void {
-			super.close();
-			
-			//update dimensions
-			if (background || waveform) {
-				width = width ? width : 500;
-				height = height ? height : 350;
-			}		
-			
+			super.close();				
 			audio = null;
 			mp3.close();
 			if (wav) {
