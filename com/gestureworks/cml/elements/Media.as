@@ -86,6 +86,7 @@ package com.gestureworks.cml.elements
 				audio.init();
 			}
 			
+			syncThumbSettings();
 			super.init();		
 		}
 		
@@ -179,25 +180,32 @@ package com.gestureworks.cml.elements
 				return; 
 			}
 			
+			//unsubscribe to previous media events
+			if (_current) {
+				_current.removeEventListener(StateEvent.CHANGE, mediaStatus);				
+			}
+			
 			//evaluate media type
 			if (value.search(imageType) > -1) {
-				_current = image; 	
-				_current.addEventListener(StateEvent.CHANGE, mediaLoaded);				
+				_current = image; 					
 				image.src = value; 
 			}
 			else if (value.search(videoType) > -1) {				
-				_current = video; 				
-				_current.addEventListener(StateEvent.CHANGE, mediaLoaded);								
+				_current = video; 											
 				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
 				_current = audio;
-				_current.addEventListener(StateEvent.CHANGE, mediaLoaded);								
 				audio.src = value; 
 			}
 			else {
 				throw new Error("Unsupported media type: " + value);
 			}
+			
+			//subscribe to new media events
+			if (_current) {
+				_current.addEventListener(StateEvent.CHANGE, mediaStatus);				
+			}			
 			
 			//set stream flag
 			_streamMedia = _current is IStream;								
@@ -205,12 +213,11 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Post load updates
+		 * Relay media status
 		 * @param	e
 		 */
-		private function mediaLoaded(e:StateEvent):void {			
+		private function mediaStatus(e:StateEvent):void {			
 			if (e.property == MediaStatus.LOADED && e.value) {
-				current.removeEventListener(StateEvent.CHANGE, mediaLoaded);
 				
 				//sync current media and wrapper dimensions
 				sizeMedia();	
@@ -225,7 +232,22 @@ package com.gestureworks.cml.elements
 				
 				loadComplete();
 			}
+			else if (e.property == MediaStatus.THUMB_LOADED) {
+				if (thumbSrc || thumbnail || !e.value) {
+					return; 
+				}
+				thumbnail = current.thumbnail; 
+				onStatus(e.property, e.value);
+			}
+			else{
+				onStatus(e.property, e.value);
+			}
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function generateThumb():void {} //defer to curent media function
 		
 		/**
 		 * Flag indicating the current media supports stream operations
@@ -243,6 +265,15 @@ package com.gestureworks.cml.elements
 				m.volume = isNaN(volume) ? 1: volume;
 				m.pan = isNaN(pan) ? 0 : pan;
 			}
+		}
+		
+		/**
+		 * Propagate thumb settings to child media elements
+		 */
+		private function syncThumbSettings():void {
+			image.preview = video.preview = audio.preview = preview;
+			image.thumbWidth = video.thumbWidth = audio.thumbWidth = thumbWidth;
+			image.thumbHeight = video.thumbHeight = audio.thumbHeight = thumbHeight;
 		}
 		
 		/**
