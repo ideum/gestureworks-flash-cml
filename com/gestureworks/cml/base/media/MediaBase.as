@@ -89,8 +89,8 @@ package com.gestureworks.cml.base.media
 		}
 		
 		/**
-		 * A bitmap representation of the media element. If one is not provided, the <code>internalThumb</code> flag must be 
-		 * set to <code>true</code> to internally generate the bitmap. The associated media object can be accessed through the 
+		 * A bitmap representation of the media element. If one is not provided, the @see #preview flag must be set to 
+		 * <code>true</code> to internally generate the bitmap. The associated media object can be accessed through the 
 		 * thumbnail's meta data (i.e. thumbnail.metaData["media"]);
 		 */		
 		public function get thumbnail():Bitmap { return _thumbnail; }
