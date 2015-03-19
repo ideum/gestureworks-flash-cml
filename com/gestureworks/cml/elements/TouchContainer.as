@@ -62,7 +62,23 @@ package com.gestureworks.cml.elements
 		protected var cmlGestureList:Object;
 		
 		public var initialized:Boolean;			
-		public var state:Dictionary;			
+		public var state:Dictionary;	
+		
+		//////////////////////////////////////////////////////////////
+		//  Basic State Subscription 
+		//////////////////////////////////////////////////////////////		
+		/**
+		 * A subscription function invoked on visibility changes. The function signature must match
+		 * the following functionName(value:TouchContainer); value being the subscribed object.  
+		 */
+		public var onVisibleState:Function;
+		
+		/**
+		 * A subscription function invoked on point registrations. The function signature must match
+		 * the following functionName(value:TouchContainer); value being the subscribed object.  
+		 */
+		public var onActivity:Function;
+		
 				
 		/**
 		 * Constructor
@@ -338,7 +354,28 @@ package com.gestureworks.cml.elements
 		public function tweenState(sId:*= null, tweenTime:Number = 1, onComplete:Function= null):void {
 			if (StateUtils.tweenState(this, sId, tweenTime, onComplete))
 				stateId = sId;
-		}			
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function set visible(value:Boolean):void {
+			if (onVisibleState != null && super.visible != value) {
+				onVisibleState.call(null, this);
+			}
+			super.visible = value;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function set totalPointCount(value:int):void {
+			var tmp = super.totalPointCount;
+			super.totalPointCount = value;
+			if (onActivity != null && tmp < value) {
+				onActivity.call(null, this);
+			}			
+		}
 			
 		/**
 		 * Sets child dimensions to specified percentages of the container's
@@ -386,8 +423,7 @@ package com.gestureworks.cml.elements
 				}					
 			}				
 		}
-
-				
+			
 		/**
 		 * Overwrites child coordinates and dimensions with padding values
 		 */
@@ -411,8 +447,7 @@ package com.gestureworks.cml.elements
 				}						
 			}			
 		}
-		
-		
+				
 		/**
 		 * Sets the dimensions to given object
 		 */
@@ -680,9 +715,7 @@ package com.gestureworks.cml.elements
 				return returnVal;
 			}
 		}	
-		
-	
-		
+					
 		/**
 		 * Default parseCML routine
 		 * @param	cml
