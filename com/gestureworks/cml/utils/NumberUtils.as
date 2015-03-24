@@ -61,9 +61,18 @@ package com.gestureworks.cml.utils
 		 * @param	maxNum
 		 * @return
 		 */
-		public static function randomNumber(minNum:Number, maxNum:Number):Number   
-        {  
-          return ( ( Math.random() * (maxNum - minNum) ) + minNum);  
+		public static function randomNumber(minNum:Number, maxNum:Number):Number   {  
+          return (Math.floor(Math.random() * (maxNum - minNum + 1 )) + minNum); 
 	    } 
+		
+		/**
+		 * Returns a random integer within a specified range
+		 * @param	minInt
+		 * @param	maxInt
+		 * @return
+		 */
+		public static function randomInt(minInt:int, maxInt:int):int {
+			return (Math.floor(Math.random() * (maxInt - minInt + 1 )) + minInt); 
+		}
 	}
 }
