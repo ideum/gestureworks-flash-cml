@@ -1,6 +1,7 @@
 package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.core.*;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.*;
@@ -63,23 +64,7 @@ package com.gestureworks.cml.elements
 		protected var cmlGestureList:Object;
 		
 		public var initialized:Boolean;			
-		public var state:Dictionary;	
-		
-		//////////////////////////////////////////////////////////////
-		//  Basic State Subscription 
-		//////////////////////////////////////////////////////////////		
-		/**
-		 * A subscription function invoked on visibility changes. The function signature must match
-		 * the following functionName(object:TouchContainer); object being the subscribed object.  
-		 */
-		public var onVisibleState:Function;
-		
-		/**
-		 * A subscription function invoked on point registrations. The function signature must match
-		 * the following functionName(object:TouchContainer); object being the subscribed object.  
-		 */
-		public var onActivity:Function;
-		
+		public var state:Dictionary;			
 				
 		/**
 		 * Constructor
@@ -363,8 +348,8 @@ package com.gestureworks.cml.elements
 		override public function set visible(value:Boolean):void {
 			var tmp:Boolean = super.visible;
 			super.visible = value;
-			if (onVisibleState != null && tmp != value) {
-				onVisibleState.call(null, this);
+			if(tmp != super.visible){
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "visible", value));
 			}
 		}
 		
@@ -374,9 +359,9 @@ package com.gestureworks.cml.elements
 		override public function set totalPointCount(value:int):void {
 			var tmp:int = super.totalPointCount;
 			super.totalPointCount = value;
-			if (onActivity != null && tmp < value) {
-				onActivity.call(null, this);
-			}			
+			if (tmp < value) {
+				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "activity", value));
+			}
 		}
 			
 		/**
