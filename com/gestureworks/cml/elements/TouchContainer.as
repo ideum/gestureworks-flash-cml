@@ -9,6 +9,7 @@ package com.gestureworks.cml.elements
 	import flash.display.*;
 	import flash.events.*;
 	import flash.filters.*;
+	import flash.geom.Point;
 	import flash.utils.*;
 	
 	/**
@@ -69,13 +70,13 @@ package com.gestureworks.cml.elements
 		//////////////////////////////////////////////////////////////		
 		/**
 		 * A subscription function invoked on visibility changes. The function signature must match
-		 * the following functionName(value:TouchContainer); value being the subscribed object.  
+		 * the following functionName(object:TouchContainer); object being the subscribed object.  
 		 */
 		public var onVisibleState:Function;
 		
 		/**
 		 * A subscription function invoked on point registrations. The function signature must match
-		 * the following functionName(value:TouchContainer); value being the subscribed object.  
+		 * the following functionName(object:TouchContainer); object being the subscribed object.  
 		 */
 		public var onActivity:Function;
 		
@@ -360,17 +361,18 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function set visible(value:Boolean):void {
-			if (onVisibleState != null && super.visible != value) {
+			var tmp:Boolean = super.visible;
+			super.visible = value;
+			if (onVisibleState != null && tmp != value) {
 				onVisibleState.call(null, this);
 			}
-			super.visible = value;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function set totalPointCount(value:int):void {
-			var tmp = super.totalPointCount;
+			var tmp:int = super.totalPointCount;
 			super.totalPointCount = value;
 			if (onActivity != null && tmp < value) {
 				onActivity.call(null, this);
@@ -457,7 +459,7 @@ package com.gestureworks.cml.elements
 			this.width = value.width;
 			this.height = value.height;
 			this.length = value.length;
-		}				
+		}
 
 		/**
 		 * Add child to childList
