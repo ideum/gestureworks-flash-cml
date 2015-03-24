@@ -1,5 +1,6 @@
 package com.gestureworks.cml.elements 
 {
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.gestureworks.events.GWTouchEvent;
 	import com.greensock.easing.Expo;
@@ -9,6 +10,9 @@ package com.gestureworks.cml.elements
 	import flash.geom.Rectangle;
 	
 	/**
+	 * The Collection controls the display of its children based on a set number of allowable display objects. All objects not displayed are 
+	 * put into a queue to be invoked when the display count changes (either when an object becomes invisble or is moved offscreen) providing 
+	 * a cyclical browsing of collection objects. 
 	 * @author Ideum
 	 */
 	public class Collection extends Container
@@ -141,7 +145,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Setup display queue
 		 */
-		private function initializeQueue():void {
+		protected function initializeQueue():void {
 			
 			//display trackers
 			displayed = new Vector.<TouchContainer>();
@@ -153,8 +157,10 @@ package com.gestureworks.cml.elements
 				object = getChildAt(i) as TouchContainer;
 				object.visible = false; 
 				
-				//track display states
-				object.onVisibleState = visibilityCheck;
+				//trac visibility
+				object.addEventListener(StateEvent.CHANGE, visibilityCheck);
+				
+				//track position
 				if (object.releaseInertia) {
 					object.addEventListener(GWGestureEvent.COMPLETE, boundaryCheck);
 				}
@@ -199,7 +205,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Display the next object in the queue
 		 */
-		private function displayNext():void {
+		protected function displayNext():void {
 			var next:TouchContainer = queued.shift();
 			displayed.push(next);
 			next.visible = true;
@@ -219,7 +225,7 @@ package com.gestureworks.cml.elements
 		 * Remove from display and append to queue
 		 * @param	object The object to append
 		 */
-		private function addToQueue(object:TouchContainer):void {			
+		protected function addToQueue(object:TouchContainer):void {			
 			displayed.splice(displayed.indexOf(object), 1); 
 			queued.push(object);			
 			displayNext();
@@ -229,10 +235,12 @@ package com.gestureworks.cml.elements
 		 * Transfer invisible objects from display to queue
 		 * @param	object The subscribed object
 		 */
-		private function visibilityCheck(object:TouchContainer):void {
-			object.touchEnabled = object.visible;
-			if (!object.visible) {
-				addToQueue(object);
+		protected function visibilityCheck(event:StateEvent):void {
+			if (event.property == "visible") {
+				event.target.touchEnabled = event.target.visible; 
+				if (!event.target.visible) {
+					addToQueue(event.target as TouchContainer);
+				}
 			}
 		}
 		
@@ -241,7 +249,7 @@ package com.gestureworks.cml.elements
 		 * inertia enabled. 
 		 * @param	event Event fired on gesture complete
 		 */
-		private function boundaryCheck(event:GWGestureEvent):void {
+		protected function boundaryCheck(event:GWGestureEvent):void {
 			if (event.target.visible && !this.hitTestObject(event.target as DisplayObject)) {
 				addToQueue(event.target as TouchContainer);
 			}
@@ -287,7 +295,7 @@ package com.gestureworks.cml.elements
 			//temporarily disable visible callback
 			for (i = 0; i < numChildren; i++) {
 				object = getChildAt(i) as TouchContainer;
-				object.onVisibleState = null; 
+				object.removeEventListener(StateEvent.CHANGE, visibilityCheck);
 			}
 			
 			//clone collection
@@ -296,7 +304,7 @@ package com.gestureworks.cml.elements
 			//re-enable visible callback
 			for (i = 0; i < numChildren; i++) {
 				object = getChildAt(i) as TouchContainer;
-				object.onVisibleState = visibilityCheck; 
+				object.addEventListener(StateEvent.CHANGE, visibilityCheck);
 			}			
 			
 			return clone;
