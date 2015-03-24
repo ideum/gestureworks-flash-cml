@@ -39,8 +39,6 @@ package com.gestureworks.cml.elements
 		public function Collection() {
 			super();
 			addEventListener(Event.ADDED_TO_STAGE, defaultDimensions);
-			displayed = new Vector.<TouchContainer>();
-			queued = new Vector.<TouchContainer>();
 		}
 		
 		/**
@@ -85,9 +83,6 @@ package com.gestureworks.cml.elements
 		 */
 		override public function addChild(child:DisplayObject):DisplayObject {
 			if (child is TouchContainer) {
-				if(!initialized){
-					queued.push(child);
-				}
 				return super.addChild(child);
 			}
 			return child; 
@@ -102,9 +97,6 @@ package com.gestureworks.cml.elements
 		 */
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
 			if (child is TouchContainer) {
-				if(!initialized){
-					queued[index] = child as TouchContainer;
-				}
 				return super.addChildAt(child, index);
 			}
 			return child;
@@ -132,6 +124,8 @@ package com.gestureworks.cml.elements
 		 * @param	object Registered instance to remove
 		 */
 		private function removeObject(object:TouchContainer):void {
+			
+			//remove from display trackers
 			if (queued.indexOf(object) != -1) {
 				queued.splice(queued.indexOf(object), 1);
 			}
@@ -144,15 +138,28 @@ package com.gestureworks.cml.elements
 		// Display Management
 		///////////////////////////////////////////////////		
 		
+		/**
+		 * Setup display queue
+		 */
 		private function initializeQueue():void {
 			
-			//track display states
-			for each(var object:TouchContainer in queued) {
+			//display trackers
+			displayed = new Vector.<TouchContainer>();
+			queued = new Vector.<TouchContainer>();			
+			
+			//populate queue 
+			var object:TouchContainer;
+			for (var i:int = 0; i < numChildren; i++) {
+				object = getChildAt(i) as TouchContainer;
 				object.visible = false; 
+				
+				//track display states
 				object.onVisibleState = visibilityCheck;
 				if (object.releaseInertia) {
 					object.addEventListener(GWGestureEvent.COMPLETE, boundaryCheck);
 				}
+				
+				queued.push(object);
 			}
 			
 			//prevent display count from exceeding the number of objects
@@ -268,6 +275,42 @@ package com.gestureworks.cml.elements
 		private function animateToCenter(object:TouchContainer):void {
 			rect = object.getBounds(this);	
 			TweenLite.fromTo(object, 3, { x:-rect.width, y:-rect.height }, { x:width / 2 - rect.width / 2, y:height / 2 - rect.height / 2, ease:Expo.easeOut } );
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
+			var i:int; 
+			var object:TouchContainer;
+			
+			//temporarily disable visible callback
+			for (i = 0; i < numChildren; i++) {
+				object = getChildAt(i) as TouchContainer;
+				object.onVisibleState = null; 
+			}
+			
+			//clone collection
+			var clone:Collection = super.clone();
+			
+			//re-enable visible callback
+			for (i = 0; i < numChildren; i++) {
+				object = getChildAt(i) as TouchContainer;
+				object.onVisibleState = visibilityCheck; 
+			}			
+			
+			return clone;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispose():void {
+			super.dispose();
+			displayed = null;
+			queued = null;
+			rect = null;
+			_displayBehavior = null;
 		}
 	}
 }
