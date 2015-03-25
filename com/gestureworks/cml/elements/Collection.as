@@ -12,7 +12,7 @@ package com.gestureworks.cml.elements
 	/**
 	 * The Collection controls the display of its children based on a set number of allowable display objects. All objects not displayed are 
 	 * put into a queue to be invoked when the display count changes (either when an object becomes invisble or is moved offscreen) providing 
-	 * a cyclical browsing of collection objects. 
+	 * a cyclical browsing of the collection objects. 
 	 * @author Ideum
 	 */
 	public class Collection extends Container
@@ -272,7 +272,7 @@ package com.gestureworks.cml.elements
 			rect = object.getBounds(this);
 			object.x = width / 2 - rect.width / 2;			
 			object.y = height / 2 - rect.height / 2;			
-			TweenLite.fromTo(object, 1, { alpha:0 }, { alpha:1 } );
+			TweenLite.fromTo(object, .5, { alpha:0 }, { alpha:1 } );
 		}
 		
 		/**
