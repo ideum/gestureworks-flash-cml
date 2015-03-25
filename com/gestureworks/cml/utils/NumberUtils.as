@@ -74,5 +74,21 @@ package com.gestureworks.cml.utils
 		public static function randomInt(minInt:int, maxInt:int):int {
 			return (Math.floor(Math.random() * (maxInt - minInt + 1 )) + minInt); 
 		}
+		
+		/**
+		 * Converts radians to degrees
+		 * @param	value Value in radians
+		 */
+		public static function radiansToDegrees(value:Number):Number {
+			return value * 180 / Math.PI;
+		}
+		
+		/**
+		 * Converts degrees to radians
+		 * @param	value Value in degrees
+		 */
+		public static function degreesToRadians(value:Number):Number {
+			return value * Math.PI / 180;
+		}
 	}
 }
