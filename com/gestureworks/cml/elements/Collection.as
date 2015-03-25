@@ -23,6 +23,7 @@ package com.gestureworks.cml.elements
 		
 		private var _displayCount:int = 1; 		
 		private var _displayBehavior:Function; 
+		private var _background:*; 							
 		
 		/**
 		 * Enables an alternative default display behavior that animates the queued display object to the center
@@ -36,6 +37,20 @@ package com.gestureworks.cml.elements
 		 * @default = true;
 		 */
 		public var prioritizeGesture:Boolean = true; 
+		
+		/**
+		 * Color of default background when @see #background setting is enabled. Not applicable for custom
+		 * background displays. 
+		 * @default 0x000000
+		 */
+		public var backgroundColor:uint;
+		
+		/**
+		 * Alpha of default background when @see #background setting is enabled. Not applicable for custom
+		 * background displays.
+		 * @default 1
+		 */
+		public var backgroundAlpha:Number = 1;
 				
 		/**
 		 * Constructor 
@@ -50,6 +65,22 @@ package com.gestureworks.cml.elements
 		 */
 		override public function init():void {						
 			super.init();	
+			
+			//evaluate background value
+			if (background) {				
+				//default graphic
+				if (background is Boolean) {
+					graphics.clear();
+					graphics.beginFill(backgroundColor, backgroundAlpha);
+					graphics.drawRect(0, 0, width, height);
+					graphics.endFill();
+				}
+				//display object
+				else {
+					background = displayById(background);
+					addChildAt(background, 0);
+				}
+			}
 			
 			//restrict display to dimensions
 			scrollRect = new Rectangle(0, 0, width, height);
@@ -73,6 +104,41 @@ package com.gestureworks.cml.elements
 			removeEventListener(Event.ADDED_TO_STAGE, defaultDimensions);
 			width = width ? width : stage.stageWidth;
 			height = height ? height : stage.stageHeight;
+		}
+			
+		/**
+		 * @inheritDoc
+		 */
+		override public function set width(value:Number):void {
+			super.width = value;
+			if (scrollRect) {
+				scrollRect.width = value; 
+			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function set height(value:Number):void {
+			super.height = value;
+			if (scrollRect) {
+				scrollRect.height = value; 
+			}
+		}
+		
+		/**
+		 * The background setting allows the generation of a default background graphic with standard Boolean values or
+		 * the assignment (either directly or by id) of a display object. 
+		 * @default null
+		 */		
+		public function get background():* { return _background; }
+		public function set background(value:*):void {
+			if (value == "true" || value == "false") {
+				_background = Boolean(value);
+			}
+			else {
+				_background = value; 
+			}
 		}
 		
 		///////////////////////////////////////////////////
@@ -153,7 +219,8 @@ package com.gestureworks.cml.elements
 			
 			//populate queue 
 			var object:TouchContainer;
-			for (var i:int = 0; i < numChildren; i++) {
+			var i:int = background is DisplayObject ? 1 : 0;
+			for (i; i < numChildren; i++) {
 				object = getChildAt(i) as TouchContainer;
 				object.visible = false; 
 				
@@ -293,7 +360,7 @@ package com.gestureworks.cml.elements
 			var object:TouchContainer;
 			
 			//temporarily disable visible callback
-			for (i = 0; i < numChildren; i++) {
+			for (i = background is DisplayObject ? 1 : 0; i < numChildren; i++) {
 				object = getChildAt(i) as TouchContainer;
 				object.removeEventListener(StateEvent.CHANGE, visibilityCheck);
 			}
@@ -302,7 +369,7 @@ package com.gestureworks.cml.elements
 			var clone:Collection = super.clone();
 			
 			//re-enable visible callback
-			for (i = 0; i < numChildren; i++) {
+			for (i = background is DisplayObject ? 1 : 0; i < numChildren; i++) {
 				object = getChildAt(i) as TouchContainer;
 				object.addEventListener(StateEvent.CHANGE, visibilityCheck);
 			}			
