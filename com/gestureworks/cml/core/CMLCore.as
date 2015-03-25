@@ -129,7 +129,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.elements.Button; Button;
 	import com.gestureworks.cml.elements.RadioButtons; RadioButtons;	
 	import com.gestureworks.cml.elements.Drawer; Drawer;
-	import com.gestureworks.cml.elements.Dock; Dock;	
+	//import com.gestureworks.cml.elements.Dock; Dock;	
 	import com.gestureworks.cml.elements.MenuAlbum; MenuAlbum;	
 	import com.gestureworks.cml.elements.ProgressBar; ProgressBar;	
 	import com.gestureworks.cml.elements.Accordion; Accordion;	

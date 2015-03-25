@@ -965,7 +965,7 @@ package com.gestureworks.cml.elements
 				
 				obj.x = location.x + obj.width*obj.scale;
 				obj.y = location.y + location.height;
-				collectionViewer.tagObject(true, obj);
+				//collectionViewer.tagObject(true, obj);
 			}
 			else {		
 				//if ("rotation" in obj["state"][0])
@@ -974,7 +974,7 @@ package com.gestureworks.cml.elements
 					obj.rotation = 0;
 				obj.x = location.x;
 				obj.y = location.y;				
-				collectionViewer.tagObject(false, obj);
+				//collectionViewer.tagObject(false, obj);
 			}
 			
 			
@@ -1093,7 +1093,7 @@ package com.gestureworks.cml.elements
 					clone.removeEventListener(StateEvent.CHANGE, onCloneChange);
 					if (srcMap[clone]) {
 						var src:String = srcMap[clone];	
-						collectionViewer.untagObject(clone);
+						//collectionViewer.untagObject(clone);
 						if (srcMap[src]["preview"])
 							album.unSelect(srcMap[src]["preview"]);
 						else 
