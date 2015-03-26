@@ -10,7 +10,8 @@ package com.gestureworks.cml.elements
 	import flash.display.*;
 	import flash.events.*;
 	import flash.filters.*;
-	import flash.geom.Point;
+	import flash.geom.Matrix;
+	import flash.geom.Transform;
 	import flash.utils.*;
 	
 	/**
@@ -37,6 +38,7 @@ package com.gestureworks.cml.elements
 		private var b:Bitmap;
 		private var store:Array;
 		private var dropShadowFilter:DropShadowFilter;
+		private var initialTransform:Matrix;
 		private var _cloneExclusions:Vector.<String> = new < String > ["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", "tt", "tp", "tg", "td", "clusterID", "pointCount",
 																	   "dN", "N", "_dN", "_N", "touchObjectID", "_touchObjectID", "pointArray", "transformPoint", "transform",
 																	   "childList"];				
@@ -95,6 +97,7 @@ package com.gestureworks.cml.elements
 			updatePadding();
 			updateRelativePos();			
 			contentToBitmap();
+			initialTransform = transform.matrix;
 			initialized = true; 
 		}						
 					
@@ -152,6 +155,20 @@ package com.gestureworks.cml.elements
 			if(value >= 0){
 				_height = value;
 			}
+		}
+		
+		/**
+		 * Returns bounding box width 
+		 */
+		public function get displayWidth():Number {
+			return getBounds(parent ? parent : this).width; 
+		}
+		
+		/**
+		 * Returns bounding box height
+		 */
+		public function get displayHeight():Number {
+			return getBounds(parent ? parent : this).height; 
 		}
 		
 		/**
@@ -886,6 +903,15 @@ package com.gestureworks.cml.elements
 		public function get relativeY():Boolean { return _relativeY; }		
 		public function set relativeY(value:Boolean):void {
 			_relativeY = value;
+		}
+		
+		/**
+		 * Reset transform to initial state
+		 */
+		public function resetTransform():void {
+			if(initialized){
+				transform.matrix = initialTransform;
+			}
 		}
 
 		/**
