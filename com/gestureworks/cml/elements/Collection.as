@@ -20,8 +20,8 @@ package com.gestureworks.cml.elements
 	{				
 		private var displayed:Vector.<TouchContainer>;		//currently displayed
 		private var queued:Vector.<TouchContainer>;			//queued for display 
-		private var rect:Rectangle;							//bounding rectangle reference for child objects
-		private var identity:Matrix;
+		private var objectWidth:Number; 					//child object width reference
+		private var objectHeight:Number; 					//child object height reference
 		
 		private var _displayCount:int = 1; 		
 		private var _displayBehavior:Function; 
@@ -59,8 +59,9 @@ package com.gestureworks.cml.elements
 		 */
 		public function Collection() {
 			super();
-			identity = new Matrix();
 			addEventListener(Event.ADDED_TO_STAGE, defaultDimensions);
+			displayed = new Vector.<TouchContainer>();
+			queued = new Vector.<TouchContainer>();				
 		}
 		
 		/**
@@ -339,10 +340,11 @@ package com.gestureworks.cml.elements
 		 * @param	object The object to display
 		 */
 		private function centerFadeIn(object:TouchContainer):void {
-			object.transform.matrix = identity;
-			rect = object.getBounds(this);
-			object.x = width / 2 - rect.width / 2;			
-			object.y = height / 2 - rect.height / 2;			
+			object.resetTransform();
+			objectWidth = object.width ? object.width : object.displayWidth;
+			objectHeight = object.height ? object.height : object.displayHeight;
+			object.x = width / 2 - objectWidth / 2;			
+			object.y = height / 2 - objectHeight / 2;			
 			TweenLite.fromTo(object, .5, { alpha:0 }, { alpha:1 } );
 		}
 		
@@ -352,9 +354,10 @@ package com.gestureworks.cml.elements
 		 * @param	object The object to display
 		 */
 		private function animateToCenter(object:TouchContainer):void {
-			object.transform.matrix = identity;
-			rect = object.getBounds(this);	
-			TweenLite.fromTo(object, 3, { x:-rect.width, y:-rect.height }, { x:width / 2 - rect.width / 2, y:height / 2 - rect.height / 2, ease:Expo.easeOut } );
+			object.resetTransform();	
+			objectWidth = object.width ? object.width : object.displayWidth;
+			objectHeight = object.height ? object.height : object.displayHeight;			
+			TweenLite.fromTo(object, 3, { x:-objectWidth, y:-objectHeight }, { x:width / 2 - objectWidth / 2, y:height / 2 - objectHeight / 2, ease:Expo.easeOut } );
 		}
 		
 		/**
@@ -389,7 +392,6 @@ package com.gestureworks.cml.elements
 			super.dispose();
 			displayed = null;
 			queued = null;
-			rect = null;
 			_displayBehavior = null;
 		}
 	}
