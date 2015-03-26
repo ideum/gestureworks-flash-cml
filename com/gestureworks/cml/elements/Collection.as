@@ -7,6 +7,7 @@ package com.gestureworks.cml.elements
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
 	/**
@@ -20,6 +21,7 @@ package com.gestureworks.cml.elements
 		private var displayed:Vector.<TouchContainer>;		//currently displayed
 		private var queued:Vector.<TouchContainer>;			//queued for display 
 		private var rect:Rectangle;							//bounding rectangle reference for child objects
+		private var identity:Matrix;
 		
 		private var _displayCount:int = 1; 		
 		private var _displayBehavior:Function; 
@@ -57,6 +59,7 @@ package com.gestureworks.cml.elements
 		 */
 		public function Collection() {
 			super();
+			identity = new Matrix();
 			addEventListener(Event.ADDED_TO_STAGE, defaultDimensions);
 		}
 		
@@ -336,6 +339,7 @@ package com.gestureworks.cml.elements
 		 * @param	object The object to display
 		 */
 		private function centerFadeIn(object:TouchContainer):void {
+			object.transform.matrix = identity;
 			rect = object.getBounds(this);
 			object.x = width / 2 - rect.width / 2;			
 			object.y = height / 2 - rect.height / 2;			
@@ -348,6 +352,7 @@ package com.gestureworks.cml.elements
 		 * @param	object The object to display
 		 */
 		private function animateToCenter(object:TouchContainer):void {
+			object.transform.matrix = identity;
 			rect = object.getBounds(this);	
 			TweenLite.fromTo(object, 3, { x:-rect.width, y:-rect.height }, { x:width / 2 - rect.width / 2, y:height / 2 - rect.height / 2, ease:Expo.easeOut } );
 		}
