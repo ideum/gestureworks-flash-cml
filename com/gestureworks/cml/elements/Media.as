@@ -112,8 +112,7 @@ package com.gestureworks.cml.elements
 					video.resize(width, height);
 				}
 				else{
-					current.width = width;
-					current.height = height;				
+					audio.dimensionsTo = this; 			
 				}
 			}
 		}
