@@ -11,6 +11,7 @@ package com.gestureworks.cml.elements
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Loader;
 	import flash.events.GestureEvent;
+	import flash.geom.Point;
 	import flash.net.URLRequest;
 	
 	public class Carousel extends TouchContainer
@@ -23,11 +24,13 @@ package com.gestureworks.cml.elements
 		
 //==  VARIABLES  =============================================================//
 		
+		// TODO: getters/setters
+		private var rotationOffset   : Number = 0;             // rendered rotation offset angle
+		private var dragScaling      : Number = 1;             // drag movement-scaling factor
+
 		private var snapIndex        : int    = 0;             // index of currently "selected" element
 		private var targetRotation   : Number = 0;             // target rotation for currentRotation, dragging modifies this
 		private var currentRotation  : Number = 0;             // rendered rotation
-		private var rotationOffset   : Number = 0;             // rendered rotation offset angle
-		private var dragScaling      : Number = 2;             // drag movement-scaling factor
 		private var orderedChildList : Vector.<DisplayObject>; // ring elements are stored in here in correct insertion order
 		private var ring             : TouchContainer;         // ring elements are rendered on here in correct z-stack order
 		
@@ -49,7 +52,19 @@ package com.gestureworks.cml.elements
 			ring.nativeTransform = false;
 			ring.gestureList = { "n-drag":true };
 			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
-				targetRotation += e.value.drag_dx * -2 * dragScaling / width;
+				// TODO: perform circular drag only if width and height exceed threshold
+				// TODO: transform drag evt to local coords
+				var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
+				var oldY:Number = (e.value.y - e.value.drag_dy - height/2) / height;
+				var newX:Number = (e.value.x - width /2) / width;
+				var newY:Number = (e.value.y - height/2) / height;
+				
+				var oldTheta:Number = Math.atan2(oldY, oldX);
+				var newTheta:Number = Math.atan2(newY, newX);
+				trace(newTheta - oldTheta);
+				
+//				targetRotation += e.value.drag_dx * -2 * dragScaling / width;
+				targetRotation += newTheta - oldTheta;
 				var n:int = numChildren;
 				snapIndex = -(targetRotation / (2 * Math.PI)) * n;
 				snapIndex = ((snapIndex % n) + n) % n;
@@ -59,6 +74,7 @@ package com.gestureworks.cml.elements
 			
 			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
 				trace("touch release");
+				trace("  " + e.value.drag_dx + " " + e.value.drag_dy);
 			});
 		}
 		
