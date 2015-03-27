@@ -14,92 +14,97 @@ package com.gestureworks.cml.elements
 	import flash.geom.Point;
 	import flash.net.URLRequest;
 	
-	public class Carousel extends TouchContainer
-	{
+	public class Carousel extends TouchContainer {
+		
 		// child anchor points?
 		// dynamic insertion of children?
 		// will this include buttons? currently, users can set external buttons to control rotation using snap and rotation functions
 		// ring spacing distribution function?
 		// passive animation?
+		// TODO: getters/setters
 		
 //==  VARIABLES  =============================================================//
 		
-		// TODO: getters/setters
-		private var rotationOffset   : Number = 0;             // rendered rotation offset angle
-		private var dragScaling      : Number = 1;             // drag movement-scaling factor
+		public static const LINEAR_DRAG   : Boolean = false;
+		public static const CIRCULAR_DRAG : Boolean = true;
+		
+		private var rotationOffset        : Number  = 0;             // rendered rotation offset angle
+		private var dragScaling           : Number  = 1;             // drag movement-scaling factor
+		private var dragType              : Boolean = CIRCULAR_DRAG; // drag type
 
-		private var snapIndex        : int    = 0;             // index of currently "selected" element
-		private var targetRotation   : Number = 0;             // target rotation for currentRotation, dragging modifies this
-		private var currentRotation  : Number = 0;             // rendered rotation
-		private var orderedChildList : Vector.<DisplayObject>; // ring elements are stored in here in correct insertion order
-		private var ring             : TouchContainer;         // ring elements are rendered on here in correct z-stack order
+		private var snapIndex             : int     = 0;             // index of currently "selected" element
+		private var targetRotation        : Number  = 0;             // target rotation for currentRotation, dragging modifies this
+		private var currentRotation       : Number  = 0;             // rendered rotation
+		private var orderedChildList      : Vector.<DisplayObject>;  // ring elements are stored in here in correct insertion order
+		private var ring                  : TouchContainer;          // ring elements are rendered on here in correct z-stack order
 		
 //==  INITIALIZATION  ========================================================//
 		
-		public function Carousel()
-		{
+		public function Carousel() {
 			super.mouseChildren = true;
 			orderedChildList = new Vector.<DisplayObject>();
 			ring = new TouchContainer();
 			super.addChild(ring);
 		}
 		
-		override public function init():void
-		{
+		override public function init():void {
 			updateStackOrder(); // DELETE
-			render();           // DELETE
+			updateCoords();     // DELETE
+			
+			var guide:Graphic = new Graphic;
+			guide.graphics.lineStyle(2, 0xffffff, 1);
+			guide.graphics.moveTo(width / 2, height / 2);
+			guide.graphics.lineTo(width / 2, height);
+			super.addChild(guide);
 			
 			ring.nativeTransform = false;
 			ring.gestureList = { "n-drag":true };
-			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
-				// TODO: perform circular drag only if width and height exceed threshold
-				// TODO: transform drag evt to local coords
-				var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
-				var oldY:Number = (e.value.y - e.value.drag_dy - height/2) / height;
-				var newX:Number = (e.value.x - width /2) / width;
-				var newY:Number = (e.value.y - height/2) / height;
-				
-				var oldTheta:Number = Math.atan2(oldY, oldX);
-				var newTheta:Number = Math.atan2(newY, newX);
-				trace(newTheta - oldTheta);
-				
-//				targetRotation += e.value.drag_dx * -2 * dragScaling / width;
-				targetRotation += newTheta - oldTheta;
-				var n:int = numChildren;
-				snapIndex = -(targetRotation / (2 * Math.PI)) * n;
-				snapIndex = ((snapIndex % n) + n) % n;
-				updateStackOrder();
-				render();
-			});
+			ring.addEventListener(GWGestureEvent.DRAG, dragType?circularDrag:linearDrag);
 			
-			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
-				trace("touch release");
-				trace("  " + e.value.drag_dx + " " + e.value.drag_dy);
-			});
+			// TODO: how to identify which element was tapped?
+			ring.addEventListener(GWGestureEvent.START  , function(e:GWGestureEvent):void { trace("START"  ); } );
+			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void { trace("RELEASE"); });
+		}
+		
+//==  DRAGGING  ==============================================================//
+		
+		private function linearDrag(e:GWGestureEvent):void {
+			// TODO: transform drag evt to local coords
+		}
+		
+		private function circularDrag(e:GWGestureEvent):void {
+			// TODO: transform drag evt to local coords
+			var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
+			var oldY:Number = (e.value.y - e.value.drag_dy - height/2) / height;
+			var newX:Number = (e.value.x - width /2) / width;
+			var newY:Number = (e.value.y - height/2) / height;
+			var oldTheta:Number = Math.atan2(oldY, oldX);
+			var newTheta:Number = Math.atan2(newY, newX);
+			targetRotation += (newTheta - oldTheta) * dragScaling;
+			snapToClosest();
+			updateStackOrder();
+			updateCoords();
 		}
 		
 //==  SNAPPING  ==============================================================//
 		
-		public function setTo(index:int):void
-		{
+		public function setTo(index:int):void {
 			snapIndex = index;
 			targetRotation = currentRotation = (index / numChildren) * 2 * Math.PI;
 		}
 		
-		public function snapTo(index:Number):void
-		{
+		public function snapTo(index:Number):void {
 			var i:int = Math.round(index);
 			var n:int = numChildren;
-			snapIndex = ((i % n) + n) % n; // DELETE?
+		}
+		
+		private function snapToClosest():void {
+			var n:int = numChildren;
+			snapIndex = -((targetRotation + (targetRotation>0?1:-1)*((2 * Math.PI / n) / 2)) / (2 * Math.PI)) * n;
 		}
 		
 		public function rotateLeft ():void { snapTo(snapIndex - 1); }
 		public function rotateRight():void { snapTo(snapIndex + 1); }
-		
-		private function snapToClosest():void
-		{
-			// TODO: snap targetRotation
-		}
 		
 //==  ANCHORING  =============================================================//
 		
@@ -109,8 +114,7 @@ package com.gestureworks.cml.elements
 		
 //==  RENDERING  =============================================================//
 		
-		private function updateStackOrder():void
-		{
+		private function updateStackOrder():void {
 			// dont do this if you dont need to? whats the check for this?
 			ring.removeChildren();
 			var n:int = numChildren;
@@ -124,8 +128,7 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-		private function render():void
-		{
+		private function updateCoords():void {
 			var n:int = numChildren;
 			for (var i:int = 0; i < n; ++i) {
 				// TODO: rotation offset
@@ -139,6 +142,8 @@ package com.gestureworks.cml.elements
 //==  ADD/REMOVE REDIRECTION  ================================================//
 		
 		// TODO: add stuff for ring touch container?
+		
+		override public function get numChildren():int { return orderedChildList.length; }
 		
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
@@ -164,15 +169,13 @@ package com.gestureworks.cml.elements
 			return null;
 		}
 		
+		override public function removeChild(child:DisplayObject):DisplayObject { return removeChildAt(getChildIndex(child)); }
+		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void { orderedChildList.splice(beginIndex, endIndex-beginIndex); }
 		override public function removeChildAt(index:int):DisplayObject {
 			var removedChild:DisplayObject = getChildAt(index);
 			orderedChildList.splice(index, 1);
 			return removedChild;
 		}
-		
-		override public function removeChild(child:DisplayObject):DisplayObject { return removeChildAt(getChildIndex(child)); }
-		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void { orderedChildList.splice(beginIndex, endIndex-beginIndex); }
-		override public function get numChildren():int { return orderedChildList.length; }
 		
 //==  MISC  ==================================================================//
 		
