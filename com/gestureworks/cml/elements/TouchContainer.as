@@ -853,6 +853,7 @@ package com.gestureworks.cml.elements
 		 * @param	endIndex
 		 */
 		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void {
+			if (numChildren <= 0) return;
 			if (endIndex < 0 || endIndex >= numChildren)
 				endIndex = numChildren - 1;
 				

@@ -40,27 +40,8 @@ package com.gestureworks.cml.elements
 		
 		override public function init():void
 		{
-			updateStackOrder();
-			render();
-			/*
-			// DELETE DELETE DELETE DELETE DELETE DELETE DELETE
-			var guide:Graphic = new Graphic();
-			guide.graphics.lineStyle(1, 0xffffff, 1);
-			guide.graphics.drawEllipse(0, 0, this.width, this.height);
-			var n:int = 100;
-			var i:int = n/2;
-			var d:Boolean = false;
-			for (var q:int = 0; q < n; ++q) {
-				guide.graphics.beginFill(0xff0000, 1);
-				var w:Number = 50 + 50 * Math.random();
-				var h:Number = 100 + 100 * Math.random();
-				guide.graphics.drawRect((this.width  + Math.cos(i / n * 2 * Math.PI + Math.PI / 2) * this.width  - w) / 2,
-				                        (this.height + Math.sin(i / n * 2 * Math.PI + Math.PI / 2) * this.height) / 2 - h, w, h);
-				i += (q + 1) * ((d = !d)?1: -1);
-				i = ((i % n) + n) % n;
-			}super.addChild(guide);
-			// DELETE DELETE DELETE DELETE DELETE DELETE DELETE
-			*/
+			updateStackOrder(); // DELETE
+			render();           // DELETE
 		}
 		
 //==  SNAPPING  ==============================================================//
@@ -97,13 +78,12 @@ package com.gestureworks.cml.elements
 		private function updateStackOrder():void
 		{
 			// dont do this if you dont need to? whats the check for this?
-		//	ring.removeChildren();
+			ring.removeChildren();
 			var n:int = numChildren;
 			var i:int = snapIndex;
 			    i = ((i % n) + n) % n;
 			var dir:Boolean = false;
 			for (var q:int = 0; q < n; ++q) {
-				trace("TSET: "+i+"/"+numChildren);
 				ring.addChildAt(getChildAt(i), 0);
 				i += (q + 1) * ((dir = !dir)?1: -1); // iterate in stacking order
 				i = ((i % n) + n) % n;
@@ -151,7 +131,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		override public function removeChildAt(index:int):DisplayObject {
-			var removedChild = getChildAt(index);
+			var removedChild:DisplayObject = getChildAt(index);
 			orderedChildList.splice(index, 1);
 			return removedChild;
 		}
