@@ -102,6 +102,14 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
+		 * @inheritDoc
+		 */
+		override public function set dimensionsTo(value:Object):void {
+			super.dimensionsTo = value;
+			setDisplay();
+		}
+		
+		/**
 		 * Evaluate audio type and activate correct audio factory
 		 * @param	value
 		 */
@@ -428,12 +436,19 @@ package com.gestureworks.cml.elements
 			}	
 			//background graphic
 			else if (background) {
+				graphics.clear();
 				graphics.beginFill(backgroundColor, backgroundAlpha);
 				graphics.drawRect(0, 0, width, height);
 				graphics.endFill();
 			}
 			else {
 				graphics.clear();
+			}
+			
+			//clear waveform
+			if (waveForm) {
+				removeChild(waveForm);
+				waveForm = null;
 			}
 			
 			//waveform
