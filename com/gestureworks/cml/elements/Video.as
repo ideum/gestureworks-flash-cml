@@ -533,8 +533,11 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */	
-		override public function close():void 
-		{
+		override public function close():void {
+			if (!initialized) {
+				return; 
+			}
+			
 			super.close();
 			if (netConnection) 
 			{

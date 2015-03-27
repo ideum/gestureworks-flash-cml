@@ -228,6 +228,10 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function close():void {
+			if (!initialized) {
+				return; 
+			}
+			
 			super.close();
 			_aspectRatio = 0;
 			_landscape = false;
@@ -240,7 +244,9 @@ package com.gestureworks.cml.elements
 			
 			if (_bitmap) {
 				removeChild(_bitmap)
-				_bitmap.bitmapData.dispose();
+				if(_bitmap.bitmapData){
+					_bitmap.bitmapData.dispose();
+				}
 				_bitmap = null;
 			}
 		}		

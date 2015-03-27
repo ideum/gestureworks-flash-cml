@@ -491,6 +491,10 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function close():void {
+			if (!initialized) {
+				return; 
+			}
+			
 			super.close();				
 			audio = null;
 			mp3.close();
