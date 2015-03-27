@@ -107,13 +107,13 @@ package com.gestureworks.cml.elements
 		// TODO: add stuff for ring touch container?
 		
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
-			// if orderedChildList doesnt contain child
+			if (getChildIndex(child) != -1) return child;
 			orderedChildList.splice(index, 0, child);
 			return child;
 		}
 		
 		override public function addChild(child:DisplayObject):DisplayObject {
-			// if orderedChildList doesnt contain child
+			if (getChildIndex(child) != -1) return child;
 			orderedChildList.push(child);
 			return child;
 		}
