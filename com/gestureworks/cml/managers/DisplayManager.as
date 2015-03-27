@@ -162,7 +162,7 @@ package com.gestureworks.cml.managers
 						if (CMLObjectList.instance.getIndex(i).layout) {						
 							layoutString = CMLObjectList.instance.getIndex(i).layout;
 							//apply local layout
-							if (CMLObjectList.instance.getIndex(i).layoutList[layoutString])
+							if (CMLObjectList.instance.getIndex(i).layout)
 								CMLObjectList.instance.getIndex(i).applyLayout();
 		
 							//apply global layout
