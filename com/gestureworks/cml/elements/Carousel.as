@@ -5,15 +5,16 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.ChildList;
 	import com.gestureworks.core.TouchSprite;
+	import com.gestureworks.events.GWGestureEvent;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Loader;
+	import flash.events.GestureEvent;
 	import flash.net.URLRequest;
 	
 	public class Carousel extends TouchContainer
 	{
-		// rotation offset?
-		// drag scaling?
 		// child anchor points?
 		// dynamic insertion of children?
 		// will this include buttons? currently, users can set external buttons to control rotation using snap and rotation functions
@@ -25,6 +26,8 @@ package com.gestureworks.cml.elements
 		private var snapIndex        : int    = 0;             // index of currently "selected" element
 		private var targetRotation   : Number = 0;             // target rotation for currentRotation, dragging modifies this
 		private var currentRotation  : Number = 0;             // rendered rotation
+		private var rotationOffset   : Number = 0;             // rendered rotation offset angle
+		private var dragScaling      : Number = 2;             // drag movement-scaling factor
 		private var orderedChildList : Vector.<DisplayObject>; // ring elements are stored in here in correct insertion order
 		private var ring             : TouchContainer;         // ring elements are rendered on here in correct z-stack order
 		
@@ -42,6 +45,21 @@ package com.gestureworks.cml.elements
 		{
 			updateStackOrder(); // DELETE
 			render();           // DELETE
+			
+			ring.nativeTransform = false;
+			ring.gestureList = { "n-drag":true };
+			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
+				targetRotation += e.value.drag_dx * -2 * dragScaling / width;
+				var n:int = numChildren;
+				snapIndex = -(targetRotation / (2 * Math.PI)) * n;
+				snapIndex = ((snapIndex % n) + n) % n;
+				updateStackOrder();
+				render();
+			});
+			
+			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
+				trace("touch release");
+			});
 		}
 		
 //==  SNAPPING  ==============================================================//
@@ -97,8 +115,8 @@ package com.gestureworks.cml.elements
 				// TODO: rotation offset
 				// TODO: currentRotation
 				var child:DisplayObject = getChildAt(i);
-				child.x = (width  + Math.cos(i / n * 2 * Math.PI + Math.PI / 2) * width  - child.width ) / 2;
-				child.y = (height + Math.sin(i / n * 2 * Math.PI + Math.PI / 2) * height - child.height) / 2;
+				child.x = (width  + Math.cos(i / n * 2 * Math.PI + Math.PI / 2 + targetRotation + rotationOffset) * width  - child.width ) / 2;
+				child.y = (height + Math.sin(i / n * 2 * Math.PI + Math.PI / 2 + targetRotation + rotationOffset) * height - child.height) / 2;
 			}
 		}
 		
