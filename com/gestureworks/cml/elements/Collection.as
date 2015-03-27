@@ -228,7 +228,7 @@ package com.gestureworks.cml.elements
 				object = getChildAt(i) as TouchContainer;
 				object.visible = false; 
 				
-				//trac visibility
+				//track visibility
 				object.addEventListener(StateEvent.CHANGE, visibilityCheck);
 				
 				//track position
@@ -252,13 +252,13 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * The fixed number of objects to display on screen. When an object is not displayed, either by disabling its visibility or 
-		 * moving outside of the display area, another object is queued to replace it. The assigned value must be greater than 0 and
-		 * cannot exceed the number of objects in the collection.
+		 * moving outside of the display area, another object is queued to replace it. The assigned value must be postive and cannot 
+		 * exceed the number of objects in the collection.
 		 * @default 1
 		 */
 		public function get displayCount():int { return _displayCount; }
 		public function set displayCount(value:int):void {
-			if(value > 0){
+			if(value >= 0){
 				_displayCount = value; 
 			}
 		}
@@ -358,6 +358,19 @@ package com.gestureworks.cml.elements
 			objectWidth = object.width ? object.width : object.displayWidth;
 			objectHeight = object.height ? object.height : object.displayHeight;			
 			TweenLite.fromTo(object, 3, { x:-objectWidth, y:-objectHeight }, { x:width / 2 - objectWidth / 2, y:height / 2 - objectHeight / 2, ease:Expo.easeOut } );
+		}
+		
+		/**
+		 * Remove all registered objects
+		 */
+		public function clear():void {
+			var obj:TouchContainer;
+			for each(obj in displayed) {
+				removeChild(obj);
+			}
+			for each(obj in queued) {
+				removeChild(obj);
+			}
 		}
 		
 		/**
