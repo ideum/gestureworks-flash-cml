@@ -91,9 +91,7 @@ package com.gestureworks.cml.elements
 			
 			//stop animation on touch
 			if (prioritizeGesture) {
-				addEventListener(GWTouchEvent.TOUCH_BEGIN, function(e:GWTouchEvent):void {
-					TweenLite.killTweensOf(e.target);
-				});
+				addEventListener(GWTouchEvent.TOUCH_BEGIN, stopAnimation);
 			}
 			
 			//set display
@@ -358,6 +356,23 @@ package com.gestureworks.cml.elements
 			objectWidth = object.width ? object.width : object.displayWidth;
 			objectHeight = object.height ? object.height : object.displayHeight;			
 			TweenLite.fromTo(object, 3, { x:-objectWidth, y:-objectHeight }, { x:width / 2 - objectWidth / 2, y:height / 2 - objectHeight / 2, ease:Expo.easeOut } );
+		}
+		
+		/**
+		 * Search for registered object in targeted object's hierarchy and kill active tweens
+		 * @param	e
+		 */
+		private function stopAnimation(e:GWTouchEvent):void {
+			if (e.target == root) {
+				return; 
+			}
+			if(displayed.indexOf(e.target) >= 0){
+				TweenLite.killTweensOf(e.target);
+			}
+			else {
+				e.target = e.target.parent;
+				stopAnimation(e);
+			}
 		}
 		
 		/**
