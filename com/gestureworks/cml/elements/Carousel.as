@@ -6,6 +6,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.utils.ChildList;
 	import com.gestureworks.core.TouchSprite;
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Loader;
 	import flash.net.URLRequest;
 	
@@ -21,24 +22,27 @@ package com.gestureworks.cml.elements
 		
 //==  VARIABLES  =============================================================//
 		
-		private var snapIndex        : int    = 0;     // index of currently "selected" element
-		private var targetRotation   : Number = 0;     // target rotation for currentRotation, dragging modifies this
-		private var currentRotation  : Number = 0;     // rendered rotation
-		private var orderedChildList : TouchContainer; // ring elements are stored in here in correct insertion order
-		private var ring             : TouchContainer; // ring elements are rendered on here in correct z-stack order
+		private var snapIndex        : int    = 0;             // index of currently "selected" element
+		private var targetRotation   : Number = 0;             // target rotation for currentRotation, dragging modifies this
+		private var currentRotation  : Number = 0;             // rendered rotation
+		private var orderedChildList : Vector.<DisplayObject>; // ring elements are stored in here in correct insertion order
+		private var ring             : TouchContainer;         // ring elements are rendered on here in correct z-stack order
 		
 //==  INITIALIZATION  ========================================================//
 		
 		public function Carousel()
 		{
 			super.mouseChildren = true;
-			orderedChildList = new TouchContainer();
+			orderedChildList = new Vector.<DisplayObject>();
 			ring = new TouchContainer();
 			super.addChild(ring);
 		}
 		
 		override public function init():void
 		{
+			updateStackOrder();
+			render();
+			/*
 			// DELETE DELETE DELETE DELETE DELETE DELETE DELETE
 			var guide:Graphic = new Graphic();
 			guide.graphics.lineStyle(1, 0xffffff, 1);
@@ -56,6 +60,7 @@ package com.gestureworks.cml.elements
 				i = ((i % n) + n) % n;
 			}super.addChild(guide);
 			// DELETE DELETE DELETE DELETE DELETE DELETE DELETE
+			*/
 		}
 		
 //==  SNAPPING  ==============================================================//
@@ -63,7 +68,7 @@ package com.gestureworks.cml.elements
 		public function setTo(index:int):void
 		{
 			snapIndex = index;
-			// targetRotation = currentRotation = TODO;
+			targetRotation = currentRotation = (index / numChildren) * 2 * Math.PI;
 		}
 		
 		public function snapTo(index:Number):void
@@ -78,7 +83,7 @@ package com.gestureworks.cml.elements
 		
 		private function snapToClosest():void
 		{
-			// use targetRotation
+			// TODO: snap targetRotation
 		}
 		
 //==  ANCHORING  =============================================================//
@@ -92,11 +97,13 @@ package com.gestureworks.cml.elements
 		private function updateStackOrder():void
 		{
 			// dont do this if you dont need to? whats the check for this?
-			ring.removeChildren();
+		//	ring.removeChildren();
 			var n:int = numChildren;
 			var i:int = snapIndex;
+			    i = ((i % n) + n) % n;
 			var dir:Boolean = false;
 			for (var q:int = 0; q < n; ++q) {
+				trace("TSET: "+i+"/"+numChildren);
 				ring.addChildAt(getChildAt(i), 0);
 				i += (q + 1) * ((dir = !dir)?1: -1); // iterate in stacking order
 				i = ((i % n) + n) % n;
@@ -106,7 +113,7 @@ package com.gestureworks.cml.elements
 		private function render():void
 		{
 			var n:int = numChildren;
-			for (var i:int = 0; i < n; ++i){
+			for (var i:int = 0; i < n; ++i) {
 				// TODO: rotation offset
 				// TODO: currentRotation
 				var child:DisplayObject = getChildAt(i);
@@ -117,33 +124,47 @@ package com.gestureworks.cml.elements
 		
 //==  ADD/REMOVE REDIRECTION  ================================================//
 		
-		// TODO: add stuff for ring touch container
-		override public function addChildAt(child:DisplayObject, index:int):DisplayObject { return orderedChildList.addChildAt(child, index); }
-		override public function addChild(child:DisplayObject):DisplayObject { return orderedChildList.addChild(child); }
-		override public function getChildAt(index:int):DisplayObject { return orderedChildList.getChildAt(index); }
-		override public function getChildByName(name:String):DisplayObject { return orderedChildList.getChildByName(name); }
-		override public function getChildIndex(child:DisplayObject):int { return orderedChildList.getChildIndex(child); }
-		override public function removeChildAt(index:int):DisplayObject { return orderedChildList.removeChildAt(index); }
-		override public function removeChild(child:DisplayObject):DisplayObject { return orderedChildList.removeChild(child); }
-		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void { orderedChildList.removeChildren(beginIndex, endIndex); }
+		// TODO: add stuff for ring touch container?
+		
+		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
+			// if orderedChildList doesnt contain child
+			orderedChildList.splice(index, 0, child);
+			return child;
+		}
+		
+		override public function addChild(child:DisplayObject):DisplayObject {
+			// if orderedChildList doesnt contain child
+			orderedChildList.push(child);
+			return child;
+		}
+		
+		override public function getChildAt(index:int):DisplayObject { return orderedChildList[index]; }
+		override public function getChildIndex(child:DisplayObject):int { return orderedChildList.indexOf(child); }
+		override public function getChildByName(name:String):DisplayObject {
+			var i:int, n:int = numChildren;
+			for (i = 0; i < n; ++i) {
+				var child:DisplayObject = getChildAt(i);
+				if (child.name == name) return child;
+			}
+			
+			return null;
+		}
+		
+		override public function removeChildAt(index:int):DisplayObject {
+			var removedChild = getChildAt(index);
+			orderedChildList.splice(index, 1);
+			return removedChild;
+		}
+		
+		override public function removeChild(child:DisplayObject):DisplayObject { return removeChildAt(getChildIndex(child)); }
+		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void { orderedChildList.splice(beginIndex, endIndex-beginIndex); }
+		override public function get numChildren():int { return orderedChildList.length; }
 		
 //==  MISC  ==================================================================//
 		
-		// override public function set clusterBubbling(value:Boolean):void
-		// override public function get mouseChildren():Boolean
-		// override public function set mouseChildren(value:Boolean):void
-		
 		override public function set layout(value:*):void { }
 		override public function applyLayout(value:Layout = null):void { }
-		
-		override public function clone():*
-		{
-			// TODO
-		}
-		
-		override public function dispose():void
-		{
-			super.dispose();
-		}
+		override public function clone():* { } // TODO
+		override public function dispose():void { super.dispose(); } // TODO
 	}
 }
