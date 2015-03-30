@@ -12,10 +12,6 @@ package com.gestureworks.cml.elements
 	public class Carousel extends TouchContainer {
 		
 		// child anchor points?
-		// dynamic insertion of children?
-		// will this include buttons? currently, users can set external buttons to control rotation using snap and rotation functions
-		// ring spacing distribution function?
-		// TODO: getters/setters
 		// elementFocused callback?
 		// elementSelected callback?
 		
@@ -53,6 +49,8 @@ package com.gestureworks.cml.elements
 		public function get dragType():Boolean { return _dragType; }
 		public function set dragType(type:Boolean):void { _dragType = type; }
 		
+		// TODO: get snapIndex?
+		
 //==  INITIALIZATION  ========================================================//
 		
 		public function Carousel() {
@@ -78,7 +76,8 @@ package com.gestureworks.cml.elements
 			var newY:Number = (y - height/2) / height;
 			var oldTheta:Number = Math.atan2(oldY, oldX);
 			var newTheta:Number = Math.atan2(newY, newX);
-			return newTheta - oldTheta;
+			var dTheta:Number = newTheta - oldTheta;
+			return isNaN(dTheta)?0:dTheta;
 		}
 		
 		private function getGlobalToLocalEvt(e:GWGestureEvent):GWGestureEvent {
@@ -102,9 +101,12 @@ package com.gestureworks.cml.elements
 			ring.gestureList = { "n-drag":true };
 			var x:Number, y:Number, dx:Number, dy:Number;
 			
+			//ring.addEventListener(GWGestureEvent.TAP, function(e:GWGestureEvent):void { trace("TAP"); } );
+			
 			ring.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { trace("START"); } );
 			
 			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
+				trace(snapIndex);
 				e = getGlobalToLocalEvt(e);
 				(dragType?circularDrag:linearDrag)(e);
 				x  = e.value.x;
@@ -155,14 +157,9 @@ package com.gestureworks.cml.elements
 			snapIndex = -Math.round(currentRotation * numChildren / (2 * Math.PI));
 		}
 		
-		public function rotateLeft ():void { snapTo(snapIndex - 1); }
+		// TODO: fix this
+		public function rotateLeft ():void { snapTo(targetRotation-(2*Math.PI)/numChildren); }
 		public function rotateRight():void { snapTo(snapIndex + 1); }
-		
-//==  ANCHORING  =============================================================//
-		
-		// public static const ANCHOR_TOP:Function = function() { };
-		
-		// public function setAnchor
 		
 //==  RENDERING  =============================================================//
 		
@@ -200,13 +197,11 @@ package com.gestureworks.cml.elements
 				var theta:Number = i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset;
 				var x:Number = child.x = (width  + Math.cos(theta) * width  - child.width ) / 2;
 				var y:Number = child.y = (height + Math.sin(theta) * height - child.height) / 2;
-				if (transformFunc != undefined) transformFunc(child, theta);
+				if (transformFunc != null) transformFunc(child, theta);
 			}
 		}
 		
 //==  ADD/GET/REMOVE REDIRECTION  ============================================//
-		
-		// TODO: add stuff for ring touch container?
 		
 		override public function get numChildren():int { return orderedChildList.length; }
 		
