@@ -187,24 +187,22 @@ package com.gestureworks.cml.elements
 			//evaluate media type
 			if (value.search(imageType) > -1) {
 				_current = image; 					
+				image.addEventListener(StateEvent.CHANGE, mediaStatus);
 				image.src = value; 
 			}
 			else if (value.search(videoType) > -1) {				
 				_current = video; 											
+				video.addEventListener(StateEvent.CHANGE, mediaStatus);
 				video.src = value; 				
 			}
 			else if (value.search(audioType) > -1) {
 				_current = audio;
+				audio.addEventListener(StateEvent.CHANGE, mediaStatus);
 				audio.src = value; 
 			}
 			else {
 				throw new Error("Unsupported media type: " + value);
-			}
-			
-			//subscribe to new media events
-			if (_current) {
-				_current.addEventListener(StateEvent.CHANGE, mediaStatus);				
-			}			
+			}	
 			
 			//set stream flag
 			_streamMedia = _current is IStream;								
@@ -456,7 +454,6 @@ package com.gestureworks.cml.elements
 
 			cloneExclusions.push("mediaUpdate");
 			var clone:Media = super.clone();
-			clone.initialized = false; 
 			clone.image = image.clone();
 			clone.video = video.clone();
 			clone.audio = audio.clone();
