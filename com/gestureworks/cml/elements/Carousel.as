@@ -6,6 +6,8 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
 	
 	public class Carousel extends TouchContainer {
 		
@@ -13,7 +15,6 @@ package com.gestureworks.cml.elements
 		// dynamic insertion of children?
 		// will this include buttons? currently, users can set external buttons to control rotation using snap and rotation functions
 		// ring spacing distribution function?
-		// passive animation?
 		// TODO: getters/setters
 		// elementFocused callback?
 		// elementSelected callback?
@@ -63,6 +64,20 @@ package com.gestureworks.cml.elements
 			return newTheta - oldTheta;
 		}
 		
+		private function getGlobalToLocalEvt(e:GWGestureEvent):GWGestureEvent {
+			var   mtx:Matrix = this.transform.concatenatedMatrix.clone();
+			var   pos:Point  = new Point(e.value.x      , e.value.y      );
+			var delta:Point  = new Point(e.value.drag_dx, e.value.drag_dy);
+			mtx.invert();
+			pos   = mtx.transformPoint(pos);
+			delta = mtx.deltaTransformPoint(delta);
+			e.value.x = pos.x;
+			e.value.y = pos.y;
+			e.value.drag_dx = delta.x;
+			e.value.drag_dy = delta.y;
+			return e;
+		}
+		
 		private function initListeners():void {
 			// TODO: how to identify which element was tapped?
 			
@@ -73,7 +88,7 @@ package com.gestureworks.cml.elements
 			ring.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { trace("START"); } );
 			
 			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
-				// TODO: overwrite e with x y dx dy translated to local coords
+				e = getGlobalToLocalEvt(e);
 				(dragType?circularDrag:linearDrag)(e);
 				x  = e.value.x;
 				y  = e.value.y;
@@ -95,7 +110,6 @@ package com.gestureworks.cml.elements
 		}
 		
 		private function circularDrag(e:GWGestureEvent):void {
-			trace(this.transform.concatenatedMatrix);
 			targetRotation += calcDTheta(e.value.x, e.value.y, e.value.drag_dx, e.value.drag_dy) * dragScaling;
 			currentRotation = targetRotation;
 			updateSnapIndex();
