@@ -37,7 +37,6 @@ package com.gestureworks.cml.elements
 	{
 		private var b:Bitmap;
 		private var store:Array;
-		private var dropShadowFilter:DropShadowFilter;
 		private var initialTransform:Matrix;
 		private var _cloneExclusions:Vector.<String> = new < String > ["_x", "_y", "cO", "sO", "gO", "tiO", "trO", "tc", "tt", "tp", "tg", "td", "clusterID", "pointCount",
 																	   "dN", "N", "_dN", "_N", "touchObjectID", "_touchObjectID", "pointArray", "transformPoint", "transform",
@@ -158,17 +157,17 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Returns bounding box width 
+		 * Returns bounding rectangle width 
 		 */
 		public function get displayWidth():Number {
-			return getBounds(parent ? parent : this).width; 
+			return getRect(parent ? parent : this).width; 
 		}
 		
 		/**
-		 * Returns bounding box height
+		 * Returns bounding rectangle height
 		 */
 		public function get displayHeight():Number {
-			return getBounds(parent ? parent : this).height; 
+			return getRect(parent ? parent : this).height; 
 		}
 		
 		/**
@@ -238,25 +237,7 @@ package com.gestureworks.cml.elements
 		public function get paddingBottom():Number { return _paddingBottom; }
 		public function set paddingBottom(value:Number):void {
 			_paddingBottom = value;
-		}							
-		
-		/**
-		 * Sets the drop shadow effect
-		 * @default false
-		 */
-		public function get dropShadow():Boolean { return _dropShadow; }		
-		public function set dropShadow(value:Boolean):void { 		
-			_dropShadow = value;			
-			if (_dropShadow) {
-				if (!dropShadowFilter) {
-					 dropShadowFilter = new DropShadowFilter(1, 45, 0x333333, .5, 3, 3, 1, 1, false);						
-				}
-				this.filters = new Array(dropShadowFilter);				
-			}
-			else{	
-				this.filters = [];
-			}			
-		}				
+		}										
 
 		/**
 		 * Positions child display objects based on layout type
