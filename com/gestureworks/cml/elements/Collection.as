@@ -7,7 +7,6 @@ package com.gestureworks.cml.elements
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
 	/**
@@ -18,14 +17,15 @@ package com.gestureworks.cml.elements
 	 */
 	public class Collection extends Container
 	{				
-		private var displayed:Vector.<TouchContainer>;		//currently displayed
-		private var queued:Vector.<TouchContainer>;			//queued for display 
-		private var objectWidth:Number; 					//child object width reference
-		private var objectHeight:Number; 					//child object height reference
+		private var objectWidth:Number; 					    //child object width reference
+		private var objectHeight:Number; 					    //child object height reference
 		
 		private var _displayCount:int = 1; 		
 		private var _displayBehavior:Function; 
 		private var _background:*; 							
+		
+		protected var displayed:Vector.<TouchContainer>;		//currently displayed
+		protected var queued:Vector.<TouchContainer>;			//queued for display 		
 		
 		/**
 		 * Enables an alternative default display behavior that animates the queued display object to the center
@@ -175,27 +175,11 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * @inheritDoc
-		 */
-		override public function removeChild(child:DisplayObject):DisplayObject {
-			removeObject(child as TouchContainer);
-			return super.removeChild(child);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function removeChildAt(index:int):DisplayObject {
-			var child:DisplayObject = super.removeChildAt(index);
-			removeObject(child as TouchContainer);
-			return child; 
-		}
-		
-		/**
 		 * Unregister object
 		 * @param	object Registered instance to remove
+		 * @return  Unregistered object
 		 */
-		private function removeObject(object:TouchContainer):void {
+		public function removeObject(object:TouchContainer):TouchContainer {
 			
 			//remove from display trackers
 			if (queued.indexOf(object) != -1) {
@@ -204,6 +188,15 @@ package com.gestureworks.cml.elements
 			else if (displayed.indexOf(object) != -1) {
 				displayed.splice(displayed.indexOf(object), 1);
 			}
+			
+			//unsubscribe
+			object.removeEventListener(StateEvent.CHANGE, visibilityCheck);
+			object.removeEventListener(GWGestureEvent.COMPLETE, boundaryCheck);
+			
+			//stop animation
+			TweenLite.killTweensOf(object);
+			
+			return object; 
 		}
 		
 		///////////////////////////////////////////////////
@@ -216,8 +209,8 @@ package com.gestureworks.cml.elements
 		protected function initializeQueue():void {
 			
 			//display trackers
-			displayed = new Vector.<TouchContainer>();
-			queued = new Vector.<TouchContainer>();			
+			displayed.length = 0;
+			queued.length = 0;
 			
 			//populate queue 
 			var object:TouchContainer;
@@ -272,12 +265,14 @@ package com.gestureworks.cml.elements
 		public function get onQueue():Vector.<TouchContainer> { return queued.concat(); }
 		
 		/**
-		 * Display the next object in the queue
+		 * Display the next object in the queue. Dispatches a StateEvent with a property of 'displayed' and value being
+		 * the object being displayed. 
 		 */
 		protected function displayNext():void {
 			var next:TouchContainer = queued.shift();
 			displayed.push(next);
 			next.visible = true;
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "displayed", next));
 			
 			if (displayBehavior != null) {
 				displayBehavior.call(null, next);
@@ -291,12 +286,14 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Remove from display and append to queue
+		 * Remove from display and append to queue. Dispatches a StateEvent with a property of 'queued' and value being
+		 * the object being added to the queue. 
 		 * @param	object The object to append
 		 */
 		protected function addToQueue(object:TouchContainer):void {			
 			displayed.splice(displayed.indexOf(object), 1); 
 			queued.push(object);			
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "queued", object));
 			displayNext();
 		}
 		
@@ -305,11 +302,8 @@ package com.gestureworks.cml.elements
 		 * @param	object The subscribed object
 		 */
 		protected function visibilityCheck(event:StateEvent):void {
-			if (event.property == "visible") {
-				event.target.touchEnabled = event.target.visible; 
-				if (!event.target.visible) {
-					addToQueue(event.target as TouchContainer);
-				}
+			if (event.property == "visible" && !event.target.visible) {
+				addToQueue(event.target as TouchContainer);
 			}
 		}
 		
@@ -320,7 +314,7 @@ package com.gestureworks.cml.elements
 		 */
 		protected function boundaryCheck(event:GWGestureEvent):void {
 			if (event.target.visible && !this.hitTestObject(event.target as DisplayObject)) {
-				addToQueue(event.target as TouchContainer);
+				event.target.visible = false; 
 			}
 		}
 		
@@ -338,6 +332,7 @@ package com.gestureworks.cml.elements
 		 * @param	object The object to display
 		 */
 		private function centerFadeIn(object:TouchContainer):void {
+			object.parent.addChildAt(object, object.parent.numChildren - 1); //top of display			
 			object.resetTransform();
 			objectWidth = object.width ? object.width : object.displayWidth;
 			objectHeight = object.height ? object.height : object.displayHeight;
@@ -352,6 +347,7 @@ package com.gestureworks.cml.elements
 		 * @param	object The object to display
 		 */
 		private function animateToCenter(object:TouchContainer):void {
+			object.parent.addChildAt(object, object.parent.numChildren - 1); //top of display
 			object.resetTransform();	
 			objectWidth = object.width ? object.width : object.displayWidth;
 			objectHeight = object.height ? object.height : object.displayHeight;			
@@ -379,12 +375,10 @@ package com.gestureworks.cml.elements
 		 * Remove all registered objects
 		 */
 		public function clear():void {
-			var obj:TouchContainer;
-			for each(obj in displayed) {
-				removeChild(obj);
-			}
-			for each(obj in queued) {
-				removeChild(obj);
+			var i:int = numChildren - 1; 
+			var last:int = background is DisplayObject ? 1 : 0;
+			for (i; i >= last; i--) {
+				removeChild(removeObject(getChildAt(i) as TouchContainer));	
 			}
 		}
 		
