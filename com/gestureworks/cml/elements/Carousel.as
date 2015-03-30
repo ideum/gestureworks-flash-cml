@@ -24,20 +24,26 @@ package com.gestureworks.cml.elements
 		public static const LINEAR_DRAG   : Boolean =  false;
 		public static const CIRCULAR_DRAG : Boolean =  true;
 		
-		private var  rotationOffset        : Number  =  0;             // rendered rotation offset angle
-		private var  dragScaling           : Number  =  1;             // drag movement-scaling factor
-		private var _dragType              : Boolean =  CIRCULAR_DRAG; // drag type
-		private var _transformFunc         : Function;                 // this gets applied to every element
+		private var _rotationOffset       : Number  =  0;             // rendered rotation offset angle
+		private var _dragScaling          : Number  =  1;             // drag movement-scaling factor
+		private var _dragType             : Boolean =  CIRCULAR_DRAG; // drag type
+		private var _transformFunc        : Function;                 // this gets applied to every element
 		
-		private var  snapTween             : TweenLite;                // TweenLite object for animation
-		private var  snapIndex             : int     =  0;             // index of currently "selected" element
-		private var  oldSnapIndex          : int     = -1;             // index of "selected" element last time updateStackOrder() was called
-		private var  targetRotation        : Number  =  0;             // target rotation for currentRotation, dragging modifies this
-		private var  currentRotation       : Number  =  0;             // rendered rotation
-		private var  orderedChildList      : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
-		private var  ring                  : TouchContainer;           // ring elements are rendered on here in correct z-stack order
+		private var  snapTween            : TweenLite;                // TweenLite object for animation
+		private var  snapIndex            : int     =  0;             // index of currently "selected" element
+		private var  oldSnapIndex         : int     = -1;             // index of "selected" element last time updateStackOrder() was called
+		private var  targetRotation       : Number  =  0;             // target rotation for currentRotation, dragging modifies this
+		private var  currentRotation      : Number  =  0;             // rendered rotation
+		private var  orderedChildList     : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
+		private var  ring                 : TouchContainer;           // ring elements are rendered on here in correct z-stack order
 		
 //==  GETTERS/SETTERS  =======================================================//
+		
+		public function get rotationOffset():Number { return _rotationOffset; }
+		public function set rotationOffset(offset:Number):void { _rotationOffset = offset; }
+		
+		public function get dragScaling():Number { return _dragScaling; }
+		public function set dragScaling(scale:Number):void { _dragScaling = scale; }
 		
 		// function should be of the form (DisplayObject,Number):void
 		public function get transformFunc():Function { return _transformFunc; }
