@@ -1,18 +1,11 @@
 package com.gestureworks.cml.elements
 {
-	import com.gestureworks.cml.elements.Graphic;
 	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.ChildList;
-	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
-	import com.gestureworks.events.GWTouchEvent;
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Loader;
-	import flash.events.GestureEvent;
-	import flash.geom.Point;
-	import flash.net.URLRequest;
 	
 	public class Carousel extends TouchContainer {
 		
@@ -22,21 +15,25 @@ package com.gestureworks.cml.elements
 		// ring spacing distribution function?
 		// passive animation?
 		// TODO: getters/setters
+		// elementFocused callback?
+		// elementSelected callback?
 		
 //==  VARIABLES  =============================================================//
 		
-		public static const LINEAR_DRAG   : Boolean = false;
-		public static const CIRCULAR_DRAG : Boolean = true;
+		public static const LINEAR_DRAG   : Boolean =  false;
+		public static const CIRCULAR_DRAG : Boolean =  true;
 		
-		private var rotationOffset        : Number  = 0;             // rendered rotation offset angle
-		private var dragScaling           : Number  = 1;             // drag movement-scaling factor
-		private var dragType              : Boolean = CIRCULAR_DRAG; // drag type
-
-		private var snapIndex             : int     = 0;             // index of currently "selected" element
-		private var targetRotation        : Number  = 0;             // target rotation for currentRotation, dragging modifies this
-		private var currentRotation       : Number  = 0;             // rendered rotation
-		private var orderedChildList      : Vector.<DisplayObject>;  // ring elements are stored in here in correct insertion order
-		private var ring                  : TouchContainer;          // ring elements are rendered on here in correct z-stack order
+		private var rotationOffset        : Number  =  0;             // rendered rotation offset angle
+		private var dragScaling           : Number  =  1;             // drag movement-scaling factor
+		private var dragType              : Boolean =  CIRCULAR_DRAG; // drag type
+		
+		private var snapTween             : TweenLite;                // TweenLite object for animation
+		private var snapIndex             : int     =  0;             // index of currently "selected" element
+		private var oldSnapIndex          : int     = -1;             // index of "selected" element last time updateStackOrder() was called
+		private var targetRotation        : Number  =  0;             // target rotation for currentRotation, dragging modifies this
+		private var currentRotation       : Number  =  0;             // rendered rotation
+		private var orderedChildList      : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
+		private var ring                  : TouchContainer;           // ring elements are rendered on here in correct z-stack order
 		
 //==  INITIALIZATION  ========================================================//
 		
@@ -45,43 +42,63 @@ package com.gestureworks.cml.elements
 			orderedChildList = new Vector.<DisplayObject>();
 			ring = new TouchContainer();
 			super.addChild(ring);
+			initSnapTween();
+			initListeners();
 		}
 		
 		override public function init():void {
-			updateStackOrder(); // DELETE
-			updateCoords();     // DELETE
-			
-			var guide:Graphic = new Graphic;
-			guide.graphics.lineStyle(2, 0xffffff, 1);
-			guide.graphics.moveTo(width / 2, height / 2);
-			guide.graphics.lineTo(width / 2, height);
-			super.addChild(guide);
-			
-			ring.nativeTransform = false;
-			ring.gestureList = { "n-drag":true };
-			ring.addEventListener(GWGestureEvent.DRAG, dragType?circularDrag:linearDrag);
-			
-			// TODO: how to identify which element was tapped?
-			ring.addEventListener(GWGestureEvent.START  , function(e:GWGestureEvent):void { trace("START"  ); } );
-			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void { trace("RELEASE"); });
+			updateStackOrder();
+			updateCoords();
 		}
 		
 //==  DRAGGING  ==============================================================//
 		
+		private function calcDTheta(x:Number, y:Number, dx:Number, dy:Number):Number {
+			var oldX:Number = (x - dx - width /2) / width;
+			var oldY:Number = (y - dy - height/2) / height;
+			var newX:Number = (x - width /2) / width;
+			var newY:Number = (y - height/2) / height;
+			var oldTheta:Number = Math.atan2(oldY, oldX);
+			var newTheta:Number = Math.atan2(newY, newX);
+			return newTheta - oldTheta;
+		}
+		
+		private function initListeners():void {
+			// TODO: how to identify which element was tapped?
+			
+			ring.nativeTransform = false;
+			ring.gestureList = { "n-drag":true };
+			var x:Number, y:Number, dx:Number, dy:Number;
+			
+			ring.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { trace("START"); } );
+			
+			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
+				// TODO: overwrite e with x y dx dy translated to local coords
+				(dragType?circularDrag:linearDrag)(e);
+				x  = e.value.x;
+				y  = e.value.y;
+				dx = e.value.drag_dx;
+				dy = e.value.drag_dy;
+			});
+			
+			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
+				var dTheta:Number = calcDTheta(x, y, dx, dy);
+				var n:int = numChildren;
+				targetRotation += dTheta * 10;
+				targetRotation = 2 * Math.PI * Math.round(targetRotation * n / (2 * Math.PI)) / n;
+				snapTween.play();
+			});
+		}
+		
 		private function linearDrag(e:GWGestureEvent):void {
-			// TODO: transform drag evt to local coords
+			// TODO: implement this
 		}
 		
 		private function circularDrag(e:GWGestureEvent):void {
-			// TODO: transform drag evt to local coords
-			var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
-			var oldY:Number = (e.value.y - e.value.drag_dy - height/2) / height;
-			var newX:Number = (e.value.x - width /2) / width;
-			var newY:Number = (e.value.y - height/2) / height;
-			var oldTheta:Number = Math.atan2(oldY, oldX);
-			var newTheta:Number = Math.atan2(newY, newX);
-			targetRotation += (newTheta - oldTheta) * dragScaling;
-			snapToClosest();
+			trace(this.transform.concatenatedMatrix);
+			targetRotation += calcDTheta(e.value.x, e.value.y, e.value.drag_dx, e.value.drag_dy) * dragScaling;
+			currentRotation = targetRotation;
+			updateSnapIndex();
 			updateStackOrder();
 			updateCoords();
 		}
@@ -90,17 +107,16 @@ package com.gestureworks.cml.elements
 		
 		public function setTo(index:int):void {
 			snapIndex = index;
-			targetRotation = currentRotation = (index / numChildren) * 2 * Math.PI;
+			currentRotation = targetRotation = (index / numChildren) * 2 * Math.PI;
 		}
 		
 		public function snapTo(index:Number):void {
-			var i:int = Math.round(index);
-			var n:int = numChildren;
+			targetRotation = 2 * Math.PI * Math.round(index) / numChildren;
+			snapTween.play();
 		}
 		
-		private function snapToClosest():void {
-			var n:int = numChildren;
-			snapIndex = -((targetRotation + (targetRotation>0?1:-1)*((2 * Math.PI / n) / 2)) / (2 * Math.PI)) * n;
+		private function updateSnapIndex():void {
+			snapIndex = -Math.round(currentRotation * numChildren / (2 * Math.PI));
 		}
 		
 		public function rotateLeft ():void { snapTo(snapIndex - 1); }
@@ -114,8 +130,21 @@ package com.gestureworks.cml.elements
 		
 //==  RENDERING  =============================================================//
 		
+		private function initSnapTween():void {
+			snapTween = TweenLite.to(this, int.MAX_VALUE, { onUpdate:function():void {
+				currentRotation += ((targetRotation - currentRotation) * 0.1);
+				if (Math.abs(currentRotation - targetRotation) < 0.0001) currentRotation = targetRotation;
+				updateSnapIndex();
+				updateStackOrder();
+				updateCoords();
+				if (targetRotation == currentRotation) snapTween.pause();
+			}});
+		}
+		
 		private function updateStackOrder():void {
-			// dont do this if you dont need to? whats the check for this?
+			if (oldSnapIndex == snapIndex) return;
+			oldSnapIndex = snapIndex;
+
 			ring.removeChildren();
 			var n:int = numChildren;
 			var i:int = snapIndex;
@@ -123,7 +152,7 @@ package com.gestureworks.cml.elements
 			var dir:Boolean = false;
 			for (var q:int = 0; q < n; ++q) {
 				ring.addChildAt(getChildAt(i), 0);
-				i += (q + 1) * ((dir = !dir)?1: -1); // iterate in stacking order
+				i += (q + 1) * ((dir = !dir)?1: -1);
 				i = ((i % n) + n) % n;
 			}
 		}
@@ -131,15 +160,13 @@ package com.gestureworks.cml.elements
 		private function updateCoords():void {
 			var n:int = numChildren;
 			for (var i:int = 0; i < n; ++i) {
-				// TODO: rotation offset
-				// TODO: currentRotation
 				var child:DisplayObject = getChildAt(i);
-				child.x = (width  + Math.cos(i / n * 2 * Math.PI + Math.PI / 2 + targetRotation + rotationOffset) * width  - child.width ) / 2;
-				child.y = (height + Math.sin(i / n * 2 * Math.PI + Math.PI / 2 + targetRotation + rotationOffset) * height - child.height) / 2;
+				child.x = (width  + Math.cos(i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset) * width  - child.width ) / 2;
+				child.y = (height + Math.sin(i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset) * height - child.height) / 2;
 			}
 		}
 		
-//==  ADD/REMOVE REDIRECTION  ================================================//
+//==  ADD/GET/REMOVE REDIRECTION  ============================================//
 		
 		// TODO: add stuff for ring touch container?
 		
