@@ -26,7 +26,7 @@ package com.gestureworks.cml.elements
 		
 		private var  rotationOffset        : Number  =  0;             // rendered rotation offset angle
 		private var  dragScaling           : Number  =  1;             // drag movement-scaling factor
-		private var  dragType              : Boolean =  CIRCULAR_DRAG; // drag type
+		private var _dragType              : Boolean =  CIRCULAR_DRAG; // drag type
 		private var _transformFunc         : Function;                 // this gets applied to every element
 		
 		private var  snapTween             : TweenLite;                // TweenLite object for animation
@@ -42,6 +42,10 @@ package com.gestureworks.cml.elements
 		// function should be of the form (DisplayObject,Number):void
 		public function get transformFunc():Function { return _transformFunc; }
 		public function set transformFunc(func:Function):void { _transformFunc = func; }
+		
+		// should be set to either Carousel.LINEAR_DRAG or Carousel.CIRCULAR_DRAG
+		public function get dragType():Boolean { return _dragType; }
+		public function set dragType(type:Boolean):void { _dragType = type; }
 		
 //==  INITIALIZATION  ========================================================//
 		
@@ -104,6 +108,7 @@ package com.gestureworks.cml.elements
 			});
 			
 			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
+				// TODO: linearDrag release
 				var dTheta:Number = calcDTheta(x, y, dx, dy);
 				var n:int = numChildren;
 				targetRotation += dTheta * 10;
@@ -113,7 +118,11 @@ package com.gestureworks.cml.elements
 		}
 		
 		private function linearDrag(e:GWGestureEvent):void {
-			// TODO: implement this
+			targetRotation -= e.value.drag_dx / width * dragScaling;
+			currentRotation = targetRotation;
+			updateSnapIndex();
+			updateStackOrder();
+			updateCoords();
 		}
 		
 		private function circularDrag(e:GWGestureEvent):void {
