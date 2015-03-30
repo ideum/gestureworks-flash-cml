@@ -40,6 +40,7 @@
 			
 			//listen for image load
 			if (front) {
+				Media(front).mediaUpdate = updateLayout;
 				if (Media(front).isLoaded) {
 					Media(front).image.resize(front.width, front.height);
 				}
