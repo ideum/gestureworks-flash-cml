@@ -30,6 +30,7 @@ package com.gestureworks.cml.elements
 		private var  oldSnapIndex         : int     = -1;             // index of "selected" element last time updateStackOrder() was called
 		private var  targetRotation       : Number  =  0;             // target rotation for currentRotation, dragging modifies this
 		private var  currentRotation      : Number  =  0;             // rendered rotation
+		private var  releaseEvent         : GWGestureEvent;           // last gesture event before release event
 		private var  orderedChildList     : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
 		private var  ring                 : TouchContainer;           // ring elements are rendered on here in correct z-stack order
 		
@@ -69,11 +70,11 @@ package com.gestureworks.cml.elements
 		
 //==  DRAGGING  ==============================================================//
 		
-		private function calcDTheta(x:Number, y:Number, dx:Number, dy:Number):Number {
-			var oldX:Number = (x - dx - width /2) / width;
-			var oldY:Number = (y - dy - height/2) / height;
-			var newX:Number = (x - width /2) / width;
-			var newY:Number = (y - height/2) / height;
+		private function calcDTheta(e:GWGestureEvent):Number {
+			var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
+			var oldY:Number = (e.value.y - e.value.drag_dy - height/2) / height;
+			var newX:Number = (e.value.x - width /2) / width;
+			var newY:Number = (e.value.y - height/2) / height;
 			var oldTheta:Number = Math.atan2(oldY, oldX);
 			var newTheta:Number = Math.atan2(newY, newX);
 			var dTheta:Number = newTheta - oldTheta;
@@ -98,47 +99,32 @@ package com.gestureworks.cml.elements
 			// TODO: how to identify which element was tapped?
 			
 			ring.nativeTransform = false;
-			ring.gestureList = { "n-drag":true };
-			var x:Number, y:Number, dx:Number, dy:Number;
+			ring.gestureList = { "n-drag":true, "n-tap":true };
 			
-			//ring.addEventListener(GWGestureEvent.TAP, function(e:GWGestureEvent):void { trace("TAP"); } );
+			ring.addEventListener(GWGestureEvent.TAP, function(e:GWGestureEvent):void { trace("TAP"); } );
 			
-			ring.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { trace("START"); } );
+			ring.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { releaseEvent = e; });
 			
 			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
-				trace(snapIndex);
 				e = getGlobalToLocalEvt(e);
-				(dragType?circularDrag:linearDrag)(e);
-				x  = e.value.x;
-				y  = e.value.y;
-				dx = e.value.drag_dx;
-				dy = e.value.drag_dy;
+				releaseEvent = e;
+				targetRotation += dragType?(calcDTheta(e) * dragScaling)
+				                          :(-e.value.drag_dx / width * dragScaling);
+				currentRotation = targetRotation;
+				updateSnapIndex();
+				updateStackOrder();
+				updateCoords();
 			});
 			
 			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
-				// TODO: linearDrag release
-				var dTheta:Number = calcDTheta(x, y, dx, dy);
+				e = getGlobalToLocalEvt(e);
+				var dTheta:Number = dragType?(calcDTheta(releaseEvent))
+				                            :(-releaseEvent.value.drag_dx / width);
 				var n:int = numChildren;
 				targetRotation += dTheta * 10;
 				targetRotation = 2 * Math.PI * Math.round(targetRotation * n / (2 * Math.PI)) / n;
 				snapTween.play();
 			});
-		}
-		
-		private function linearDrag(e:GWGestureEvent):void {
-			targetRotation -= e.value.drag_dx / width * dragScaling;
-			currentRotation = targetRotation;
-			updateSnapIndex();
-			updateStackOrder();
-			updateCoords();
-		}
-		
-		private function circularDrag(e:GWGestureEvent):void {
-			targetRotation += calcDTheta(e.value.x, e.value.y, e.value.drag_dx, e.value.drag_dy) * dragScaling;
-			currentRotation = targetRotation;
-			updateSnapIndex();
-			updateStackOrder();
-			updateCoords();
 		}
 		
 //==  SNAPPING  ==============================================================//
