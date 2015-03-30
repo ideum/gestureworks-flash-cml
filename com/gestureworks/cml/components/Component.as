@@ -226,6 +226,9 @@ package com.gestureworks.cml.components
 		override public function set visible(value:Boolean):void {
 			super.visible = value;		
 			trackActivity = value; 
+			if (!value && flipped) {
+				flip();
+			}
 		}
 		
 		/**
@@ -302,6 +305,7 @@ package com.gestureworks.cml.components
 			else if (event.value == "close"){
 				close();
 			}
+			event.stopPropagation();
 		}
 		
 		/**
@@ -339,16 +343,16 @@ package com.gestureworks.cml.components
 			var clone:Component = super.clone();
 		
 			//verify element references
-			if (!clone.front && front) {
+			if (front) {
 				clone.front = clone.getChildAt(getChildIndex(front));
 			}
-			if (!clone.back && back) {
+			if (back) {
 				clone.back = clone.getChildAt(getChildIndex(back));
 			}
-			if (!clone.menu && menu) {
+			if (menu) {
 				clone.menu = clone.getChildAt(getChildIndex(menu));
 			}
-			if (!clone.frame && frame) {
+			if (frame) {
 				clone.frame = clone.getChildAt(getChildIndex(frame));
 			}
 			
