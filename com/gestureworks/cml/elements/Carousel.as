@@ -24,17 +24,24 @@ package com.gestureworks.cml.elements
 		public static const LINEAR_DRAG   : Boolean =  false;
 		public static const CIRCULAR_DRAG : Boolean =  true;
 		
-		private var rotationOffset        : Number  =  0;             // rendered rotation offset angle
-		private var dragScaling           : Number  =  1;             // drag movement-scaling factor
-		private var dragType              : Boolean =  CIRCULAR_DRAG; // drag type
+		private var  rotationOffset        : Number  =  0;             // rendered rotation offset angle
+		private var  dragScaling           : Number  =  1;             // drag movement-scaling factor
+		private var  dragType              : Boolean =  CIRCULAR_DRAG; // drag type
+		private var _transformFunc         : Function;                 // this gets applied to every element
 		
-		private var snapTween             : TweenLite;                // TweenLite object for animation
-		private var snapIndex             : int     =  0;             // index of currently "selected" element
-		private var oldSnapIndex          : int     = -1;             // index of "selected" element last time updateStackOrder() was called
-		private var targetRotation        : Number  =  0;             // target rotation for currentRotation, dragging modifies this
-		private var currentRotation       : Number  =  0;             // rendered rotation
-		private var orderedChildList      : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
-		private var ring                  : TouchContainer;           // ring elements are rendered on here in correct z-stack order
+		private var  snapTween             : TweenLite;                // TweenLite object for animation
+		private var  snapIndex             : int     =  0;             // index of currently "selected" element
+		private var  oldSnapIndex          : int     = -1;             // index of "selected" element last time updateStackOrder() was called
+		private var  targetRotation        : Number  =  0;             // target rotation for currentRotation, dragging modifies this
+		private var  currentRotation       : Number  =  0;             // rendered rotation
+		private var  orderedChildList      : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
+		private var  ring                  : TouchContainer;           // ring elements are rendered on here in correct z-stack order
+		
+//==  GETTERS/SETTERS  =======================================================//
+		
+		// function should be of the form (DisplayObject,Number):void
+		public function get transformFunc():Function { return _transformFunc; }
+		public function set transformFunc(func:Function):void { _transformFunc = func; }
 		
 //==  INITIALIZATION  ========================================================//
 		
@@ -175,8 +182,10 @@ package com.gestureworks.cml.elements
 			var n:int = numChildren;
 			for (var i:int = 0; i < n; ++i) {
 				var child:DisplayObject = getChildAt(i);
-				child.x = (width  + Math.cos(i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset) * width  - child.width ) / 2;
-				child.y = (height + Math.sin(i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset) * height - child.height) / 2;
+				var theta:Number = i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset;
+				var x:Number = child.x = (width  + Math.cos(theta) * width  - child.width ) / 2;
+				var y:Number = child.y = (height + Math.sin(theta) * height - child.height) / 2;
+				if (transformFunc != undefined) transformFunc(child, theta);
 			}
 		}
 		
