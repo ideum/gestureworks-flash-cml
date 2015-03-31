@@ -116,7 +116,7 @@ package com.gestureworks.cml.elements
 					e = getGlobalToLocalEvt(e);
 					releaseEvent = e;
 					targetRotation += dragType?(calcDTheta(e) * dragScaling)
-											  :(-e.value.drag_dx / width * dragScaling);
+											  :( -(isNaN(e.value.drag_dx)?0:e.value.drag_dx) / width * dragScaling);
 					currentRotation = targetRotation;
 					updateSnapIndex();
 					updateStackOrder();
@@ -126,7 +126,7 @@ package com.gestureworks.cml.elements
 				child.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
 					e = getGlobalToLocalEvt(e);
 					var dTheta:Number = dragType?(calcDTheta(releaseEvent))
-												:(-releaseEvent.value.drag_dx / width);
+												:( -(isNaN(releaseEvent.value.drag_dx)?0:releaseEvent.value.drag_dx) / width);
 					var n:int = numChildren;
 					targetRotation += dTheta * 10;
 					targetRotation = 2 * Math.PI * Math.round(targetRotation * n / (2 * Math.PI)) / n;
