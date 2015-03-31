@@ -139,7 +139,7 @@ package com.gestureworks.cml.layouts
 				var COS:Number = Math.cos(degreesToRadians(child.rotation));
 				var dx:Number = spacingX*COS;
 				
-				xVal = useMargins ? sumx + index * (2 * marginX) : index * dx + originX;
+				xVal = useMargins ? sumx + index * marginX : index * dx + originX;
 				xVal = centerColumn ? xVal - child.width/2 : xVal;         //adjust spacing for column centering
 				yVal = centerRow ? rowHeight/2 - child.height/2 : yVal;	   //adjust spacing for row centering
 				
