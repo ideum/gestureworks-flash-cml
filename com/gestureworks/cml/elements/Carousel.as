@@ -12,10 +12,6 @@ package com.gestureworks.cml.elements
 	
 	public class Carousel extends TouchContainer {
 		
-		// child anchor points?
-		// elementFocused callback?
-		// elementSelected callback?
-		
 //==  VARIABLES  =============================================================//
 		
 		public static const LINEAR_DRAG   : Boolean =  false;
@@ -24,7 +20,7 @@ package com.gestureworks.cml.elements
 		private var _rotationOffset       : Number  =  0;             // rendered rotation offset angle
 		private var _dragScaling          : Number  =  1;             // drag movement-scaling factor
 		private var _dragType             : Boolean =  CIRCULAR_DRAG; // drag type
-		private var _transformFunc        : Function;                 // this gets applied to every element
+		private var _onUpdate             : Function;                 // this gets applied to every element
 		
 		private var  snapTween            : TweenLite;                // TweenLite object for animation
 		private var  snapIndex            : int     =  0;             // index of currently "selected" element
@@ -45,8 +41,8 @@ package com.gestureworks.cml.elements
 		public function set dragScaling(scale:Number):void { _dragScaling = scale; }
 		
 		// function should be of the form (DisplayObject,Number):void
-		public function get transformFunc():Function { return _transformFunc; }
-		public function set transformFunc(func:Function):void { _transformFunc = func; }
+		public function get onUpdate():Function { return _onUpdate; }
+		public function set onUpdate(func:Function):void { _onUpdate = func; }
 		
 		// should be set to either Carousel.LINEAR_DRAG or Carousel.CIRCULAR_DRAG
 		public function get dragType():Boolean { return _dragType; }
@@ -60,6 +56,7 @@ package com.gestureworks.cml.elements
 			orderedChildList = new Vector.<DisplayObject>();
 			containerList = new Vector.<TouchContainer>();
 			ring = new TouchContainer();
+			ring.mouseChildren = true;
 			super.addChild(ring);
 			mouseChildren = true;
 			initSnapTween();
@@ -67,8 +64,7 @@ package com.gestureworks.cml.elements
 		
 		override public function init():void {
 			initListeners();
-			updateStackOrder();
-			updateCoords();
+			snapTween.play();
 		}
 		
 //==  CONTROLS  ==============================================================//
@@ -98,8 +94,9 @@ package com.gestureworks.cml.elements
 			return e;
 		}
 		
+		// TODO: elementSelected callback?
+		// TODO: elementUnselected callback?
 		private function initListeners():void {
-			ring.mouseChildren = true;
 			for (var i:int = 0; i < containerList.length;++i) {
 				var child:TouchContainer = containerList[i];
 				child.nativeTransform = false;
@@ -118,9 +115,7 @@ package com.gestureworks.cml.elements
 					targetRotation += dragType?(calcDTheta(e) * dragScaling)
 											  :( -(isNaN(e.value.drag_dx)?0:e.value.drag_dx) / width * dragScaling);
 					currentRotation = targetRotation;
-					updateSnapIndex();
-					updateStackOrder();
-					updateCoords();
+					snapTween.play();
 				});
 				
 				child.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
@@ -140,7 +135,7 @@ package com.gestureworks.cml.elements
 		public function setTo(index:int):void {
 			snapIndex = index;
 			currentRotation = targetRotation = (index / numChildren) * 2 * Math.PI;
-			// TODO: force redraw
+			snapTween.play();
 		}
 		
 		public function snapToNoMod(index:Number):void {
@@ -178,10 +173,11 @@ package com.gestureworks.cml.elements
 			}});
 		}
 		
+		// TODO: elementFocused callback?
+		// TODO: elementUnfocused callback?
 		private function updateStackOrder():void {
 			if (oldSnapIndex == snapIndex) return;
 			oldSnapIndex = snapIndex;
-
 			ring.removeChildren();
 			var n:int = numChildren;
 			var i:int = snapIndex;
@@ -201,13 +197,14 @@ package com.gestureworks.cml.elements
 				var theta:Number = i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset;
 				var x:Number = child.x = (width  + Math.cos(theta) * width  - child.width ) / 2;
 				var y:Number = child.y = (height + Math.sin(theta) * height - child.height) / 2;
-				if (transformFunc != null) transformFunc(child, theta);
+				if (onUpdate != null) onUpdate(child, theta);
 			}
 		}
 		
 //==  ADD/GET/REMOVE CHILD REDIRECTION  ======================================//
 		
 		// TODO: out of bounds checks
+		// TODO: anchor on container add?
 		
 		override public function get numChildren():int { return orderedChildList.length; }
 		
@@ -261,7 +258,17 @@ package com.gestureworks.cml.elements
 		
 		override public function set layout(value:*):void { }
 		override public function applyLayout(value:Layout = null):void { }
+		
 		override public function clone():* { } // TODO
-		override public function dispose():void { super.dispose(); } // TODO
+		
+		override public function dispose():void {
+			super.dispose();
+			_onUpdate        = null;
+			snapTween        = null;
+			releaseEvent     = null;
+			orderedChildList = null;
+			containerList    = null;
+			ring             = null;
+		}
 	}
 }
