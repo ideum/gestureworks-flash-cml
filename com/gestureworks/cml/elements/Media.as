@@ -77,10 +77,11 @@ package com.gestureworks.cml.elements
 			//only allow internally constructed media objects
 			DisplayUtils.removeAllChildrenByType(this, [Image, Video, Audio]);			
 			DisplayUtils.addChildren(this, [image, video, audio]);	
-			
+						
+			sizeToContent = !width && !height;
+				
 			//initialized media
 			if (!initialized) {
-				sizeToContent = !width && !height;
 				image.init();
 				video.init();
 				audio.init();
@@ -97,7 +98,7 @@ package com.gestureworks.cml.elements
 			if (!current) {
 				return; 
 			}
-			
+
 			//inherit dimensions from current media element
 			if (sizeToContent) {
 				width = current.width;
