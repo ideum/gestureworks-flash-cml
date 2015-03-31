@@ -412,6 +412,12 @@ package com.gestureworks.cml.elements
 		 */
 		private function setDisplay():void {
 			
+			//default dimensions
+			if (!width && !height) {
+				width = 500;
+				height = 250; 
+			}
+			
 			//postpone for background image load
 			if (backgroundSrc && !backgroundImage) {
 				return; 
@@ -421,14 +427,7 @@ package com.gestureworks.cml.elements
 			if (backgroundImage) {				
 				
 				//background dimensions to audio
-				if (width || height) {  
-					backgroundImage = DisplayUtils.resampledBitmap(backgroundImage, width, height);
-				}				
-				//audio to background dimensions
-				else {
-					width = backgroundImage.width; 
-					height = backgroundImage.height;
-				}	
+				backgroundImage = DisplayUtils.resampledBitmap(backgroundImage, width, height);
 				
 				//add background
 				backgroundImage.alpha = backgroundAlpha;
