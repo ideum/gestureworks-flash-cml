@@ -3,6 +3,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.ChildList;
+	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
@@ -32,6 +33,7 @@ package com.gestureworks.cml.elements
 		private var  currentRotation      : Number  =  0;             // rendered rotation
 		private var  releaseEvent         : GWGestureEvent;           // last gesture event before release event
 		private var  orderedChildList     : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
+		private var  containerList        : Vector.<TouchContainer>;  // mirror of orderedChildList containing the touchContainers holding the display objects
 		private var  ring                 : TouchContainer;           // ring elements are rendered on here in correct z-stack order
 		
 //==  GETTERS/SETTERS  =======================================================//
@@ -55,20 +57,21 @@ package com.gestureworks.cml.elements
 //==  INITIALIZATION  ========================================================//
 		
 		public function Carousel() {
-			super.mouseChildren = true;
 			orderedChildList = new Vector.<DisplayObject>();
+			containerList = new Vector.<TouchContainer>();
 			ring = new TouchContainer();
 			super.addChild(ring);
+			mouseChildren = true;
 			initSnapTween();
-			initListeners();
 		}
 		
 		override public function init():void {
+			initListeners();
 			updateStackOrder();
 			updateCoords();
 		}
 		
-//==  DRAGGING  ==============================================================//
+//==  CONTROLS  ==============================================================//
 		
 		private function calcDTheta(e:GWGestureEvent):Number {
 			var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
@@ -96,35 +99,40 @@ package com.gestureworks.cml.elements
 		}
 		
 		private function initListeners():void {
-			// TODO: how to identify which element was tapped?
+			ring.mouseChildren = true;
+			for (var i:int = 0; i < containerList.length;++i) {
+				var child:TouchContainer = containerList[i];
+				child.nativeTransform = false;
+				child.gestureList = { "n-drag":true, "n-tap":true };
+				child.addEventListener(GWGestureEvent.TAP,
+					function(index:int):Function {
+						return function(e:GWGestureEvent):void { snapTo(index); };
+					}(i)
+				);
 			
-			ring.nativeTransform = false;
-			ring.gestureList = { "n-drag":true, "n-tap":true };
-			
-			ring.addEventListener(GWGestureEvent.TAP, function(e:GWGestureEvent):void { trace("TAP"); } );
-			
-			ring.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { releaseEvent = e; });
-			
-			ring.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
-				e = getGlobalToLocalEvt(e);
-				releaseEvent = e;
-				targetRotation += dragType?(calcDTheta(e) * dragScaling)
-				                          :(-e.value.drag_dx / width * dragScaling);
-				currentRotation = targetRotation;
-				updateSnapIndex();
-				updateStackOrder();
-				updateCoords();
-			});
-			
-			ring.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
-				e = getGlobalToLocalEvt(e);
-				var dTheta:Number = dragType?(calcDTheta(releaseEvent))
-				                            :(-releaseEvent.value.drag_dx / width);
-				var n:int = numChildren;
-				targetRotation += dTheta * 10;
-				targetRotation = 2 * Math.PI * Math.round(targetRotation * n / (2 * Math.PI)) / n;
-				snapTween.play();
-			});
+				child.addEventListener(GWGestureEvent.START, function(e:GWGestureEvent):void { releaseEvent = e; });
+				
+				child.addEventListener(GWGestureEvent.DRAG, function(e:GWGestureEvent):void {
+					e = getGlobalToLocalEvt(e);
+					releaseEvent = e;
+					targetRotation += dragType?(calcDTheta(e) * dragScaling)
+											  :(-e.value.drag_dx / width * dragScaling);
+					currentRotation = targetRotation;
+					updateSnapIndex();
+					updateStackOrder();
+					updateCoords();
+				});
+				
+				child.addEventListener(GWGestureEvent.RELEASE, function(e:GWGestureEvent):void {
+					e = getGlobalToLocalEvt(e);
+					var dTheta:Number = dragType?(calcDTheta(releaseEvent))
+												:(-releaseEvent.value.drag_dx / width);
+					var n:int = numChildren;
+					targetRotation += dTheta * 10;
+					targetRotation = 2 * Math.PI * Math.round(targetRotation * n / (2 * Math.PI)) / n;
+					snapTween.play();
+				});
+			}
 		}
 		
 //==  SNAPPING  ==============================================================//
@@ -132,19 +140,29 @@ package com.gestureworks.cml.elements
 		public function setTo(index:int):void {
 			snapIndex = index;
 			currentRotation = targetRotation = (index / numChildren) * 2 * Math.PI;
+			// TODO: force redraw
+		}
+		
+		public function snapToNoMod(index:Number):void {
+			snapIndex = index;
+			targetRotation = -2 * Math.PI * Math.round(index) / numChildren;
+			snapTween.play();
 		}
 		
 		public function snapTo(index:Number):void {
-			targetRotation = 2 * Math.PI * Math.round(index) / numChildren;
-			snapTween.play();
+			var n:int = numChildren;
+			var current:int = ((snapIndex % n) + n) % n;
+			var  target:int = ((index % n) + n) % n;
+			if (Math.abs(target - n - current) < n / 2) target -= n;
+			else if (Math.abs(target + n - current) < n / 2) target += n;
+			snapToNoMod(snapIndex + (target - current));
 		}
 		
 		private function updateSnapIndex():void {
 			snapIndex = -Math.round(currentRotation * numChildren / (2 * Math.PI));
 		}
 		
-		// TODO: fix this
-		public function rotateLeft ():void { snapTo(targetRotation-(2*Math.PI)/numChildren); }
+		public function rotateLeft ():void { snapTo(snapIndex - 1); }
 		public function rotateRight():void { snapTo(snapIndex + 1); }
 		
 //==  RENDERING  =============================================================//
@@ -170,7 +188,7 @@ package com.gestureworks.cml.elements
 			    i = ((i % n) + n) % n;
 			var dir:Boolean = false;
 			for (var q:int = 0; q < n; ++q) {
-				ring.addChildAt(getChildAt(i), 0);
+				ring.addChildAt(containerList[i], 0);
 				i += (q + 1) * ((dir = !dir)?1: -1);
 				i = ((i % n) + n) % n;
 			}
@@ -187,19 +205,27 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
-//==  ADD/GET/REMOVE REDIRECTION  ============================================//
+//==  ADD/GET/REMOVE CHILD REDIRECTION  ======================================//
+		
+		// TODO: out of bounds checks
 		
 		override public function get numChildren():int { return orderedChildList.length; }
 		
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
 			orderedChildList.splice(index, 0, child);
+			var container:TouchContainer = new TouchContainer();
+			container.addChild(child);
+			containerList.splice(index, 0, container);
 			return child;
 		}
 		
 		override public function addChild(child:DisplayObject):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
 			orderedChildList.push(child);
+			var container:TouchContainer = new TouchContainer();
+			container.addChild(child);
+			containerList.push(container);
 			return child;
 		}
 		
@@ -216,10 +242,18 @@ package com.gestureworks.cml.elements
 		}
 		
 		override public function removeChild(child:DisplayObject):DisplayObject { return removeChildAt(getChildIndex(child)); }
-		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void { orderedChildList.splice(beginIndex, endIndex-beginIndex); }
+		
+		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void {
+			for (var i:int = beginIndex; i < endIndex; ++i) containerList[i].removeChildAt(0);
+			orderedChildList.splice(beginIndex, endIndex - beginIndex);
+			containerList.splice(beginIndex, endIndex - beginIndex);
+		}
+		
 		override public function removeChildAt(index:int):DisplayObject {
 			var removedChild:DisplayObject = getChildAt(index);
+			containerList[index].removeChildAt(0);
 			orderedChildList.splice(index, 1);
+			containerList.splice(index, 1);
 			return removedChild;
 		}
 		
