@@ -393,7 +393,7 @@ package com.gestureworks.cml.elements
 			var child:DisplayObject;
 			if (relativeX) {
 				for (i = 1; i < numChildren; i++) {					
-					getChildAt(i).x = getChildAt(i - 1).height + getChildAt(i - 1).x;
+					getChildAt(i).x = getChildAt(i - 1).width + getChildAt(i - 1).x;
 					if ( getChildAt(i)['state'][0]['x'] ) {
 						getChildAt(i).x += Number(getChildAt(i)['state'][0].x);
 					}
