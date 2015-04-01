@@ -1,6 +1,7 @@
 package com.gestureworks.cml.elements
 {
 	import com.gestureworks.cml.elements.TouchContainer;
+	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.ChildList;
 	import com.gestureworks.core.TouchSprite;
@@ -17,6 +18,7 @@ package com.gestureworks.cml.elements
 		public static const LINEAR_DRAG   : Boolean =  false;
 		public static const CIRCULAR_DRAG : Boolean =  true;
 		
+		private var _friction             : Number  =  0.5;           // amount of fricion to apply on inertia-release
 		private var _rotationOffset       : Number  =  0;             // rendered rotation offset angle
 		private var _dragScaling          : Number  =  1;             // drag movement-scaling factor
 		private var _dragType             : Boolean =  CIRCULAR_DRAG; // drag type
@@ -34,6 +36,14 @@ package com.gestureworks.cml.elements
 		
 //==  GETTERS/SETTERS  =======================================================//
 		
+		// expects value 0 < friction <= 1 where 1 immediately snaps
+		public function get friction():Number { return _friction; }
+		public function set friction(value:Number):void {
+			if (value > 1) value = 1;
+			else if (value <= 0) value = 0.5;
+			_friction = value;
+		}
+		
 		public function get rotationOffset():Number { return _rotationOffset; }
 		public function set rotationOffset(offset:Number):void { _rotationOffset = offset; }
 		
@@ -49,6 +59,7 @@ package com.gestureworks.cml.elements
 		public function set dragType(type:Boolean):void { _dragType = type; }
 		
 		// TODO: get snapIndex?
+		// TODO: get currentElement?
 		
 //==  INITIALIZATION  ========================================================//
 		
@@ -63,6 +74,7 @@ package com.gestureworks.cml.elements
 		}
 		
 		override public function init():void {
+			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", true, true));
 			initListeners();
 			snapTween.play();
 		}
@@ -123,7 +135,7 @@ package com.gestureworks.cml.elements
 					var dTheta:Number = dragType?(calcDTheta(releaseEvent))
 												:( -(isNaN(releaseEvent.value.drag_dx)?0:releaseEvent.value.drag_dx) / width);
 					var n:int = numChildren;
-					targetRotation += dTheta * 10;
+					targetRotation += dTheta * (1 / friction);
 					targetRotation = 2 * Math.PI * Math.round(targetRotation * n / (2 * Math.PI)) / n;
 					snapTween.play();
 				});
@@ -164,7 +176,7 @@ package com.gestureworks.cml.elements
 		
 		private function initSnapTween():void {
 			snapTween = TweenLite.to(this, int.MAX_VALUE, { onUpdate:function():void {
-				currentRotation += ((targetRotation - currentRotation) * 0.1);
+				currentRotation += ((targetRotation - currentRotation) * friction);
 				if (Math.abs(currentRotation - targetRotation) < 0.0001) currentRotation = targetRotation;
 				updateSnapIndex();
 				updateStackOrder();
