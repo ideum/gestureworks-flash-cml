@@ -67,14 +67,14 @@ package com.gestureworks.cml.elements
 			orderedChildList = new Vector.<DisplayObject>();
 			containerList = new Vector.<TouchContainer>();
 			ring = new TouchContainer();
-			ring.mouseChildren = true;
-			super.addChild(ring);
-			mouseChildren = true;
-			initSnapTween();
 		}
 		
 		override public function init():void {
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", true, true));
+			ring.mouseChildren = true;
+			super.addChild(ring);
+			mouseChildren = true;
+			initSnapTween();
 			initListeners();
 			snapTween.play();
 		}
@@ -238,8 +238,8 @@ package com.gestureworks.cml.elements
 			return child;
 		}
 		
-		override public function getChildAt(index:int):DisplayObject { return orderedChildList[index]; }
 		override public function getChildIndex(child:DisplayObject):int { return orderedChildList.indexOf(child); }
+		override public function getChildAt(index:int):DisplayObject { return orderedChildList[index]; }
 		override public function getChildByName(name:String):DisplayObject {
 			var i:int, n:int = numChildren;
 			for (i = 0; i < n; ++i) {
