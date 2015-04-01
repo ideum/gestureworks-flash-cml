@@ -115,6 +115,7 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.elements.Image; Image;
 	import com.gestureworks.cml.elements.Media; Media;
 	import com.gestureworks.cml.elements.Album; Album;	
+	import com.gestureworks.cml.elements.Carousel; Carousel;
 	import com.gestureworks.cml.elements.ModestMap; ModestMap;
 	import com.gestureworks.cml.elements.ModestMapMarker; ModestMapMarker;
 	import com.gestureworks.cml.elements.Paint; Paint;
