@@ -18,21 +18,22 @@ package com.gestureworks.cml.elements
 		public static const LINEAR_DRAG   : Boolean =  false;
 		public static const CIRCULAR_DRAG : Boolean =  true;
 		
-		private var _friction             : Number  =  0.5;           // amount of fricion to apply on inertia-release
-		private var _rotationOffset       : Number  =  0;             // rendered rotation offset angle
-		private var _dragScaling          : Number  =  1;             // drag movement-scaling factor
-		private var _dragType             : Boolean =  CIRCULAR_DRAG; // drag type
-		private var _onUpdate             : Function;                 // this gets applied to every element
+		private var _friction             : Number  =  0.5;            // amount of fricion to apply on inertia-release
+		private var _rotationOffset       : Number  =  0;              // rendered rotation offset angle
+		private var _dragScaling          : Number  =  1;              // drag movement-scaling factor
+		private var _dragType             : Boolean =  CIRCULAR_DRAG;  // drag type
+		private var _onUpdate             : Function;                  // this gets applied to every element
 		
-		private var  snapTween            : TweenLite;                // TweenLite object for animation
-		private var  snapIndex            : int     =  0;             // index of currently "selected" element
-		private var  oldSnapIndex         : int     = -1;             // index of "selected" element last time updateStackOrder() was called
-		private var  targetRotation       : Number  =  0;             // target rotation for currentRotation, dragging modifies this
-		private var  currentRotation      : Number  =  0;             // rendered rotation
-		private var  releaseEvent         : GWGestureEvent;           // last gesture event before release event
-		private var  orderedChildList     : Vector.<DisplayObject>;   // ring elements are stored in here in correct insertion order
-		private var  containerList        : Vector.<TouchContainer>;  // mirror of orderedChildList containing the touchContainers holding the display objects
-		private var  ring                 : TouchContainer;           // ring elements are rendered on here in correct z-stack order
+		private var  firstInit            : Boolean = true;            // indicates whether this has been initialized once already
+		private var  snapTween            : TweenLite;                 // TweenLite object for animation
+		private var  snapIndex            : int     =  0;              // index of currently "selected" element
+		private var  oldSnapIndex         : int     = -1;              // index of "selected" element last time updateStackOrder() was called
+		private var  targetRotation       : Number  =  0;              // target rotation for currentRotation, dragging modifies this
+		private var  currentRotation      : Number  =  0;              // rendered rotation
+		private var  releaseEvent         : GWGestureEvent;            // last gesture event before release event
+		private var  orderedChildList     : Vector.<DisplayObject>;    // ring elements are stored in here in correct insertion order
+		private var  containerList        : Vector.<DispObjContainer>; // mirror of orderedChildList containing the touchContainers holding the display objects
+		private var  ring                 : TouchContainer;            // ring elements are rendered on here in correct z-stack order
 		
 //==  GETTERS/SETTERS  =======================================================//
 		
@@ -65,16 +66,21 @@ package com.gestureworks.cml.elements
 		
 		public function Carousel() {
 			orderedChildList = new Vector.<DisplayObject>();
-			containerList = new Vector.<TouchContainer>();
+			containerList = new Vector.<DispObjContainer>();
 			ring = new TouchContainer();
 		}
 		
 		override public function init():void {
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", true, true));
 			ring.mouseChildren = true;
-			super.addChild(ring);
 			mouseChildren = true;
-			initSnapTween();
+			
+			if (firstInit) {
+				firstInit = false;
+				super.addChild(ring);
+				initSnapTween();
+			}
+			
 			initListeners();
 			snapTween.play();
 		}
@@ -110,7 +116,8 @@ package com.gestureworks.cml.elements
 		// TODO: elementUnselected callback?
 		private function initListeners():void {
 			for (var i:int = 0; i < containerList.length;++i) {
-				var child:TouchContainer = containerList[i];
+				var child:DispObjContainer = containerList[i];
+				child.clearEvents();
 				child.nativeTransform = false;
 				child.gestureList = { "n-drag":true, "n-tap":true };
 				child.addEventListener(GWGestureEvent.TAP,
@@ -223,7 +230,7 @@ package com.gestureworks.cml.elements
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
 			orderedChildList.splice(index, 0, child);
-			var container:TouchContainer = new TouchContainer();
+			var container:DispObjContainer = new DispObjContainer();
 			container.addChild(child);
 			containerList.splice(index, 0, container);
 			return child;
@@ -232,7 +239,7 @@ package com.gestureworks.cml.elements
 		override public function addChild(child:DisplayObject):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
 			orderedChildList.push(child);
-			var container:TouchContainer = new TouchContainer();
+			var container:DispObjContainer = new DispObjContainer();
 			container.addChild(child);
 			containerList.push(container);
 			return child;
@@ -282,5 +289,14 @@ package com.gestureworks.cml.elements
 			containerList    = null;
 			ring             = null;
 		}
+	}
+}
+
+class DispObjContainer extends com.gestureworks.cml.elements.TouchContainer {
+	private var eventList:Array = [];
+	public function clearEvents():void { for each(var i:Object in eventList) if (hasEventListener(i.type)) removeEventListener(i.type, i.listener); }
+	override public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void {
+		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		eventList.push( { type:type, listener:listener } );
 	}
 }
