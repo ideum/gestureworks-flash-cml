@@ -92,7 +92,7 @@ package com.gestureworks.cml.core
 		 * Clone method.
 		 * @return Clone
 		 */
-		public function clone():* { return new Object };
+		public function clone(parent:* = null):TouchContainer { return new Object };
 		
 	}
 }

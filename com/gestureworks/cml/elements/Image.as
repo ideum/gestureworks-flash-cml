@@ -255,10 +255,10 @@ package com.gestureworks.cml.elements
 		 * Returns an Image clone
 		 * @return
 		 */
-		override public function clone():* 
+		override public function clone(parent:* = null):TouchContainer 
 		{
 			cloneExclusions.push("bitmap","bitmapData");
-			var clone:Image = CloneUtils.clone(this, parent, cloneExclusions, true);
+			var clone:Image = CloneUtils.clone(this, parent ? parent : this.parent, cloneExclusions, true);
 			
 			if (bitmapData) {			
 				clone.bitmapData = bitmapData.clone();

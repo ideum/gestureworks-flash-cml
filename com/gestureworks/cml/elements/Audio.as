@@ -505,7 +505,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():* {
+		override public function clone(parent:* = null):TouchContainer {
 			
 			//pre clone state
 			removeChild(waveForm);			
@@ -513,7 +513,7 @@ package com.gestureworks.cml.elements
 			resetDimensions = false; 
 			
 			//clone
-			var c:Audio = super.clone();
+			var c:Audio = super.clone(parent);
 			
 			//restore state
 			addChild(waveForm);

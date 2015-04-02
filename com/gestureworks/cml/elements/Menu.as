@@ -273,15 +273,7 @@ package com.gestureworks.cml.elements
 			
 			x += offsetX;
 			y += offsetY;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function clone():* {
-			var clone:Menu = super.clone();			
-			return clone;
-		}		
+		}	
 		
 		/**
 		 * @inheritDoc

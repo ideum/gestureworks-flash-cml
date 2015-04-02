@@ -451,10 +451,10 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():* {
+		override public function clone(parent:* = null):TouchContainer {
 
 			cloneExclusions.push("mediaUpdate");
-			var clone:Media = super.clone();
+			var clone:Media = super.clone(parent);
 			clone.image = image.clone();
 			clone.video = video.clone();
 			clone.audio = audio.clone();

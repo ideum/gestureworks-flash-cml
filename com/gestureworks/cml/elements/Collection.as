@@ -385,7 +385,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():* {
+		override public function clone(parent:* = null):TouchContainer {
 			var i:int; 
 			var object:TouchContainer;
 			
@@ -396,7 +396,7 @@ package com.gestureworks.cml.elements
 			}
 			
 			//clone collection
-			var clone:Collection = super.clone();
+			var clone:Collection = super.clone(parent);
 			
 			//re-enable visible callback
 			for (i = background is DisplayObject ? 1 : 0; i < numChildren; i++) {

@@ -336,7 +336,7 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():* {
+		override public function clone(parent:* = null):TouchContainer {
 			
 			//component clone 
 			cloneExclusions.push("front", "back", "frame", "menu");			

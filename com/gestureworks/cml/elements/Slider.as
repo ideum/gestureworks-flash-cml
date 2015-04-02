@@ -553,9 +553,9 @@ package com.gestureworks.cml.elements
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "value", _value, true));			
 		}
 		
-		override public function clone():*{
+		override public function clone(parent:* = null):TouchContainer{
 			var v:Vector.<String> = new < String > ["touchKnob", "knob", "hit", "rail"];
-			var clone:Slider = CloneUtils.clone(this, parent, v);
+			var clone:Slider = CloneUtils.clone(this, parent ? parent : this.parent, v);
 			
 			//CloneUtils.copyChildList(this, clone);
 			

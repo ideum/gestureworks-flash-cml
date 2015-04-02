@@ -1117,7 +1117,7 @@ package com.gestureworks.cml.elements
 			loopClones = null;
 		}		
 		
-		override public function clone():* {
+		override public function clone(parent:* = null):TouchContainer {
 			
 			//exclude mask
 			cloneExclusions.push("mask");						
@@ -1128,7 +1128,7 @@ package com.gestureworks.cml.elements
 			this.removeChildren(); 
 			
 			//clone album
-			var clone:Album = CloneUtils.clone(this, this.parent, cloneExclusions) as Album;  
+			var clone:Album = CloneUtils.clone(this, parent ? parent : this.parent, cloneExclusions) as Album;  
 			//clone belt
 			belt.cloneExclusions.push("childList");
 			var beltClone:TouchContainer = CloneUtils.clone(belt, null, belt.cloneExclusions); 

@@ -532,7 +532,7 @@ package com.gestureworks.cml.elements
 			return nearestIndex;
 		}
 		
-		override public function clone():*{
+		override public function clone(parent:* = null):TouchContainer{
 			var v:Vector.<String> = new < String > ["touchKnob", "knob", "hit", "rail"];
 			var clone:RadialSlider = CloneUtils.clone(this, parent, v);
 			

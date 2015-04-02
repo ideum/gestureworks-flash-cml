@@ -562,10 +562,10 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():* {
+		override public function clone(parent:* = null):TouchContainer {
 			var v:Vector.<String> = cloneExclusions;
 			v.push("childList", "_vBar", "_hBar", "_mask");// , "_content");
-			var clone:ScrollPane = CloneUtils.clone(this, this.parent, v);
+			var clone:ScrollPane = CloneUtils.clone(this, parent ? parent : this.parent, v);
 			//CloneUtils.copyChildList(this, clone);	
 			
 			clone.vBar = _vBar.clone();
