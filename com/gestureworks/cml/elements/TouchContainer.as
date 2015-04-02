@@ -899,7 +899,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Clone method
 		 */
-		public function clone(parent:* = null):TouchContainer {		
+		public function clone(parent:* = null):* {		
 			var clone:TouchContainer = CloneUtils.clone(this, parent ? parent : this.parent, cloneExclusions);
 			clone.graphics.copyFrom(this.graphics);
 			clone.gestureList = CloneUtils.deepCopyObject(gestureList); 

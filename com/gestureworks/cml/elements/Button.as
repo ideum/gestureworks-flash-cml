@@ -1483,7 +1483,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Returns clone of self
 		 */
-		override public function clone(parent:* = null):TouchContainer
+		override public function clone(parent:* = null):*
 		{
 			var v:Vector.<String> = new <String>["childList", "initial", "hit", "up", "down", "over", "out", "mouseUp", "mouseDown", "mouseOver", "mouseOut", "touchUp", "touchDown", "touchOver", "touchOut"];
 			var clone:Button = CloneUtils.clone(this, parent ? parent : this.parent, v);

@@ -120,7 +120,7 @@ package com.gestureworks.cml.elements
 		 * Returns a clone of self
 		 * @return
 		 */
-		override public function clone(parent:* = null):TouchContainer 
+		override public function clone(parent:* = null):* 
 		{
 			var clone:Frame = CloneUtils.clone(this, parent ? parent : this.parent);
 			clone.updateGraphic();

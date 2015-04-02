@@ -255,7 +255,7 @@ package com.gestureworks.cml.elements
 		 * Returns an Image clone
 		 * @return
 		 */
-		override public function clone(parent:* = null):TouchContainer 
+		override public function clone(parent:* = null):* 
 		{
 			cloneExclusions.push("bitmap","bitmapData");
 			var clone:Image = CloneUtils.clone(this, parent ? parent : this.parent, cloneExclusions, true);

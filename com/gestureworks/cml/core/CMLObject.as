@@ -1,6 +1,7 @@
 package com.gestureworks.cml.core 
 {
 	import com.gestureworks.cml.core.CMLParser;
+	import com.gestureworks.cml.elements.TouchContainer;
 	import com.gestureworks.cml.interfaces.IObject;
 	import com.gestureworks.cml.utils.ChildList;
 	import flash.events.EventDispatcher;
@@ -92,7 +93,7 @@ package com.gestureworks.cml.core
 		 * Clone method.
 		 * @return Clone
 		 */
-		public function clone(parent:* = null):TouchContainer { return new Object };
+		public function clone():Object { return new Object };
 		
 	}
 }

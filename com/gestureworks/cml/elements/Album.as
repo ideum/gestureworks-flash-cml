@@ -1117,7 +1117,7 @@ package com.gestureworks.cml.elements
 			loopClones = null;
 		}		
 		
-		override public function clone(parent:* = null):TouchContainer {
+		override public function clone(parent:* = null):* {
 			
 			//exclude mask
 			cloneExclusions.push("mask");						

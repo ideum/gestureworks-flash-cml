@@ -1243,7 +1243,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone(parent:* = null):TouchContainer { 
+		override public function clone(parent:* = null):* { 
 			removeChild(textField);			
 			var clone:Text = super.clone(parent);	
 			addChild(textField);

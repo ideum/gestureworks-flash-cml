@@ -451,7 +451,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone(parent:* = null):TouchContainer {
+		override public function clone(parent:* = null):* {
 
 			cloneExclusions.push("mediaUpdate");
 			var clone:Media = super.clone(parent);

@@ -336,11 +336,11 @@ package com.gestureworks.cml.components
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone(parent:* = null):TouchContainer {
+		override public function clone(parent:* = null):* {
 			
 			//component clone 
 			cloneExclusions.push("front", "back", "frame", "menu");			
-			var clone:Component = super.clone();
+			var clone:Component = super.clone(parent);
 		
 			//verify element references
 			if (front) {

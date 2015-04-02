@@ -318,7 +318,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * Returns clone of self
 		 */
-		override public function clone(parent:* = null):TouchContainer 
+		override public function clone(parent:* = null):* 
 		{
 			var clone:Graphic = CloneUtils.clone(this, parent ? parent : this.parent);
 			clone.updateGraphic();
