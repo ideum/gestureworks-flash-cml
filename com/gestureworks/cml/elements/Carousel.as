@@ -11,6 +11,23 @@ package com.gestureworks.cml.elements
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	
+	/**
+	 * The Carousel element provides a circular list of display objects that can
+	 * be scrolled circularly or horizontally using a drag gesture. Objects also
+	 * snap to front when tapped on. Carousel supports tweening and snapping.
+	 * 
+	 * <codeblock xmll:space="preserve" class="+ topic/pre pr-d/codeblock ">
+		var carousel:Carousel = new Carousel();
+		carousel.width  = 400;
+		carousel.height = 100;
+		carousel.addChild(getImageElement("assets/wb3.jpg"));
+		carousel.addChild(getImageElement("assets/USS_Macon_over_Manhattan.png"));
+		carousel.addChild(getImageElement("assets/wb3.jpg"));
+		carousel.init();
+	 * </codeblock>
+	 * 
+	 * @author Ideum
+	 */
 	public class Carousel extends TouchContainer {
 		
 //==  VARIABLES  =============================================================//
@@ -18,11 +35,11 @@ package com.gestureworks.cml.elements
 		public static const LINEAR_DRAG   : Boolean =  false;
 		public static const CIRCULAR_DRAG : Boolean =  true;
 		
-		private var _friction             : Number  =  0.5;            // amount of fricion to apply on inertia-release
-		private var _rotationOffset       : Number  =  0;              // rendered rotation offset angle
-		private var _dragScaling          : Number  =  1;              // drag movement-scaling factor
-		private var _dragType             : Boolean =  CIRCULAR_DRAG;  // drag type
-		private var _onUpdate             : Function;                  // this gets applied to every element
+		private var _friction             : Number  =  0.5;
+		private var _rotationOffset       : Number  =  0;
+		private var _dragScaling          : Number  =  1;
+		private var _dragType             : Boolean =  CIRCULAR_DRAG;
+		private var _onUpdate             : Function;
 		
 		private var  firstInit            : Boolean = true;            // indicates whether this has been initialized once already
 		private var  snapTween            : TweenLite;                 // TweenLite object for animation
@@ -37,7 +54,11 @@ package com.gestureworks.cml.elements
 		
 //==  GETTERS/SETTERS  =======================================================//
 		
-		// expects value 0 < friction <= 1 where 1 immediately snaps
+		/**
+		 * Amount of fricion to apply on inertia-release.
+		 * Expects value x where 0 < x <= 1, where 1 disables tweening.
+		 * @default 0.5
+		 */
 		public function get friction():Number { return _friction; }
 		public function set friction(value:Number):void {
 			if (value > 1) value = 1;
@@ -45,31 +66,69 @@ package com.gestureworks.cml.elements
 			_friction = value;
 		}
 		
+		/**
+		 * Rendered rotation offset angle.
+		 * A value of 0 corresponds to the bottom of carousel.
+		 * @default 0
+		 */
 		public function get rotationOffset():Number { return _rotationOffset; }
 		public function set rotationOffset(offset:Number):void { _rotationOffset = offset; }
 		
+		/**
+		 * Drag movement scaling factor.
+		 * @default 1
+		 */
 		public function get dragScaling():Number { return _dragScaling; }
 		public function set dragScaling(scale:Number):void { _dragScaling = scale; }
 		
-		// function should be of the form (DisplayObject,Number):void
-		public function get onUpdate():Function { return _onUpdate; }
-		public function set onUpdate(func:Function):void { _onUpdate = func; }
-		
-		// should be set to either Carousel.LINEAR_DRAG or Carousel.CIRCULAR_DRAG
+		/**
+		 * Drag type.
+		 * Expects either Carousel.LINEAR_DRAG or Carousel.CIRCULAR_DRAG.
+		 * Linear drag: dragging horizontally rotates the carousel, vertical movement is not considered.
+		 * Circular drag: dragging around the carousel rotates it.
+		 * @default Carousel.CIRCULAR_DRAG
+		 */
 		public function get dragType():Boolean { return _dragType; }
 		public function set dragType(type:Boolean):void { _dragType = type; }
 		
-		// TODO: get snapIndex?
-		// TODO: get currentElement?
+		/**
+		 * Function to apply to each element when the display is updated.
+		 * Function should be of the form (DisplayObject,Number):void
+		 * 
+		 * <codeblock xmll:space="preserve" class="+ topic/pre pr-d/codeblock ">
+			var carousel:Carousel = new Carousel();
+			c_carousel.onUpdate = function(child:DisplayObject, theta:Number):void {
+				child.rotation = theta * 180 / Math.PI + 90;
+			}
+		 * </codeblock>
+		 * 
+		 * @default undefined
+		 */
+		public function get onUpdate():Function { return _onUpdate; }
+		public function set onUpdate(func:Function):void { _onUpdate = func; }
+		
+		/**
+		 * Returns the currently snapped object
+		 */
+		public function getCurrent():DisplayObject {
+			var n:int = numChildren;
+			return getChildAt(((snapIndex % n) + n) % n);
+		}
 		
 //==  INITIALIZATION  ========================================================//
 		
+		/**
+		 * Constructor
+		 */
 		public function Carousel() {
 			orderedChildList = new Vector.<DisplayObject>();
 			containerList = new Vector.<DispObjContainer>();
 			ring = new TouchContainer();
 		}
 		
+		/**
+		 * Initialization function
+		 */
 		override public function init():void {
 			dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "isLoaded", true, true));
 			ring.mouseChildren = true;
@@ -87,6 +146,11 @@ package com.gestureworks.cml.elements
 		
 //==  CONTROLS  ==============================================================//
 		
+		/**
+		 * Calculates the change of angle from a drag event.
+		 * @param	e Event to calculate dTheta from
+		 * @return dTheta, the change of angle
+		 */
 		private function calcDTheta(e:GWGestureEvent):Number {
 			var oldX:Number = (e.value.x - e.value.drag_dx - width /2) / width;
 			var oldY:Number = (e.value.y - e.value.drag_dy - height/2) / height;
@@ -98,6 +162,11 @@ package com.gestureworks.cml.elements
 			return isNaN(dTheta)?0:dTheta;
 		}
 		
+		/**
+		 * Transforms an events value.x, value.y, value.drag_dx, and value.drag_dy to local coordinates
+		 * @param	e Event to transform
+		 * @return Event with values transformed
+		 */
 		private function getGlobalToLocalEvt(e:GWGestureEvent):GWGestureEvent {
 			var   mtx:Matrix = this.transform.concatenatedMatrix.clone();
 			var   pos:Point  = new Point(e.value.x      , e.value.y      );
@@ -112,8 +181,9 @@ package com.gestureworks.cml.elements
 			return e;
 		}
 		
-		// TODO: elementSelected callback?
-		// TODO: elementUnselected callback?
+		/**
+		 * Initializes event listeners
+		 */
 		private function initListeners():void {
 			for (var i:int = 0; i < containerList.length;++i) {
 				var child:DispObjContainer = containerList[i];
@@ -151,20 +221,32 @@ package com.gestureworks.cml.elements
 		
 //==  SNAPPING  ==============================================================//
 		
+		/**
+		 * Sets the carousels rotation to the specified index without tweening
+		 * @param	index Index to rotate to
+		 */
 		public function setTo(index:int):void {
 			snapIndex = index;
 			currentRotation = targetRotation = (index / numChildren) * 2 * Math.PI;
 			snapTween.play();
 		}
 		
+		/**
+		 * Snaps the carousel to the specified index without modulus
+		 * @param	index Index to snap to
+		 */
 		public function snapToNoMod(index:Number):void {
 			snapIndex = index;
 			targetRotation = -2 * Math.PI * Math.round(index) / numChildren;
 			snapTween.play();
 		}
 		
+		/**
+		 * Snaps the carousel to the specified index
+		 * @param	index Index to snap to
+		 */
 		public function snapTo(index:Number):void {
-			var n:int = numChildren;
+			var       n:int = numChildren;
 			var current:int = ((snapIndex % n) + n) % n;
 			var  target:int = ((index % n) + n) % n;
 			if (Math.abs(target - n - current) < n / 2) target -= n;
@@ -172,15 +254,28 @@ package com.gestureworks.cml.elements
 			snapToNoMod(snapIndex + (target - current));
 		}
 		
+		/**
+		 * Updates the snap index according to the current rotation of the carousel
+		 */
 		private function updateSnapIndex():void {
 			snapIndex = -Math.round(currentRotation * numChildren / (2 * Math.PI));
 		}
 		
+		/**
+		 * Rotates the carousel left
+		 */
 		public function rotateLeft ():void { snapTo(snapIndex - 1); }
+		
+		/**
+		 * Rotates the carousel right
+		 */
 		public function rotateRight():void { snapTo(snapIndex + 1); }
 		
 //==  RENDERING  =============================================================//
 		
+		/**
+		 * Initializes the TweenLite object used for snapping animation
+		 */
 		private function initSnapTween():void {
 			snapTween = TweenLite.to(this, int.MAX_VALUE, { onUpdate:function():void {
 				currentRotation += ((targetRotation - currentRotation) * friction);
@@ -192,8 +287,9 @@ package com.gestureworks.cml.elements
 			}});
 		}
 		
-		// TODO: elementFocused callback?
-		// TODO: elementUnfocused callback?
+		/**
+		 * Updates the z-order of the rendered objects according to snapIndex
+		 */
 		private function updateStackOrder():void {
 			if (oldSnapIndex == snapIndex) return;
 			oldSnapIndex = snapIndex;
@@ -209,6 +305,9 @@ package com.gestureworks.cml.elements
 			}
 		}
 		
+		/**
+		 * Updates the positions of all the display objects in a circular fashion
+		 */
 		private function updateCoords():void {
 			var n:int = numChildren;
 			for (var i:int = 0; i < n; ++i) {
@@ -222,11 +321,14 @@ package com.gestureworks.cml.elements
 		
 //==  ADD/GET/REMOVE CHILD REDIRECTION  ======================================//
 		
-		// TODO: out of bounds checks
-		// TODO: anchor on container add?
-		
+		/**
+		 * @inheritDoc
+		 */
 		override public function get numChildren():int { return orderedChildList.length; }
-		
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
 			orderedChildList.splice(index, 0, child);
@@ -235,7 +337,10 @@ package com.gestureworks.cml.elements
 			containerList.splice(index, 0, container);
 			return child;
 		}
-		
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function addChild(child:DisplayObject):DisplayObject {
 			if (getChildIndex(child) != -1) return child;
 			orderedChildList.push(child);
@@ -244,9 +349,20 @@ package com.gestureworks.cml.elements
 			containerList.push(container);
 			return child;
 		}
-		
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function getChildIndex(child:DisplayObject):int { return orderedChildList.indexOf(child); }
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function getChildAt(index:int):DisplayObject { return orderedChildList[index]; }
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function getChildByName(name:String):DisplayObject {
 			var i:int, n:int = numChildren;
 			for (i = 0; i < n; ++i) {
@@ -256,15 +372,24 @@ package com.gestureworks.cml.elements
 			
 			return null;
 		}
-		
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function removeChild(child:DisplayObject):DisplayObject { return removeChildAt(getChildIndex(child)); }
-		
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void {
 			for (var i:int = beginIndex; i < endIndex; ++i) containerList[i].removeChildAt(0);
 			orderedChildList.splice(beginIndex, endIndex - beginIndex);
 			containerList.splice(beginIndex, endIndex - beginIndex);
 		}
-		
+			
+		/**
+		 * @inheritDoc
+		 */
 		override public function removeChildAt(index:int):DisplayObject {
 			var removedChild:DisplayObject = getChildAt(index);
 			containerList[index].removeChildAt(0);
@@ -275,11 +400,30 @@ package com.gestureworks.cml.elements
 		
 //==  MISC  ==================================================================//
 		
+		/**
+		 * The Carousel element ignores the layout parameter. The Carousels
+		 * appearance can be modified by changing its width and height, as well
+		 * as its rotationOffset and onUpdate function.
+		 */
 		override public function set layout(value:*):void { }
+		
+		/**
+		 * The Carousel element ignores the layout parameter. The Carousels
+		 * appearance can be modified by changing its width and height, as well
+		 * as its rotationOffset and onUpdate function.
+		 */
 		override public function applyLayout(value:Layout = null):void { }
 		
-		override public function clone():* { } // TODO
+		/**
+		 * @inheritDoc
+		 */
+		override public function clone():* {
+			// TODO
+		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function dispose():void {
 			super.dispose();
 			_onUpdate        = null;
@@ -292,6 +436,9 @@ package com.gestureworks.cml.elements
 	}
 }
 
+/**
+ * Helper class to make event clearing easier
+ */
 class DispObjContainer extends com.gestureworks.cml.elements.TouchContainer {
 	private var eventList:Array = [];
 	public function clearEvents():void { for each(var i:Object in eventList) if (hasEventListener(i.type)) removeEventListener(i.type, i.listener); }
