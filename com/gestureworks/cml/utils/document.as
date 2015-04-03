@@ -16,6 +16,15 @@ package com.gestureworks.cml.utils {
 		}
 		
 		/**
+		 * Searches the CML document by cmlIndex
+		 * @param	index
+		 * @return
+		 */
+		static public function getElementByCMLIndex(index:int):*{
+			return CMLObjectList.instance.getIndex(index);
+		}
+		
+		/**
 		 * Searches the CML document by tagName as type Class. An array of objects are returned.
 		 * @param	tagName
 		 * @return Array of found objects.
