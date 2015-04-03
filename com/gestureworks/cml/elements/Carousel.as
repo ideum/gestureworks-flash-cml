@@ -417,7 +417,7 @@ package com.gestureworks.cml.elements
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():* {
+		override public function clone(parent:* = null):* {
 			// TODO
 		}
 		
