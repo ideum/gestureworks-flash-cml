@@ -450,11 +450,9 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function clone(parent:* = null):* {
-			// this implementation assumes a clone will be followed by an init call before use
-			
 			if (!cloneExInit) {
 				cloneExInit = true;
-				cloneExclusions.push("childList"); // this is already in here by default
+				cloneExclusions.push("childList");
 				cloneExclusions.push("snapTween");
 				cloneExclusions.push("orderedChildList");
 				cloneExclusions.push("containerList");
