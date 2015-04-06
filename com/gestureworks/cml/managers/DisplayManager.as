@@ -172,7 +172,15 @@ package com.gestureworks.cml.managers
 					}
 				}	
 			}
-		}		
+		}
+		
+		/**
+		 * Initialize object cloning defined by CML <code>Clone</code> tags
+		 */
+		public function loadClones():void 
+		{
+			CloneManager.instance.loadCMLClones();
+		}
 	}
 }
 
