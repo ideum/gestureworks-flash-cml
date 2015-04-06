@@ -446,6 +446,10 @@ package com.gestureworks.cml.core
 					loopCML(pRenderKit(XML(node)), parent);
 					continue;
 				}
+				else if (tag == "Clone") {
+					CloneManager.instance.parseCMLClone(node, parent);
+					continue;
+				}
 				
 				else if (tag == "DebugKit" || tag == "RendererData" || tag == "Filter" || tag == "Gesture" 
 					|| tag == "GestureList" || tag == "LibraryKit" || tag == "Library" || tag == "LayoutKit" 
@@ -1155,6 +1159,11 @@ package com.gestureworks.cml.core
 				trace("\n\n++ Layout Containers... set dimensions to child ++");				
 			
 			DisplayManager.instance.layoutCML();
+			
+			if (debug)
+				trace("\n\n++ Load Clones...++");				
+				
+			DisplayManager.instance.loadClones();
 			
 			if (debug)
 				trace("\n\n++ Call object's init() method ++");				

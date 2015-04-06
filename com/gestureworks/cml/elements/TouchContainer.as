@@ -4,6 +4,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.interfaces.*;
 	import com.gestureworks.cml.layouts.Layout;
+	import com.gestureworks.cml.managers.CloneManager;
 	import com.gestureworks.cml.utils.*;
 	import com.gestureworks.core.*;
 	import com.gestureworks.events.*;
@@ -706,8 +707,7 @@ package com.gestureworks.cml.elements
 		 * @param	cml
 		 * @return
 		 */
-		public function parseCML(cml:XMLList):XMLList {			
-			
+		public function parseCML(cml:XMLList):XMLList {						
 			var node:XML = XML(cml);
 			var obj:Layout;
 			var attrName:String;
@@ -731,12 +731,16 @@ package com.gestureworks.cml.elements
 							obj[attrName] = attrValue;							
 					}					
 					layout = obj; 
-				}								
+				}
+				else if (item.name() == "Clone") {
+					CloneManager.instance.parseCMLClone(item, this);
+				}
 			}
 			
 			//remove processed 
-			delete cml["Layout"];			
-			
+			delete cml["Layout"];	
+			delete cml["Clone"];
+						
 			CMLParser.instance.parseCML(this, cml);
 			return cml.*;
 		}
