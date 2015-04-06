@@ -4,6 +4,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.events.StateEvent;
 	import com.gestureworks.cml.layouts.Layout;
 	import com.gestureworks.cml.utils.ChildList;
+	import com.gestureworks.cml.utils.CloneUtils;
 	import com.gestureworks.core.TouchSprite;
 	import com.gestureworks.events.GWGestureEvent;
 	import com.greensock.TweenLite;
@@ -32,25 +33,31 @@ package com.gestureworks.cml.elements
 		
 //==  VARIABLES  =============================================================//
 		
-		public static const LINEAR_DRAG   : Boolean =  false;
-		public static const CIRCULAR_DRAG : Boolean =  true;
+		public static const LINEAR_DRAG    : Boolean =  false;
+		public static const CIRCULAR_DRAG  : Boolean =  true;
 		
-		private var _friction             : Number  =  0.5;
-		private var _rotationOffset       : Number  =  0;
-		private var _dragScaling          : Number  =  1;
-		private var _dragType             : Boolean =  CIRCULAR_DRAG;
-		private var _onUpdate             : Function;
+		public static const ROTATE_UP      : int     =  0;
+		public static const ROTATE_INWARD  : int     =  1;
+		public static const ROTATE_OUTWARD : int     =  2;
 		
-		private var  firstInit            : Boolean = true;            // indicates whether this has been initialized once already
-		private var  snapTween            : TweenLite;                 // TweenLite object for animation
-		private var  snapIndex            : int     =  0;              // index of currently "selected" element
-		private var  oldSnapIndex         : int     = -1;              // index of "selected" element last time updateStackOrder() was called
-		private var  targetRotation       : Number  =  0;              // target rotation for currentRotation, dragging modifies this
-		private var  currentRotation      : Number  =  0;              // rendered rotation
-		private var  releaseEvent         : GWGestureEvent;            // last gesture event before release event
-		private var  orderedChildList     : Vector.<DisplayObject>;    // ring elements are stored in here in correct insertion order
-		private var  containerList        : Vector.<DispObjContainer>; // mirror of orderedChildList containing the touchContainers holding the display objects
-		private var  ring                 : TouchContainer;            // ring elements are rendered on here in correct z-stack order
+		private var _friction              : Number  =  0.5;
+		private var _rotationOffset        : Number  =  0;
+		private var _dragScaling           : Number  =  1;
+		private var _dragType              : Boolean =  CIRCULAR_DRAG;
+		private var _rotationType          : int     =  ROTATE_UP;
+		private var _onUpdate              : Function;
+		
+		private var  firstInit             : Boolean =  true;           // indicates whether this has been initialized once already
+		private var  cloneExInit           : Boolean =  false;          // indicates whether cloneExclusions have been initialized already
+		private var  snapTween             : TweenLite;                 // TweenLite object for animation
+		private var  snapIndex             : int     =  0;              // index of currently "selected" element
+		private var  oldSnapIndex          : int     = -1;              // index of "selected" element last time updateStackOrder() was called
+		private var  targetRotation        : Number  =  0;              // target rotation for currentRotation, dragging modifies this
+		private var  currentRotation       : Number  =  0;              // rendered rotation
+		private var  releaseEvent          : GWGestureEvent;            // last gesture event before release event
+		private var  orderedChildList      : Vector.<DisplayObject>;    // ring elements are stored in here in correct insertion order
+		private var  containerList         : Vector.<DispObjContainer>; // mirror of orderedChildList containing the touchContainers holding the display objects
+		private var  ring                  : TouchContainer;            // ring elements are rendered on here in correct z-stack order
 		
 //==  GETTERS/SETTERS  =======================================================//
 		
@@ -83,13 +90,23 @@ package com.gestureworks.cml.elements
 		
 		/**
 		 * Drag type.
-		 * Expects either Carousel.LINEAR_DRAG or Carousel.CIRCULAR_DRAG.
+		 * Expects either Carousel.LINEAR_DRAG (true) or Carousel.CIRCULAR_DRAG (false).
 		 * Linear drag: dragging horizontally rotates the carousel, vertical movement is not considered.
 		 * Circular drag: dragging around the carousel rotates it.
 		 * @default Carousel.CIRCULAR_DRAG
 		 */
 		public function get dragType():Boolean { return _dragType; }
 		public function set dragType(type:Boolean):void { _dragType = type; }
+		
+		/**
+		 * Rotation type.
+		 * Expects either Carousel.ROTATE_UP (0), Carousel.ROTATE_INWARD (1) or Carousel.ROTATE_OUTWARD (2).
+		 * Rotate up: elements of the carousel point upwards.
+		 * Rotate inward: elements of the carousel point towards the pivot point
+		 * Rotate outward: elements of the carousel point away from the pivot point
+		 */
+		public function get rotationType():int { return _rotationType; }
+		public function set rotationType(type:int):void{ _rotationType = type; }
 		
 		/**
 		 * Function to apply to each element when the display is updated.
@@ -313,9 +330,24 @@ package com.gestureworks.cml.elements
 			for (var i:int = 0; i < n; ++i) {
 				var child:DisplayObject = getChildAt(i);
 				var theta:Number = i / n * 2 * Math.PI + Math.PI / 2 + currentRotation + rotationOffset;
-				var x:Number = child.x = (width  + Math.cos(theta) * width  - child.width ) / 2;
-				var y:Number = child.y = (height + Math.sin(theta) * height - child.height) / 2;
+				child.x = (width  + Math.cos(theta) * width  - child.width ) / 2;
+				child.y = (height + Math.sin(theta) * height - child.height) / 2;
 				if (onUpdate != null) onUpdate(child, theta);
+				
+				var rotateFunc:Function = function(angle:Number):void {
+					child.rotation = 0;
+					var mtx:Matrix = child.transform.matrix;
+					var x:Number = mtx.tx+child.width/2, y:Number = mtx.ty+child.width/2;
+					mtx.translate( -x, -y);
+					mtx.rotate(angle);
+					mtx.translate(x, y);
+					child.transform.matrix = mtx;
+				};
+				
+				switch(rotationType) {
+					case ROTATE_INWARD:  rotateFunc(theta - Math.PI / 2); break;
+					case ROTATE_OUTWARD: rotateFunc(theta + Math.PI / 2); break;
+				}
 			}
 		}
 		
@@ -418,7 +450,23 @@ package com.gestureworks.cml.elements
 		 * @inheritDoc
 		 */
 		override public function clone(parent:* = null):* {
-			// TODO
+			// this implementation assumes a clone will be followed by an init call before use
+			
+			if (!cloneExInit) {
+				cloneExInit = true;
+				cloneExclusions.push("childList"); // this is already in here by default
+				cloneExclusions.push("snapTween");
+				cloneExclusions.push("orderedChildList");
+				cloneExclusions.push("containerList");
+				cloneExclusions.push("ring");
+			}
+			
+			var clone:Carousel = CloneUtils.clone(this, parent?parent:this.parent, cloneExclusions) as Carousel;
+			    clone.orderedChildList = new Vector.<DisplayObject>();
+			    clone.containerList = new Vector.<DispObjContainer>();
+			    clone.ring = new TouchContainer();
+			    clone.firstInit = true;
+			return clone;
 		}
 		
 		/**
