@@ -9,7 +9,7 @@
 	 */	
 	public class CloneManager
 	{					
-		private static var _instance:CloneManager = new CloneManager();
+		private static var _instance:CloneManager;
 		private var cloneArgs:Vector.<Object> = new Vector.<Object>();
 		
 		/**
@@ -24,7 +24,12 @@
 		/**
 		 * Returns the CloneManager instance
 		 */
-		public static function get instance():CloneManager { return _instance; }
+		public static function get instance():CloneManager { 
+			if (!_instance) {
+				_instance = new CloneManager();
+			}
+			return _instance; 
+		}
 		
 		/**
 		 * Process CML declared Clone tags
