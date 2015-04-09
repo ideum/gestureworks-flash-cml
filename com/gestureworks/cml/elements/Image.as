@@ -11,6 +11,7 @@ package com.gestureworks.cml.elements
 	import flash.display.BitmapData;
 	import flash.display.PixelSnapping;
 	import flash.events.Event;
+	import flash.net.URLRequest;
 	
 	/** 
 	 * The ImageNew class loads and displays an external bitmap file.	 
@@ -72,10 +73,7 @@ package com.gestureworks.cml.elements
 			} 
 			//load file
 			else {
-				img = new ImageLoader(value);
-				img.addEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.addEventListener(LoaderEvent.PROGRESS, loading);
-				img.addEventListener(LoaderEvent.ERROR, onError);
+				img = new ImageLoader(isURL(value) ? new URLRequest(value) : value, {allowMalformedURL:true, onComplete:loadComplete, onProgress:loading, onError:onError});
 				img.load();
 			}							
 		}
@@ -152,9 +150,6 @@ package com.gestureworks.cml.elements
 			//retrieve file data
 			if (img && img.rawContent){
 				_fileData = img.rawContent;
-				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.removeEventListener(LoaderEvent.PROGRESS, loading);
-				img.removeEventListener(LoaderEvent.ERROR, onError);
 			}
 			else if(FileManager.hasFile(src)){
 				src = src ? src : state[0]["src"];					
@@ -212,15 +207,11 @@ package com.gestureworks.cml.elements
 		/**
 		 * Update loaded state 
 		 */
-		protected function bitmapComplete():void 
-		{
+		protected function bitmapComplete():void {
 			if (img) {
-				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
-				img.removeEventListener(LoaderEvent.PROGRESS, loading);
-				img.removeEventListener(LoaderEvent.ERROR, onError);				
-				img = null;				
+				img.dispose();
+				img = null; 
 			}
-			
 			super.loadComplete();
 		}	
 		
@@ -280,7 +271,6 @@ package com.gestureworks.cml.elements
 			super.dispose();
 				
    			if (img) {
-				img.removeEventListener(LoaderEvent.COMPLETE, loadComplete);
 				img.dispose();
 				img = null;
 			}

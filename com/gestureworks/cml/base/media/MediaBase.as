@@ -236,6 +236,15 @@ package com.gestureworks.cml.base.media
 		}
 		
 		/**
+		 * Evaluates string to determine if it s a URL scheme
+		 * @param	value String to check
+		 * @return
+		 */
+		public function isURL(value:String):Boolean {
+			return (value.substring(0, 7) == "http://" || value.substring(0, 8) == "https://"); 
+		}
+		
+		/**
 		 * Closes media
 		 */
 		public function close():void {

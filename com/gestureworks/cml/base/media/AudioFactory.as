@@ -126,6 +126,15 @@ package com.gestureworks.cml.base.media
 				load();
 			}
 		}		
+		
+		/**
+		 * Evaluates string to determine if it s a URL scheme
+		 * @param	value String to check
+		 * @return
+		 */
+		public function isURL(value:String):Boolean {
+			return (value.substring(0, 7) == "http://" || value.substring(0, 8) == "https://"); 
+		}		
 	
 		/**
 		 * Load audio file
@@ -157,7 +166,7 @@ package com.gestureworks.cml.base.media
 			_isComplete = true; 
 			publishStatus(MediaStatus.PLAYBACK_COMPLETE, isComplete);
 			stop();								
-		}	
+		}					
 		
 		/**
 		 * Closes audio file

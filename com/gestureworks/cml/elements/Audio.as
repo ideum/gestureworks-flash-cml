@@ -122,9 +122,22 @@ package com.gestureworks.cml.elements
 			if (!value || !value.length) {
 				return; 
 			}
-			
+
 			//audio type evaluation
-			var extension:String = value.split(".")[1].toLowerCase();
+			var extension:String; 
+			if (isURL(value)) {
+				if (value.indexOf(".mp3") != -1) {
+					extension = "mp3";					
+				}
+				else if (value.indexOf(".wav") != -1) {
+					extension = "wav";
+				}
+			}
+			else {
+				extension = value.split(".")[1].toLowerCase();				
+			}
+			
+			//set audio factory based on file extension
 			switch(extension) {
 				case "mp3":
 					audio = mp3;

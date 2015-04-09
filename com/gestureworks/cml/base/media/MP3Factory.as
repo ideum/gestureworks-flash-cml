@@ -21,6 +21,7 @@ package com.gestureworks.cml.base.media
 	import com.greensock.loading.MP3Loader;
 	import flash.events.Event;
 	import flash.media.Sound;
+	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
 	/** 
 	 * The MP3Factory is the base class for all MP3 audio elements. 
@@ -49,7 +50,7 @@ package com.gestureworks.cml.base.media
 		 */
 		override protected function load():void {
 			super.load();			
-			soundLoader = new MP3Loader(_src, {onProgress:loadProgress, onComplete:soundLoaded});		
+			soundLoader = new MP3Loader(isURL(_src) ? new URLRequest(_src) : _src, {allowMalformedURL:true, onProgress:loadProgress, onComplete:soundLoaded});		
 			soundLoader.load();					
 		}
 		
