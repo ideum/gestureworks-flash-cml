@@ -208,10 +208,7 @@ package com.gestureworks.cml.elements
 		 * Update loaded state 
 		 */
 		protected function bitmapComplete():void {
-			if (img) {
-				img.dispose();
-				img = null; 
-			}
+			img = null; 
 			super.loadComplete();
 		}	
 		
