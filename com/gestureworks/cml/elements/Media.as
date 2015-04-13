@@ -20,7 +20,12 @@ package com.gestureworks.cml.elements
 	 * @see WAV
 	 */	 
 	public class Media extends MediaBase implements IStream
-	{			
+	{		
+		//supported media types
+		public static const IMAGE_TYPE:int = 1; 
+		public static const VIDEO_TYPE:int = 2; 
+		public static const AUDIO_TYPE:int = 3; 
+		
 		//supported media types
 		private var _image:Image; 
 		private var _video:Video;
@@ -28,11 +33,6 @@ package com.gestureworks.cml.elements
 		
 		//current media
 		private var _current:MediaBase; 
-		
-		//supported media types
-		private var imageType:RegExp;
-		private var videoType:RegExp;
-		private var audioType:RegExp;
 		
 		//current media implments IStream
 		private var _streamMedia:Boolean;
@@ -42,7 +42,8 @@ package com.gestureworks.cml.elements
 		private var _loop:Boolean;
 		private var _volume:Number;
 		private var _pan:Number;
-		private var _mute:Boolean;								
+		private var _mute:Boolean;	
+		private var _type:int = -1; 
 					
 		//when dimensions are undefined, the <code>Media</code> wrapper inherits dimensions from current media element
 		//when dimensions are defined, the media element dimensions are resized to the <code>Media</code> wrapper's
@@ -61,12 +62,7 @@ package com.gestureworks.cml.elements
 			
 			image = new Image();
 			video = new Video();			
-			audio = new Audio();
-			
-			//access supported types from FileManager
-			imageType = FileManager.imageType;
-			videoType = FileManager.videoType;
-			audioType = FileManager.audioType;		
+			audio = new Audio();	
 		}
 
 		/**
@@ -164,6 +160,11 @@ package com.gestureworks.cml.elements
 				_audio.visible = false; 
 			}
 		}
+		
+		/**
+		 * Current media type
+		 */
+		public function get type():int { return _type; }
 			
 		/**
 		 * Update current media with new media at provided source path
@@ -185,29 +186,56 @@ package com.gestureworks.cml.elements
 				_current.removeEventListener(StateEvent.CHANGE, mediaStatus);				
 			}
 			
-			//evaluate media type
-			if (value.search(imageType) > -1) {
-				_current = image; 					
-				image.addEventListener(StateEvent.CHANGE, mediaStatus);
-				image.src = value; 
+			//update media type
+			updateType(value);
+						
+			//update current element
+			switch(type) {
+				case IMAGE_TYPE:
+					_current = image; 					
+					image.addEventListener(StateEvent.CHANGE, mediaStatus);
+					image.src = value; 					
+					break; 
+				case VIDEO_TYPE:
+					_current = video; 											
+					video.addEventListener(StateEvent.CHANGE, mediaStatus);
+					video.src = value; 							
+					break;
+				case AUDIO_TYPE:
+					_current = audio;
+					audio.addEventListener(StateEvent.CHANGE, mediaStatus);
+					audio.src = value; 					
+					break;
+				default:
+					throw new Error("Unsupported media type: " + value);
 			}
-			else if (value.search(videoType) > -1) {				
-				_current = video; 											
-				video.addEventListener(StateEvent.CHANGE, mediaStatus);
-				video.src = value; 				
-			}
-			else if (value.search(audioType) > -1) {
-				_current = audio;
-				audio.addEventListener(StateEvent.CHANGE, mediaStatus);
-				audio.src = value; 
-			}
-			else {
-				throw new Error("Unsupported media type: " + value);
-			}	
 			
 			//set stream flag
 			_streamMedia = _current is IStream;								
 			syncStreamSettings();	
+		}
+		
+		/**
+		 * Evaluate extension to determine current media type
+		 * @param	value
+		 */
+		private function updateType(value:String):void {
+			var file:String = new String(value);
+			if (isURL(file)) {
+				file = file.split("?")[0];
+			}
+			if (file.search(FileManager.imageType) > -1) {
+				_type = IMAGE_TYPE;
+			}
+			else if (file.search(FileManager.videoType) > -1) {
+				_type = VIDEO_TYPE;
+			}
+			else if (file.search(FileManager.audioType) > -1) {
+				_type = AUDIO_TYPE;
+			}
+			else {
+				_type = -1; 
+			}
 		}
 		
 		/**
@@ -479,10 +507,7 @@ package com.gestureworks.cml.elements
 			_image = null;
 			_video = null;
 			_audio = null;			
-			_current = null;
-			imageType = null;
-			videoType = null;
-			audioType = null;			
+			_current = null;			
 		}
 	}
 }
