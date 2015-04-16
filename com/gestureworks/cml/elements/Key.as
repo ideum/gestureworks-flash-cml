@@ -394,7 +394,7 @@ package  com.gestureworks.cml.elements
 		 * value (10) to identify its origin.
 		 * @param	event  event triggered when touched/clicked
 		 */
-		override protected function onDown(event:*):void 
+		override public function onDown(event:* = null):void 
 		{	
 			super.onDown(event);						
 			keyText.textColor = downTextColor ? downTextColor : initTextColor; 			    
@@ -405,7 +405,7 @@ package  com.gestureworks.cml.elements
 		 * The up event handler.
 		 * @param	event  event triggered when a key is released from a down event
 		 */
-		override protected function onUp(event:*):void 
+		override public function onUp(event:* = null):void 
 		{
 			super.onUp(event);
 			keyText.textColor = upTextColor ? upTextColor : initTextColor;
@@ -415,7 +415,7 @@ package  com.gestureworks.cml.elements
 		 * The over event handler.
 		 * @param	event  event triggered when a key is intersected from outside
 		 */
-		override protected function onOver(event:*):void 
+		override public function onOver(event:* = null):void 
 		{
 			super.onOver(event);
 			keyText.textColor = overTextColor ? overTextColor : initTextColor;
@@ -425,7 +425,7 @@ package  com.gestureworks.cml.elements
 		 * The out event handler.
 		 * @param	event  event triggered when a key is released from an over event
 		 */
-		override protected function onOut(event:*):void 
+		override public function onOut(event:* = null):void 
 		{
 			super.onOut(event);
 			keyText.textColor = outTextColor ? outTextColor : initTextColor;		

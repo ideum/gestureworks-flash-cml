@@ -69,13 +69,14 @@ package com.gestureworks.cml.elements
 	 */
 	public class Button extends Container
 	{
-		public var debug:Boolean = false;
+		public var debug:Boolean;
 		protected var buttonStates:Array;
-		public var dispatchDefault:Boolean = false;
+		public var dispatchDefault:Boolean;
 		private var dispatchDict:Dictionary;
 		private var buttonId:int = 0;
 		private var _hideOnToggle:Boolean = true;
 		private var _bitmapHitTest:Boolean = false; 
+		private var _externalEvents:Boolean;
 		
 		/**
 		 * Contructor
@@ -166,6 +167,16 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
+		 * Disables internal registration of input listeners and instead depends on external
+		 * invocation of state handlers. 
+		 * @default false
+		 */
+		public function get externalEvents():Boolean { return _externalEvents; }
+		public function set externalEvents(value:Boolean):void {
+			_externalEvents = value; 
+		}
+		
+		/**
 		 * Adds or removes a listener based on the value of the <code>add</code> flag
 		 * @param	type  the type of event
 		 * @param	listener  the listener function that processes the event
@@ -174,6 +185,8 @@ package com.gestureworks.cml.elements
 		 */
 		private function addListener(type:String, listener:Function, add:Boolean = true, obj:* = null):void
 		{
+			if (externalEvents) 
+				return; 
 			if (!obj)
 				obj = this;
 			if (add)
@@ -768,7 +781,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the mouse down event
 		 */
-		protected function onMouseDown(event:*):void
+		public function onMouseDown(event:* = null):void
 		{
 			if (debug)
 				trace("mouseDown");
@@ -808,7 +821,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the mouse up event
 		 */
-		protected function onMouseUp(event:*):void
+		public function onMouseUp(event:* = null):void
 		{
 			if (debug)
 				trace("mouseUp");
@@ -845,7 +858,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the mouse over event
 		 */
-		protected function onMouseOver(event:*):void
+		public function onMouseOver(event:* = null):void
 		{
 			if (debug)
 				trace("mouseOver");
@@ -879,7 +892,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the mouse out event
 		 */
-		protected function onMouseOut(event:*):void
+		public function onMouseOut(event:* = null):void
 		{
 			if (debug)
 				trace("mouseOut");
@@ -907,7 +920,11 @@ package com.gestureworks.cml.elements
 				dispatchEvent(new StateEvent(StateEvent.CHANGE, this, "buttonState", "mouseOut", true, true));
 		}
 		
-		protected function onTap(event:*):void
+		/**
+		 * Dispatches tap state
+		 * @param	event
+		 */
+		public function onTap(event:* = null):void
 		{
 			if (debug)
 				trace("tap");
@@ -972,7 +989,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the touch down event
 		 */
-		protected function onTouchBegin(event:*):void
+		public function onTouchBegin(event:* = null):void
 		{
 			if (debug)
 				trace("touchDown");
@@ -1012,7 +1029,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the touch over event
 		 */
-		protected function onTouchOver(event:*):void
+		public function onTouchOver(event:* = null):void
 		{
 			if (debug)
 				trace("touchOver");
@@ -1046,7 +1063,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the touch up event
 		 */
-		protected function onTouchUp(event:*):void
+		public function onTouchUp(event:* = null):void
 		{
 			if (debug)
 				trace("touchUp");
@@ -1083,7 +1100,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the touch out event
 		 */
-		protected function onTouchOut(event:*):void
+		public function onTouchOut(event:* = null):void
 		{
 			if (debug)
 				trace("touchOut");
@@ -1168,7 +1185,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the down event
 		 */
-		protected function onDown(event:*):void
+		public function onDown(event:* = null):void
 		{
 			if (debug)
 				trace("down");
@@ -1208,7 +1225,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the over event
 		 */
-		protected function onOver(event:*):void
+		public function onOver(event:* = null):void
 		{
 			if (debug)
 				trace("over");
@@ -1242,7 +1259,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the up event
 		 */
-		protected function onUp(event:*):void
+		public function onUp(event:* = null):void
 		{
 			if (debug)
 				trace("up");
@@ -1279,7 +1296,7 @@ package com.gestureworks.cml.elements
 		 * and disables appropriate listeners to control event flow.
 		 * @param	event  the out event
 		 */
-		protected function onOut(event:*):void
+		public function onOut(event:* = null):void
 		{
 			if (debug)
 				trace("out");
@@ -1352,7 +1369,7 @@ package com.gestureworks.cml.elements
 		 * the button states are ignored.
 		 * @param	event
 		 */
-		protected function onToggle(event:*):void
+		public function onToggle(event:* = null):void
 		{
 			if (hideOnToggle) {
 				childList.currentValue.visible = false;
