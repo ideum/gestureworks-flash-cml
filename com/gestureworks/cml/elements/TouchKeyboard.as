@@ -504,7 +504,8 @@ package com.gestureworks.cml.elements
 			var cText:String = currentTF.text;
 			caret = currentTF.caretIndex;
 			currentTF.text = cText.substring(0, caret - 1) + cText.substring(caret, cText.length);
-			caret--;				
+			caret--;
+			currentTF.setSelection(caret-1, caret);
 		}
 		
 		/**
@@ -571,6 +572,15 @@ package com.gestureworks.cml.elements
 				}
 			}
 		}
+		
+		/**
+		 * Clear output text field
+		 */
+		public function clearOutput():void {
+			caret = 0;
+			currentTF.text = "";
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
