@@ -29,9 +29,10 @@ package  com.gestureworks.cml.elements
  	 */
 	public class Key extends Button
 	{
-		private var _capsOn:Boolean = false;
-		private var _shiftOn:Boolean = false;
+		private var _capsOn:Boolean;
+		private var _shiftOn:Boolean;
 		private var _outputText:Boolean;
+		private var _hideText:Boolean;
 		private var _keyCode:uint;
 		private var _charCode:uint;
 		private var _shiftCharCode:uint;
@@ -178,6 +179,17 @@ package  com.gestureworks.cml.elements
 		}
 		
 		/**
+		 * Disable display of text but allow it define key event properties (when possible)
+		 */
+		public function get hideText():Boolean { return _hideText; }
+		public function set hideText(value:Boolean):void {
+			_hideText = value; 
+			if (keyText) {
+				keyText.visible = !_hideText; 
+			}
+		}
+		
+		/**
 		 * Instructs the <code>TouchKeyboard</code> to bypass the KeyboardEvent evaluation and output the text
 		 * instead. This is a useful setting for key text without valid character or key codes. For example, setting
 		 * this flag on a key having a text value of '.com', will output '.com' in the designated text field. 
@@ -254,8 +266,8 @@ package  com.gestureworks.cml.elements
 			if (initial)
 			{
 				background = initial;
-				width = background.width;
-				height = background.height;				
+				width = width ? width : background.width; 
+				height = height ? height : background.height; 
 			}
 			else 
 			{
@@ -354,6 +366,9 @@ package  com.gestureworks.cml.elements
 				addChild(keyText);
 			}
 			
+			//text display
+			keyText.visible = !hideText;
+			
 			//default initital color
 			if (!initTextColor)
 				initTextColor = keyText.textColor;
@@ -394,7 +409,7 @@ package  com.gestureworks.cml.elements
 		 * value (10) to identify its origin.
 		 * @param	event  event triggered when touched/clicked
 		 */
-		override protected function onDown(event:*):void 
+		override public function onDown(event:* = null):void 
 		{	
 			super.onDown(event);						
 			keyText.textColor = downTextColor ? downTextColor : initTextColor; 			    
@@ -405,7 +420,7 @@ package  com.gestureworks.cml.elements
 		 * The up event handler.
 		 * @param	event  event triggered when a key is released from a down event
 		 */
-		override protected function onUp(event:*):void 
+		override public function onUp(event:* = null):void 
 		{
 			super.onUp(event);
 			keyText.textColor = upTextColor ? upTextColor : initTextColor;
@@ -415,7 +430,7 @@ package  com.gestureworks.cml.elements
 		 * The over event handler.
 		 * @param	event  event triggered when a key is intersected from outside
 		 */
-		override protected function onOver(event:*):void 
+		override public function onOver(event:* = null):void 
 		{
 			super.onOver(event);
 			keyText.textColor = overTextColor ? overTextColor : initTextColor;
@@ -425,7 +440,7 @@ package  com.gestureworks.cml.elements
 		 * The out event handler.
 		 * @param	event  event triggered when a key is released from an over event
 		 */
-		override protected function onOut(event:*):void 
+		override public function onOut(event:* = null):void 
 		{
 			super.onOut(event);
 			keyText.textColor = outTextColor ? outTextColor : initTextColor;		
