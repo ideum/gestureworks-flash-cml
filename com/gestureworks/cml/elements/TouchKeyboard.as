@@ -3,6 +3,7 @@ package com.gestureworks.cml.elements
 	import com.gestureworks.cml.core.CMLObjectList;
 	import com.gestureworks.cml.elements.Container;
 	import com.gestureworks.cml.elements.Key;
+	import com.gestureworks.events.GWTouchEvent;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
@@ -50,6 +51,7 @@ package com.gestureworks.cml.elements
 		private var bkgWidth:Number;
 		private var bkgHeight:Number;
 		private var currentTF:Text;
+		private var currentKey:Key; 
 		private var caret:int = 0;
 		
 		/**
@@ -63,6 +65,10 @@ package com.gestureworks.cml.elements
 			keySpacing = 10;
 			bkgPadding = 50;
 			addEventListener(KeyboardEvent.KEY_DOWN, keyHandler);
+			
+			addEventListener(GWTouchEvent.TOUCH_BEGIN, targetKey);
+			addEventListener(GWTouchEvent.TOUCH_END, targetKey);
+			addEventListener(GWTouchEvent.TOUCH_MOVE, targetKey);
 		}
 		
 		/**
@@ -237,6 +243,8 @@ package com.gestureworks.cml.elements
 				{
 					var key:* = container.childList.getIndex(j);
 					if (!(key is Key)) continue;
+					key.externalEvents = true; 
+					key.mouseChildren = false; 
 					key.setup();
 					rowArray.push(key);
 				}
@@ -262,6 +270,8 @@ package com.gestureworks.cml.elements
 			key.shiftText = specsArray[1] != "--" ? specsArray[1] : null;
 			key.width = specsArray[2] != "--" ? Number(specsArray[2]) : null;
 			key.keyCode = specsArray[3] != "--" ? Number(specsArray[3]) : null;
+			key.externalEvents = true; 
+			key.mouseChildren = false; 
 			key.init();
 			
 			return key;
@@ -355,6 +365,36 @@ package com.gestureworks.cml.elements
 		}		
 				
 		//*****************KEY ACTIONS**********************************//
+		
+		/**
+		 * Evaluate global touch events and invoke appropriate state events of targeted key. Applying a centralized event
+		 * manager drastically decreases the performance overhead resulting from each key locally registering it's own event
+		 * listeners. 
+		 * @param	event
+		 */
+		private function targetKey(event:GWTouchEvent):void {
+			if (event.target is Key) {								
+				if (event.type == "gwTouchBegin") {
+					event.target.onDown();
+				}
+				else if (event.type == "gwTouchEnd") {
+					event.target.onUp();
+				}
+				else if (event.type == "gwTouchMove") {
+					if (currentKey != event.target) {
+						if (currentKey) { currentKey.onOut(); }
+						event.target.onOver();
+					}
+				}				
+				currentKey = event.target as Key;
+			}
+			else {
+				if (currentKey) {
+					currentKey.onOut();
+				}
+				currentKey = null; 
+			}
+		}
 		
 		/**
 		 * Manages the key events dispatched by the key elements. If an output is not provided, the designated output is
