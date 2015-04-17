@@ -195,7 +195,7 @@ package com.gestureworks.cml.elements
 				for each(var key:Key in row)
 				{				
 					key.y = bkgHeight;
-					key.x = rowWidth;										
+					key.x += rowWidth;										
 					rowWidth += key.width + keySpacing;
 					maxKeyHeight = maxKeyHeight > key.height ? maxKeyHeight : key.height;					
 					addChild(key);
@@ -243,6 +243,7 @@ package com.gestureworks.cml.elements
 				{
 					var key:* = container.childList.getIndex(j);
 					if (!(key is Key)) continue;
+					key.x = container.x; 
 					key.externalEvents = true; 
 					key.mouseChildren = false; 
 					key.setup();
