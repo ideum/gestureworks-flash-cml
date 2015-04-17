@@ -29,9 +29,10 @@ package  com.gestureworks.cml.elements
  	 */
 	public class Key extends Button
 	{
-		private var _capsOn:Boolean = false;
-		private var _shiftOn:Boolean = false;
+		private var _capsOn:Boolean;
+		private var _shiftOn:Boolean;
 		private var _outputText:Boolean;
+		private var _hideText:Boolean;
 		private var _keyCode:uint;
 		private var _charCode:uint;
 		private var _shiftCharCode:uint;
@@ -178,6 +179,17 @@ package  com.gestureworks.cml.elements
 		}
 		
 		/**
+		 * Disable display of text but allow it define key event properties (when possible)
+		 */
+		public function get hideText():Boolean { return _hideText; }
+		public function set hideText(value:Boolean):void {
+			_hideText = value; 
+			if (keyText) {
+				keyText.visible = !_hideText; 
+			}
+		}
+		
+		/**
 		 * Instructs the <code>TouchKeyboard</code> to bypass the KeyboardEvent evaluation and output the text
 		 * instead. This is a useful setting for key text without valid character or key codes. For example, setting
 		 * this flag on a key having a text value of '.com', will output '.com' in the designated text field. 
@@ -254,8 +266,8 @@ package  com.gestureworks.cml.elements
 			if (initial)
 			{
 				background = initial;
-				width = background.width;
-				height = background.height;				
+				width = width ? width : background.width; 
+				height = height ? height : background.height; 
 			}
 			else 
 			{
@@ -353,6 +365,9 @@ package  com.gestureworks.cml.elements
 				keyText.textColor = initTextColor ? initTextColor : 0xFFFFFF;						
 				addChild(keyText);
 			}
+			
+			//text display
+			keyText.visible = !hideText;
 			
 			//default initital color
 			if (!initTextColor)
