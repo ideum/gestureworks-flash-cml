@@ -469,7 +469,9 @@ package com.gestureworks.cml.elements
 				}				
 			}
 				
-			stage.focus = currentTF; //restore focus
+			if(!output){
+				stage.focus = currentTF; //restore focus
+			}
 			currentTF.setSelection(caret, caret); //reset caret
 		}				
 		
