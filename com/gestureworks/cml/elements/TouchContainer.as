@@ -158,18 +158,14 @@ package com.gestureworks.cml.elements
 		}
 		
 		/**
-		 * Returns bounding rectangle width 
+		 * Width of content bounds
 		 */
-		public function get displayWidth():Number {
-			return getRect(parent ? parent : this).width; 
-		}
+		public function get displayWidth():Number { return super.width; }
 		
 		/**
-		 * Returns bounding rectangle height
+		 * Height of content bounds
 		 */
-		public function get displayHeight():Number {
-			return getRect(parent ? parent : this).height; 
-		}
+		public function get displayHeight():Number { return super.height; }
 		
 		/**
 		 * Sets width to a specified percentage of the parent's width
