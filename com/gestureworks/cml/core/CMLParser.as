@@ -1161,14 +1161,14 @@ package com.gestureworks.cml.core
 			DisplayManager.instance.layoutCML();
 			
 			if (debug)
-				trace("\n\n++ Load Clones...++");				
-				
-			DisplayManager.instance.loadClones();
-			
-			if (debug)
 				trace("\n\n++ Call object's init() method ++");				
 			
 			DisplayManager.instance.init();	
+			
+			if (debug)
+				trace("\n\n++ Load Clones...++");				
+				
+			DisplayManager.instance.loadClones();			
 			
 			if (debug) trace("\n\n++ Process Complete ++");
 	
