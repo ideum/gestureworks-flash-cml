@@ -143,7 +143,8 @@ package com.gestureworks.cml.core
 	import com.gestureworks.cml.elements.PopupMenu; PopupMenu;
 	import com.gestureworks.cml.elements.SVG; SVG;	
 	import com.gestureworks.cml.elements.Audio; Audio;	
-	import com.gestureworks.cml.elements.Collection; Collection;	
+	import com.gestureworks.cml.elements.Collection; Collection;		
+	import com.gestureworks.cml.elements.FlipBook; FlipBook;		
 	
 	///////////////////////
 	//  LAYOUTS 
